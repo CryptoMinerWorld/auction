@@ -30,7 +30,7 @@
     "gzip-size": "3.0.0",
     "html-webpack-plugin": "2.24.0",
     "http-proxy-middleware": "0.17.2",
-    "jest": "18.1.0",
+    "jest": "^18.1.0",
     "json-loader": "0.5.4",
     "object-assign": "4.1.0",
     "path-exists": "2.1.0",
@@ -51,7 +51,8 @@
   "dependencies": {
     "dotenv": "^2.0.0",
     "react": "^15.4.2",
-    "react-dom": "^15.4.2"
+    "react-dom": "^15.4.2",
+    "styled-components": "^3.4.2"
   },
   "scripts": {
     "start": "node scripts/start.js",
