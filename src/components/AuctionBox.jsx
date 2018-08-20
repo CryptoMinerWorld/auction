@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import CountdownTimer from './CountdownTimer';
+import Gembox from './Gembox';
 
 const TopHighlight = styled.div`
   background: linear-gradient(to right, #e36d2d, #b91a78);
@@ -9,16 +10,14 @@ const TopHighlight = styled.div`
 `;
 
 class AuctionBox extends PureComponent {
-  static propTypes = {};
-
   render() {
     return (
       <div className="bg-dark-gray  br3 measure ">
         <TopHighlight />
         <div className="white pa3">
-          <h1>Amethyst Thingymajig</h1>
-          <div>countdown timer</div>
-          <div>gems</div>
+          <h1 className="tc">Amethyst Thingymajig</h1>
+          <CountdownTimer />
+          <Gembox level="2" grade="b" rate="54" />
           <div>current price</div>
           <button>Buy Now</button>
           <p>learn more</p>
