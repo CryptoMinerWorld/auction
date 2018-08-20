@@ -1,5 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Auction from './pages/Auction';
+import App from './pages/App';
 
-ReactDOM.render(<Auction />, document.getElementById('root'));
+ReactDOM.render(<App />, document.getElementById('root'));

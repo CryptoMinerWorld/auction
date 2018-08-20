@@ -1,9 +1,12 @@
 :root {
   --main-color: #c018ab;
-  --dark-purple: #5f1763;
+  --deep-purple: #5f1763;
   --black: #141417;
   --off-black: #24292f;
   --dark-gray: #383f45;
+  --dark-orange: #47373a;
+  --dark-blue: #344054;
+  --dark-purple: #413e58;
 }
 
 .bg-base {
@@ -11,8 +14,8 @@
   background-image: linear-gradient(to right, #c018ab, #7a2697);
 }
 
-.bg-dark-purple {
-  background-color: var(--dark-purple);
+.bg-deep-purple {
+  background-color: var(--deep-purple);
 }
 
 .bg-black {
@@ -25,4 +28,16 @@
 
 .bg-dark-gray {
   background-color: var(--dark-gray);
+}
+
+.bg-dark-orange {
+  background-color: var(--dark-orange);
+}
+
+.bg-dark-blue {
+  background-color: var(--dark-blue);
+}
+
+.bg-dark-purple {
+  background-color: var(--dark-purple);
 }

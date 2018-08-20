@@ -6,22 +6,22 @@ class FAQ extends PureComponent {
 
   render() {
     return (
-      <div className="bg-off-black white">
+      <div className="bg-off-black white ma0 pa3">
         <h2>Frequently Asked Questions</h2>
         <details open>
-          <summary>some question</summary>
+          <summary className="underlined blue">some question</summary>
           <p>Answer to that question.</p>
         </details>
         <details>
-          <summary>some question</summary>
+          <summary className="underlined blue">some question</summary>
           <p>Answer to that question.</p>
         </details>
         <details>
-          <summary>some question</summary>
+          <summary className="underlined blue">some question</summary>
           <p>Answer to that question.</p>
         </details>
         <details>
-          <summary>some question</summary>
+          <summary className="underlined blue">some question</summary>
           <p>Answer to that question.</p>
         </details>
       </div>
