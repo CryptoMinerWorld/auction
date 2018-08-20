@@ -1,10 +1,20 @@
 import React, { PureComponent } from 'react';
 import '../css/root.css';
 import Auction from './Auction';
+import MobileHeader from '../components/MobileHeader';
 import Navbar from '../components/Nav';
 import Footer from '../components/Footer';
 import SimpleStorageContract from '../../build/contracts/SimpleStorage.json';
 import getWeb3 from '../utils/getWeb3';
+import styled from 'styled-components';
+import FontFaceObserver from 'fontfaceobserver';
+
+const StickyHeader = styled.div`
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  top: 0;
+  z-index: 3;
+`;
 
 class App extends PureComponent {
   constructor(props) {
@@ -12,8 +22,20 @@ class App extends PureComponent {
 
     this.state = {
       storageValue: 0,
-      web3: null
+      web3: null,
+      font: ''
     };
+  }
+
+  componentDidMount() {
+    var font = new FontFaceObserver('Muli', {
+      weight: 400
+    });
+
+    font
+      .load()
+      .then(() => this.setState({ font: 'muli' }))
+      .catch(() => console.log('Font is not available'));
   }
 
   componentWillMount() {
@@ -55,7 +77,6 @@ class App extends PureComponent {
         .deployed()
         .then(instance => {
           simpleStorageInstance = instance;
-
           // Stores a given value, 5 by default.
           return simpleStorageInstance.set(5, { from: accounts[0] });
         })
@@ -73,16 +94,29 @@ class App extends PureComponent {
   handleBuyNow = () => console.log('buying...');
 
   render() {
+    let currentPrice = 1.323;
+    let level = 2;
+    let grade = 'a';
+    let rate = 53;
     return (
-      <main>
-        <Navbar />
+      <main className={this.state.font}>
+        <StickyHeader>
+          <Navbar />
+          <MobileHeader
+            currentPrice={currentPrice}
+            level={level}
+            grade={grade}
+            rate={rate}
+          />
+        </StickyHeader>
+
         <Auction
-          currentPrice={3.557}
+          currentPrice={currentPrice}
           minPrice={0.8}
           maxPrice={4.5}
-          level={2}
-          grade="a"
-          rate={45}
+          level={level}
+          grade={grade}
+          rate={rate}
           buyNow={this.handleBuyNow}
           deadline="Aug 20, 2018 @ 00:00 EST"
         />

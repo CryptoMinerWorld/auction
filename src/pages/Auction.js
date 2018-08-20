@@ -1,20 +1,11 @@
 import React, { Component } from 'react';
-import MobileHeader from '../components/MobileHeader';
 import AuctionImage from '../components/AuctionImage';
-import styled from 'styled-components';
 import AuctionBox from '../components/AuctionBox';
 import DescriptionBox from '../components/DescriptionBox';
 import ProgressMeter from '../components/ProgressMeter';
 import FAQ from '../components/FAQ';
 import MailingList from '../components/MailingList';
 import PropTypes from 'prop-types';
-
-const StickyHeader = styled.div`
-  position: -webkit-sticky; /* Safari */
-  position: sticky;
-  top: 0;
-  z-index: 3;
-`;
 
 class Auction extends Component {
   static propTypes = {
@@ -41,14 +32,6 @@ class Auction extends Component {
 
     return (
       <div>
-        <StickyHeader>
-          <MobileHeader
-            currentPrice={currentPrice}
-            level={level}
-            grade={grade}
-            rate={rate}
-          />
-        </StickyHeader>
         <AuctionImage />
         <AuctionBox
           currentPrice={currentPrice}
