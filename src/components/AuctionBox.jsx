@@ -32,16 +32,24 @@ class AuctionBox extends PureComponent {
     handleBuyNow: PropTypes.func.isRequired,
     level: PropTypes.number.isRequired,
     grade: PropTypes.string.isRequired,
-    rate: PropTypes.number.isRequired
+    rate: PropTypes.number.isRequired,
+    deadline: PropTypes.instanceOf(Date).isRequired
   };
   render() {
-    let { currentPrice, handleBuyNow, level, grade, rate } = this.props;
+    let {
+      currentPrice,
+      handleBuyNow,
+      level,
+      grade,
+      rate,
+      deadline
+    } = this.props;
     return (
       <div className="bg-dark-gray  br3 measure ">
         <TopHighlight />
         <div className="white pa3">
           <h1 className="tc">Amethyst Thingymajig</h1>
-          <CountdownTimer />
+          <CountdownTimer deadline={deadline} />
           <Gembox level={level} grade={grade} rate={rate} />
           <div className="tc">
             <p>current price</p>

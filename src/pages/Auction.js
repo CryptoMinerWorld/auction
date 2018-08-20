@@ -7,6 +7,7 @@ import DescriptionBox from '../components/DescriptionBox';
 import ProgressMeter from '../components/ProgressMeter';
 import FAQ from '../components/FAQ';
 import MailingList from '../components/MailingList';
+import PropTypes from 'prop-types';
 
 const StickyHeader = styled.div`
   position: -webkit-sticky; /* Safari */
@@ -16,6 +17,16 @@ const StickyHeader = styled.div`
 `;
 
 class Auction extends Component {
+  static propTypes = {
+    deadline: PropTypes.instanceOf(Date).isRequired,
+    currentPrice: PropTypes.number.isRequired,
+    minPrice: PropTypes.number.isRequired,
+    maxPrice: PropTypes.number.isRequired,
+    level: PropTypes.number.isRequired,
+    grade: PropTypes.string.isRequired,
+    rate: PropTypes.number.isRequired,
+    buyNow: PropTypes.func.isRequired
+  };
   render() {
     let {
       currentPrice,
@@ -24,8 +35,10 @@ class Auction extends Component {
       level,
       grade,
       rate,
-      buyNow
+      buyNow,
+      deadline
     } = this.props;
+
     return (
       <div>
         <StickyHeader>
@@ -39,6 +52,7 @@ class Auction extends Component {
         <AuctionImage />
         <AuctionBox
           currentPrice={currentPrice}
+          deadline={deadline}
           handleBuyNow={buyNow}
           level={level}
           grade={grade}

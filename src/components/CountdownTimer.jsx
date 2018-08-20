@@ -7,13 +7,14 @@ const AngleGradient = styled.div`
 `;
 
 class CountdownTimer extends PureComponent {
-  static propTypes = {};
+  static propTypes = { deadline: PropTypes.instanceOf(Date).isRequired };
 
   render() {
+    let { deadline } = this.props;
     return (
       <AngleGradient className="tc bg-blue pa3 br3">
         <p>Auction ends on</p>
-        <time>Aug 19, 2018 @ 00:00 EST</time>
+        <time>{deadline}</time>
         <div className="flex jca">
           <div>
             <p>4</p>

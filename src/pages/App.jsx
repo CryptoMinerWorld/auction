@@ -84,6 +84,7 @@ class App extends PureComponent {
           grade="a"
           rate={45}
           buyNow={this.handleBuyNow}
+          deadline="Aug 20, 2018 @ 00:00 EST"
         />
         <Footer />
       </main>
