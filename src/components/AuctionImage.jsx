@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import img from '../images/amethystImage.png';
 import rockBackground from '../images/rockBackground.png';
+import styled from 'styled-components';
 
 const Image = styled.div`
   background-image: url(${img});
@@ -24,9 +24,11 @@ class AuctionImage extends PureComponent {
 
   render() {
     return (
-      <div className="pa4-ns bg-black">
-        <RockOverlay />
-        <Image className="vh-75 v-mid bg-black contain bg-right-ns bg-center" />
+      <div>
+        <div className="pa4-ns bg-black">
+          <RockOverlay />
+          <Image className="vh-75 v-mid bg-black contain bg-right-ns bg-center" />
+        </div>
       </div>
     );
   }

@@ -5,6 +5,11 @@ import gem2 from '../images/icons/gem2.png';
 import gem3 from '../images/icons/gem3.png';
 import styled from 'styled-components';
 
+const TopHighlight = styled.div`
+  background: linear-gradient(to right, #e36d2d, #b91a78);
+  border-radius: 4px 4px 0px 0px;
+  height: 3px;
+`;
 class DescriptionBox extends PureComponent {
   static propTypes = {
     level: PropTypes.number.isRequired,
@@ -15,37 +20,42 @@ class DescriptionBox extends PureComponent {
   render() {
     let { level, grade, rate } = this.props;
     return (
-      <div className="bg-off-black white ma0 ">
-        <div className="pa3">
-          <h1>Amethyst Thingymagij</h1>
-          <p>
-            Click anywhere on teh line to place a bid or click on the giant buy
-            now button above to buy at the current price.Click anywhere on teh
-            line to place a bid or click on the giant buy now button above to
-            buy at the current price.
-          </p>
+      <div className="bg-off-black white ma0">
+        <TopHighlight />
+        <div className="flex-ns jce">
+          <div className="w-50-ns ">
+            <div className="pa5-ns pa3">
+              <h1>Amethyst Thingymagij</h1>
+              <p>
+                Click anywhere on teh line to place a bid or click on the giant
+                buy now button above to buy at the current price.Click anywhere
+                on teh line to place a bid or click on the giant buy now button
+                above to buy at the current price.
+              </p>
+            </div>
+            <FeatureBand
+              colour="bg-dark-orange"
+              gem={gem1}
+              category="level"
+              amount={level}
+              description="Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+            />
+            <FeatureBand
+              colour="bg-dark-blue"
+              gem={gem2}
+              category="grade"
+              amount={grade}
+              description="Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+            />
+            <FeatureBand
+              colour="bg-dark-purple"
+              gem={gem3}
+              category="mining rate"
+              amount={rate}
+              description="Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+            />
+          </div>
         </div>
-        <FeatureBand
-          colour="bg-dark-orange"
-          gem={gem1}
-          category="level"
-          amount={level}
-          description="Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
-        />
-        <FeatureBand
-          colour="bg-dark-blue"
-          gem={gem2}
-          category="grade"
-          amount={grade}
-          description="Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
-        />
-        <FeatureBand
-          colour="bg-dark-purple"
-          gem={gem3}
-          category="mining rate"
-          amount={rate}
-          description="Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
-        />
       </div>
     );
   }
@@ -62,7 +72,7 @@ const Feature = styled.div`
 
 const FeatureBand = ({ colour, gem, category, amount, description }) => {
   return (
-    <div className={`w-100 ${colour} h4 flex aic mt3`}>
+    <div className={`w-100 ${colour} h4 flex aic mt3 br4-ns br--left`}>
       <div className="w-30 ">
         <Feature>
           <img

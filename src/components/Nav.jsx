@@ -1,12 +1,18 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 
+const BottomHighlight = styled.div`
+  background: linear-gradient(to right, #fc01ca, #bc197c);
+  border-radius: 4px 4px 0px 0px;
+  height: 3px;
+`;
 class Navbar extends PureComponent {
   static propTypes = {};
 
   render() {
     return (
-      <div>
+      <div className="shadow-1">
         <nav className="db dt-l w-100 border-box pa3 ph5-l bg-white shadow-1">
           <div>
             <a
@@ -63,6 +69,7 @@ class Navbar extends PureComponent {
             <button className="mdc-button--raised ml4 dn dib-ns">FAQ</button>
           </div>
         </nav>
+        <BottomHighlight />
       </div>
     );
   }

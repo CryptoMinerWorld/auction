@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react';
-import styled from 'styled-components';
 import CountdownTimer from './CountdownTimer';
 import Gembox from './Gembox';
 import PropTypes from 'prop-types';
 import buyNow from '../images/pinkBuyNowButton.png';
+import styled from 'styled-components';
 
 const TopHighlight = styled.div`
   background: linear-gradient(to right, #e36d2d, #b91a78);
@@ -26,6 +26,14 @@ const BuyNow = styled.button`
   cursor: pointer;
 `;
 
+const OverlapOnDesktopView = styled.div`
+  @media (min-width: 30em) {
+    position: absolute;
+    top: 10em;
+    left: 5em;
+  }
+`;
+
 class AuctionBox extends PureComponent {
   static propTypes = {
     currentPrice: PropTypes.string.isRequired,
@@ -45,7 +53,7 @@ class AuctionBox extends PureComponent {
       deadline
     } = this.props;
     return (
-      <div className="bg-dark-gray  br3 measure ">
+      <OverlapOnDesktopView className="bg-dark-gray br3 measure h0-ns">
         <TopHighlight />
         <div className="white pa3">
           <h1 className="tc">Amethyst Thingymajig</h1>
@@ -62,7 +70,7 @@ class AuctionBox extends PureComponent {
             Click here to learn more about how dutch auctions work?
           </p>
         </div>
-      </div>
+      </OverlapOnDesktopView>
     );
   }
 }

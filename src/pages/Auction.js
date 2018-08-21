@@ -7,6 +7,16 @@ import FAQ from '../components/FAQ';
 import MailingList from '../components/MailingList';
 import PropTypes from 'prop-types';
 
+import styled from 'styled-components';
+
+const OverlapOnDesktopView = styled.div`
+  @media (min-width: 30em) {
+    position: absolute;
+    bottom: 5em;
+    left: 5em;
+  }
+`;
+
 class Auction extends Component {
   static propTypes = {
     deadline: PropTypes.instanceOf(Date).isRequired,
@@ -31,7 +41,7 @@ class Auction extends Component {
     } = this.props;
 
     return (
-      <div>
+      <div className="bg-off-black">
         <AuctionImage />
         <AuctionBox
           currentPrice={currentPrice}
@@ -42,12 +52,16 @@ class Auction extends Component {
           rate={rate}
         />
         <DescriptionBox level={level} grade={grade} rate={rate} />
-        <ProgressMeter
-          currentPrice={currentPrice}
-          minPrice={minPrice}
-          maxPrice={maxPrice}
-        />
-        <FAQ />
+        <div className="w-50-ns measure relative">
+          <OverlapOnDesktopView>
+            <ProgressMeter
+              currentPrice={currentPrice}
+              minPrice={minPrice}
+              maxPrice={maxPrice}
+            />
+            <FAQ />
+          </OverlapOnDesktopView>
+        </div>
         <MailingList />
       </div>
     );

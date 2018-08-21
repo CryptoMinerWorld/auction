@@ -7,6 +7,7 @@
   --dark-orange: #47373a;
   --dark-blue: #344054;
   --dark-purple: #413e58;
+  --footer-black: #010e17;
 }
 
 .bg-base {
@@ -40,4 +41,8 @@
 
 .bg-dark-purple {
   background-color: var(--dark-purple);
+}
+
+.bg-footer-black {
+  background-color: var(--footer-black);
 }
