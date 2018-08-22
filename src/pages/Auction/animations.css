@@ -1,0 +1,13 @@
+.example-appear {
+  -webkit-transform: translateX(-120%);
+  -ms-transform: translateX(-120%);
+  transform: translateX(-120%);
+  -webkit-transition: 1s;
+  transition: 1s;
+}
+
+.example-appear.example-appear-active {
+  -webkit-transform: translateX(0%);
+  -ms-transform: translateX(0%);
+  transform: translateX(0%);
+}

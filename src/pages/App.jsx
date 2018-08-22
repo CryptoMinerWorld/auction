@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import '../css/root.css';
-import Auction from './Auction';
+import Auction from './Auction/index';
 import MobileHeader from '../components/MobileHeader';
 import Navbar from '../components/Nav';
 import Footer from '../components/Footer';

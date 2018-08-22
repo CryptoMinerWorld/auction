@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import CountdownTimer from './CountdownTimer';
 import Gembox from './Gembox';
 import PropTypes from 'prop-types';
@@ -35,7 +35,7 @@ const OverlapOnDesktopView = styled.div`
   }
 `;
 
-class AuctionBox extends PureComponent {
+class AuctionBox extends Component {
   static propTypes = {
     currentPrice: PropTypes.string.isRequired,
     handleBuyNow: PropTypes.func.isRequired,
@@ -56,7 +56,7 @@ class AuctionBox extends PureComponent {
       name
     } = this.props;
     return (
-      <OverlapOnDesktopView className="bg-dark-gray br3 measure h0-ns">
+      <OverlapOnDesktopView className="bg-dark-gray br3 measure h0-ns shadow-3">
         <TopHighlight />
         <div className="white pa3">
           <h1 className="tc pb3" style={{ wordBreak: 'break-all' }}>

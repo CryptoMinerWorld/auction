@@ -51,8 +51,10 @@
   },
   "dependencies": {
     "fontfaceobserver": "^2.0.13",
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2",
+    "react": "^16.4.2",
+    "react-addons-css-transition-group": "^15.6.2",
+    "react-dom": "16.4.2",
+    "react-waypoint": "^8.0.3",
     "styled-components": "^3.4.2"
   },
   "scripts": {
