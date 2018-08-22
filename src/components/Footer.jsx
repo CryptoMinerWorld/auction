@@ -1,10 +1,9 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import img from '../images/footer_geodes.png';
 import styled from 'styled-components';
 
 const TopHighlight = styled.div`
-  background: linear-gradient(to right, #bc197c, #fc01ca);
+  background: linear-gradient(to right, #fc01ca, #bc197c);
   border-radius: 4px 4px 0px 0px;
   height: 3px;
 `;

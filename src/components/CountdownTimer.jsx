@@ -12,25 +12,25 @@ class CountdownTimer extends PureComponent {
   render() {
     let { deadline } = this.props;
     return (
-      <AngleGradient className="tc bg-blue pa3 br3">
-        <p>Auction ends on</p>
+      <AngleGradient className="tc bg-blue pa3 br3 shadow-3">
+        <p className="b">Auction ends on</p>
         <time>{deadline}</time>
-        <div className="flex jca">
+        <div className="flex jca pt3">
           <div>
-            <p>4</p>
-            <small>days</small>
+            <p className="f2 f1-l fw6 ma0">4</p>
+            <small className="ttu b">days</small>
           </div>
           <div>
-            <p>10</p>
-            <small>hours</small>
+            <p className="f2 f1-l fw6 ma0">10</p>
+            <small className="ttu b">hours</small>
           </div>
           <div>
-            <p>22</p>
-            <small>min</small>
+            <p className="f2 f1-l fw6 ma0">22</p>
+            <small className="ttu b">min</small>
           </div>
           <div>
-            <p>40</p>
-            <small>sec</small>
+            <p className="f2 f1-l fw6 ma0">40</p>
+            <small className="ttu b">sec</small>
           </div>
         </div>
       </AngleGradient>

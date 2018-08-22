@@ -36,11 +36,6 @@ class App extends PureComponent {
       .load()
       .then(() => this.setState({ font: 'muli' }))
       .catch(() => console.log('Font is not available'));
-  }
-
-  componentWillMount() {
-    // Get network provider and web3 instance.
-    // See utils/getWeb3 for more info.
 
     getWeb3
       .then(results => {
@@ -98,6 +93,11 @@ class App extends PureComponent {
     let level = 2;
     let grade = 'a';
     let rate = 53;
+    let name = 'Amethyst Thingymajig';
+    let minPrice = 0.8;
+    let maxPrice = 4.5;
+    let deadline = 'Aug 20, 2018 @ 00:00 EST';
+
     return (
       <main className={this.state.font}>
         <StickyHeader>
@@ -109,16 +109,16 @@ class App extends PureComponent {
             rate={rate}
           />
         </StickyHeader>
-
         <Auction
           currentPrice={currentPrice}
-          minPrice={0.8}
-          maxPrice={4.5}
+          minPrice={minPrice}
+          maxPrice={maxPrice}
           level={level}
           grade={grade}
           rate={rate}
           buyNow={this.handleBuyNow}
-          deadline="Aug 20, 2018 @ 00:00 EST"
+          deadline={deadline}
+          name={name}
         />
         <Footer />
       </main>

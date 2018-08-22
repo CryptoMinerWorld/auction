@@ -26,7 +26,8 @@ class Auction extends Component {
     level: PropTypes.number.isRequired,
     grade: PropTypes.string.isRequired,
     rate: PropTypes.number.isRequired,
-    buyNow: PropTypes.func.isRequired
+    buyNow: PropTypes.func.isRequired,
+    name: PropTypes.string.isRequired
   };
   render() {
     let {
@@ -37,7 +38,8 @@ class Auction extends Component {
       grade,
       rate,
       buyNow,
-      deadline
+      deadline,
+      name
     } = this.props;
 
     return (
@@ -50,6 +52,7 @@ class Auction extends Component {
           level={level}
           grade={grade}
           rate={rate}
+          name={name}
         />
         <DescriptionBox level={level} grade={grade} rate={rate} />
         <div className="w-50-ns measure relative">

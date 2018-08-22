@@ -8,7 +8,7 @@ import styled from 'styled-components';
 const TopHighlight = styled.div`
   background: linear-gradient(to right, #e36d2d, #b91a78);
   border-radius: 4px 4px 0px 0px;
-  height: 3px;
+  height: 4px;
 `;
 
 const BuyNow = styled.button`
@@ -31,6 +31,7 @@ const OverlapOnDesktopView = styled.div`
     position: absolute;
     top: 10em;
     left: 5em;
+    z-index: 2;
   }
 `;
 
@@ -41,7 +42,8 @@ class AuctionBox extends PureComponent {
     level: PropTypes.number.isRequired,
     grade: PropTypes.string.isRequired,
     rate: PropTypes.number.isRequired,
-    deadline: PropTypes.instanceOf(Date).isRequired
+    deadline: PropTypes.instanceOf(Date).isRequired,
+    name: PropTypes.string.isRequired
   };
   render() {
     let {
@@ -50,23 +52,29 @@ class AuctionBox extends PureComponent {
       level,
       grade,
       rate,
-      deadline
+      deadline,
+      name
     } = this.props;
     return (
       <OverlapOnDesktopView className="bg-dark-gray br3 measure h0-ns">
         <TopHighlight />
         <div className="white pa3">
-          <h1 className="tc">Amethyst Thingymajig</h1>
+          <h1 className="tc pb3" style={{ wordBreak: 'break-all' }}>
+            {name}
+          </h1>
           <CountdownTimer deadline={deadline} />
+
           <Gembox level={level} grade={grade} rate={rate} />
           <div className="tc">
-            <p>current price</p>
-            <p>Ξ {currentPrice}</p>
+            <small className="white ttu ">current price</small>
+            <p className="white f2 mt2 mb3 tc">♦ {currentPrice}</p>
           </div>
-          <div className="w-100 w5-ns h3">
-            <BuyNow onClick={handleBuyNow}>Buy Now</BuyNow>
+          <div className="w-100 w5-ns h3 center">
+            <BuyNow onClick={handleBuyNow} className="b">
+              Buy Now
+            </BuyNow>
           </div>
-          <p className="underline blue tc measure">
+          <p className="underline blue tc measure-narrow center pt3">
             Click here to learn more about how dutch auctions work?
           </p>
         </div>

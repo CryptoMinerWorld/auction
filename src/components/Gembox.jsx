@@ -12,9 +12,28 @@ const Feature = styled.div`
   align-items: center;
 `;
 
+const Gem = ({ quality, image, amount }) => (
+  <div>
+    <small className="ttu white b dn-ns">{quality}</small>
+    <Feature>
+      <img
+        src={image}
+        alt={quality}
+        style={{ gridColumn: '1 / -1', gridRow: '2' }}
+      />
+      <p
+        style={{ gridRow: 2, gridColumn: 2 }}
+        className="ttu f3 f2-ns b o-50 black"
+      >
+        {amount}
+      </p>
+    </Feature>
+  </div>
+);
+
 class Gembox extends PureComponent {
   static propTypes = {
-    level: PropTypes.array.isRequired,
+    level: PropTypes.number.isRequired,
     grade: PropTypes.string.isRequired,
     rate: PropTypes.number.isRequired
   };
@@ -22,42 +41,9 @@ class Gembox extends PureComponent {
     let { level, grade, rate } = this.props;
     return (
       <div className="flex tc pa3">
-        <div>
-          <small>level</small>
-          <Feature>
-            <img
-              src={gem1}
-              alt=""
-              style={{ gridColumn: '1 / -1', gridRow: '2' }}
-            />
-            <p style={{ gridRow: 2, gridColumn: 2 }}>{level}</p>
-          </Feature>
-        </div>
-        <div>
-          <small>grade</small>
-          <Feature>
-            <img
-              src={gem2}
-              alt=""
-              style={{ gridColumn: '1 / -1', gridRow: '2' }}
-            />
-            <p style={{ gridRow: 2, gridColumn: 2 }} className="ttu black">
-              {grade}
-            </p>
-          </Feature>
-        </div>
-        <div>
-          <small>rate</small>
-
-          <Feature>
-            <img
-              src={gem3}
-              alt=""
-              style={{ gridColumn: '1 / -1', gridRow: '2' }}
-            />
-            <p style={{ gridRow: 2, gridColumn: 2 }}>{rate}</p>
-          </Feature>
-        </div>
+        <Gem quality="level" image={gem1} amount={level} />
+        <Gem quality="grade" image={gem2} amount={grade} />
+        <Gem quality="rate" image={gem3} amount={rate} />
       </div>
     );
   }

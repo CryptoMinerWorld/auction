@@ -4,10 +4,10 @@ import Gembox from './Gembox';
 import PropTypes from 'prop-types';
 
 const Triangle = styled.div`
-  width: 116px;
-  height: 0;
-  border-left: 60px solid transparent;
-  border-right: 60px solid transparent;
+  width: 140px;
+  height: 10px;
+  border-left: 70px solid transparent;
+  border-right: 70px solid transparent;
   border-top: 20px solid #5f1763;
 `;
 
@@ -24,8 +24,10 @@ class MobileHeader extends PureComponent {
       <div className="flex-s dn-ns jca bg-base shadow-1 ">
         <div className="absolute left-1">
           <div className="bg-deep-purple pa3">
-            <p className="white">current price</p>
-            <p className="white">Ξ {currentPrice}</p>
+            <small className="white ttu b ">current price</small>
+            <p className="white f3 tc">
+              ♦ {Math.round(currentPrice * 100) / 100}
+            </p>
           </div>
           <Triangle />
         </div>

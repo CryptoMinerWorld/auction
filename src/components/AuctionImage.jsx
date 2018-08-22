@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import img from '../images/amethystImage.png';
 import rockBackground from '../images/rockBackground.png';
 import styled from 'styled-components';
