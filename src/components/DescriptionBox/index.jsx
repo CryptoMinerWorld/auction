@@ -29,9 +29,9 @@ class DescriptionBox extends PureComponent {
   render() {
     let { level, grade, rate } = this.props;
     return (
-      <div className="bg-off-black white ma0 vh-100">
-        <div className="flex-ns jce mw9 center">
-          <div className="w-50-ns ">
+      <div className="bg-off-black white ma0 ">
+        <div className="flex-l jce mw9 center">
+          <div className="w-50-l">
             <div className="pa5-ns pa3">
               <div className="flex aic tc tl-ns">
                 <img

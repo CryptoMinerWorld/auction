@@ -12,7 +12,7 @@ import './animations.css';
 import rockBackground from '../../images/rockBackground.png';
 
 const OverlapOnDesktopView = styled.div`
-  @media (min-width: 30em) {
+  @media (min-width: 64em) {
     position: absolute;
     bottom: 1em;
     left: 5em;
@@ -80,9 +80,9 @@ class Auction extends Component {
         </RockOverlay>
         <div className="bg-off-black">
           <TopHighlight />
-          <div className="mw9 center relative">
+          <div className="mw9 center relative-l">
             <DescriptionBox level={level} grade={grade} rate={rate} />
-            <div className="w-50-ns measure-wide">
+            <div className="w-50-l measure-wide-l">
               <OverlapOnDesktopView>
                 <ProgressMeter
                   currentPrice={currentPrice}

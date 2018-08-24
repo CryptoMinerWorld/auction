@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import gemKid from '../images/gemKid.png';
 
 const OverlapOnDesktopView = styled.div`
-  @media (min-width: 30em) {
+  @media (min-width: 64em) {
     position: relative;
     top: 7em;
   }

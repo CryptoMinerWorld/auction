@@ -13,7 +13,7 @@ const Feature = styled.div`
 `;
 
 const Gem = ({ quality, image, amount }) => (
-  <div className="w-100 ">
+  <div className="w-100">
     <small className="ttu white b dn-ns">{quality}</small>
     <Feature>
       <img

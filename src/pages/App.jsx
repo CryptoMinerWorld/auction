@@ -131,7 +131,7 @@ class App extends PureComponent {
         );
       })
       .catch(() => {
-        console.log('Error finding web3.');
+        console.error('Error finding web3.');
       });
   }
 
@@ -160,7 +160,9 @@ class App extends PureComponent {
     let level = this.state.level || 2;
     let grade = this.state.grade || 'a';
     let rate = this.state.rate || 53;
+
     let name = 'Amethyst Thingymajig';
+    // let sourceImage = '';
 
     return (
       <main className={this.state.font}>

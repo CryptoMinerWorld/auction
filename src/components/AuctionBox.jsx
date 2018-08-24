@@ -27,7 +27,7 @@ const BuyNow = styled.button`
 `;
 
 const OverlapOnDesktopView = styled.div`
-  @media (min-width: 30em) {
+  @media (min-width: 64em) {
     position: absolute;
     top: 2em;
     left: 5em;
@@ -56,7 +56,7 @@ class AuctionBox extends Component {
       name
     } = this.props;
     return (
-      <OverlapOnDesktopView className="bg-dark-gray br3 measure shadow-3">
+      <OverlapOnDesktopView className="bg-dark-gray br3 measure-l w-100 shadow-3">
         <TopHighlight />
         <div className="white pa3">
           <h1 className="tc pb3" style={{ wordBreak: 'break-all' }}>

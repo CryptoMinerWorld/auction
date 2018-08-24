@@ -32,8 +32,8 @@ class MobileHeader extends PureComponent {
           <Triangle />
         </div>
 
-        <div>
-          <div className="w-60 fr">
+        <div className="w-100">
+          <div className="w-50 fr mr6-ns">
             <Gembox level={level} grade={grade} rate={rate} />
           </div>
         </div>

@@ -14,7 +14,7 @@ class AuctionImage extends PureComponent {
     return (
       <div className="pa3-ns">
         <div className="mw8 center">
-          <Image className="v-mid bg-transparent contain bg-right-ns bg-center" />
+          <Image className="v-mid bg-transparent contain bg-right-l bg-center" />
         </div>
       </div>
     );

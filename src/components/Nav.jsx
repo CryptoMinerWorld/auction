@@ -13,7 +13,7 @@ class Navbar extends PureComponent {
 
   render() {
     return (
-      <div className="shadow-1 z-9 bg-white">
+      <div className="shadow-1 z-9 bg-white w-100">
         <nav className="db dt-l w-100 border-box pa3 ph5-l bg-white mw9 center">
           <div>
             <a
@@ -27,11 +27,16 @@ class Navbar extends PureComponent {
                 alt="CryptoMiner World"
               />
             </a>
-            <button className="mdc-button--raised ml4 dib dn-ns fr mt2">
-              FAQ
-            </button>
+
+            <div className="dn-ns fr mt2">
+              <RippleButton
+                onClick={() => {}}
+                className="ml4 dib bg-black shadow-1 white br2 pa3 ph4"
+                title="FAQ"
+              />
+            </div>
           </div>
-          <div className="db dtc-l v-mid w-75-l tr-l nowrap overflow-x-hidden mt3 mt0-ns">
+          <div className="db dtc-l v-mid w-75-l tr-l tc nowrap overflow-x-auto mt3 mt0-ns">
             <a
               className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
               href="#"
@@ -67,11 +72,13 @@ class Navbar extends PureComponent {
             >
               World
             </a>
-            <RippleButton
-              onClick={() => {}}
-              className="ml4 dn dib-ns bg-black shadow-1 white br2 pa3 ph4"
-              title="FAQ"
-            />
+            <div className="dn dib-ns">
+              <RippleButton
+                onClick={() => {}}
+                className="ml4 dib bg-black shadow-1 white br2 pa3 ph4"
+                title="FAQ"
+              />
+            </div>
           </div>
         </nav>
         <BottomHighlight />
