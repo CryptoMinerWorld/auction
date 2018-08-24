@@ -26,7 +26,7 @@ class MobileHeader extends PureComponent {
           <div className="bg-deep-purple pa3">
             <small className="white ttu b ">current price</small>
             <p className="white f3 tc">
-              ♦ {Math.round(currentPrice * 100) / 100}
+              Ξ {Math.round(currentPrice * 100) / 100}
             </p>
           </div>
           <Triangle />

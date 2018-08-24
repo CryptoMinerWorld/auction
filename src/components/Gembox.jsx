@@ -13,18 +13,16 @@ const Feature = styled.div`
 `;
 
 const Gem = ({ quality, image, amount }) => (
-  <div>
+  <div className="w-100 ">
     <small className="ttu white b dn-ns">{quality}</small>
     <Feature>
       <img
         src={image}
         alt={quality}
         style={{ gridColumn: '1 / -1', gridRow: '2' }}
+        className="h3 center"
       />
-      <p
-        style={{ gridRow: 2, gridColumn: 2 }}
-        className="ttu f3 f2-ns b o-50 black"
-      >
+      <p style={{ gridRow: 2, gridColumn: 2 }} className="ttu f3  b o-50 black">
         {amount}
       </p>
     </Feature>

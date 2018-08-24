@@ -13,8 +13,8 @@ class Navbar extends PureComponent {
 
   render() {
     return (
-      <div className="shadow-1 z-9">
-        <nav className="db dt-l w-100 border-box pa3 ph5-l bg-white shadow-1">
+      <div className="shadow-1 z-9 bg-white">
+        <nav className="db dt-l w-100 border-box pa3 ph5-l bg-white mw9 center">
           <div>
             <a
               className=" dtc-l v-mid mid-gray link dim tl mb2 mb0-l dib"

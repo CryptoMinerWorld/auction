@@ -29,7 +29,7 @@ const BuyNow = styled.button`
 const OverlapOnDesktopView = styled.div`
   @media (min-width: 30em) {
     position: absolute;
-    top: 10em;
+    top: 2em;
     left: 5em;
     z-index: 2;
   }
@@ -56,7 +56,7 @@ class AuctionBox extends Component {
       name
     } = this.props;
     return (
-      <OverlapOnDesktopView className="bg-dark-gray br3 measure h0-ns shadow-3">
+      <OverlapOnDesktopView className="bg-dark-gray br3 measure shadow-3">
         <TopHighlight />
         <div className="white pa3">
           <h1 className="tc pb3" style={{ wordBreak: 'break-all' }}>
@@ -67,7 +67,7 @@ class AuctionBox extends Component {
           <Gembox level={level} grade={grade} rate={rate} />
           <div className="tc">
             <small className="white ttu ">current price</small>
-            <p className="white f2 mt2 mb3 tc">♦ {currentPrice}</p>
+            <p className="white f2 mv2 tc">Ξ {currentPrice}</p>
           </div>
           <div className="w-100 w5-ns h3 center">
             <BuyNow onClick={handleBuyNow} className="b">

@@ -4,10 +4,15 @@ import Auction from './Auction/index';
 import MobileHeader from '../components/MobileHeader';
 import Navbar from '../components/Nav';
 import Footer from '../components/Footer';
-import SimpleStorageContract from '../../build/contracts/SimpleStorage.json';
 import getWeb3 from '../utils/getWeb3';
 import styled from 'styled-components';
 import FontFaceObserver from 'fontfaceobserver';
+
+import DutchAuction from '../../build/contracts/DutchAuction.json';
+const dutchAuctionABI = DutchAuction.abi;
+
+import Gems from '../../build/contracts/GemERC721.json';
+const gemsABI = Gems.abi;
 
 const StickyHeader = styled.div`
   position: -webkit-sticky; /* Safari */
@@ -23,7 +28,16 @@ class App extends PureComponent {
     this.state = {
       storageValue: 0,
       web3: null,
-      font: ''
+      font: '',
+      currentPrice: '',
+      minPrice: '',
+      maxPrice: '',
+      deadline: '',
+      dutchAuctionContractInstance: '',
+      tokenId: '',
+      grade: '',
+      level: '',
+      rate: ''
     };
   }
 
@@ -39,64 +53,114 @@ class App extends PureComponent {
 
     getWeb3
       .then(results => {
-        this.setState({
-          web3: results.web3
-        });
+        this.setState(
+          {
+            web3: results.web3
+          },
+          async () => {
+            const newDutchAuctionContract = this.state.web3.eth.contract(
+              dutchAuctionABI
+            );
+            const dutchAuctionContractInstance = newDutchAuctionContract.at(
+              'TK_AUCTION_CONTRACT_ADDRESS'
+            );
 
-        // Instantiate contract once web3 provided.
-        this.instantiateContract();
+            const newGemsContract = this.state.web3.eth.contract(gemsABI);
+            const gemsContractInstance = newGemsContract.at(
+              'TK_GEMS_CONTRACT_ADDRESS'
+            );
+
+            let tokenId = 'TK_TOKEN_ID';
+
+            let _minPrice = dutchAuctionContractInstance.items[tokenId].p0;
+            let _maxPrice = dutchAuctionContractInstance.items[tokenId].p1;
+            let _deadline = dutchAuctionContractInstance.items[tokenId].t1;
+
+            let _grade = gemsContractInstance.gems[tokenId].grade;
+            let _gradeValue = gemsContractInstance.gems[tokenId].gradeValue;
+            let _level = gemsContractInstance.gems[tokenId].level;
+
+            Promise.all([
+              _minPrice,
+              _maxPrice,
+              _deadline,
+              _grade,
+              _level,
+              _gradeValue
+            ]).then(values => {
+              let [
+                minPrice,
+                maxPrice,
+                deadline,
+                grade,
+                level,
+                gradeValue
+              ] = values;
+
+              let calcMiningRate = (gradeType, gradeValue) => {
+                switch (gradeType) {
+                  case 1:
+                    return gradeValue / 200000;
+                  case 2:
+                    return 10 + gradeValue / 200000;
+                  case 3:
+                    return 20 + gradeValue / 200000;
+                  case 4:
+                    return 40 + (3 * gradeValue) / 200000;
+                  case 5:
+                    return 100 + gradeValue / 40000;
+                  case 6:
+                    return 300 + gradeValue / 10000;
+                  default:
+                    return 300 + gradeValue / 10000;
+                }
+              };
+
+              this.setState({
+                tokenId,
+                dutchAuctionContractInstance,
+                minPrice,
+                maxPrice,
+                deadline,
+                grade,
+                level,
+                rate: calcMiningRate(grade, gradeValue)
+              });
+            });
+          }
+        );
       })
       .catch(() => {
         console.log('Error finding web3.');
       });
   }
 
-  instantiateContract() {
-    /*
-         * SMART CONTRACT EXAMPLE
-         *
-         * Normally these functions would be called in the context of a
-         * state management library, but for convenience I've placed them here.
-         */
+  handleBuyNow = async tokenId => {
+    console.log('buying...');
+    await this.state.dutchAuctionContractInstance.buy(tokenId);
+    console.log('bought successfully');
+  };
 
-    const contract = require('truffle-contract');
-    const simpleStorage = contract(SimpleStorageContract);
-    simpleStorage.setProvider(this.state.web3.currentProvider);
-
-    // Declaring this for later so we can chain functions on SimpleStorage.
-    var simpleStorageInstance;
-
-    // Get accounts.
-    this.state.web3.eth.getAccounts((error, accounts) => {
-      simpleStorage
-        .deployed()
-        .then(instance => {
-          simpleStorageInstance = instance;
-          // Stores a given value, 5 by default.
-          return simpleStorageInstance.set(5, { from: accounts[0] });
-        })
-        .then(result => {
-          // Get the value from the contract to prove it worked.
-          return simpleStorageInstance.get.call(accounts[0]);
-        })
-        .then(result => {
-          // Update state with the result.
-          return this.setState({ storageValue: result.c[0] });
-        });
-    });
-  }
-
-  handleBuyNow = () => console.log('buying...');
+  handleGetPrice = async tokenId => {
+    console.log('fetching price...');
+    let currentPrice = await this.state.dutchAuctionContractInstance.getCurrentPrice(
+      tokenId
+    );
+    this.setState({ currentPrice });
+    console.log('price updated');
+  };
 
   render() {
-    let currentPrice = 1.323;
-    let level = 2;
-    let grade = 'a';
-    let rate = 53;
+    let currentPrice = this.state.currentPrice || 1.323;
+
+    let minPrice = this.state.minPrice || 0.8;
+    let maxPrice = this.state.maxPrice || 4.5;
+    let deadline = this.state.deadline || 'Aug 20, 2018 @ 00:00 EST';
+
+    let level = this.state.level || 2;
+    let grade = this.state.grade || 'a';
+    let rate = this.state.rate || 53;
     let name = 'Amethyst Thingymajig';
-    let minPrice = 0.8;
-    let maxPrice = 4.5;
-    let deadline = 'Aug 20, 2018 @ 00:00 EST';
 
     return (
       <main className={this.state.font}>

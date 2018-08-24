@@ -9,11 +9,6 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
 import './animations.css';
 import Waypoint from 'react-waypoint';
 
-const TopHighlight = styled.div`
-  background: linear-gradient(to right, #e36d2d, #b91a78);
-  border-radius: 4px 4px 0px 0px;
-  height: 3px;
-`;
 class DescriptionBox extends PureComponent {
   static propTypes = {
     level: PropTypes.number.isRequired,
@@ -34,9 +29,8 @@ class DescriptionBox extends PureComponent {
   render() {
     let { level, grade, rate } = this.props;
     return (
-      <div className="bg-off-black white ma0">
-        <TopHighlight />
-        <div className="flex-ns jce">
+      <div className="bg-off-black white ma0 vh-100">
+        <div className="flex-ns jce mw9 center">
           <div className="w-50-ns ">
             <div className="pa5-ns pa3">
               <div className="flex aic tc tl-ns">
@@ -145,7 +139,7 @@ const FeatureBand = ({ colour, gem, category, amount, description }) => {
       </div>
       <div className="w-70">
         <p className="b ttu">{category}</p>
-        <p>{description}</p>
+        <p className="measure-ns pr4-ns">{description}</p>
       </div>
     </div>
   );

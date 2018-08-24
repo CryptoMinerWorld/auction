@@ -9,13 +9,26 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
 import './animations.css';
+import rockBackground from '../../images/rockBackground.png';
 
 const OverlapOnDesktopView = styled.div`
   @media (min-width: 30em) {
     position: absolute;
-    bottom: 5em;
+    bottom: 1em;
     left: 5em;
   }
+`;
+
+const RockOverlay = styled.div`
+  background-image: url(${rockBackground});
+  background-repeat: repeat;
+  background-size: contain;
+`;
+
+const TopHighlight = styled.div`
+  background: linear-gradient(to right, #e36d2d, #b91a78);
+  border-radius: 4px 4px 0px 0px;
+  height: 3px;
 `;
 
 class Auction extends Component {
@@ -44,35 +57,43 @@ class Auction extends Component {
     } = this.props;
 
     return (
-      <div className="bg-off-black">
-        <AuctionImage />
-        <ReactCSSTransitionGroup
-          transitionName="example"
-          transitionAppear={true}
-          transitionAppearTimeout={5000}
-        >
-          <AuctionBox
-            currentPrice={currentPrice}
-            deadline={deadline}
-            handleBuyNow={buyNow}
-            level={level}
-            grade={grade}
-            rate={rate}
-            name={name}
-          />
-        </ReactCSSTransitionGroup>
-
-        <DescriptionBox level={level} grade={grade} rate={rate} />
-        <div className="w-50-ns measure-wide relative">
-          <OverlapOnDesktopView>
-            <ProgressMeter
-              currentPrice={currentPrice}
-              minPrice={minPrice}
-              maxPrice={maxPrice}
-            />
-            <div className="h3" />
-            <FAQ />
-          </OverlapOnDesktopView>
+      <div className="bg-off-black ">
+        <RockOverlay>
+          <div className="relative mw9 center">
+            <AuctionImage />
+            <ReactCSSTransitionGroup
+              transitionName="example"
+              transitionAppear={true}
+              transitionAppearTimeout={5000}
+            >
+              <AuctionBox
+                currentPrice={currentPrice}
+                deadline={deadline}
+                handleBuyNow={buyNow}
+                level={level}
+                grade={grade}
+                rate={rate}
+                name={name}
+              />
+            </ReactCSSTransitionGroup>
+          </div>
+        </RockOverlay>
+        <div className="bg-off-black">
+          <TopHighlight />
+          <div className="mw9 center relative">
+            <DescriptionBox level={level} grade={grade} rate={rate} />
+            <div className="w-50-ns measure-wide">
+              <OverlapOnDesktopView>
+                <ProgressMeter
+                  currentPrice={currentPrice}
+                  minPrice={minPrice}
+                  maxPrice={maxPrice}
+                />
+                <div className="h3" />
+                <FAQ />
+              </OverlapOnDesktopView>
+            </div>
+          </div>
         </div>
         <MailingList />
       </div>
