@@ -52,86 +52,117 @@ class App extends PureComponent {
       .catch(() => console.log('Font is not available'));
 
     getWeb3
-      .then(results => {
-        this.setState(
-          {
-            web3: results.web3
-          },
-          async () => {
-            const newDutchAuctionContract = this.state.web3.eth.contract(
-              dutchAuctionABI
-            );
-            const dutchAuctionContractInstance = newDutchAuctionContract.at(
-              'TK_AUCTION_CONTRACT_ADDRESS'
-            );
-
-            const newGemsContract = this.state.web3.eth.contract(gemsABI);
-            const gemsContractInstance = newGemsContract.at(
-              'TK_GEMS_CONTRACT_ADDRESS'
-            );
-
-            let tokenId = 'TK_TOKEN_ID';
-
-            let _minPrice = dutchAuctionContractInstance.items[tokenId].p0;
-            let _maxPrice = dutchAuctionContractInstance.items[tokenId].p1;
-            let _deadline = dutchAuctionContractInstance.items[tokenId].t1;
-
-            let _grade = gemsContractInstance.gems[tokenId].grade;
-            let _gradeValue = gemsContractInstance.gems[tokenId].gradeValue;
-            let _level = gemsContractInstance.gems[tokenId].level;
-
-            Promise.all([
-              _minPrice,
-              _maxPrice,
-              _deadline,
-              _grade,
-              _level,
-              _gradeValue
-            ]).then(values => {
-              let [
-                minPrice,
-                maxPrice,
-                deadline,
-                grade,
-                level,
-                gradeValue
-              ] = values;
-
-              let calcMiningRate = (gradeType, gradeValue) => {
-                switch (gradeType) {
-                  case 1:
-                    return gradeValue / 200000;
-                  case 2:
-                    return 10 + gradeValue / 200000;
-                  case 3:
-                    return 20 + gradeValue / 200000;
-                  case 4:
-                    return 40 + (3 * gradeValue) / 200000;
-                  case 5:
-                    return 100 + gradeValue / 40000;
-                  case 6:
-                    return 300 + gradeValue / 10000;
-                  default:
-                    return 300 + gradeValue / 10000;
-                }
-              };
-
-              this.setState({
-                tokenId,
-                dutchAuctionContractInstance,
-                minPrice,
-                maxPrice,
-                deadline,
-                grade,
-                level,
-                rate: calcMiningRate(grade, gradeValue)
-              });
-            });
-          }
+      .then(results =>
+        this.setState({
+          web3: results.web3
+        })
+      )
+      .then(async () => {
+        const newDutchAuctionContract = this.state.web3.eth.contract(
+          dutchAuctionABI
         );
-      })
-      .catch(() => {
-        console.error('Error finding web3.');
+
+        // tk
+        const dutchAuctionContractInstance = await newDutchAuctionContract.at(
+          '0x51e5b41f82b71dcebe11a7bd67ce12c862772e98'
+        );
+
+        // tk
+        const newGemsContract = this.state.web3.eth.contract(gemsABI);
+        const gemsContractInstance = await newGemsContract.at(
+          '0x82ff6bbd7b64f707e704034907d582c7b6e09d97'
+        );
+
+        // tk
+        let tokenId = 69664;
+
+        // let _minPrice = await dutchAuctionContractInstance.getCurrentPrice(
+        //   tokenId,
+        //   (error, result) => {
+        //     if (!error) console.log('bbb', result.toNumber());
+        //     else console.error(error);
+        //   }
+        // );
+
+        // let data = await dutchAuctionContractInstance.items(
+        //   tokenId,
+        //   (error, result) => {
+        //     if (!error) {
+        //       console.log('aaa', result);
+        //       return result;
+        //     } else console.error(error);
+        //   }
+        // );
+
+        dutchAuctionContractInstance.items(tokenId, (error, result) => {
+          if (!error) {
+            let [minPrice, maxPrice, start, end] = result;
+
+            this.setState({
+              minPrice: minPrice.toNumber(),
+              maxPrice: maxPrice.toNumber(),
+              start: start.toNumber(),
+              end: end.toNumber()
+            });
+            console.log('prices set');
+          } else console.error(error);
+        });
+
+        // data
+        //   .map(bigNumber => bigNumber.toNumber())
+        //   .then(result => console.log('bbb', result));
+
+        //   let _maxPrice = dutchAuctionContractInstance.items[tokenId].p1;
+        //   let _deadline = dutchAuctionContractInstance.items[tokenId].t1;
+
+        //   let _grade = gemsContractInstance.gems[tokenId].grade;
+        //   let _gradeValue = gemsContractInstance.gems[tokenId].gradeValue;
+        //   let _level = gemsContractInstance.gems[tokenId].level;
+
+        //   Promise.all([
+        //     _minPrice,
+        //     _maxPrice,
+        //     _deadline,
+        //     _grade,
+        //     _level,
+        //     _gradeValue
+        //   ]).then(values => {
+        //     console.log('xxx', values);
+        //     let [minPrice, maxPrice, deadline, grade, level, gradeValue] = values;
+
+        //     let calcMiningRate = (gradeType, gradeValue) => {
+        //       switch (gradeType) {
+        //         case 1:
+        //           return gradeValue / 200000;
+        //         case 2:
+        //           return 10 + gradeValue / 200000;
+        //         case 3:
+        //           return 20 + gradeValue / 200000;
+        //         case 4:
+        //           return 40 + (3 * gradeValue) / 200000;
+        //         case 5:
+        //           return 100 + gradeValue / 40000;
+        //         case 6:
+        //           return 300 + gradeValue / 10000;
+        //         default:
+        //           return 300 + gradeValue / 10000;
+        //       }
+        //     };
+
+        //     this.setState({
+        //       tokenId,
+        //       dutchAuctionContractInstance,
+        //       minPrice,
+        //       maxPrice,
+        //       deadline,
+        //       grade,
+        //       level,
+        //       rate: calcMiningRate(grade, gradeValue)
+        //     });
+        //   });
+        // })
+        // .catch(() => {
+        //   console.error('Error finding web3.');
       });
   }
 
@@ -144,9 +175,12 @@ class App extends PureComponent {
   handleGetPrice = async tokenId => {
     console.log('fetching price...');
     let currentPrice = await this.state.dutchAuctionContractInstance.getCurrentPrice(
-      tokenId
+      tokenId,
+      (error, result) => {
+        if (!error) this.setState({ currentPrice: result.toNumber() });
+        else console.error(error);
+      }
     );
-    this.setState({ currentPrice });
     console.log('price updated');
   };
 

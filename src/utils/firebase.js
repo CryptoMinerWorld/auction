@@ -3,12 +3,12 @@
 <script>
   // Initialize Firebase
   var config = {
-    apiKey: "AIzaSyDWzdzOR1HrMNec53Mm3TBdb1tLSOWIdv8",
-    authDomain: "cryptominerworld-7afd6.firebaseapp.com",
-    databaseURL: "https://cryptominerworld-7afd6.firebaseio.com",
-    projectId: "cryptominerworld-7afd6",
-    storageBucket: "cryptominerworld-7afd6.appspot.com",
-    messagingSenderId: "295876392813"
+    apiKey: process.env.FB_API_KEY,
+    authDomain: process.env.FB_AUTH_DOMAIN,
+    databaseURL:  process.env.FB_DB_URL,
+    projectId: process.env.FB_PROJECT_ID,
+    storageBucket:   process.env.FB_STORAGE_BUCKET,
+    messagingSenderId: process.env.FB_MESSAGING_SENDER_ID
   };
   firebase.initializeApp(config);
 </script>
