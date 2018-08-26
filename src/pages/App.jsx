@@ -66,6 +66,7 @@ class App extends PureComponent {
         const dutchAuctionContractInstance = await newDutchAuctionContract.at(
           '0x51e5b41f82b71dcebe11a7bd67ce12c862772e98'
         );
+        console.log('a', dutchAuctionContractInstance);
 
         // tk
         const newGemsContract = this.state.web3.eth.contract(gemsABI);
@@ -76,44 +77,20 @@ class App extends PureComponent {
         // tk
         let tokenId = 69664;
 
-        // let _minPrice = await dutchAuctionContractInstance.getCurrentPrice(
-        //   tokenId,
-        //   (error, result) => {
-        //     if (!error) console.log('bbb', result.toNumber());
-        //     else console.error(error);
-        //   }
-        // );
-
-        // let data = await dutchAuctionContractInstance.items(
-        //   tokenId,
-        //   (error, result) => {
-        //     if (!error) {
-        //       console.log('aaa', result);
-        //       return result;
-        //     } else console.error(error);
-        //   }
-        // );
-
         dutchAuctionContractInstance.items(tokenId, (error, result) => {
           if (!error) {
-            let [minPrice, maxPrice, start, end] = result;
+            let [startTime, endTime, startPrice, endPrice] = result;
 
             this.setState({
-              minPrice: minPrice.toNumber(),
-              maxPrice: maxPrice.toNumber(),
-              start: start.toNumber(),
-              end: end.toNumber()
+              auctionStartTime: startTime.toNumber(),
+              auctionEndTime: endTime.toNumber(),
+              auctionStartPrice: startPrice.toNumber(),
+              auctionEndPrice: endPrice.toNumber()
             });
+
             console.log('prices set');
           } else console.error(error);
         });
-
-        // data
-        //   .map(bigNumber => bigNumber.toNumber())
-        //   .then(result => console.log('bbb', result));
-
-        //   let _maxPrice = dutchAuctionContractInstance.items[tokenId].p1;
-        //   let _deadline = dutchAuctionContractInstance.items[tokenId].t1;
 
         //   let _grade = gemsContractInstance.gems[tokenId].grade;
         //   let _gradeValue = gemsContractInstance.gems[tokenId].gradeValue;
@@ -189,7 +166,8 @@ class App extends PureComponent {
 
     let minPrice = this.state.minPrice || 0.8;
     let maxPrice = this.state.maxPrice || 4.5;
-    let deadline = this.state.deadline || 'Aug 20, 2018 @ 00:00 EST';
+    let deadline =
+      new Date(this.state.auctionEndTime) || 'Aug 20, 2018 @ 00:00 EST';
 
     let level = this.state.level || 2;
     let grade = this.state.grade || 'a';

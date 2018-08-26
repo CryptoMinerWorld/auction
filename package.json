@@ -50,6 +50,7 @@
     "whatwg-fetch": "1.0.0"
   },
   "dependencies": {
+    "date-fns": "^2.0.0-alpha.16",
     "fontfaceobserver": "^2.0.13",
     "react": "^16.4.2",
     "react-addons-css-transition-group": "^15.6.2",
