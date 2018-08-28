@@ -68,7 +68,9 @@ class AuctionBox extends Component {
           <Gembox level={level} grade={grade} rate={rate} />
           <div className="tc">
             <small className="white ttu ">current price</small>
-            <p className="white f2 mv2 tc">Ξ {currentPrice}</p>
+            <p className="white f2 mv2 tc" data-testid="currentAuctionPrice">
+              Ξ {currentPrice}
+            </p>
           </div>
           <div className="w-100 w5-ns h3 center">
             <BuyNow

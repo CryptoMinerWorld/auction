@@ -1,17 +1,18 @@
 import React, { PureComponent } from 'react';
-import '../css/root.css';
-import Auction from './Auction/index';
-import MobileHeader from '../components/MobileHeader';
-import Navbar from '../components/Nav';
-import Footer from '../components/Footer';
-import getWeb3 from '../utils/getWeb3';
+import './css/root.css';
+import Auction from './pages/Auction';
+import MobileHeader from './components/MobileHeader';
+import Navbar from './components/Nav';
+import Footer from './components/Footer';
+import getWeb3 from './utils/getWeb3';
 import styled from 'styled-components';
 import FontFaceObserver from 'fontfaceobserver';
+import { Routes } from './routes';
 
-import DutchAuction from '../../build/contracts/DutchAuction.json';
+import DutchAuction from '../build/contracts/DutchAuction.json';
 const dutchAuctionABI = DutchAuction.abi;
 
-import Gems from '../../build/contracts/GemERC721.json';
+import Gems from '../build/contracts/GemERC721.json';
 const gemsABI = Gems.abi;
 
 const StickyHeader = styled.div`
@@ -198,7 +199,7 @@ class App extends PureComponent {
             rate={rate}
           />
         </StickyHeader>
-        <Auction
+        <Routes
           currentPrice={currentPrice}
           minPrice={minPrice}
           maxPrice={maxPrice}

@@ -6,7 +6,7 @@ import {
   cleanup
 } from 'react-testing-library';
 import 'jest-dom/extend-expect';
-import Auction from '.';
+import Auction from './index';
 
 // @dev this automatically unmounts and cleanup DOM after the test is finished.
 afterEach(cleanup);
@@ -99,4 +99,51 @@ test('Countdown timer shows non-plural time descriptions (for example 1 hour vs 
   const daysUnit = await waitForElement(() => getByTestId('daysUnit'));
   expect(daysUnit).not.toHaveTextContent('days');
   expect(daysUnit).toHaveTextContent('day');
+});
+
+test('Progress bar shows correct start and end price', async () => {
+  const { getByTestId } = render(
+    <Auction
+      currentPrice={testData.currentPrice}
+      minPrice={testData.minPrice}
+      maxPrice={testData.maxPrice}
+      level={testData.level}
+      grade={testData.grade}
+      rate={testData.rate}
+      buyNow={testData.handleBuyNow}
+      deadline={testData.deadline}
+      name={testData.name}
+    />
+  );
+
+  expect(getByTestId('minPrice')).toHaveTextContent(testData.minPrice);
+  expect(getByTestId('maxPrice')).toHaveTextContent(testData.maxPrice);
+  expect(getByTestId('currentPrice')).toHaveTextContent(testData.currentPrice);
+});
+
+test('Current price shows the correct price', async () => {
+  const { getByTestId } = render(
+    <Auction
+      currentPrice={testData.currentPrice}
+      minPrice={testData.minPrice}
+      maxPrice={testData.maxPrice}
+      level={testData.level}
+      grade={testData.grade}
+      rate={testData.rate}
+      buyNow={testData.handleBuyNow}
+      deadline={testData.deadline}
+      name={testData.name}
+    />
+  );
+
+  expect(getByTestId('currentAuctionPrice')).toHaveTextContent(
+    testData.currentPrice
+  );
+});
+
+test('Current price depreciates over time', async () => {
+  expect(true).toBeFalsy();
+});
+test('Current price does not continue to depreciate after the deadline', async () => {
+  expect(true).toBeFalsy();
 });
