@@ -81,12 +81,17 @@ class App extends PureComponent {
           if (!error) {
             let [startTime, endTime, startPrice, endPrice] = result;
 
-            this.setState({
-              auctionStartTime: startTime.toNumber(),
-              auctionEndTime: endTime.toNumber(),
-              auctionStartPrice: startPrice.toNumber(),
-              auctionEndPrice: endPrice.toNumber()
-            });
+            this.setState(
+              {
+                dutchAuctionContractInstance: dutchAuctionContractInstance,
+                tokenId: tokenId,
+                auctionStartTime: startTime.toNumber(),
+                auctionEndTime: endTime.toNumber(),
+                auctionStartPrice: startPrice.toNumber(),
+                auctionEndPrice: endPrice.toNumber()
+              },
+              () => this.handleGetPrice(tokenId)
+            );
 
             console.log('prices set');
           } else console.error(error);
@@ -143,16 +148,16 @@ class App extends PureComponent {
       });
   }
 
-  handleBuyNow = async tokenId => {
-    console.log('buying...');
-    await this.state.dutchAuctionContractInstance.buy(tokenId);
+  handleBuyNow = async _tokenId => {
+    console.log('buying...', _tokenId);
+    await this.state.dutchAuctionContractInstance.buy(_tokenId);
     console.log('bought successfully');
   };
 
-  handleGetPrice = async tokenId => {
+  handleGetPrice = async _tokenId => {
     console.log('fetching price...');
     let currentPrice = await this.state.dutchAuctionContractInstance.getCurrentPrice(
-      tokenId,
+      _tokenId,
       (error, result) => {
         if (!error) this.setState({ currentPrice: result.toNumber() });
         else console.error(error);
@@ -166,8 +171,13 @@ class App extends PureComponent {
 
     let minPrice = this.state.minPrice || 0.8;
     let maxPrice = this.state.maxPrice || 4.5;
-    let deadline =
-      new Date(this.state.auctionEndTime) || 'Aug 20, 2018 @ 00:00 EST';
+
+    let someDate = new Date();
+
+    let numberOfDaysToAdd = 4;
+    someDate.setDate(someDate.getDate() + numberOfDaysToAdd);
+    let deadline = someDate;
+    // let deadline = new Date(this.state.auctionEndTime) ;
 
     let level = this.state.level || 2;
     let grade = this.state.grade || 'a';
@@ -175,6 +185,7 @@ class App extends PureComponent {
 
     let name = 'Amethyst Thingymajig';
     // let sourceImage = '';
+    let tokenId = this.state.tokenId;
 
     return (
       <main className={this.state.font}>
@@ -197,6 +208,7 @@ class App extends PureComponent {
           buyNow={this.handleBuyNow}
           deadline={deadline}
           name={name}
+          tokenId={tokenId}
         />
         <Footer />
       </main>

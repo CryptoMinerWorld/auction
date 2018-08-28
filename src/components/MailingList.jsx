@@ -24,7 +24,7 @@ class MailingList extends PureComponent {
             </legend>
             <fieldset className="bn ma0 pa0 w-50-ns">
               <div className="">
-                <label className="clip" for="email-address">
+                <label className="clip" htmlFor="email-address">
                   Email Address
                 </label>
                 <input

@@ -53,7 +53,8 @@ class Auction extends Component {
       rate,
       buyNow,
       deadline,
-      name
+      name,
+      tokenId
     } = this.props;
 
     return (
@@ -65,6 +66,8 @@ class Auction extends Component {
               transitionName="example"
               transitionAppear={true}
               transitionAppearTimeout={5000}
+              transitionEnterTimeout={5000}
+              transitionLeaveTimeout={5000}
             >
               <AuctionBox
                 currentPrice={currentPrice}
@@ -74,6 +77,7 @@ class Auction extends Component {
                 grade={grade}
                 rate={rate}
                 name={name}
+                tokenId={tokenId}
               />
             </ReactCSSTransitionGroup>
           </div>

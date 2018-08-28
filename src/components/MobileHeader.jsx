@@ -13,7 +13,7 @@ const Triangle = styled.div`
 
 class MobileHeader extends PureComponent {
   static propTypes = {
-    currentPrice: PropTypes.string.isRequired,
+    currentPrice: PropTypes.number.isRequired,
     level: PropTypes.number.isRequired,
     grade: PropTypes.string.isRequired,
     rate: PropTypes.number.isRequired

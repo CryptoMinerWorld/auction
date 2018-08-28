@@ -37,7 +37,7 @@ const OverlapOnDesktopView = styled.div`
 
 class AuctionBox extends Component {
   static propTypes = {
-    currentPrice: PropTypes.string.isRequired,
+    currentPrice: PropTypes.number.isRequired,
     handleBuyNow: PropTypes.func.isRequired,
     level: PropTypes.number.isRequired,
     grade: PropTypes.string.isRequired,
@@ -53,7 +53,8 @@ class AuctionBox extends Component {
       grade,
       rate,
       deadline,
-      name
+      name,
+      tokenId
     } = this.props;
     return (
       <OverlapOnDesktopView className="bg-dark-gray br3 measure-l w-100 shadow-3">
@@ -70,7 +71,11 @@ class AuctionBox extends Component {
             <p className="white f2 mv2 tc">Ξ {currentPrice}</p>
           </div>
           <div className="w-100 w5-ns h3 center">
-            <BuyNow onClick={handleBuyNow} className="b">
+            <BuyNow
+              onClick={() => handleBuyNow(tokenId)}
+              className="b"
+              data-testid="buyNowButton"
+            >
               Buy Now
             </BuyNow>
           </div>
