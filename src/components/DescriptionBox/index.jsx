@@ -61,6 +61,8 @@ class DescriptionBox extends PureComponent {
                       transitionName="example1"
                       transitionAppear={true}
                       transitionAppearTimeout={5000}
+                      transitionEnterTimeout={5000}
+                      transitionLeaveTimeout={5000}
                     >
                       <FeatureBand
                         colour="bg-dark-orange"
@@ -74,6 +76,8 @@ class DescriptionBox extends PureComponent {
                       transitionName="example2"
                       transitionAppear={true}
                       transitionAppearTimeout={5000}
+                      transitionEnterTimeout={5000}
+                      transitionLeaveTimeout={5000}
                     >
                       <FeatureBand
                         colour="bg-dark-blue"
@@ -87,6 +91,8 @@ class DescriptionBox extends PureComponent {
                       transitionName="example3"
                       transitionAppear={true}
                       transitionAppearTimeout={5000}
+                      transitionEnterTimeout={5000}
+                      transitionLeaveTimeout={5000}
                     >
                       <FeatureBand
                         colour="bg-dark-purple"

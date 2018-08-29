@@ -1,7 +1,9 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import rockBackground from '../../images/rockBackground.png';
+import { Subscribe } from 'unstated';
+import CreateAuctionStore from './store';
 
 const RockOverlay = styled.div`
   background-image: url(${rockBackground});
@@ -10,19 +12,71 @@ const RockOverlay = styled.div`
 `;
 
 class CreateAuction extends PureComponent {
-  static propTypes = {};
+  // static propTypes = {};
+
+  state = {
+    gemId: 69898,
+    duration: 400000,
+    startPrice: 95566000000000000,
+    endPrice: 955660000000000
+  };
+
+  handleChange = (value, field) => this.setState({ [field]: value });
 
   render() {
+    let { createAuction, handleApproveGemTransfer } = this.props;
+    let { gemId, duration, startPrice, endPrice } = this.state;
     return (
       <div className="bg-off-black ">
         <RockOverlay>
           <div className="relative mw9 center flex jcc">
             <div className="pa5 tc">
-              <button className="ma3">Create Auction</button>
-              <input type="text" placeholder="gemId" className="db" />
-              <input type="text" placeholder="starting price" className="db" />
-              <input type="text" placeholder="minimum price" className="db" />
-              <input type="text" placeholder="duration" className="db" />
+              <input
+                type="text"
+                placeholder="gemId"
+                className="db"
+                value={gemId}
+                onChange={e => this.handleChange(e.target.value, 'gemId')}
+                required
+              />
+              <input
+                type="text"
+                placeholder="duration in seconds"
+                className="db"
+                value={duration}
+                onChange={e => this.handleChange(e.target.value, 'duration')}
+                required
+              />
+              <input
+                type="text"
+                placeholder="starting price"
+                className="db"
+                value={startPrice}
+                onChange={e => this.handleChange(e.target.value, 'startPrice')}
+                required
+              />
+              <input
+                type="text"
+                placeholder="end price"
+                className="db"
+                value={endPrice}
+                onChange={e => this.handleChange(e.target.value, 'endPrice')}
+                required
+              />
+              <button
+                className="ma3"
+                onClick={() => handleApproveGemTransfer(gemId)}
+              >
+                Approve Transfer
+              </button>
+              <button
+                className="ma3"
+                onClick={() =>
+                  createAuction(gemId, duration, startPrice, endPrice)
+                }
+              >
+                Create Auction
+              </button>
             </div>
           </div>
         </RockOverlay>
@@ -31,4 +85,8 @@ class CreateAuction extends PureComponent {
   }
 }
 
-export default CreateAuction;
+export const CreateAuctionContainer = props => (
+  <Subscribe to={[CreateAuctionStore]}>
+    {store => <CreateAuction store={store} {...props} />}
+  </Subscribe>
+);

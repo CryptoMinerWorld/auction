@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 
 class ListAuctions extends PureComponent {
-  static propTypes = {};
+  // static propTypes = {};
 
   render() {
     return (

@@ -147,3 +147,7 @@ test('Current price depreciates over time', async () => {
 test('Current price does not continue to depreciate after the deadline', async () => {
   expect(true).toBeFalsy();
 });
+
+test('Check if the auction is still active, show bought or over', async () => {
+  expect(true).toBeFalsy();
+});
