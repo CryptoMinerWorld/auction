@@ -18,9 +18,9 @@ class CreateAuction extends PureComponent {
 
   state = {
     gemId: '',
-    duration: 400000,
-    startPrice: 95566000000000000,
-    endPrice: 955660000000000
+    duration: '',
+    startPrice: '',
+    endPrice: ''
   };
 
   handleChange = (value, field) => this.setState({ [field]: value });
@@ -75,7 +75,7 @@ class CreateAuction extends PureComponent {
               />
               <input
                 type="number"
-                placeholder="duration in seconds"
+                placeholder="duration in milliseconds"
                 className="db"
                 value={duration}
                 onChange={e =>
@@ -86,7 +86,7 @@ class CreateAuction extends PureComponent {
               />
               <input
                 type="number"
-                placeholder="starting price"
+                placeholder="starting price in wei"
                 className="db"
                 value={startPrice}
                 onChange={e =>
@@ -97,7 +97,7 @@ class CreateAuction extends PureComponent {
               />
               <input
                 type="number"
-                placeholder="end price"
+                placeholder="end price in wei"
                 className="db"
                 value={endPrice}
                 onChange={e =>

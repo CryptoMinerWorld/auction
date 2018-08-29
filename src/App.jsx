@@ -93,6 +93,11 @@ class App extends PureComponent {
           } else console.error(error);
         });
 
+        this.priceInterval = setInterval(() => {
+          console.log('pog');
+          this.handleGetPrice(tokenId);
+        }, 10000);
+
         //   let _grade = gemsContractInstance.gems[tokenId].grade;
         //   let _gradeValue = gemsContractInstance.gems[tokenId].gradeValue;
         //   let _level = gemsContractInstance.gems[tokenId].level;
@@ -156,6 +161,10 @@ class App extends PureComponent {
     );
   };
 
+  componentWillUnmount() {
+    clearInterval(this.priceInterval);
+  }
+
   handleCreateAuction = async (_tokenId, _duration, _startPrice, _endPrice) => {
     console.log('creating auction...', _tokenId);
 
@@ -194,9 +203,10 @@ class App extends PureComponent {
   };
 
   handleBuyNow = async _tokenId => {
-    console.log('buying...', _tokenId, typeof _tokenId);
+    console.log(this.state.currentPrice);
     await this.state.dutchAuctionContractInstance.buy(
       _tokenId,
+      { value: this.state.currentPrice },
       (error, result) => {
         if (!error) console.log('bought successfully');
         else console.error(error);
@@ -263,14 +273,3 @@ class App extends PureComponent {
 }
 
 export default App;
-
-// export default () => (
-//   <Subscribe to={[AuctionSettingsContainer, AuctionContainer]}>
-//     {(_auctionSettingsStore, _auctionStore) => (
-//       <App
-//         auctionSettingsStore={_auctionSettingsStore}
-//         auctionStore={_auctionStore}
-//       />
-//     )}
-//   </Subscribe>
-// );
