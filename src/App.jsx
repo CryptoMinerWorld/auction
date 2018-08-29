@@ -61,33 +61,18 @@ class App extends PureComponent {
         const newDutchAuctionContract = this.state.web3.eth.contract(
           dutchAuctionABI
         );
-
-        // tk
         const dutchAuctionContractInstance = await newDutchAuctionContract.at(
+          // process.env.RINKBY_AUCTION_CONTRACT
           '0x51e5b41f82b71dcebe11a7bd67ce12c862772e98'
         );
 
-        // const dutchAuctionContractInstance = await newDutchAuctionContract.new(
-        //   '0x82ff6bbd7b64f707e704034907d582c7b6e09d97',
-        //   (error, result) => {
-        //     if (!error)
-        //       console.log('dutchAuctionContractInstance created...', result);
-        //     else console.error(error);
-        //   }
-        // );
-
-        // // tk
         const newGemsContract = this.state.web3.eth.contract(gemsABI);
         const gemsContractInstance = await newGemsContract.at(
+          // process.env.RINKBY_GEM_CONTRACT
           '0x82ff6bbd7b64f707e704034907d582c7b6e09d97'
         );
 
-        // tk
-        // let tokenId = 69664;
-
-        // let tokenId = 69896;
-
-        let tokenId = 69898;
+        let tokenId = Number(window.location.href.split('/').pop());
 
         await dutchAuctionContractInstance.items(tokenId, (error, result) => {
           if (!error) {
@@ -155,21 +140,17 @@ class App extends PureComponent {
         //   });
         // })
         // .catch(() => {
-        //   console.error('Error finding web3.');
+        //   console.error('Error finding web3.');}
       });
   }
 
   handleApproveGemTransfer = async _tokenId => {
-    console.log('creating auction...', _tokenId);
-    // tk
     await this.state.gemsContractInstance.approve(
       '0x51e5b41f82b71dcebe11a7bd67ce12c862772e98',
       _tokenId,
       (error, result) => {
         if (!error)
-          console.log(
-            `gemId ${_tokenId} successfully transferred to auction 0x51e5b41f82b71dcebe11a7bd67ce12c862772e98`
-          );
+          console.log(`gemId ${_tokenId} successfully transferred to auction`);
         else console.error(error);
       }
     );
@@ -197,8 +178,23 @@ class App extends PureComponent {
     );
   };
 
+  handleRemoveGemFromAuction = async _tokenId => {
+    console.log('removing gem from auction...', _tokenId);
+    await this.state.dutchAuctionContractInstance.remove(
+      _tokenId,
+      (error, result) => {
+        if (!error)
+          console.log(
+            `Gem successfully removed from auction ${_tokenId}`,
+            result
+          );
+        else console.error(error);
+      }
+    );
+  };
+
   handleBuyNow = async _tokenId => {
-    console.log('buying...', _tokenId);
+    console.log('buying...', _tokenId, typeof _tokenId);
     await this.state.dutchAuctionContractInstance.buy(
       _tokenId,
       (error, result) => {
@@ -226,15 +222,13 @@ class App extends PureComponent {
 
     let deadline = new Date(this.state.auctionEndTime * 1000);
 
-    console.log('c', new Date(this.state.auctionEndTime * 1000));
-
     let level = Number(this.state.level) || 2;
     let grade = this.state.grade || 'a';
     let rate = Number(this.state.rate) || 53;
 
     let name = 'Amethyst Thingymajig';
     // let sourceImage = '';
-    let tokenId = this.state.tokenId;
+    let tokenId = Number(window.location.href.split('/').pop());
 
     return (
       <main className={this.state.font}>
@@ -260,6 +254,7 @@ class App extends PureComponent {
           tokenId={tokenId}
           createAuction={this.handleCreateAuction}
           handleApproveGemTransfer={this.handleApproveGemTransfer}
+          handleRemoveGemFromAuction={this.handleRemoveGemFromAuction}
         />
         <Footer />
       </main>
@@ -268,3 +263,14 @@ class App extends PureComponent {
 }
 
 export default App;
+
+// export default () => (
+//   <Subscribe to={[AuctionSettingsContainer, AuctionContainer]}>
+//     {(_auctionSettingsStore, _auctionStore) => (
+//       <App
+//         auctionSettingsStore={_auctionSettingsStore}
+//         auctionStore={_auctionStore}
+//       />
+//     )}
+//   </Subscribe>
+// );

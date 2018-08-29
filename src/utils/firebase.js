@@ -1,7 +1,7 @@
 
 <script src="https://www.gstatic.com/firebasejs/5.4.0/firebase.js"></script>
 <script>
-  // Initialize Firebase
+  
   var config = {
     apiKey: process.env.FB_API_KEY,
     authDomain: process.env.FB_AUTH_DOMAIN,
