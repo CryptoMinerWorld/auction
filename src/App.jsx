@@ -105,8 +105,10 @@ class App extends PureComponent {
           this.handleGetPrice(tokenId);
         }, 10000);
 
-        gemsContractInstance.getGrade(tokenId, (error, result) => {
+        gemsContractInstance.getGradeType(tokenId, (error, result) => {
           if (!error) {
+            let gradeValue = result.toNumber();
+
             this.setState({
               grade: result.toNumber()
             });

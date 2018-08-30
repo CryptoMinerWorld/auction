@@ -4,7 +4,7 @@ import DutchAuction from '../build/contracts/DutchAuction.json';
 
 import Gems from '../build/contracts/GemERC721.json';
 
-import getWeb3 from './utils/getWeb3';
+// import getWeb3 from './utils/getWeb3';
 
 // @notice context allows me to inject application state into any component in app
 export const Context = React.createContext();

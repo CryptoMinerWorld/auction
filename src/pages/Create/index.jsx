@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import rockBackground from '../../images/rockBackground.png';
+import Mint from './Mint';
 
 const RockOverlay = styled.div`
   background-image: url(${rockBackground});
@@ -143,6 +144,7 @@ class CreateAuction extends PureComponent {
               </div>
             </div>
           </div>
+          <Mint />
         </RockOverlay>
       </div>
     );

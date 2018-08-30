@@ -12,22 +12,27 @@ const Feature = styled.div`
   align-items: center;
 `;
 
-const Gem = ({ quality, image, amount }) => (
-  <div className="w-100">
-    <small className="ttu white b dn-ns">{quality}</small>
-    <Feature>
-      <img
-        src={image}
-        alt={quality}
-        style={{ gridColumn: '1 / -1', gridRow: '2' }}
-        className="h3 center"
-      />
-      <p style={{ gridRow: 2, gridColumn: 2 }} className="ttu f3  b o-50 black">
-        {amount}
-      </p>
-    </Feature>
-  </div>
-);
+const Gem = ({ quality, image, amount }) => {
+  return (
+    <div className="w-100">
+      <small className="ttu white b dn-ns">{quality}</small>
+      <Feature>
+        <img
+          src={image}
+          alt={quality}
+          style={{ gridColumn: '1 / -1', gridRow: '2' }}
+          className="h3 center"
+        />
+        <p
+          style={{ gridRow: 2, gridColumn: 2 }}
+          className="ttu f3  b o-50 black"
+        >
+          {quality === 'rate' ? `${amount} %` : amount}
+        </p>
+      </Feature>
+    </div>
+  );
+};
 
 class Gembox extends PureComponent {
   static propTypes = {
@@ -35,13 +40,41 @@ class Gembox extends PureComponent {
     grade: PropTypes.string.isRequired,
     rate: PropTypes.number.isRequired
   };
+
+  gradeConverter = gradeValue => {
+    switch (gradeValue) {
+      case 1:
+        return 'D';
+        break;
+      case 2:
+        return 'C';
+        break;
+      case 3:
+        return 'B';
+        break;
+      case 4:
+        return 'A';
+        break;
+      case 5:
+        return 'AA';
+        break;
+      case 6:
+        return 'AAA';
+        break;
+      default:
+        return '...';
+    }
+  };
+
+  rateConverter = rate => Math.round((rate / 400) * 100);
+
   render() {
     let { level, grade, rate } = this.props;
     return (
       <div className="flex tc pa3">
         <Gem quality="level" image={gem1} amount={level} />
-        <Gem quality="grade" image={gem2} amount={grade} />
-        <Gem quality="rate" image={gem3} amount={rate} />
+        <Gem quality="grade" image={gem2} amount={this.gradeConverter(grade)} />
+        <Gem quality="rate" image={gem3} amount={this.rateConverter(rate)} />
       </div>
     );
   }

@@ -73,31 +73,34 @@ class RippleButton extends PureComponent {
 
   render() {
     return (
-      <Button
-        className={this.props.className}
-        onClick={e => {
-          this.props.onClick();
-          const left = e.pageX - e.currentTarget.offsetLeft;
-          const top = e.pageY - e.currentTarget.offsetTop;
-          const id = Math.random().toString();
-          const ripples = [...this.state.ripples, { left, top, id }];
-          this.setState({ ripples });
-        }}
-      >
-        {this.props.title}
-        {this.state.ripples.map(({ left, top, id }) => (
-          <Ripple
-            left={`${left}px`}
-            top={`${top}px`}
-            key={id}
-            onRequestRemove={() => {
-              this.setState(state => ({
-                ripples: state.ripples.filter(x => x.id !== id)
-              }));
-            }}
-          />
-        ))}
-      </Button>
+      <a href={this.props.href}>
+        <Button
+          className={this.props.className}
+          onClick={e => {
+            this.props.onClick();
+            const left = e.pageX - e.currentTarget.offsetLeft;
+            const top = e.pageY - e.currentTarget.offsetTop;
+            const id = Math.random().toString();
+            const ripples = [...this.state.ripples, { left, top, id }];
+            this.setState({ ripples });
+          }}
+        >
+          {this.props.title}
+
+          {this.state.ripples.map(({ left, top, id }) => (
+            <Ripple
+              left={`${left}px`}
+              top={`${top}px`}
+              key={id}
+              onRequestRemove={() => {
+                this.setState(state => ({
+                  ripples: state.ripples.filter(x => x.id !== id)
+                }));
+              }}
+            />
+          ))}
+        </Button>
+      </a>
     );
   }
 }

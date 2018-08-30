@@ -39,42 +39,43 @@ class Navbar extends PureComponent {
           <div className="db dtc-l v-mid w-75-l tr-l tc nowrap overflow-x-auto mt3 mt0-ns">
             <a
               className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
-              href="#"
-              title="Home"
+              href="https://cryptominerworld.com/game_info/"
+              title="Game Information"
             >
               Game Info
             </a>
             <a
               className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
-              href="#"
-              title="How it Works"
+              href="https://cryptominerworld.com/founders_geode_pre-sale/"
+              title="Geode Pre-Sale"
             >
               Founder's Geode Pre-Sale
             </a>
             <a
               className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
-              href="#"
-              title="Blog"
+              href="https://cryptominerworld.com/workshop/"
+              title="Workshop"
             >
               Workshop
             </a>
             <a
               className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
-              href="#"
-              title="Press"
+              href="https://cryptominerworld.com/market/"
+              title="Market"
             >
               Market
             </a>
             <a
               className="link dim dark-gray f6 f5-l dib"
-              href="#"
-              title="Contact"
+              href="https://cryptominerworld.com/world/"
+              title="World"
             >
               World
             </a>
             <div className="dn dib-ns">
               <RippleButton
                 onClick={() => {}}
+                href="https://cryptominerworld.com/faq/"
                 className="ml4 dib bg-black shadow-1 white br2 pa3 ph4"
                 title="FAQ"
               />
