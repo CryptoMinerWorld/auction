@@ -54,8 +54,14 @@ class AuctionBox extends Component {
       rate,
       deadline,
       name,
-      tokenId
+      tokenId,
+      redirectTo,
+      showConfirm
     } = this.props;
+
+    if (redirectTo === '/workshop') {
+      window.location = 'https://cryptominerworld.com/workshop/';
+    }
     return (
       <OverlapOnDesktopView className="bg-dark-gray br3 measure-l w-100 shadow-3">
         <TopHighlight />
@@ -74,7 +80,7 @@ class AuctionBox extends Component {
           </div>
           <div className="w-100 w5-ns h3 center">
             <BuyNow
-              onClick={() => handleBuyNow(tokenId)}
+              onClick={() => showConfirm(tokenId, handleBuyNow)}
               className="b"
               data-testid="buyNowButton"
             >

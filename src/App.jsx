@@ -7,6 +7,8 @@ import styled from 'styled-components';
 import FontFaceObserver from 'fontfaceobserver';
 import { Routes } from './routes';
 import './css/root.css';
+import 'antd/dist/antd.css';
+import { showConfirm, showExpired } from './components/Modal';
 
 import DutchAuction from '../build/contracts/DutchAuction.json';
 const dutchAuctionABI = DutchAuction.abi;
@@ -37,7 +39,8 @@ class App extends PureComponent {
       tokenId: '',
       grade: '',
       level: '',
-      rate: ''
+      rate: '',
+      isTokenOnSale: true
     };
   }
 
@@ -88,13 +91,15 @@ class App extends PureComponent {
                 auctionStartPrice: startPrice.toNumber(),
                 auctionEndPrice: endPrice.toNumber()
               },
-              () => this.handleGetPrice(tokenId)
+              () => {
+                this.handleGetPrice(tokenId);
+                this.isTokenOnSale(tokenId);
+              }
             );
           } else console.error(error);
         });
 
         this.priceInterval = setInterval(() => {
-          console.log('pog');
           this.handleGetPrice(tokenId);
         }, 10000);
 
@@ -208,7 +213,7 @@ class App extends PureComponent {
       _tokenId,
       { value: this.state.currentPrice },
       (error, result) => {
-        if (!error) console.log('bought successfully');
+        if (!error) this.setState({ redirectTo: '/workshop' });
         else console.error(error);
       }
     );
@@ -224,7 +229,22 @@ class App extends PureComponent {
     );
   };
 
+  isTokenOnSale = async _tokenId => {
+    await this.state.dutchAuctionContractInstance.isTokenOnSale(
+      _tokenId,
+      (error, result) => {
+        if (!error) this.setState({ isTokenOnSale: result });
+        else console.error(error);
+      }
+    );
+  };
+
   render() {
+    // @notice if the token is not on auction a modal tells people the auction is over
+    !this.state.isTokenOnSale &&
+      window.location.href.includes('/auction/') &&
+      showExpired();
+
     let currentPrice = Number(this.state.currentPrice) || 1.323;
 
     let minPrice = Number(this.state.minPrice) || 0.8;
@@ -265,6 +285,8 @@ class App extends PureComponent {
           createAuction={this.handleCreateAuction}
           handleApproveGemTransfer={this.handleApproveGemTransfer}
           handleRemoveGemFromAuction={this.handleRemoveGemFromAuction}
+          redirectTo={this.state.redirectTo}
+          showConfirm={showConfirm}
         />
         <Footer />
       </main>

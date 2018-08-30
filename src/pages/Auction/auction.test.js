@@ -27,10 +27,11 @@ let testData = {
   rate: 53,
   name: 'Amethyst Thingymajig',
   handleBuyNow: jest.fn(),
+  showConfirm: jest.fn(),
   gemId: 12345
 };
 
-test('Buy now button fires triggers the buy now function with the correct gem Id', () => {
+test('Buy now button triggers the modal with the correct gem Id and the buy Now function', () => {
   // Arrange
   const { getByTestId } = render(
     <Auction
@@ -44,6 +45,7 @@ test('Buy now button fires triggers the buy now function with the correct gem Id
       deadline={testData.deadline}
       name={testData.name}
       tokenId={testData.gemId}
+      showConfirm={testData.showConfirm}
     />
   );
 
@@ -51,8 +53,11 @@ test('Buy now button fires triggers the buy now function with the correct gem Id
   fireEvent.click(getByTestId('buyNowButton'));
 
   // Assert
-  expect(testData.handleBuyNow).toHaveBeenCalledTimes(1);
-  expect(testData.handleBuyNow).toHaveBeenCalledWith(testData.gemId);
+  expect(testData.showConfirm).toHaveBeenCalledTimes(1);
+  expect(testData.showConfirm).toHaveBeenCalledWith(
+    testData.gemId,
+    testData.handleBuyNow
+  );
 });
 
 test('Countdown timer shows correct time', async () => {
@@ -141,13 +146,17 @@ test('Current price shows the correct price', async () => {
   );
 });
 
-test.skip('Current price depreciates over time', async () => {
-  expect(true).toBeFalsy();
-});
-test.skip('Current price does not continue to depreciate after the deadline', async () => {
+test.only('Check if the auction is still active, show bought or over', async () => {
   expect(true).toBeFalsy();
 });
 
-test.skip('Check if the auction is still active, show bought or over', async () => {
-  expect(true).toBeFalsy();
+test.skip('Current price depreciates over time', async () => {
+  // I don't knwo how to test this since the time deprecation is happening on the contract
+  // jest.advanceTimersByTime(1000); might be useful somewhere
+  // https://jestjs.io/docs/en/timer-mocks.html#advance-timers-by-time
+});
+test.skip('Current price does not continue to depreciate after the deadline', async () => {
+  // Again, I don't knwo how to test this since the time deprecation is happening on the contract
+  // jest.advanceTimersByTime(1000); might be useful somewhere
+  // https://jestjs.io/docs/en/timer-mocks.html#advance-timers-by-time
 });

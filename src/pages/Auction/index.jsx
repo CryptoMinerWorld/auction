@@ -7,7 +7,7 @@ import FAQ from '../../components/FAQ';
 import MailingList from '../../components/MailingList';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import './animations.css';
 import rockBackground from '../../images/rockBackground.png';
 
@@ -43,6 +43,7 @@ class Auction extends Component {
     buyNow: PropTypes.func.isRequired,
     name: PropTypes.string.isRequired
   };
+
   render() {
     let {
       currentPrice,
@@ -54,7 +55,9 @@ class Auction extends Component {
       buyNow,
       deadline,
       name,
-      tokenId
+      tokenId,
+      redirectTo,
+      showConfirm
     } = this.props;
 
     return (
@@ -78,6 +81,8 @@ class Auction extends Component {
                 rate={rate}
                 name={name}
                 tokenId={tokenId}
+                redirectTo={redirectTo}
+                showConfirm={showConfirm}
               />
             </ReactCSSTransitionGroup>
           </div>
