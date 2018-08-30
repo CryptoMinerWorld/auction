@@ -35,3 +35,13 @@ html {
   word-spacing: 0.05px;
   visibility: visible;
 }
+
+.basic {
+  font-family: arial;
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 300;
+  letter-spacing: 0.25px;
+  word-spacing: 0.05px;
+  visibility: visible;
+}

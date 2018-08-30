@@ -70,11 +70,13 @@ class AuctionBox extends Component {
             {name}
           </h1>
           <CountdownTimer deadline={deadline} />
-
           <Gembox level={level} grade={grade} rate={rate} />
           <div className="tc">
             <small className="white ttu ">current price</small>
-            <p className="white f2 mv2 tc" data-testid="currentAuctionPrice">
+            <p
+              className="white f2 mv2 tc basic "
+              data-testid="currentAuctionPrice"
+            >
               Ξ {currentPrice}
             </p>
           </div>

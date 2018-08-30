@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import format from 'date-fns/format';
 
 const AngleGradient = styled.div`
   background: linear-gradient(45deg, #c018ab, #5f1763);
@@ -44,7 +45,9 @@ class CountdownTimer extends PureComponent {
     return (
       <AngleGradient className="tc bg-blue pa2 br3 shadow-3">
         <p className="b">Auction ends on</p>
-        <time className="measure">{deadline.toString()}</time>
+        <time className="measure">
+          {format(deadline, 'EEEE do of MMMM, p')}
+        </time>
         {timeLeft !== '' && (
           <div className="flex jca pt2">
             <div className="pb2">

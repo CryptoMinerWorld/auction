@@ -9,6 +9,7 @@ import { Routes } from './routes';
 import './css/root.css';
 import 'antd/dist/antd.css';
 import { showConfirm, showExpired } from './components/Modal';
+import fromExponential from 'from-exponential';
 
 import DutchAuction from '../build/contracts/DutchAuction.json';
 const dutchAuctionABI = DutchAuction.abi;
@@ -170,6 +171,7 @@ class App extends PureComponent {
 
     let startTime = Date.now() / 1000;
     let endTime = (Date.now() + _duration) / 1000;
+
     await this.state.dutchAuctionContractInstance.addWith(
       _tokenId,
       startTime,
@@ -240,7 +242,9 @@ class App extends PureComponent {
       window.location.href.includes('/auction/') &&
       showExpired();
 
-    let currentPrice = Number(this.state.currentPrice) || 1.323;
+    let currentPrice = fromExponential(
+      Number(this.state.currentPrice) / 1000000000000000000
+    );
 
     let minPrice = Number(this.state.minPrice) || 0.8;
     let maxPrice = Number(this.state.maxPrice) || 4.5;

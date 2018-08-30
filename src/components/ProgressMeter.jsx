@@ -10,11 +10,17 @@ class ProgressMeter extends PureComponent {
     let { currentPrice, minPrice, maxPrice } = this.props;
     return (
       <div className="bg-off-black white ma0 pa3 tc relative-l left-1 ">
-        <p data-testid="currentPrice">Ξ {currentPrice}</p>
+        <p data-testid="currentPrice" className="basic">
+          Ξ {currentPrice}
+        </p>
         <progress value="22" max="100" className="w-100" />
         <div className="flex jcb">
-          <small data-testid="minPrice">Ξ {minPrice}</small>
-          <small data-testid="maxPrice">Ξ {maxPrice}</small>
+          <small data-testid="minPrice" className="basic">
+            Ξ {minPrice}
+          </small>
+          <small data-testid="maxPrice" className="basic">
+            Ξ {maxPrice}
+          </small>
         </div>
       </div>
     );
