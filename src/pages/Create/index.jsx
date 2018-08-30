@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import rockBackground from '../../images/rockBackground.png';
 import Mint from './Mint';
+import { Input, Button } from 'antd';
 
 const RockOverlay = styled.div`
   background-image: url(${rockBackground});
@@ -39,7 +40,7 @@ class CreateAuction extends PureComponent {
         <RockOverlay>
           <div className="relative mw9 center flex jcc ">
             <div className="pa5 flex jcc col">
-              <input
+              <Input
                 type="number"
                 placeholder="gemId"
                 className="db"
@@ -52,18 +53,18 @@ class CreateAuction extends PureComponent {
               />
 
               <div>
-                <button
+                <Button
                   className="ma3"
                   onClick={() => handleApproveGemTransfer(gemId)}
                   data-testid="transferGemButton"
                 >
                   Approve Transfer
-                </button>
+                </Button>
               </div>
             </div>
 
             <div className="pa5 flex jcc col">
-              <input
+              <Input
                 type="number"
                 placeholder="gemId"
                 className="db"
@@ -74,7 +75,7 @@ class CreateAuction extends PureComponent {
                 data-testid="gemInputField"
                 required
               />
-              <input
+              <Input
                 type="number"
                 placeholder="duration in milliseconds"
                 className="db"
@@ -85,9 +86,9 @@ class CreateAuction extends PureComponent {
                 data-testid="durationInputField"
                 required
               />
-              <input
+              <Input
                 type="number"
-                placeholder="starting price in wei"
+                placeholder="Start price in wei"
                 className="db"
                 value={startPrice}
                 onChange={e =>
@@ -96,9 +97,9 @@ class CreateAuction extends PureComponent {
                 data-testid="startPriceInputField"
                 required
               />
-              <input
+              <Input
                 type="number"
-                placeholder="end price in wei"
+                placeholder="End price in wei"
                 className="db"
                 value={endPrice}
                 onChange={e =>
@@ -108,7 +109,7 @@ class CreateAuction extends PureComponent {
                 required
               />
               <div>
-                <button
+                <Button
                   className="ma3"
                   onClick={() =>
                     createAuction(gemId, duration, startPrice, endPrice)
@@ -116,12 +117,12 @@ class CreateAuction extends PureComponent {
                   data-testid="createAuctionButton"
                 >
                   Create Auction
-                </button>
+                </Button>
               </div>
             </div>
 
             <div className="pa5 flex jcc col">
-              <input
+              <Input
                 type="text"
                 placeholder="gemId"
                 className="db"
@@ -134,13 +135,14 @@ class CreateAuction extends PureComponent {
               />
 
               <div>
-                <button
+                <Button
+                  type="danger"
                   className="ma3"
                   onClick={() => handleRemoveGemFromAuction(gemId)}
                   data-testid="removeGemButton"
                 >
                   Remove Gem From Auction
-                </button>
+                </Button>
               </div>
             </div>
           </div>

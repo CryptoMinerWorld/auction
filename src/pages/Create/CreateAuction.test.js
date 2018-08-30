@@ -8,6 +8,7 @@ import {
 } from 'react-testing-library';
 import 'jest-dom/extend-expect';
 import CreateAuction from './index';
+
 // @dev this automatically unmounts and cleanup DOM after the test is finished.
 afterEach(cleanup);
 
