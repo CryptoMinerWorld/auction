@@ -1,5 +1,4 @@
 import { Modal } from 'antd';
-import { withRouter } from 'react-router-dom';
 
 export const showConfirm = (_tokenId, _handleBuyNow) => {
   Modal.warning({

@@ -16,6 +16,7 @@ const dutchAuctionABI = DutchAuction.abi;
 import Gems from '../build/contracts/GemERC721.json';
 const gemsABI = Gems.abi;
 
+// @dev keeping component specific styling inside each component file is optimising for deletability. Change or delete this component in the future and all the relevant styles are removed and no more zombie css
 const StickyHeader = styled.div`
   position: -webkit-sticky; /* Safari */
   position: sticky;
@@ -103,54 +104,48 @@ class App extends PureComponent {
           this.handleGetPrice(tokenId);
         }, 10000);
 
-        //   let _grade = gemsContractInstance.gems[tokenId].grade;
-        //   let _gradeValue = gemsContractInstance.gems[tokenId].gradeValue;
-        //   let _level = gemsContractInstance.gems[tokenId].level;
+        gemsContractInstance.getGrade(tokenId, (error, result) => {
+          if (!error) {
+            this.setState({
+              grade: result.toNumber()
+            });
+          } else console.error(error);
+        });
 
-        //   Promise.all([
-        //     _minPrice,
-        //     _maxPrice,
-        //     _deadline,
-        //     _grade,
-        //     _level,
-        //     _gradeValue
-        //   ]).then(values => {
-        //     console.log('xxx', values);
-        //     let [minPrice, maxPrice, deadline, grade, level, gradeValue] = values;
+        gemsContractInstance.getLevel(tokenId, (error, result) => {
+          if (!error)
+            this.setState({
+              level: result.toNumber()
+            });
+          else console.error(error);
+        });
 
-        //     let calcMiningRate = (gradeType, gradeValue) => {
-        //       switch (gradeType) {
-        //         case 1:
-        //           return gradeValue / 200000;
-        //         case 2:
-        //           return 10 + gradeValue / 200000;
-        //         case 3:
-        //           return 20 + gradeValue / 200000;
-        //         case 4:
-        //           return 40 + (3 * gradeValue) / 200000;
-        //         case 5:
-        //           return 100 + gradeValue / 40000;
-        //         case 6:
-        //           return 300 + gradeValue / 10000;
-        //         default:
-        //           return 300 + gradeValue / 10000;
-        //       }
-        //     };
+        let calcMiningRate = (gradeType, gradeValue) => {
+          switch (gradeType) {
+            case 1:
+              return gradeValue / 200000;
+            case 2:
+              return 10 + gradeValue / 200000;
+            case 3:
+              return 20 + gradeValue / 200000;
+            case 4:
+              return 40 + (3 * gradeValue) / 200000;
+            case 5:
+              return 100 + gradeValue / 40000;
+            case 6:
+              return 300 + gradeValue / 10000;
+            default:
+              return 300 + gradeValue / 10000;
+          }
+        };
 
-        //     this.setState({
-        //       tokenId,
-        //       dutchAuctionContractInstance,
-        //       minPrice,
-        //       maxPrice,
-        //       deadline,
-        //       grade,
-        //       level,
-        //       rate: calcMiningRate(grade, gradeValue)
-        //     });
-        //   });
-        // })
-        // .catch(() => {
-        //   console.error('Error finding web3.');}
+        gemsContractInstance.getGradeValue(tokenId, (error, result) => {
+          if (!error)
+            this.setState({
+              rate: calcMiningRate(this.state.grade, result.toNumber())
+            });
+          else console.error(error);
+        });
       });
   }
 
@@ -229,8 +224,8 @@ class App extends PureComponent {
     );
   };
 
-  isTokenOnSale = async _tokenId => {
-    await this.state.dutchAuctionContractInstance.isTokenOnSale(
+  isTokenOnSale = _tokenId => {
+    this.state.dutchAuctionContractInstance.isTokenOnSale(
       _tokenId,
       (error, result) => {
         if (!error) this.setState({ isTokenOnSale: result });

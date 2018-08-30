@@ -10,6 +10,7 @@ import styled from 'styled-components';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import './animations.css';
 import rockBackground from '../../images/rockBackground.png';
+import { Context } from '../../Provider';
 
 const OverlapOnDesktopView = styled.div`
   @media (min-width: 64em) {
@@ -43,6 +44,10 @@ class Auction extends Component {
     buyNow: PropTypes.func.isRequired,
     name: PropTypes.string.isRequired
   };
+
+  // componentDidMount() {
+  //   console.log('xxx', this.props.store);
+  // }
 
   render() {
     let {
@@ -110,4 +115,8 @@ class Auction extends Component {
   }
 }
 
-export default Auction;
+export default props => (
+  <Context.Consumer>
+    {store => <Auction store={store} {...props} />}
+  </Context.Consumer>
+);
