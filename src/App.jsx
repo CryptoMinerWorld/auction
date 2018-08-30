@@ -6,8 +6,8 @@ import getWeb3 from './utils/getWeb3';
 import styled from 'styled-components';
 import FontFaceObserver from 'fontfaceobserver';
 import { Routes } from './routes';
-import './css/root.css';
 import 'antd/dist/antd.css';
+import './css/root.css';
 import { showConfirm, showExpired } from './components/Modal';
 import fromExponential from 'from-exponential';
 

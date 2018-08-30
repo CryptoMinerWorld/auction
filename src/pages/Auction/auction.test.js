@@ -146,7 +146,7 @@ test('Current price shows the correct price', async () => {
   );
 });
 
-test.only('Check if the auction is still active, show bought or over', async () => {
+test.skip('Check if the auction is still active, show bought or over', async () => {
   expect(true).toBeFalsy();
 });
 

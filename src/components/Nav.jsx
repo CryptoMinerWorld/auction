@@ -17,13 +17,13 @@ class Navbar extends PureComponent {
         <nav className="db dt-l w-100 border-box pa3 ph5-l bg-white mw9 center">
           <div>
             <a
-              className=" dtc-l v-mid mid-gray link dim tl mb2 mb0-l dib"
+              className="dtc-l v-mid mid-gray link dim tl mb2 mb0-l dib"
               href="#"
               title="Home"
             >
               <img
                 src={require('../images/Profile-Image-Logo-60x60.png')}
-                className="dib w3 h3 br-100 pl3"
+                className="dib w3 h-auto br-100 pl3"
                 alt="CryptoMiner World"
               />
             </a>

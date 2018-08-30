@@ -188,7 +188,7 @@ class Footer extends PureComponent {
                 <p className="f7 black-70 dib pr3 mb3 white">
                   Copyright © Your Company 2048
                 </p>
-                <p className="f7 black-70 dib pr3 mb3 white">Version 0.0.2</p>
+                <p className="f7 black-70 dib pr3 mb3 white">Version 0.0.3</p>
               </div>
             </div>
             <div className="db dn-ns">

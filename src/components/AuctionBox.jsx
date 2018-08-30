@@ -66,7 +66,7 @@ class AuctionBox extends Component {
       <OverlapOnDesktopView className="bg-dark-gray br3 measure-l w-100 shadow-3">
         <TopHighlight />
         <div className="white pa3">
-          <h1 className="tc pb3" style={{ wordBreak: 'break-all' }}>
+          <h1 className="tc pb3 b white" style={{ wordBreak: 'break-all' }}>
             {name}
           </h1>
           <CountdownTimer deadline={deadline} />
