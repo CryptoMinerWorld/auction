@@ -7,8 +7,6 @@ var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeMod
 var getClientEnvironment = require('./env');
 var paths = require('./paths');
 
-
-
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
 var publicPath = '/';
@@ -87,7 +85,7 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         loader: 'eslint',
-        include: paths.appSrc,
+        include: paths.appSrc
       }
     ],
     loaders: [
@@ -127,7 +125,6 @@ module.exports = {
         include: paths.appSrc,
         loader: 'babel',
         query: {
-
           // This is a feature of `babel-loader` for webpack (not Babel itself).
           // It enables caching results in ./node_modules/.cache/babel-loader/
           // directory for faster rebuilds.
@@ -178,7 +175,7 @@ module.exports = {
         query: {
           name: 'fonts/[name].[hash].[ext]'
         }
-      },
+      }
       // Truffle solidity loader to watch for changes in Solitiy files and hot
       // reload contracts with webpack.
       //
@@ -200,9 +197,9 @@ module.exports = {
           '>1%',
           'last 4 versions',
           'Firefox ESR',
-          'not ie < 9', // React doesn't support IE8 anyway
+          'not ie < 9' // React doesn't support IE8 anyway
         ]
-      }),
+      })
     ];
   },
   plugins: [
@@ -215,7 +212,7 @@ module.exports = {
     // Generates an `index.html` file with the <script> injected.
     new HtmlWebpackPlugin({
       inject: true,
-      template: paths.appHtml,
+      template: paths.appHtml
     }),
     // Makes some environment variables available to the JS code, for example:
     // if (process.env.NODE_ENV === 'development') { ... }. See `./env.js`.

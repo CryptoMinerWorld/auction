@@ -1,0 +1,47 @@
+/* muli-regular - latin */
+@font-face {
+  font-family: 'Muli';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Muli Regular'), local('Muli-Regular'),
+    url('../fonts/muli-v11-latin-regular.woff2') format('woff2'),
+    /* Chrome 26+, Opera 23+, Firefox 39+ */
+      url('../fonts/muli-v11-latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+/* muli-900 - latin */
+@font-face {
+  font-family: 'Muli';
+  font-style: normal;
+  font-weight: 900;
+  src: local('Muli Black'), local('Muli-Black'),
+    url('../fonts/muli-v11-latin-900.woff2') format('woff2'),
+    /* Chrome 26+, Opera 23+, Firefox 39+ */
+      url('../fonts/muli-v11-latin-900.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+.muli {
+  font-family: 'Muli' !important;
+  font-size: 16px;
+  line-height: 1.6;
+  visibility: visible;
+}
+
+html {
+  font-family: arial;
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 300;
+  letter-spacing: 0.25px;
+  word-spacing: 0.05px;
+  visibility: visible;
+}
+
+.basic {
+  font-family: arial;
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 300;
+  letter-spacing: 0.25px;
+  word-spacing: 0.05px;
+  visibility: visible;
+}
