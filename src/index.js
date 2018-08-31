@@ -1,8 +1,11 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import App from './App'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
+import AuctionProvider from './Provider';
 
 ReactDOM.render(
-  <App />,
+  <AuctionProvider>
+    <App />
+  </AuctionProvider>,
   document.getElementById('root')
 );
