@@ -10,6 +10,13 @@ import 'antd/dist/antd.css';
 import './css/root.css';
 import { showConfirm, showExpired } from './components/Modal';
 import fromExponential from 'from-exponential';
+import {
+  isTokenOnSale,
+  getAuctionDetails,
+  calcMiningRate,
+  getGemQualities
+} from './pages/Auction/helpers';
+import { handleApproveGemTransfer } from './pages/Create/helpers';
 
 import DutchAuction from '../build/contracts/DutchAuction.json';
 const dutchAuctionABI = DutchAuction.abi;
@@ -28,7 +35,6 @@ const StickyHeader = styled.div`
 class App extends PureComponent {
   constructor(props) {
     super(props);
-
     this.state = {
       storageValue: 0,
       web3: null,
@@ -59,7 +65,8 @@ class App extends PureComponent {
     getWeb3
       .then(results =>
         this.setState({
-          web3: results.web3
+          web3: results.web3,
+          tokenId: Number(window.location.href.split('/').pop())
         })
       )
       .then(async () => {
@@ -77,92 +84,53 @@ class App extends PureComponent {
           '0x82ff6bbd7b64f707e704034907d582c7b6e09d97'
         );
 
-        let tokenId = Number(window.location.href.split('/').pop());
-
-        await dutchAuctionContractInstance.items(tokenId, (error, result) => {
-          if (!error) {
-            let [startTime, endTime, startPrice, endPrice] = result;
-
-            this.setState(
-              {
-                dutchAuctionContractInstance: dutchAuctionContractInstance,
-                gemsContractInstance: gemsContractInstance,
-                tokenId: tokenId,
-                auctionStartTime: startTime.toNumber(),
-                auctionEndTime: endTime.toNumber(),
-                auctionStartPrice: startPrice.toNumber(),
-                auctionEndPrice: endPrice.toNumber()
-              },
-              () => {
-                this.handleGetPrice(tokenId);
-                this.isTokenOnSale(tokenId);
-              }
-            );
-          } else console.error(error);
-        });
+        this.setState(
+          {
+            dutchAuctionContractInstance,
+            gemsContractInstance
+          },
+          () => {
+            getAuctionDetails(
+              this.state.dutchAuctionContractInstance,
+              this.state.tokenId
+            ).then(result => {
+              let [startTime, endTime, startPrice, endPrice] = result;
+              this.setState(
+                {
+                  auctionStartTime: startTime.toNumber(),
+                  auctionEndTime: endTime.toNumber(),
+                  auctionStartPrice: startPrice.toNumber(),
+                  auctionEndPrice: endPrice.toNumber()
+                },
+                () => {
+                  this.handleGetPrice(this.state.tokenId);
+                  isTokenOnSale(
+                    this.state.dutchAuctionContractInstance,
+                    this.state.tokenId
+                  ).then(isTokenOnSale => this.setState({ isTokenOnSale }));
+                }
+              );
+            });
+          }
+        );
 
         this.priceInterval = setInterval(() => {
-          this.handleGetPrice(tokenId);
+          this.handleGetPrice(this.state.tokenId);
         }, 10000);
 
-        gemsContractInstance.getGradeType(tokenId, (error, result) => {
-          if (!error) {
-            let gradeValue = result.toNumber();
-
+        getGemQualities(gemsContractInstance, this.state.tokenId).then(
+          result => {
+            let [color, level, gradeType, gradeValue] = result;
             this.setState({
-              grade: result.toNumber()
+              grade: gradeType,
+              level,
+              color,
+              rate: calcMiningRate(gradeType, gradeValue)
             });
-          } else console.error(error);
-        });
-
-        gemsContractInstance.getLevel(tokenId, (error, result) => {
-          if (!error)
-            this.setState({
-              level: result.toNumber()
-            });
-          else console.error(error);
-        });
-
-        let calcMiningRate = (gradeType, gradeValue) => {
-          switch (gradeType) {
-            case 1:
-              return gradeValue / 200000;
-            case 2:
-              return 10 + gradeValue / 200000;
-            case 3:
-              return 20 + gradeValue / 200000;
-            case 4:
-              return 40 + (3 * gradeValue) / 200000;
-            case 5:
-              return 100 + gradeValue / 40000;
-            case 6:
-              return 300 + gradeValue / 10000;
-            default:
-              return 300 + gradeValue / 10000;
           }
-        };
-
-        gemsContractInstance.getGradeValue(tokenId, (error, result) => {
-          if (!error)
-            this.setState({
-              rate: calcMiningRate(this.state.grade, result.toNumber())
-            });
-          else console.error(error);
-        });
+        );
       });
   }
-
-  handleApproveGemTransfer = async _tokenId => {
-    await this.state.gemsContractInstance.approve(
-      '0x51e5b41f82b71dcebe11a7bd67ce12c862772e98',
-      _tokenId,
-      (error, result) => {
-        if (!error)
-          console.log(`gemId ${_tokenId} successfully transferred to auction`);
-        else console.error(error);
-      }
-    );
-  };
 
   componentWillUnmount() {
     clearInterval(this.priceInterval);
@@ -228,16 +196,6 @@ class App extends PureComponent {
     );
   };
 
-  isTokenOnSale = _tokenId => {
-    this.state.dutchAuctionContractInstance.isTokenOnSale(
-      _tokenId,
-      (error, result) => {
-        if (!error) this.setState({ isTokenOnSale: result });
-        else console.error(error);
-      }
-    );
-  };
-
   render() {
     // @notice if the token is not on auction a modal tells people the auction is over
     !this.state.isTokenOnSale &&
@@ -247,19 +205,11 @@ class App extends PureComponent {
     let currentPrice = fromExponential(
       Number(this.state.currentPrice) / 1000000000000000000
     );
-
-    let minPrice = Number(this.state.minPrice) || 0.8;
-    let maxPrice = Number(this.state.maxPrice) || 4.5;
-
-    let deadline = new Date(this.state.auctionEndTime * 1000);
-
-    let level = Number(this.state.level) || 2;
-    let grade = this.state.grade || 'a';
-    let rate = Number(this.state.rate) || 53;
-
+    let level = Number(this.state.level);
+    let grade = this.state.grade;
+    let rate = Number(this.state.rate);
     let name = 'Amethyst Thingymajig';
     // let sourceImage = '';
-    let tokenId = Number(window.location.href.split('/').pop());
 
     return (
       <main className={this.state.font}>
@@ -274,17 +224,21 @@ class App extends PureComponent {
         </StickyHeader>
         <Routes
           currentPrice={currentPrice}
-          minPrice={minPrice}
-          maxPrice={maxPrice}
+          minPrice={Number(this.state.minPrice)}
+          maxPrice={Number(this.state.maxPrice)}
           level={level}
           grade={grade}
           rate={rate}
           buyNow={this.handleBuyNow}
-          deadline={deadline}
+          deadline={new Date(this.state.auctionEndTime * 1000)}
           name={name}
-          tokenId={tokenId}
+          tokenId={this.state.tokenId}
           createAuction={this.handleCreateAuction}
-          handleApproveGemTransfer={this.handleApproveGemTransfer}
+          handleApproveGemTransfer={handleApproveGemTransfer(
+            this.state.gemsContractInstance,
+            '0x51e5b41f82b71dcebe11a7bd67ce12c862772e98',
+            this.state.tokenId
+          )}
           handleRemoveGemFromAuction={this.handleRemoveGemFromAuction}
           redirectTo={this.state.redirectTo}
           showConfirm={showConfirm}

@@ -26,8 +26,11 @@ class DescriptionBox extends PureComponent {
     }
   };
 
+  rateConverter = rate => Math.round((rate / 400) * 100);
+
   render() {
     let { level, grade, rate } = this.props;
+
     return (
       <div className="bg-off-black white ma0 ">
         <div className="flex-l jce mw9 center">
@@ -98,7 +101,7 @@ class DescriptionBox extends PureComponent {
                         colour="bg-dark-purple"
                         gem={gem3}
                         category="mining rate"
-                        amount={rate}
+                        amount={`${this.rateConverter(rate)} %`}
                         description="Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
                       />
                     </ReactCSSTransitionGroup>
@@ -137,7 +140,7 @@ const FeatureBand = ({ colour, gem, category, amount, description }) => {
           />
           <p
             style={{ gridRow: 2, gridColumn: 2 }}
-            className="ttu f3 b o-50 black tc"
+            className="ttu f4 b o-50 black tc"
           >
             {amount}
           </p>

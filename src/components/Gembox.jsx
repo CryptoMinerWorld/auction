@@ -25,7 +25,7 @@ const Gem = ({ quality, image, amount }) => {
         />
         <p
           style={{ gridRow: 2, gridColumn: 2 }}
-          className="ttu f3  b o-50 black"
+          className="ttu f5  b o-50 black"
         >
           {quality === 'rate' ? `${amount} %` : amount}
         </p>
