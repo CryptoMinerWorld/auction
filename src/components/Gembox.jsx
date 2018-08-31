@@ -37,7 +37,7 @@ const Gem = ({ quality, image, amount }) => {
 class Gembox extends PureComponent {
   static propTypes = {
     level: PropTypes.number.isRequired,
-    grade: PropTypes.string.isRequired,
+    grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     rate: PropTypes.number.isRequired
   };
 

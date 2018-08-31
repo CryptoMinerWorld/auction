@@ -16,7 +16,7 @@ import {
   calcMiningRate,
   getGemQualities
 } from './pages/Auction/helpers';
-import { handleApproveGemTransfer } from './pages/Create/helpers';
+// import { handleApproveGemTransfer } from './pages/Create/helpers';
 
 import DutchAuction from '../build/contracts/DutchAuction.json';
 const dutchAuctionABI = DutchAuction.abi;
@@ -196,6 +196,18 @@ class App extends PureComponent {
     );
   };
 
+  handleApproveGemTransfer = async _tokenId => {
+    await this.state.gemsContractInstance.approve(
+      '0x51e5b41f82b71dcebe11a7bd67ce12c862772e98',
+      _tokenId,
+      (error, result) => {
+        if (!error)
+          console.log(`gemId ${_tokenId} successfully transferred to auction`);
+        else console.error(error);
+      }
+    );
+  };
+
   render() {
     // @notice if the token is not on auction a modal tells people the auction is over
     !this.state.isTokenOnSale &&
@@ -234,11 +246,7 @@ class App extends PureComponent {
           name={name}
           tokenId={this.state.tokenId}
           createAuction={this.handleCreateAuction}
-          handleApproveGemTransfer={handleApproveGemTransfer(
-            this.state.gemsContractInstance,
-            '0x51e5b41f82b71dcebe11a7bd67ce12c862772e98',
-            this.state.tokenId
-          )}
+          handleApproveGemTransfer={this.handleApproveGemTransfer}
           handleRemoveGemFromAuction={this.handleRemoveGemFromAuction}
           redirectTo={this.state.redirectTo}
           showConfirm={showConfirm}
