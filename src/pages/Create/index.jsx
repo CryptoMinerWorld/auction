@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import rockBackground from '../../images/rockBackground.png';
 import Mint from './Mint';
 import { Input, Button } from 'antd';
+import { ethToWei, daysToMilliseconds } from './helpers';
 
 const RockOverlay = styled.div`
   background-image: url(${rockBackground});
@@ -77,7 +78,7 @@ class CreateAuction extends PureComponent {
               />
               <Input
                 type="number"
-                placeholder="duration in milliseconds"
+                placeholder="duration in days"
                 className="db"
                 value={duration}
                 onChange={e =>
@@ -88,7 +89,7 @@ class CreateAuction extends PureComponent {
               />
               <Input
                 type="number"
-                placeholder="Start price in wei"
+                placeholder="Start price in ether"
                 className="db"
                 value={startPrice}
                 onChange={e =>
@@ -99,7 +100,7 @@ class CreateAuction extends PureComponent {
               />
               <Input
                 type="number"
-                placeholder="End price in wei"
+                placeholder="End price in ether"
                 className="db"
                 value={endPrice}
                 onChange={e =>
@@ -112,7 +113,12 @@ class CreateAuction extends PureComponent {
                 <Button
                   className="ma3"
                   onClick={() =>
-                    createAuction(gemId, duration, startPrice, endPrice)
+                    createAuction(
+                      gemId,
+                      daysToMilliseconds(duration),
+                      ethToWei(startPrice),
+                      ethToWei(endPrice)
+                    )
                   }
                   data-testid="createAuctionButton"
                 >

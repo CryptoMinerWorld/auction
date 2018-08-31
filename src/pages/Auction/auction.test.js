@@ -8,6 +8,8 @@ import {
 import 'jest-dom/extend-expect';
 import Auction from './index';
 
+import { calcMiningRate } from './helpers';
+
 // @dev this automatically unmounts and cleanup DOM after the test is finished.
 afterEach(cleanup);
 
@@ -159,4 +161,9 @@ test.skip('Current price does not continue to depreciate after the deadline', as
   // Again, I don't knwo how to test this since the time deprecation is happening on the contract
   // jest.advanceTimersByTime(1000); might be useful somewhere
   // https://jestjs.io/docs/en/timer-mocks.html#advance-timers-by-time
+});
+
+test('calcMiningRate accurately calculate steh mining rate', () => {
+  expect(calcMiningRate(1, 200000)).toEqual(1);
+  expect(calcMiningRate(6, 1000000)).toEqual(400);
 });

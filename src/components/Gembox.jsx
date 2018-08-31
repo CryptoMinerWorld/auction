@@ -42,28 +42,14 @@ class Gembox extends PureComponent {
   };
 
   gradeConverter = gradeValue => {
-    switch (gradeValue) {
-      case 1:
-        return 'D';
-        break;
-      case 2:
-        return 'C';
-        break;
-      case 3:
-        return 'B';
-        break;
-      case 4:
-        return 'A';
-        break;
-      case 5:
-        return 'AA';
-        break;
-      case 6:
-        return 'AAA';
-        break;
-      default:
-        return '...';
-    }
+    return {
+      1: 'D',
+      2: 'C',
+      3: 'B',
+      4: 'A',
+      5: 'AA',
+      6: 'AAA'
+    }[gradeValue];
   };
 
   rateConverter = rate => Math.round((rate / 400) * 100);

@@ -16,7 +16,6 @@ import {
   calcMiningRate,
   getGemQualities
 } from './pages/Auction/helpers';
-// import { handleApproveGemTransfer } from './pages/Create/helpers';
 
 import DutchAuction from '../build/contracts/DutchAuction.json';
 const dutchAuctionABI = DutchAuction.abi;
@@ -53,15 +52,16 @@ class App extends PureComponent {
   }
 
   componentDidMount() {
+    // @notice loading a custom font when app mounts
     var font = new FontFaceObserver('Muli', {
       weight: 400
     });
-
     font
       .load()
       .then(() => this.setState({ font: 'muli' }))
       .catch(() => console.warn('Font is not available'));
 
+    // @notice loading web3 when component mounts
     getWeb3
       .then(results =>
         this.setState({
@@ -70,6 +70,7 @@ class App extends PureComponent {
         })
       )
       .then(async () => {
+        // @notice instantiating auction contract
         const newDutchAuctionContract = this.state.web3.eth.contract(
           dutchAuctionABI
         );
@@ -77,24 +78,26 @@ class App extends PureComponent {
           // process.env.RINKBY_AUCTION_CONTRACT
           '0x51e5b41f82b71dcebe11a7bd67ce12c862772e98'
         );
-
+        // @notice instantiating gem contract
         const newGemsContract = this.state.web3.eth.contract(gemsABI);
         const gemsContractInstance = await newGemsContract.at(
           // process.env.RINKBY_GEM_CONTRACT
           '0x82ff6bbd7b64f707e704034907d582c7b6e09d97'
         );
-
+        // @notice set instances to component state for easy access
         this.setState(
           {
             dutchAuctionContractInstance,
             gemsContractInstance
           },
           () => {
+            // @notice get auction details from contract
             getAuctionDetails(
               this.state.dutchAuctionContractInstance,
               this.state.tokenId
             ).then(result => {
               let [startTime, endTime, startPrice, endPrice] = result;
+              // @notice set auction details to app state
               this.setState(
                 {
                   auctionStartTime: startTime.toNumber(),
@@ -103,7 +106,9 @@ class App extends PureComponent {
                   auctionEndPrice: endPrice.toNumber()
                 },
                 () => {
+                  // @notice get current price from contract
                   this.handleGetPrice(this.state.tokenId);
+                  // @notice check if the token is on sale
                   isTokenOnSale(
                     this.state.dutchAuctionContractInstance,
                     this.state.tokenId
@@ -114,10 +119,12 @@ class App extends PureComponent {
           }
         );
 
+        // @notice updates the price every 10 seconds
         this.priceInterval = setInterval(() => {
           this.handleGetPrice(this.state.tokenId);
         }, 10000);
 
+        // @notice get gem qualities from gem contract
         getGemQualities(gemsContractInstance, this.state.tokenId).then(
           result => {
             let [color, level, gradeType, gradeValue] = result;
@@ -133,14 +140,17 @@ class App extends PureComponent {
   }
 
   componentWillUnmount() {
+    // @notice clear price update interval when you leav ethe app to stop any memory leaks
     clearInterval(this.priceInterval);
   }
 
+  // @notice creates an auction
   handleCreateAuction = async (_tokenId, _duration, _startPrice, _endPrice) => {
-    console.log('creating auction...', _tokenId);
+    console.log('a', fromExponential(_startPrice));
+    console.log('v', fromExponential(_endPrice));
 
-    let startTime = Date.now() / 1000;
-    let endTime = (Date.now() + _duration) / 1000;
+    let startTime = Number(Date.now() / 1000);
+    let endTime = Number((Date.now() + _duration) / 1000);
 
     await this.state.dutchAuctionContractInstance.addWith(
       _tokenId,
@@ -159,6 +169,7 @@ class App extends PureComponent {
     );
   };
 
+  // @notice removes a gem from an auction
   handleRemoveGemFromAuction = async _tokenId => {
     console.log('removing gem from auction...', _tokenId);
     await this.state.dutchAuctionContractInstance.remove(
@@ -174,6 +185,7 @@ class App extends PureComponent {
     );
   };
 
+  // @notice lets users buy a gem in an active auction
   handleBuyNow = async _tokenId => {
     console.log(this.state.currentPrice);
     await this.state.dutchAuctionContractInstance.buy(
@@ -186,6 +198,7 @@ class App extends PureComponent {
     );
   };
 
+  // @notice get latest price from contract
   handleGetPrice = async _tokenId => {
     await this.state.dutchAuctionContractInstance.getCurrentPrice(
       _tokenId,
@@ -196,6 +209,7 @@ class App extends PureComponent {
     );
   };
 
+  // @notice you must approve a gem before it can be sent to an auction
   handleApproveGemTransfer = async _tokenId => {
     await this.state.gemsContractInstance.approve(
       '0x51e5b41f82b71dcebe11a7bd67ce12c862772e98',
@@ -235,9 +249,9 @@ class App extends PureComponent {
           />
         </StickyHeader>
         <Routes
-          currentPrice={currentPrice}
-          minPrice={Number(this.state.minPrice)}
-          maxPrice={Number(this.state.maxPrice)}
+          currentPrice={Number(currentPrice).toFixed(3)}
+          minPrice={Number(this.state.auctionStartPrice / 1000000000000000000)}
+          maxPrice={Number(this.state.auctionEndPrice / 1000000000000000000)}
           level={level}
           grade={grade}
           rate={rate}

@@ -1,13 +1,8 @@
 import React from 'react';
-import {
-  render,
-  fireEvent,
-  waitForElement,
-  cleanup,
-  Simulate
-} from 'react-testing-library';
+import { render, fireEvent, cleanup } from 'react-testing-library';
 import 'jest-dom/extend-expect';
 import CreateAuction from './index';
+import { ethToWei, daysToMilliseconds } from './helpers';
 
 // @dev this automatically unmounts and cleanup DOM after the test is finished.
 afterEach(cleanup);
@@ -53,17 +48,23 @@ test('Create a new auction', async () => {
   let startPriceInputNode = getByTestId('startPriceInputField');
   let endPriceInputNode = getByTestId('endPriceInputField');
   fireEvent.change(gemIdInputNode, { target: { value: 54321 } });
-  fireEvent.change(durationInputNode, { target: { value: 49000 } });
-  fireEvent.change(startPriceInputNode, { target: { value: 543210000 } });
-  fireEvent.change(endPriceInputNode, { target: { value: 54321000 } });
+  fireEvent.change(durationInputNode, {
+    target: { value: daysToMilliseconds(20) }
+  });
+  fireEvent.change(startPriceInputNode, {
+    target: { value: 4 }
+  });
+  fireEvent.change(endPriceInputNode, {
+    target: { value: 1 }
+  });
   fireEvent.click(getByTestId('createAuctionButton'));
 
   expect(testData.createAuction).toHaveBeenCalledTimes(1);
   expect(testData.createAuction).toHaveBeenCalledWith(
     54321,
-    49000,
-    543210000,
-    54321000
+    149299200000000000,
+    4000000000000000000,
+    1000000000000000000
   );
 });
 
@@ -98,4 +99,16 @@ test.skip('field forms always strip whitespace values', async () => {
 
 test.skip('List out all your gems', async () => {
   expect(true).toBeFalsy();
+});
+
+test('ethToWei convert units reliably', () => {
+  expect(typeof ethToWei(1)).toBe('number');
+  expect(ethToWei(1)).toEqual(1000000000000000000);
+});
+
+test('daysToMilliseconds convert units reliably', () => {
+  expect(typeof daysToMilliseconds(1)).toBe('number');
+  expect(daysToMilliseconds(1)).toEqual(86400000);
+  expect(daysToMilliseconds(0.6)).toEqual(51840000);
+  expect(daysToMilliseconds(481)).toEqual(41558400000);
 });

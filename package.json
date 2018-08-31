@@ -54,6 +54,7 @@
   },
   "dependencies": {
     "antd": "^3.8.4",
+    "big-integer": "^1.6.34",
     "date-fns": "^2.0.0-alpha.16",
     "fontfaceobserver": "^2.0.13",
     "from-exponential": "^1.0.0",

@@ -76,6 +76,7 @@ class AuctionBox extends Component {
             <p
               className="white f2 mv2 tc basic "
               data-testid="currentAuctionPrice"
+              style={{ fontSize: 'xx-large' }}
             >
               Ξ {currentPrice}
             </p>
