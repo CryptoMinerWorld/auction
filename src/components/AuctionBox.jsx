@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import CountdownTimer from './CountdownTimer';
 import Gembox from './Gembox';
 import buyNow from '../images/pinkBuyNowButton.png';
+import ProgressMeter from './ProgressMeter';
 
 const TopHighlight = styled.div`
   background: linear-gradient(to right, #e36d2d, #b91a78);
@@ -44,7 +45,7 @@ const AuctionBox = ({ currentPrice,
   name,
   tokenId,
   redirectTo,
-  showConfirm }) => {
+  showConfirm, minPrice, maxPrice }) => {
 
   if (redirectTo === '/workshop') {
     window.location = 'https://cryptominerworld.com/workshop/';
@@ -58,17 +59,8 @@ const AuctionBox = ({ currentPrice,
         </h1>
         <CountdownTimer deadline={deadline} />
         <Gembox level={level} grade={grade} rate={rate} />
-        <div className="tc">
-          <small className="white ttu ">current price</small>
-          <p
-            className="white f2 mv2 tc basic "
-            data-testid="currentAuctionPrice"
-            style={{ fontSize: 'xx-large' }}
-          >
-            Ξ {currentPrice}
-          </p>
-        </div>
-        <div className="w-100 w5-ns h3 center">
+
+        <div className="w-100 w5-ns h3 center mt5">
           <BuyNow
             onClick={() => showConfirm(tokenId, handleBuyNow)}
             className="b"
@@ -77,9 +69,16 @@ const AuctionBox = ({ currentPrice,
             Buy Now
             </BuyNow>
         </div>
-        <p className="underline blue tc measure-narrow center pt3">
-          Click here to learn more about how dutch auctions work?
-          </p>
+
+
+
+
+        <ProgressMeter
+          currentPrice={currentPrice}
+          minPrice={minPrice}
+          maxPrice={maxPrice}
+        />
+
       </div>
     </OverlapOnDesktopView>
   );
@@ -99,4 +98,6 @@ AuctionBox.propTypes = {
   showConfirm: PropTypes.bool.isRequired,
   redirectTo: PropTypes.string.isRequired,
   tokenId: PropTypes.string.isRequired,
+  maxPrice: PropTypes.number.isRequired,
+  minPrice: PropTypes.number.isRequired,
 };

@@ -73,7 +73,7 @@ class DescriptionBox extends PureComponent {
                         gem={gem1}
                         category="level"
                         amount={level}
-                        description="Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+                        description="A Gem’s level determines how far down that Gem can mine. There are 5 tiers of land and 5 levels of gems. Each successive level allows for another type of land to be mined."
                       />
                     </ReactCSSTransitionGroup>
                     <ReactCSSTransitionGroup
@@ -88,7 +88,7 @@ class DescriptionBox extends PureComponent {
                         gem={gem2}
                         category="grade"
                         amount={grade}
-                        description="Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+                        description="A Gem’s Grade determines how fast it can mine. There are 6 Grades, D, C, B, A, AA, and AAA. Grade As and better all store Resting Energy when they are not mining!"
                       />
                     </ReactCSSTransitionGroup>
                     <ReactCSSTransitionGroup
@@ -101,9 +101,9 @@ class DescriptionBox extends PureComponent {
                       <FeatureBand
                         colour="bg-dark-purple"
                         gem={gem3}
-                        category="mining rate"
+                        category="mining rate Bonus"
                         amount={`${this.rateConverter(rate)} %`}
-                        description="Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+                        description="This is the percentage of how much faster a Gem mines compared to the base speed. +100% is twice as fast as base, +400% is five times faster. All Mining Rate Bonuses are tied to Grades. Grades give you a general sense of how how fast a Gem mines but Mining Rate Bonuses tells you exactly how much fast it is."
                       />
                     </ReactCSSTransitionGroup>
                   </div>
@@ -128,7 +128,7 @@ const Feature = styled.div`
 
 const FeatureBand = ({ colour, gem, category, amount, description }) =>
   <div
-    className={`w-100 ${colour} h4 flex aic mt3 br4-ns br--left-ns shadow-3`}
+    className={`w-100 ${colour} h5 flex aic mt3 br4-ns br--left-ns shadow-3 pa3`}
   >
     <div className="w-30 ">
       <Feature>

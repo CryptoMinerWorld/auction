@@ -11,7 +11,8 @@ class ProgressMeter extends PureComponent {
   render() {
     const { currentPrice, minPrice, maxPrice } = this.props;
     return (
-      <div className="bg-off-black white ma0 pa3 tc relative-l left-1 ">
+      <div className="white ma0 pa3 tc ">
+        <small className="white ttu ">current price</small>
         <p
           data-testid="currentPrice"
           className="basic"
@@ -19,7 +20,7 @@ class ProgressMeter extends PureComponent {
         >
           Ξ {currentPrice}
         </p>
-        <progress value="22" max="100" className="w-100" />
+        <progress value={currentPrice} max={maxPrice} min={minPrice} className="w-100" />
         <div className="flex jcb">
           <small data-testid="minPrice" className="basic">
             Ξ {minPrice}

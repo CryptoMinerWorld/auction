@@ -5,7 +5,6 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import AuctionImage from '../../components/AuctionImage';
 import AuctionBox from '../../components/AuctionBox';
 import DescriptionBox from '../../components/DescriptionBox/index';
-import ProgressMeter from '../../components/ProgressMeter';
 import FAQ from '../../components/FAQ';
 import MailingList from '../../components/MailingList';
 import './animations.css';
@@ -58,6 +57,8 @@ const Auction = ({
           >
             <AuctionBox
               currentPrice={currentPrice}
+              minPrice={minPrice}
+              maxPrice={maxPrice}
               deadline={deadline}
               handleBuyNow={buyNow}
               level={level}
@@ -77,12 +78,6 @@ const Auction = ({
           <DescriptionBox level={level} grade={grade} rate={rate} />
           <div className="w-50-l measure-wide-l">
             <OverlapOnDesktopView>
-              <ProgressMeter
-                currentPrice={currentPrice}
-                minPrice={minPrice}
-                maxPrice={maxPrice}
-              />
-              <div className="h3" />
               <FAQ />
             </OverlapOnDesktopView>
           </div>
