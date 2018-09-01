@@ -1,13 +1,14 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import Waypoint from 'react-waypoint';
 import gem1 from '../../images/icons/gem1.png';
 import gem2 from '../../images/icons/gem2.png';
 import gem3 from '../../images/icons/gem3.png';
-import styled from 'styled-components';
 import tinyDiamond from '../../images/tinyDiamond.png';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group'; // ES6
 import './animations.css';
-import Waypoint from 'react-waypoint';
+
 
 class DescriptionBox extends PureComponent {
   static propTypes = {
@@ -20,7 +21,7 @@ class DescriptionBox extends PureComponent {
     inView: false
   };
 
-  _handleWaypointEnter = ({ previousPosition }) => {
+  handleWaypointEnter = ({ previousPosition }) => {
     if (previousPosition === Waypoint.below) {
       this.setState({ inView: true });
     }
@@ -29,8 +30,8 @@ class DescriptionBox extends PureComponent {
   rateConverter = rate => Math.round((rate / 400) * 100);
 
   render() {
-    let { level, grade, rate } = this.props;
-
+    const { level, grade, rate } = this.props;
+    const { inView } = this.state
     return (
       <div className="bg-off-black white ma0 ">
         <div className="flex-l jce mw9 center">
@@ -56,13 +57,13 @@ class DescriptionBox extends PureComponent {
                 above to buy at the current price.
               </p>
             </div>
-            <Waypoint onEnter={this._handleWaypointEnter}>
+            <Waypoint onEnter={this.handleWaypointEnter}>
               <div>
-                {this.state.inView && (
+                {inView && (
                   <div>
                     <ReactCSSTransitionGroup
                       transitionName="example1"
-                      transitionAppear={true}
+                      transitionAppear
                       transitionAppearTimeout={5000}
                       transitionEnterTimeout={5000}
                       transitionLeaveTimeout={5000}
@@ -77,7 +78,7 @@ class DescriptionBox extends PureComponent {
                     </ReactCSSTransitionGroup>
                     <ReactCSSTransitionGroup
                       transitionName="example2"
-                      transitionAppear={true}
+                      transitionAppear
                       transitionAppearTimeout={5000}
                       transitionEnterTimeout={5000}
                       transitionLeaveTimeout={5000}
@@ -92,7 +93,7 @@ class DescriptionBox extends PureComponent {
                     </ReactCSSTransitionGroup>
                     <ReactCSSTransitionGroup
                       transitionName="example3"
-                      transitionAppear={true}
+                      transitionAppear
                       transitionAppearTimeout={5000}
                       transitionEnterTimeout={5000}
                       transitionLeaveTimeout={5000}
@@ -125,31 +126,33 @@ const Feature = styled.div`
   align-items: center;
 `;
 
-const FeatureBand = ({ colour, gem, category, amount, description }) => {
-  return (
-    <div
-      className={`w-100 ${colour} h4 flex aic mt3 br4-ns br--left-ns shadow-3`}
-    >
-      <div className="w-30 ">
-        <Feature>
-          <img
-            src={gem}
-            alt={category}
-            style={{ gridColumn: '1 / -1', gridRow: '2' }}
-            className="h3 center"
-          />
-          <p
-            style={{ gridRow: 2, gridColumn: 2 }}
-            className="ttu f4 b o-50 black tc"
-          >
-            {amount}
-          </p>
-        </Feature>
-      </div>
-      <div className="w-70">
-        <p className="b ttu">{category}</p>
-        <p className="measure-ns pr4-ns">{description}</p>
-      </div>
+const FeatureBand = ({ colour, gem, category, amount, description }) =>
+  <div
+    className={`w-100 ${colour} h4 flex aic mt3 br4-ns br--left-ns shadow-3`}
+  >
+    <div className="w-30 ">
+      <Feature>
+        <img
+          src={gem}
+          alt={category}
+          style={{ gridColumn: '1 / -1', gridRow: '2' }}
+          className="h3 center"
+        />
+        <p
+          style={{ gridRow: 2, gridColumn: 2 }}
+          className="ttu f4 b o-50 black tc"
+        >
+          {amount}
+        </p>
+      </Feature>
     </div>
-  );
+    <div className="w-70">
+      <p className="b ttu">{category}</p>
+      <p className="measure-ns pr4-ns">{description}</p>
+    </div>
+  </div>
+
+FeatureBand.propTypes = {
+  colour: PropTypes.number.isRequired, gem: PropTypes.number.isRequired, category: PropTypes.number.isRequired, amount: PropTypes.number.isRequired, description: PropTypes.string.isRequired
 };
+

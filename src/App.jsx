@@ -1,26 +1,28 @@
 import React, { PureComponent } from 'react';
+import styled from 'styled-components';
+import FontFaceObserver from 'fontfaceobserver';
+import fromExponential from 'from-exponential';
 import MobileHeader from './components/MobileHeader';
 import Navbar from './components/Nav';
 import Footer from './components/Footer';
 import getWeb3 from './utils/getWeb3';
-import styled from 'styled-components';
-import FontFaceObserver from 'fontfaceobserver';
-import { Routes } from './routes';
+import Routes from './routes';
 import 'antd/dist/antd.css';
 import './css/root.css';
 import { showConfirm, showExpired } from './components/Modal';
-import fromExponential from 'from-exponential';
 import {
-  isTokenOnSale,
+  isTokenForSale,
   getAuctionDetails,
   calcMiningRate,
   getGemQualities
 } from './pages/Auction/helpers';
 
 import DutchAuction from '../build/contracts/DutchAuction.json';
-const dutchAuctionABI = DutchAuction.abi;
 
 import Gems from '../build/contracts/GemERC721.json';
+
+const dutchAuctionABI = DutchAuction.abi;
+
 const gemsABI = Gems.abi;
 
 // @dev keeping component specific styling inside each component file is optimising for deletability. Change or delete this component in the future and all the relevant styles are removed and no more zombie css
@@ -35,31 +37,32 @@ class App extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      storageValue: 0,
       web3: null,
       font: '',
+      auctionStartPrice: '',
+      auctionEndPrice: '',
       currentPrice: '',
-      minPrice: '',
-      maxPrice: '',
-      deadline: '',
       dutchAuctionContractInstance: '',
+      auctionStartTime: '',
+      auctionEndTime: '',
       tokenId: '',
       grade: '',
       level: '',
       rate: '',
+      color: '',
       isTokenOnSale: true
     };
   }
 
   componentDidMount() {
     // @notice loading a custom font when app mounts
-    var font = new FontFaceObserver('Muli', {
+    const font = new FontFaceObserver('Muli', {
       weight: 400
     });
     font
       .load()
       .then(() => this.setState({ font: 'muli' }))
-      .catch(() => console.warn('Font is not available'));
+      .catch((error) => error);
 
     // @notice loading web3 when component mounts
     getWeb3
@@ -70,16 +73,19 @@ class App extends PureComponent {
         })
       )
       .then(async () => {
+
+
+        const { tokenId, web3, dutchAuctionContractInstance } = this.state
         // @notice instantiating auction contract
-        const newDutchAuctionContract = this.state.web3.eth.contract(
+        const newDutchAuctionContract = web3.eth.contract(
           dutchAuctionABI
         );
-        const dutchAuctionContractInstance = await newDutchAuctionContract.at(
+        const dutchAuctionContractInstances = await newDutchAuctionContract.at(
           // process.env.RINKBY_AUCTION_CONTRACT
           '0x51e5b41f82b71dcebe11a7bd67ce12c862772e98'
         );
         // @notice instantiating gem contract
-        const newGemsContract = this.state.web3.eth.contract(gemsABI);
+        const newGemsContract = web3.eth.contract(gemsABI);
         const gemsContractInstance = await newGemsContract.at(
           // process.env.RINKBY_GEM_CONTRACT
           '0x82ff6bbd7b64f707e704034907d582c7b6e09d97'
@@ -87,16 +93,16 @@ class App extends PureComponent {
         // @notice set instances to component state for easy access
         this.setState(
           {
-            dutchAuctionContractInstance,
+            dutchAuctionContractInstance: dutchAuctionContractInstances,
             gemsContractInstance
           },
           () => {
             // @notice get auction details from contract
             getAuctionDetails(
-              this.state.dutchAuctionContractInstance,
-              this.state.tokenId
+              dutchAuctionContractInstance,
+              tokenId
             ).then(result => {
-              let [startTime, endTime, startPrice, endPrice] = result;
+              const [startTime, endTime, startPrice, endPrice] = result;
               // @notice set auction details to app state
               this.setState(
                 {
@@ -107,11 +113,11 @@ class App extends PureComponent {
                 },
                 () => {
                   // @notice get current price from contract
-                  this.handleGetPrice(this.state.tokenId);
+                  this.handleGetPrice(tokenId);
                   // @notice check if the token is on sale
-                  isTokenOnSale(
-                    this.state.dutchAuctionContractInstance,
-                    this.state.tokenId
+                  isTokenForSale(
+                    dutchAuctionContractInstance,
+                    tokenId
                   ).then(isTokenOnSale => this.setState({ isTokenOnSale }));
                 }
               );
@@ -121,18 +127,18 @@ class App extends PureComponent {
 
         // @notice updates the price every 10 seconds
         this.priceInterval = setInterval(() => {
-          this.handleGetPrice(this.state.tokenId);
+          this.handleGetPrice(tokenId);
         }, 10000);
 
         // @notice get gem qualities from gem contract
-        getGemQualities(gemsContractInstance, this.state.tokenId).then(
+        getGemQualities(gemsContractInstance, tokenId).then(
           result => {
-            let [color, level, gradeType, gradeValue] = result;
+            const [color, level, gradeType, gradeValue] = result;
             this.setState({
               grade: gradeType,
-              level,
+              level: Number(level),
               color,
-              rate: calcMiningRate(gradeType, gradeValue)
+              rate: Number(calcMiningRate(gradeType, gradeValue))
             });
           }
         );
@@ -146,99 +152,83 @@ class App extends PureComponent {
 
   // @notice creates an auction
   handleCreateAuction = async (_tokenId, _duration, _startPrice, _endPrice) => {
-    console.log('a', fromExponential(_startPrice));
-    console.log('v', fromExponential(_endPrice));
-
-    let startTime = Number(Date.now() / 1000);
-    let endTime = Number((Date.now() + _duration) / 1000);
-
-    await this.state.dutchAuctionContractInstance.addWith(
+    const startTime = Number(Date.now() / 1000);
+    const endTime = Number((Date.now() + _duration) / 1000);
+    const { dutchAuctionContractInstance } = this.state
+    await dutchAuctionContractInstance.addWith(
       _tokenId,
       startTime,
       endTime,
       _startPrice,
       _endPrice,
-      (error, result) => {
-        if (!error)
-          console.log(
-            `Auction successfully submitted with gemId ${_tokenId}`,
-            result
-          );
-        else console.error(error);
-      }
+      (error) => error
     );
   };
 
   // @notice removes a gem from an auction
   handleRemoveGemFromAuction = async _tokenId => {
-    console.log('removing gem from auction...', _tokenId);
-    await this.state.dutchAuctionContractInstance.remove(
+    const { dutchAuctionContractInstance } = this.state
+    await dutchAuctionContractInstance.remove(
       _tokenId,
-      (error, result) => {
-        if (!error)
-          console.log(
-            `Gem successfully removed from auction ${_tokenId}`,
-            result
-          );
-        else console.error(error);
-      }
-    );
+      (error) => error)
   };
 
   // @notice lets users buy a gem in an active auction
   handleBuyNow = async _tokenId => {
-    console.log(this.state.currentPrice);
-    await this.state.dutchAuctionContractInstance.buy(
+    const { currentPrice, dutchAuctionContractInstance } = this.state
+    await dutchAuctionContractInstance.buy(
       _tokenId,
-      { value: this.state.currentPrice },
-      (error, result) => {
+      { value: currentPrice },
+      (error) => {
         if (!error) this.setState({ redirectTo: '/workshop' });
-        else console.error(error);
+
       }
     );
   };
 
   // @notice get latest price from contract
   handleGetPrice = async _tokenId => {
-    await this.state.dutchAuctionContractInstance.getCurrentPrice(
+    const { dutchAuctionContractInstance } = this.state
+    await dutchAuctionContractInstance.getCurrentPrice(
       _tokenId,
       (error, result) => {
-        if (!error) this.setState({ currentPrice: result.toNumber() });
-        else console.error(error);
+        if (!error) this.setState({
+          currentPrice:
+            fromExponential(
+              Number(result.toNumber()) / 1000000000000000000
+            )
+        });
+
       }
     );
   };
 
   // @notice you must approve a gem before it can be sent to an auction
   handleApproveGemTransfer = async _tokenId => {
-    await this.state.gemsContractInstance.approve(
+    const { gemsContractInstance } = this.state
+    await gemsContractInstance.approve(
       '0x51e5b41f82b71dcebe11a7bd67ce12c862772e98',
       _tokenId,
-      (error, result) => {
-        if (!error)
-          console.log(`gemId ${_tokenId} successfully transferred to auction`);
-        else console.error(error);
-      }
+      (error) => error
+
     );
   };
 
   render() {
-    // @notice if the token is not on auction a modal tells people the auction is over
-    !this.state.isTokenOnSale &&
-      window.location.href.includes('/auction/') &&
-      showExpired();
+    const { redirectTo, tokenId, auctionEndTime, auctionStartTime, auctionStartPrice, auctionEndPrice, font, currentPrice, level, grade, rate, color, isTokenOnSale } = this.state
 
-    let currentPrice = fromExponential(
-      Number(this.state.currentPrice) / 1000000000000000000
-    );
-    let level = Number(this.state.level);
-    let grade = this.state.grade;
-    let rate = Number(this.state.rate);
-    let name = 'Amethyst Thingymajig';
+    // @notice if the token is not on auction a modal tells people the auction is over
+    if (!isTokenOnSale &&
+      window.location.href.includes('/auction/')) {
+      showExpired();
+    }
+
+    const name = 'Amethyst Thingymajig';
+
     // let sourceImage = '';
 
     return (
-      <main className={this.state.font}>
+      <main className={font}>
         <StickyHeader>
           <Navbar />
           <MobileHeader
@@ -248,21 +238,24 @@ class App extends PureComponent {
             rate={rate}
           />
         </StickyHeader>
+
         <Routes
           currentPrice={Number(currentPrice).toFixed(3)}
-          minPrice={Number(this.state.auctionStartPrice / 1000000000000000000)}
-          maxPrice={Number(this.state.auctionEndPrice / 1000000000000000000)}
+          minPrice={Number(auctionStartPrice / 1000000000000000000)}
+          maxPrice={Number(auctionEndPrice / 1000000000000000000)}
           level={level}
           grade={grade}
           rate={rate}
+          color={color}
           buyNow={this.handleBuyNow}
-          deadline={new Date(this.state.auctionEndTime * 1000)}
+          auctionStartTime={auctionStartTime}
+          deadline={new Date(auctionEndTime * 1000)}
           name={name}
-          tokenId={this.state.tokenId}
+          tokenId={tokenId}
           createAuction={this.handleCreateAuction}
           handleApproveGemTransfer={this.handleApproveGemTransfer}
           handleRemoveGemFromAuction={this.handleRemoveGemFromAuction}
-          redirectTo={this.state.redirectTo}
+          redirectTo={redirectTo}
           showConfirm={showConfirm}
         />
         <Footer />

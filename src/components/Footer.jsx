@@ -1,6 +1,6 @@
-import React, { PureComponent } from 'react';
-import img from '../images/footer_geodes.png';
+import React from 'react';
 import styled from 'styled-components';
+import img from '../images/footer_geodes.png';
 
 const TopHighlight = styled.div`
   background: linear-gradient(to right, #fc01ca, #bc197c);
@@ -15,11 +15,7 @@ const BackgroundImage = styled.footer`
   background-repeat: no-repeat;
 `;
 
-class Footer extends PureComponent {
-  static propTypes = {};
-
-  render() {
-    return (
+const Footer = () =>    
       <div className="bg-footer-black">
         <TopHighlight />
         <div className="mw9 center">
@@ -27,38 +23,48 @@ class Footer extends PureComponent {
             <div className="mb4-l cf">
               <article className="fl w-50 dib-ns w-auto-ns mr4-m mr5-l mb4 pr2 pr0-ns white">
                 <a
+                href="https://cryptominerworld.com/"
                   className="f5 db fw6 pv3 black-70 link dim white"
-                  title="Game Info"
+                  title="Home"
                 >
                   Home
                 </a>
                 <a
+                href="https://cryptominerworld.com/game_info/"
                   className="f5 db fw6 pv3 black-70 link dim white"
                   title="Game Info"
                 >
                   Game Info
                 </a>
                 <a
+               href="https://cryptominerworld.com/founders_geode_pre-sale/"
+               title="Geode Pre-Sale"
                   className="f5 db fw6 pv3 black-70 link dim white"
-                  title="Game Info"
+                
                 >
-                  Founder's Geode Pre-Sale
+                  Founder Geode Pre-Sale
                 </a>
                 <a
+            
                   className="f5 db fw6 pv3 black-70 link dim white"
-                  title="Game Info"
+                  href="https://cryptominerworld.com/workshop/"
+                  title="Workshop"
                 >
                   Workshop
                 </a>
                 <a
+             
                   className="f5 db fw6 pv3 black-70 link dim white"
-                  title="Game Info"
+                  href="https://cryptominerworld.com/market/"
+                  title="Market"
                 >
                   Market
                 </a>
                 <a
+             
                   className="f5 db fw6 pv3 black-70 link dim white"
-                  title="Game Info"
+                  href="https://cryptominerworld.com/world/"
+                  title="World"
                 >
                   World
                 </a>
@@ -68,25 +74,27 @@ class Footer extends PureComponent {
           db w-100 dib-ns w-auto-ns mr4-m mr5-l mb4 pr2 pr0-ns"
               >
                 <a
+               href="https://cryptominerworld.com/faq/"
                   className="f5 db fw6 pv3 black-70 link dim white"
-                  title="Game Info"
+                  title="FAQ"
                 >
                   FAQ
                 </a>
-                <a
+                {/* <a href='#'
                   className="f5 db fw6 pv3 black-70 link dim white"
                   title="Game Info"
                 >
                   Press Kit
-                </a>
+                </a> */}
               </article>
               <div className="cf dn-ns" />
               <article className="fr w-50-ns w-100 dib-ns w-auto-ns mr4-m mr5-l mb4 pr2 pr0-ns ">
                 <div className="db dtc-ns tc tr-ns v-mid">
                   <a
-                    href="https://www.facebook.com/"
+                    href="https://www.facebook.com/CryptoMinerWorld/"
+
                     className="link dim dib mr3 white"
-                    title="Impossible Labs on Facebook"
+                    title="Cryptominer World on Facebook"
                   >
                     <svg
                       className="db w2 h2"
@@ -99,8 +107,9 @@ class Footer extends PureComponent {
                     </svg>
                   </a>
                   <a
-                    href="https://twitter.com/"
+                    href="https://twitter.com/CryptoMiner_W"
                     className="link dim dib mr3 white"
+                    title="Cryptominer World on Twitter"
                   >
                     <svg
                       className="db w2 h2"
@@ -113,9 +122,9 @@ class Footer extends PureComponent {
                     </svg>
                   </a>
                   <a
-                    href="https://medium.com/"
+                    href="https://medium.com/@CMWorld"
                     className="link dim dib mr3 white"
-                    title="Impossible Labs on Medium"
+                    title="Cryptominer World on Medium"
                   >
                     <svg
                       className="db w2 h2"
@@ -145,40 +154,7 @@ class Footer extends PureComponent {
                       </g>
                     </svg>
                   </a>
-                  <a
-                    href="https://www.linkedin.com/company/"
-                    className="link dim dib white"
-                  >
-                    <svg
-                      className="db w2 h2"
-                      x="0px"
-                      y="0px"
-                      viewBox="0 0 48 48"
-                    >
-                      <linearGradient
-                        gradientUnits="userSpaceOnUse"
-                        x1="23.9995"
-                        y1="0"
-                        x2="23.9995"
-                        y2="48.0005"
-                      >
-                        <stop offset="0" />
-                        <stop offset="1" />
-                      </linearGradient>
-                      <path
-                        fill="currentColor"
-                        d="M48,42c0,3.313-2.687,6-6,6H6c-3.313,0-6-2.687-6-6V6 c0-3.313,2.687-6,6-6h36c3.313,0,6,2.687,6,6V42z"
-                      />
-                      <g>
-                        <g>
-                          <path
-                            fill="#000"
-                            d="M15.731,11.633c-1.608,0-2.658,1.083-2.625,2.527c-0.033,1.378,1.018,2.494,2.593,2.494 c1.641,0,2.691-1.116,2.691-2.494C18.357,12.716,17.339,11.633,15.731,11.633z M13.237,35.557h4.988V18.508h-4.988V35.557z M31.712,18.748c-1.595,0-3.222-0.329-4.956,2.36h-0.099l-0.087-2.599h-4.417c0.065,1.411,0.074,3.518,0.074,5.52v11.529h4.988 v-9.854c0-0.46,0.065-0.919,0.196-1.248c0.328-0.919,1.149-1.871,2.527-1.871c1.805,0,2.527,1.411,2.527,3.479v9.494h4.988V25.439 C37.455,20.713,34.993,18.748,31.712,18.748z"
-                          />
-                        </g>
-                      </g>
-                    </svg>
-                  </a>
+                 
                 </div>
               </article>
             </div>
@@ -186,19 +162,17 @@ class Footer extends PureComponent {
             <div className="dt dt--fixed w-100">
               <div className="dn dtc-ns v-mid">
                 <p className="f7 black-70 dib pr3 mb3 white">
-                  Copyright © Your Company 2048
+                  Copyright © Cryptominer World 2018
                 </p>
                 <p className="f7 black-70 dib pr3 mb3 white">Version 0.0.7</p>
               </div>
             </div>
             <div className="db dn-ns">
-              <p className="f7 white mt4 tl">Copyright © Your Company 2038</p>
+              <p className="f7 white mt4 tl">Copyright © Cryptominer World 2018</p>
             </div>
           </BackgroundImage>
         </div>
       </div>
-    );
-  }
-}
+
 
 export default Footer;

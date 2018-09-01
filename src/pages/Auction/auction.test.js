@@ -14,12 +14,12 @@ import { calcMiningRate } from './helpers';
 afterEach(cleanup);
 
 // @dev this lets you set a deadline so that the time is easy to test
-let someDate = new Date();
-let numberOfDaysToAdd = 2;
+const someDate = new Date();
+const numberOfDaysToAdd = 2;
 someDate.setDate(someDate.getDate() + numberOfDaysToAdd);
 
 // @dev this is all the test data, easy to configure in one place
-let testData = {
+const testData = {
   currentPrice: 1.323,
   minPrice: 0.8,
   maxPrice: 4.5,
@@ -166,4 +166,13 @@ test.skip('Current price does not continue to depreciate after the deadline', as
 test('calcMiningRate accurately calculate steh mining rate', () => {
   expect(calcMiningRate(1, 200000)).toEqual(1);
   expect(calcMiningRate(6, 1000000)).toEqual(400);
+});
+
+test('auction lets people buy after a deadline is passed', () => {
+  expect(true).toBeFalsy();
+});
+
+
+test('auction tell you an auction is over of the id does not exist', () => {
+  expect(true).toBeFalsy();
 });

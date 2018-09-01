@@ -11,43 +11,40 @@ class CountdownTimer extends PureComponent {
   static propTypes = { deadline: PropTypes.instanceOf(Date).isRequired };
 
   state = {
-    timeLeft: ''
+    timeLeft: '',
   };
 
   componentDidMount() {
+    const { deadline } = this.props;
     this.interval = setInterval(
       () =>
         this.setState({
-          timeLeft: this.props.deadline - Date.now()
+          timeLeft: deadline - Date.now(),
         }),
       1000
     );
   }
 
-  calculateTimeLeftInDays = t => Math.floor(t / (1000 * 60 * 60 * 24));
-
-  calculateTimeLeftInHours = t =>
-    Math.floor((t % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-
-  calculateTimeLeftInMinutes = t =>
-    Math.floor((t % (1000 * 60 * 60)) / (1000 * 60));
-
-  calculateTimeLeftInSeconds = t => Math.floor((t % (1000 * 60)) / 1000);
-
   componentWillUnmount() {
     clearInterval(this.interval);
   }
 
+  calculateTimeLeftInDays = t => Math.floor(t / (1000 * 60 * 60 * 24));
+
+  calculateTimeLeftInHours = t => Math.floor((t % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+  calculateTimeLeftInMinutes = t => Math.floor((t % (1000 * 60 * 60)) / (1000 * 60));
+
+  calculateTimeLeftInSeconds = t => Math.floor((t % (1000 * 60)) / 1000);
+
   render() {
-    let { deadline } = this.props;
-    let { timeLeft } = this.state;
+    const { deadline } = this.props;
+    const { timeLeft } = this.state;
 
     return (
       <AngleGradient className="tc bg-blue pa2 br3 shadow-3">
         <p className="b">Auction ends on</p>
-        <time className="measure">
-          {format(deadline, 'EEEE do of MMMM, p')}
-        </time>
+        <time className="measure">{format(deadline, 'EEEE do of MMMM, p')}</time>
         {timeLeft !== '' && (
           <div className="flex jca pt2">
             <div className="pb2">
@@ -64,9 +61,7 @@ class CountdownTimer extends PureComponent {
                 {timeLeft > 0 ? this.calculateTimeLeftInHours(timeLeft) : 0}
               </time>
               <small className="ttu b">
-                {this.calculateTimeLeftInHours(timeLeft) === 1
-                  ? 'hour'
-                  : 'hours'}
+                {this.calculateTimeLeftInHours(timeLeft) === 1 ? 'hour' : 'hours'}
               </small>
             </div>
             <div>
@@ -74,18 +69,14 @@ class CountdownTimer extends PureComponent {
                 {timeLeft > 0 ? this.calculateTimeLeftInMinutes(timeLeft) : 0}
               </time>
               <small className="ttu b">
-                {this.calculateTimeLeftInMinutes(timeLeft) === 1
-                  ? 'minute'
-                  : 'minutes'}
+                {this.calculateTimeLeftInMinutes(timeLeft) === 1 ? 'minute' : 'minutes'}
               </small>
             </div>
             <div>
               <time className="f2 f1-l fw6 ma0 db" data-testid="secondsLeft">
                 {timeLeft > 0 ? this.calculateTimeLeftInSeconds(timeLeft) : 0}
               </time>
-              <small className="ttu b">
-                {timeLeft === 1 ? 'second' : 'seconds'}
-              </small>
+              <small className="ttu b">{timeLeft === 1 ? 'second' : 'seconds'}</small>
             </div>
           </div>
         )}

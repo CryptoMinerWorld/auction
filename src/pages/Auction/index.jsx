@@ -1,16 +1,15 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import AuctionImage from '../../components/AuctionImage';
 import AuctionBox from '../../components/AuctionBox';
 import DescriptionBox from '../../components/DescriptionBox/index';
 import ProgressMeter from '../../components/ProgressMeter';
 import FAQ from '../../components/FAQ';
 import MailingList from '../../components/MailingList';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import './animations.css';
 import rockBackground from '../../images/rockBackground.png';
-import { Context } from '../../Provider';
 
 const OverlapOnDesktopView = styled.div`
   @media (min-width: 64em) {
@@ -32,91 +31,81 @@ const TopHighlight = styled.div`
   height: 3px;
 `;
 
-class Auction extends Component {
-  static propTypes = {
-    deadline: PropTypes.instanceOf(Date).isRequired,
-    currentPrice: PropTypes.number.isRequired,
-    minPrice: PropTypes.number.isRequired,
-    maxPrice: PropTypes.number.isRequired,
-    level: PropTypes.number.isRequired,
-    grade: PropTypes.string.isRequired,
-    rate: PropTypes.number.isRequired,
-    buyNow: PropTypes.func.isRequired,
-    name: PropTypes.string.isRequired
-  };
-
-  // componentDidMount() {
-  //   console.log('xxx', this.props.store);
-  // }
-
-  render() {
-    let {
-      currentPrice,
-      minPrice,
-      maxPrice,
-      level,
-      grade,
-      rate,
-      buyNow,
-      deadline,
-      name,
-      tokenId,
-      redirectTo,
-      showConfirm
-    } = this.props;
-
-    return (
-      <div className="bg-off-black ">
-        <RockOverlay>
-          <div className="relative mw9 center">
-            <AuctionImage />
-            <ReactCSSTransitionGroup
-              transitionName="example"
-              transitionAppear={true}
-              transitionAppearTimeout={5000}
-              transitionEnterTimeout={5000}
-              transitionLeaveTimeout={5000}
-            >
-              <AuctionBox
+const Auction = ({
+  currentPrice,
+  minPrice,
+  maxPrice,
+  level,
+  grade,
+  rate,
+  buyNow,
+  deadline,
+  name,
+  tokenId,
+  redirectTo,
+  showConfirm
+}) => (
+    <div className="bg-off-black ">
+      <RockOverlay>
+        <div className="relative mw9 center">
+          <AuctionImage />
+          <ReactCSSTransitionGroup
+            transitionName="example"
+            transitionAppear
+            transitionAppearTimeout={5000}
+            transitionEnterTimeout={5000}
+            transitionLeaveTimeout={5000}
+          >
+            <AuctionBox
+              currentPrice={currentPrice}
+              deadline={deadline}
+              handleBuyNow={buyNow}
+              level={level}
+              grade={grade}
+              rate={rate}
+              name={name}
+              tokenId={tokenId}
+              redirectTo={redirectTo}
+              showConfirm={showConfirm}
+            />
+          </ReactCSSTransitionGroup>
+        </div>
+      </RockOverlay>
+      <div className="bg-off-black">
+        <TopHighlight />
+        <div className="mw9 center relative-l">
+          <DescriptionBox level={level} grade={grade} rate={rate} />
+          <div className="w-50-l measure-wide-l">
+            <OverlapOnDesktopView>
+              <ProgressMeter
                 currentPrice={currentPrice}
-                deadline={deadline}
-                handleBuyNow={buyNow}
-                level={level}
-                grade={grade}
-                rate={rate}
-                name={name}
-                tokenId={tokenId}
-                redirectTo={redirectTo}
-                showConfirm={showConfirm}
+                minPrice={minPrice}
+                maxPrice={maxPrice}
               />
-            </ReactCSSTransitionGroup>
-          </div>
-        </RockOverlay>
-        <div className="bg-off-black">
-          <TopHighlight />
-          <div className="mw9 center relative-l">
-            <DescriptionBox level={level} grade={grade} rate={rate} />
-            <div className="w-50-l measure-wide-l">
-              <OverlapOnDesktopView>
-                <ProgressMeter
-                  currentPrice={currentPrice}
-                  minPrice={minPrice}
-                  maxPrice={maxPrice}
-                />
-                <div className="h3" />
-                <FAQ />
-              </OverlapOnDesktopView>
-            </div>
+              <div className="h3" />
+              <FAQ />
+            </OverlapOnDesktopView>
           </div>
         </div>
-        <MailingList />
       </div>
-    );
-  }
-}
+      <MailingList />
+    </div>
+  );
 
-export default props => (
-  <Context.Consumer>
-    {store => <Auction store={store} {...props} />}
-  </Context.Consumer>
-);
+
+export default Auction;
+
+Auction.propTypes = {
+  deadline: PropTypes.instanceOf(Date).isRequired,
+  currentPrice: PropTypes.number.isRequired,
+  minPrice: PropTypes.number.isRequired,
+  maxPrice: PropTypes.number.isRequired,
+  level: PropTypes.number.isRequired,
+  grade: PropTypes.string.isRequired,
+  rate: PropTypes.number.isRequired,
+  buyNow: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  showConfirm: PropTypes.bool.isRequired,
+  tokenId: PropTypes.string.isRequired,
+  redirectTo: PropTypes.string.isRequired,
+};

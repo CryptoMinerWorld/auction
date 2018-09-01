@@ -10,9 +10,6 @@ export const showConfirm = (_tokenId, _handleBuyNow) => {
     keyboard: true,
     onOk() {
       _handleBuyNow(_tokenId);
-    },
-    onCancel() {
-      console.log('Cancel');
     }
   });
 };

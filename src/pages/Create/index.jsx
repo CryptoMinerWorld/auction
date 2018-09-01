@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { Input, Button } from 'antd';
 import rockBackground from '../../images/rockBackground.png';
 import Mint from './Mint';
-import { Input, Button } from 'antd';
 import { ethToWei, daysToMilliseconds } from './helpers';
 
 const RockOverlay = styled.div`
@@ -29,12 +29,12 @@ class CreateAuction extends PureComponent {
   handleChange = (value, field) => this.setState({ [field]: value });
 
   render() {
-    let {
+    const {
       createAuction,
       handleApproveGemTransfer,
       handleRemoveGemFromAuction
     } = this.props;
-    let { gemId, duration, startPrice, endPrice } = this.state;
+    const { gemId, duration, startPrice, endPrice } = this.state;
 
     return (
       <div className="bg-off-black">

@@ -3,11 +3,13 @@ import PropTypes from 'prop-types';
 
 class ProgressMeter extends PureComponent {
   static propTypes = {
-    currentPrice: PropTypes.number.isRequired
+    currentPrice: PropTypes.number.isRequired,
+    minPrice: PropTypes.number.isRequired,
+    maxPrice: PropTypes.number.isRequired
   };
 
   render() {
-    let { currentPrice, minPrice, maxPrice } = this.props;
+    const { currentPrice, minPrice, maxPrice } = this.props;
     return (
       <div className="bg-off-black white ma0 pa3 tc relative-l left-1 ">
         <p
