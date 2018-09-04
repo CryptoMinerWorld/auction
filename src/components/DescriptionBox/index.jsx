@@ -14,12 +14,18 @@ class DescriptionBox extends PureComponent {
   static propTypes = {
     level: PropTypes.number.isRequired,
     grade: PropTypes.string.isRequired,
-    rate: PropTypes.number.isRequired
+    rate: PropTypes.number.isRequired,
+    color: PropTypes.string.isRequired,
   };
 
   state = {
     inView: false
   };
+
+  componentDidMount() {
+    const { level, color } = this.props
+    this.getDetails(level, color)
+  }
 
   handleWaypointEnter = ({ previousPosition }) => {
     if (previousPosition === Waypoint.below) {
@@ -28,6 +34,11 @@ class DescriptionBox extends PureComponent {
   };
 
   rateConverter = rate => Math.round((rate / 400) * 100);
+
+  getDetails = (level, color) => { // eslint-disable-next-line
+    console.log(level, color);
+  }
+
 
   render() {
     const { level, grade, rate } = this.props;
@@ -69,7 +80,7 @@ class DescriptionBox extends PureComponent {
                       transitionLeaveTimeout={5000}
                     >
                       <FeatureBand
-                        colour="bg-dark-orange"
+                        bgColour="bg-dark-orange"
                         gem={gem1}
                         category="level"
                         amount={level}
@@ -84,7 +95,7 @@ class DescriptionBox extends PureComponent {
                       transitionLeaveTimeout={5000}
                     >
                       <FeatureBand
-                        colour="bg-dark-blue"
+                        bgColour="bg-dark-blue"
                         gem={gem2}
                         category="grade"
                         amount={grade}
@@ -99,7 +110,7 @@ class DescriptionBox extends PureComponent {
                       transitionLeaveTimeout={5000}
                     >
                       <FeatureBand
-                        colour="bg-dark-purple"
+                        bgColour="bg-dark-purple"
                         gem={gem3}
                         category="mining rate Bonus"
                         amount={`${this.rateConverter(rate)} %`}
@@ -126,9 +137,9 @@ const Feature = styled.div`
   align-items: center;
 `;
 
-const FeatureBand = ({ colour, gem, category, amount, description }) =>
+const FeatureBand = ({ bgColour, gem, category, amount, description }) =>
   <div
-    className={`w-100 ${colour} h5 flex aic mt3 br4-ns br--left-ns shadow-3 pa3`}
+    className={`w-100 ${bgColour} h5 flex aic mt3 br4-ns br--left-ns shadow-3 pa3`}
   >
     <div className="w-30 ">
       <Feature>
@@ -153,6 +164,6 @@ const FeatureBand = ({ colour, gem, category, amount, description }) =>
   </div>
 
 FeatureBand.propTypes = {
-  colour: PropTypes.number.isRequired, gem: PropTypes.number.isRequired, category: PropTypes.number.isRequired, amount: PropTypes.number.isRequired, description: PropTypes.string.isRequired
+  bgColour: PropTypes.string.isRequired, gem: PropTypes.number.isRequired, category: PropTypes.number.isRequired, amount: PropTypes.number.isRequired, description: PropTypes.string.isRequired
 };
 

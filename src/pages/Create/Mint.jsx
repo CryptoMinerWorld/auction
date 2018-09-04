@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Select, Input, Icon } from 'antd';
 import PropTypes from 'prop-types';
+import { Observable } from 'rxjs'
 import getWeb3 from '../../utils/getWeb3';
 import { db, storage } from '../../utils/firebase'
 
@@ -54,9 +55,11 @@ class Mint extends PureComponent {
       })
     );
     this.randomGradeValue();
-    this.getImage()
-
-
+    this.getImage().subscribe(({ id, image }) =>
+      this.setState({
+        gemDetails: id,
+        gemImage: image
+      }))
   }
 
   gemURL = (color, level, gradeType) => {
@@ -80,29 +83,39 @@ class Mint extends PureComponent {
 
 
     const fileName = `${type} ${level} ${grade}.png`;
-    console.log(fileName);
 
     storage
       .ref(`gems/${fileName}`)
       .getDownloadURL()
       .then(url => this.setState({ gemImage: url, imageLoading: false }))
-      .catch(err => console.error(err))
-
+      .catch(err => {
+        // eslint-disable-next-line
+        console.error(err)
+      })
 
   }
 
+  getImage = () => Observable.create(observer => {
+    const unsubscribe = db.collection('gems').where("id", "==", "123").onSnapshot(collection => collection.docs.map(doc => observer.next(doc.data())))
+    return unsubscribe
+  })
 
-  getImage = () => {
-    db.collection('gems').where("id", "==", "123").get()
-      .then(collection => {
-        const details = collection.docs.map(doc => doc.data())
-        const { id, image } = details[0]
-        this.setState({
-          gemDetails: id,
-          gemImage: image
-        })
-      }).catch(err => console.error(err))
-  }
+  // componentDidUpdate () {
+  //   this.getImage().unsubscribe()
+  // }
+
+
+  // getImage = () => {
+  //   db.collection('gems').where("id", "==", "123").get()
+  //     .then(collection => {
+  //       const details = collection.docs.map(doc => doc.data())
+  //       const { id, image } = details[0]
+  //       this.setState({
+  //         gemDetails: id,
+  //         gemImage: image
+  //       })
+  //     }).catch(err => console.error(err))
+  // }
 
   createGem = async (_contractAddress, _color, _level, _gradeType, _gradeValue) => {
     const { web3, contractAddress } = this.state

@@ -20,7 +20,8 @@ firebase.initializeApp(config);
 export const storage = firebase.storage();
 // eslint-disable-next-line
 export let db = firebase.firestore();
-
+const settings = {timestampsInSnapshots: true};
+db.settings(settings);
 
 firebase
   .firestore()

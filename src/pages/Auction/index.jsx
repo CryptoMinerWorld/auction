@@ -42,7 +42,8 @@ const Auction = ({
   name,
   tokenId,
   redirectTo,
-  showConfirm
+  showConfirm,
+  color
 }) => (
     <div className="bg-off-black ">
       <RockOverlay>
@@ -75,7 +76,7 @@ const Auction = ({
       <div className="bg-off-black">
         <TopHighlight />
         <div className="mw9 center relative-l">
-          <DescriptionBox level={level} grade={grade} rate={rate} />
+          <DescriptionBox level={level} grade={grade} rate={rate} color={color} />
           <div className="w-50-l measure-wide-l">
             <OverlapOnDesktopView>
               <FAQ />
@@ -103,4 +104,5 @@ Auction.propTypes = {
   showConfirm: PropTypes.bool.isRequired,
   tokenId: PropTypes.string.isRequired,
   redirectTo: PropTypes.string.isRequired,
+  color: PropTypes.string.isRequired,
 };
