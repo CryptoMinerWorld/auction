@@ -14,9 +14,9 @@ const Triangle = styled.div`
 class MobileHeader extends PureComponent {
   static propTypes = {
     currentPrice: PropTypes.string.isRequired,
-    level: PropTypes.number.isRequired,
+    level: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    rate: PropTypes.number.isRequired
+    rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
   };
 
   render() {

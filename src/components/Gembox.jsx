@@ -33,16 +33,22 @@ const Gem = ({ quality, image, amount }) => (
 );
 
 Gem.propTypes = {
-  quality: PropTypes.number.isRequired,
-  image: PropTypes.string.isRequired,
-  amount: PropTypes.number.isRequired,
+  quality: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  image: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+};
+
+Gem.defaultProps = {
+  quality: '',
+  image: '',
+  amount: '',
 };
 
 class Gembox extends PureComponent {
   static propTypes = {
-    level: PropTypes.number.isRequired,
+    level: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    rate: PropTypes.number.isRequired,
+    rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
   };
 
   gradeConverter = gradeValue => ({

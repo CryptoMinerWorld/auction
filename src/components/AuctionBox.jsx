@@ -88,16 +88,22 @@ const AuctionBox = ({ currentPrice,
 export default AuctionBox;
 
 AuctionBox.propTypes = {
-  currentPrice: PropTypes.number.isRequired,
+  currentPrice: PropTypes.string.isRequired,
   handleBuyNow: PropTypes.func.isRequired,
-  level: PropTypes.number.isRequired,
-  grade: PropTypes.string.isRequired,
-  rate: PropTypes.number.isRequired,
+  level: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   deadline: PropTypes.instanceOf(Date).isRequired,
   name: PropTypes.string.isRequired,
-  showConfirm: PropTypes.bool.isRequired,
-  redirectTo: PropTypes.string.isRequired,
-  tokenId: PropTypes.string.isRequired,
+  showConfirm: PropTypes.func.isRequired,
+  redirectTo: PropTypes.string,
+  tokenId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   maxPrice: PropTypes.number.isRequired,
   minPrice: PropTypes.number.isRequired,
+};
+
+AuctionBox.defaultProps = {
+
+  redirectTo: '',
+
 };

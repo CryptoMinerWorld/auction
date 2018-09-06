@@ -47,6 +47,7 @@ class CustomForm extends PureComponent {
             <div className='w-100 fl tl' >
               {status === "sending" && <div className='primary'>Sending...</div>}
               {status === "error" && <div className='red'
+                // eslint-disable-next-line
                 dangerouslySetInnerHTML={{ __html: message }}
               />}
               {status === "success" && <div className='primary'>{`${message}`}</div>}</div>

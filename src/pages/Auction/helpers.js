@@ -1,19 +1,22 @@
+import {BigNumber} from 'bignumber.js';
+
 export const isTokenForSale = (_contract, _tokenId) =>
-  new Promise((resolve, reject) => {
-    _contract.isTokenOnSale(_tokenId, (error, result) => {
-      if (!error) resolve(result);
-      else reject(error);
-    });
-  });
+ 
+    _contract.methods.isTokenOnSale(_tokenId).call();
+
 
 export const getAuctionDetails = (_contract, _tokenId) =>
-  new Promise((resolve, reject) => {
-    _contract.items(_tokenId, (error, result) => {
-      if (!error) {
-        resolve(result);
-      } else reject(error);
-    });
-  });
+    _contract.methods.items(_tokenId).call().then( result => {
+      const {t0, t1, p0, p1} = result;
+      return([t0, t1, p0, p1])
+    })
+
+ 
+
+
+
+
+    
 
 // export const calcMiningRate = (gradeType, gradeValue) => {
 //   switch (gradeType) {
@@ -43,10 +46,12 @@ export const calcMiningRate = (gradeType, gradeValue) => ({
   6: 300 + gradeValue / 10000
 }[gradeType]);
 
-export const getGemQualities = (_contract, _tokenId) =>
-  new Promise((resolve, reject) => {
-    _contract.getProperties(_tokenId, (error, properties) => {
-      if (!error) {
+export const getGemQualities = (_contract, _tokenId) => 
+_contract.methods
+.getProperties(_tokenId)
+.call()
+.then( _properties => {
+const properties = new BigNumber(_properties)
         const color = properties.dividedToIntegerBy(0x10000000000).toNumber();
         const level = properties
           .dividedToIntegerBy(0x100000000)
@@ -57,7 +62,7 @@ export const getGemQualities = (_contract, _tokenId) =>
           .modulo(0x100)
           .toNumber();
         const gradeValue = properties.modulo(0x1000000).toNumber();
-        resolve([color, level, gradeType, gradeValue]);
-      } else reject(error);
-    });
-  });
+        return([color, level, gradeType, gradeValue]);
+      })
+  
+      

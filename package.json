@@ -57,6 +57,7 @@
   "dependencies": {
     "antd": "^3.8.4",
     "big-integer": "^1.6.34",
+    "bignumber.js": "^7.2.1",
     "date-fns": "^2.0.0-alpha.16",
     "firebase": "^5.4.2",
     "fontfaceobserver": "^2.0.13",

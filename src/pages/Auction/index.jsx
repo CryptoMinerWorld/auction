@@ -43,12 +43,14 @@ const Auction = ({
   tokenId,
   redirectTo,
   showConfirm,
-  color
+  color,
+  sourceImage,
+  story
 }) => (
     <div className="bg-off-black ">
       <RockOverlay>
         <div className="relative mw9 center">
-          <AuctionImage />
+          <AuctionImage sourceImage={sourceImage} />
           <ReactCSSTransitionGroup
             transitionName="example"
             transitionAppear
@@ -76,7 +78,7 @@ const Auction = ({
       <div className="bg-off-black">
         <TopHighlight />
         <div className="mw9 center relative-l">
-          <DescriptionBox level={level} grade={grade} rate={rate} color={color} />
+          <DescriptionBox level={level} grade={grade} rate={rate} color={color} story={story} name={name} />
           <div className="w-50-l measure-wide-l">
             <OverlapOnDesktopView>
               <FAQ />
@@ -93,16 +95,24 @@ export default Auction;
 
 Auction.propTypes = {
   deadline: PropTypes.instanceOf(Date).isRequired,
-  currentPrice: PropTypes.number.isRequired,
+  currentPrice: PropTypes.string.isRequired,
   minPrice: PropTypes.number.isRequired,
   maxPrice: PropTypes.number.isRequired,
-  level: PropTypes.number.isRequired,
-  grade: PropTypes.string.isRequired,
-  rate: PropTypes.number.isRequired,
+  level: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   buyNow: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
-  showConfirm: PropTypes.bool.isRequired,
-  tokenId: PropTypes.string.isRequired,
-  redirectTo: PropTypes.string.isRequired,
-  color: PropTypes.string.isRequired,
+  showConfirm: PropTypes.func.isRequired,
+  tokenId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  redirectTo: PropTypes.string,
+  color: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  sourceImage: PropTypes.string.isRequired,
+  story: PropTypes.string.isRequired,
+};
+
+Auction.defaultProps = {
+
+  redirectTo: '',
+
 };

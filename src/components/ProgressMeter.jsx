@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 class ProgressMeter extends PureComponent {
   static propTypes = {
-    currentPrice: PropTypes.number.isRequired,
+    currentPrice: PropTypes.string.isRequired,
     minPrice: PropTypes.number.isRequired,
     maxPrice: PropTypes.number.isRequired
   };

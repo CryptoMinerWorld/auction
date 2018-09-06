@@ -12,10 +12,12 @@ import './animations.css';
 
 class DescriptionBox extends PureComponent {
   static propTypes = {
-    level: PropTypes.number.isRequired,
-    grade: PropTypes.string.isRequired,
-    rate: PropTypes.number.isRequired,
-    color: PropTypes.string.isRequired,
+    level: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    color: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    name: PropTypes.string.isRequired,
+    story: PropTypes.string.isRequired,
   };
 
   state = {
@@ -41,7 +43,7 @@ class DescriptionBox extends PureComponent {
 
 
   render() {
-    const { level, grade, rate } = this.props;
+    const { level, grade, rate, name, story } = this.props;
     const { inView } = this.state
     return (
       <div className="bg-off-black white ma0 ">
@@ -54,7 +56,7 @@ class DescriptionBox extends PureComponent {
                   alt="tiny decorative orange triangle"
                   className="dib mr3"
                 />
-                <h1 className="dib b white">Amethyst Thingymagij</h1>
+                <h1 className="dib b white">{name}</h1>
                 <img
                   src={tinyDiamond}
                   alt="tiny decorative orange triangle"
@@ -62,10 +64,7 @@ class DescriptionBox extends PureComponent {
                 />
               </div>
               <p className="o-50">
-                Click anywhere on teh line to place a bid or click on the giant
-                buy now button above to buy at the current price.Click anywhere
-                on teh line to place a bid or click on the giant buy now button
-                above to buy at the current price.
+                {story}
               </p>
             </div>
             <Waypoint onEnter={this.handleWaypointEnter}>
