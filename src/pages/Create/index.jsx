@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Input, Button } from 'antd';
 import rockBackground from '../../images/rockBackground.png';
 import Mint from './Mint';
-import { ethToWei, daysToMilliseconds } from './helpers';
+import { ethToWei, daysToSeconds } from './helpers';
 
 const RockOverlay = styled.div`
   background-image: url(${rockBackground});
@@ -15,15 +15,15 @@ const RockOverlay = styled.div`
 class CreateAuction extends PureComponent {
   static propTypes = {
     createAuction: PropTypes.func.isRequired,
-    handleApproveGemTransfer: PropTypes.func.isRequired,
+    // handleApproveGemTransfer: PropTypes.func.isRequired,
     handleRemoveGemFromAuction: PropTypes.func.isRequired
   };
 
   state = {
-    gemId: '',
-    duration: '',
-    startPrice: '',
-    endPrice: ''
+    gemId: '69918',
+    duration: '2',
+    startPrice: '2',
+    endPrice: '1'
   };
 
   handleChange = (value, field) => this.setState({ [field]: value });
@@ -31,7 +31,7 @@ class CreateAuction extends PureComponent {
   render() {
     const {
       createAuction,
-      handleApproveGemTransfer,
+      // handleApproveGemTransfer,
       handleRemoveGemFromAuction
     } = this.props;
     const { gemId, duration, startPrice, endPrice } = this.state;
@@ -40,7 +40,7 @@ class CreateAuction extends PureComponent {
       <div className="bg-off-black">
         <RockOverlay>
           <div className="relative mw9 center flex jcc ">
-            <div className="pa5 flex jcc col">
+            {/* <div className="pa5 flex jcc col">
               <Input
                 type="number"
                 placeholder="gemId"
@@ -62,7 +62,7 @@ class CreateAuction extends PureComponent {
                   Approve Transfer
                 </Button>
               </div>
-            </div>
+            </div> */}
 
             <div className="pa5 flex jcc col">
               <Input
@@ -113,11 +113,9 @@ class CreateAuction extends PureComponent {
                 <Button
                   className="ma3"
                   onClick={() =>
-                    createAuction(
-                      gemId,
-                      daysToMilliseconds(duration),
-                      ethToWei(startPrice),
-                      ethToWei(endPrice)
+
+                    createAuction(gemId,
+                      daysToSeconds(duration), ethToWei(startPrice), ethToWei(endPrice)
                     )
                   }
                   data-testid="createAuctionButton"
@@ -154,7 +152,7 @@ class CreateAuction extends PureComponent {
           </div>
           <Mint />
         </RockOverlay>
-      </div>
+      </div >
     );
   }
 }

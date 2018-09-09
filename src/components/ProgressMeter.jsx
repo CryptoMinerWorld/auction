@@ -14,22 +14,22 @@ class ProgressMeter extends PureComponent {
       <div className="white ma0 pa3 tc ">
         <small className="white ttu ">current price</small>
         <p
-          data-testid="currentPrice"
+
           className="basic"
           style={{ fontSize: 'xx-large' }}
         >
-          Ξ {currentPrice}
+          Ξ <span data-testid="currentPrice">{currentPrice}</span>
         </p>
         <progress value={currentPrice} max={maxPrice} min={minPrice} className="w-100" />
         <div className="flex jcb">
-          <small data-testid="minPrice" className="basic">
-            Ξ {minPrice}
+          <small className="basic">
+            Ξ <span data-testid="minPrice">{minPrice}</span>
           </small>
-          <small data-testid="maxPrice" className="basic">
-            Ξ {maxPrice}
+          <small className="basic">
+            Ξ <span data-testid="maxPrice" >{maxPrice}</span>
           </small>
         </div>
-      </div>
+      </div >
     );
   }
 }

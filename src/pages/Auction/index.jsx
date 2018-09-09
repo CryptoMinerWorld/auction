@@ -95,7 +95,7 @@ export default Auction;
 
 Auction.propTypes = {
   deadline: PropTypes.instanceOf(Date).isRequired,
-  currentPrice: PropTypes.string.isRequired,
+  currentPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   minPrice: PropTypes.number.isRequired,
   maxPrice: PropTypes.number.isRequired,
   level: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
@@ -112,7 +112,6 @@ Auction.propTypes = {
 };
 
 Auction.defaultProps = {
-
   redirectTo: '',
 
 };

@@ -8,7 +8,7 @@ import { ethToWei, daysToMilliseconds } from './helpers';
 afterEach(cleanup);
 
 // @dev this is all the test data, easy to configure in one place
-let testData = {
+const testData = {
   createAuction: jest.fn(),
   handleApproveGemTransfer: jest.fn(),
   handleRemoveGemFromAuction: jest.fn()
@@ -16,7 +16,7 @@ let testData = {
 
 test('Transfer gem to an auction button fires with correct data', async () => {
   // Arrange
-  let { getByTestId } = render(
+  const { getByTestId } = render(
     <CreateAuction
       createAuction={testData.createAuction}
       handleApproveGemTransfer={testData.handleApproveGemTransfer}
@@ -25,7 +25,7 @@ test('Transfer gem to an auction button fires with correct data', async () => {
   );
 
   // Act
-  let gemIdInputNode = getByTestId('approveGemInputField');
+  const gemIdInputNode = getByTestId('approveGemInputField');
   fireEvent.change(gemIdInputNode, { target: { value: 12345 } });
   fireEvent.click(getByTestId('transferGemButton'));
 
@@ -35,7 +35,7 @@ test('Transfer gem to an auction button fires with correct data', async () => {
 });
 
 test('Create a new auction', async () => {
-  let { getByTestId } = render(
+  const { getByTestId } = render(
     <CreateAuction
       createAuction={testData.createAuction}
       handleApproveGemTransfer={testData.handleApproveGemTransfer}
@@ -43,10 +43,10 @@ test('Create a new auction', async () => {
     />
   );
 
-  let gemIdInputNode = getByTestId('gemInputField');
-  let durationInputNode = getByTestId('durationInputField');
-  let startPriceInputNode = getByTestId('startPriceInputField');
-  let endPriceInputNode = getByTestId('endPriceInputField');
+  const gemIdInputNode = getByTestId('gemInputField');
+  const durationInputNode = getByTestId('durationInputField');
+  const startPriceInputNode = getByTestId('startPriceInputField');
+  const endPriceInputNode = getByTestId('endPriceInputField');
   fireEvent.change(gemIdInputNode, { target: { value: 54321 } });
   fireEvent.change(durationInputNode, {
     target: { value: daysToMilliseconds(20) }
@@ -69,7 +69,7 @@ test('Create a new auction', async () => {
 });
 
 test('Stop an auction and retreieve your collectible', async () => {
-  let { getByTestId } = render(
+  const { getByTestId } = render(
     <CreateAuction
       createAuction={testData.createAuction}
       handleApproveGemTransfer={testData.handleApproveGemTransfer}
@@ -77,7 +77,7 @@ test('Stop an auction and retreieve your collectible', async () => {
     />
   );
 
-  let gemIdInputNode = getByTestId('removeGemInputField');
+  const gemIdInputNode = getByTestId('removeGemInputField');
   fireEvent.change(gemIdInputNode, { target: { value: 54321 } });
   fireEvent.click(getByTestId('removeGemButton'));
 
@@ -111,4 +111,18 @@ test('daysToMilliseconds convert units reliably', () => {
   expect(daysToMilliseconds(1)).toEqual(86400000);
   expect(daysToMilliseconds(0.6)).toEqual(51840000);
   expect(daysToMilliseconds(481)).toEqual(41558400000);
+});
+
+
+test.skip('List a gem for auction with a single Click', () => {
+
+  const { getByTestId } = render(
+    <CreateAuction
+      createAuction={testData.createAuction}
+      handleApproveGemTransfer={testData.handleApproveGemTransfer}
+      handleRemoveGemFromAuction={testData.handleRemoveGemFromAuction}
+    />
+  );
+  
+  expect(true).toBeFalsy();
 });

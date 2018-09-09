@@ -48,13 +48,14 @@ class Mint extends PureComponent {
     imageLoading: false
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     getWeb3.then(results =>
       this.setState({
         web3: results.web3,
       })
     );
     this.randomGradeValue();
+
     this.getImage().subscribe(({ id, image }) =>
       this.setState({
         gemDetails: id,
@@ -119,17 +120,15 @@ class Mint extends PureComponent {
 
   createGem = async (_contractAddress, _color, _level, _gradeType, _gradeValue) => {
     const { web3, contractAddress } = this.state
-    const mintContract = web3.eth.contract(mintABI);
-    const mintContractInstance = await mintContract.at(contractAddress);
-    mintContractInstance.mint(_color, _level, _gradeType, _gradeValue, (err) => {
-      if (!err) {
-        return
-        // this.setState(() => {
-        //   gemId: result,
-        //     minted: true,
-        // });
-      };
-    });
+
+    const currentAccount = await web3.eth.getAccounts().then(accounts => accounts[0]);
+    const mintContractInstance =
+      new web3.eth.Contract(mintABI, contractAddress, {
+        from: currentAccount
+      });
+    console.log('xx', _color, _level, _gradeType, _gradeValue);
+
+    await mintContractInstance.methods.mint(_color, _level, _gradeType, _gradeValue).send()
   };
 
   // eslint-disable-next-line
@@ -290,7 +289,7 @@ const MintForm = ({ randomGradeValue, handleNetworkChange, contractAddress, colo
         </label>
       </div>
     </fieldset>
-    <Input type="submit" value="Mint" />
+    <Input type="submit" value="Mint" className='pointer' />
   </form>
 )
 

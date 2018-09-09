@@ -10,6 +10,8 @@ import tinyDiamond from '../../images/tinyDiamond.png';
 import './animations.css';
 
 
+
+
 class DescriptionBox extends PureComponent {
   static propTypes = {
     level: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
@@ -48,7 +50,7 @@ class DescriptionBox extends PureComponent {
     return (
       <div className="bg-off-black white ma0 ">
         <div className="flex-l jce mw9 center">
-          <div className="w-50-l">
+          <div className="w-60-l pl5-l">
             <div className="pa5-ns pa3">
               <div className="flex aic tc tl-ns">
                 <img
@@ -84,6 +86,10 @@ class DescriptionBox extends PureComponent {
                         category="level"
                         amount={level}
                         description="A Gem’s level determines how far down that Gem can mine. There are 5 tiers of land and 5 levels of gems. Each successive level allows for another type of land to be mined."
+                      // clip={{ clipPath: 'polygon(50% 0%, 100% 0, 100% 100%, 11% 99%, 3% 76%, 5% 20%, 14% 0)' }}
+
+
+
                       />
                     </ReactCSSTransitionGroup>
                     <ReactCSSTransitionGroup
@@ -99,6 +105,7 @@ class DescriptionBox extends PureComponent {
                         category="grade"
                         amount={grade}
                         description="A Gem’s Grade determines how fast it can mine. There are 6 Grades, D, C, B, A, AA, and AAA. Grade As and better all store Resting Energy when they are not mining!"
+                      // clip={{ clipPath: 'polygon(13% 1%, 100% 0, 100% 100%, 11% 100%, 2% 43%, 4% 13%)' }}
                       />
                     </ReactCSSTransitionGroup>
                     <ReactCSSTransitionGroup
@@ -136,11 +143,15 @@ const Feature = styled.div`
   align-items: center;
 `;
 
-const FeatureBand = ({ bgColour, gem, category, amount, description }) =>
+
+
+
+const FeatureBand = ({ bgColour, gem, category, amount, description, clip }) =>
   <div
-    className={`w-100 ${bgColour} h5 flex aic mt3 br4-ns br--left-ns shadow-3 pa3`}
+    className={`w-100 ${bgColour} h-auto flex aic mt3 br4-ns br--left-ns shadow-3 pa3`}
+    style={clip}
   >
-    <div className="w-30 ">
+    <div className="w-20">
       <Feature>
         <img
           src={gem}
@@ -156,13 +167,20 @@ const FeatureBand = ({ bgColour, gem, category, amount, description }) =>
         </p>
       </Feature>
     </div>
-    <div className="w-70">
+    <div className="w-80">
       <p className="b ttu">{category}</p>
-      <p className="measure-ns pr4-ns">{description}</p>
+      <p className=" pr4-ns">{description}</p>
     </div>
   </div>
 
 FeatureBand.propTypes = {
-  bgColour: PropTypes.string.isRequired, gem: PropTypes.number.isRequired, category: PropTypes.number.isRequired, amount: PropTypes.number.isRequired, description: PropTypes.string.isRequired
+  bgColour: PropTypes.string.isRequired, gem: PropTypes.number.isRequired, category: PropTypes.number.isRequired, amount: PropTypes.number.isRequired, description: PropTypes.string.isRequired,
+  clip: PropTypes.shape({
+    clip: PropTypes.string,
+  })
 };
+
+FeatureBand.defaultProps = {
+  clip: null
+}
 

@@ -45,7 +45,8 @@ const AuctionBox = ({ currentPrice,
   name,
   tokenId,
   redirectTo,
-  showConfirm, minPrice, maxPrice }) => {
+  // showConfirm, 
+  minPrice, maxPrice }) => {
 
   if (redirectTo === '/workshop') {
     window.location = 'https://cryptominerworld.com/workshop/';
@@ -57,28 +58,26 @@ const AuctionBox = ({ currentPrice,
         <h1 className="tc pb3 b white" style={{ wordBreak: 'break-all' }}>
           {name}
         </h1>
-        <CountdownTimer deadline={deadline} />
+        {deadline && <CountdownTimer deadline={deadline} />}
+        <div className='mt3' />
         <Gembox level={level} grade={grade} rate={rate} />
 
-        <div className="w-100 w5-ns h3 center mt5">
+        <div className="w-100 w5-ns h3 center mt4">
           <BuyNow
-            onClick={() => showConfirm(tokenId, handleBuyNow)}
+            // onClick={() => showConfirm(tokenId, handleBuyNow)}
+            onClick={() => handleBuyNow(tokenId)}
+
             className="b"
             data-testid="buyNowButton"
           >
             Buy Now
             </BuyNow>
         </div>
-
-
-
-
         <ProgressMeter
           currentPrice={currentPrice}
           minPrice={minPrice}
           maxPrice={maxPrice}
         />
-
       </div>
     </OverlapOnDesktopView>
   );
@@ -95,7 +94,7 @@ AuctionBox.propTypes = {
   rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   deadline: PropTypes.instanceOf(Date).isRequired,
   name: PropTypes.string.isRequired,
-  showConfirm: PropTypes.func.isRequired,
+  // showConfirm: PropTypes.func.isRequired,
   redirectTo: PropTypes.string,
   tokenId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   maxPrice: PropTypes.number.isRequired,
