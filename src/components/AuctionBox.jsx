@@ -92,7 +92,7 @@ AuctionBox.propTypes = {
   level: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  deadline: PropTypes.instanceOf(Date).isRequired,
+  deadline: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   // showConfirm: PropTypes.func.isRequired,
   redirectTo: PropTypes.string,

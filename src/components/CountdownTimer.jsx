@@ -8,7 +8,7 @@ const AngleGradient = styled.div`
 `;
 
 class CountdownTimer extends PureComponent {
-  static propTypes = { deadline: PropTypes.instanceOf(Date).isRequired };
+  static propTypes = { deadline: PropTypes.number.isRequired };
 
   state = {
     timeLeft: '',

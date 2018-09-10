@@ -20,10 +20,10 @@ class CreateAuction extends PureComponent {
   };
 
   state = {
-    gemId: '69918',
-    duration: '2',
-    startPrice: '2',
-    endPrice: '1'
+    gemId: '',
+    duration: '',
+    startPrice: '',
+    endPrice: ''
   };
 
   handleChange = (value, field) => this.setState({ [field]: value });

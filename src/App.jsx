@@ -89,20 +89,6 @@ class App extends PureComponent {
             from: currentAccount
         });
 
-        gemsContractInstance.events.allEvents({
-        }, (error, event) => {
-            if (!error) console.log(event)
-            else console.log(error)
-        }
-        )
-
-
-        dutchAuctionContractInstance.events.allEvents({
-        }, (error, event) => {
-            if (!error) console.log(event)
-            else console.log(error)
-        })
-
         // @notice set instances to component state for easy access
         this.setState(
             {
@@ -156,7 +142,7 @@ class App extends PureComponent {
                         color,
                         rate: Number(calcMiningRate(gradeType, gradeValue))
                     });
-                    console.log('[color, level, gradeType, gradeValue]', [color, level, gradeType, gradeValue]);
+
                     return [color, gradeType, level]
                 }
             ).then(result => {
@@ -285,7 +271,7 @@ class App extends PureComponent {
         const sourceImage = `${type}-${level}-${gradeType}-4500.png`;
 
         return storage
-            .ref(`gems/${sourceImage}`)
+            .ref(`gems512/${sourceImage}`)
             .getDownloadURL()
     }
 
@@ -313,7 +299,6 @@ class App extends PureComponent {
             window.location.href.includes('/auction/')) {
             showExpired();
         }
-
 
         return (
             <main className={font}>

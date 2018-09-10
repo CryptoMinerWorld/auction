@@ -6,9 +6,16 @@ import {
   cleanup
 } from 'react-testing-library';
 import 'jest-dom/extend-expect';
-import Auction from '.';
+import Auction from './index';
 
 import { calcMiningRate } from './helpers';
+
+
+const firebasemock = require('firebase-mock');
+
+const mockfirestore = new firebasemock.MockFirestore();
+const mockstorage = new firebasemock.MockStorage();
+
 
 // @dev this automatically unmounts and cleanup DOM after the test is finished.
 afterEach(cleanup);
@@ -23,7 +30,7 @@ const testData = {
   currentPrice: 1.323,
   minPrice: .8,
   maxPrice: 4.5,
-  deadline: someDate,
+  deadline: Math.round(someDate/1000),
   level: 2,
   grade: 5,
   rate: 53,
@@ -45,7 +52,6 @@ test('Buy now button triggers the modal with the correct gem Id and the buy Now 
   // Arrange
   const { getByTestId } = render(
     <Auction
-      currentPrice={Number(testData.currentPrice).toFixed(3)}
           minPrice={testData.minPrice}
           maxPrice={testData.maxPrice }
           level={testData.level}
@@ -54,13 +60,14 @@ test('Buy now button triggers the modal with the correct gem Id and the buy Now 
           color={testData.color}
           buyNow={testData.handleBuyNow}
           auctionStartTime={testData.auctionStartTime}
-          deadline={new Date(testData.auctionEndTime * 1000)}
+          deadline={testData.auctionEndTime }
           name={`# ${testData.tokenId}`}
-          tokenId={testData.tokenId}
           redirectTo={testData.redirectTo}
           showConfirm={testData.showConfirm}
           sourceImage={testData.gemImage}
+          tokenId={testData.tokenId}
           story={testData.story}
+          currentPrice={Number(testData.currentPrice).toFixed(3)}
           color={testData.color}
     />
   );
@@ -69,17 +76,19 @@ test('Buy now button triggers the modal with the correct gem Id and the buy Now 
   fireEvent.click(getByTestId('buyNowButton'));
 
   // Assert
-  expect(testData.showConfirm).toHaveBeenCalledTimes(1);
-  expect(testData.showConfirm).toHaveBeenCalledWith(
-    testData.gemId,
-    testData.handleBuyNow
+  expect(testData.handleBuyNow).toHaveBeenCalledTimes(1);
+  expect(testData.handleBuyNow).toHaveBeenCalledWith(
+    testData.gemId 
   );
 });
+
+test.skip('If no metamask show modal, otherwise let people buy directly', async () => {  expect(true).toBeFalsy();})
 
 test('Countdown timer shows correct time', async () => {
   const { getByTestId } = render(
     <Auction
-      currentPrice={testData.currentPrice}
+    currentPrice={Number(testData.currentPrice).toFixed(3)}
+    color={testData.color}
       minPrice={testData.minPrice}
       maxPrice={testData.maxPrice}
       level={testData.level}
@@ -88,6 +97,10 @@ test('Countdown timer shows correct time', async () => {
       buyNow={testData.handleBuyNow}
       deadline={testData.deadline}
       name={testData.name}
+      showConfirm={testData.showConfirm}
+      sourceImage={testData.gemImage}
+      tokenId={testData.tokenId}
+      story={testData.story}
     />
   );
 
@@ -99,13 +112,14 @@ test('Countdown timer shows correct time', async () => {
   expect(days).toHaveTextContent(1);
   expect(hours).toHaveTextContent(23);
   expect(minutes).toHaveTextContent(59);
-  expect(seconds).not.toHaveTextContent(59);
+  expect(seconds).not.toHaveTextContent(0);
 });
 
 test('Countdown timer shows non-plural time descriptions (for example 1 hour vs 1 hours)', async () => {
   const { getByTestId } = render(
     <Auction
-      currentPrice={testData.currentPrice}
+    currentPrice={Number(testData.currentPrice).toFixed(3)}
+    color={testData.color}
       minPrice={testData.minPrice}
       maxPrice={testData.maxPrice}
       level={testData.level}
@@ -114,6 +128,10 @@ test('Countdown timer shows non-plural time descriptions (for example 1 hour vs 
       buyNow={testData.handleBuyNow}
       deadline={testData.deadline}
       name={testData.name}
+      showConfirm={testData.showConfirm}
+      sourceImage={testData.gemImage}
+      tokenId={testData.tokenId}
+      story={testData.story}
     />
   );
 
@@ -125,7 +143,8 @@ test('Countdown timer shows non-plural time descriptions (for example 1 hour vs 
 test('Progress bar shows correct start and end price', async () => {
   const { getByTestId } = render(
     <Auction
-      currentPrice={testData.currentPrice}
+    currentPrice={Number(testData.currentPrice).toFixed(3)}
+    color={testData.color}
       minPrice={testData.minPrice}
       maxPrice={testData.maxPrice}
       level={testData.level}
@@ -134,6 +153,10 @@ test('Progress bar shows correct start and end price', async () => {
       buyNow={testData.handleBuyNow}
       deadline={testData.deadline}
       name={testData.name}
+      showConfirm={testData.showConfirm}
+      sourceImage={testData.gemImage}
+      tokenId={testData.tokenId}
+      story={testData.story}
     />
   );
 
@@ -145,7 +168,8 @@ test('Progress bar shows correct start and end price', async () => {
 test('Current price shows the correct price', async () => {
   const { getByTestId } = render(
     <Auction
-      currentPrice={testData.currentPrice}
+    currentPrice={Number(testData.currentPrice).toFixed(3)}
+    color={testData.color}
       minPrice={testData.minPrice}
       maxPrice={testData.maxPrice}
       level={testData.level}
@@ -154,6 +178,10 @@ test('Current price shows the correct price', async () => {
       buyNow={testData.handleBuyNow}
       deadline={testData.deadline}
       name={testData.name}
+      showConfirm={testData.showConfirm}
+      sourceImage={testData.gemImage}
+      tokenId={testData.tokenId}
+      story={testData.story}
     />
   );
 

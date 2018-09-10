@@ -8,6 +8,7 @@ import gem2 from '../../images/icons/gem2.png';
 import gem3 from '../../images/icons/gem3.png';
 import tinyDiamond from '../../images/tinyDiamond.png';
 import './animations.css';
+import logo from '../../images/Profile-Image-Logo-60x60.png';
 
 
 
@@ -17,7 +18,6 @@ class DescriptionBox extends PureComponent {
     level: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    color: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     name: PropTypes.string.isRequired,
     story: PropTypes.string.isRequired,
   };
@@ -25,11 +25,6 @@ class DescriptionBox extends PureComponent {
   state = {
     inView: false
   };
-
-  componentDidMount() {
-    const { level, color } = this.props
-    this.getDetails(level, color)
-  }
 
   handleWaypointEnter = ({ previousPosition }) => {
     if (previousPosition === Waypoint.below) {
@@ -39,10 +34,14 @@ class DescriptionBox extends PureComponent {
 
   rateConverter = rate => Math.round((rate / 400) * 100);
 
-  getDetails = (level, color) => { // eslint-disable-next-line
-    console.log(level, color);
-  }
-
+  gradeConverter = gradeValue => ({
+    1: 'D',
+    2: 'C',
+    3: 'B',
+    4: 'A',
+    5: 'AA',
+    6: 'AAA'
+  }[gradeValue]);
 
   render() {
     const { level, grade, rate, name, story } = this.props;
@@ -52,18 +51,25 @@ class DescriptionBox extends PureComponent {
         <div className="flex-l jce mw9 center">
           <div className="w-60-l pl5-l">
             <div className="pa5-ns pa3">
-              <div className="flex aic tc tl-ns">
-                <img
-                  src={tinyDiamond}
-                  alt="tiny decorative orange triangle"
-                  className="dib mr3"
-                />
-                <h1 className="dib b white">{name}</h1>
-                <img
-                  src={tinyDiamond}
-                  alt="tiny decorative orange triangle"
-                  className="dib ml3"
-                />
+              <div className='flex jcb aic'>
+                <div className="flex aic tc tl-ns">
+                  <img
+                    src={tinyDiamond}
+                    alt="tiny decorative orange triangle"
+                    className="dib mr3"
+                  />
+                  <h1 className="dib b white">{name}</h1>
+                  <img
+                    src={tinyDiamond}
+                    alt="tiny decorative orange triangle"
+                    className="dib ml3"
+                  />
+
+                </div>
+                <div className='flex aic br-pill bg-white-10 w5-ns w-auto black h-auto pa1'>
+                  <img src={logo} alt="seller logo" className='br-100 h2 pl3-ns' />
+                  <small className='pl3 white-60 dn dib-m dib-l'> <span className='dn dib-l'>Sold By {''}</span > CryptoMiner World</small>
+                </div>
               </div>
               <p className="o-50">
                 {story}
@@ -81,16 +87,14 @@ class DescriptionBox extends PureComponent {
                       transitionLeaveTimeout={5000}
                     >
                       <FeatureBand
-                        bgColour="bg-dark-orange"
+                        bgColour="bg-dark-blue"
                         gem={gem1}
-                        category="level"
-                        amount={level}
-                        description="A Gem’s level determines how far down that Gem can mine. There are 5 tiers of land and 5 levels of gems. Each successive level allows for another type of land to be mined."
-                      // clip={{ clipPath: 'polygon(50% 0%, 100% 0, 100% 100%, 11% 99%, 3% 76%, 5% 20%, 14% 0)' }}
-
-
-
+                        category="grade"
+                        amount={this.gradeConverter(grade)}
+                        description="A Gem’s Grade determines how fast it can mine. There are 6 Grades, D, C, B, A, AA, and AAA. Grade As and better all store Resting Energy when they are not mining!"
+                      // clip={{ clipPath: 'polygon(13% 1%, 100% 0, 100% 100%, 11% 100%, 2% 43%, 4% 13%)' }}
                       />
+
                     </ReactCSSTransitionGroup>
                     <ReactCSSTransitionGroup
                       transitionName="example2"
@@ -100,13 +104,14 @@ class DescriptionBox extends PureComponent {
                       transitionLeaveTimeout={5000}
                     >
                       <FeatureBand
-                        bgColour="bg-dark-blue"
+                        bgColour="bg-dark-orange"
                         gem={gem2}
-                        category="grade"
-                        amount={grade}
-                        description="A Gem’s Grade determines how fast it can mine. There are 6 Grades, D, C, B, A, AA, and AAA. Grade As and better all store Resting Energy when they are not mining!"
-                      // clip={{ clipPath: 'polygon(13% 1%, 100% 0, 100% 100%, 11% 100%, 2% 43%, 4% 13%)' }}
+                        category="level"
+                        amount={level}
+                        description="A Gem’s level determines how far down that Gem can mine. There are 5 tiers of land and 5 levels of gems. Each successive level allows for another type of land to be mined."
+                      // clip={{ clipPath: 'polygon(50% 0%, 100% 0, 100% 100%, 11% 99%, 3% 76%, 5% 20%, 14% 0)' }}
                       />
+
                     </ReactCSSTransitionGroup>
                     <ReactCSSTransitionGroup
                       transitionName="example3"
@@ -119,7 +124,7 @@ class DescriptionBox extends PureComponent {
                         bgColour="bg-dark-purple"
                         gem={gem3}
                         category="mining rate Bonus"
-                        amount={`${this.rateConverter(rate)} %`}
+                        amount={`${this.rateConverter(rate)}%`}
                         description="This is the percentage of how much faster a Gem mines compared to the base speed. +100% is twice as fast as base, +400% is five times faster. All Mining Rate Bonuses are tied to Grades. Grades give you a general sense of how how fast a Gem mines but Mining Rate Bonuses tells you exactly how much fast it is."
                       />
                     </ReactCSSTransitionGroup>
@@ -161,7 +166,7 @@ const FeatureBand = ({ bgColour, gem, category, amount, description, clip }) =>
         />
         <p
           style={{ gridRow: 2, gridColumn: 2 }}
-          className="ttu f4 b o-50 black tc"
+          className={`ttu f5 b o-50 black tc mt1 ${category === 'grade' && 'pr2'}`}
         >
           {amount}
         </p>

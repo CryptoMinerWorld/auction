@@ -94,7 +94,7 @@ const Auction = ({
 export default Auction;
 
 Auction.propTypes = {
-  deadline: PropTypes.instanceOf(Date).isRequired,
+  deadline: PropTypes.number.isRequired,
   currentPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   minPrice: PropTypes.number.isRequired,
   maxPrice: PropTypes.number.isRequired,

@@ -16,14 +16,14 @@ export const showConfirm = (_tokenId, _handleBuyNow) => {
 
 export const showExpired = () => {
   Modal.error({
-    title: 'This Auction is Now Over',
+    title: 'This Auction No Longer Exists.',
     content:
-      'You can checkout all teh current auctions in our Auction listing page',
-    okText: 'Take me to all the Auctions',
+      'The Item was most likely sold or you may have the wrong link.',
+    okText: 'Take Me To My Workshop',
     maskClosable: false,
     keyboard: false,
     onOk() {
-      window.location = '/';
+      window.location = 'https://cryptominerworld.com/workshop/';
     }
   });
 };

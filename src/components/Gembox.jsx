@@ -15,7 +15,7 @@ const Feature = styled.div`
 const Gem = ({ quality, image, amount }) => (
   <div className="w-100">
     <small className="ttu white b dn-ns">{quality}</small>
-    <Feature>
+    <Feature >
       <img
         src={image}
         alt={quality}
@@ -24,9 +24,9 @@ const Gem = ({ quality, image, amount }) => (
       />
       <p
         style={{ gridRow: 2, gridColumn: 2 }}
-        className="ttu f5  b o-50 black"
+        className={`ttu f5 mt2 b o-50 black ${quality === 'grade' && 'pr2'}`}
       >
-        {quality === 'rate' ? `${amount} %` : amount}
+        {quality === 'rate' ? `${amount}%` : amount}
       </p>
     </Feature>
   </div>
@@ -66,8 +66,8 @@ class Gembox extends PureComponent {
     const { level, grade, rate } = this.props;
     return (
       <div className="flex tc pa3">
-        <Gem quality="level" image={gem1} amount={level} />
-        <Gem quality="grade" image={gem2} amount={this.gradeConverter(grade)} />
+        <Gem quality="level" image={gem2} amount={level} />
+        <Gem quality="grade" image={gem1} amount={this.gradeConverter(grade)} />
         <Gem quality="rate" image={gem3} amount={this.rateConverter(rate)} />
       </div>
     );

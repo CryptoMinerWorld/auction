@@ -11,40 +11,33 @@ export const getAuctionDetails = (_contract, _tokenId) =>
       return([t0, t1, p0, p1])
     })
 
- 
+// export const calcMiningRate = (gradeType, gradeValue) => {
+//   switch (gradeType) {
+//     case 1:
+//       return gradeValue / 200000;
+//     case 2:
+//       return 10 + gradeValue / 200000;
+//     case 3:
+//       return 20 + gradeValue / 200000;
+//     case 4:
+//       return 40 + (3 * gradeValue) / 200000;
+//     case 5:
+//       return 100 + gradeValue / 40000;
+//     case 6:
+//       return 300 + gradeValue / 10000;
+//     default:
+//       return 300 + gradeValue / 10000;
+//   }
+// };
 
-
-
-
-    
-
-export const calcMiningRate = (gradeType, gradeValue) => {
-  switch (gradeType) {
-    case 1:
-      return gradeValue / 200000;
-    case 2:
-      return 10 + gradeValue / 200000;
-    case 3:
-      return 20 + gradeValue / 200000;
-    case 4:
-      return 40 + (3 * gradeValue) / 200000;
-    case 5:
-      return 100 + gradeValue / 40000;
-    case 6:
-      return 300 + gradeValue / 10000;
-    default:
-      return 300 + gradeValue / 10000;
-  }
-};
-
-// export const calcMiningRate = (gradeType, gradeValue) => ({
-//   1: gradeValue / 200000,
-//   2: 10 + gradeValue / 200000,
-//   3: 20 + gradeValue / 200000,
-//   4: 40 + (3 * gradeValue) / 200000,
-//   5: 100 + gradeValue / 40000,
-//   6: 300 + gradeValue / 10000
-// }[gradeType]);
+export const calcMiningRate = (gradeType, gradeValue) => ({
+  1: gradeValue / 200000,
+  2: 10 + gradeValue / 200000,
+  3: 20 + gradeValue / 200000,
+  4: 40 + (3 * gradeValue) / 200000,
+  5: 100 + gradeValue / 40000,
+  6: 300 + gradeValue / 10000
+}[gradeType]);
 
 export const getGemQualities = (_contract, _tokenId) => 
 _contract.methods

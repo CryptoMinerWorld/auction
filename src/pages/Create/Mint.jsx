@@ -126,8 +126,6 @@ class Mint extends PureComponent {
       new web3.eth.Contract(mintABI, contractAddress, {
         from: currentAccount
       });
-    console.log('xx', _color, _level, _gradeType, _gradeValue);
-
     await mintContractInstance.methods.mint(_color, _level, _gradeType, _gradeValue).send()
   };
 
