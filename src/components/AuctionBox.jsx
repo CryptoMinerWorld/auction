@@ -44,14 +44,14 @@ const AuctionBox = ({ currentPrice,
   deadline,
   name,
   tokenId,
-  redirectTo,
+  // redirectTo,
   // showConfirm, 
-  minPrice, maxPrice }) => {
+  minPrice, maxPrice }) =>
 
-  if (redirectTo === '/workshop') {
-    window.location = 'https://cryptominerworld.com/workshop/';
-  }
-  return (
+  // if (redirectTo === '/workshop') {
+  //   window.location = 'https://cryptominerworld.com/workshop/';
+  // }
+  (
     <OverlapOnDesktopView className="bg-dark-gray br3 measure-l w-100 shadow-3">
       <TopHighlight />
       <div className="white pa3">
@@ -66,7 +66,6 @@ const AuctionBox = ({ currentPrice,
           <BuyNow
             // onClick={() => showConfirm(tokenId, handleBuyNow)}
             onClick={() => handleBuyNow(tokenId)}
-
             className="b"
             data-testid="buyNowButton"
           >
@@ -80,8 +79,8 @@ const AuctionBox = ({ currentPrice,
         />
       </div>
     </OverlapOnDesktopView>
-  );
-}
+  )
+
 
 
 export default AuctionBox;
@@ -95,14 +94,9 @@ AuctionBox.propTypes = {
   deadline: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   // showConfirm: PropTypes.func.isRequired,
-  redirectTo: PropTypes.string,
+  // redirectTo: PropTypes.string,
   tokenId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   maxPrice: PropTypes.number.isRequired,
   minPrice: PropTypes.number.isRequired,
 };
 
-AuctionBox.defaultProps = {
-
-  redirectTo: '',
-
-};

@@ -45,7 +45,7 @@ class CountdownTimer extends PureComponent {
     return (
       <AngleGradient className="tc bg-blue pa2 br3 shadow-3">
         <p className="b">Auction ends on</p>
-        <time className="measure">{format(new Date(deadline * 1000), 'EEEE do of MMMM, p YYYY')}</time>
+        <time className="measure">{format(new Date(deadline * 1000), 'EEEE do of MMMM, p')}</time>
         {timeLeft !== '' && (
           <div className="flex jca pt2">
             <div className="pb2">

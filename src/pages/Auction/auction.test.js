@@ -48,7 +48,7 @@ const testData = {
 
 };
 
-test('Buy now button triggers the modal with the correct gem Id and the buy Now function', () => {
+test('Buy now button triggers the modal with the correct gem Id and the buy Now function', async () => {
   // Arrange
   const { getByTestId } = render(
     <Auction
@@ -72,8 +72,9 @@ test('Buy now button triggers the modal with the correct gem Id and the buy Now 
     />
   );
 
+  const buyNowButton = await waitForElement(() => getByTestId('buyNowButton'));
   // Act
-  fireEvent.click(getByTestId('buyNowButton'));
+  fireEvent.click(buyNowButton);
 
   // Assert
   expect(testData.handleBuyNow).toHaveBeenCalledTimes(1);
@@ -160,9 +161,13 @@ test('Progress bar shows correct start and end price', async () => {
     />
   );
 
-  expect(getByTestId('minPrice')).toHaveTextContent(testData.minPrice);
-  expect(getByTestId('maxPrice')).toHaveTextContent(testData.maxPrice);
-  expect(getByTestId('currentPrice')).toHaveTextContent(testData.currentPrice);
+  const minPriceBit = await waitForElement(() => getByTestId('minPrice'));
+  const maxPriceBit = await waitForElement(() => getByTestId('maxPrice'));
+  const currentPriceBit = await waitForElement(() => getByTestId('currentPrice'));
+
+  expect(minPriceBit).toHaveTextContent(testData.minPrice);
+  expect(maxPriceBit).toHaveTextContent(testData.maxPrice);
+  expect(currentPriceBit).toHaveTextContent(testData.currentPrice);
 });
 
 test('Current price shows the correct price', async () => {
@@ -185,7 +190,9 @@ test('Current price shows the correct price', async () => {
     />
   );
 
-  expect(getByTestId('currentPrice')).toHaveTextContent(
+  const currentPriceBit = await waitForElement(() => getByTestId('currentPrice'));
+
+  expect(currentPriceBit).toHaveTextContent(
     testData.currentPrice
   );
 });

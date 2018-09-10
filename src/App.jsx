@@ -10,7 +10,7 @@ import getWeb3 from './utils/getWeb3';
 import Routes from './routes';
 import 'antd/dist/antd.css';
 import './css/root.css';
-import { showConfirm, showExpired } from './components/Modal';
+import { showConfirm, showExpired, confirmInMetamask } from './components/Modal';
 import {
     isTokenForSale,
     getAuctionDetails,
@@ -20,7 +20,6 @@ import {
 import { db, storage } from './utils/firebase'
 import DutchAuction from '../build/contracts/DutchAuction.json';
 import Gems from '../build/contracts/GemERC721.json';
-
 
 
 const dutchAuctionABI = DutchAuction.abi
@@ -57,7 +56,8 @@ class App extends PureComponent {
             gemImage: '',
             story: '',
             priceInWei: '',
-            currentAccount: ''
+            currentAccount: '',
+            releaseConfetti: false
         };
     }
 
@@ -215,6 +215,7 @@ class App extends PureComponent {
         gemsContractInstance.methods.safeTransferFrom(
             currentAccount, auctionContract, token, bigNumberToBytes
         ).send()
+
     };
 
     // @notice removes a gem from an auction
@@ -228,7 +229,13 @@ class App extends PureComponent {
     // @notice lets users buy a gem in an active auction
     handleBuyNow = async _tokenId => {
         const { dutchAuctionContractInstance, priceInWei } = this.state
-        await dutchAuctionContractInstance.methods.buy(_tokenId).send({ value: Number(priceInWei) })
+        confirmInMetamask();
+        await dutchAuctionContractInstance.methods.buy(_tokenId).send({ value: Number(priceInWei) }).on('transactionHash', () => {
+            this.setState({ releaseConfetti: true })
+        }).on('confirmation', () => {
+            window.location = 'https://cryptominerworld.com/workshop/';
+        }
+        ).on('error', console.error);
     };
 
     // @notice get latest price from contract
@@ -290,7 +297,7 @@ class App extends PureComponent {
 
 
     render() {
-        const { redirectTo, tokenId, auctionEndTime, auctionStartTime, auctionStartPrice, auctionEndPrice, font, currentPrice, level, grade, rate, color, isTokenOnSale, web3, gemImage, story } = this.state
+        const { redirectTo, tokenId, auctionEndTime, auctionStartTime, auctionStartPrice, auctionEndPrice, font, currentPrice, level, grade, rate, color, isTokenOnSale, web3, gemImage, story, releaseConfetti } = this.state
 
 
 
@@ -300,8 +307,11 @@ class App extends PureComponent {
             showExpired();
         }
 
+
+
         return (
             <main className={font}>
+
                 <StickyHeader>
                     <Navbar />
                     <MobileHeader
@@ -311,7 +321,6 @@ class App extends PureComponent {
                         rate={rate}
                     />
                 </StickyHeader>
-
                 <Routes
                     currentPrice={Number(currentPrice).toFixed(3)}
                     minPrice={Number(auctionStartPrice / 1000000000000000000)}
@@ -332,6 +341,7 @@ class App extends PureComponent {
                     web3={web3}
                     sourceImage={gemImage}
                     story={story}
+                    releaseConfetti={releaseConfetti}
                 />
                 <Footer />
             </main>

@@ -1,5 +1,21 @@
 import { Modal } from 'antd';
 
+
+
+export const confirmInMetamask = () => {
+  Modal.info({
+    title: 'Please Confirm Your Transaction In Metamask to Proceed',
+    content:
+      'Once you pay for the Gem using Metamask, you will be redirected to your workshop. This may take a moment.',
+
+    maskClosable: true,
+    keyboard: true,
+    iconType: "loading",
+    zIndex: 1000
+
+  });
+};
+
 export const showConfirm = (_tokenId, _handleBuyNow) => {
   Modal.warning({
     title: 'Please Make sure you have installed Metamask and are signed in.',
