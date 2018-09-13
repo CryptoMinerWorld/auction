@@ -92,7 +92,9 @@ const Nugget = ({ quality, value, gem }) => (
 )
 
 Nugget.propTypes = {
-  quality: PropTypes.string.isRequired, value: PropTypes.string.isRequired, gem: PropTypes.string.isRequired,
+  quality: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  gem: PropTypes.string.isRequired,
 };
 
 

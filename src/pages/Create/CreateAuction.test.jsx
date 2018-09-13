@@ -46,20 +46,20 @@ describe('Auction page tests', () => {
     );
   });
 
-  test.skip('Stop an auction and retreieve your collectible', async () => {
-    const { getByTestId } = render(
-      <CreateAuction
-        {...props}
-      />
-    );
+  // test.skip('Stop an auction and retreieve your collectible', async () => {
+  //   const { getByTestId } = render(
+  //     <CreateAuction
+  //       {...props}
+  //     />
+  //   );
 
-    const gemIdInputNode = getByTestId('removeGemInputField');
-    fireEvent.change(gemIdInputNode, { target: { value: 54321 } });
-    fireEvent.click(getByTestId('removeGemButton'));
+  //   const gemIdInputNode = getByTestId('removeGemInputField');
+  //   fireEvent.change(gemIdInputNode, { target: { value: 54321 } });
+  //   fireEvent.click(getByTestId('removeGemButton'));
 
-    expect(props.handleRemoveGemFromAuction).toHaveBeenCalledTimes(1);
-    expect(props.handleRemoveGemFromAuction).toHaveBeenCalledWith(54321);
-  });
+  //   expect(props.handleRemoveGemFromAuction).toHaveBeenCalledTimes(1);
+  //   expect(props.handleRemoveGemFromAuction).toHaveBeenCalledWith(54321);
+  // });
 
   // test.skip('An auction cannot be submitted without all of the fields in the correct type', async () => {
   //   const { getByTestId } = render(<CreateAuction {...props} />);
