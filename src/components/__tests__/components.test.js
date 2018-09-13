@@ -123,9 +123,8 @@ it('CountdownTimer renders correctly', () => {
         level: '1',
         grade: '2',
         rate: '2',
-       
         }
-        const { container } = render(<Gembox {...props}/>);
+        const  container  = render(<Gembox {...props}/>);
         expect(container).toMatchSnapshot();
     });
 
@@ -133,9 +132,9 @@ it('CountdownTimer renders correctly', () => {
 
   it('Gem renders correctly', () => {
     const props = {
-        quality: 'PropTypes.oneOfType([PropTypes.string, PropTypes.number])',
-        image: 'PropTypes.oneOfType([PropTypes.string, PropTypes.number])',
-        amount: 'PropTypes.oneOfType([PropTypes.string, PropTypes.number])'
+        quality: 'PropTypes.oneOfType([PropTypes.string,',
+        image: 'PropTypes.string, PropTypes.number])',
+        amount: 'PropTypes.oneOfTypes.number])'
     }
     const { container } = render(<Gem {...props}/>);
     expect(container).toMatchSnapshot();
