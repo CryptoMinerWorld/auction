@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
@@ -32,76 +33,57 @@ const TopHighlight = styled.div`
   height: 3px;
 `;
 
-const Auction = ({
-  currentPrice,
-  minPrice,
-  maxPrice,
-  level,
-  grade,
-  rate,
-  buyNow,
-  deadline,
-  name,
-  tokenId,
-  redirectTo,
-  showConfirm,
-  color,
-  sourceImage,
-  story,
-  size,
-  releaseConfetti,
-  provider
-}) => (
-    <div>
-      {releaseConfetti && <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: '999' }}>
-        <Confetti  {...size} />
-      </div>}
-      <div className="bg-off-black ">
+const Auction = props => (
+  <div>
+    {props.releaseConfetti && <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: '999' }}>
+      <Confetti  {...props.size} />
+    </div>}
+    <div className="bg-off-black ">
 
-        <RockOverlay>
-          <div className="relative mw9 center">
-            <AuctionImage sourceImage={sourceImage} />
-            <ReactCSSTransitionGroup
-              transitionName="example"
-              transitionAppear
-              transitionAppearTimeout={5000}
-              transitionEnterTimeout={5000}
-              transitionLeaveTimeout={5000}
-            >
-              <AuctionBox
-                currentPrice={currentPrice}
-                minPrice={minPrice}
-                maxPrice={maxPrice}
-                deadline={deadline}
-                handleBuyNow={buyNow}
-                level={level}
-                grade={grade}
-                rate={rate}
-                name={name}
-                tokenId={tokenId}
-                redirectTo={redirectTo}
-                showConfirm={showConfirm}
-                provider={provider}
+      <RockOverlay>
+        <div className="relative mw9 center">
+          <AuctionImage sourceImage={props.sourceImage} />
+          <ReactCSSTransitionGroup
+            transitionName="example"
+            transitionAppear
+            transitionAppearTimeout={5000}
+            transitionEnterTimeout={5000}
+            transitionLeaveTimeout={5000}
+          >
+            <AuctionBox
+              currentPrice={props.currentPrice}
+              minPrice={props.minPrice}
+              maxPrice={props.maxPrice}
+              deadline={props.deadline}
+              handleBuyNow={props.buyNow}
+              level={props.level}
+              grade={props.grade}
+              rate={props.rate}
+              name={props.name}
+              tokenId={props.tokenId}
+              redirectTo={props.redirectTo}
+              showConfirm={props.showConfirm}
+              provider={props.provider}
 
-              />
-            </ReactCSSTransitionGroup>
-          </div>
-        </RockOverlay>
-        <div className="bg-off-black">
-          <TopHighlight />
-          <div className="mw9 center relative-l">
-            <DescriptionBox level={level} grade={grade} rate={rate} color={color} story={story} name={name} />
-            <div className="w-50-l measure-wide-l">
-              <OverlapOnDesktopView>
-                <FAQ />
-              </OverlapOnDesktopView>
-            </div>
+            />
+          </ReactCSSTransitionGroup>
+        </div>
+      </RockOverlay>
+      <div className="bg-off-black">
+        <TopHighlight />
+        <div className="mw9 center relative-l">
+          <DescriptionBox level={props.level} grade={props.grade} rate={props.rate} color={props.color} story={props.story} name={props.name} />
+          <div className="w-50-l measure-wide-l">
+            <OverlapOnDesktopView>
+              <FAQ />
+            </OverlapOnDesktopView>
           </div>
         </div>
-        <MailingList />
       </div>
+      <MailingList />
     </div>
-  );
+  </div>
+);
 
 
 export default sizeMe({
@@ -135,3 +117,4 @@ Auction.propTypes = {
 Auction.defaultProps = {
   redirectTo: '',
 };
+/* eslint-enable */

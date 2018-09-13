@@ -48,8 +48,13 @@ class Gembox extends PureComponent {
   static propTypes = {
     level: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
+    rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    styling: PropTypes.string
   };
+
+  static defaultProps = {
+    styling: ''
+  }
 
   gradeConverter = gradeValue => ({
     1: 'D',
@@ -63,20 +68,13 @@ class Gembox extends PureComponent {
   rateConverter = rate => Math.round((rate / 400) * 100);
 
   render() {
-    const { level, grade, rate } = this.props;
+    const { level, grade, rate, styling } = this.props;
     return (
-      <div className="flex tc pa3">
-        <div className="w-100">
-          <small className="ttu white b dn-ns">level</small>
-          <Gem quality="level" image={gem2} amount={level} />
-        </div>
-        <div className="w-100">
-          <small className="ttu white b dn-ns">grade</small>
-          <Gem quality="grade" image={gem1} amount={this.gradeConverter(grade)} />
-        </div>
-        <div className="w-100">
-          <small className="ttu white b dn-ns">rate</small>
-          <Gem quality="rate" image={gem3} amount={this.rateConverter(rate)} />
+      <div className={styling}>
+        <div className="flex tc pa3">
+          <Nugget quality='level' value={level} gem={gem2} />
+          <Nugget quality='grade' value={this.gradeConverter(grade)} gem={gem1} />
+          <Nugget quality='rate' value={this.rateConverter(rate)} gem={gem3} />
         </div>
       </div>
     );
@@ -84,3 +82,17 @@ class Gembox extends PureComponent {
 }
 
 export default Gembox;
+
+
+const Nugget = ({ quality, value, gem }) => (
+  <div className="w-100">
+    <small className="ttu white b dn-ns">{quality}</small>
+    <Gem quality="rate" image={gem} amount={value} />
+  </div>
+)
+
+Nugget.propTypes = {
+  quality: PropTypes.string.isRequired, value: PropTypes.string.isRequired, gem: PropTypes.string.isRequired,
+};
+
+
