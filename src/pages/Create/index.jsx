@@ -40,30 +40,6 @@ class CreateAuction extends PureComponent {
       <div className="bg-off-black">
         <RockOverlay>
           <div className="relative mw9 center flex jcc ">
-            {/* <div className="pa5 flex jcc col">
-              <Input
-                type="number"
-                placeholder="gemId"
-                className="db"
-                value={gemId}
-                onChange={e =>
-                  this.handleChange(Number(e.target.value), 'gemId')
-                }
-                data-testid="approveGemInputField"
-                required
-              />
-
-              <div>
-                <Button
-                  className="ma3"
-                  onClick={() => handleApproveGemTransfer(gemId)}
-                  data-testid="transferGemButton"
-                >
-                  Approve Transfer
-                </Button>
-              </div>
-            </div> */}
-
             <div className="pa5 flex jcc col">
               <Input
                 type="number"

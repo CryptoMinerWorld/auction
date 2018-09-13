@@ -94,8 +94,14 @@ const SocialIcons = ({link, title, path}) => <a
                   </a>
 
 SocialIcons.propTypes = {
-  link: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
-  path: PropTypes.string.isRequired,
+  link: PropTypes.string,
+  title: PropTypes.string,
+  path: PropTypes.string,
+};
+
+SocialIcons.defaultProps = {
+  link: '',
+  title: '',
+  path: '',
 };
 

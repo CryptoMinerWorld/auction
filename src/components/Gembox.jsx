@@ -12,24 +12,24 @@ const Feature = styled.div`
   align-items: center;
 `;
 
-const Gem = ({ quality, image, amount }) => (
-  <div className="w-100">
-    <small className="ttu white b dn-ns">{quality}</small>
-    <Feature >
-      <img
-        src={image}
-        alt={quality}
-        style={{ gridColumn: '1 / -1', gridRow: '2' }}
-        className="h3 center"
-      />
-      <p
-        style={{ gridRow: 2, gridColumn: 2 }}
-        className={`ttu f5 mt2 b o-50 black ${quality === 'grade' && 'pr2'}`}
-      >
-        {quality === 'rate' ? `${amount}%` : amount}
-      </p>
-    </Feature>
-  </div>
+
+export const Gem = ({ quality, image, amount }) => (
+
+  <Feature >
+    <img
+      src={image}
+      alt={quality}
+      style={{ gridColumn: '1 / -1', gridRow: '2' }}
+      className="h3 center"
+    />
+    <p
+      style={{ gridRow: 2, gridColumn: 2 }}
+      className={`ttu f5 mt2 b o-50 black ${quality === 'grade' && 'pr2'}`}
+    >
+      {quality === 'rate' ? `${amount}%` : amount}
+    </p>
+  </Feature>
+
 );
 
 Gem.propTypes = {
@@ -66,9 +66,18 @@ class Gembox extends PureComponent {
     const { level, grade, rate } = this.props;
     return (
       <div className="flex tc pa3">
-        <Gem quality="level" image={gem2} amount={level} />
-        <Gem quality="grade" image={gem1} amount={this.gradeConverter(grade)} />
-        <Gem quality="rate" image={gem3} amount={this.rateConverter(rate)} />
+        <div className="w-100">
+          <small className="ttu white b dn-ns">level</small>
+          <Gem quality="level" image={gem2} amount={level} />
+        </div>
+        <div className="w-100">
+          <small className="ttu white b dn-ns">grade</small>
+          <Gem quality="grade" image={gem1} amount={this.gradeConverter(grade)} />
+        </div>
+        <div className="w-100">
+          <small className="ttu white b dn-ns">rate</small>
+          <Gem quality="rate" image={gem3} amount={this.rateConverter(rate)} />
+        </div>
       </div>
     );
   }

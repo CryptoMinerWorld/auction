@@ -3,11 +3,7 @@ import PropTypes from 'prop-types';
 import { Progress } from 'antd';
 
 class ProgressMeter extends PureComponent {
-  static propTypes = {
-    currentPrice: PropTypes.string.isRequired,
-    minPrice: PropTypes.number.isRequired,
-    maxPrice: PropTypes.number.isRequired
-  };
+
 
   calculatePercentage = (max, current) => ((max - current) / max) * 100
 
@@ -40,3 +36,10 @@ class ProgressMeter extends PureComponent {
 }
 
 export default ProgressMeter;
+
+
+ProgressMeter.propTypes = {
+  currentPrice: PropTypes.string.isRequired,
+  minPrice: PropTypes.number.isRequired,
+  maxPrice: PropTypes.number.isRequired
+};

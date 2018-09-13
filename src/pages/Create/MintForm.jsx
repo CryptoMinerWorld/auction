@@ -107,6 +107,8 @@ const MintForm = ({ randomGradeValue, handleNetworkChange, contractAddress, colo
   </form>
 )
 
+export default MintForm
+
 MintForm.propTypes = {
   contractAddress: PropTypes.string.isRequired,
   color: PropTypes.string.isRequired,

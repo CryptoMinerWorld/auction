@@ -1,3 +1,4 @@
+import fromExponential from 'from-exponential';
 import {BigNumber} from 'bignumber.js';
 import { db, storage } from '../../utils/firebase'
 
@@ -81,3 +82,6 @@ const properties = new BigNumber(_properties)
  export const getPrice =  (_tokenId, _contract) =>  _contract.methods.getCurrentPrice(
         _tokenId).call()
         
+
+
+export const nonExponential = (count) =>     fromExponential(Number(count) / 1000000000000000000)

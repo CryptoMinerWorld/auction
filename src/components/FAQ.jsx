@@ -39,7 +39,6 @@ const Question = ({ focusedDetail, handleChange, question, answer, index }) => (
   </details>
 )
 
-
 Question.propTypes = {
   focusedDetail: PropTypes.number.isRequired, handleChange: PropTypes.func.isRequired,
   question: PropTypes.string.isRequired,

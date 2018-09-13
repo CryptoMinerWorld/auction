@@ -40,7 +40,7 @@ class Mint extends PureComponent {
     color: '9',
     level: '1',
     gradeType: '1',
-    gradeValue: '',
+    gradeValue: 1,
     gemDetails: `hello`,
     gemImage: `http://placekitten.com/g/600/300`,
     imageLoading: false
@@ -54,9 +54,8 @@ class Mint extends PureComponent {
     );
     this.randomGradeValue();
 
-    this.getImage().subscribe(({ id, image }) =>
+    this.getImage().subscribe(({ image }) =>
       this.setState({
-        gemDetails: id,
         gemImage: image
       }))
   }
@@ -81,10 +80,11 @@ class Mint extends PureComponent {
     }[gradeType]
 
 
-    const fileName = `${type} ${level} ${grade}.png`;
+    const fileName = `${type}-${level}-${grade}-4500.png`;
+    console.log('fileName', fileName);
 
     storage
-      .ref(`gems/${fileName}`)
+      .ref(`gems512/${fileName}`)
       .getDownloadURL()
       .then(url => this.setState({ gemImage: url, imageLoading: false }))
       .catch(err => {
@@ -116,7 +116,7 @@ class Mint extends PureComponent {
 
   handleNetworkChange = value => this.setState({ contractAddress: value });
 
-  handleChange = (value, quality) => {
+  handleChange = () => (value, quality) => {
     // eslint-disable-next-line
     this.setState({ [quality]: value }, () => this.gemURL(this.state.color, this.state.level, this.state.gradeType));
   }
@@ -143,7 +143,7 @@ class Mint extends PureComponent {
               gemDetails={gemDetails}
               handleSubmit={this.handleSubmit} />
           </div>
-          <DisplayCard gemDetails={gemDetails} gemImage={gemImage} imageLoading={imageLoading} />
+          <DisplayCard gemImage={gemImage} imageLoading={imageLoading} />
         </div>
       </div >
     );

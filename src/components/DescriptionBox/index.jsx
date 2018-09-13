@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Waypoint from 'react-waypoint';
 import gem1 from '../../images/icons/gem1.png';
@@ -9,7 +8,7 @@ import gem3 from '../../images/icons/gem3.png';
 import tinyDiamond from '../../images/tinyDiamond.png';
 import './animations.css';
 import logo from '../../images/Profile-Image-Logo-60x60.png';
-
+import { Gem } from '../Gembox'
 
 
 
@@ -141,14 +140,6 @@ class DescriptionBox extends PureComponent {
 
 export default DescriptionBox;
 
-const Feature = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: 1fr;
-  align-items: center;
-`;
-
-
 
 
 const FeatureBand = ({ bgColour, gem, category, amount, description, clip }) =>
@@ -157,20 +148,7 @@ const FeatureBand = ({ bgColour, gem, category, amount, description, clip }) =>
     style={clip}
   >
     <div className="w-20">
-      <Feature>
-        <img
-          src={gem}
-          alt={category}
-          style={{ gridColumn: '1 / -1', gridRow: '2' }}
-          className="h3 center"
-        />
-        <p
-          style={{ gridRow: 2, gridColumn: 2 }}
-          className={`ttu f5 b o-50 black tc mt1 ${category === 'grade' && 'pr2'}`}
-        >
-          {amount}
-        </p>
-      </Feature>
+      <Gem quality={category} image={gem} amount={amount} />
     </div>
     <div className="w-80">
       <p className="b ttu">{category}</p>

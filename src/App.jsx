@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import FontFaceObserver from 'fontfaceobserver';
-import fromExponential from 'from-exponential';
 import { Alert } from 'antd';
 import MobileHeader from './components/MobileHeader';
 import Navbar from './components/Nav';
@@ -15,7 +14,11 @@ import {
     isTokenForSale,
     getAuctionDetails,
     calcMiningRate,
-    getGemQualities, getGemStory, getGemImage, getPrice
+    getGemQualities,
+    getGemStory,
+    getGemImage,
+    getPrice,
+    nonExponential
 } from './pages/Auction/helpers';
 import { createAuction } from './pages/Create/helpers';
 import DutchAuction from '../build/contracts/DutchAuction.json';
@@ -114,7 +117,8 @@ class App extends PureComponent {
                     getPrice(tokenId, dutchAuctionContractInstance).then(result =>
                         this.setState({
                             priceInWei: result,
-                            currentPrice:fromExponential(Number(result) / 1000000000000000000)
+                            currentPrice: nonExponential(result)
+
                         })
                     )
                     // @notice check if the token is on sale
@@ -130,7 +134,8 @@ class App extends PureComponent {
                 getPrice(tokenId, dutchAuctionContractInstance).then(result =>
                     this.setState({
                         priceInWei: result,
-                        currentPrice:fromExponential(Number(result) / 1000000000000000000)
+                        currentPrice: nonExponential(result)
+
                     })
                 )
             }, 10000);
@@ -146,13 +151,13 @@ class App extends PureComponent {
                         rate: Number(calcMiningRate(gradeType, gradeValue))
                     });
 
-                const image = getGemImage(color, gradeType, level)
-                const story = getGemStory(color, level)
+                    const image = getGemImage(color, gradeType, level)
+                    const story = getGemStory(color, level)
 
-                Promise.all([image, story]).then(([_image, _story]) => this.setState({ gemImage: _image, story: _story }))
-                .catch(err => {
-                    this.setState({ err })
-                })
+                    Promise.all([image, story]).then(([_image, _story]) => this.setState({ gemImage: _image, story: _story }))
+                        .catch(err => {
+                            this.setState({ err })
+                        })
                 }
             )
         }
@@ -169,7 +174,7 @@ class App extends PureComponent {
         _duration, _startPriceInWei, _endPriceInWei
     ) => {
         const { gemsContractInstance, currentAccount } = this.state
-        createAuction( _tokenId,
+        createAuction(_tokenId,
             _duration, _startPriceInWei, _endPriceInWei, gemsContractInstance, currentAccount)
     };
 
@@ -187,7 +192,7 @@ class App extends PureComponent {
         confirmInMetamask();
         await dutchAuctionContractInstance.methods.buy(_tokenId).send({ value: Number(priceInWei) }).on('transactionHash', () => {
             this.setState({ releaseConfetti: true })
-        }).on('confirmation', () => {window.location = 'https://cryptominerworld.com/workshop/'}
+        }).on('confirmation', () => { window.location = 'https://cryptominerworld.com/workshop/' }
         ).on('error', err => this.setState({ err }));
     };
 
