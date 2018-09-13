@@ -2,14 +2,11 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types';
 
 class FAQ extends PureComponent {
-
   state = {
     focusedDetail: 0
   }
 
-  handleChange = (index) => () => {
-    this.setState({ focusedDetail: index })
-  }
+  handleChange = (index) => () => this.setState({ focusedDetail: index })
 
   render() {
     const { focusedDetail } = this.state
@@ -17,7 +14,6 @@ class FAQ extends PureComponent {
       <div className="bg-off-black white ma0 pa3 measure">
         <h2 className='white'
         >Frequently Asked Questions</h2>
-
         <Question focusedDetail={focusedDetail}
           handleChange={this.handleChange}
           question='How does this work?'
@@ -38,14 +34,10 @@ class FAQ extends PureComponent {
           question='How do I bid?'
           answer='You bid by clicking the big pink “Buy Now” button. You will need to be using a Web3 compatible Ethereum Wallet program. MetaMask, Toshi/Coinbase Wallet, BUNTOY, Brave browser, Trust, Cipher, are some of the more well know options. For more information on how to install MetaMask'
           index={4} />
-
-
       </div>
     )
   }
 }
-
-
 
 const Question = ({ focusedDetail, handleChange, question, answer, index }) => (
   <details open={focusedDetail === index} onFocus={handleChange(index)}>

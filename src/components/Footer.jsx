@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import img from '../images/footer_geodes.png';
+
 
 const TopHighlight = styled.div`
   background: linear-gradient(to right, #fc01ca, #bc197c);
@@ -15,6 +17,19 @@ const BackgroundImage = styled.footer`
   background-repeat: no-repeat;
 `;
 
+const FooterLink = ({link, title}) => <a
+href={link}
+  className="f5 db fw6 pv3 black-70 link dim white"
+  title={title}
+>
+  {title}
+</a>
+
+FooterLink.propTypes = {
+  title: PropTypes.string.isRequired,
+  link: PropTypes.string.isRequired,
+};
+
 const Footer = () =>    
       <div className="bg-footer-black">
         <TopHighlight />
@@ -22,52 +37,12 @@ const Footer = () =>
           <BackgroundImage className="pa4 pa6-l bt b--black-10  ">
             <div className="mb4-l cf">
               <article className="fl w-50 dib-ns w-auto-ns mr4-m mr5-l mb4 pr2 pr0-ns white">
-                <a
-                href="https://cryptominerworld.com/"
-                  className="f5 db fw6 pv3 black-70 link dim white"
-                  title="Home"
-                >
-                  Home
-                </a>
-                <a
-                href="https://cryptominerworld.com/game_info/"
-                  className="f5 db fw6 pv3 black-70 link dim white"
-                  title="Game Info"
-                >
-                  Game Info
-                </a>
-                <a
-               href="https://cryptominerworld.com/founders_geode_pre-sale/"
-               title="Geode Pre-Sale"
-                  className="f5 db fw6 pv3 black-70 link dim white"
-                
-                >
-                  Founder Geode Pre-Sale
-                </a>
-                <a
-            
-                  className="f5 db fw6 pv3 black-70 link dim white"
-                  href="https://cryptominerworld.com/workshop/"
-                  title="Workshop"
-                >
-                  Workshop
-                </a>
-                <a
-             
-                  className="f5 db fw6 pv3 black-70 link dim white"
-                  href="https://cryptominerworld.com/market/"
-                  title="Market"
-                >
-                  Market
-                </a>
-                <a
-             
-                  className="f5 db fw6 pv3 black-70 link dim white"
-                  href="https://cryptominerworld.com/world/"
-                  title="World"
-                >
-                  World
-                </a>
+                <FooterLink link="https://cryptominerworld.com/" title="Home" />
+                <FooterLink link="https://cryptominerworld.com/game_info/" title="Game Info" />
+                <FooterLink link="https://cryptominerworld.com/founders_geode_pre-sale/" title="Founder Geode Pre-Sale" />
+                <FooterLink link="https://cryptominerworld.com/workshop/" title="Workshop" />
+                <FooterLink link="https://cryptominerworld.com/market/" title="Market" />
+                <FooterLink link="https://cryptominerworld.com/world/" title="World" />
               </article>
               <article
                 className="fl-ns w-50-ns
