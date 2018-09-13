@@ -25,8 +25,12 @@ const someDate = new Date();
 const numberOfDaysToAdd = 2;
 someDate.setDate(someDate.getDate() + numberOfDaysToAdd);
 
-// @dev this is all the test data, easy to configure in one place
-const testData = {
+
+
+describe('Auction page tests', () => {
+
+ // @dev this is all the test data, easy to configure in one place
+const props = {
   currentPrice: 1.323,
   minPrice: .8,
   maxPrice: 4.5,
@@ -36,7 +40,7 @@ const testData = {
   rate: 53,
   color: 10,
   name: 'Amethyst Thingymajig',
-  handleBuyNow: jest.fn(),
+  buyNow: jest.fn(),
   showConfirm: jest.fn(),
   gemId: 12345,
   story: 'hello',
@@ -49,59 +53,23 @@ const testData = {
 
 test('Buy now button triggers the modal with the correct gem Id and the buy Now function', async () => {
   // Arrange
-  const { getByTestId } = render(
-    <Auction
-          minPrice={testData.minPrice}
-          maxPrice={testData.maxPrice }
-          level={testData.level}
-          grade={testData.grade}
-          rate={testData.rate}
-          color={testData.color}
-          buyNow={testData.handleBuyNow}
-          auctionStartTime={testData.auctionStartTime}
-          deadline={testData.auctionEndTime }
-          name={`# ${testData.tokenId}`}
-          redirectTo={testData.redirectTo}
-          showConfirm={testData.showConfirm}
-          sourceImage={testData.gemImage}
-          tokenId={testData.tokenId}
-          story={testData.story}
-          currentPrice={Number(testData.currentPrice).toFixed(3)}
-          color={testData.color}
-    />
-  );
+  const { getByTestId } = render(<Auction {...props} />);
 
   const buyNowButton = await waitForElement(() => getByTestId('buyNowButton'));
   // Act
   fireEvent.click(buyNowButton);
 
   // Assert
-  expect(testData.handleBuyNow).toHaveBeenCalledTimes(1);
-  expect(testData.handleBuyNow).toHaveBeenCalledWith(
-    testData.gemId 
+  expect(props.buyNow).toHaveBeenCalledTimes(1);
+  expect(props.buyNow).toHaveBeenCalledWith(
+    props.gemId 
   );
 });
 
 test.skip('If no metamask show modal, otherwise let people buy directly', async () => {  
   const { getByTestId } = render(
     <Auction
-          minPrice={testData.minPrice}
-          maxPrice={testData.maxPrice }
-          level={testData.level}
-          grade={testData.grade}
-          rate={testData.rate}
-          color={testData.color}
-          buyNow={testData.handleBuyNow}
-          auctionStartTime={testData.auctionStartTime}
-          deadline={testData.auctionEndTime }
-          name={`# ${testData.tokenId}`}
-          redirectTo={testData.redirectTo}
-          showConfirm={testData.showConfirm}
-          sourceImage={testData.gemImage}
-          tokenId={testData.tokenId}
-          story={testData.story}
-          currentPrice={Number(testData.currentPrice).toFixed(3)}
-          color={testData.color}
+    {...props}
     />
   );
   
@@ -112,20 +80,7 @@ test.skip('If no metamask show modal, otherwise let people buy directly', async 
 test('Countdown timer shows correct time', async () => {
   const { getByTestId } = render(
     <Auction
-    currentPrice={Number(testData.currentPrice).toFixed(3)}
-    color={testData.color}
-      minPrice={testData.minPrice}
-      maxPrice={testData.maxPrice}
-      level={testData.level}
-      grade={testData.grade}
-      rate={testData.rate}
-      buyNow={testData.handleBuyNow}
-      deadline={testData.deadline}
-      name={testData.name}
-      showConfirm={testData.showConfirm}
-      sourceImage={testData.gemImage}
-      tokenId={testData.tokenId}
-      story={testData.story}
+    {...props}
     />
   );
 
@@ -142,21 +97,7 @@ test('Countdown timer shows correct time', async () => {
 
 test('Countdown timer shows non-plural time descriptions (for example 1 hour vs 1 hours)', async () => {
   const { getByTestId } = render(
-    <Auction
-    currentPrice={Number(testData.currentPrice).toFixed(3)}
-    color={testData.color}
-      minPrice={testData.minPrice}
-      maxPrice={testData.maxPrice}
-      level={testData.level}
-      grade={testData.grade}
-      rate={testData.rate}
-      buyNow={testData.handleBuyNow}
-      deadline={testData.deadline}
-      name={testData.name}
-      showConfirm={testData.showConfirm}
-      sourceImage={testData.gemImage}
-      tokenId={testData.tokenId}
-      story={testData.story}
+    <Auction {...props}
     />
   );
 
@@ -167,21 +108,7 @@ test('Countdown timer shows non-plural time descriptions (for example 1 hour vs 
 
 test('Progress bar shows correct start and end price', async () => {
   const { getByTestId } = render(
-    <Auction
-    currentPrice={Number(testData.currentPrice).toFixed(3)}
-    color={testData.color}
-      minPrice={testData.minPrice}
-      maxPrice={testData.maxPrice}
-      level={testData.level}
-      grade={testData.grade}
-      rate={testData.rate}
-      buyNow={testData.handleBuyNow}
-      deadline={testData.deadline}
-      name={testData.name}
-      showConfirm={testData.showConfirm}
-      sourceImage={testData.gemImage}
-      tokenId={testData.tokenId}
-      story={testData.story}
+    <Auction {...props}
     />
   );
 
@@ -189,35 +116,21 @@ test('Progress bar shows correct start and end price', async () => {
   const maxPriceBit = await waitForElement(() => getByTestId('maxPrice'));
   const currentPriceBit = await waitForElement(() => getByTestId('currentPrice'));
 
-  expect(minPriceBit).toHaveTextContent(testData.minPrice);
-  expect(maxPriceBit).toHaveTextContent(testData.maxPrice);
-  expect(currentPriceBit).toHaveTextContent(testData.currentPrice);
+  expect(minPriceBit).toHaveTextContent(props.minPrice);
+  expect(maxPriceBit).toHaveTextContent(props.maxPrice);
+  expect(currentPriceBit).toHaveTextContent(props.currentPrice);
 });
 
 test('Current price shows the correct price', async () => {
   const { getByTestId } = render(
-    <Auction
-    currentPrice={Number(testData.currentPrice).toFixed(3)}
-    color={testData.color}
-      minPrice={testData.minPrice}
-      maxPrice={testData.maxPrice}
-      level={testData.level}
-      grade={testData.grade}
-      rate={testData.rate}
-      buyNow={testData.handleBuyNow}
-      deadline={testData.deadline}
-      name={testData.name}
-      showConfirm={testData.showConfirm}
-      sourceImage={testData.gemImage}
-      tokenId={testData.tokenId}
-      story={testData.story}
+    <Auction {...props}
     />
   );
 
   const currentPriceBit = await waitForElement(() => getByTestId('currentPrice'));
 
   expect(currentPriceBit).toHaveTextContent(
-    testData.currentPrice
+    props.currentPrice
   );
 });
 
@@ -250,4 +163,4 @@ test.skip('auction tell you an auction is over of the id does not exist', () => 
   expect(true).toBeFalsy();
 });
 
-
+})
