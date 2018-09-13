@@ -47,13 +47,13 @@ class App extends PureComponent {
             dutchAuctionContractInstance: '',
             gemsContractInstance: '',
             auctionStartTime: '',
-            auctionEndTime: '',
+            auctionEndTime: 1,
             tokenId: '',
             grade: 1,
             level: 'A',
             rate: '',
             color: '',
-            isTokenOnSale: true,
+            isTokenOnSale: false,
             gemImage: '',
             story: '',
             priceInWei: '',
@@ -243,6 +243,7 @@ class App extends PureComponent {
                     sourceImage={gemImage}
                     story={story}
                     releaseConfetti={releaseConfetti}
+                    provider={!!web3}
                 />
                 <Footer />
             </main>

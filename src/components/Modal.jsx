@@ -16,7 +16,7 @@ export const confirmInMetamask = () => {
   });
 };
 
-export const showConfirm = (_tokenId, _handleBuyNow) => {
+export const showConfirm = (_handleBuyNow, _tokenId) => {
   Modal.warning({
     title: 'Please Make sure you have installed Metamask and are signed in.',
     content:

@@ -24,7 +24,7 @@ export const Gem = ({ quality, image, amount }) => (
     />
     <p
       style={{ gridRow: 2, gridColumn: 2 }}
-      className={`ttu f5 mt2 b o-50 black ${quality === 'grade' && 'pr2'}`}
+      className={`ttu f5 mt2 b o-50 black tc ${quality === 'grade' && 'pr2'}`}
     >
       {quality === 'rate' ? `${amount}%` : amount}
     </p>

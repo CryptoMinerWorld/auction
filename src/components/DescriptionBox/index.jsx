@@ -142,7 +142,7 @@ export default DescriptionBox;
 
 
 
-const FeatureBand = ({ bgColour, gem, category, amount, description, clip }) =>
+export const FeatureBand = ({ bgColour, gem, category, amount, description, clip }) =>
   <div
     className={`w-100 ${bgColour} h-auto flex aic mt3 br4-ns br--left-ns shadow-3 pa3`}
     style={clip}
@@ -157,7 +157,11 @@ const FeatureBand = ({ bgColour, gem, category, amount, description, clip }) =>
   </div>
 
 FeatureBand.propTypes = {
-  bgColour: PropTypes.string.isRequired, gem: PropTypes.number.isRequired, category: PropTypes.number.isRequired, amount: PropTypes.number.isRequired, description: PropTypes.string.isRequired,
+  bgColour: PropTypes.string.isRequired,
+  gem: PropTypes.string.isRequired,
+  category: PropTypes.string.isRequired,
+  amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  description: PropTypes.string.isRequired,
   clip: PropTypes.shape({
     clip: PropTypes.string,
   })

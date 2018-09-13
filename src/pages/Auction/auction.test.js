@@ -49,7 +49,8 @@ const props = {
   redirectTo:'',
   auctionStartTime:2000,
   auctionEndTime: 1000,
-  sourceImage:'https://i.kym-cdn.com/photos/images/original/001/225/594/18a.gif'
+  sourceImage:'https://i.kym-cdn.com/photos/images/original/001/225/594/18a.gif',
+  provider: true
 };
 
 test('Buy now button triggers the modal with the correct gem Id and the buy Now function', async () => {
@@ -67,14 +68,23 @@ test('Buy now button triggers the modal with the correct gem Id and the buy Now 
   );
 });
 
-test.skip('If no metamask show modal, otherwise let people buy directly', async () => {  
+test('If no metamask show modal, otherwise let people buy directly', async () => {  
   const { getByTestId } = render(
     <Auction
     {...props}
-    />
+    provider={false}
+    /> );
+
+    const metaMask = props.web3
+    expect(metaMask).toBeFalsy()
+      // Act
+    const buyNowButton = await waitForElement(() => getByTestId('buyNowButton'));
+    fireEvent.click(buyNowButton);
+
+  expect(props.showConfirm).toHaveBeenCalledTimes(1);
+  expect(props.showConfirm).toHaveBeenCalledWith(
+    props.buyNow, props.gemId
   );
-  
-  expect(true).toBeFalsy();
 
 })
 
@@ -136,6 +146,16 @@ test('Current price shows the correct price', async () => {
 });
 
 test.skip('Check if the auction is still active, show bought or over', async () => {
+  const { queryByText } = render(
+    <Auction {...props} isTokenOnSale={false}
+    />
+  );
+  const Button = queryByText('submit')
+  expect(Button).toBeInTheDocument()
+});
+
+
+test.skip('auction tell you an auction is over of the id does not exist', () => {
   expect(true).toBeFalsy();
 });
 
@@ -150,18 +170,18 @@ test.skip('Current price does not continue to depreciate after the deadline', as
   // https://jestjs.io/docs/en/timer-mocks.html#advance-timers-by-time
 });
 
-test.skip('calcMiningRate accurately calculate steh mining rate', () => {
+test('calcMiningRate accurately calculates the mining rate', () => {
   expect(calcMiningRate(1, 200000)).toEqual(1);
   expect(calcMiningRate(6, 1000000)).toEqual(400);
 });
 
 test.skip('auction lets people buy after a deadline is passed', () => {
-  expect(true).toBeFalsy();
+    // Again, I don't knwo how to test this since the time deprecation is happening on the contract
+  // jest.advanceTimersByTime(1000); might be useful somewhere
+  // https://jestjs.io/docs/en/timer-mocks.html#advance-timers-by-time
 });
 
 
-test.skip('auction tell you an auction is over of the id does not exist', () => {
-  expect(true).toBeFalsy();
-});
+
 
 })

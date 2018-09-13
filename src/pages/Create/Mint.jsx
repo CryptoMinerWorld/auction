@@ -79,14 +79,15 @@ class Mint extends PureComponent {
       6: 'AAA',
     }[gradeType]
 
-
     const fileName = `${type}-${level}-${grade}-4500.png`;
-    console.log('fileName', fileName);
 
     storage
       .ref(`gems512/${fileName}`)
       .getDownloadURL()
-      .then(url => this.setState({ gemImage: url, imageLoading: false }))
+      .then(url => {
+        this.setState({ gemImage: url, imageLoading: false })
+      }
+      )
       .catch(err => {
         // eslint-disable-next-line
         console.error(err)
@@ -116,9 +117,11 @@ class Mint extends PureComponent {
 
   handleNetworkChange = value => this.setState({ contractAddress: value });
 
-  handleChange = () => (value, quality) => {
-    // eslint-disable-next-line
-    this.setState({ [quality]: value }, () => this.gemURL(this.state.color, this.state.level, this.state.gradeType));
+  handleChange = (quality) => (value) => {
+    this.setState({ [quality]: value }, () => {
+      const { color, level, gradeType } = this.state
+      this.gemURL(color, level, gradeType);
+    })
   }
 
   handleGradeValueChange = value => this.setState({ gradeValue: value });
@@ -130,7 +133,7 @@ class Mint extends PureComponent {
     return (
       <div className="ma0 pa0">
         <div className="mw9 center flex jcc aic">
-          <div className="pa5 flex jcc col aic">
+          <div className="pa5 flex jcc row aic">
             <MintForm
               randomGradeValue={this.randomGradeValue}
               handleNetworkChange={this.handleNetworkChange} contractAddress={contractAddress}
@@ -142,8 +145,10 @@ class Mint extends PureComponent {
               handleGradeValueChange={this.handleGradeValueChange}
               gemDetails={gemDetails}
               handleSubmit={this.handleSubmit} />
+            <div />
+            <DisplayCard gemImage={gemImage} imageLoading={imageLoading} />
           </div>
-          <DisplayCard gemImage={gemImage} imageLoading={imageLoading} />
+
         </div>
       </div >
     );
