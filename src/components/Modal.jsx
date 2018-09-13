@@ -1,7 +1,5 @@
 import { Modal } from 'antd';
 
-
-
 export const confirmInMetamask = () => {
   Modal.info({
     title: 'Please Confirm Your Transaction In Metamask to Proceed',

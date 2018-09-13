@@ -1,0 +1,914 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AuctionBox renders correctly 1`] = `
+<div>
+  <div
+    class="bg-dark-gray br3 measure-l w-100 shadow-3 sc-EHOje fnvQJE"
+  >
+    <div
+      class="sc-bxivhb fmgrTl"
+    />
+    <div
+      class="white pa3"
+    >
+      <h1
+        class="tc pb3 b white"
+        style="word-break: break-all;"
+      >
+        PropTypes.string.isRequired
+      </h1>
+      <div
+        class="tc bg-blue pa2 br3 shadow-3 sc-htpNat bEMcrA"
+      >
+        <p
+          class="b"
+        >
+          Auction ends on
+        </p>
+        <time
+          class="measure"
+        >
+          Thursday 1st of January, 5:31 AM
+        </time>
+      </div>
+      <div
+        class="mt3"
+      />
+      <div
+        class=""
+      >
+        <div
+          class="flex tc pa3"
+        >
+          <div
+            class="w-100"
+          >
+            <small
+              class="ttu white b dn-ns"
+            >
+              level
+            </small>
+            <div
+              class="sc-bdVaJa giFZti"
+            >
+              <img
+                alt="rate"
+                class="h3 center"
+                src="gem2.png"
+              />
+              <p
+                class="ttu f5 mt2 b o-50 black tc false"
+              >
+                PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired%
+              </p>
+            </div>
+          </div>
+          <div
+            class="w-100"
+          >
+            <small
+              class="ttu white b dn-ns"
+            >
+              grade
+            </small>
+            <div
+              class="sc-bdVaJa giFZti"
+            >
+              <img
+                alt="rate"
+                class="h3 center"
+                src="gem1.png"
+              />
+              <p
+                class="ttu f5 mt2 b o-50 black tc false"
+              >
+                %
+              </p>
+            </div>
+          </div>
+          <div
+            class="w-100"
+          >
+            <small
+              class="ttu white b dn-ns"
+            >
+              rate
+            </small>
+            <div
+              class="sc-bdVaJa giFZti"
+            >
+              <img
+                alt="rate"
+                class="h3 center"
+                src="gem3.png"
+              />
+              <p
+                class="ttu f5 mt2 b o-50 black tc false"
+              >
+                NaN%
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="w-100 w5-ns h3 center mt4"
+      >
+        <button
+          class="b sc-ifAKCX jxHKIH"
+          data-testid="buyNowButton"
+        >
+          Buy Now
+        </button>
+      </div>
+      <div
+        class="white ma0 pa3 tc "
+      >
+        <small
+          class="white ttu "
+        >
+          current price
+        </small>
+        <p
+          class="basic"
+          style="font-size: xx-large;"
+        >
+          Ξ 
+          <span
+            data-testid="currentPrice"
+          >
+            PropTypes.string.isRequired
+          </span>
+        </p>
+        <div
+          class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default ba br-pill pb1 ph2 mb1  b--white-40"
+        >
+          <div>
+            <div
+              class="ant-progress-outer"
+            >
+              <div
+                class="ant-progress-inner"
+              >
+                <div
+                  class="ant-progress-bg"
+                  style="width: 0%; height: 8px; background: rgb(192, 24, 171); border-radius: 100px;"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="flex jcb"
+        >
+          <small
+            class="basic"
+          >
+            Ξ 
+            <span
+              data-testid="minPrice"
+            >
+              10
+            </span>
+          </small>
+          <small
+            class="basic"
+          >
+            Ξ 
+            <span
+              data-testid="maxPrice"
+            >
+              100
+            </span>
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`AuctionImage renders correctly 1`] = `
+<div>
+  <div
+    class="pa3-ns"
+  >
+    <div
+      class="mw8 center"
+    >
+      <div
+        class="v-mid bg-transparent contain bg-right-l bg-center sc-bZQynM hxcitX"
+      />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`CountdownTimer renders correctly 1`] = `
+<div>
+  <div
+    class="tc bg-blue pa2 br3 shadow-3 sc-htpNat bEMcrA"
+  >
+    <p
+      class="b"
+    >
+      Auction ends on
+    </p>
+    <time
+      class="measure"
+    >
+      Thursday 1st of January, 5:31 AM
+    </time>
+  </div>
+</div>
+`;
+
+exports[`DescriptionBox renders correctly 1`] = `
+<div>
+  <div
+    class="bg-off-black white ma0 "
+  >
+    <div
+      class="flex-l jce mw9 center"
+    >
+      <div
+        class="w-60-l pl5-l"
+      >
+        <div
+          class="pa5-ns pa3"
+        >
+          <div
+            class="flex jcb aic"
+          >
+            <div
+              class="flex aic tc tl-ns"
+            >
+              <img
+                alt="tiny decorative orange triangle"
+                class="dib mr3"
+                src="tinyDiamond.png"
+              />
+              <h1
+                class="dib b white"
+              >
+                PropTypes.string.isRequired
+              </h1>
+              <img
+                alt="tiny decorative orange triangle"
+                class="dib ml3"
+                src="tinyDiamond.png"
+              />
+            </div>
+            <div
+              class="flex aic br-pill bg-white-10 w5-ns w-auto black h-auto pa1"
+            >
+              <img
+                alt="seller logo"
+                class="br-100 h2 pl3-ns"
+                src="Profile-Image-Logo-60x60.png"
+              />
+              <small
+                class="pl3 white-60 dn dib-m dib-l"
+              >
+                 
+                <span
+                  class="dn dib-l"
+                >
+                  Sold By 
+                  
+                </span>
+                 CryptoMiner World
+              </small>
+            </div>
+          </div>
+          <p
+            class="o-50"
+          >
+            PropTypes.string.isRequired
+          </p>
+        </div>
+        <div />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`FeatureBand renders correctly 1`] = `
+<div>
+  <div
+    class="w-100 PropTypes.string.isRequired h-auto flex aic mt3 br4-ns br--left-ns shadow-3 pa3"
+  >
+    <div
+      class="sc-bdVaJa giFZti"
+    >
+      <img
+        alt="PropTypes.string.isRequired"
+        class="h3 center"
+        src="PropTypes.string.isRequired"
+      />
+      <p
+        class="ttu f5 mt2 b o-50 black tc false"
+      >
+        0
+      </p>
+    </div>
+    <div
+      class="w-80"
+    >
+      <p
+        class="b ttu"
+      >
+        PropTypes.string.isRequired
+      </p>
+      <p
+        class=" pr4-ns"
+      >
+        PropTypes.string.isRequired
+      </p>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Footer renders correctly 1`] = `
+<div>
+  <div
+    class="bg-footer-black"
+  >
+    <div
+      class="sc-gzVnrw blMZp"
+    />
+    <div
+      class="mw9 center"
+    >
+      <footer
+        class="pa4 pa6-l bt b--black-10   sc-htoDjs bWkhyn"
+      >
+        <div
+          class="mb4-l cf"
+        >
+          <article
+            class="fl w-50 dib-ns w-auto-ns mr4-m mr5-l mb4 pr2 pr0-ns white"
+          >
+            <a
+              class="f5 db fw6 pv3 black-70 link dim white"
+              href="https://cryptominerworld.com/"
+              title="Home"
+            >
+              Home
+            </a>
+            <a
+              class="f5 db fw6 pv3 black-70 link dim white"
+              href="https://cryptominerworld.com/game_info/"
+              title="Game Info"
+            >
+              Game Info
+            </a>
+            <a
+              class="f5 db fw6 pv3 black-70 link dim white"
+              href="https://cryptominerworld.com/founders_geode_pre-sale/"
+              title="Founder Geode Pre-Sale"
+            >
+              Founder Geode Pre-Sale
+            </a>
+            <a
+              class="f5 db fw6 pv3 black-70 link dim white"
+              href="https://cryptominerworld.com/workshop/"
+              title="Workshop"
+            >
+              Workshop
+            </a>
+            <a
+              class="f5 db fw6 pv3 black-70 link dim white"
+              href="https://cryptominerworld.com/market/"
+              title="Market"
+            >
+              Market
+            </a>
+            <a
+              class="f5 db fw6 pv3 black-70 link dim white"
+              href="https://cryptominerworld.com/world/"
+              title="World"
+            >
+              World
+            </a>
+          </article>
+          <article
+            class="fl-ns w-50-ns db w-100 dib-ns w-auto-ns mr4-m mr5-l mb4 pr2 pr0-ns"
+          >
+            <a
+              class="f5 db fw6 pv3 black-70 link dim white"
+              href="https://cryptominerworld.com/faq/"
+              title="FAQ"
+            >
+              FAQ
+            </a>
+          </article>
+          <div
+            class="cf dn-ns"
+          />
+          <article
+            class="fr w-50-ns w-100 dib-ns w-auto-ns mr4-m mr5-l mb4 pr2 pr0-ns "
+          >
+            <div
+              class="db dtc-ns tc tr-ns v-mid"
+            >
+              <a
+                class="link dim dib mr3 white"
+                href="https://www.facebook.com/CryptoMinerWorld/"
+                title="Cryptominer World on Facebook"
+              >
+                <svg
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
+                  />
+                </svg>
+              </a>
+              <a
+                class="link dim dib mr3 white"
+                href="https://twitter.com/CryptoMiner_W"
+                title="Cryptominer World on Twitter"
+              >
+                <svg
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"
+                  />
+                </svg>
+              </a>
+            </div>
+          </article>
+        </div>
+        <div
+          class="dt dt--fixed w-100"
+        >
+          <div
+            class="dn dtc-ns v-mid"
+          >
+            <p
+              class="f7 black-70 dib pr3 mb3 white"
+            >
+              Copyright © Cryptominer World 2018
+            </p>
+            <p
+              class="f7 black-70 dib pr3 mb3 white"
+            >
+              Version 0.0.10
+            </p>
+          </div>
+        </div>
+        <div
+          class="db dn-ns"
+        >
+          <p
+            class="f7 white mt4 tl"
+          >
+            Copyright © Cryptominer World 2018
+          </p>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Gem renders correctly 1`] = `
+<div>
+  <div
+    class="sc-bdVaJa giFZti"
+  >
+    <img
+      alt="PropTypes.oneOfType([PropTypes.string, PropTypes.number])"
+      class="h3 center"
+      src="PropTypes.oneOfType([PropTypes.string, PropTypes.number])"
+    />
+    <p
+      class="ttu f5 mt2 b o-50 black tc false"
+    >
+      PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+    </p>
+  </div>
+</div>
+`;
+
+exports[`Gembox renders correctly 1`] = `
+<div>
+  <div
+    class=""
+  >
+    <div
+      class="flex tc pa3"
+    >
+      <div
+        class="w-100"
+      >
+        <small
+          class="ttu white b dn-ns"
+        >
+          level
+        </small>
+        <div
+          class="sc-bdVaJa giFZti"
+        >
+          <img
+            alt="rate"
+            class="h3 center"
+            src="gem2.png"
+          />
+          <p
+            class="ttu f5 mt2 b o-50 black tc false"
+          >
+            1%
+          </p>
+        </div>
+      </div>
+      <div
+        class="w-100"
+      >
+        <small
+          class="ttu white b dn-ns"
+        >
+          grade
+        </small>
+        <div
+          class="sc-bdVaJa giFZti"
+        >
+          <img
+            alt="rate"
+            class="h3 center"
+            src="gem1.png"
+          />
+          <p
+            class="ttu f5 mt2 b o-50 black tc false"
+          >
+            C%
+          </p>
+        </div>
+      </div>
+      <div
+        class="w-100"
+      >
+        <small
+          class="ttu white b dn-ns"
+        >
+          rate
+        </small>
+        <div
+          class="sc-bdVaJa giFZti"
+        >
+          <img
+            alt="rate"
+            class="h3 center"
+            src="gem3.png"
+          />
+          <p
+            class="ttu f5 mt2 b o-50 black tc false"
+          >
+            1%
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`MailingList renders correctly 1`] = `
+<div>
+  <div
+    class="sc-iwsKbI gOAetJ"
+  >
+    <div
+      class="pa4-l bg-transparent"
+    >
+      <div
+        class="bg-off-black mw8 center pa2 br2-ns ba b--black-10 flex-ns aic shadow-3"
+      >
+        <img
+          alt="gem kid"
+          class="dn dib-ns mh3 h4"
+          src="gemKid.png"
+        />
+        <legend
+          class="pa0 f5 f4-ns mb3 white w-50-ns tl-ns tc"
+        >
+          <p
+            class="f2 mb0"
+          >
+            Early bird gets the gem.
+          </p>
+          <p
+            class="mt0"
+          >
+            Be notified when our next auction starts.
+          </p>
+        </legend>
+        <fieldset
+          class="bn ma0 pa0 w-50-ns"
+        >
+          <div>
+            <form>
+              <input
+                class="f6 f5-l input-reset bn fl white bg-dark-gray pa3 lh-solid w-100 w-75-m w-80-l br2-ns br--left-ns"
+                id="email-address"
+                name="email-address"
+                placeholder="Your Email Address"
+                type="text"
+                value=""
+              />
+              <input
+                class="f6 f5-l button-reset fl pv3 tc bn bg-animate bg-black-70 hover-bg-black white pointer w-100 w-25-m w-20-l br2-ns br--right-ns"
+                type="submit"
+                value="Subscribe"
+              />
+            </form>
+            <div
+              class="w-100 fl tl"
+            />
+          </div>
+        </fieldset>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`MobileHeader renders correctly 1`] = `
+<div>
+  <div
+    class="flex-s dn-ns jca bg-base shadow-1 "
+  >
+    <div
+      class="absolute left-1"
+    >
+      <div
+        class="bg-deep-purple pa3"
+      >
+        <small
+          class="white ttu b "
+        >
+          current price
+        </small>
+        <p
+          class="white f3 tc"
+        >
+          Ξ 
+          NaN
+        </p>
+      </div>
+      <div
+        class="sc-dnqmqq cYOrnY"
+      />
+    </div>
+    <div
+      class="w-100"
+    >
+      <div
+        class="w-60 fr mr6-ns"
+      >
+        <div
+          class="flex tc pa3"
+        >
+          <div
+            class="w-100"
+          >
+            <small
+              class="ttu white b dn-ns"
+            >
+              level
+            </small>
+            <div
+              class="sc-bdVaJa giFZti"
+            >
+              <img
+                alt="rate"
+                class="h3 center"
+                src="gem2.png"
+              />
+              <p
+                class="ttu f5 mt2 b o-50 black tc false"
+              >
+                PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired%
+              </p>
+            </div>
+          </div>
+          <div
+            class="w-100"
+          >
+            <small
+              class="ttu white b dn-ns"
+            >
+              grade
+            </small>
+            <div
+              class="sc-bdVaJa giFZti"
+            >
+              <img
+                alt="rate"
+                class="h3 center"
+                src="gem1.png"
+              />
+              <p
+                class="ttu f5 mt2 b o-50 black tc false"
+              >
+                %
+              </p>
+            </div>
+          </div>
+          <div
+            class="w-100"
+          >
+            <small
+              class="ttu white b dn-ns"
+            >
+              rate
+            </small>
+            <div
+              class="sc-bdVaJa giFZti"
+            >
+              <img
+                alt="rate"
+                class="h3 center"
+                src="gem3.png"
+              />
+              <p
+                class="ttu f5 mt2 b o-50 black tc false"
+              >
+                NaN%
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ProgressMeter renders correctly 1`] = `
+<div>
+  <div
+    class="white ma0 pa3 tc "
+  >
+    <small
+      class="white ttu "
+    >
+      current price
+    </small>
+    <p
+      class="basic"
+      style="font-size: xx-large;"
+    >
+      Ξ 
+      <span
+        data-testid="currentPrice"
+      />
+    </p>
+    <div
+      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default ba br-pill pb1 ph2 mb1  b--white-40"
+    >
+      <div>
+        <div
+          class="ant-progress-outer"
+        >
+          <div
+            class="ant-progress-inner"
+          >
+            <div
+              class="ant-progress-bg"
+              style="width: 0%; height: 8px; background: rgb(192, 24, 171); border-radius: 100px;"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="flex jcb"
+    >
+      <small
+        class="basic"
+      >
+        Ξ 
+        <span
+          data-testid="minPrice"
+        />
+      </small>
+      <small
+        class="basic"
+      >
+        Ξ 
+        <span
+          data-testid="maxPrice"
+        />
+      </small>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Question renders correctly 1`] = `
+<div>
+  <div
+    class="bg-off-black white ma0 pa3 measure"
+  >
+    <h2
+      class="white"
+    >
+      Frequently Asked Questions
+    </h2>
+    <details>
+      <summary
+        class="underlined blue"
+      >
+        How does this work?
+      </summary>
+      <p>
+        This auction is a Dutch Auction. It works by having a high and a low price. Then setting a time frame in which the price will steadily lower from the high to the low. The Auction ends as soon as one user pays their bid. Bids are always the current price. If the low price is reached and no bid was made, the item stays for sale at that low price indefinitely, until someone buys it or the user that started the auction cancels it. The user can cancel the auction at any time, before or after the low price is reached.
+      </p>
+    </details>
+    <details>
+      <summary
+        class="underlined blue"
+      >
+        How often do auctions run?
+      </summary>
+      <p>
+        Auctions will start out one at a time. The items for sale will be very rare. They will run for a week, but once one is bought the next one begins. Later we will do more than one item for sale at once, at that time some rare, but not very rare, items will be sold at lower prices.
+      </p>
+    </details>
+    <details>
+      <summary
+        class="underlined blue"
+      >
+        Can I resell an Item?
+      </summary>
+      <p>
+        Once the Market is open to the public (Phase 2) you will be able to sell any item you own to other players.
+      </p>
+    </details>
+    <details>
+      <summary
+        class="underlined blue"
+      >
+        How do I bid?
+      </summary>
+      <p>
+        You bid by clicking the big pink “Buy Now” button. You will need to be using a Web3 compatible Ethereum Wallet program. MetaMask, Toshi/Coinbase Wallet, BUNTOY, Brave browser, Trust, Cipher, are some of the more well know options. For more information on how to install MetaMask
+      </p>
+      <p>
+        For more information on how to install MetaMask  
+        <a
+          href="https://cryptominerworld.com/game_info/#GameInfoMetaMask"
+        >
+          Click here 
+        </a>
+      </p>
+    </details>
+  </div>
+</div>
+`;
+
+exports[`Ripple Button renders correctly 1`] = `
+<div>
+  <a
+    href="#"
+  >
+    <button
+      class="sc-bwzfXH fbRjTD"
+    >
+      title
+    </button>
+  </a>
+</div>
+`;
+
+exports[`Ripple Effect renders correctly 1`] = `
+<div>
+  <div
+    class="Ripple"
+    style="left: 1px; top: 1px;"
+  />
+</div>
+`;
+
+exports[`showExpired renders correctly 1`] = `<div />`;
