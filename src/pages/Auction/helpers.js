@@ -1,4 +1,6 @@
 import {BigNumber} from 'bignumber.js';
+import { db, storage } from '../../utils/firebase'
+
 
 export const isTokenForSale = (_contract, _tokenId) =>
  
@@ -11,25 +13,42 @@ export const getAuctionDetails = (_contract, _tokenId) =>
       return([t0, t1, p0, p1])
     })
 
-// export const calcMiningRate = (gradeType, gradeValue) => {
-//   switch (gradeType) {
-//     case 1:
-//       return gradeValue / 200000;
-//     case 2:
-//       return 10 + gradeValue / 200000;
-//     case 3:
-//       return 20 + gradeValue / 200000;
-//     case 4:
-//       return 40 + (3 * gradeValue) / 200000;
-//     case 5:
-//       return 100 + gradeValue / 40000;
-//     case 6:
-//       return 300 + gradeValue / 10000;
-//     default:
-//       return 300 + gradeValue / 10000;
-//   }
-// };
+export const getGemStory = (color, level) => {
+      const type = {
+          9: 'sapphire',
+          10: 'opal',
+          1: 'garnet',
+          2: 'amethyst',
+      }[color]
+      const lvl = `lvl${level}`
+      return db.doc(`gems/${type}`).get().then(doc => doc.data()[lvl])
+  }
 
+
+export const  getGemImage = (color, grade, level) => {
+
+    const type = {
+        9: 'Sap',
+        10: 'Opa',
+        1: 'Gar',
+        2: 'Ame',
+    }[color]
+
+    const gradeType = {
+        1: 'D',
+        2: 'C',
+        3: 'B',
+        4: 'A',
+        5: 'AA',
+        6: 'AAA',
+    }[grade]
+
+    const sourceImage = `${type}-${level}-${gradeType}-4500.png`;
+
+    return storage
+        .ref(`gems512/${sourceImage}`)
+        .getDownloadURL()
+}
 export const calcMiningRate = (gradeType, gradeValue) => ({
   1: gradeValue / 200000,
   2: 10 + gradeValue / 200000,
@@ -59,3 +78,6 @@ const properties = new BigNumber(_properties)
       })
   
       
+ export const getPrice =  (_tokenId, _contract) =>  _contract.methods.getCurrentPrice(
+        _tokenId).call()
+        

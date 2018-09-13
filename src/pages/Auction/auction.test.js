@@ -45,7 +45,6 @@ const testData = {
   redirectTo:'',
   auctionStartTime:2000,
   auctionEndTime: 1000
-
 };
 
 test('Buy now button triggers the modal with the correct gem Id and the buy Now function', async () => {
@@ -83,7 +82,32 @@ test('Buy now button triggers the modal with the correct gem Id and the buy Now 
   );
 });
 
-test.skip('If no metamask show modal, otherwise let people buy directly', async () => {  expect(true).toBeFalsy();})
+test.skip('If no metamask show modal, otherwise let people buy directly', async () => {  
+  const { getByTestId } = render(
+    <Auction
+          minPrice={testData.minPrice}
+          maxPrice={testData.maxPrice }
+          level={testData.level}
+          grade={testData.grade}
+          rate={testData.rate}
+          color={testData.color}
+          buyNow={testData.handleBuyNow}
+          auctionStartTime={testData.auctionStartTime}
+          deadline={testData.auctionEndTime }
+          name={`# ${testData.tokenId}`}
+          redirectTo={testData.redirectTo}
+          showConfirm={testData.showConfirm}
+          sourceImage={testData.gemImage}
+          tokenId={testData.tokenId}
+          story={testData.story}
+          currentPrice={Number(testData.currentPrice).toFixed(3)}
+          color={testData.color}
+    />
+  );
+  
+  expect(true).toBeFalsy();
+
+})
 
 test('Countdown timer shows correct time', async () => {
   const { getByTestId } = render(

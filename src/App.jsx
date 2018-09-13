@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import FontFaceObserver from 'fontfaceobserver';
 import fromExponential from 'from-exponential';
-import { BigNumber } from 'bignumber.js';
+import { Alert } from 'antd';
 import MobileHeader from './components/MobileHeader';
 import Navbar from './components/Nav';
 import Footer from './components/Footer';
@@ -15,15 +15,13 @@ import {
     isTokenForSale,
     getAuctionDetails,
     calcMiningRate,
-    getGemQualities
+    getGemQualities, getGemStory, getGemImage, getPrice
 } from './pages/Auction/helpers';
-import { db, storage } from './utils/firebase'
+import { createAuction } from './pages/Create/helpers';
 import DutchAuction from '../build/contracts/DutchAuction.json';
 import Gems from '../build/contracts/GemERC721.json';
 
-
 const dutchAuctionABI = DutchAuction.abi
-
 const gemsABI = Gems.abi;
 
 // @dev keeping component specific styling inside each component file is optimising for deletability. Change or delete this component in the future and all the relevant styles are removed and no more zombie css
@@ -57,7 +55,8 @@ class App extends PureComponent {
             story: '',
             priceInWei: '',
             currentAccount: '',
-            releaseConfetti: false
+            releaseConfetti: false,
+            err: ''
         };
     }
 
@@ -70,12 +69,10 @@ class App extends PureComponent {
             .load()
             .then(() => this.setState({ font: 'muli' }))
             .catch((error) => error);
-
         // @notice loading web3 when component mounts
         const Web3 = await getWeb3
         const { web3 } = Web3
         const currentAccount = await web3.eth.getAccounts().then(accounts => accounts[0]);
-
         const tokenId = Number(window.location.href.split('/').pop())
         // @notice instantiating auction contract
         const dutchAuctionContractInstance = await new web3.eth.Contract(
@@ -83,12 +80,10 @@ class App extends PureComponent {
                 from: currentAccount
             }
         );
-
         // @notice instantiating gem contract
         const gemsContractInstance = await new web3.eth.Contract(gemsABI, '0x82ff6bbd7b64f707e704034907d582c7b6e09d97', {
             from: currentAccount
         });
-
         // @notice set instances to component state for easy access
         this.setState(
             {
@@ -104,9 +99,7 @@ class App extends PureComponent {
                 dutchAuctionContractInstance,
                 tokenId
             )
-
             const [startTime, endTime, startPrice, endPrice] = await gemDetails;
-
             // @notice set auction details to app state
             this.setState(
                 {
@@ -118,7 +111,12 @@ class App extends PureComponent {
                 },
                 () => {
                     // @notice get current price from contract
-                    this.handleGetPrice(tokenId);
+                    getPrice(tokenId, dutchAuctionContractInstance).then(result =>
+                        this.setState({
+                            priceInWei: result,
+                            currentPrice:fromExponential(Number(result) / 1000000000000000000)
+                        })
+                    )
                     // @notice check if the token is on sale
                     isTokenForSale(
                         dutchAuctionContractInstance,
@@ -129,7 +127,12 @@ class App extends PureComponent {
 
             // @notice updates the price every 10 seconds
             this.priceInterval = setInterval(() => {
-                this.handleGetPrice(tokenId);
+                getPrice(tokenId, dutchAuctionContractInstance).then(result =>
+                    this.setState({
+                        priceInWei: result,
+                        currentPrice:fromExponential(Number(result) / 1000000000000000000)
+                    })
+                )
             }, 10000);
 
             // @notice get gem qualities from gem contract
@@ -143,28 +146,16 @@ class App extends PureComponent {
                         rate: Number(calcMiningRate(gradeType, gradeValue))
                     });
 
-                    return [color, gradeType, level]
-                }
-            ).then(result => {
+                const image = getGemImage(color, gradeType, level)
+                const story = getGemStory(color, level)
 
-                const [color, gradeType, level] = result
-                const image = this.getGemImage(color, gradeType, level)
-
-                const story = this.getGemStory(color, level)
-
-                return Promise.all([image, story]).then(data => data
-                )
-
-
-            })
-                .then(([image, story]) => this.setState({ gemImage: image, story }))
+                Promise.all([image, story]).then(([_image, _story]) => this.setState({ gemImage: _image, story: _story }))
                 .catch(err => {
-                    // eslint-disable-next-line
-                    console.error(err)
+                    this.setState({ err })
                 })
+                }
+            )
         }
-
-
     }
 
     componentWillUnmount() {
@@ -178,44 +169,8 @@ class App extends PureComponent {
         _duration, _startPriceInWei, _endPriceInWei
     ) => {
         const { gemsContractInstance, currentAccount } = this.state
-
-        // converts BigNumber representing Solidity uint256 into String representing Solidity bytes
-        function toBytes(uint256) {
-            let s = uint256.toString(16);
-            const len = s.length;
-            // 256 bits must occupy exactly 64 hex digits
-            if (len > 64) {
-                s = s.substr(0, 64);
-            }
-            for (let i = 0; i < 64 - len; i += 1) {
-                s = `0${s}`;
-            }
-            return `0x${s}`;
-        }
-
-        // construct auction parameters
-        const token = Number(_tokenId)
-        const tokenId = new BigNumber(token)
-        const t0 = (Math.round(new Date().getTime() / 1000)) || 0;
-        const t1 = t0 + _duration;
-        const p0 = _startPriceInWei;
-        const p1 = _endPriceInWei;
-        const two = new BigNumber(2)
-
-        const bigNumber = two.pow(224).times(tokenId)
-            .plus(two.pow(192).times(t0))
-            .plus(two.pow(160).times(t1))
-            .plus(two.pow(80).times(p0))
-            .plus(p1)
-
-        const bigNumberToBytes = toBytes(bigNumber)
-
-        const auctionContract = '0xdd229423db08b1e9a0add49986e358dab72b7f54'
-
-        gemsContractInstance.methods.safeTransferFrom(
-            currentAccount, auctionContract, token, bigNumberToBytes
-        ).send()
-
+        createAuction( _tokenId,
+            _duration, _startPriceInWei, _endPriceInWei, gemsContractInstance, currentAccount)
     };
 
     // @notice removes a gem from an auction
@@ -232,74 +187,12 @@ class App extends PureComponent {
         confirmInMetamask();
         await dutchAuctionContractInstance.methods.buy(_tokenId).send({ value: Number(priceInWei) }).on('transactionHash', () => {
             this.setState({ releaseConfetti: true })
-        }).on('confirmation', () => {
-            window.location = 'https://cryptominerworld.com/workshop/';
-        }
-        ).on('error', console.error);
+        }).on('confirmation', () => {window.location = 'https://cryptominerworld.com/workshop/'}
+        ).on('error', err => this.setState({ err }));
     };
 
-    // @notice get latest price from contract
-    handleGetPrice = async _tokenId => {
-        const { dutchAuctionContractInstance } = this.state
-        await dutchAuctionContractInstance.methods.getCurrentPrice(
-            _tokenId).call().then(result =>
-
-
-
-                this.setState({
-                    priceInWei: result,
-                    currentPrice:
-                        fromExponential(
-                            Number(result) / 1000000000000000000
-                        )
-                })
-            )
-    }
-
-
-    getGemImage = (color, grade, level) => {
-
-        const type = {
-            9: 'Sap',
-            10: 'Opa',
-            1: 'Gar',
-            2: 'Ame',
-        }[color]
-
-        const gradeType = {
-            1: 'D',
-            2: 'C',
-            3: 'B',
-            4: 'A',
-            5: 'AA',
-            6: 'AAA',
-        }[grade]
-
-        const sourceImage = `${type}-${level}-${gradeType}-4500.png`;
-
-        return storage
-            .ref(`gems512/${sourceImage}`)
-            .getDownloadURL()
-    }
-
-
-
-    getGemStory = (color, level) => {
-        const type = {
-            9: 'sapphire',
-            10: 'opal',
-            1: 'garnet',
-            2: 'amethyst',
-        }[color]
-        const lvl = `lvl${level}`
-        return db.doc(`gems/${type}`).get().then(doc => doc.data()[lvl])
-    }
-
-
     render() {
-        const { redirectTo, tokenId, auctionEndTime, auctionStartTime, auctionStartPrice, auctionEndPrice, font, currentPrice, level, grade, rate, color, isTokenOnSale, web3, gemImage, story, releaseConfetti } = this.state
-
-
+        const { redirectTo, tokenId, auctionEndTime, auctionStartTime, auctionStartPrice, auctionEndPrice, font, currentPrice, level, grade, rate, color, isTokenOnSale, web3, gemImage, story, releaseConfetti, err } = this.state
 
         // @notice if the token is not on auction a modal tells people the auction is over
         if (!isTokenOnSale &&
@@ -307,11 +200,14 @@ class App extends PureComponent {
             showExpired();
         }
 
-
-
         return (
             <main className={font}>
-
+                {err && <Alert
+                    message="Error Text"
+                    description={`${err.message}`}
+                    type="error"
+                    closable
+                />}
                 <StickyHeader>
                     <Navbar />
                     <MobileHeader

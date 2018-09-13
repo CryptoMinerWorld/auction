@@ -12,10 +12,6 @@ import MailingList from '../../components/MailingList';
 import './animations.css';
 import rockBackground from '../../images/rockBackground.png';
 
-
-
-
-
 const OverlapOnDesktopView = styled.div`
   @media (min-width: 64em) {
     position: absolute;
