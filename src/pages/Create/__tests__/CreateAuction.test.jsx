@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, fireEvent, cleanup } from 'react-testing-library';
 import 'jest-dom/extend-expect';
-import CreateAuction from './index';
-import { ethToWei, daysToMilliseconds, daysToSeconds } from './helpers';
+import CreateAuction from '..';
+import { ethToWei, daysToMilliseconds, daysToSeconds } from '../helpers';
 
 // @dev this automatically unmounts and cleanup DOM after the test is finished.
 afterEach(cleanup);
@@ -14,7 +14,6 @@ describe('Auction page tests', () => {
     createAuction: jest.fn(),
     handleRemoveGemFromAuction: jest.fn(),
     sourceImage: 'https://i.kym-cdn.com/photos/images/original/001/225/594/18a.gif'
-
   };
 
   test('Create a new auction', async () => {
