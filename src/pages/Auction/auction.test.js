@@ -31,7 +31,7 @@ describe('Auction page tests', () => {
 
  // @dev this is all the test data, easy to configure in one place
 const props = {
-  currentPrice: 1.323,
+  currentPrice: '1.323',
   minPrice: .8,
   maxPrice: 4.5,
   deadline: Math.round(someDate/1000),
@@ -48,7 +48,8 @@ const props = {
   tokenId: 12345,
   redirectTo:'',
   auctionStartTime:2000,
-  auctionEndTime: 1000
+  auctionEndTime: 1000,
+  sourceImage:'https://i.kym-cdn.com/photos/images/original/001/225/594/18a.gif'
 };
 
 test('Buy now button triggers the modal with the correct gem Id and the buy Now function', async () => {

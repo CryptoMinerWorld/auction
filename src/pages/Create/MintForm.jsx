@@ -4,7 +4,7 @@ import { Select, Input, Icon } from 'antd';
 
 const { Option } = Select;
 
-const MintForm = ({ randomGradeValue, handleNetworkChange, contractAddress, color, level, gradeType, gradeValue, handleColorChange, handleLevelChange, handleGradeTypeChange, handleSubmit, handleGradeValueChange }) => (
+const MintForm = ({ randomGradeValue, handleNetworkChange, contractAddress, color, level, gradeType, gradeValue, handleChange, handleSubmit, handleGradeValueChange }) => (
   <form
     id="mint_form"
     className="bg-white br3"
@@ -38,7 +38,7 @@ const MintForm = ({ randomGradeValue, handleNetworkChange, contractAddress, colo
             id="helper_color"
             defaultValue="Sapphire (September)"
             style={{ width: 120 }}
-            onChange={handleColorChange}
+            onChange={handleChange('color')}
           >
             <Option value="9">Sapphire (September)</Option>
             <Option value="10">Opal (October)</Option>
@@ -57,7 +57,7 @@ const MintForm = ({ randomGradeValue, handleNetworkChange, contractAddress, colo
             id="helper_level"
             defaultValue="1"
             style={{ width: 120 }}
-            onChange={handleLevelChange}
+            onChange={handleChange('level')}
           >
             <option value="1">1</option>
             <option value="2">2</option>
@@ -74,7 +74,7 @@ const MintForm = ({ randomGradeValue, handleNetworkChange, contractAddress, colo
             id="helper_grade_type"
             defaultValue="D"
             style={{ width: 120 }}
-            onChange={handleGradeTypeChange}
+            onChange={handleChange('gradeType')}
           >
             <option value="1">D</option>
             <option value="2">C</option>
@@ -113,8 +113,7 @@ MintForm.propTypes = {
   level: PropTypes.string.isRequired,
   gradeType: PropTypes.string.isRequired,
   gradeValue: PropTypes.number.isRequired,
-  handleColorChange: PropTypes.func.isRequired,
-  handleLevelChange: PropTypes.func.isRequired, handleGradeTypeChange: PropTypes.func.isRequired,
+  handleChange: PropTypes.func.isRequired,
   handleNetworkChange: PropTypes.func.isRequired,
   randomGradeValue: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,

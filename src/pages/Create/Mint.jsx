@@ -99,22 +99,6 @@ class Mint extends PureComponent {
     return unsubscribe
   })
 
-  // componentDidUpdate () {
-  //   this.getImage().unsubscribe()
-  // }
-
-  // getImage = () => {
-  //   db.collection('gems').where("id", "==", "123").get()
-  //     .then(collection => {
-  //       const details = collection.docs.map(doc => doc.data())
-  //       const { id, image } = details[0]
-  //       this.setState({
-  //         gemDetails: id,
-  //         gemImage: image
-  //       })
-  //     }).catch(err => console.error(err))
-  // }
-
   createGem = async (_contractAddress, _color, _level, _gradeType, _gradeValue) => {
     const { web3, contractAddress } = this.state
 
@@ -132,22 +116,9 @@ class Mint extends PureComponent {
 
   handleNetworkChange = value => this.setState({ contractAddress: value });
 
-  handleColorChange = value => {
-    // const { color, level, gradeType } = this.state
+  handleChange = (value, quality) => {
     // eslint-disable-next-line
-    this.setState({ color: value }, () => this.gemURL(this.state.color, this.state.level, this.state.gradeType));
-  }
-
-  handleLevelChange = value => {
-    // const { color, level, gradeType } = this.state
-    // eslint-disable-next-line
-    this.setState({ level: value }, () => this.gemURL(this.state.color, this.state.level, this.state.gradeType));
-  }
-
-  handleGradeTypeChange = value => {
-    // const { color, level, gradeType } = this.state
-    // eslint-disable-next-line
-    this.setState({ gradeType: value }, () => this.gemURL(this.state.color, this.state.level, this.state.gradeType));
+    this.setState({ [quality]: value }, () => this.gemURL(this.state.color, this.state.level, this.state.gradeType));
   }
 
   handleGradeValueChange = value => this.setState({ gradeValue: value });
@@ -167,13 +138,10 @@ class Mint extends PureComponent {
               level={level}
               gradeType={gradeType}
               gradeValue={gradeValue}
-              handleColorChange={this.handleColorChange}
-              handleLevelChange={this.handleLevelChange}
-              handleGradeTypeChange={this.handleGradeTypeChange}
+              handleChange={this.handleChange}
               handleGradeValueChange={this.handleGradeValueChange}
               gemDetails={gemDetails}
               handleSubmit={this.handleSubmit} />
-
           </div>
           <DisplayCard gemDetails={gemDetails} gemImage={gemImage} imageLoading={imageLoading} />
         </div>
