@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import './ripple.css';
 import styled from 'styled-components';
+import Ripple from './Ripple'
 
 const Button = styled.button`
   display: inline-block;
@@ -18,53 +19,20 @@ const Button = styled.button`
   }
 `;
 
-const DURATION = 230;
 
-class Ripple extends React.Component {
-  static propTypes = {
-    onRequestRemove: PropTypes.func.isRequired
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = { in: false, out: false };
-  }
-
-  componentDidMount() {
-    setTimeout(() => {
-      this.setState({ in: true, out: false });
-      setTimeout(() => {
-        this.setState({ in: false, out: true });
-        setTimeout(() => {
-          this.props.onRequestRemove();
-        }, DURATION);
-      }, DURATION);
-    }, 15);
-  }
-
-  render() {
-    let className = `Ripple`;
-
-    if (this.state.in) {
-      className = `${className} Ripple--in`;
-    }
-    if (this.state.out) {
-      className = `${className} Ripple--out`;
-    }
-
-    const style = {};
-    if (this.props.left) style.left = this.props.left;
-    if (this.props.top) style.top = this.props.top;
-
-    return <div className={className} style={style} />;
-  }
-}
 
 class RippleButton extends PureComponent {
+
+  static defaultProps = {
+    className: '',
+    href: '#',
+  };
+
   static propTypes = {
     onClick: PropTypes.func.isRequired,
     title: PropTypes.string.isRequired,
-    className: PropTypes.string
+    className: PropTypes.string,
+    href: PropTypes.string,
   };
 
   state = {
@@ -72,22 +40,25 @@ class RippleButton extends PureComponent {
   };
 
   render() {
+
+    const { className, href, onClick, title } = this.props
+    const { ripples } = this.state
+
     return (
-      <a href={this.props.href}>
+      <a href={href}>
         <Button
-          className={this.props.className}
+          className={className}
           onClick={e => {
-            this.props.onClick();
+            onClick();
             const left = e.pageX - e.currentTarget.offsetLeft;
             const top = e.pageY - e.currentTarget.offsetTop;
             const id = Math.random().toString();
-            const ripples = [...this.state.ripples, { left, top, id }];
-            this.setState({ ripples });
+            this.setState({ ripples: [...ripples, { left, top, id }] });
           }}
         >
-          {this.props.title}
+          {title}
 
-          {this.state.ripples.map(({ left, top, id }) => (
+          {ripples.map(({ left, top, id }) => (
             <Ripple
               left={`${left}px`}
               top={`${top}px`}
@@ -106,3 +77,5 @@ class RippleButton extends PureComponent {
 }
 
 export default RippleButton;
+
+

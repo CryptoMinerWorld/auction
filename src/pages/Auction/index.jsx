@@ -1,16 +1,17 @@
-import React, { Component } from 'react';
+/* eslint-disable */
+import React from 'react';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
+import Confetti from 'react-confetti'
+import sizeMe from 'react-sizeme'
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import AuctionImage from '../../components/AuctionImage';
 import AuctionBox from '../../components/AuctionBox';
 import DescriptionBox from '../../components/DescriptionBox/index';
-import ProgressMeter from '../../components/ProgressMeter';
 import FAQ from '../../components/FAQ';
 import MailingList from '../../components/MailingList';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import './animations.css';
 import rockBackground from '../../images/rockBackground.png';
-import { Context } from '../../Provider';
 
 const OverlapOnDesktopView = styled.div`
   @media (min-width: 64em) {
@@ -32,91 +33,88 @@ const TopHighlight = styled.div`
   height: 3px;
 `;
 
-class Auction extends Component {
-  static propTypes = {
-    deadline: PropTypes.instanceOf(Date).isRequired,
-    currentPrice: PropTypes.number.isRequired,
-    minPrice: PropTypes.number.isRequired,
-    maxPrice: PropTypes.number.isRequired,
-    level: PropTypes.number.isRequired,
-    grade: PropTypes.string.isRequired,
-    rate: PropTypes.number.isRequired,
-    buyNow: PropTypes.func.isRequired,
-    name: PropTypes.string.isRequired
-  };
+const Auction = props => (
+  <div>
+    {props.releaseConfetti && <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: '999' }}>
+      <Confetti  {...props.size} />
+    </div>}
+    <div className="bg-off-black ">
 
-  // componentDidMount() {
-  //   console.log('xxx', this.props.store);
-  // }
+      <RockOverlay>
+        <div className="relative mw9 center">
+          <AuctionImage sourceImage={props.sourceImage} />
+          <ReactCSSTransitionGroup
+            transitionName="example"
+            transitionAppear
+            transitionAppearTimeout={5000}
+            transitionEnterTimeout={5000}
+            transitionLeaveTimeout={5000}
+          >
+            <AuctionBox
+              currentPrice={props.currentPrice}
+              minPrice={props.minPrice}
+              maxPrice={props.maxPrice}
+              deadline={props.deadline}
+              handleBuyNow={props.buyNow}
+              level={props.level}
+              grade={props.grade}
+              rate={props.rate}
+              name={props.name}
+              tokenId={props.tokenId}
+              redirectTo={props.redirectTo}
+              showConfirm={props.showConfirm}
+              provider={props.provider}
 
-  render() {
-    let {
-      currentPrice,
-      minPrice,
-      maxPrice,
-      level,
-      grade,
-      rate,
-      buyNow,
-      deadline,
-      name,
-      tokenId,
-      redirectTo,
-      showConfirm
-    } = this.props;
-
-    return (
-      <div className="bg-off-black ">
-        <RockOverlay>
-          <div className="relative mw9 center">
-            <AuctionImage />
-            <ReactCSSTransitionGroup
-              transitionName="example"
-              transitionAppear={true}
-              transitionAppearTimeout={5000}
-              transitionEnterTimeout={5000}
-              transitionLeaveTimeout={5000}
-            >
-              <AuctionBox
-                currentPrice={currentPrice}
-                deadline={deadline}
-                handleBuyNow={buyNow}
-                level={level}
-                grade={grade}
-                rate={rate}
-                name={name}
-                tokenId={tokenId}
-                redirectTo={redirectTo}
-                showConfirm={showConfirm}
-              />
-            </ReactCSSTransitionGroup>
-          </div>
-        </RockOverlay>
-        <div className="bg-off-black">
-          <TopHighlight />
-          <div className="mw9 center relative-l">
-            <DescriptionBox level={level} grade={grade} rate={rate} />
-            <div className="w-50-l measure-wide-l">
-              <OverlapOnDesktopView>
-                <ProgressMeter
-                  currentPrice={currentPrice}
-                  minPrice={minPrice}
-                  maxPrice={maxPrice}
-                />
-                <div className="h3" />
-                <FAQ />
-              </OverlapOnDesktopView>
-            </div>
+            />
+          </ReactCSSTransitionGroup>
+        </div>
+      </RockOverlay>
+      <div className="bg-off-black">
+        <TopHighlight />
+        <div className="mw9 center relative-l">
+          <DescriptionBox level={props.level} grade={props.grade} rate={props.rate} color={props.color} story={props.story} name={props.name} />
+          <div className="w-50-l measure-wide-l">
+            <OverlapOnDesktopView>
+              <FAQ />
+            </OverlapOnDesktopView>
           </div>
         </div>
-        <MailingList />
       </div>
-    );
-  }
+      <MailingList />
+    </div>
+  </div>
+);
+
+
+export default sizeMe({
+  monitorHeight: true,
+  monitorWidth: true,
+})(Auction);
+
+Auction.propTypes = {
+  size: PropTypes.shape({
+    monitorHeight: PropTypes.bool,
+    monitorWidth: PropTypes.bool
+  }).isRequired,
+  deadline: PropTypes.number.isRequired,
+  currentPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  minPrice: PropTypes.number.isRequired,
+  maxPrice: PropTypes.number.isRequired,
+  level: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  buyNow: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  showConfirm: PropTypes.func.isRequired,
+  tokenId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  redirectTo: PropTypes.string,
+  color: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  sourceImage: PropTypes.string.isRequired,
+  story: PropTypes.string.isRequired,
+  provider: PropTypes.bool.isRequired
 }
 
-export default props => (
-  <Context.Consumer>
-    {store => <Auction store={store} {...props} />}
-  </Context.Consumer>
-);
+Auction.defaultProps = {
+  redirectTo: '',
+};
+/* eslint-enable */

@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import CountdownTimer from './CountdownTimer';
 import Gembox from './Gembox';
-import PropTypes from 'prop-types';
 import buyNow from '../images/pinkBuyNowButton.png';
-import styled from 'styled-components';
+import ProgressMeter from './ProgressMeter';
 
 const TopHighlight = styled.div`
   background: linear-gradient(to right, #e36d2d, #b91a78);
@@ -35,68 +36,64 @@ const OverlapOnDesktopView = styled.div`
   }
 `;
 
-class AuctionBox extends Component {
-  static propTypes = {
-    currentPrice: PropTypes.number.isRequired,
-    handleBuyNow: PropTypes.func.isRequired,
-    level: PropTypes.number.isRequired,
-    grade: PropTypes.string.isRequired,
-    rate: PropTypes.number.isRequired,
-    deadline: PropTypes.instanceOf(Date).isRequired,
-    name: PropTypes.string.isRequired
-  };
-  render() {
-    let {
-      currentPrice,
-      handleBuyNow,
-      level,
-      grade,
-      rate,
-      deadline,
-      name,
-      tokenId,
-      redirectTo,
-      showConfirm
-    } = this.props;
+const AuctionBox = ({ currentPrice,
+  handleBuyNow,
+  level,
+  grade,
+  rate,
+  deadline,
+  name,
+  tokenId,
+  provider,
+  showConfirm,
+  minPrice,
+  maxPrice }) =>
 
-    if (redirectTo === '/workshop') {
-      window.location = 'https://cryptominerworld.com/workshop/';
-    }
-    return (
-      <OverlapOnDesktopView className="bg-dark-gray br3 measure-l w-100 shadow-3">
-        <TopHighlight />
-        <div className="white pa3">
-          <h1 className="tc pb3 b white" style={{ wordBreak: 'break-all' }}>
-            {name}
-          </h1>
-          <CountdownTimer deadline={deadline} />
-          <Gembox level={level} grade={grade} rate={rate} />
-          <div className="tc">
-            <small className="white ttu ">current price</small>
-            <p
-              className="white f2 mv2 tc basic "
-              data-testid="currentAuctionPrice"
-              style={{ fontSize: 'xx-large' }}
-            >
-              Ξ {currentPrice}
-            </p>
-          </div>
-          <div className="w-100 w5-ns h3 center">
-            <BuyNow
-              onClick={() => showConfirm(tokenId, handleBuyNow)}
-              className="b"
-              data-testid="buyNowButton"
-            >
-              Buy Now
+  (
+    <OverlapOnDesktopView className="bg-dark-gray br3 measure-l w-100 shadow-3">
+      <TopHighlight />
+      <div className="white pa3">
+        <h1 className="tc pb3 b white" style={{ wordBreak: 'break-all' }}>
+          {name}
+        </h1>
+        {deadline && <CountdownTimer deadline={deadline} />}
+        <div className='mt3' />
+        <Gembox level={level} grade={grade} rate={rate} />
+
+        <div className="w-100 w5-ns h3 center mt4">
+          <BuyNow
+            onClick={() => provider ? handleBuyNow(tokenId) : showConfirm(handleBuyNow, tokenId)}
+            className="b"
+            data-testid="buyNowButton"
+          >
+            Buy Now
             </BuyNow>
-          </div>
-          <p className="underline blue tc measure-narrow center pt3">
-            Click here to learn more about how dutch auctions work?
-          </p>
         </div>
-      </OverlapOnDesktopView>
-    );
-  }
-}
+        <ProgressMeter
+          currentPrice={currentPrice}
+          minPrice={minPrice}
+          maxPrice={maxPrice}
+        />
+      </div>
+    </OverlapOnDesktopView>
+  )
+
+
 
 export default AuctionBox;
+
+AuctionBox.propTypes = {
+  currentPrice: PropTypes.string.isRequired,
+  handleBuyNow: PropTypes.func.isRequired,
+  level: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  deadline: PropTypes.number.isRequired,
+  name: PropTypes.string.isRequired,
+  showConfirm: PropTypes.func.isRequired,
+  tokenId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  maxPrice: PropTypes.number.isRequired,
+  minPrice: PropTypes.number.isRequired,
+  provider: PropTypes.bool.isRequired,
+};
+

@@ -1,0 +1,56 @@
+{
+  "extends": [
+    "airbnb",
+    "prettier",
+    "prettier/react"
+  ],
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 5,
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true,
+      "impliedStrict": true,
+      "classes": true
+    }
+  },
+  "rules": {
+    "jsx-a11y/label-has-associated-control": [
+      0,
+      {
+        "labelComponents": [
+          "CustomInputLabel"
+        ],
+        "labelAttributes": [
+          "label"
+        ],
+        "controlComponents": [
+          "CustomInput"
+        ],
+        "depth": 3
+      }
+    ],
+    "jsx-a11y/label-has-for": [
+      0,
+      {
+        "components": [
+          "Label"
+        ],
+        "required": {
+          "every": [
+            "nesting",
+            "id"
+          ]
+        },
+        "allowChildren": false
+      }
+    ]
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "jest": true
+  },
+  "plugins": [
+    "prettier"
+  ]
+}
