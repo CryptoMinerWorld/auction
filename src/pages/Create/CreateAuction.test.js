@@ -84,22 +84,27 @@ test.skip('Stop an auction and retreieve your collectible', async () => {
 });
 
 test.skip('An auction cannot be submiyyed without all of teh fields in the correct type', async () => {
+  const { getByTestId } = render(<CreateAuction {...props}/>);
   expect(true).toBeFalsy();
 });
 
 test.skip('No code injection on field forms', async () => {
+  const { getByTestId } = render(<CreateAuction {...props}/>);
   expect(true).toBeFalsy();
 });
 
 test.skip('field forms always strip whitespace values', async () => {
+  const { getByTestId } = render(<CreateAuction {...props}/>);
   expect(true).toBeFalsy();
 });
 
 test.skip('progress bar shows correct value', async () => {
+  const { getByTestId } = render(<CreateAuction {...props}/>);
   expect(true).toBeFalsy();
 });
 
 test.skip('List out all your gems', async () => {
+  const { getByTestId } = render(<CreateAuction {...props}/>);
   expect(true).toBeFalsy();
 });
 
@@ -117,13 +122,7 @@ test('daysToMilliseconds convert units reliably', () => {
 
 
 test.skip('List a gem for auction with a single Click', () => {
-
-  const { getByTestId } = render(
-    <CreateAuction
-    {...props}
-    />
-  );
-  
+  const { getByTestId } = render(<CreateAuction {...props}/>);
   expect(true).toBeFalsy();
 });
 

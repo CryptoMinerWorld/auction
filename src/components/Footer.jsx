@@ -48,13 +48,9 @@ const Footer = () =>
                 className="fl-ns w-50-ns
           db w-100 dib-ns w-auto-ns mr4-m mr5-l mb4 pr2 pr0-ns"
               >
-                <a
-               href="https://cryptominerworld.com/faq/"
-                  className="f5 db fw6 pv3 black-70 link dim white"
-                  title="FAQ"
-                >
-                  FAQ
-                </a>
+                              <FooterLink link="https://cryptominerworld.com/faq/" title="FAQ" />
+
+             
               
               </article>
               <div className="cf dn-ns" />
@@ -62,21 +58,10 @@ const Footer = () =>
 
               <article className="fr w-50-ns w-100 dib-ns w-auto-ns mr4-m mr5-l mb4 pr2 pr0-ns ">
                 <div className="db dtc-ns tc tr-ns v-mid">
-                  <a
-                    href="https://www.facebook.com/CryptoMinerWorld/"
-
-                    className="link dim dib mr3 white"
-                    title="Cryptominer World on Facebook"
-                  >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-facebook"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" /></svg>
-                  </a>
-                  <a
-                    href="https://twitter.com/CryptoMiner_W"
-                    className="link dim dib mr3 white"
-                    title="Cryptominer World on Twitter"
-                  >
-                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-twitter"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z" /></svg>
-                  </a>
+                <SocialIcons link="https://www.facebook.com/CryptoMinerWorld/" title="Cryptominer World on Facebook" path="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                 
+                <SocialIcons link="https://twitter.com/CryptoMiner_W" title="Cryptominer World on Twitter" path="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z" />
+                
                 </div>
               </article>
             </div>
@@ -98,3 +83,19 @@ const Footer = () =>
 
 
 export default Footer;
+
+
+const SocialIcons = ({link, title, path}) => <a
+                    href={link}
+                    className="link dim dib mr3 white"
+                    title={title}
+                  >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" ><path d={path} /></svg>
+                  </a>
+
+SocialIcons.propTypes = {
+  link: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  path: PropTypes.string.isRequired,
+};
+
