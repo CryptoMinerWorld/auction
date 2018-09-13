@@ -53,7 +53,7 @@ class App extends PureComponent {
             level: 'A',
             rate: '',
             color: '',
-            isTokenOnSale: false,
+            isTokenOnSale: true,
             gemImage: '',
             story: '',
             priceInWei: '',

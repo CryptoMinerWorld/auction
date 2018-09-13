@@ -61,30 +61,31 @@ describe('Auction page tests', () => {
     expect(props.handleRemoveGemFromAuction).toHaveBeenCalledWith(54321);
   });
 
-  test.skip('An auction cannot be submitted without all of the fields in the correct type', async () => {
-    const { getByTestId } = render(<CreateAuction {...props} />);
-    expect(true).toBeFalsy();
-  });
+  // test.skip('An auction cannot be submitted without all of the fields in the correct type', async () => {
+  //   const { getByTestId } = render(<CreateAuction {...props} />);
+  //   fireEvent.click(getByTestId('createAuctionButton'));
+  //   expect(props.createAuction).toHaveBeenCalledTimes(0);
+  // });
 
-  test.skip('No code injection on field forms', async () => {
-    const { getByTestId } = render(<CreateAuction {...props} />);
-    expect(true).toBeFalsy();
-  });
+  // test.skip('No code injection on field forms', async () => {
+  //   const { getByTestId } = render(<CreateAuction {...props} />);
+  //   expect(true).toBeFalsy();
+  // });
 
-  test.skip('field forms always strip whitespace values', async () => {
-    const { getByTestId } = render(<CreateAuction {...props} />);
-    expect(true).toBeFalsy();
-  });
+  // test.skip('field forms always strip whitespace values', async () => {
+  //   const { getByTestId } = render(<CreateAuction {...props} />);
+  //   expect(true).toBeFalsy();
+  // });
 
-  test.skip('progress bar shows correct value', async () => {
-    const { getByTestId } = render(<CreateAuction {...props} />);
-    expect(true).toBeFalsy();
-  });
+  // test.skip('progress bar shows correct value', async () => {
+  //   const { getByTestId } = render(<CreateAuction {...props} />);
+  //   expect(true).toBeFalsy();
+  // });
 
-  test.skip('List out all your gems', async () => {
-    const { getByTestId } = render(<CreateAuction {...props} />);
-    expect(true).toBeFalsy();
-  });
+  // test.skip('List out all your gems', async () => {
+  //   const { getByTestId } = render(<CreateAuction {...props} />);
+  //   expect(true).toBeFalsy();
+  // });
 
   test('ethToWei convert units reliably', () => {
     expect(typeof ethToWei(1)).toBe('number');
