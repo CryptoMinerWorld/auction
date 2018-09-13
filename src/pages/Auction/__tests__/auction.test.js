@@ -6,9 +6,9 @@ import {
   cleanup
 } from 'react-testing-library';
 import 'jest-dom/extend-expect';
-import Auction from './index';
+import Auction from '..';
 
-import { calcMiningRate } from './helpers';
+import { calcMiningRate } from '../helpers';
 
 
 const firebasemock = require('firebase-mock');
@@ -52,6 +52,11 @@ const props = {
   sourceImage:'https://i.kym-cdn.com/photos/images/original/001/225/594/18a.gif',
   provider: true
 };
+
+test('Auction Page render correctly', async () => {
+  const { container } = render(<Auction {...props} />);
+  expect(container).toMatchSnapshot();
+})
 
 test('Buy now button triggers the modal with the correct gem Id and the buy Now function', async () => {
   // Arrange
