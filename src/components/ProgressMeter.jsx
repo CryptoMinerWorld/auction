@@ -1,34 +1,45 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import { Progress } from 'antd';
 
 class ProgressMeter extends PureComponent {
-  static propTypes = {
-    currentPrice: PropTypes.number.isRequired
-  };
+
+
+  calculatePercentage = (max, current) => ((max - current) / max) * 100
 
   render() {
-    let { currentPrice, minPrice, maxPrice } = this.props;
+    const { currentPrice, minPrice, maxPrice } = this.props;
+
     return (
-      <div className="bg-off-black white ma0 pa3 tc relative-l left-1 ">
+      <div className="white ma0 pa3 tc ">
+        <small className="white ttu ">current price</small>
         <p
-          data-testid="currentPrice"
+
           className="basic"
           style={{ fontSize: 'xx-large' }}
         >
-          Ξ {currentPrice}
+          Ξ <span data-testid="currentPrice">{currentPrice}</span>
         </p>
-        <progress value="22" max="100" className="w-100" />
+
+        <Progress percent={this.calculatePercentage(minPrice, currentPrice)} showInfo={false} className='ba br-pill pb1 ph2 mb1  b--white-40' strokeColor='#c018ab' />
         <div className="flex jcb">
-          <small data-testid="minPrice" className="basic">
-            Ξ {minPrice}
+          <small className="basic">
+            Ξ <span data-testid="minPrice">{minPrice}</span>
           </small>
-          <small data-testid="maxPrice" className="basic">
-            Ξ {maxPrice}
+          <small className="basic">
+            Ξ <span data-testid="maxPrice" >{maxPrice}</span>
           </small>
         </div>
-      </div>
+      </div >
     );
   }
 }
 
 export default ProgressMeter;
+
+
+ProgressMeter.propTypes = {
+  currentPrice: PropTypes.string.isRequired,
+  minPrice: PropTypes.number.isRequired,
+  maxPrice: PropTypes.number.isRequired
+};

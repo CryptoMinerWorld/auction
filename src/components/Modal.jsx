@@ -1,6 +1,22 @@
 import { Modal } from 'antd';
 
-export const showConfirm = (_tokenId, _handleBuyNow) => {
+
+
+export const confirmInMetamask = () => {
+  Modal.info({
+    title: 'Please Confirm Your Transaction In Metamask to Proceed',
+    content:
+      'Once you pay for the Gem using Metamask, you will be redirected to your workshop. This may take a moment.',
+
+    maskClosable: true,
+    keyboard: true,
+    iconType: "loading",
+    zIndex: 1000
+
+  });
+};
+
+export const showConfirm = (_handleBuyNow, _tokenId) => {
   Modal.warning({
     title: 'Please Make sure you have installed Metamask and are signed in.',
     content:
@@ -10,23 +26,20 @@ export const showConfirm = (_tokenId, _handleBuyNow) => {
     keyboard: true,
     onOk() {
       _handleBuyNow(_tokenId);
-    },
-    onCancel() {
-      console.log('Cancel');
     }
   });
 };
 
 export const showExpired = () => {
   Modal.error({
-    title: 'This Auction is Now Over',
+    title: 'This Auction No Longer Exists.',
     content:
-      'You can checkout all teh current auctions in our Auction listing page',
-    okText: 'Take me to all the Auctions',
+      'The Item was most likely sold or you may have the wrong link.',
+    okText: 'Take Me To My Workshop',
     maskClosable: false,
     keyboard: false,
     onOk() {
-      window.location = '/';
+      window.location = 'https://cryptominerworld.com/workshop/';
     }
   });
 };

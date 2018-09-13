@@ -10,6 +10,10 @@
   --footer-black: #010e17;
 }
 
+.primary{
+  color: var( --main-color)
+}
+
 .bg-base {
   background-image: -webkit-gradient(linear, left top, right top, from(#c018ab), to(#7a2697));
   background-image: linear-gradient(to right, #c018ab, #7a2697);

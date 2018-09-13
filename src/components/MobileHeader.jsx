@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
-import Gembox from './Gembox';
 import PropTypes from 'prop-types';
+import Gembox from './Gembox';
 
 const Triangle = styled.div`
   width: 140px;
@@ -14,12 +14,13 @@ const Triangle = styled.div`
 class MobileHeader extends PureComponent {
   static propTypes = {
     currentPrice: PropTypes.string.isRequired,
-    level: PropTypes.number.isRequired,
+    level: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    rate: PropTypes.number.isRequired
+    rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
   };
+
   render() {
-    let { currentPrice, level, grade, rate } = this.props;
+    const { currentPrice, level, grade, rate } = this.props;
     return (
       <div className="flex-s dn-ns jca bg-base shadow-1 ">
         <div className="absolute left-1">
@@ -33,9 +34,9 @@ class MobileHeader extends PureComponent {
         </div>
 
         <div className="w-100">
-          <div className="w-50 fr mr6-ns">
-            <Gembox level={level} grade={grade} rate={rate} />
-          </div>
+
+          <Gembox level={level} grade={grade} rate={rate} styling="w-60 fr mr6-ns" />
+
         </div>
       </div>
     );
