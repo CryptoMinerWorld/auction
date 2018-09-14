@@ -8,7 +8,9 @@ const AngleGradient = styled.div`
 `;
 
 class CountdownTimer extends PureComponent {
-  static propTypes = { deadline: PropTypes.number.isRequired };
+  static propTypes = {
+    deadline: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  };
 
   state = {
     timeLeft: '',
@@ -20,7 +22,7 @@ class CountdownTimer extends PureComponent {
     this.interval = setInterval(
       () =>
         this.setState({
-          timeLeft: (deadline * 1000) - new Date().getTime()
+          timeLeft: Math.round(((deadline * 1000) - new Date().getTime()))
         }),
       1000
     );
@@ -37,6 +39,7 @@ class CountdownTimer extends PureComponent {
   calculateTimeLeftInMinutes = t => Math.floor((t % (1000 * 60 * 60)) / (1000 * 60));
 
   calculateTimeLeftInSeconds = t => Math.floor((t % (1000 * 60)) / 1000);
+
 
   render() {
     const { deadline } = this.props;
