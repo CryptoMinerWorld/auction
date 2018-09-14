@@ -297,7 +297,7 @@ exports[`DescriptionBox renders correctly 1`] = `
 exports[`FeatureBand renders correctly 1`] = `
 <div>
   <div
-    class="w-100 PropTypes.string.isRequired h-auto flex aic mt3 br4-ns br--left-ns shadow-3 pa3"
+    class="w-100 PropTypes.string.isRequired h-auto flex aic jcb mt3 br4-ns br--left-ns shadow-3 pa3 pl5-ns"
   >
     <div
       class="sc-bdVaJa giFZti"
@@ -314,7 +314,7 @@ exports[`FeatureBand renders correctly 1`] = `
       </p>
     </div>
     <div
-      class="w-80"
+      class="w-80 pl3 pl0-nsa"
     >
       <p
         class="b ttu"
@@ -565,7 +565,7 @@ Object {
     </div>
     <div>
       <div
-        class="w-100 PropTypes.string.isRequired h-auto flex aic mt3 br4-ns br--left-ns shadow-3 pa3"
+        class="w-100 PropTypes.string.isRequired h-auto flex aic jcb mt3 br4-ns br--left-ns shadow-3 pa3 pl5-ns"
       >
         <div
           class="sc-bdVaJa giFZti"
@@ -582,7 +582,7 @@ Object {
           </p>
         </div>
         <div
-          class="w-80"
+          class="w-80 pl3 pl0-nsa"
         >
           <p
             class="b ttu"
@@ -1286,7 +1286,7 @@ Object {
     </div>
     <div>
       <div
-        class="w-100 PropTypes.string.isRequired h-auto flex aic mt3 br4-ns br--left-ns shadow-3 pa3"
+        class="w-100 PropTypes.string.isRequired h-auto flex aic jcb mt3 br4-ns br--left-ns shadow-3 pa3 pl5-ns"
       >
         <div
           class="sc-bdVaJa giFZti"
@@ -1303,7 +1303,7 @@ Object {
           </p>
         </div>
         <div
-          class="w-80"
+          class="w-80 pl3 pl0-nsa"
         >
           <p
             class="b ttu"
@@ -2201,7 +2201,7 @@ Object {
     </div>
     <div>
       <div
-        class="w-100 PropTypes.string.isRequired h-auto flex aic mt3 br4-ns br--left-ns shadow-3 pa3"
+        class="w-100 PropTypes.string.isRequired h-auto flex aic jcb mt3 br4-ns br--left-ns shadow-3 pa3 pl5-ns"
       >
         <div
           class="sc-bdVaJa giFZti"
@@ -2218,7 +2218,7 @@ Object {
           </p>
         </div>
         <div
-          class="w-80"
+          class="w-80 pl3 pl0-nsa"
         >
           <p
             class="b ttu"

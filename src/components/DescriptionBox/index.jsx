@@ -150,7 +150,7 @@ export const FeatureBand = ({ bgColour, gem, category, amount, description, clip
 
     <Gem quality={category} image={gem} amount={amount} styling="w-20" />
 
-    <div className="w-80 pl3 pl0-ns">
+    <div className="w-80 pl3 pl0-nsa">
       <p className="b ttu">{category}</p>
       <p className=" pr4-ns">{description}</p>
     </div>
