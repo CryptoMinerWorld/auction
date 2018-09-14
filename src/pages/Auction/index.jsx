@@ -96,7 +96,7 @@ Auction.propTypes = {
     monitorHeight: PropTypes.bool,
     monitorWidth: PropTypes.bool
   }).isRequired,
-  deadline: PropTypes.number.isRequired,
+  deadline: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   currentPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   minPrice: PropTypes.number.isRequired,
   maxPrice: PropTypes.number.isRequired,

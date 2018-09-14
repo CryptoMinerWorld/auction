@@ -39,21 +39,24 @@ Gem.propTypes = {
 };
 
 Gem.defaultProps = {
-  quality: '',
-  image: '',
-  amount: '',
+  quality: 1,
+  image: 1,
+  amount: 1,
 };
 
 class Gembox extends PureComponent {
   static propTypes = {
-    level: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    level: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     styling: PropTypes.string
   };
 
   static defaultProps = {
-    styling: ''
+    styling: '',
+    level: 2,
+    grade: 2,
+    rate: 2,
   }
 
   gradeConverter = gradeValue => ({
@@ -93,8 +96,12 @@ const Nugget = ({ quality, value, gem }) => (
 
 Nugget.propTypes = {
   quality: PropTypes.string.isRequired,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   gem: PropTypes.string.isRequired,
 };
+
+Nugget.defaultProps = {
+  value: 1
+}
 
 

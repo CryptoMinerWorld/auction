@@ -47,11 +47,11 @@ class App extends PureComponent {
             dutchAuctionContractInstance: '',
             gemsContractInstance: '',
             auctionStartTime: '',
-            auctionEndTime: 1,
+            auctionEndTime: '',
             tokenId: '',
             grade: 1,
-            level: 'A',
-            rate: '',
+            level: 2,
+            rate: 2,
             color: '',
             isTokenOnSale: true,
             gemImage: '',
@@ -198,6 +198,9 @@ class App extends PureComponent {
 
     render() {
         const { redirectTo, tokenId, auctionEndTime, auctionStartTime, auctionStartPrice, auctionEndPrice, font, currentPrice, level, grade, rate, color, isTokenOnSale, web3, gemImage, story, releaseConfetti, err } = this.state
+
+
+
 
         // @notice if the token is not on auction a modal tells people the auction is over
         if (!isTokenOnSale &&
