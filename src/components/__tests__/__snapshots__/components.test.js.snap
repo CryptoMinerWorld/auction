@@ -1440,14 +1440,14 @@ Object {
               class="sc-bdVaJa giFZti"
             >
               <img
-                alt="rate"
+                alt="level"
                 class="h3 center"
                 src="gem2.png"
               />
               <p
                 class="ttu f5 mt2 b o-50 black tc false"
               >
-                1%
+                1
               </p>
             </div>
           </div>
@@ -1463,14 +1463,14 @@ Object {
               class="sc-bdVaJa giFZti"
             >
               <img
-                alt="rate"
+                alt="grade"
                 class="h3 center"
                 src="gem1.png"
               />
               <p
-                class="ttu f5 mt2 b o-50 black tc false"
+                class="ttu f5 mt2 b o-50 black tc pr2"
               >
-                C%
+                C
               </p>
             </div>
           </div>
@@ -1520,14 +1520,14 @@ Object {
             class="sc-bdVaJa giFZti"
           >
             <img
-              alt="rate"
+              alt="level"
               class="h3 center"
               src="gem2.png"
             />
             <p
               class="ttu f5 mt2 b o-50 black tc false"
             >
-              1%
+              1
             </p>
           </div>
         </div>
@@ -1543,14 +1543,14 @@ Object {
             class="sc-bdVaJa giFZti"
           >
             <img
-              alt="rate"
+              alt="grade"
               class="h3 center"
               src="gem1.png"
             />
             <p
-              class="ttu f5 mt2 b o-50 black tc false"
+              class="ttu f5 mt2 b o-50 black tc pr2"
             >
-              C%
+              C
             </p>
           </div>
         </div>
@@ -1662,14 +1662,14 @@ exports[`MobileHeader renders correctly 1`] = `
               class="sc-bdVaJa giFZti"
             >
               <img
-                alt="rate"
+                alt="level"
                 class="h3 center"
                 src="gem2.png"
               />
               <p
                 class="ttu f5 mt2 b o-50 black tc false"
               >
-                2%
+                2
               </p>
             </div>
           </div>
@@ -1685,14 +1685,14 @@ exports[`MobileHeader renders correctly 1`] = `
               class="sc-bdVaJa giFZti"
             >
               <img
-                alt="rate"
+                alt="grade"
                 class="h3 center"
                 src="gem1.png"
               />
               <p
-                class="ttu f5 mt2 b o-50 black tc false"
+                class="ttu f5 mt2 b o-50 black tc pr2"
               >
-                C%
+                C
               </p>
             </div>
           </div>
@@ -2154,14 +2154,14 @@ Object {
               class="sc-bdVaJa giFZti"
             >
               <img
-                alt="rate"
+                alt="level"
                 class="h3 center"
                 src="gem2.png"
               />
               <p
                 class="ttu f5 mt2 b o-50 black tc false"
               >
-                1%
+                1
               </p>
             </div>
           </div>
@@ -2177,14 +2177,14 @@ Object {
               class="sc-bdVaJa giFZti"
             >
               <img
-                alt="rate"
+                alt="grade"
                 class="h3 center"
                 src="gem1.png"
               />
               <p
-                class="ttu f5 mt2 b o-50 black tc false"
+                class="ttu f5 mt2 b o-50 black tc pr2"
               >
-                C%
+                C
               </p>
             </div>
           </div>
@@ -2277,14 +2277,14 @@ Object {
                   class="sc-bdVaJa giFZti"
                 >
                   <img
-                    alt="rate"
+                    alt="level"
                     class="h3 center"
                     src="gem2.png"
                   />
                   <p
                     class="ttu f5 mt2 b o-50 black tc false"
                   >
-                    2%
+                    2
                   </p>
                 </div>
               </div>
@@ -2300,14 +2300,14 @@ Object {
                   class="sc-bdVaJa giFZti"
                 >
                   <img
-                    alt="rate"
+                    alt="grade"
                     class="h3 center"
                     src="gem1.png"
                   />
                   <p
-                    class="ttu f5 mt2 b o-50 black tc false"
+                    class="ttu f5 mt2 b o-50 black tc pr2"
                   >
-                    C%
+                    C
                   </p>
                 </div>
               </div>

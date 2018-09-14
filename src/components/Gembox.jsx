@@ -14,7 +14,6 @@ const Feature = styled.div`
 
 
 export const Gem = ({ quality, image, amount }) => (
-
   <Feature >
     <img
       src={image}
@@ -90,7 +89,7 @@ export default Gembox;
 const Nugget = ({ quality, value, gem }) => (
   <div className="w-100">
     <small className="ttu white b dn-ns">{quality}</small>
-    <Gem quality="rate" image={gem} amount={value} />
+    <Gem quality={quality} image={gem} amount={value} />
   </div>
 )
 
