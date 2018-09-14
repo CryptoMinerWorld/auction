@@ -144,13 +144,13 @@ export default DescriptionBox;
 
 export const FeatureBand = ({ bgColour, gem, category, amount, description, clip }) =>
   <div
-    className={`w-100 ${bgColour} h-auto flex aic mt3 br4-ns br--left-ns shadow-3 pa3`}
+    className={`w-100 ${bgColour} h-auto flex aic jcb mt3 br4-ns br--left-ns shadow-3 pa3 pl5-ns`}
     style={clip}
   >
 
     <Gem quality={category} image={gem} amount={amount} styling="w-20" />
 
-    <div className="w-80">
+    <div className="w-80 pl3 pl0-ns">
       <p className="b ttu">{category}</p>
       <p className=" pr4-ns">{description}</p>
     </div>

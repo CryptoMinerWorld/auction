@@ -4,7 +4,6 @@ import { Progress } from 'antd';
 
 class ProgressMeter extends PureComponent {
 
-
   calculatePercentage = (max, current) => ((max - current) / max) * 100
 
   render() {
@@ -41,5 +40,6 @@ export default ProgressMeter;
 ProgressMeter.propTypes = {
   currentPrice: PropTypes.string.isRequired,
   minPrice: PropTypes.number.isRequired,
-  maxPrice: PropTypes.number.isRequired
+  maxPrice: PropTypes.number.isRequired,
 };
+

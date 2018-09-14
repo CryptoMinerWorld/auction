@@ -70,9 +70,9 @@ it('AuctionBox renders correctly', () => {
     const props = {
         currentPrice: 'PropTypes.string.isRequired',
         handleBuyNow: jest.fn(),
-        level: 'PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired',
-        grade: 'PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired',
-        rate: 'PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired',
+        level: 2,
+        grade: 2,
+        rate: 2,
         deadline: 100,
         name: 'PropTypes.string.isRequired',
         showConfirm: jest.fn(),
@@ -126,9 +126,9 @@ it('Footer & MailingList render correctly', () => {
 
 it('Gembox renders correctly', () => {
     const props = {
-        level: '1',
-        grade: '2',
-        rate: '2',
+        level: 1,
+        grade: 2,
+        rate: 2,
     }
     const container = render(<Gembox {...props} />);
     expect(container).toMatchSnapshot();
@@ -137,11 +137,10 @@ it('Gembox renders correctly', () => {
 
 
 it('Gem renders correctly', () => {
-    const props = {
-        quality: 'PropTypes.oneOfType([PropTypes.string,',
-        image: 'PropTypes.string, PropTypes.number])',
-        amount: 'PropTypes.oneOfTypes.number])'
-    }
+     const props = {
+    level: 2,
+    grade: 2,
+    rate: 2}
     const { container } = render(<Gem {...props} />);
     expect(container).toMatchSnapshot();
 });
@@ -152,9 +151,9 @@ it('Gem renders correctly', () => {
 it('MobileHeader renders correctly', () => {
     const props = {
         currentPrice: 'PropTypes.string.isRequired',
-        level: 'PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired',
-        grade: 'PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired',
-        rate: 'PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired'
+        level: 2,
+        grade: 2,
+        rate: 2
     }
     const { container } = render(<MobileHeader {...props} />);
     expect(container).toMatchSnapshot();
@@ -162,19 +161,17 @@ it('MobileHeader renders correctly', () => {
 
 
 it('showExpired renders correctly', () => {
-
     const { container } = render(Navbar);
     expect(container).toMatchSnapshot();
 });
 
 it('ProgressMeter renders correctly', () => {
-
     const props = {
-        currentPrice: 'PropTypes.string.isRequired',
+        currentPrice: '1.2',
         minPrice: 100,
         maxPrice: 10
     };
-    const { container } = render(<ProgressMeter />);
+    const  container  = render(<ProgressMeter {...props}/>);
     expect(container).toMatchSnapshot();
 });
 
