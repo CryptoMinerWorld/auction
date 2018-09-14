@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import FontFaceObserver from 'fontfaceobserver';
 import { Alert } from 'antd';
+import ReactGA from 'react-ga';
 import MobileHeader from './components/MobileHeader';
 import Navbar from './components/Nav';
 import Footer from './components/Footer';
@@ -23,6 +24,9 @@ import {
 import { createAuction } from './pages/Create/helpers';
 import DutchAuction from '../build/contracts/DutchAuction.json';
 import Gems from '../build/contracts/GemERC721.json';
+
+ReactGA.initialize('UA-125801446-1');
+ReactGA.pageview(window.location.pathname + window.location.search);
 
 const dutchAuctionABI = DutchAuction.abi
 const gemsABI = Gems.abi;
