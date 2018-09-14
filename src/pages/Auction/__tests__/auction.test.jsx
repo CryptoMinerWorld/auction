@@ -50,7 +50,8 @@ const props = {
   auctionStartTime:2000,
   auctionEndTime: 1000,
   sourceImage:'https://i.kym-cdn.com/photos/images/original/001/225/594/18a.gif',
-  provider: true
+  provider: true,
+  currentTime: 1536908786405
 };
 
 test('Auction Page render correctly', async () => {
