@@ -47,7 +47,8 @@ const AuctionBox = ({ currentPrice,
   provider,
   showConfirm,
   minPrice,
-  maxPrice }) =>
+  maxPrice,
+}) =>
 
   (
     <OverlapOnDesktopView className="bg-dark-gray br3 measure-l w-100 shadow-3">

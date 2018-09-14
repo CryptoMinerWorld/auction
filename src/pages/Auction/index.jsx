@@ -64,7 +64,6 @@ const Auction = props => (
               redirectTo={props.redirectTo}
               showConfirm={props.showConfirm}
               provider={props.provider}
-
             />
           </ReactCSSTransitionGroup>
         </div>
@@ -111,7 +110,7 @@ Auction.propTypes = {
   color: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   sourceImage: PropTypes.string.isRequired,
   story: PropTypes.string.isRequired,
-  provider: PropTypes.bool.isRequired
+  provider: PropTypes.bool.isRequired,
 }
 
 Auction.defaultProps = {
