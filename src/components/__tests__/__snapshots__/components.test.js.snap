@@ -304,11 +304,11 @@ exports[`FeatureBand renders correctly 1`] = `
     >
       <img
         alt="PropTypes.string.isRequired"
-        class="h3 center"
+        class="h2 h3-ns center"
         src="PropTypes.string.isRequired"
       />
       <p
-        class="ttu f5 mt2 b o-50 black tc false"
+        class="ttu f5 mt2 o-50 black tc pt1 b false"
       >
         0
       </p>
@@ -473,7 +473,7 @@ exports[`Footer & MailingList render correctly 1`] = `
             <p
               class="f7 black-70 dib pr3 mb3 white"
             >
-              Version 0.0.11
+              Version 0.0.13
             </p>
           </div>
         </div>
@@ -572,11 +572,11 @@ Object {
         >
           <img
             alt="PropTypes.string.isRequired"
-            class="h3 center"
+            class="h2 h3-ns center"
             src="PropTypes.string.isRequired"
           />
           <p
-            class="ttu f5 mt2 b o-50 black tc false"
+            class="ttu f5 mt2 o-50 black tc pt1 b false"
           >
             0
           </p>
@@ -827,7 +827,7 @@ Object {
                 <p
                   class="f7 black-70 dib pr3 mb3 white"
                 >
-                  Version 0.0.11
+                  Version 0.0.13
                 </p>
               </div>
             </div>
@@ -1000,11 +1000,11 @@ exports[`Gem renders correctly 1`] = `
   >
     <img
       alt="1"
-      class="h3 center"
+      class="h2 h3-ns center"
       src="1"
     />
     <p
-      class="ttu f5 mt2 b o-50 black tc false"
+      class="ttu f5 mt2 o-50 black tc pt1 b false"
     >
       1
     </p>
@@ -1092,11 +1092,11 @@ Object {
         >
           <img
             alt="PropTypes.string.isRequired"
-            class="h3 center"
+            class="h2 h3-ns center"
             src="PropTypes.string.isRequired"
           />
           <p
-            class="ttu f5 mt2 b o-50 black tc false"
+            class="ttu f5 mt2 o-50 black tc pt1 b false"
           >
             0
           </p>
@@ -1347,7 +1347,7 @@ Object {
                 <p
                   class="f7 black-70 dib pr3 mb3 white"
                 >
-                  Version 0.0.11
+                  Version 0.0.13
                 </p>
               </div>
             </div>
@@ -1432,7 +1432,7 @@ Object {
             class="w-100"
           >
             <small
-              class="ttu white b dn-ns"
+              class="ttu white dn-ns"
             >
               level
             </small>
@@ -1441,11 +1441,11 @@ Object {
             >
               <img
                 alt="level"
-                class="h3 center"
+                class="h2 h3-ns center"
                 src="gem2.png"
               />
               <p
-                class="ttu f5 mt2 b o-50 black tc false"
+                class="ttu f5 mt2 o-50 black tc pt1 b false"
               >
                 1
               </p>
@@ -1455,7 +1455,7 @@ Object {
             class="w-100"
           >
             <small
-              class="ttu white b dn-ns"
+              class="ttu white dn-ns"
             >
               grade
             </small>
@@ -1464,11 +1464,11 @@ Object {
             >
               <img
                 alt="grade"
-                class="h3 center"
+                class="h2 h3-ns center"
                 src="gem1.png"
               />
               <p
-                class="ttu f5 mt2 b o-50 black tc pr2"
+                class="ttu f5 mt2 o-50 black tc pt1 b pr2"
               >
                 C
               </p>
@@ -1478,7 +1478,7 @@ Object {
             class="w-100"
           >
             <small
-              class="ttu white b dn-ns"
+              class="ttu white dn-ns"
             >
               rate
             </small>
@@ -1487,11 +1487,11 @@ Object {
             >
               <img
                 alt="rate"
-                class="h3 center"
+                class="h2 h3-ns center"
                 src="gem3.png"
               />
               <p
-                class="ttu f5 mt2 b o-50 black tc false"
+                class="ttu f5 mt2 o-50 black tc pt1 b false"
               >
                 1%
               </p>
@@ -1512,7 +1512,7 @@ Object {
           class="w-100"
         >
           <small
-            class="ttu white b dn-ns"
+            class="ttu white dn-ns"
           >
             level
           </small>
@@ -1521,11 +1521,11 @@ Object {
           >
             <img
               alt="level"
-              class="h3 center"
+              class="h2 h3-ns center"
               src="gem2.png"
             />
             <p
-              class="ttu f5 mt2 b o-50 black tc false"
+              class="ttu f5 mt2 o-50 black tc pt1 b false"
             >
               1
             </p>
@@ -1535,7 +1535,7 @@ Object {
           class="w-100"
         >
           <small
-            class="ttu white b dn-ns"
+            class="ttu white dn-ns"
           >
             grade
           </small>
@@ -1544,11 +1544,11 @@ Object {
           >
             <img
               alt="grade"
-              class="h3 center"
+              class="h2 h3-ns center"
               src="gem1.png"
             />
             <p
-              class="ttu f5 mt2 b o-50 black tc pr2"
+              class="ttu f5 mt2 o-50 black tc pt1 b pr2"
             >
               C
             </p>
@@ -1558,7 +1558,7 @@ Object {
           class="w-100"
         >
           <small
-            class="ttu white b dn-ns"
+            class="ttu white dn-ns"
           >
             rate
           </small>
@@ -1567,11 +1567,11 @@ Object {
           >
             <img
               alt="rate"
-              class="h3 center"
+              class="h2 h3-ns center"
               src="gem3.png"
             />
             <p
-              class="ttu f5 mt2 b o-50 black tc false"
+              class="ttu f5 mt2 o-50 black tc pt1 b false"
             >
               1%
             </p>
@@ -1617,18 +1617,20 @@ Object {
 exports[`MobileHeader renders correctly 1`] = `
 <div>
   <div
-    class="flex-s dn-ns jca bg-base shadow-1 "
+    class="flex-s dn-ns jca bg-base shadow-1"
   >
     <div
       class="absolute left-1"
     >
       <div
-        class="bg-deep-purple pa3"
+        class="bg-deep-purple pa3 tc"
       >
         <small
-          class="white ttu b "
+          class="white ttu b tc center"
         >
-          current price
+          current 
+          <br />
+           price
         </small>
         <p
           class="white f3 tc"
@@ -1654,7 +1656,7 @@ exports[`MobileHeader renders correctly 1`] = `
             class="w-100"
           >
             <small
-              class="ttu white b dn-ns"
+              class="ttu white dn-ns"
             >
               level
             </small>
@@ -1663,11 +1665,11 @@ exports[`MobileHeader renders correctly 1`] = `
             >
               <img
                 alt="level"
-                class="h3 center"
+                class="h2 h3-ns center"
                 src="gem2.png"
               />
               <p
-                class="ttu f5 mt2 b o-50 black tc false"
+                class="ttu f5 mt2 o-50 black tc pt1 b false"
               >
                 2
               </p>
@@ -1677,7 +1679,7 @@ exports[`MobileHeader renders correctly 1`] = `
             class="w-100"
           >
             <small
-              class="ttu white b dn-ns"
+              class="ttu white dn-ns"
             >
               grade
             </small>
@@ -1686,11 +1688,11 @@ exports[`MobileHeader renders correctly 1`] = `
             >
               <img
                 alt="grade"
-                class="h3 center"
+                class="h2 h3-ns center"
                 src="gem1.png"
               />
               <p
-                class="ttu f5 mt2 b o-50 black tc pr2"
+                class="ttu f5 mt2 o-50 black tc pt1 b pr2"
               >
                 C
               </p>
@@ -1700,7 +1702,7 @@ exports[`MobileHeader renders correctly 1`] = `
             class="w-100"
           >
             <small
-              class="ttu white b dn-ns"
+              class="ttu white dn-ns"
             >
               rate
             </small>
@@ -1709,11 +1711,11 @@ exports[`MobileHeader renders correctly 1`] = `
             >
               <img
                 alt="rate"
-                class="h3 center"
+                class="h2 h3-ns center"
                 src="gem3.png"
               />
               <p
-                class="ttu f5 mt2 b o-50 black tc false"
+                class="ttu f5 mt2 o-50 black tc pt1 b false"
               >
                 1%
               </p>
@@ -1806,11 +1808,11 @@ Object {
         >
           <img
             alt="PropTypes.string.isRequired"
-            class="h3 center"
+            class="h2 h3-ns center"
             src="PropTypes.string.isRequired"
           />
           <p
-            class="ttu f5 mt2 b o-50 black tc false"
+            class="ttu f5 mt2 o-50 black tc pt1 b false"
           >
             0
           </p>
@@ -2061,7 +2063,7 @@ Object {
                 <p
                   class="f7 black-70 dib pr3 mb3 white"
                 >
-                  Version 0.0.11
+                  Version 0.0.13
                 </p>
               </div>
             </div>
@@ -2146,7 +2148,7 @@ Object {
             class="w-100"
           >
             <small
-              class="ttu white b dn-ns"
+              class="ttu white dn-ns"
             >
               level
             </small>
@@ -2155,11 +2157,11 @@ Object {
             >
               <img
                 alt="level"
-                class="h3 center"
+                class="h2 h3-ns center"
                 src="gem2.png"
               />
               <p
-                class="ttu f5 mt2 b o-50 black tc false"
+                class="ttu f5 mt2 o-50 black tc pt1 b false"
               >
                 1
               </p>
@@ -2169,7 +2171,7 @@ Object {
             class="w-100"
           >
             <small
-              class="ttu white b dn-ns"
+              class="ttu white dn-ns"
             >
               grade
             </small>
@@ -2178,11 +2180,11 @@ Object {
             >
               <img
                 alt="grade"
-                class="h3 center"
+                class="h2 h3-ns center"
                 src="gem1.png"
               />
               <p
-                class="ttu f5 mt2 b o-50 black tc pr2"
+                class="ttu f5 mt2 o-50 black tc pt1 b pr2"
               >
                 C
               </p>
@@ -2192,7 +2194,7 @@ Object {
             class="w-100"
           >
             <small
-              class="ttu white b dn-ns"
+              class="ttu white dn-ns"
             >
               rate
             </small>
@@ -2201,11 +2203,11 @@ Object {
             >
               <img
                 alt="rate"
-                class="h3 center"
+                class="h2 h3-ns center"
                 src="gem3.png"
               />
               <p
-                class="ttu f5 mt2 b o-50 black tc false"
+                class="ttu f5 mt2 o-50 black tc pt1 b false"
               >
                 1%
               </p>
@@ -2220,11 +2222,11 @@ Object {
       >
         <img
           alt="1"
-          class="h3 center"
+          class="h2 h3-ns center"
           src="1"
         />
         <p
-          class="ttu f5 mt2 b o-50 black tc false"
+          class="ttu f5 mt2 o-50 black tc pt1 b false"
         >
           1
         </p>
@@ -2232,18 +2234,20 @@ Object {
     </div>
     <div>
       <div
-        class="flex-s dn-ns jca bg-base shadow-1 "
+        class="flex-s dn-ns jca bg-base shadow-1"
       >
         <div
           class="absolute left-1"
         >
           <div
-            class="bg-deep-purple pa3"
+            class="bg-deep-purple pa3 tc"
           >
             <small
-              class="white ttu b "
+              class="white ttu b tc center"
             >
-              current price
+              current 
+              <br />
+               price
             </small>
             <p
               class="white f3 tc"
@@ -2269,7 +2273,7 @@ Object {
                 class="w-100"
               >
                 <small
-                  class="ttu white b dn-ns"
+                  class="ttu white dn-ns"
                 >
                   level
                 </small>
@@ -2278,11 +2282,11 @@ Object {
                 >
                   <img
                     alt="level"
-                    class="h3 center"
+                    class="h2 h3-ns center"
                     src="gem2.png"
                   />
                   <p
-                    class="ttu f5 mt2 b o-50 black tc false"
+                    class="ttu f5 mt2 o-50 black tc pt1 b false"
                   >
                     2
                   </p>
@@ -2292,7 +2296,7 @@ Object {
                 class="w-100"
               >
                 <small
-                  class="ttu white b dn-ns"
+                  class="ttu white dn-ns"
                 >
                   grade
                 </small>
@@ -2301,11 +2305,11 @@ Object {
                 >
                   <img
                     alt="grade"
-                    class="h3 center"
+                    class="h2 h3-ns center"
                     src="gem1.png"
                   />
                   <p
-                    class="ttu f5 mt2 b o-50 black tc pr2"
+                    class="ttu f5 mt2 o-50 black tc pt1 b pr2"
                   >
                     C
                   </p>
@@ -2315,7 +2319,7 @@ Object {
                 class="w-100"
               >
                 <small
-                  class="ttu white b dn-ns"
+                  class="ttu white dn-ns"
                 >
                   rate
                 </small>
@@ -2324,11 +2328,11 @@ Object {
                 >
                   <img
                     alt="rate"
-                    class="h3 center"
+                    class="h2 h3-ns center"
                     src="gem3.png"
                   />
                   <p
-                    class="ttu f5 mt2 b o-50 black tc false"
+                    class="ttu f5 mt2 o-50 black tc pt1 b false"
                   >
                     1%
                   </p>

@@ -1,9 +1,5 @@
 {
-  "extends": [
-    "airbnb",
-    "prettier",
-    "prettier/react"
-  ],
+  "extends": ["airbnb", "prettier", "prettier/react"],
   "parser": "babel-eslint",
   "parserOptions": {
     "ecmaVersion": 5,
@@ -17,40 +13,28 @@
     "jsx-a11y/label-has-associated-control": [
       0,
       {
-        "labelComponents": [
-          "CustomInputLabel"
-        ],
-        "labelAttributes": [
-          "label"
-        ],
-        "controlComponents": [
-          "CustomInput"
-        ],
+        "labelComponents": ["CustomInputLabel"],
+        "labelAttributes": ["label"],
+        "controlComponents": ["CustomInput"],
         "depth": 3
       }
     ],
     "jsx-a11y/label-has-for": [
       0,
       {
-        "components": [
-          "Label"
-        ],
+        "components": ["Label"],
         "required": {
-          "every": [
-            "nesting",
-            "id"
-          ]
+          "every": ["nesting", "id"]
         },
         "allowChildren": false
       }
-    ]
+    ],
+    "import/no-unresolved": "off"
   },
   "env": {
     "browser": true,
     "node": true,
     "jest": true
   },
-  "plugins": [
-    "prettier"
-  ]
+  "plugins": ["prettier"]
 }
