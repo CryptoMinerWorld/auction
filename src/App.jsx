@@ -44,6 +44,11 @@ const StickyHeader = styled.div`
   z-index: 3;
 `;
 
+const NotStickyHeader = styled.div`
+  position: relative;
+  z-index: 2;
+`;
+
 class App extends PureComponent {
   constructor(props) {
     super(props);
@@ -266,13 +271,15 @@ class App extends PureComponent {
         )}
         <StickyHeader>
           <Navbar />
+        </StickyHeader>
+        <NotStickyHeader>
           <MobileHeader
             currentPrice={currentPrice}
             level={level}
             grade={grade}
             rate={rate}
           />
-        </StickyHeader>
+        </NotStickyHeader>
         <Routes
           currentPrice={Number(currentPrice).toFixed(3)}
           minPrice={Number(auctionStartPrice / 1000000000000000000)}
