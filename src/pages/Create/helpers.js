@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js';
+import settings from "../../../cmw_settings.json";
 
 // export const handleApproveGemTransfer = (
 //   _contract,
@@ -55,10 +56,8 @@ export const createAuction = async (
         .plus(two.pow(80).times(p0))
         .plus(p1))
 
-    const auctionContract = '0xdd229423db08b1e9a0add49986e358dab72b7f54'
-
     _contract.methods.safeTransferFrom(
-        _currentAccount, auctionContract, token, data
+        _currentAccount, settings.dutchAuction, token, data
     ).send()
 
 };
