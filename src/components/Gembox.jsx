@@ -1,9 +1,9 @@
-import React, { PureComponent } from 'react';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import gem1 from '../images/icons/gem1.png';
-import gem2 from '../images/icons/gem2.png';
-import gem3 from '../images/icons/gem3.png';
+import React, { PureComponent } from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import gem1 from "../images/icons/gem1.png";
+import gem2 from "../images/icons/gem2.png";
+import gem3 from "../images/icons/gem3.png";
 
 const Feature = styled.div`
   display: grid;
@@ -12,35 +12,34 @@ const Feature = styled.div`
   align-items: center;
 `;
 
-
 export const Gem = ({ quality, image, amount }) => (
-  <Feature >
+  <Feature>
     <img
       src={image}
       alt={quality}
-      style={{ gridColumn: '1 / -1', gridRow: '2' }}
-      className="h3 center"
+      style={{ gridColumn: "1 / -1", gridRow: "2" }}
+      className="h2 h3-ns center"
     />
     <p
       style={{ gridRow: 2, gridColumn: 2 }}
-      className={`ttu f5 mt2 b o-50 black tc ${quality === 'grade' && 'pr2'}`}
+      className={`ttu f5 mt2 o-50 black tc pt1 b ${quality === "grade" &&
+        "pr2"}`}
     >
-      {quality === 'rate' ? `${amount}%` : amount}
+      {quality === "rate" ? `${amount}%` : amount}
     </p>
   </Feature>
-
 );
 
 Gem.propTypes = {
   quality: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   image: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
 
 Gem.defaultProps = {
   quality: 1,
   image: 1,
-  amount: 1,
+  amount: 1
 };
 
 class Gembox extends PureComponent {
@@ -52,20 +51,21 @@ class Gembox extends PureComponent {
   };
 
   static defaultProps = {
-    styling: '',
+    styling: "",
     level: 2,
     grade: 2,
-    rate: 2,
-  }
+    rate: 2
+  };
 
-  gradeConverter = gradeValue => ({
-    1: 'D',
-    2: 'C',
-    3: 'B',
-    4: 'A',
-    5: 'AA',
-    6: 'AAA'
-  }[gradeValue]);
+  gradeConverter = gradeValue =>
+    ({
+      1: "D",
+      2: "C",
+      3: "B",
+      4: "A",
+      5: "AA",
+      6: "AAA"
+    }[gradeValue]);
 
   rateConverter = rate => Math.round((rate / 400) * 100);
 
@@ -74,9 +74,13 @@ class Gembox extends PureComponent {
     return (
       <div className={styling}>
         <div className="flex tc pa3">
-          <Nugget quality='level' value={level} gem={gem2} />
-          <Nugget quality='grade' value={this.gradeConverter(grade)} gem={gem1} />
-          <Nugget quality='rate' value={this.rateConverter(rate)} gem={gem3} />
+          <Nugget quality="level" value={level} gem={gem2} />
+          <Nugget
+            quality="grade"
+            value={this.gradeConverter(grade)}
+            gem={gem1}
+          />
+          <Nugget quality="rate" value={this.rateConverter(rate)} gem={gem3} />
         </div>
       </div>
     );
@@ -85,22 +89,19 @@ class Gembox extends PureComponent {
 
 export default Gembox;
 
-
 const Nugget = ({ quality, value, gem }) => (
   <div className="w-100">
-    <small className="ttu white b dn-ns">{quality}</small>
+    <small className="ttu white dn-ns">{quality}</small>
     <Gem quality={quality} image={gem} amount={value} />
   </div>
-)
+);
 
 Nugget.propTypes = {
   quality: PropTypes.string.isRequired,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  gem: PropTypes.string.isRequired,
+  gem: PropTypes.string.isRequired
 };
 
 Nugget.defaultProps = {
   value: 1
-}
-
-
+};
