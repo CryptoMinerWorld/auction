@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import List from './pages/ListAuctions';
+import List from './pages/market/ListAuctions';
 import CreateAuction from './pages/Create';
 import Auction from './pages/Auction';
 

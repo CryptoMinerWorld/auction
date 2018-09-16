@@ -94,6 +94,8 @@ module.exports = {
     ]
   },
 
+  
+
   module: {
     // First, run the linter.
     // It's important to do this before Babel processes the JS.
@@ -103,8 +105,14 @@ module.exports = {
         loader: 'eslint',
         include: paths.appSrc
       }
+
+      
     ],
     loaders: [
+
+      
+
+
       // Default loader: load all assets that are not handled
       // by other loaders with the url loader.
       // Note: This list needs to be updated with every change of extensions
@@ -137,8 +145,19 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         include: paths.appSrc,
-        loader: 'babel',
+          loader: 'babel',
+          exclude:/node_modules/,
+          options: {  
+            presets: ['env']
+          },
+          
+        
       },
+
+
+      
+
+
       // The notation here is somewhat confusing.
       // "postcss" loader applies autoprefixer to our CSS.
       // "css" loader resolves paths in CSS and adds assets as dependencies.
@@ -243,6 +262,7 @@ module.exports = {
     // Try to dedupe duplicated modules, if any:
     new webpack.optimize.DedupePlugin(),
     // Minify the code.
+
     // new webpack.optimize.UglifyJsPlugin({
     //   compress: {
     //     screw_ie8: true, // React doesn't support IE8

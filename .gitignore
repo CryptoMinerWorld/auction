@@ -1,3 +1,5 @@
+cmw_settings.json
+
 # Logs
 logs
 *.log
@@ -71,3 +73,4 @@ typings/
 
 # Serverless directories
 .serverless
+
