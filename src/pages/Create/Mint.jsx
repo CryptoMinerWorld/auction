@@ -4,7 +4,6 @@ import getWeb3 from "../../utils/getWeb3";
 import { db, storage } from "../../utils/firebase";
 import DisplayCard from "./DisplayCard";
 import MintForm from "./MintForm";
-import settings from "../../../cmw_settings.json";
 
 const mintABI = [
   {
@@ -37,13 +36,13 @@ const mintABI = [
 
 class Mint extends PureComponent {
   state = {
-    contractAddress: settings.mintContract,
+    contractAddress: process.env.REACT_APP_MINT_HELPER,
     color: "9",
     level: "1",
     gradeType: "1",
     gradeValue: 1,
     gemDetails: `hello`,
-    gemImage: `http://placekitten.com/g/600/300`,
+    gemImage: `https://via.placeholder.com/350x350`,
     imageLoading: false
   };
 
@@ -159,6 +158,7 @@ class Mint extends PureComponent {
       gemImage,
       imageLoading
     } = this.state;
+
     return (
       <div className="ma0 pa0">
         <div className="mw9 center flex jcc aic">
