@@ -160,12 +160,6 @@ class DescriptionBox extends PureComponent {
 
 export default DescriptionBox;
 
-DescriptionBox.propTypes = {
-  size: PropTypes.shape({
-    width: PropTypes.number.isRequired
-  }).isRequired
-};
-
 export const FeatureBand = ({
   bgColour,
   gem,
