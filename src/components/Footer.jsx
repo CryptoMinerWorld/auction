@@ -35,7 +35,7 @@ const Footer = () => (
   <div className="bg-footer-black">
     <TopHighlight />
     <div className="mw9 center">
-      <BackgroundImage className="pa4 pa6-l bt b--black-10  ">
+      <BackgroundImage className="pa4 pa6-l bt b--black-10">
         <div className="mb4-l cf">
           <article className="fl w-50 dib-ns w-auto-ns mr4-m mr5-l mb4 pr2 pr0-ns white">
             <FooterLink link="https://cryptominerworld.com/" title="Home" />
@@ -90,7 +90,9 @@ const Footer = () => (
             <p className="f7 black-70 dib pr3 mb3 white">
               Copyright © Cryptominer World 2018
             </p>
-            <p className="f7 black-70 dib pr3 mb3 white">Version 0.0.15</p>
+            <p className="f7 black-70 dib pr3 mb3 white">
+              Version 0.0.16
+            </p>
           </div>
         </div>
         <div className="db dn-ns">
