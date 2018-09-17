@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+
 import RippleButton from "./RippleButton/RippleButton";
 import img from "../images/Profile-Image-Logo-60x60.png";
 
@@ -63,13 +64,9 @@ const Navbar = () => (
         >
           Workshop
         </a>
-        <a
-          className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
-          href="https://cryptominerworld.com/market/"
-          title="Market"
-        >
+        <p className="link dim dark-gray f6 f5-l dib mr3 mr4-l bb b-primary bw1">
           Market
-        </a>
+        </p>
         <a
           className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
           href="https://cryptominerworld.com/world/"

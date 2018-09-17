@@ -20,19 +20,23 @@ class DescriptionBox extends PureComponent {
   };
 
   state = {
-    inView: false,
-    notOnAMobile: true
+    inView: false
   };
 
   componentDidMount() {
-    if (
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        navigator.userAgent
-      )
-    ) {
-      this.setState({ notOnAMobile: false });
-    }
+    this.fireAnimationImmediatelyOnMobileOrMassiveScreens(
+      window.screen.availWidth
+    );
   }
+
+  fireAnimationImmediatelyOnMobileOrMassiveScreens = width => {
+    const massiveScreens = width >= 1920;
+    const mobileScreens = width <= 780;
+
+    if (massiveScreens || mobileScreens) {
+      this.setState({ inView: true });
+    }
+  };
 
   handleWaypointEnter = ({ previousPosition }) => {
     if (previousPosition === Waypoint.below) {
@@ -54,7 +58,7 @@ class DescriptionBox extends PureComponent {
 
   render() {
     const { level, grade, rate, name, story } = this.props;
-    const { inView, notOnAMobile } = this.state;
+    const { inView } = this.state;
     return (
       <div className="bg-off-black white ma0 ">
         <div className="flex-l jce mw9 center">
@@ -74,14 +78,19 @@ class DescriptionBox extends PureComponent {
                     className="dib ml3"
                   />
                 </div>
-                <div className="flex aic br-pill bg-white-10 w5-ns w-auto black h-auto pa1">
+                <div
+                  className="flex aic bg-white-10 w5-ns w-auto black h-auto pa1"
+                  style={{
+                    clipPath:
+                      "polygon(5% 0, 97% 1%, 100% 19%, 100% 81%, 95% 100%, 5% 99%, 0 84%, 0 16%)"
+                  }}
+                >
                   <img
                     src={logo}
                     alt="seller logo"
                     className="br-100 h2 pl3-ns"
                   />
                   <small className="pl3 white-60 dn dib-m dib-l">
-                    {" "}
                     <span className="dn dib-l">Sold By {""}</span> CryptoMiner
                     World
                   </small>
@@ -95,7 +104,7 @@ class DescriptionBox extends PureComponent {
                   <div>
                     <ReactCSSTransitionGroup
                       transitionName="example1"
-                      transitionAppear={notOnAMobile}
+                      transitionAppear
                       transitionAppearTimeout={5000}
                       transitionEnterTimeout={5000}
                       transitionLeaveTimeout={5000}
@@ -106,12 +115,11 @@ class DescriptionBox extends PureComponent {
                         category="grade"
                         amount={this.gradeConverter(grade)}
                         description="A Gem’s Grade determines how fast it can mine. There are 6 Grades, D, C, B, A, AA, and AAA. Grade As and better all store Resting Energy when they are not mining!"
-                        // clip={{ clipPath: 'polygon(13% 1%, 100% 0, 100% 100%, 11% 100%, 2% 43%, 4% 13%)' }}
                       />
                     </ReactCSSTransitionGroup>
                     <ReactCSSTransitionGroup
                       transitionName="example2"
-                      transitionAppear={notOnAMobile}
+                      transitionAppear
                       transitionAppearTimeout={5000}
                       transitionEnterTimeout={5000}
                       transitionLeaveTimeout={5000}
@@ -122,12 +130,11 @@ class DescriptionBox extends PureComponent {
                         category="level"
                         amount={level}
                         description="A Gem’s level determines how far down that Gem can mine. There are 5 tiers of land and 5 levels of gems. Each successive level allows for another type of land to be mined."
-                        // clip={{ clipPath: 'polygon(50% 0%, 100% 0, 100% 100%, 11% 99%, 3% 76%, 5% 20%, 14% 0)' }}
                       />
                     </ReactCSSTransitionGroup>
                     <ReactCSSTransitionGroup
                       transitionName="example3"
-                      transitionAppear={notOnAMobile}
+                      transitionAppear
                       transitionAppearTimeout={5000}
                       transitionEnterTimeout={5000}
                       transitionLeaveTimeout={5000}
@@ -153,23 +160,34 @@ class DescriptionBox extends PureComponent {
 
 export default DescriptionBox;
 
+DescriptionBox.propTypes = {
+  size: PropTypes.shape({
+    width: PropTypes.number.isRequired
+  }).isRequired
+};
+
 export const FeatureBand = ({
   bgColour,
   gem,
   category,
   amount,
-  description,
-  clip
+  description
 }) => (
-  <div
-    className={`w-100 ${bgColour} h-auto flex aic jcb mt3 br4-ns br--left-ns shadow-3 pa3 pl5-ns`}
-    style={clip}
-  >
-    <Gem quality={category} image={gem} amount={amount} styling="w-20" />
-
-    <div className="w-80 pl3 pl0-nsa">
-      <p className="b ttu">{category}</p>
-      <p className=" pr4-ns">{description}</p>
+  <div className="relative">
+    <div
+      className={`w-100 ${bgColour} h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns`}
+      style={{
+        clipPath:
+          window.screen.availWidth >= 1920
+            ? "polygon(0 84%, 1% 96%, 5% 100%, 97% 100%, 99% 97%, 100% 90%, 100% 14%, 99% 4%, 96% 0, 5% 0%, 1% 2%, 0 12%)"
+            : "polygon(0 84%, 1% 96%, 5% 100%, 97% 100%, 100% 100%, 100% 90%, 100% 14%, 100% 0, 96% 0, 5% 0%, 1% 2%, 0 12%)"
+      }}
+    >
+      <Gem quality={category} image={gem} amount={amount} styling="w-20" />
+      <div className="w-80 pl3 pl0-nsa">
+        <p className="b ttu">{category}</p>
+        <p className=" pr4-ns">{description}</p>
+      </div>
     </div>
   </div>
 );
@@ -179,10 +197,7 @@ FeatureBand.propTypes = {
   gem: PropTypes.string.isRequired,
   category: PropTypes.string.isRequired,
   amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  description: PropTypes.string.isRequired,
-  clip: PropTypes.shape({
-    clip: PropTypes.string
-  })
+  description: PropTypes.string.isRequired
 };
 
 FeatureBand.defaultProps = {

@@ -1,7 +1,7 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import format from 'date-fns/format';
+import React, { PureComponent } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import format from "date-fns/format";
 
 const AngleGradient = styled.div`
   background: linear-gradient(45deg, #c018ab, #5f1763);
@@ -9,11 +9,12 @@ const AngleGradient = styled.div`
 
 class CountdownTimer extends PureComponent {
   static propTypes = {
-    deadline: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    deadline: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+      .isRequired
   };
 
   state = {
-    timeLeft: '',
+    timeLeft: ""
   };
 
   componentDidMount() {
@@ -22,7 +23,7 @@ class CountdownTimer extends PureComponent {
     this.interval = setInterval(
       () =>
         this.setState({
-          timeLeft: Math.round(((deadline * 1000) - new Date().getTime()))
+          timeLeft: Math.round(deadline * 1000 - new Date().getTime())
         }),
       1000
     );
@@ -34,22 +35,31 @@ class CountdownTimer extends PureComponent {
 
   calculateTimeLeftInDays = t => Math.floor(t / (1000 * 60 * 60 * 24));
 
-  calculateTimeLeftInHours = t => Math.floor((t % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  calculateTimeLeftInHours = t =>
+    Math.floor((t % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
 
-  calculateTimeLeftInMinutes = t => Math.floor((t % (1000 * 60 * 60)) / (1000 * 60));
+  calculateTimeLeftInMinutes = t =>
+    Math.floor((t % (1000 * 60 * 60)) / (1000 * 60));
 
   calculateTimeLeftInSeconds = t => Math.floor((t % (1000 * 60)) / 1000);
-
 
   render() {
     const { deadline } = this.props;
     const { timeLeft } = this.state;
 
     return (
-      <AngleGradient className="tc bg-blue pa2 br3 shadow-3">
+      <AngleGradient
+        className="tc bg-blue pa2 br3 shadow-3"
+        style={{
+          clipPath:
+            "polygon(2% 0, 98% 0, 100% 4%, 100% 94%, 98% 100%, 2% 100%, 0 94%, 0 6%)"
+        }}
+      >
         <p className="b">Auction ends on</p>
-        <time className="measure">{format(new Date(deadline * 1000), 'EEEE do of MMMM, p')}</time>
-        {timeLeft !== '' && (
+        <time className="measure">
+          {format(new Date(deadline * 1000), "EEEE do of MMMM, p")}
+        </time>
+        {timeLeft !== "" && (
           <div className="flex jca pt2">
             <div className="pb2">
               <time className="f2 f1-l fw6 ma0 db" data-testid="daysLeft">
@@ -57,7 +67,7 @@ class CountdownTimer extends PureComponent {
               </time>
 
               <small className="ttu b" data-testid="daysUnit">
-                {this.calculateTimeLeftInDays(timeLeft) === 1 ? 'day' : 'days'}
+                {this.calculateTimeLeftInDays(timeLeft) === 1 ? "day" : "days"}
               </small>
             </div>
             <div>
@@ -65,7 +75,9 @@ class CountdownTimer extends PureComponent {
                 {timeLeft > 0 ? this.calculateTimeLeftInHours(timeLeft) : 0}
               </time>
               <small className="ttu b">
-                {this.calculateTimeLeftInHours(timeLeft) === 1 ? 'hour' : 'hours'}
+                {this.calculateTimeLeftInHours(timeLeft) === 1
+                  ? "hour"
+                  : "hours"}
               </small>
             </div>
             <div>
@@ -73,14 +85,18 @@ class CountdownTimer extends PureComponent {
                 {timeLeft > 0 ? this.calculateTimeLeftInMinutes(timeLeft) : 0}
               </time>
               <small className="ttu b">
-                {this.calculateTimeLeftInMinutes(timeLeft) === 1 ? 'minute' : 'minutes'}
+                {this.calculateTimeLeftInMinutes(timeLeft) === 1
+                  ? "minute"
+                  : "minutes"}
               </small>
             </div>
             <div>
               <time className="f2 f1-l fw6 ma0 db" data-testid="secondsLeft">
                 {timeLeft > 0 ? this.calculateTimeLeftInSeconds(timeLeft) : 0}
               </time>
-              <small className="ttu b">{timeLeft === 1 ? 'second' : 'seconds'}</small>
+              <small className="ttu b">
+                {timeLeft === 1 ? "second" : "seconds"}
+              </small>
             </div>
           </div>
         )}
