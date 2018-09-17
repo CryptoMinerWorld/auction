@@ -51,7 +51,13 @@ const AuctionBox = ({
   maxPrice,
   currentAccount
 }) => (
-  <OverlapOnDesktopView className="bg-dark-gray br3 measure-l w-100 shadow-3">
+  <OverlapOnDesktopView
+    className="bg-dark-gray br3 measure-l w-100 shadow-3"
+    style={{
+      clipPath:
+        "polygon(3% 0, 97% 0, 100% 2%, 100% 98%, 97% 100%, 3% 100%, 0 98%, 0 2%)"
+    }}
+  >
     <TopHighlight />
     <div className="white pa3">
       <h1 className="tc pb3 b white" style={{ wordBreak: "break-all" }}>
