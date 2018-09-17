@@ -594,7 +594,7 @@ exports[`Footer & MailingList render correctly 1`] = `
               class="f7 black-70 dib pr3 mb3 white"
             >
               Version 
-              0.0.15
+              0.0.16
             </p>
           </div>
         </div>
@@ -1069,7 +1069,7 @@ Object {
                   class="f7 black-70 dib pr3 mb3 white"
                 >
                   Version 
-                  0.0.15
+                  0.0.16
                 </p>
               </div>
             </div>
@@ -1710,7 +1710,7 @@ Object {
                   class="f7 black-70 dib pr3 mb3 white"
                 >
                   Version 
-                  0.0.15
+                  0.0.16
                 </p>
               </div>
             </div>
@@ -2547,7 +2547,7 @@ Object {
                   class="f7 black-70 dib pr3 mb3 white"
                 >
                   Version 
-                  0.0.15
+                  0.0.16
                 </p>
               </div>
             </div>
