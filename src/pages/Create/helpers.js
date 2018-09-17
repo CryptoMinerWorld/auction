@@ -1,17 +1,4 @@
 import { BigNumber } from 'bignumber.js';
-import settings from "../../../cmw_settings.json";
-
-// export const handleApproveGemTransfer = (
-//   _contract,
-//   _approvedContract,
-//   _tokenId
-// ) =>
-//   new Promise((resolve, reject) => {
-//     _contract.approve(_approvedContract, _tokenId, (error, result) => {
-//       if (!error) resolve(_tokenId, result);
-//       else reject(error);
-//     });
-//   });
 
 export const ethToWei = eth => Number((eth * 1000000000000000000).toFixed(20));
 
@@ -57,7 +44,8 @@ export const createAuction = async (
         .plus(p1))
 
     _contract.methods.safeTransferFrom(
-        _currentAccount, settings.dutchAuction, token, data
+        _currentAccount, 
+        process.env.REACT_APP_DUTCH_AUCTION, token, data
     ).send()
 
 };

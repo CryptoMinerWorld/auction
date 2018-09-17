@@ -28,9 +28,8 @@ import {
 import { createAuction } from "./pages/Create/helpers";
 import DutchAuction from "../build/contracts/DutchAuction.json";
 import Gems from "../build/contracts/GemERC721.json";
-import settings from "../cmw_settings.json";
 
-ReactGA.initialize(settings.analytics);
+ReactGA.initialize(process.env.REACT_APP_ANALYTICS);
 ReactGA.pageview(window.location.pathname + window.location.search);
 
 const dutchAuctionABI = DutchAuction.abi;
@@ -96,7 +95,7 @@ class App extends PureComponent {
     // @notice instantiating auction contract
     const dutchAuctionContractInstance = await new web3.eth.Contract(
       dutchAuctionABI,
-      settings.dutchAuction,
+      process.env.REACT_APP_DUTCH_AUCTION,
       {
         from: currentAccount
       }
@@ -104,7 +103,7 @@ class App extends PureComponent {
     // @notice instantiating gem contract
     const gemsContractInstance = await new web3.eth.Contract(
       gemsABI,
-      settings.gemERC721,
+      process.env.REACT_APP_GEM_ERC721,
       {
         from: currentAccount
       }
