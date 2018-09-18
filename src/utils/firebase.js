@@ -6,12 +6,12 @@ require('firebase/storage')
 
 
 const config = {
-  apiKey: "AIzaSyDWzdzOR1HrMNec53Mm3TBdb1tLSOWIdv8",
-  authDomain: "cryptominerworld-7afd6.firebaseapp.com",
-  databaseURL: "https://cryptominerworld-7afd6.firebaseio.com",
-  projectId: "cryptominerworld-7afd6",
-  storageBucket: "cryptominerworld-7afd6.appspot.com",
-  messagingSenderId: "295876392813"
+  apiKey: process.env.REACT_APP_FB_API,
+  authDomain: process.env.REACT_APP_FB_AUTH_DOMAIN,
+  databaseURL: process.env.REACT_APP_FB_DB_URL,
+  projectId: process.env.REACT_APP_FB_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FB_STORAGE,
+  messagingSenderId: process.env.REACT_APP_FB_MSG_SENDER_ID
 };
 
 firebase.initializeApp(config);
