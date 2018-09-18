@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Slider } from "antd";
+import PropTypes from "prop-types";
 import amethyst from "../../images/amethystImage.png";
 
 const Grid = styled.article`
@@ -26,12 +27,14 @@ const Aside = styled.aside`
   grid-column: 5/5;
 `;
 
-const ListAuctions = () => (
+const Marketplace = ({ auctions }) => (
   <div className="bg-off-black white pa4">
     <AuctionCategories />
     <div className="flex aic mt3">
       <img src={amethyst} className="h3 w-auto pr3 dib" alt="gem auctions" />
-      <h1 className="white">gem auctions</h1>
+      <h1 className="white" data-testid="header">
+        gem auctions
+      </h1>
     </div>
 
     <Grid>
@@ -42,12 +45,10 @@ const ListAuctions = () => (
           <p className="ttu pr4">highest price</p>
         </div>
         <CardBox>
-          <Cards />
-          <Cards />
-          <Cards />
-          <Cards />
-          <Cards />
-          <Cards />
+          {auctions &&
+            auctions.map(auction => (
+              <Cards auction={auction} key={auction.id} />
+            ))}
         </CardBox>
         <p>pagination</p>
       </Primary>
@@ -76,7 +77,24 @@ const ListAuctions = () => (
   </div>
 );
 
-export default ListAuctions;
+export default Marketplace;
+
+Marketplace.propTypes = {
+  auctions: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      minPrice: PropTypes.number,
+      maxPrice: PropTypes.number,
+      price: PropTypes.number,
+      deadline: PropTypes.number,
+      image: PropTypes.string,
+      owner: PropTypes.string,
+      grade: PropTypes.number,
+      quality: PropTypes.number,
+      rate: PropTypes.number
+    })
+  ).isRequired
+};
 
 const Card = styled.aside`
   grid-column: span 1;
@@ -106,30 +124,49 @@ const ProgressDivider = styled.progress`
   }
 `;
 
-const Cards = () => (
+const Cards = ({ auction }) => (
   <Card className="bg-dark-gray shadow-3">
     <figure className="ma0 pa0">
-      <img src={amethyst} alt="gem" className="ma0 pa3 pb0" />
-      <figcaption hidden>Amethyst Gem</figcaption>
+      <img src={auction.image} alt="gem" className="ma0 pa3 pb0" />
+      <figcaption hidden>{auction.quality}</figcaption>
     </figure>
     <ProgressDivider value="22" max="100" />
     <div className="flex jcb ph3">
-      <small>3</small> <small>1</small>
+      <small>{auction.minPrice}</small> <small>{auction.maxPrice}</small>
     </div>
     <div className="tc">
-      <big className="db b">3.445</big>
-      <small>Auction ends on {`sometime`}</small>
+      <big className="db b">{auction.price}</big>
+      <small>Auction ends on {auction.deadline}</small>
     </div>
     <hr />
     <div className="flex pa3 pb0">
-      <img src={amethyst} alt="" className="h3" />
+      <img src={auction.image} alt="" className="h3" />
       <div className="pl3 ma0 pa0">
-        <p>by Cryptominers World</p>
-        <p>gems</p>
+        <p>by {auction.owner}</p>
+        <div>
+          <p>{auction.grade}</p>
+          <p>{auction.quality}</p>
+          <p>{auction.rate}</p>
+        </div>
       </div>
     </div>
   </Card>
 );
+
+Cards.propTypes = {
+  auction: PropTypes.shape({
+    id: PropTypes.number,
+    minPrice: PropTypes.number,
+    maxPrice: PropTypes.number,
+    price: PropTypes.number,
+    deadline: PropTypes.number,
+    image: PropTypes.string,
+    owner: PropTypes.string,
+    grade: PropTypes.number,
+    quality: PropTypes.number,
+    rate: PropTypes.number
+  }).isRequired
+};
 
 const AuctionCategories = () => (
   <div className="flex jcb ba pa2 mb4">

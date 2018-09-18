@@ -194,10 +194,10 @@ exports[`AuctionImage renders correctly 1`] = `
     class="pa3-ns"
   >
     <div
-      class="mw8 center"
+      class="mw9"
     >
       <div
-        class="v-mid bg-transparent contain bg-right-l bg-center sc-bZQynM hxcitX"
+        class="v-mid bg-transparent contain bg-right-l bg-center mr6-l  AuctionImage__Image-sc-971sy0-0 dLAuTy"
       />
     </div>
   </div>
@@ -260,7 +260,7 @@ exports[`DescriptionBox renders correctly 1`] = `
               />
             </div>
             <div
-              class="flex aic br-pill bg-white-10 w5-ns w-auto black h-auto pa1"
+              class="flex aic bg-white-10 w5-ns w-auto black h-auto pa1"
             >
               <img
                 alt="seller logo"
@@ -270,7 +270,6 @@ exports[`DescriptionBox renders correctly 1`] = `
               <small
                 class="pl3 white-60 dn dib-m dib-l"
               >
-                 
                 <span
                   class="dn dib-l"
                 >
@@ -287,7 +286,124 @@ exports[`DescriptionBox renders correctly 1`] = `
             PropTypes.string.isRequired
           </p>
         </div>
-        <div />
+        <div>
+          <div>
+            <span>
+              <div
+                class="relative example1-appear"
+              >
+                <div
+                  class="w-100 bg-dark-blue h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
+                >
+                  <div
+                    class="Gembox__Feature-a9qxbj-0 iIshpl"
+                  >
+                    <img
+                      alt="grade"
+                      class="h2 h3-ns center"
+                      src="gem1.png"
+                    />
+                    <p
+                      class="ttu f5 mt2 o-50 black tc pt1 b pr2"
+                    >
+                      D
+                    </p>
+                  </div>
+                  <div
+                    class="w-80 pl3 pl0-nsa"
+                  >
+                    <p
+                      class="b ttu"
+                    >
+                      grade
+                    </p>
+                    <p
+                      class=" pr4-ns"
+                    >
+                      A Gem’s Grade determines how fast it can mine. There are 6 Grades, D, C, B, A, AA, and AAA. Grade As and better all store Resting Energy when they are not mining!
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </span>
+            <span>
+              <div
+                class="relative example2-appear"
+              >
+                <div
+                  class="w-100 bg-dark-orange h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
+                >
+                  <div
+                    class="Gembox__Feature-a9qxbj-0 iIshpl"
+                  >
+                    <img
+                      alt="level"
+                      class="h2 h3-ns center"
+                      src="gem2.png"
+                    />
+                    <p
+                      class="ttu f5 mt2 o-50 black tc pt1 b false"
+                    >
+                      1
+                    </p>
+                  </div>
+                  <div
+                    class="w-80 pl3 pl0-nsa"
+                  >
+                    <p
+                      class="b ttu"
+                    >
+                      level
+                    </p>
+                    <p
+                      class=" pr4-ns"
+                    >
+                      A Gem’s level determines how far down that Gem can mine. There are 5 tiers of land and 5 levels of gems. Each successive level allows for another type of land to be mined.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </span>
+            <span>
+              <div
+                class="relative example3-appear"
+              >
+                <div
+                  class="w-100 bg-dark-purple h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
+                >
+                  <div
+                    class="Gembox__Feature-a9qxbj-0 iIshpl"
+                  >
+                    <img
+                      alt="mining rate Bonus"
+                      class="h2 h3-ns center"
+                      src="gem3.png"
+                    />
+                    <p
+                      class="ttu f5 mt2 o-50 black tc pt1 b false"
+                    >
+                      250%
+                    </p>
+                  </div>
+                  <div
+                    class="w-80 pl3 pl0-nsa"
+                  >
+                    <p
+                      class="b ttu"
+                    >
+                      mining rate Bonus
+                    </p>
+                    <p
+                      class=" pr4-ns"
+                    >
+                      This is the percentage of how much faster a Gem mines compared to the base speed. +100% is twice as fast as base, +400% is five times faster. All Mining Rate Bonuses are tied to Grades. Grades give you a general sense of how how fast a Gem mines but Mining Rate Bonuses tells you exactly how much fast it is.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -297,35 +413,39 @@ exports[`DescriptionBox renders correctly 1`] = `
 exports[`FeatureBand renders correctly 1`] = `
 <div>
   <div
-    class="w-100 PropTypes.string.isRequired h-auto flex aic jcb mt3 br4-ns br--left-ns shadow-3 pa3 pl5-ns"
+    class="relative"
   >
     <div
-      class="sc-bdVaJa giFZti"
+      class="w-100 PropTypes.string.isRequired h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
     >
-      <img
-        alt="PropTypes.string.isRequired"
-        class="h3 center"
-        src="PropTypes.string.isRequired"
-      />
-      <p
-        class="ttu f5 mt2 b o-50 black tc false"
+      <div
+        class="Gembox__Feature-a9qxbj-0 iIshpl"
       >
-        0
-      </p>
-    </div>
-    <div
-      class="w-80 pl3 pl0-nsa"
-    >
-      <p
-        class="b ttu"
+        <img
+          alt="PropTypes.string.isRequired"
+          class="h2 h3-ns center"
+          src="PropTypes.string.isRequired"
+        />
+        <p
+          class="ttu f5 mt2 o-50 black tc pt1 b false"
+        >
+          0
+        </p>
+      </div>
+      <div
+        class="w-80 pl3 pl0-nsa"
       >
-        PropTypes.string.isRequired
-      </p>
-      <p
-        class=" pr4-ns"
-      >
-        PropTypes.string.isRequired
-      </p>
+        <p
+          class="b ttu"
+        >
+          PropTypes.string.isRequired
+        </p>
+        <p
+          class=" pr4-ns"
+        >
+          PropTypes.string.isRequired
+        </p>
+      </div>
     </div>
   </div>
 </div>
@@ -337,13 +457,13 @@ exports[`Footer & MailingList render correctly 1`] = `
     class="bg-footer-black"
   >
     <div
-      class="sc-gzVnrw blMZp"
+      class="Footer__TopHighlight-yndh5b-0 lmXAs"
     />
     <div
       class="mw9 center"
     >
       <footer
-        class="pa4 pa6-l bt b--black-10   sc-htoDjs bWkhyn"
+        class="pa4 pa6-l bt b--black-10 Footer__BackgroundImage-yndh5b-1 rxTKj"
       >
         <div
           class="mb4-l cf"
@@ -473,7 +593,7 @@ exports[`Footer & MailingList render correctly 1`] = `
             <p
               class="f7 black-70 dib pr3 mb3 white"
             >
-              Version 0.0.10
+              Version 0.0.17
             </p>
           </div>
         </div>
@@ -531,7 +651,7 @@ Object {
                   />
                 </div>
                 <div
-                  class="flex aic br-pill bg-white-10 w5-ns w-auto black h-auto pa1"
+                  class="flex aic bg-white-10 w5-ns w-auto black h-auto pa1"
                 >
                   <img
                     alt="seller logo"
@@ -541,7 +661,6 @@ Object {
                   <small
                     class="pl3 white-60 dn dib-m dib-l"
                   >
-                     
                     <span
                       class="dn dib-l"
                     >
@@ -558,42 +677,163 @@ Object {
                 PropTypes.string.isRequired
               </p>
             </div>
-            <div />
+            <div>
+              <div>
+                <span>
+                  <div
+                    class="relative example1-appear"
+                  >
+                    <div
+                      class="w-100 bg-dark-blue h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
+                    >
+                      <div
+                        class="Gembox__Feature-a9qxbj-0 iIshpl"
+                      >
+                        <img
+                          alt="grade"
+                          class="h2 h3-ns center"
+                          src="gem1.png"
+                        />
+                        <p
+                          class="ttu f5 mt2 o-50 black tc pt1 b pr2"
+                        >
+                          D
+                        </p>
+                      </div>
+                      <div
+                        class="w-80 pl3 pl0-nsa"
+                      >
+                        <p
+                          class="b ttu"
+                        >
+                          grade
+                        </p>
+                        <p
+                          class=" pr4-ns"
+                        >
+                          A Gem’s Grade determines how fast it can mine. There are 6 Grades, D, C, B, A, AA, and AAA. Grade As and better all store Resting Energy when they are not mining!
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </span>
+                <span>
+                  <div
+                    class="relative example2-appear"
+                  >
+                    <div
+                      class="w-100 bg-dark-orange h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
+                    >
+                      <div
+                        class="Gembox__Feature-a9qxbj-0 iIshpl"
+                      >
+                        <img
+                          alt="level"
+                          class="h2 h3-ns center"
+                          src="gem2.png"
+                        />
+                        <p
+                          class="ttu f5 mt2 o-50 black tc pt1 b false"
+                        >
+                          1
+                        </p>
+                      </div>
+                      <div
+                        class="w-80 pl3 pl0-nsa"
+                      >
+                        <p
+                          class="b ttu"
+                        >
+                          level
+                        </p>
+                        <p
+                          class=" pr4-ns"
+                        >
+                          A Gem’s level determines how far down that Gem can mine. There are 5 tiers of land and 5 levels of gems. Each successive level allows for another type of land to be mined.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </span>
+                <span>
+                  <div
+                    class="relative example3-appear"
+                  >
+                    <div
+                      class="w-100 bg-dark-purple h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
+                    >
+                      <div
+                        class="Gembox__Feature-a9qxbj-0 iIshpl"
+                      >
+                        <img
+                          alt="mining rate Bonus"
+                          class="h2 h3-ns center"
+                          src="gem3.png"
+                        />
+                        <p
+                          class="ttu f5 mt2 o-50 black tc pt1 b false"
+                        >
+                          250%
+                        </p>
+                      </div>
+                      <div
+                        class="w-80 pl3 pl0-nsa"
+                      >
+                        <p
+                          class="b ttu"
+                        >
+                          mining rate Bonus
+                        </p>
+                        <p
+                          class=" pr4-ns"
+                        >
+                          This is the percentage of how much faster a Gem mines compared to the base speed. +100% is twice as fast as base, +400% is five times faster. All Mining Rate Bonuses are tied to Grades. Grades give you a general sense of how how fast a Gem mines but Mining Rate Bonuses tells you exactly how much fast it is.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
     <div>
       <div
-        class="w-100 PropTypes.string.isRequired h-auto flex aic jcb mt3 br4-ns br--left-ns shadow-3 pa3 pl5-ns"
+        class="relative"
       >
         <div
-          class="sc-bdVaJa giFZti"
+          class="w-100 PropTypes.string.isRequired h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
         >
-          <img
-            alt="PropTypes.string.isRequired"
-            class="h3 center"
-            src="PropTypes.string.isRequired"
-          />
-          <p
-            class="ttu f5 mt2 b o-50 black tc false"
+          <div
+            class="Gembox__Feature-a9qxbj-0 iIshpl"
           >
-            0
-          </p>
-        </div>
-        <div
-          class="w-80 pl3 pl0-nsa"
-        >
-          <p
-            class="b ttu"
+            <img
+              alt="PropTypes.string.isRequired"
+              class="h2 h3-ns center"
+              src="PropTypes.string.isRequired"
+            />
+            <p
+              class="ttu f5 mt2 o-50 black tc pt1 b false"
+            >
+              0
+            </p>
+          </div>
+          <div
+            class="w-80 pl3 pl0-nsa"
           >
-            PropTypes.string.isRequired
-          </p>
-          <p
-            class=" pr4-ns"
-          >
-            PropTypes.string.isRequired
-          </p>
+            <p
+              class="b ttu"
+            >
+              PropTypes.string.isRequired
+            </p>
+            <p
+              class=" pr4-ns"
+            >
+              PropTypes.string.isRequired
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -608,7 +848,7 @@ Object {
         href="#"
       >
         <button
-          class="sc-bwzfXH fbRjTD"
+          class="RippleButton__Button-sc-8zvudi-0 jadjVY"
         >
           title
         </button>
@@ -619,10 +859,10 @@ Object {
         class="pa3-ns"
       >
         <div
-          class="mw8 center"
+          class="mw9"
         >
           <div
-            class="v-mid bg-transparent contain bg-right-l bg-center sc-bZQynM hxcitX"
+            class="v-mid bg-transparent contain bg-right-l bg-center mr6-l  AuctionImage__Image-sc-971sy0-0 dLAuTy"
           />
         </div>
       </div>
@@ -691,13 +931,13 @@ Object {
         class="bg-footer-black"
       >
         <div
-          class="sc-gzVnrw blMZp"
+          class="Footer__TopHighlight-yndh5b-0 lmXAs"
         />
         <div
           class="mw9 center"
         >
           <footer
-            class="pa4 pa6-l bt b--black-10   sc-htoDjs bWkhyn"
+            class="pa4 pa6-l bt b--black-10 Footer__BackgroundImage-yndh5b-1 rxTKj"
           >
             <div
               class="mb4-l cf"
@@ -827,7 +1067,7 @@ Object {
                 <p
                   class="f7 black-70 dib pr3 mb3 white"
                 >
-                  Version 0.0.10
+                  Version 0.0.17
                 </p>
               </div>
             </div>
@@ -846,13 +1086,13 @@ Object {
     </div>
     <div>
       <div
-        class="sc-iwsKbI gOAetJ"
+        class="MailingList__OverlapOnDesktopView-sc-1ktwykx-0 jEuRIX"
       >
         <div
           class="pa4-l bg-transparent"
         >
           <div
-            class="bg-off-black mw8 center pa2 br2-ns ba b--black-10 flex-ns aic shadow-3"
+            class="bg-off-black mw8 center pa2 ba b--black-10 flex-ns aic"
           >
             <img
               alt="gem kid"
@@ -904,13 +1144,13 @@ Object {
   </body>,
   "container": <div>
     <div
-      class="sc-iwsKbI gOAetJ"
+      class="MailingList__OverlapOnDesktopView-sc-1ktwykx-0 jEuRIX"
     >
       <div
         class="pa4-l bg-transparent"
       >
         <div
-          class="bg-off-black mw8 center pa2 br2-ns ba b--black-10 flex-ns aic shadow-3"
+          class="bg-off-black mw8 center pa2 ba b--black-10 flex-ns aic"
         >
           <img
             alt="gem kid"
@@ -996,15 +1236,15 @@ Object {
 exports[`Gem renders correctly 1`] = `
 <div>
   <div
-    class="sc-bdVaJa giFZti"
+    class="Gembox__Feature-a9qxbj-0 iIshpl"
   >
     <img
       alt="1"
-      class="h3 center"
+      class="h2 h3-ns center"
       src="1"
     />
     <p
-      class="ttu f5 mt2 b o-50 black tc false"
+      class="ttu f5 mt2 o-50 black tc pt1 b false"
     >
       1
     </p>
@@ -1051,7 +1291,7 @@ Object {
                   />
                 </div>
                 <div
-                  class="flex aic br-pill bg-white-10 w5-ns w-auto black h-auto pa1"
+                  class="flex aic bg-white-10 w5-ns w-auto black h-auto pa1"
                 >
                   <img
                     alt="seller logo"
@@ -1061,7 +1301,6 @@ Object {
                   <small
                     class="pl3 white-60 dn dib-m dib-l"
                   >
-                     
                     <span
                       class="dn dib-l"
                     >
@@ -1078,42 +1317,163 @@ Object {
                 PropTypes.string.isRequired
               </p>
             </div>
-            <div />
+            <div>
+              <div>
+                <span>
+                  <div
+                    class="relative example1-appear"
+                  >
+                    <div
+                      class="w-100 bg-dark-blue h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
+                    >
+                      <div
+                        class="Gembox__Feature-a9qxbj-0 iIshpl"
+                      >
+                        <img
+                          alt="grade"
+                          class="h2 h3-ns center"
+                          src="gem1.png"
+                        />
+                        <p
+                          class="ttu f5 mt2 o-50 black tc pt1 b pr2"
+                        >
+                          D
+                        </p>
+                      </div>
+                      <div
+                        class="w-80 pl3 pl0-nsa"
+                      >
+                        <p
+                          class="b ttu"
+                        >
+                          grade
+                        </p>
+                        <p
+                          class=" pr4-ns"
+                        >
+                          A Gem’s Grade determines how fast it can mine. There are 6 Grades, D, C, B, A, AA, and AAA. Grade As and better all store Resting Energy when they are not mining!
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </span>
+                <span>
+                  <div
+                    class="relative example2-appear"
+                  >
+                    <div
+                      class="w-100 bg-dark-orange h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
+                    >
+                      <div
+                        class="Gembox__Feature-a9qxbj-0 iIshpl"
+                      >
+                        <img
+                          alt="level"
+                          class="h2 h3-ns center"
+                          src="gem2.png"
+                        />
+                        <p
+                          class="ttu f5 mt2 o-50 black tc pt1 b false"
+                        >
+                          1
+                        </p>
+                      </div>
+                      <div
+                        class="w-80 pl3 pl0-nsa"
+                      >
+                        <p
+                          class="b ttu"
+                        >
+                          level
+                        </p>
+                        <p
+                          class=" pr4-ns"
+                        >
+                          A Gem’s level determines how far down that Gem can mine. There are 5 tiers of land and 5 levels of gems. Each successive level allows for another type of land to be mined.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </span>
+                <span>
+                  <div
+                    class="relative example3-appear"
+                  >
+                    <div
+                      class="w-100 bg-dark-purple h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
+                    >
+                      <div
+                        class="Gembox__Feature-a9qxbj-0 iIshpl"
+                      >
+                        <img
+                          alt="mining rate Bonus"
+                          class="h2 h3-ns center"
+                          src="gem3.png"
+                        />
+                        <p
+                          class="ttu f5 mt2 o-50 black tc pt1 b false"
+                        >
+                          250%
+                        </p>
+                      </div>
+                      <div
+                        class="w-80 pl3 pl0-nsa"
+                      >
+                        <p
+                          class="b ttu"
+                        >
+                          mining rate Bonus
+                        </p>
+                        <p
+                          class=" pr4-ns"
+                        >
+                          This is the percentage of how much faster a Gem mines compared to the base speed. +100% is twice as fast as base, +400% is five times faster. All Mining Rate Bonuses are tied to Grades. Grades give you a general sense of how how fast a Gem mines but Mining Rate Bonuses tells you exactly how much fast it is.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
     <div>
       <div
-        class="w-100 PropTypes.string.isRequired h-auto flex aic jcb mt3 br4-ns br--left-ns shadow-3 pa3 pl5-ns"
+        class="relative"
       >
         <div
-          class="sc-bdVaJa giFZti"
+          class="w-100 PropTypes.string.isRequired h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
         >
-          <img
-            alt="PropTypes.string.isRequired"
-            class="h3 center"
-            src="PropTypes.string.isRequired"
-          />
-          <p
-            class="ttu f5 mt2 b o-50 black tc false"
+          <div
+            class="Gembox__Feature-a9qxbj-0 iIshpl"
           >
-            0
-          </p>
-        </div>
-        <div
-          class="w-80 pl3 pl0-nsa"
-        >
-          <p
-            class="b ttu"
+            <img
+              alt="PropTypes.string.isRequired"
+              class="h2 h3-ns center"
+              src="PropTypes.string.isRequired"
+            />
+            <p
+              class="ttu f5 mt2 o-50 black tc pt1 b false"
+            >
+              0
+            </p>
+          </div>
+          <div
+            class="w-80 pl3 pl0-nsa"
           >
-            PropTypes.string.isRequired
-          </p>
-          <p
-            class=" pr4-ns"
-          >
-            PropTypes.string.isRequired
-          </p>
+            <p
+              class="b ttu"
+            >
+              PropTypes.string.isRequired
+            </p>
+            <p
+              class=" pr4-ns"
+            >
+              PropTypes.string.isRequired
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -1128,7 +1488,7 @@ Object {
         href="#"
       >
         <button
-          class="sc-bwzfXH fbRjTD"
+          class="RippleButton__Button-sc-8zvudi-0 jadjVY"
         >
           title
         </button>
@@ -1139,10 +1499,10 @@ Object {
         class="pa3-ns"
       >
         <div
-          class="mw8 center"
+          class="mw9"
         >
           <div
-            class="v-mid bg-transparent contain bg-right-l bg-center sc-bZQynM hxcitX"
+            class="v-mid bg-transparent contain bg-right-l bg-center mr6-l  AuctionImage__Image-sc-971sy0-0 dLAuTy"
           />
         </div>
       </div>
@@ -1211,13 +1571,13 @@ Object {
         class="bg-footer-black"
       >
         <div
-          class="sc-gzVnrw blMZp"
+          class="Footer__TopHighlight-yndh5b-0 lmXAs"
         />
         <div
           class="mw9 center"
         >
           <footer
-            class="pa4 pa6-l bt b--black-10   sc-htoDjs bWkhyn"
+            class="pa4 pa6-l bt b--black-10 Footer__BackgroundImage-yndh5b-1 rxTKj"
           >
             <div
               class="mb4-l cf"
@@ -1347,7 +1707,7 @@ Object {
                 <p
                   class="f7 black-70 dib pr3 mb3 white"
                 >
-                  Version 0.0.10
+                  Version 0.0.17
                 </p>
               </div>
             </div>
@@ -1366,13 +1726,13 @@ Object {
     </div>
     <div>
       <div
-        class="sc-iwsKbI gOAetJ"
+        class="MailingList__OverlapOnDesktopView-sc-1ktwykx-0 jEuRIX"
       >
         <div
           class="pa4-l bg-transparent"
         >
           <div
-            class="bg-off-black mw8 center pa2 br2-ns ba b--black-10 flex-ns aic shadow-3"
+            class="bg-off-black mw8 center pa2 ba b--black-10 flex-ns aic"
           >
             <img
               alt="gem kid"
@@ -1432,20 +1792,20 @@ Object {
             class="w-100"
           >
             <small
-              class="ttu white b dn-ns"
+              class="ttu white dn-ns"
             >
               level
             </small>
             <div
-              class="sc-bdVaJa giFZti"
+              class="Gembox__Feature-a9qxbj-0 iIshpl"
             >
               <img
                 alt="level"
-                class="h3 center"
+                class="h2 h3-ns center"
                 src="gem2.png"
               />
               <p
-                class="ttu f5 mt2 b o-50 black tc false"
+                class="ttu f5 mt2 o-50 black tc pt1 b false"
               >
                 1
               </p>
@@ -1455,20 +1815,20 @@ Object {
             class="w-100"
           >
             <small
-              class="ttu white b dn-ns"
+              class="ttu white dn-ns"
             >
               grade
             </small>
             <div
-              class="sc-bdVaJa giFZti"
+              class="Gembox__Feature-a9qxbj-0 iIshpl"
             >
               <img
                 alt="grade"
-                class="h3 center"
+                class="h2 h3-ns center"
                 src="gem1.png"
               />
               <p
-                class="ttu f5 mt2 b o-50 black tc pr2"
+                class="ttu f5 mt2 o-50 black tc pt1 b pr2"
               >
                 C
               </p>
@@ -1478,20 +1838,20 @@ Object {
             class="w-100"
           >
             <small
-              class="ttu white b dn-ns"
+              class="ttu white dn-ns"
             >
               rate
             </small>
             <div
-              class="sc-bdVaJa giFZti"
+              class="Gembox__Feature-a9qxbj-0 iIshpl"
             >
               <img
                 alt="rate"
-                class="h3 center"
+                class="h2 h3-ns center"
                 src="gem3.png"
               />
               <p
-                class="ttu f5 mt2 b o-50 black tc false"
+                class="ttu f5 mt2 o-50 black tc pt1 b false"
               >
                 1%
               </p>
@@ -1512,20 +1872,20 @@ Object {
           class="w-100"
         >
           <small
-            class="ttu white b dn-ns"
+            class="ttu white dn-ns"
           >
             level
           </small>
           <div
-            class="sc-bdVaJa giFZti"
+            class="Gembox__Feature-a9qxbj-0 iIshpl"
           >
             <img
               alt="level"
-              class="h3 center"
+              class="h2 h3-ns center"
               src="gem2.png"
             />
             <p
-              class="ttu f5 mt2 b o-50 black tc false"
+              class="ttu f5 mt2 o-50 black tc pt1 b false"
             >
               1
             </p>
@@ -1535,20 +1895,20 @@ Object {
           class="w-100"
         >
           <small
-            class="ttu white b dn-ns"
+            class="ttu white dn-ns"
           >
             grade
           </small>
           <div
-            class="sc-bdVaJa giFZti"
+            class="Gembox__Feature-a9qxbj-0 iIshpl"
           >
             <img
               alt="grade"
-              class="h3 center"
+              class="h2 h3-ns center"
               src="gem1.png"
             />
             <p
-              class="ttu f5 mt2 b o-50 black tc pr2"
+              class="ttu f5 mt2 o-50 black tc pt1 b pr2"
             >
               C
             </p>
@@ -1558,20 +1918,20 @@ Object {
           class="w-100"
         >
           <small
-            class="ttu white b dn-ns"
+            class="ttu white dn-ns"
           >
             rate
           </small>
           <div
-            class="sc-bdVaJa giFZti"
+            class="Gembox__Feature-a9qxbj-0 iIshpl"
           >
             <img
               alt="rate"
-              class="h3 center"
+              class="h2 h3-ns center"
               src="gem3.png"
             />
             <p
-              class="ttu f5 mt2 b o-50 black tc false"
+              class="ttu f5 mt2 o-50 black tc pt1 b false"
             >
               1%
             </p>
@@ -1617,18 +1977,20 @@ Object {
 exports[`MobileHeader renders correctly 1`] = `
 <div>
   <div
-    class="flex-s dn-ns jca bg-base shadow-1 "
+    class="flex-s dn-ns jca bg-base shadow-1"
   >
     <div
       class="absolute left-1"
     >
       <div
-        class="bg-deep-purple pa3"
+        class="bg-deep-purple pa3 tc"
       >
         <small
-          class="white ttu b "
+          class="white ttu b tc center"
         >
-          current price
+          current 
+          <br />
+           price
         </small>
         <p
           class="white f3 tc"
@@ -1638,7 +2000,7 @@ exports[`MobileHeader renders correctly 1`] = `
         </p>
       </div>
       <div
-        class="sc-dnqmqq cYOrnY"
+        class="MobileHeader__Triangle-favzpq-0 iMdFlc"
       />
     </div>
     <div
@@ -1654,20 +2016,20 @@ exports[`MobileHeader renders correctly 1`] = `
             class="w-100"
           >
             <small
-              class="ttu white b dn-ns"
+              class="ttu white dn-ns"
             >
               level
             </small>
             <div
-              class="sc-bdVaJa giFZti"
+              class="Gembox__Feature-a9qxbj-0 iIshpl"
             >
               <img
                 alt="level"
-                class="h3 center"
+                class="h2 h3-ns center"
                 src="gem2.png"
               />
               <p
-                class="ttu f5 mt2 b o-50 black tc false"
+                class="ttu f5 mt2 o-50 black tc pt1 b false"
               >
                 2
               </p>
@@ -1677,20 +2039,20 @@ exports[`MobileHeader renders correctly 1`] = `
             class="w-100"
           >
             <small
-              class="ttu white b dn-ns"
+              class="ttu white dn-ns"
             >
               grade
             </small>
             <div
-              class="sc-bdVaJa giFZti"
+              class="Gembox__Feature-a9qxbj-0 iIshpl"
             >
               <img
                 alt="grade"
-                class="h3 center"
+                class="h2 h3-ns center"
                 src="gem1.png"
               />
               <p
-                class="ttu f5 mt2 b o-50 black tc pr2"
+                class="ttu f5 mt2 o-50 black tc pt1 b pr2"
               >
                 C
               </p>
@@ -1700,20 +2062,20 @@ exports[`MobileHeader renders correctly 1`] = `
             class="w-100"
           >
             <small
-              class="ttu white b dn-ns"
+              class="ttu white dn-ns"
             >
               rate
             </small>
             <div
-              class="sc-bdVaJa giFZti"
+              class="Gembox__Feature-a9qxbj-0 iIshpl"
             >
               <img
                 alt="rate"
-                class="h3 center"
+                class="h2 h3-ns center"
                 src="gem3.png"
               />
               <p
-                class="ttu f5 mt2 b o-50 black tc false"
+                class="ttu f5 mt2 o-50 black tc pt1 b false"
               >
                 1%
               </p>
@@ -1765,7 +2127,7 @@ Object {
                   />
                 </div>
                 <div
-                  class="flex aic br-pill bg-white-10 w5-ns w-auto black h-auto pa1"
+                  class="flex aic bg-white-10 w5-ns w-auto black h-auto pa1"
                 >
                   <img
                     alt="seller logo"
@@ -1775,7 +2137,6 @@ Object {
                   <small
                     class="pl3 white-60 dn dib-m dib-l"
                   >
-                     
                     <span
                       class="dn dib-l"
                     >
@@ -1792,42 +2153,163 @@ Object {
                 PropTypes.string.isRequired
               </p>
             </div>
-            <div />
+            <div>
+              <div>
+                <span>
+                  <div
+                    class="relative example1-appear"
+                  >
+                    <div
+                      class="w-100 bg-dark-blue h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
+                    >
+                      <div
+                        class="Gembox__Feature-a9qxbj-0 iIshpl"
+                      >
+                        <img
+                          alt="grade"
+                          class="h2 h3-ns center"
+                          src="gem1.png"
+                        />
+                        <p
+                          class="ttu f5 mt2 o-50 black tc pt1 b pr2"
+                        >
+                          D
+                        </p>
+                      </div>
+                      <div
+                        class="w-80 pl3 pl0-nsa"
+                      >
+                        <p
+                          class="b ttu"
+                        >
+                          grade
+                        </p>
+                        <p
+                          class=" pr4-ns"
+                        >
+                          A Gem’s Grade determines how fast it can mine. There are 6 Grades, D, C, B, A, AA, and AAA. Grade As and better all store Resting Energy when they are not mining!
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </span>
+                <span>
+                  <div
+                    class="relative example2-appear"
+                  >
+                    <div
+                      class="w-100 bg-dark-orange h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
+                    >
+                      <div
+                        class="Gembox__Feature-a9qxbj-0 iIshpl"
+                      >
+                        <img
+                          alt="level"
+                          class="h2 h3-ns center"
+                          src="gem2.png"
+                        />
+                        <p
+                          class="ttu f5 mt2 o-50 black tc pt1 b false"
+                        >
+                          1
+                        </p>
+                      </div>
+                      <div
+                        class="w-80 pl3 pl0-nsa"
+                      >
+                        <p
+                          class="b ttu"
+                        >
+                          level
+                        </p>
+                        <p
+                          class=" pr4-ns"
+                        >
+                          A Gem’s level determines how far down that Gem can mine. There are 5 tiers of land and 5 levels of gems. Each successive level allows for another type of land to be mined.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </span>
+                <span>
+                  <div
+                    class="relative example3-appear"
+                  >
+                    <div
+                      class="w-100 bg-dark-purple h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
+                    >
+                      <div
+                        class="Gembox__Feature-a9qxbj-0 iIshpl"
+                      >
+                        <img
+                          alt="mining rate Bonus"
+                          class="h2 h3-ns center"
+                          src="gem3.png"
+                        />
+                        <p
+                          class="ttu f5 mt2 o-50 black tc pt1 b false"
+                        >
+                          250%
+                        </p>
+                      </div>
+                      <div
+                        class="w-80 pl3 pl0-nsa"
+                      >
+                        <p
+                          class="b ttu"
+                        >
+                          mining rate Bonus
+                        </p>
+                        <p
+                          class=" pr4-ns"
+                        >
+                          This is the percentage of how much faster a Gem mines compared to the base speed. +100% is twice as fast as base, +400% is five times faster. All Mining Rate Bonuses are tied to Grades. Grades give you a general sense of how how fast a Gem mines but Mining Rate Bonuses tells you exactly how much fast it is.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
     <div>
       <div
-        class="w-100 PropTypes.string.isRequired h-auto flex aic jcb mt3 br4-ns br--left-ns shadow-3 pa3 pl5-ns"
+        class="relative"
       >
         <div
-          class="sc-bdVaJa giFZti"
+          class="w-100 PropTypes.string.isRequired h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
         >
-          <img
-            alt="PropTypes.string.isRequired"
-            class="h3 center"
-            src="PropTypes.string.isRequired"
-          />
-          <p
-            class="ttu f5 mt2 b o-50 black tc false"
+          <div
+            class="Gembox__Feature-a9qxbj-0 iIshpl"
           >
-            0
-          </p>
-        </div>
-        <div
-          class="w-80 pl3 pl0-nsa"
-        >
-          <p
-            class="b ttu"
+            <img
+              alt="PropTypes.string.isRequired"
+              class="h2 h3-ns center"
+              src="PropTypes.string.isRequired"
+            />
+            <p
+              class="ttu f5 mt2 o-50 black tc pt1 b false"
+            >
+              0
+            </p>
+          </div>
+          <div
+            class="w-80 pl3 pl0-nsa"
           >
-            PropTypes.string.isRequired
-          </p>
-          <p
-            class=" pr4-ns"
-          >
-            PropTypes.string.isRequired
-          </p>
+            <p
+              class="b ttu"
+            >
+              PropTypes.string.isRequired
+            </p>
+            <p
+              class=" pr4-ns"
+            >
+              PropTypes.string.isRequired
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -1842,7 +2324,7 @@ Object {
         href="#"
       >
         <button
-          class="sc-bwzfXH fbRjTD"
+          class="RippleButton__Button-sc-8zvudi-0 jadjVY"
         >
           title
         </button>
@@ -1853,10 +2335,10 @@ Object {
         class="pa3-ns"
       >
         <div
-          class="mw8 center"
+          class="mw9"
         >
           <div
-            class="v-mid bg-transparent contain bg-right-l bg-center sc-bZQynM hxcitX"
+            class="v-mid bg-transparent contain bg-right-l bg-center mr6-l  AuctionImage__Image-sc-971sy0-0 dLAuTy"
           />
         </div>
       </div>
@@ -1925,13 +2407,13 @@ Object {
         class="bg-footer-black"
       >
         <div
-          class="sc-gzVnrw blMZp"
+          class="Footer__TopHighlight-yndh5b-0 lmXAs"
         />
         <div
           class="mw9 center"
         >
           <footer
-            class="pa4 pa6-l bt b--black-10   sc-htoDjs bWkhyn"
+            class="pa4 pa6-l bt b--black-10 Footer__BackgroundImage-yndh5b-1 rxTKj"
           >
             <div
               class="mb4-l cf"
@@ -2061,7 +2543,7 @@ Object {
                 <p
                   class="f7 black-70 dib pr3 mb3 white"
                 >
-                  Version 0.0.10
+                  Version 0.0.17
                 </p>
               </div>
             </div>
@@ -2080,13 +2562,13 @@ Object {
     </div>
     <div>
       <div
-        class="sc-iwsKbI gOAetJ"
+        class="MailingList__OverlapOnDesktopView-sc-1ktwykx-0 jEuRIX"
       >
         <div
           class="pa4-l bg-transparent"
         >
           <div
-            class="bg-off-black mw8 center pa2 br2-ns ba b--black-10 flex-ns aic shadow-3"
+            class="bg-off-black mw8 center pa2 ba b--black-10 flex-ns aic"
           >
             <img
               alt="gem kid"
@@ -2146,20 +2628,20 @@ Object {
             class="w-100"
           >
             <small
-              class="ttu white b dn-ns"
+              class="ttu white dn-ns"
             >
               level
             </small>
             <div
-              class="sc-bdVaJa giFZti"
+              class="Gembox__Feature-a9qxbj-0 iIshpl"
             >
               <img
                 alt="level"
-                class="h3 center"
+                class="h2 h3-ns center"
                 src="gem2.png"
               />
               <p
-                class="ttu f5 mt2 b o-50 black tc false"
+                class="ttu f5 mt2 o-50 black tc pt1 b false"
               >
                 1
               </p>
@@ -2169,20 +2651,20 @@ Object {
             class="w-100"
           >
             <small
-              class="ttu white b dn-ns"
+              class="ttu white dn-ns"
             >
               grade
             </small>
             <div
-              class="sc-bdVaJa giFZti"
+              class="Gembox__Feature-a9qxbj-0 iIshpl"
             >
               <img
                 alt="grade"
-                class="h3 center"
+                class="h2 h3-ns center"
                 src="gem1.png"
               />
               <p
-                class="ttu f5 mt2 b o-50 black tc pr2"
+                class="ttu f5 mt2 o-50 black tc pt1 b pr2"
               >
                 C
               </p>
@@ -2192,20 +2674,20 @@ Object {
             class="w-100"
           >
             <small
-              class="ttu white b dn-ns"
+              class="ttu white dn-ns"
             >
               rate
             </small>
             <div
-              class="sc-bdVaJa giFZti"
+              class="Gembox__Feature-a9qxbj-0 iIshpl"
             >
               <img
                 alt="rate"
-                class="h3 center"
+                class="h2 h3-ns center"
                 src="gem3.png"
               />
               <p
-                class="ttu f5 mt2 b o-50 black tc false"
+                class="ttu f5 mt2 o-50 black tc pt1 b false"
               >
                 1%
               </p>
@@ -2216,15 +2698,15 @@ Object {
     </div>
     <div>
       <div
-        class="sc-bdVaJa giFZti"
+        class="Gembox__Feature-a9qxbj-0 iIshpl"
       >
         <img
           alt="1"
-          class="h3 center"
+          class="h2 h3-ns center"
           src="1"
         />
         <p
-          class="ttu f5 mt2 b o-50 black tc false"
+          class="ttu f5 mt2 o-50 black tc pt1 b false"
         >
           1
         </p>
@@ -2232,18 +2714,20 @@ Object {
     </div>
     <div>
       <div
-        class="flex-s dn-ns jca bg-base shadow-1 "
+        class="flex-s dn-ns jca bg-base shadow-1"
       >
         <div
           class="absolute left-1"
         >
           <div
-            class="bg-deep-purple pa3"
+            class="bg-deep-purple pa3 tc"
           >
             <small
-              class="white ttu b "
+              class="white ttu b tc center"
             >
-              current price
+              current 
+              <br />
+               price
             </small>
             <p
               class="white f3 tc"
@@ -2253,7 +2737,7 @@ Object {
             </p>
           </div>
           <div
-            class="sc-dnqmqq cYOrnY"
+            class="MobileHeader__Triangle-favzpq-0 iMdFlc"
           />
         </div>
         <div
@@ -2269,20 +2753,20 @@ Object {
                 class="w-100"
               >
                 <small
-                  class="ttu white b dn-ns"
+                  class="ttu white dn-ns"
                 >
                   level
                 </small>
                 <div
-                  class="sc-bdVaJa giFZti"
+                  class="Gembox__Feature-a9qxbj-0 iIshpl"
                 >
                   <img
                     alt="level"
-                    class="h3 center"
+                    class="h2 h3-ns center"
                     src="gem2.png"
                   />
                   <p
-                    class="ttu f5 mt2 b o-50 black tc false"
+                    class="ttu f5 mt2 o-50 black tc pt1 b false"
                   >
                     2
                   </p>
@@ -2292,20 +2776,20 @@ Object {
                 class="w-100"
               >
                 <small
-                  class="ttu white b dn-ns"
+                  class="ttu white dn-ns"
                 >
                   grade
                 </small>
                 <div
-                  class="sc-bdVaJa giFZti"
+                  class="Gembox__Feature-a9qxbj-0 iIshpl"
                 >
                   <img
                     alt="grade"
-                    class="h3 center"
+                    class="h2 h3-ns center"
                     src="gem1.png"
                   />
                   <p
-                    class="ttu f5 mt2 b o-50 black tc pr2"
+                    class="ttu f5 mt2 o-50 black tc pt1 b pr2"
                   >
                     C
                   </p>
@@ -2315,20 +2799,20 @@ Object {
                 class="w-100"
               >
                 <small
-                  class="ttu white b dn-ns"
+                  class="ttu white dn-ns"
                 >
                   rate
                 </small>
                 <div
-                  class="sc-bdVaJa giFZti"
+                  class="Gembox__Feature-a9qxbj-0 iIshpl"
                 >
                   <img
                     alt="rate"
-                    class="h3 center"
+                    class="h2 h3-ns center"
                     src="gem3.png"
                   />
                   <p
-                    class="ttu f5 mt2 b o-50 black tc false"
+                    class="ttu f5 mt2 o-50 black tc pt1 b false"
                   >
                     1%
                   </p>
@@ -2571,7 +3055,7 @@ exports[`Ripple Button renders correctly 1`] = `
     href="#"
   >
     <button
-      class="sc-bwzfXH fbRjTD"
+      class="RippleButton__Button-sc-8zvudi-0 jadjVY"
     >
       title
     </button>

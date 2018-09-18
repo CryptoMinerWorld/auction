@@ -1,10 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import CountdownTimer from './CountdownTimer';
-import Gembox from './Gembox';
-import buyNow from '../images/pinkBuyNowButton.png';
-import ProgressMeter from './ProgressMeter';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import CountdownTimer from "./CountdownTimer";
+import Gembox from "./Gembox";
+import buyNow from "../images/pinkBuyNowButton.png";
+import ProgressMeter from "./ProgressMeter";
 
 const TopHighlight = styled.div`
   background: linear-gradient(to right, #e36d2d, #b91a78);
@@ -36,7 +36,8 @@ const OverlapOnDesktopView = styled.div`
   }
 `;
 
-const AuctionBox = ({ currentPrice,
+const AuctionBox = ({
+  currentPrice,
   handleBuyNow,
   level,
   grade,
@@ -48,38 +49,45 @@ const AuctionBox = ({ currentPrice,
   showConfirm,
   minPrice,
   maxPrice,
-}) =>
+  currentAccount
+}) => (
+  <OverlapOnDesktopView
+    className="bg-dark-gray br3 measure-l w-100 shadow-3"
+    style={{
+      clipPath:
+        "polygon(3% 0, 97% 0, 100% 2%, 100% 98%, 97% 100%, 3% 100%, 0 98%, 0 2%)"
+    }}
+  >
+    <TopHighlight />
+    <div className="white pa3">
+      <h1 className="tc pb3 b white" style={{ wordBreak: "break-all" }}>
+        {name}
+      </h1>
+      {deadline && <CountdownTimer deadline={deadline} />}
+      <div className="mt3" />
+      <Gembox level={level} grade={grade} rate={rate} />
 
-  (
-    <OverlapOnDesktopView className="bg-dark-gray br3 measure-l w-100 shadow-3">
-      <TopHighlight />
-      <div className="white pa3">
-        <h1 className="tc pb3 b white" style={{ wordBreak: 'break-all' }}>
-          {name}
-        </h1>
-        {deadline && <CountdownTimer deadline={deadline} />}
-        <div className='mt3' />
-        <Gembox level={level} grade={grade} rate={rate} />
-
-        <div className="w-100 w5-ns h3 center mt4">
-          <BuyNow
-            onClick={() => provider ? handleBuyNow(tokenId) : showConfirm(handleBuyNow, tokenId)}
-            className="b"
-            data-testid="buyNowButton"
-          >
-            Buy Now
-            </BuyNow>
-        </div>
-        <ProgressMeter
-          currentPrice={currentPrice}
-          minPrice={minPrice}
-          maxPrice={maxPrice}
-        />
+      <div className="w-100 w5-ns h3 center mt4">
+        <BuyNow
+          onClick={() =>
+            provider
+              ? handleBuyNow(tokenId, currentAccount)
+              : showConfirm(handleBuyNow, tokenId, currentAccount)
+          }
+          className="b"
+          data-testid="buyNowButton"
+        >
+          {currentAccount ? "Buy Now" : "Loading..."}
+        </BuyNow>
       </div>
-    </OverlapOnDesktopView>
-  )
-
-
+      <ProgressMeter
+        currentPrice={currentPrice}
+        minPrice={minPrice}
+        maxPrice={maxPrice}
+      />
+    </div>
+  </OverlapOnDesktopView>
+);
 
 export default AuctionBox;
 
@@ -89,12 +97,13 @@ AuctionBox.propTypes = {
   level: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  deadline: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  deadline: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+    .isRequired,
   name: PropTypes.string.isRequired,
   showConfirm: PropTypes.func.isRequired,
   tokenId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   maxPrice: PropTypes.number.isRequired,
   minPrice: PropTypes.number.isRequired,
   provider: PropTypes.bool.isRequired,
+  currentAccount: PropTypes.string.isRequired
 };
-
