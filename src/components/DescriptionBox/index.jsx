@@ -44,7 +44,7 @@ class DescriptionBox extends PureComponent {
     }
   };
 
-  rateConverter = rate => Math.round((rate / 400) * 100);
+  rateConverter = rate => rate;
 
   gradeConverter = gradeValue =>
     ({
@@ -71,7 +71,9 @@ class DescriptionBox extends PureComponent {
                     alt="tiny decorative orange triangle"
                     className="dib mr3"
                   />
-                  <h1 className="dib b white">{name}</h1>
+                  <h1 className="dib b white" data-testid="gemName">
+                    {name}
+                  </h1>
                   <img
                     src={tinyDiamond}
                     alt="tiny decorative orange triangle"
@@ -81,8 +83,10 @@ class DescriptionBox extends PureComponent {
                 <div
                   className="flex aic bg-white-10 w5-ns w-auto black h-auto pa1"
                   style={{
+                    WebkitClipPath:
+                      "polygon(8px 0px, 94.81% 2px, 98.32% 4.35%, 99.9% 27.62%, 100.43% 70.48%, 99.16% 94.96%, 95.85% 101.04%, 8.96% 99%, 3.73% 101.97%, 0px 86.79%, 0.03% 20.61%)",
                     clipPath:
-                      "polygon(5% 0, 97% 1%, 100% 19%, 100% 81%, 95% 100%, 5% 99%, 0 84%, 0 16%)"
+                      "polygon(8px 0px, 94.81% 2px, 98.32% 4.35%, 99.9% 27.62%, 100.43% 70.48%, 99.16% 94.96%, 95.85% 101.04%, 8.96% 99%, 3.73% 101.97%, 0px 86.79%, 0.03% 20.61%)"
                   }}
                 >
                   <img

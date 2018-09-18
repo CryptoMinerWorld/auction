@@ -67,7 +67,7 @@ class Gembox extends PureComponent {
       6: "AAA"
     }[gradeValue]);
 
-  rateConverter = rate => Math.round((rate / 400) * 100);
+  // rateConverter = rate => Math.round((rate / 400) * 100);
 
   render() {
     const { level, grade, rate, styling } = this.props;
@@ -80,7 +80,7 @@ class Gembox extends PureComponent {
             value={this.gradeConverter(grade)}
             gem={gem1}
           />
-          <Nugget quality="rate" value={this.rateConverter(rate)} gem={gem3} />
+          <Nugget quality="rate" value={rate} gem={gem3} />
         </div>
       </div>
     );

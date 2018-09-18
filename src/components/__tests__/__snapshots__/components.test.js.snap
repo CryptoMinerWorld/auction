@@ -197,7 +197,7 @@ exports[`AuctionImage renders correctly 1`] = `
       class="mw9"
     >
       <div
-        class="v-mid bg-transparent contain bg-right-l bg-center mr6-l  sc-bZQynM fwolbd"
+        class="v-mid bg-transparent contain bg-right-l bg-center sc-EHOje ezeAEC"
       />
     </div>
   </div>
@@ -250,6 +250,7 @@ exports[`DescriptionBox renders correctly 1`] = `
               />
               <h1
                 class="dib b white"
+                data-testid="gemName"
               >
                 PropTypes.string.isRequired
               </h1>
@@ -382,7 +383,7 @@ exports[`DescriptionBox renders correctly 1`] = `
                     <p
                       class="ttu f5 mt2 o-50 black tc pt1 b false"
                     >
-                      250%
+                      1000%
                     </p>
                   </div>
                   <div
@@ -457,13 +458,13 @@ exports[`Footer & MailingList render correctly 1`] = `
     class="bg-footer-black"
   >
     <div
-      class="sc-gzVnrw blMZp"
+      class="sc-bZQynM dbNQv"
     />
     <div
       class="mw9 center"
     >
       <footer
-        class="pa4 pa6-l bt b--black-10 sc-htoDjs bWkhyn"
+        class="pa4 pa6-l bt b--black-10 sc-gzVnrw kPpIuA"
       >
         <div
           class="mb4-l cf"
@@ -641,6 +642,7 @@ Object {
                   />
                   <h1
                     class="dib b white"
+                    data-testid="gemName"
                   >
                     PropTypes.string.isRequired
                   </h1>
@@ -773,7 +775,7 @@ Object {
                         <p
                           class="ttu f5 mt2 o-50 black tc pt1 b false"
                         >
-                          250%
+                          1000%
                         </p>
                       </div>
                       <div
@@ -848,7 +850,7 @@ Object {
         href="#"
       >
         <button
-          class="sc-bwzfXH fbRjTD"
+          class="RippleButton__Button-sc-8zvudi-0 jadjVY"
         >
           title
         </button>
@@ -862,7 +864,7 @@ Object {
           class="mw9"
         >
           <div
-            class="v-mid bg-transparent contain bg-right-l bg-center mr6-l  sc-bZQynM fwolbd"
+            class="v-mid bg-transparent contain bg-right-l bg-center sc-EHOje ezeAEC"
           />
         </div>
       </div>
@@ -916,11 +918,13 @@ Object {
             You bid by clicking the big pink “Buy Now” button. You will need to be using a Web3 compatible Ethereum Wallet program. MetaMask, Toshi/Coinbase Wallet, BUNTOY, Brave browser, Trust, Cipher, are some of the more well know options. For more information on how to install MetaMask
           </p>
           <p>
-            For more information on how to install MetaMask  
+            For more information on how to install MetaMask
+             
             <a
               href="https://cryptominerworld.com/game_info/#GameInfoMetaMask"
             >
-              Click here 
+              Click here
+               
             </a>
           </p>
         </details>
@@ -931,13 +935,13 @@ Object {
         class="bg-footer-black"
       >
         <div
-          class="sc-gzVnrw blMZp"
+          class="sc-bZQynM dbNQv"
         />
         <div
           class="mw9 center"
         >
           <footer
-            class="pa4 pa6-l bt b--black-10 sc-htoDjs bWkhyn"
+            class="pa4 pa6-l bt b--black-10 sc-gzVnrw kPpIuA"
           >
             <div
               class="mb4-l cf"
@@ -1086,7 +1090,7 @@ Object {
     </div>
     <div>
       <div
-        class="sc-iwsKbI iTXxxb"
+        class="sc-htoDjs cDSmAt"
       >
         <div
           class="pa4-l bg-transparent"
@@ -1144,7 +1148,7 @@ Object {
   </body>,
   "container": <div>
     <div
-      class="sc-iwsKbI iTXxxb"
+      class="sc-htoDjs cDSmAt"
     >
       <div
         class="pa4-l bg-transparent"
@@ -1281,6 +1285,7 @@ Object {
                   />
                   <h1
                     class="dib b white"
+                    data-testid="gemName"
                   >
                     PropTypes.string.isRequired
                   </h1>
@@ -1413,7 +1418,7 @@ Object {
                         <p
                           class="ttu f5 mt2 o-50 black tc pt1 b false"
                         >
-                          250%
+                          1000%
                         </p>
                       </div>
                       <div
@@ -1488,7 +1493,7 @@ Object {
         href="#"
       >
         <button
-          class="sc-bwzfXH fbRjTD"
+          class="RippleButton__Button-sc-8zvudi-0 jadjVY"
         >
           title
         </button>
@@ -1502,7 +1507,7 @@ Object {
           class="mw9"
         >
           <div
-            class="v-mid bg-transparent contain bg-right-l bg-center mr6-l  sc-bZQynM fwolbd"
+            class="v-mid bg-transparent contain bg-right-l bg-center sc-EHOje ezeAEC"
           />
         </div>
       </div>
@@ -1556,11 +1561,13 @@ Object {
             You bid by clicking the big pink “Buy Now” button. You will need to be using a Web3 compatible Ethereum Wallet program. MetaMask, Toshi/Coinbase Wallet, BUNTOY, Brave browser, Trust, Cipher, are some of the more well know options. For more information on how to install MetaMask
           </p>
           <p>
-            For more information on how to install MetaMask  
+            For more information on how to install MetaMask
+             
             <a
               href="https://cryptominerworld.com/game_info/#GameInfoMetaMask"
             >
-              Click here 
+              Click here
+               
             </a>
           </p>
         </details>
@@ -1571,13 +1578,13 @@ Object {
         class="bg-footer-black"
       >
         <div
-          class="sc-gzVnrw blMZp"
+          class="sc-bZQynM dbNQv"
         />
         <div
           class="mw9 center"
         >
           <footer
-            class="pa4 pa6-l bt b--black-10 sc-htoDjs bWkhyn"
+            class="pa4 pa6-l bt b--black-10 sc-gzVnrw kPpIuA"
           >
             <div
               class="mb4-l cf"
@@ -1726,7 +1733,7 @@ Object {
     </div>
     <div>
       <div
-        class="sc-iwsKbI iTXxxb"
+        class="sc-htoDjs cDSmAt"
       >
         <div
           class="pa4-l bg-transparent"
@@ -1853,7 +1860,7 @@ Object {
               <p
                 class="ttu f5 mt2 o-50 black tc pt1 b false"
               >
-                1%
+                2%
               </p>
             </div>
           </div>
@@ -1933,7 +1940,7 @@ Object {
             <p
               class="ttu f5 mt2 o-50 black tc pt1 b false"
             >
-              1%
+              2%
             </p>
           </div>
         </div>
@@ -2000,7 +2007,7 @@ exports[`MobileHeader renders correctly 1`] = `
         </p>
       </div>
       <div
-        class="sc-dnqmqq cYOrnY"
+        class="MobileHeader__Triangle-favzpq-0 iMdFlc"
       />
     </div>
     <div
@@ -2077,7 +2084,7 @@ exports[`MobileHeader renders correctly 1`] = `
               <p
                 class="ttu f5 mt2 o-50 black tc pt1 b false"
               >
-                1%
+                2%
               </p>
             </div>
           </div>
@@ -2117,6 +2124,7 @@ Object {
                   />
                   <h1
                     class="dib b white"
+                    data-testid="gemName"
                   >
                     PropTypes.string.isRequired
                   </h1>
@@ -2249,7 +2257,7 @@ Object {
                         <p
                           class="ttu f5 mt2 o-50 black tc pt1 b false"
                         >
-                          250%
+                          1000%
                         </p>
                       </div>
                       <div
@@ -2324,7 +2332,7 @@ Object {
         href="#"
       >
         <button
-          class="sc-bwzfXH fbRjTD"
+          class="RippleButton__Button-sc-8zvudi-0 jadjVY"
         >
           title
         </button>
@@ -2338,7 +2346,7 @@ Object {
           class="mw9"
         >
           <div
-            class="v-mid bg-transparent contain bg-right-l bg-center mr6-l  sc-bZQynM fwolbd"
+            class="v-mid bg-transparent contain bg-right-l bg-center sc-EHOje ezeAEC"
           />
         </div>
       </div>
@@ -2392,11 +2400,13 @@ Object {
             You bid by clicking the big pink “Buy Now” button. You will need to be using a Web3 compatible Ethereum Wallet program. MetaMask, Toshi/Coinbase Wallet, BUNTOY, Brave browser, Trust, Cipher, are some of the more well know options. For more information on how to install MetaMask
           </p>
           <p>
-            For more information on how to install MetaMask  
+            For more information on how to install MetaMask
+             
             <a
               href="https://cryptominerworld.com/game_info/#GameInfoMetaMask"
             >
-              Click here 
+              Click here
+               
             </a>
           </p>
         </details>
@@ -2407,13 +2417,13 @@ Object {
         class="bg-footer-black"
       >
         <div
-          class="sc-gzVnrw blMZp"
+          class="sc-bZQynM dbNQv"
         />
         <div
           class="mw9 center"
         >
           <footer
-            class="pa4 pa6-l bt b--black-10 sc-htoDjs bWkhyn"
+            class="pa4 pa6-l bt b--black-10 sc-gzVnrw kPpIuA"
           >
             <div
               class="mb4-l cf"
@@ -2562,7 +2572,7 @@ Object {
     </div>
     <div>
       <div
-        class="sc-iwsKbI iTXxxb"
+        class="sc-htoDjs cDSmAt"
       >
         <div
           class="pa4-l bg-transparent"
@@ -2689,7 +2699,7 @@ Object {
               <p
                 class="ttu f5 mt2 o-50 black tc pt1 b false"
               >
-                1%
+                2%
               </p>
             </div>
           </div>
@@ -2737,7 +2747,7 @@ Object {
             </p>
           </div>
           <div
-            class="sc-dnqmqq cYOrnY"
+            class="MobileHeader__Triangle-favzpq-0 iMdFlc"
           />
         </div>
         <div
@@ -2814,7 +2824,7 @@ Object {
                   <p
                     class="ttu f5 mt2 o-50 black tc pt1 b false"
                   >
-                    1%
+                    2%
                   </p>
                 </div>
               </div>
@@ -3037,11 +3047,13 @@ exports[`Question renders correctly 1`] = `
         You bid by clicking the big pink “Buy Now” button. You will need to be using a Web3 compatible Ethereum Wallet program. MetaMask, Toshi/Coinbase Wallet, BUNTOY, Brave browser, Trust, Cipher, are some of the more well know options. For more information on how to install MetaMask
       </p>
       <p>
-        For more information on how to install MetaMask  
+        For more information on how to install MetaMask
+         
         <a
           href="https://cryptominerworld.com/game_info/#GameInfoMetaMask"
         >
-          Click here 
+          Click here
+           
         </a>
       </p>
     </details>
@@ -3055,7 +3067,7 @@ exports[`Ripple Button renders correctly 1`] = `
     href="#"
   >
     <button
-      class="sc-bwzfXH fbRjTD"
+      class="RippleButton__Button-sc-8zvudi-0 jadjVY"
     >
       title
     </button>
