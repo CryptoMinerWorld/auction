@@ -8,7 +8,6 @@ import ProgressMeter from "./ProgressMeter";
 
 const TopHighlight = styled.div`
   background: linear-gradient(to right, #e36d2d, #b91a78);
-  border-radius: 4px 4px 0px 0px;
   height: 4px;
 `;
 
@@ -52,10 +51,14 @@ const AuctionBox = ({
   currentAccount
 }) => (
   <OverlapOnDesktopView
-    className="bg-dark-gray br3 measure-l w-100 shadow-3"
+    className="bg-dark-gray measure-l w-100 shadow-3"
     style={{
+      WebkitClipPath:
+        "polygon(5px 2px, 3.34% -0.15%, 99% 0px, 100% 2.31%, 99.59% 7.08%, 99.48% 46%, 99.17% 71.71%, 100% 97%, 100.04% 99%, 98% 100%, 8.96% 99.00%, 0.8% 99.93%, 0px 97%, 0.58% 59.56%, 1.08% 25.51%, 0.03% 2.23%)",
       clipPath:
-        "polygon(3% 0, 97% 0, 100% 2%, 100% 98%, 97% 100%, 3% 100%, 0 98%, 0 2%)"
+        "polygon(5px 2px, 3.34% -0.15%, 99% 0px, 100% 2.31%, 99.59% 7.08%, 99.48% 46%, 99.17% 71.71%, 100% 97%, 100.04% 99%, 98% 100%, 8.96% 99.00%, 0.8% 99.93%, 0px 97%, 0.58% 59.56%, 1.08% 25.51%, 0.03% 2.23%)"
+      // clipPath:
+      //   "polygon(3% 0, 97% 0, 100% 2%, 100% 98%, 97% 100%, 3% 100%, 0 98%, 0 2%)"
     }}
   >
     <TopHighlight />

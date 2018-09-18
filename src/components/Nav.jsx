@@ -64,7 +64,7 @@ const Navbar = () => (
         >
           Workshop
         </a>
-        <p className="link dim dark-gray f6 f5-l dib mr3 mr4-l bb b-primary bw1">
+        <p className="link dim dark-gray f6 f5-l dib mr3 mr4-l bb b-primary bw1 pointer">
           Market
         </p>
         <a

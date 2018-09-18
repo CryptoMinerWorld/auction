@@ -78,8 +78,10 @@ const MailingList = () => (
       <div
         className="bg-off-black mw8 center pa2 ba b--black-10 flex-ns aic"
         style={{
+          WebkitClipPath:
+            "polygon(1% 2px, 2.78% 0%, 99% 0px, 99.51% 6%, 100% 15.98%, 99.71% 85.85%, 100.00% 98.11%, 98.12% 101.37%, 2.49% 100%, 0.6% 101.37%, -2px 84.1%, 1px 10.42%)",
           clipPath:
-            "polygon(1% 0, 99% 0, 100% 6%, 100% 94%, 99% 100%, 1% 100%, 0 93%, 0 7%)"
+            "polygon(1% 2px, 2.78% 0%, 99% 0px, 99.51% 6%, 100% 15.98%, 99.71% 85.85%, 100.00% 98.11%, 98.12% 101.37%, 2.49% 100%, 0.6% 101.37%, -2px 84.1%, 1px 10.42%)"
         }}
       >
         <img src={gemKid} alt="gem kid" className="dn dib-ns mh3 h4" />

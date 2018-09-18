@@ -1,10 +1,10 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { Input, Button } from 'antd';
-import rockBackground from '../../images/rockBackground.png';
-import Mint from './Mint';
-import { ethToWei, daysToSeconds } from './helpers';
+import React, { PureComponent } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import { Input, Button } from "antd";
+import rockBackground from "../../images/rockBackground.png";
+import Mint from "./Mint";
+import { ethToWei, daysToSeconds } from "./helpers";
 
 const RockOverlay = styled.div`
   background-image: url(${rockBackground});
@@ -20,10 +20,10 @@ class CreateAuction extends PureComponent {
   };
 
   state = {
-    gemId: '',
-    duration: '',
-    startPrice: '',
-    endPrice: ''
+    gemId: "",
+    duration: "",
+    startPrice: "",
+    endPrice: ""
   };
 
   handleChange = (value, field) => this.setState({ [field]: value });
@@ -47,7 +47,7 @@ class CreateAuction extends PureComponent {
                 className="db"
                 value={gemId}
                 onChange={e =>
-                  this.handleChange(Number(e.target.value), 'gemId')
+                  this.handleChange(Number(e.target.value), "gemId")
                 }
                 data-testid="gemInputField"
                 required
@@ -58,7 +58,7 @@ class CreateAuction extends PureComponent {
                 className="db"
                 value={duration}
                 onChange={e =>
-                  this.handleChange(Number(e.target.value), 'duration')
+                  this.handleChange(Number(e.target.value), "duration")
                 }
                 data-testid="durationInputField"
                 required
@@ -69,7 +69,7 @@ class CreateAuction extends PureComponent {
                 className="db"
                 value={startPrice}
                 onChange={e =>
-                  this.handleChange(Number(e.target.value), 'startPrice')
+                  this.handleChange(Number(e.target.value), "startPrice")
                 }
                 data-testid="startPriceInputField"
                 required
@@ -80,7 +80,7 @@ class CreateAuction extends PureComponent {
                 className="db"
                 value={endPrice}
                 onChange={e =>
-                  this.handleChange(Number(e.target.value), 'endPrice')
+                  this.handleChange(Number(e.target.value), "endPrice")
                 }
                 data-testid="endPriceInputField"
                 required
@@ -88,12 +88,13 @@ class CreateAuction extends PureComponent {
               <div>
                 <Button
                   className="ma3"
-                  disabled={!(gemId && duration && startPrice && endPrice)}
+                  disabled={!(gemId && duration && startPrice)}
                   onClick={() =>
-
-
-                    createAuction(gemId,
-                      daysToSeconds(duration), ethToWei(startPrice), ethToWei(endPrice)
+                    createAuction(
+                      gemId,
+                      daysToSeconds(duration),
+                      ethToWei(startPrice),
+                      ethToWei(endPrice)
                     )
                   }
                   data-testid="createAuctionButton"
@@ -110,7 +111,7 @@ class CreateAuction extends PureComponent {
                 className="db"
                 value={gemId}
                 onChange={e =>
-                  this.handleChange(Number(e.target.value), 'gemId')
+                  this.handleChange(Number(e.target.value), "gemId")
                 }
                 data-testid="removeGemInputField"
                 required
@@ -120,7 +121,6 @@ class CreateAuction extends PureComponent {
                 <Button
                   type="danger"
                   className="ma3"
-
                   onClick={() => handleRemoveGemFromAuction(gemId)}
                   data-testid="removeGemButton"
                 >
@@ -131,7 +131,7 @@ class CreateAuction extends PureComponent {
           </div>
           <Mint />
         </RockOverlay>
-      </div >
+      </div>
     );
   }
 }

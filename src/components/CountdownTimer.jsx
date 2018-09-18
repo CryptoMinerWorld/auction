@@ -49,10 +49,12 @@ class CountdownTimer extends PureComponent {
 
     return (
       <AngleGradient
-        className="tc bg-blue pa2 br3 shadow-3"
+        className="tc bg-blue pa2"
         style={{
+          WebkitClipPath:
+            "polygon(5px 2px, 3.34% -0.15%, 99% 0px, 100% 2.31%, 99.48% 46%, 100.41% 61.97%, 99.17% 78.65%, 100% 97%, 100.04% 99%, 98% 100%, 8.96% 99%, 0.8% 99.93%, 0px 97%, 0.58% 59.56%, 0.03% 2.23%)",
           clipPath:
-            "polygon(2% 0, 98% 0, 100% 4%, 100% 94%, 98% 100%, 2% 100%, 0 94%, 0 6%)"
+            "polygon(5px 2px, 3.34% -0.15%, 99% 0px, 100% 2.31%, 99.48% 46%, 100.41% 61.97%, 99.17% 78.65%, 100% 97%, 100.04% 99%, 98% 100%, 8.96% 99%, 0.8% 99.93%, 0px 97%, 0.58% 59.56%, 0.03% 2.23%)"
         }}
       >
         <p className="b">Auction ends on</p>
