@@ -1,21 +1,21 @@
-var autoprefixer = require('autoprefixer');
-var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
-var InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
-var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
-var getClientEnvironment = require('./env');
-var paths = require('./paths');
+let autoprefixer = require('autoprefixer');
+let webpack = require('webpack');
+let HtmlWebpackPlugin = require('html-webpack-plugin');
+let CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+let InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
+let WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
+let getClientEnvironment = require('./env');
+let paths = require('./paths');
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
-var publicPath = '/';
+let publicPath = '/';
 // `publicUrl` is just like `publicPath`, but we will provide it to our app
 // as %PUBLIC_URL% in `index.html` and `process.env.PUBLIC_URL` in JavaScript.
 // Omit trailing slash as %PUBLIC_PATH%/xyz looks better than %PUBLIC_PATH%xyz.
-var publicUrl = '';
+let publicUrl = '';
 // Get environment variables to inject into our app.
-var env = getClientEnvironment(publicUrl);
+let env = getClientEnvironment(publicUrl);
 
 // This is the development configuration.
 // It is focused on developer experience and fast rebuilds.
@@ -57,7 +57,7 @@ module.exports = {
     // containing code from all our entry points, and the Webpack runtime.
     filename: 'static/js/bundle.js',
     // This is the URL that app is served from. We use "/" in development.
-    publicPath: publicPath
+    publicPath
   },
   resolve: {
     // This allows you to set a fallback for where Webpack should look for modules.
@@ -81,6 +81,8 @@ module.exports = {
   module: {
     // First, run the linter.
     // It's important to do this before Babel processes the JS.
+
+    
     preLoaders: [
       {
         test: /\.(js|jsx)$/,
@@ -182,7 +184,7 @@ module.exports = {
       // CURRENTLY REMOVED DUE TO INCOMPATIBILITY WITH TRUFFLE 3
       // Compile and migrate contracts manually.
       //
-      /*{
+      /* {
         test: /\.sol$/,
         loader: 'truffle-solidity?network_id=123'
       }*/
@@ -190,7 +192,7 @@ module.exports = {
   },
 
   // We use PostCSS for autoprefixing only.
-  postcss: function() {
+  postcss() {
     return [
       autoprefixer({
         browsers: [
