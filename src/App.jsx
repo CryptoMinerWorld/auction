@@ -28,11 +28,14 @@ import {
 import { createAuction } from "./pages/Create/helpers";
 import DutchAuction from "../build/contracts/DutchAuction.json";
 import Gems from "../build/contracts/GemERC721.json";
-import settings from "../cmw_settings.json";
 
-console.log("settings.dutch", settings.dutchAuction);
+// analytics breaks testing so you have to turn testmode on in development
+const testMode = process.env.NODE_ENV === "development";
 
-ReactGA.initialize("UA-125801446-1");
+ReactGA.initialize("UA-125801446-1", {
+  testMode
+});
+
 ReactGA.pageview(window.location.pathname + window.location.search);
 
 const dutchAuctionABI = DutchAuction.abi;
@@ -44,6 +47,11 @@ const StickyHeader = styled.div`
   position: sticky;
   top: 0;
   z-index: 3;
+`;
+
+const NotStickyHeader = styled.div`
+  position: relative;
+  z-index: 2;
 `;
 
 class App extends PureComponent {
@@ -93,7 +101,7 @@ class App extends PureComponent {
     // @notice instantiating auction contract
     const dutchAuctionContractInstance = await new web3.eth.Contract(
       dutchAuctionABI,
-      "0xdd229423db08b1e9a0add49986e358dab72b7f54",
+      process.env.REACT_APP_DUTCH_AUCTION,
       {
         from: currentAccount
       }
@@ -101,7 +109,8 @@ class App extends PureComponent {
     // @notice instantiating gem contract
     const gemsContractInstance = await new web3.eth.Contract(
       gemsABI,
-      "0x82ff6bbd7b64f707e704034907d582c7b6e09d97",
+
+      process.env.REACT_APP_GEM_ERC721,
       {
         from: currentAccount
       }
@@ -210,12 +219,16 @@ class App extends PureComponent {
   };
 
   // @notice lets users buy a gem in an active auction
-  handleBuyNow = async _tokenId => {
+  handleBuyNow = async (_tokenId, _from) => {
     const { dutchAuctionContractInstance, priceInWei } = this.state;
     confirmInMetamask();
     await dutchAuctionContractInstance.methods
       .buy(_tokenId)
-      .send({ value: Number(priceInWei) })
+
+      .send({
+        from: _from,
+        value: Number(priceInWei)
+      })
       .on("transactionHash", () => {
         this.setState({ releaseConfetti: true });
       })
@@ -244,7 +257,8 @@ class App extends PureComponent {
       gemImage,
       story,
       releaseConfetti,
-      err
+      err,
+      currentAccount
     } = this.state;
 
     // @notice if the token is not on auction a modal tells people the auction is over
@@ -264,13 +278,15 @@ class App extends PureComponent {
         )}
         <StickyHeader>
           <Navbar />
+        </StickyHeader>
+        <NotStickyHeader>
           <MobileHeader
             currentPrice={currentPrice}
             level={level}
             grade={grade}
             rate={rate}
           />
-        </StickyHeader>
+        </NotStickyHeader>
         <Routes
           currentPrice={Number(currentPrice).toFixed(3)}
           minPrice={Number(auctionStartPrice / 1000000000000000000)}
@@ -293,6 +309,7 @@ class App extends PureComponent {
           story={story}
           releaseConfetti={releaseConfetti}
           provider={!!web3}
+          currentAccount={currentAccount}
         />
         <Footer />
       </main>

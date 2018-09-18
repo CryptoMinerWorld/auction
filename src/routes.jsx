@@ -1,13 +1,14 @@
-import React, { Fragment } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import List from './pages/market/ListAuctions';
-import CreateAuction from './pages/Create';
-import Auction from './pages/Auction';
+import React, { Fragment } from "react";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+
+import CreateAuction from "./pages/Create";
+import Auction from "./pages/Auction";
+import Marketplace from "./pages/market/ListAuctions";
 
 const Routes = props => (
   <Router>
     <Fragment>
-      <Route exact path="/" component={List} />
+      <Route exact path="/" component={Marketplace} />
       <Route
         path="/secretAuctionPage"
         render={() => <CreateAuction {...props} />}
@@ -17,4 +18,4 @@ const Routes = props => (
   </Router>
 );
 
-export default Routes
+export default Routes;

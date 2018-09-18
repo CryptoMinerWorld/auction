@@ -1,21 +1,22 @@
-let autoprefixer = require('autoprefixer');
-let webpack = require('webpack');
-let HtmlWebpackPlugin = require('html-webpack-plugin');
-let CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
-let InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
-let WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
-let getClientEnvironment = require('./env');
-let paths = require('./paths');
+
+const autoprefixer = require('autoprefixer');
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
+const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
+const getClientEnvironment = require('./env');
+const paths = require('./paths');
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
-let publicPath = '/';
+const publicPath = '/';
 // `publicUrl` is just like `publicPath`, but we will provide it to our app
 // as %PUBLIC_URL% in `index.html` and `process.env.PUBLIC_URL` in JavaScript.
 // Omit trailing slash as %PUBLIC_PATH%/xyz looks better than %PUBLIC_PATH%xyz.
-let publicUrl = '';
+const publicUrl = '';
 // Get environment variables to inject into our app.
-let env = getClientEnvironment(publicUrl);
+const env = getClientEnvironment(publicUrl);
 
 // This is the development configuration.
 // It is focused on developer experience and fast rebuilds.
@@ -187,7 +188,7 @@ module.exports = {
       /* {
         test: /\.sol$/,
         loader: 'truffle-solidity?network_id=123'
-      }*/
+      } */
     ]
   },
 
@@ -205,6 +206,8 @@ module.exports = {
     ];
   },
   plugins: [
+
+  
     // Makes the public URL available as %PUBLIC_URL% in index.html, e.g.:
     // <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
     // In development, this will be an empty string.

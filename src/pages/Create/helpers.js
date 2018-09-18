@@ -1,17 +1,5 @@
 import { BigNumber } from 'bignumber.js';
 
-// export const handleApproveGemTransfer = (
-//   _contract,
-//   _approvedContract,
-//   _tokenId
-// ) =>
-//   new Promise((resolve, reject) => {
-//     _contract.approve(_approvedContract, _tokenId, (error, result) => {
-//       if (!error) resolve(_tokenId, result);
-//       else reject(error);
-//     });
-//   });
-
 export const ethToWei = eth => Number((eth * 1000000000000000000).toFixed(20));
 
 
@@ -55,10 +43,9 @@ export const createAuction = async (
         .plus(two.pow(80).times(p0))
         .plus(p1))
 
-    const auctionContract = '0xdd229423db08b1e9a0add49986e358dab72b7f54'
-
     _contract.methods.safeTransferFrom(
-        _currentAccount, auctionContract, token, data
+        _currentAccount, 
+        process.env.REACT_APP_DUTCH_AUCTION, token, data
     ).send()
 
 };

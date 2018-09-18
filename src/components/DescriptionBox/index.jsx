@@ -1,16 +1,14 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import Waypoint from 'react-waypoint';
-import gem1 from '../../images/icons/gem1.png';
-import gem2 from '../../images/icons/gem2.png';
-import gem3 from '../../images/icons/gem3.png';
-import tinyDiamond from '../../images/tinyDiamond.png';
-import './animations.css';
-import logo from '../../images/Profile-Image-Logo-60x60.png';
-import { Gem } from '../Gembox'
-
-
+import React, { PureComponent } from "react";
+import PropTypes from "prop-types";
+import ReactCSSTransitionGroup from "react-addons-css-transition-group";
+import Waypoint from "react-waypoint";
+import gem1 from "../../images/icons/gem1.png";
+import gem2 from "../../images/icons/gem2.png";
+import gem3 from "../../images/icons/gem3.png";
+import tinyDiamond from "../../images/tinyDiamond.png";
+import "./animations.css";
+import logo from "../../images/Profile-Image-Logo-60x60.png";
+import { Gem } from "../Gembox";
 
 class DescriptionBox extends PureComponent {
   static propTypes = {
@@ -18,11 +16,26 @@ class DescriptionBox extends PureComponent {
     grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     name: PropTypes.string.isRequired,
-    story: PropTypes.string.isRequired,
+    story: PropTypes.string.isRequired
   };
 
   state = {
     inView: false
+  };
+
+  componentDidMount() {
+    this.fireAnimationImmediatelyOnMobileOrMassiveScreens(
+      window.screen.availWidth
+    );
+  }
+
+  fireAnimationImmediatelyOnMobileOrMassiveScreens = width => {
+    const massiveScreens = width >= 1920;
+    const mobileScreens = width <= 780;
+
+    if (massiveScreens || mobileScreens) {
+      this.setState({ inView: true });
+    }
   };
 
   handleWaypointEnter = ({ previousPosition }) => {
@@ -33,24 +46,25 @@ class DescriptionBox extends PureComponent {
 
   rateConverter = rate => Math.round((rate / 400) * 100);
 
-  gradeConverter = gradeValue => ({
-    1: 'D',
-    2: 'C',
-    3: 'B',
-    4: 'A',
-    5: 'AA',
-    6: 'AAA'
-  }[gradeValue]);
+  gradeConverter = gradeValue =>
+    ({
+      1: "D",
+      2: "C",
+      3: "B",
+      4: "A",
+      5: "AA",
+      6: "AAA"
+    }[gradeValue]);
 
   render() {
     const { level, grade, rate, name, story } = this.props;
-    const { inView } = this.state
+    const { inView } = this.state;
     return (
       <div className="bg-off-black white ma0 ">
         <div className="flex-l jce mw9 center">
           <div className="w-60-l pl5-l">
             <div className="pa5-ns pa3">
-              <div className='flex jcb aic'>
+              <div className="flex jcb aic">
                 <div className="flex aic tc tl-ns">
                   <img
                     src={tinyDiamond}
@@ -63,16 +77,26 @@ class DescriptionBox extends PureComponent {
                     alt="tiny decorative orange triangle"
                     className="dib ml3"
                   />
-
                 </div>
-                <div className='flex aic br-pill bg-white-10 w5-ns w-auto black h-auto pa1'>
-                  <img src={logo} alt="seller logo" className='br-100 h2 pl3-ns' />
-                  <small className='pl3 white-60 dn dib-m dib-l'> <span className='dn dib-l'>Sold By {''}</span > CryptoMiner World</small>
+                <div
+                  className="flex aic bg-white-10 w5-ns w-auto black h-auto pa1"
+                  style={{
+                    clipPath:
+                      "polygon(5% 0, 97% 1%, 100% 19%, 100% 81%, 95% 100%, 5% 99%, 0 84%, 0 16%)"
+                  }}
+                >
+                  <img
+                    src={logo}
+                    alt="seller logo"
+                    className="br-100 h2 pl3-ns"
+                  />
+                  <small className="pl3 white-60 dn dib-m dib-l">
+                    <span className="dn dib-l">Sold By {""}</span> CryptoMiner
+                    World
+                  </small>
                 </div>
               </div>
-              <p className="o-50">
-                {story}
-              </p>
+              <p className="o-50">{story}</p>
             </div>
             <Waypoint onEnter={this.handleWaypointEnter}>
               <div>
@@ -91,9 +115,7 @@ class DescriptionBox extends PureComponent {
                         category="grade"
                         amount={this.gradeConverter(grade)}
                         description="A Gem’s Grade determines how fast it can mine. There are 6 Grades, D, C, B, A, AA, and AAA. Grade As and better all store Resting Energy when they are not mining!"
-                      // clip={{ clipPath: 'polygon(13% 1%, 100% 0, 100% 100%, 11% 100%, 2% 43%, 4% 13%)' }}
                       />
-
                     </ReactCSSTransitionGroup>
                     <ReactCSSTransitionGroup
                       transitionName="example2"
@@ -108,9 +130,7 @@ class DescriptionBox extends PureComponent {
                         category="level"
                         amount={level}
                         description="A Gem’s level determines how far down that Gem can mine. There are 5 tiers of land and 5 levels of gems. Each successive level allows for another type of land to be mined."
-                      // clip={{ clipPath: 'polygon(50% 0%, 100% 0, 100% 100%, 11% 99%, 3% 76%, 5% 20%, 14% 0)' }}
                       />
-
                     </ReactCSSTransitionGroup>
                     <ReactCSSTransitionGroup
                       transitionName="example3"
@@ -140,34 +160,40 @@ class DescriptionBox extends PureComponent {
 
 export default DescriptionBox;
 
-
-
-export const FeatureBand = ({ bgColour, gem, category, amount, description, clip }) =>
-  <div
-    className={`w-100 ${bgColour} h-auto flex aic jcb mt3 br4-ns br--left-ns shadow-3 pa3 pl5-ns`}
-    style={clip}
-  >
-
-    <Gem quality={category} image={gem} amount={amount} styling="w-20" />
-
-    <div className="w-80 pl3 pl0-nsa">
-      <p className="b ttu">{category}</p>
-      <p className=" pr4-ns">{description}</p>
+export const FeatureBand = ({
+  bgColour,
+  gem,
+  category,
+  amount,
+  description
+}) => (
+  <div className="relative">
+    <div
+      className={`w-100 ${bgColour} h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns`}
+      style={{
+        clipPath:
+          window.screen.availWidth >= 1920
+            ? "polygon(0 84%, 1% 96%, 5% 100%, 97% 100%, 99% 97%, 100% 90%, 100% 14%, 99% 4%, 96% 0, 5% 0%, 1% 2%, 0 12%)"
+            : "polygon(0 84%, 1% 96%, 5% 100%, 97% 100%, 100% 100%, 100% 90%, 100% 14%, 100% 0, 96% 0, 5% 0%, 1% 2%, 0 12%)"
+      }}
+    >
+      <Gem quality={category} image={gem} amount={amount} styling="w-20" />
+      <div className="w-80 pl3 pl0-nsa">
+        <p className="b ttu">{category}</p>
+        <p className=" pr4-ns">{description}</p>
+      </div>
     </div>
   </div>
+);
 
 FeatureBand.propTypes = {
   bgColour: PropTypes.string.isRequired,
   gem: PropTypes.string.isRequired,
   category: PropTypes.string.isRequired,
   amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  description: PropTypes.string.isRequired,
-  clip: PropTypes.shape({
-    clip: PropTypes.string,
-  })
+  description: PropTypes.string.isRequired
 };
 
 FeatureBand.defaultProps = {
   clip: null
-}
-
+};

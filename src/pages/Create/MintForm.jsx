@@ -1,10 +1,21 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Select, Input, Icon } from 'antd';
+import React from "react";
+import PropTypes from "prop-types";
+import { Select, Input, Icon } from "antd";
 
 const { Option } = Select;
 
-const MintForm = ({ randomGradeValue, handleNetworkChange, contractAddress, color, level, gradeType, gradeValue, handleChange, handleSubmit, handleGradeValueChange }) => (
+const MintForm = ({
+  randomGradeValue,
+  handleNetworkChange,
+  contractAddress,
+  color,
+  level,
+  gradeType,
+  gradeValue,
+  handleChange,
+  handleSubmit,
+  handleGradeValueChange
+}) => (
   <form
     id="mint_form"
     className="bg-white br3"
@@ -18,27 +29,31 @@ const MintForm = ({ randomGradeValue, handleNetworkChange, contractAddress, colo
       <div>
         <label htmlFor="helper_address">
           Select Network:
-                      <Select
+          <Select
             required
             id="helper_address"
-            defaultValue="rinkeby"
+            defaultValue="Mainnet"
             style={{ width: 120 }}
             onChange={handleNetworkChange}
           >
-            <Option value="0x6afd5f5f431279b0cac7f5ff406f13d804b183c9">Rinkeby</Option>
-            <Option value="0x0">Mainnet</Option>
+            <Option value="0x6afd5f5f431279b0cac7f5ff406f13d804b183c9">
+              Rinkeby
+            </Option>
+            <Option value="0xc3b54e757fD79264828eCBb78f5Bceae7fF118bC">
+              Mainnet
+            </Option>
           </Select>
         </label>
       </div>
       <div>
         <label htmlFor="helper_color">
           Select a Color:
-                      <Select
+          <Select
             required
             id="helper_color"
             defaultValue="Sapphire (September)"
             style={{ width: 120 }}
-            onChange={handleChange('color')}
+            onChange={handleChange("color")}
           >
             <Option value="9">Sapphire (September)</Option>
             <Option value="10">Opal (October)</Option>
@@ -52,16 +67,18 @@ const MintForm = ({ randomGradeValue, handleNetworkChange, contractAddress, colo
       <div>
         <label htmlFor="helper_level">
           Select a Level:
-                      <Select
+          <Select
             required
             id="helper_level"
             defaultValue="1"
             style={{ width: 120 }}
-            onChange={handleChange('level')}
+            onChange={handleChange("level")}
           >
             <option value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
           </Select>
         </label>
       </div>
@@ -69,12 +86,12 @@ const MintForm = ({ randomGradeValue, handleNetworkChange, contractAddress, colo
       <div>
         <label htmlFor="helper_grade_type">
           Select a Grade:
-                      <Select
+          <Select
             required
             id="helper_grade_type"
             defaultValue="D"
             style={{ width: 120 }}
-            onChange={handleChange('gradeType')}
+            onChange={handleChange("gradeType")}
           >
             <option value="1">D</option>
             <option value="2">C</option>
@@ -89,7 +106,7 @@ const MintForm = ({ randomGradeValue, handleNetworkChange, contractAddress, colo
       <div>
         <label htmlFor="grade_value">
           Grade Value
-                      <Input
+          <Input
             placeholder="1000000 or less."
             type="number"
             id="grade_value"
@@ -103,11 +120,11 @@ const MintForm = ({ randomGradeValue, handleNetworkChange, contractAddress, colo
         </label>
       </div>
     </fieldset>
-    <Input type="submit" value="Mint" className='pointer' />
+    <Input type="submit" value="Mint" className="pointer" />
   </form>
-)
+);
 
-export default MintForm
+export default MintForm;
 
 MintForm.propTypes = {
   contractAddress: PropTypes.string.isRequired,
@@ -119,5 +136,5 @@ MintForm.propTypes = {
   handleNetworkChange: PropTypes.func.isRequired,
   randomGradeValue: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
-  handleGradeValueChange: PropTypes.func.isRequired,
-}
+  handleGradeValueChange: PropTypes.func.isRequired
+};

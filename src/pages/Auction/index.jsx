@@ -50,7 +50,8 @@ const Auction = ({
   showConfirm,
   provider,
   color,
-  story
+  story,
+  currentAccount
 }) => (
   <div>
     {releaseConfetti && (
@@ -92,6 +93,7 @@ const Auction = ({
               redirectTo={redirectTo}
               showConfirm={showConfirm}
               provider={provider}
+              currentAccount={currentAccount}
             />
           </ReactCSSTransitionGroup>
         </div>
@@ -146,7 +148,8 @@ Auction.propTypes = {
   color: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   sourceImage: PropTypes.string.isRequired,
   story: PropTypes.string.isRequired,
-  provider: PropTypes.bool.isRequired
+  provider: PropTypes.bool.isRequired,
+  currentAccount: PropTypes.string.isRequired
 };
 
 Auction.defaultProps = {
