@@ -157,12 +157,13 @@ class App extends PureComponent {
 
       // @notice get gem qualities from gem contract
       getGemQualities(gemsContractInstance, tokenId).then(result => {
-        const [color, level, gradeType] = result;
+        const [color, level, gradeType, gradeValue] = result;
+
         this.setState({
           grade: gradeType,
           level: Number(level),
           color,
-          rate: Number(calcMiningRate(gradeType))
+          rate: Number(calcMiningRate(gradeType, gradeValue))
         });
 
         const image = getGemImage(color, gradeType, level);

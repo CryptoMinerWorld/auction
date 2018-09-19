@@ -44,8 +44,6 @@ class DescriptionBox extends PureComponent {
     }
   };
 
-  rateConverter = rate => rate;
-
   gradeConverter = gradeValue =>
     ({
       1: "D",
@@ -84,9 +82,9 @@ class DescriptionBox extends PureComponent {
                   className="flex aic bg-white-10 w5-ns w-auto black h-auto pa1"
                   style={{
                     WebkitClipPath:
-                      "polygon(8px 0px, 94.81% 2px, 98.32% 4.35%, 99.9% 27.62%, 100.43% 70.48%, 99.16% 94.96%, 95.85% 101.04%, 8.96% 99%, 3.73% 101.97%, 0px 86.79%, 0.03% 20.61%)",
+                      "polygon(100.29% 25.12%, 100.43% 75.48%, 95.88% 103.1%, 4.19% 103.27%, 0px 71.79%, 0.03% 23.11%, 4.8% -4.64%, 95.81% -4.98%)",
                     clipPath:
-                      "polygon(8px 0px, 94.81% 2px, 98.32% 4.35%, 99.9% 27.62%, 100.43% 70.48%, 99.16% 94.96%, 95.85% 101.04%, 8.96% 99%, 3.73% 101.97%, 0px 86.79%, 0.03% 20.61%)"
+                      "polygon(100.29% 25.12%, 100.43% 75.48%, 95.88% 103.1%, 4.19% 103.27%, 0px 71.79%, 0.03% 23.11%, 4.8% -4.64%, 95.81% -4.98%)"
                   }}
                 >
                   <img
@@ -147,7 +145,7 @@ class DescriptionBox extends PureComponent {
                         bgColour="bg-dark-purple"
                         gem={gem3}
                         category="mining rate Bonus"
-                        amount={`${this.rateConverter(rate)}%`}
+                        amount={`+${rate.toFixed(2)}%`}
                         description="This is the percentage of how much faster a Gem mines compared to the base speed. +100% is twice as fast as base, +400% is five times faster. All Mining Rate Bonuses are tied to Grades. Grades give you a general sense of how how fast a Gem mines but Mining Rate Bonuses tells you exactly how much fast it is."
                       />
                     </ReactCSSTransitionGroup>
@@ -173,7 +171,7 @@ export const FeatureBand = ({
 }) => (
   <div className="relative">
     <div
-      className={`w-100 ${bgColour} h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns`}
+      className={`w-100 ${bgColour} h-auto flex aic jcb mt3 br--left-ns pa3`}
       style={{
         clipPath:
           window.screen.availWidth >= 1920
@@ -181,8 +179,10 @@ export const FeatureBand = ({
             : "polygon(0 84%, 1% 96%, 5% 100%, 97% 100%, 100% 100%, 100% 90%, 100% 14%, 100% 0, 96% 0, 5% 0%, 1% 2%, 0 12%)"
       }}
     >
-      <Gem quality={category} image={gem} amount={amount} styling="w-20" />
-      <div className="w-80 pl3 pl0-nsa">
+      <div className="w-20 tc">
+        <Gem quality={category} image={gem} amount={amount} />
+      </div>
+      <div className="w-80 pl3 pl0-ns">
         <p className="b ttu">{category}</p>
         <p className=" pr4-ns">{description}</p>
       </div>

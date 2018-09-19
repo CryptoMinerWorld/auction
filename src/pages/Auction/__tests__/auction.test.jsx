@@ -164,8 +164,8 @@ describe("Auction page tests", () => {
   });
 
   test("calcMiningRate accurately calculates the mining rate", () => {
-    expect(calcMiningRate(1)).toEqual(0);
-    expect(calcMiningRate(6)).toEqual(300);
+    expect(calcMiningRate(5, 700203)).toEqual(117.505075);
+    expect(calcMiningRate(1, 659700)).toEqual(3.2985);
   });
 
   test.skip("auction lets people buy after a deadline is passed", () => {

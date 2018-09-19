@@ -91,7 +91,7 @@ const Footer = () => (
               Copyright © Cryptominer World 2018
             </p>
             <p className="f7 black-70 dib pr3 mb3 white">
-              Version 0.0.17
+              Version 0.0.18
             </p>
           </div>
         </div>
