@@ -848,7 +848,7 @@ Object {
         href="#"
       >
         <button
-          class="RippleButton__Button-sc-8zvudi-0 jadjVY"
+          class="sc-bdVaJa gnFgqI"
         >
           title
         </button>
@@ -1488,7 +1488,7 @@ Object {
         href="#"
       >
         <button
-          class="RippleButton__Button-sc-8zvudi-0 jadjVY"
+          class="sc-bdVaJa gnFgqI"
         >
           title
         </button>
@@ -2000,7 +2000,7 @@ exports[`MobileHeader renders correctly 1`] = `
         </p>
       </div>
       <div
-        class="MobileHeader__Triangle-favzpq-0 iMdFlc"
+        class="sc-bwzfXH iZAQaR"
       />
     </div>
     <div
@@ -2324,7 +2324,7 @@ Object {
         href="#"
       >
         <button
-          class="RippleButton__Button-sc-8zvudi-0 jadjVY"
+          class="sc-bdVaJa gnFgqI"
         >
           title
         </button>
@@ -2737,7 +2737,7 @@ Object {
             </p>
           </div>
           <div
-            class="MobileHeader__Triangle-favzpq-0 iMdFlc"
+            class="sc-bwzfXH iZAQaR"
           />
         </div>
         <div
@@ -3055,7 +3055,7 @@ exports[`Ripple Button renders correctly 1`] = `
     href="#"
   >
     <button
-      class="RippleButton__Button-sc-8zvudi-0 jadjVY"
+      class="sc-bdVaJa gnFgqI"
     >
       title
     </button>
