@@ -48,7 +48,7 @@ class FAQ extends PureComponent {
 
 const Question = ({ focusedDetail, handleChange, question, answer, index }) => (
   <details open={focusedDetail === index} onFocus={handleChange(index)}>
-    <summary className="underlined blue">{question}</summary>
+    <summary className="underlined blue pointer">{question}</summary>
     <p>{answer}</p>
     {index === 4 && (
       <p>
