@@ -49,23 +49,23 @@ export const  getGemImage = (color, grade, level) => {
         .ref(`gems512/${sourceImage}`)
         .getDownloadURL()
 }
-export const calcMiningRate = (gradeType) => ({
-  1: 0,
-  2: 10 ,
-  3: 20 ,
-  4: 40 ,
-  5: 100 ,
-  6: 300 
-}[gradeType]);
+// export const calcMiningRate = (gradeType) => ({
+//   1: 0,
+//   2: 10 ,
+//   3: 20 ,
+//   4: 40 ,
+//   5: 100 ,
+//   6: 300 
+// }[gradeType]);
 
-// export const calcMiningRate = (gradeType, gradeValue) => ({
-//     1: gradeValue / 200000,
-//     2: 10 + gradeValue / 200000,
-//     3: 20 + gradeValue / 200000,
-//     4: 40 + (3 * gradeValue) / 200000,
-//     5: 100 + gradeValue / 40000,
-//     6: 300 + gradeValue / 10000
-//   }[gradeType]);
+export const calcMiningRate = (gradeType, gradeValue) => ({
+    1: gradeValue / 200000,
+    2: 10 + gradeValue / 200000,
+    3: 20 + gradeValue / 200000,
+    4: 40 + (3 * gradeValue) / 200000,
+    5: 100 + gradeValue / 40000,
+    6: 300 + gradeValue / 10000
+  }[gradeType]);
 
 
 export const getGemQualities = (_contract, _tokenId) => 

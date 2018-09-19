@@ -1,11 +1,14 @@
 import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
 import format from "date-fns/format";
 
-const AngleGradient = styled.div`
-  background: linear-gradient(45deg, #c018ab, #5f1763);
-`;
+const gradientAndShape = {
+  background: "linear-gradient(45deg, #c018ab, #5f1763)",
+  WebkitClipPath:
+    "polygon(4.46% -0.15%, 96.33% 0px, 100.22% 11.24%, 100% 86.58%, 98.1% 97.17%, 93.09% 100.5%, 3.94% 100.25%, -1px 90.05%, -0.09% 8.97%)",
+  clipPath:
+    "polygon(4.46% -0.15%, 96.33% 0px, 100.22% 11.24%, 100% 86.58%, 98.1% 97.17%, 93.09% 100.5%, 3.94% 100.25%, -1px 90.05%, -0.09% 8.97%)"
+};
 
 class CountdownTimer extends PureComponent {
   static propTypes = {
@@ -48,16 +51,8 @@ class CountdownTimer extends PureComponent {
     const { timeLeft } = this.state;
 
     return (
-      <AngleGradient
-        className="tc bg-blue pa2"
-        style={{
-          WebkitClipPath:
-            "polygon(5px 2px, 3.34% -0.15%, 99% 0px, 100% 2.31%, 99.48% 46%, 100.41% 61.97%, 99.17% 78.65%, 100% 97%, 100.04% 99%, 98% 100%, 8.96% 99%, 0.8% 99.93%, 0px 97%, 0.58% 59.56%, 0.03% 2.23%)",
-          clipPath:
-            "polygon(5px 2px, 3.34% -0.15%, 99% 0px, 100% 2.31%, 99.48% 46%, 100.41% 61.97%, 99.17% 78.65%, 100% 97%, 100.04% 99%, 98% 100%, 8.96% 99%, 0.8% 99.93%, 0px 97%, 0.58% 59.56%, 0.03% 2.23%)"
-        }}
-      >
-        <p className="b">Auction ends on</p>
+      <div className="tc bg-blue pa2" style={gradientAndShape}>
+        <p className="b">Lowest price on</p>
         <time className="measure">
           {format(new Date(deadline * 1000), "EEEE do of MMMM, p")}
         </time>
@@ -102,7 +97,7 @@ class CountdownTimer extends PureComponent {
             </div>
           </div>
         )}
-      </AngleGradient>
+      </div>
     );
   }
 }

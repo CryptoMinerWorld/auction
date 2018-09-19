@@ -194,11 +194,20 @@ exports[`AuctionImage renders correctly 1`] = `
     class="pa3-ns"
   >
     <div
-      class="mw9"
+      class="w-100 flex jcc vh-50 aic"
     >
       <div
-        class="v-mid bg-transparent contain bg-right-l bg-center sc-EHOje ezeAEC"
+        class="w-40-l dn dib-l"
       />
+      <div
+        class="w-60-l tc h-100"
+      >
+        <img
+          alt="gem for sale"
+          class="w-auto h-100"
+          src="false"
+        />
+      </div>
     </div>
   </div>
 </div>
@@ -294,24 +303,28 @@ exports[`DescriptionBox renders correctly 1`] = `
                 class="relative example1-appear"
               >
                 <div
-                  class="w-100 bg-dark-blue h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
+                  class="w-100 bg-dark-blue h-auto flex aic jcb mt3 br--left-ns pa3"
                 >
                   <div
-                    class="sc-bdVaJa giFZti"
+                    class="w-20 tc"
                   >
-                    <img
-                      alt="grade"
-                      class="h2 h3-ns center"
-                      src="gem1.png"
-                    />
-                    <p
-                      class="ttu f5 mt2 o-50 black tc pt1 b pr2"
+                    <div
+                      class="sc-bdVaJa giFZti"
                     >
-                      D
-                    </p>
+                      <img
+                        alt="grade"
+                        class="h3 center"
+                        src="gem1.png"
+                      />
+                      <p
+                        class="ttu f5 mt2 o-50 black tc pt1 b pr2"
+                      >
+                        D
+                      </p>
+                    </div>
                   </div>
                   <div
-                    class="w-80 pl3 pl0-nsa"
+                    class="w-80 pl3 pl0-ns"
                   >
                     <p
                       class="b ttu"
@@ -332,24 +345,28 @@ exports[`DescriptionBox renders correctly 1`] = `
                 class="relative example2-appear"
               >
                 <div
-                  class="w-100 bg-dark-orange h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
+                  class="w-100 bg-dark-orange h-auto flex aic jcb mt3 br--left-ns pa3"
                 >
                   <div
-                    class="sc-bdVaJa giFZti"
+                    class="w-20 tc"
                   >
-                    <img
-                      alt="level"
-                      class="h2 h3-ns center"
-                      src="gem2.png"
-                    />
-                    <p
-                      class="ttu f5 mt2 o-50 black tc pt1 b false"
+                    <div
+                      class="sc-bdVaJa giFZti"
                     >
-                      1
-                    </p>
+                      <img
+                        alt="level"
+                        class="h3 center"
+                        src="gem2.png"
+                      />
+                      <p
+                        class="ttu f5 mt2 o-50 black tc pt1 b false"
+                      >
+                        1
+                      </p>
+                    </div>
                   </div>
                   <div
-                    class="w-80 pl3 pl0-nsa"
+                    class="w-80 pl3 pl0-ns"
                   >
                     <p
                       class="b ttu"
@@ -370,24 +387,28 @@ exports[`DescriptionBox renders correctly 1`] = `
                 class="relative example3-appear"
               >
                 <div
-                  class="w-100 bg-dark-purple h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
+                  class="w-100 bg-dark-purple h-auto flex aic jcb mt3 br--left-ns pa3"
                 >
                   <div
-                    class="sc-bdVaJa giFZti"
+                    class="w-20 tc"
                   >
-                    <img
-                      alt="mining rate Bonus"
-                      class="h2 h3-ns center"
-                      src="gem3.png"
-                    />
-                    <p
-                      class="ttu f5 mt2 o-50 black tc pt1 b false"
+                    <div
+                      class="sc-bdVaJa giFZti"
                     >
-                      1000%
-                    </p>
+                      <img
+                        alt="mining rate Bonus"
+                        class="h3 center"
+                        src="gem3.png"
+                      />
+                      <p
+                        class="ttu f5 mt2 o-50 black tc pt1 b false"
+                      >
+                        +1000.00%
+                      </p>
+                    </div>
                   </div>
                   <div
-                    class="w-80 pl3 pl0-nsa"
+                    class="w-80 pl3 pl0-ns"
                   >
                     <p
                       class="b ttu"
@@ -417,24 +438,28 @@ exports[`FeatureBand renders correctly 1`] = `
     class="relative"
   >
     <div
-      class="w-100 PropTypes.string.isRequired h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
+      class="w-100 PropTypes.string.isRequired h-auto flex aic jcb mt3 br--left-ns pa3"
     >
       <div
-        class="sc-bdVaJa giFZti"
+        class="w-20 tc"
       >
-        <img
-          alt="PropTypes.string.isRequired"
-          class="h2 h3-ns center"
-          src="PropTypes.string.isRequired"
-        />
-        <p
-          class="ttu f5 mt2 o-50 black tc pt1 b false"
+        <div
+          class="sc-bdVaJa giFZti"
         >
-          0
-        </p>
+          <img
+            alt="PropTypes.string.isRequired"
+            class="h3 center"
+            src="PropTypes.string.isRequired"
+          />
+          <p
+            class="ttu f5 mt2 o-50 black tc pt1 b false"
+          >
+            0
+          </p>
+        </div>
       </div>
       <div
-        class="w-80 pl3 pl0-nsa"
+        class="w-80 pl3 pl0-ns"
       >
         <p
           class="b ttu"
@@ -458,13 +483,13 @@ exports[`Footer & MailingList render correctly 1`] = `
     class="bg-footer-black"
   >
     <div
-      class="sc-bZQynM dbNQv"
+      class="sc-EHOje jtspjU"
     />
     <div
       class="mw9 center"
     >
       <footer
-        class="pa4 pa6-l bt b--black-10 sc-gzVnrw kPpIuA"
+        class="pa4 pa6-l bt b--black-10 sc-bZQynM kAKEsN"
       >
         <div
           class="mb4-l cf"
@@ -594,7 +619,7 @@ exports[`Footer & MailingList render correctly 1`] = `
             <p
               class="f7 black-70 dib pr3 mb3 white"
             >
-              Version 0.0.17
+              Version 0.0.18
             </p>
           </div>
         </div>
@@ -686,24 +711,28 @@ Object {
                     class="relative example1-appear"
                   >
                     <div
-                      class="w-100 bg-dark-blue h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
+                      class="w-100 bg-dark-blue h-auto flex aic jcb mt3 br--left-ns pa3"
                     >
                       <div
-                        class="sc-bdVaJa giFZti"
+                        class="w-20 tc"
                       >
-                        <img
-                          alt="grade"
-                          class="h2 h3-ns center"
-                          src="gem1.png"
-                        />
-                        <p
-                          class="ttu f5 mt2 o-50 black tc pt1 b pr2"
+                        <div
+                          class="sc-bdVaJa giFZti"
                         >
-                          D
-                        </p>
+                          <img
+                            alt="grade"
+                            class="h3 center"
+                            src="gem1.png"
+                          />
+                          <p
+                            class="ttu f5 mt2 o-50 black tc pt1 b pr2"
+                          >
+                            D
+                          </p>
+                        </div>
                       </div>
                       <div
-                        class="w-80 pl3 pl0-nsa"
+                        class="w-80 pl3 pl0-ns"
                       >
                         <p
                           class="b ttu"
@@ -724,24 +753,28 @@ Object {
                     class="relative example2-appear"
                   >
                     <div
-                      class="w-100 bg-dark-orange h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
+                      class="w-100 bg-dark-orange h-auto flex aic jcb mt3 br--left-ns pa3"
                     >
                       <div
-                        class="sc-bdVaJa giFZti"
+                        class="w-20 tc"
                       >
-                        <img
-                          alt="level"
-                          class="h2 h3-ns center"
-                          src="gem2.png"
-                        />
-                        <p
-                          class="ttu f5 mt2 o-50 black tc pt1 b false"
+                        <div
+                          class="sc-bdVaJa giFZti"
                         >
-                          1
-                        </p>
+                          <img
+                            alt="level"
+                            class="h3 center"
+                            src="gem2.png"
+                          />
+                          <p
+                            class="ttu f5 mt2 o-50 black tc pt1 b false"
+                          >
+                            1
+                          </p>
+                        </div>
                       </div>
                       <div
-                        class="w-80 pl3 pl0-nsa"
+                        class="w-80 pl3 pl0-ns"
                       >
                         <p
                           class="b ttu"
@@ -762,24 +795,28 @@ Object {
                     class="relative example3-appear"
                   >
                     <div
-                      class="w-100 bg-dark-purple h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
+                      class="w-100 bg-dark-purple h-auto flex aic jcb mt3 br--left-ns pa3"
                     >
                       <div
-                        class="sc-bdVaJa giFZti"
+                        class="w-20 tc"
                       >
-                        <img
-                          alt="mining rate Bonus"
-                          class="h2 h3-ns center"
-                          src="gem3.png"
-                        />
-                        <p
-                          class="ttu f5 mt2 o-50 black tc pt1 b false"
+                        <div
+                          class="sc-bdVaJa giFZti"
                         >
-                          1000%
-                        </p>
+                          <img
+                            alt="mining rate Bonus"
+                            class="h3 center"
+                            src="gem3.png"
+                          />
+                          <p
+                            class="ttu f5 mt2 o-50 black tc pt1 b false"
+                          >
+                            +1000.00%
+                          </p>
+                        </div>
                       </div>
                       <div
-                        class="w-80 pl3 pl0-nsa"
+                        class="w-80 pl3 pl0-ns"
                       >
                         <p
                           class="b ttu"
@@ -806,24 +843,28 @@ Object {
         class="relative"
       >
         <div
-          class="w-100 PropTypes.string.isRequired h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
+          class="w-100 PropTypes.string.isRequired h-auto flex aic jcb mt3 br--left-ns pa3"
         >
           <div
-            class="sc-bdVaJa giFZti"
+            class="w-20 tc"
           >
-            <img
-              alt="PropTypes.string.isRequired"
-              class="h2 h3-ns center"
-              src="PropTypes.string.isRequired"
-            />
-            <p
-              class="ttu f5 mt2 o-50 black tc pt1 b false"
+            <div
+              class="sc-bdVaJa giFZti"
             >
-              0
-            </p>
+              <img
+                alt="PropTypes.string.isRequired"
+                class="h3 center"
+                src="PropTypes.string.isRequired"
+              />
+              <p
+                class="ttu f5 mt2 o-50 black tc pt1 b false"
+              >
+                0
+              </p>
+            </div>
           </div>
           <div
-            class="w-80 pl3 pl0-nsa"
+            class="w-80 pl3 pl0-ns"
           >
             <p
               class="b ttu"
@@ -850,7 +891,7 @@ Object {
         href="#"
       >
         <button
-          class="RippleButton__Button-sc-8zvudi-0 jadjVY"
+          class="sc-bwzfXH fbRjTD"
         >
           title
         </button>
@@ -861,11 +902,20 @@ Object {
         class="pa3-ns"
       >
         <div
-          class="mw9"
+          class="w-100 flex jcc vh-50 aic"
         >
           <div
-            class="v-mid bg-transparent contain bg-right-l bg-center sc-EHOje ezeAEC"
+            class="w-40-l dn dib-l"
           />
+          <div
+            class="w-60-l tc h-100"
+          >
+            <img
+              alt="gem for sale"
+              class="w-auto h-100"
+              src="false"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -880,7 +930,7 @@ Object {
         </h2>
         <details>
           <summary
-            class="underlined blue"
+            class="underlined blue pointer"
           >
             How does this work?
           </summary>
@@ -890,7 +940,7 @@ Object {
         </details>
         <details>
           <summary
-            class="underlined blue"
+            class="underlined blue pointer"
           >
             How often do auctions run?
           </summary>
@@ -900,7 +950,7 @@ Object {
         </details>
         <details>
           <summary
-            class="underlined blue"
+            class="underlined blue pointer"
           >
             Can I resell an Item?
           </summary>
@@ -910,7 +960,7 @@ Object {
         </details>
         <details>
           <summary
-            class="underlined blue"
+            class="underlined blue pointer"
           >
             How do I bid?
           </summary>
@@ -935,13 +985,13 @@ Object {
         class="bg-footer-black"
       >
         <div
-          class="sc-bZQynM dbNQv"
+          class="sc-EHOje jtspjU"
         />
         <div
           class="mw9 center"
         >
           <footer
-            class="pa4 pa6-l bt b--black-10 sc-gzVnrw kPpIuA"
+            class="pa4 pa6-l bt b--black-10 sc-bZQynM kAKEsN"
           >
             <div
               class="mb4-l cf"
@@ -1071,7 +1121,7 @@ Object {
                 <p
                   class="f7 black-70 dib pr3 mb3 white"
                 >
-                  Version 0.0.17
+                  Version 0.0.18
                 </p>
               </div>
             </div>
@@ -1244,7 +1294,7 @@ exports[`Gem renders correctly 1`] = `
   >
     <img
       alt="1"
-      class="h2 h3-ns center"
+      class="h3 center"
       src="1"
     />
     <p
@@ -1329,24 +1379,28 @@ Object {
                     class="relative example1-appear"
                   >
                     <div
-                      class="w-100 bg-dark-blue h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
+                      class="w-100 bg-dark-blue h-auto flex aic jcb mt3 br--left-ns pa3"
                     >
                       <div
-                        class="sc-bdVaJa giFZti"
+                        class="w-20 tc"
                       >
-                        <img
-                          alt="grade"
-                          class="h2 h3-ns center"
-                          src="gem1.png"
-                        />
-                        <p
-                          class="ttu f5 mt2 o-50 black tc pt1 b pr2"
+                        <div
+                          class="sc-bdVaJa giFZti"
                         >
-                          D
-                        </p>
+                          <img
+                            alt="grade"
+                            class="h3 center"
+                            src="gem1.png"
+                          />
+                          <p
+                            class="ttu f5 mt2 o-50 black tc pt1 b pr2"
+                          >
+                            D
+                          </p>
+                        </div>
                       </div>
                       <div
-                        class="w-80 pl3 pl0-nsa"
+                        class="w-80 pl3 pl0-ns"
                       >
                         <p
                           class="b ttu"
@@ -1367,24 +1421,28 @@ Object {
                     class="relative example2-appear"
                   >
                     <div
-                      class="w-100 bg-dark-orange h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
+                      class="w-100 bg-dark-orange h-auto flex aic jcb mt3 br--left-ns pa3"
                     >
                       <div
-                        class="sc-bdVaJa giFZti"
+                        class="w-20 tc"
                       >
-                        <img
-                          alt="level"
-                          class="h2 h3-ns center"
-                          src="gem2.png"
-                        />
-                        <p
-                          class="ttu f5 mt2 o-50 black tc pt1 b false"
+                        <div
+                          class="sc-bdVaJa giFZti"
                         >
-                          1
-                        </p>
+                          <img
+                            alt="level"
+                            class="h3 center"
+                            src="gem2.png"
+                          />
+                          <p
+                            class="ttu f5 mt2 o-50 black tc pt1 b false"
+                          >
+                            1
+                          </p>
+                        </div>
                       </div>
                       <div
-                        class="w-80 pl3 pl0-nsa"
+                        class="w-80 pl3 pl0-ns"
                       >
                         <p
                           class="b ttu"
@@ -1405,24 +1463,28 @@ Object {
                     class="relative example3-appear"
                   >
                     <div
-                      class="w-100 bg-dark-purple h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
+                      class="w-100 bg-dark-purple h-auto flex aic jcb mt3 br--left-ns pa3"
                     >
                       <div
-                        class="sc-bdVaJa giFZti"
+                        class="w-20 tc"
                       >
-                        <img
-                          alt="mining rate Bonus"
-                          class="h2 h3-ns center"
-                          src="gem3.png"
-                        />
-                        <p
-                          class="ttu f5 mt2 o-50 black tc pt1 b false"
+                        <div
+                          class="sc-bdVaJa giFZti"
                         >
-                          1000%
-                        </p>
+                          <img
+                            alt="mining rate Bonus"
+                            class="h3 center"
+                            src="gem3.png"
+                          />
+                          <p
+                            class="ttu f5 mt2 o-50 black tc pt1 b false"
+                          >
+                            +1000.00%
+                          </p>
+                        </div>
                       </div>
                       <div
-                        class="w-80 pl3 pl0-nsa"
+                        class="w-80 pl3 pl0-ns"
                       >
                         <p
                           class="b ttu"
@@ -1449,24 +1511,28 @@ Object {
         class="relative"
       >
         <div
-          class="w-100 PropTypes.string.isRequired h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
+          class="w-100 PropTypes.string.isRequired h-auto flex aic jcb mt3 br--left-ns pa3"
         >
           <div
-            class="sc-bdVaJa giFZti"
+            class="w-20 tc"
           >
-            <img
-              alt="PropTypes.string.isRequired"
-              class="h2 h3-ns center"
-              src="PropTypes.string.isRequired"
-            />
-            <p
-              class="ttu f5 mt2 o-50 black tc pt1 b false"
+            <div
+              class="sc-bdVaJa giFZti"
             >
-              0
-            </p>
+              <img
+                alt="PropTypes.string.isRequired"
+                class="h3 center"
+                src="PropTypes.string.isRequired"
+              />
+              <p
+                class="ttu f5 mt2 o-50 black tc pt1 b false"
+              >
+                0
+              </p>
+            </div>
           </div>
           <div
-            class="w-80 pl3 pl0-nsa"
+            class="w-80 pl3 pl0-ns"
           >
             <p
               class="b ttu"
@@ -1493,7 +1559,7 @@ Object {
         href="#"
       >
         <button
-          class="RippleButton__Button-sc-8zvudi-0 jadjVY"
+          class="sc-bwzfXH fbRjTD"
         >
           title
         </button>
@@ -1504,11 +1570,20 @@ Object {
         class="pa3-ns"
       >
         <div
-          class="mw9"
+          class="w-100 flex jcc vh-50 aic"
         >
           <div
-            class="v-mid bg-transparent contain bg-right-l bg-center sc-EHOje ezeAEC"
+            class="w-40-l dn dib-l"
           />
+          <div
+            class="w-60-l tc h-100"
+          >
+            <img
+              alt="gem for sale"
+              class="w-auto h-100"
+              src="false"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -1523,7 +1598,7 @@ Object {
         </h2>
         <details>
           <summary
-            class="underlined blue"
+            class="underlined blue pointer"
           >
             How does this work?
           </summary>
@@ -1533,7 +1608,7 @@ Object {
         </details>
         <details>
           <summary
-            class="underlined blue"
+            class="underlined blue pointer"
           >
             How often do auctions run?
           </summary>
@@ -1543,7 +1618,7 @@ Object {
         </details>
         <details>
           <summary
-            class="underlined blue"
+            class="underlined blue pointer"
           >
             Can I resell an Item?
           </summary>
@@ -1553,7 +1628,7 @@ Object {
         </details>
         <details>
           <summary
-            class="underlined blue"
+            class="underlined blue pointer"
           >
             How do I bid?
           </summary>
@@ -1578,13 +1653,13 @@ Object {
         class="bg-footer-black"
       >
         <div
-          class="sc-bZQynM dbNQv"
+          class="sc-EHOje jtspjU"
         />
         <div
           class="mw9 center"
         >
           <footer
-            class="pa4 pa6-l bt b--black-10 sc-gzVnrw kPpIuA"
+            class="pa4 pa6-l bt b--black-10 sc-bZQynM kAKEsN"
           >
             <div
               class="mb4-l cf"
@@ -1714,7 +1789,7 @@ Object {
                 <p
                   class="f7 black-70 dib pr3 mb3 white"
                 >
-                  Version 0.0.17
+                  Version 0.0.18
                 </p>
               </div>
             </div>
@@ -1808,7 +1883,7 @@ Object {
             >
               <img
                 alt="level"
-                class="h2 h3-ns center"
+                class="h3 center"
                 src="gem2.png"
               />
               <p
@@ -1831,7 +1906,7 @@ Object {
             >
               <img
                 alt="grade"
-                class="h2 h3-ns center"
+                class="h3 center"
                 src="gem1.png"
               />
               <p
@@ -1854,13 +1929,13 @@ Object {
             >
               <img
                 alt="rate"
-                class="h2 h3-ns center"
+                class="h3 center"
                 src="gem3.png"
               />
               <p
                 class="ttu f5 mt2 o-50 black tc pt1 b false"
               >
-                2%
+                +2.00%
               </p>
             </div>
           </div>
@@ -1888,7 +1963,7 @@ Object {
           >
             <img
               alt="level"
-              class="h2 h3-ns center"
+              class="h3 center"
               src="gem2.png"
             />
             <p
@@ -1911,7 +1986,7 @@ Object {
           >
             <img
               alt="grade"
-              class="h2 h3-ns center"
+              class="h3 center"
               src="gem1.png"
             />
             <p
@@ -1934,13 +2009,13 @@ Object {
           >
             <img
               alt="rate"
-              class="h2 h3-ns center"
+              class="h3 center"
               src="gem3.png"
             />
             <p
               class="ttu f5 mt2 o-50 black tc pt1 b false"
             >
-              2%
+              +2.00%
             </p>
           </div>
         </div>
@@ -2007,7 +2082,7 @@ exports[`MobileHeader renders correctly 1`] = `
         </p>
       </div>
       <div
-        class="MobileHeader__Triangle-favzpq-0 iMdFlc"
+        class="sc-gzVnrw efLbUj"
       />
     </div>
     <div
@@ -2032,7 +2107,7 @@ exports[`MobileHeader renders correctly 1`] = `
             >
               <img
                 alt="level"
-                class="h2 h3-ns center"
+                class="h3 center"
                 src="gem2.png"
               />
               <p
@@ -2055,7 +2130,7 @@ exports[`MobileHeader renders correctly 1`] = `
             >
               <img
                 alt="grade"
-                class="h2 h3-ns center"
+                class="h3 center"
                 src="gem1.png"
               />
               <p
@@ -2078,13 +2153,13 @@ exports[`MobileHeader renders correctly 1`] = `
             >
               <img
                 alt="rate"
-                class="h2 h3-ns center"
+                class="h3 center"
                 src="gem3.png"
               />
               <p
                 class="ttu f5 mt2 o-50 black tc pt1 b false"
               >
-                2%
+                +2.00%
               </p>
             </div>
           </div>
@@ -2168,24 +2243,28 @@ Object {
                     class="relative example1-appear"
                   >
                     <div
-                      class="w-100 bg-dark-blue h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
+                      class="w-100 bg-dark-blue h-auto flex aic jcb mt3 br--left-ns pa3"
                     >
                       <div
-                        class="sc-bdVaJa giFZti"
+                        class="w-20 tc"
                       >
-                        <img
-                          alt="grade"
-                          class="h2 h3-ns center"
-                          src="gem1.png"
-                        />
-                        <p
-                          class="ttu f5 mt2 o-50 black tc pt1 b pr2"
+                        <div
+                          class="sc-bdVaJa giFZti"
                         >
-                          D
-                        </p>
+                          <img
+                            alt="grade"
+                            class="h3 center"
+                            src="gem1.png"
+                          />
+                          <p
+                            class="ttu f5 mt2 o-50 black tc pt1 b pr2"
+                          >
+                            D
+                          </p>
+                        </div>
                       </div>
                       <div
-                        class="w-80 pl3 pl0-nsa"
+                        class="w-80 pl3 pl0-ns"
                       >
                         <p
                           class="b ttu"
@@ -2206,24 +2285,28 @@ Object {
                     class="relative example2-appear"
                   >
                     <div
-                      class="w-100 bg-dark-orange h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
+                      class="w-100 bg-dark-orange h-auto flex aic jcb mt3 br--left-ns pa3"
                     >
                       <div
-                        class="sc-bdVaJa giFZti"
+                        class="w-20 tc"
                       >
-                        <img
-                          alt="level"
-                          class="h2 h3-ns center"
-                          src="gem2.png"
-                        />
-                        <p
-                          class="ttu f5 mt2 o-50 black tc pt1 b false"
+                        <div
+                          class="sc-bdVaJa giFZti"
                         >
-                          1
-                        </p>
+                          <img
+                            alt="level"
+                            class="h3 center"
+                            src="gem2.png"
+                          />
+                          <p
+                            class="ttu f5 mt2 o-50 black tc pt1 b false"
+                          >
+                            1
+                          </p>
+                        </div>
                       </div>
                       <div
-                        class="w-80 pl3 pl0-nsa"
+                        class="w-80 pl3 pl0-ns"
                       >
                         <p
                           class="b ttu"
@@ -2244,24 +2327,28 @@ Object {
                     class="relative example3-appear"
                   >
                     <div
-                      class="w-100 bg-dark-purple h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
+                      class="w-100 bg-dark-purple h-auto flex aic jcb mt3 br--left-ns pa3"
                     >
                       <div
-                        class="sc-bdVaJa giFZti"
+                        class="w-20 tc"
                       >
-                        <img
-                          alt="mining rate Bonus"
-                          class="h2 h3-ns center"
-                          src="gem3.png"
-                        />
-                        <p
-                          class="ttu f5 mt2 o-50 black tc pt1 b false"
+                        <div
+                          class="sc-bdVaJa giFZti"
                         >
-                          1000%
-                        </p>
+                          <img
+                            alt="mining rate Bonus"
+                            class="h3 center"
+                            src="gem3.png"
+                          />
+                          <p
+                            class="ttu f5 mt2 o-50 black tc pt1 b false"
+                          >
+                            +1000.00%
+                          </p>
+                        </div>
                       </div>
                       <div
-                        class="w-80 pl3 pl0-nsa"
+                        class="w-80 pl3 pl0-ns"
                       >
                         <p
                           class="b ttu"
@@ -2288,24 +2375,28 @@ Object {
         class="relative"
       >
         <div
-          class="w-100 PropTypes.string.isRequired h-auto flex aic jcb mt3 br--left-ns pa3 pl5-ns"
+          class="w-100 PropTypes.string.isRequired h-auto flex aic jcb mt3 br--left-ns pa3"
         >
           <div
-            class="sc-bdVaJa giFZti"
+            class="w-20 tc"
           >
-            <img
-              alt="PropTypes.string.isRequired"
-              class="h2 h3-ns center"
-              src="PropTypes.string.isRequired"
-            />
-            <p
-              class="ttu f5 mt2 o-50 black tc pt1 b false"
+            <div
+              class="sc-bdVaJa giFZti"
             >
-              0
-            </p>
+              <img
+                alt="PropTypes.string.isRequired"
+                class="h3 center"
+                src="PropTypes.string.isRequired"
+              />
+              <p
+                class="ttu f5 mt2 o-50 black tc pt1 b false"
+              >
+                0
+              </p>
+            </div>
           </div>
           <div
-            class="w-80 pl3 pl0-nsa"
+            class="w-80 pl3 pl0-ns"
           >
             <p
               class="b ttu"
@@ -2332,7 +2423,7 @@ Object {
         href="#"
       >
         <button
-          class="RippleButton__Button-sc-8zvudi-0 jadjVY"
+          class="sc-bwzfXH fbRjTD"
         >
           title
         </button>
@@ -2343,11 +2434,20 @@ Object {
         class="pa3-ns"
       >
         <div
-          class="mw9"
+          class="w-100 flex jcc vh-50 aic"
         >
           <div
-            class="v-mid bg-transparent contain bg-right-l bg-center sc-EHOje ezeAEC"
+            class="w-40-l dn dib-l"
           />
+          <div
+            class="w-60-l tc h-100"
+          >
+            <img
+              alt="gem for sale"
+              class="w-auto h-100"
+              src="false"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -2362,7 +2462,7 @@ Object {
         </h2>
         <details>
           <summary
-            class="underlined blue"
+            class="underlined blue pointer"
           >
             How does this work?
           </summary>
@@ -2372,7 +2472,7 @@ Object {
         </details>
         <details>
           <summary
-            class="underlined blue"
+            class="underlined blue pointer"
           >
             How often do auctions run?
           </summary>
@@ -2382,7 +2482,7 @@ Object {
         </details>
         <details>
           <summary
-            class="underlined blue"
+            class="underlined blue pointer"
           >
             Can I resell an Item?
           </summary>
@@ -2392,7 +2492,7 @@ Object {
         </details>
         <details>
           <summary
-            class="underlined blue"
+            class="underlined blue pointer"
           >
             How do I bid?
           </summary>
@@ -2417,13 +2517,13 @@ Object {
         class="bg-footer-black"
       >
         <div
-          class="sc-bZQynM dbNQv"
+          class="sc-EHOje jtspjU"
         />
         <div
           class="mw9 center"
         >
           <footer
-            class="pa4 pa6-l bt b--black-10 sc-gzVnrw kPpIuA"
+            class="pa4 pa6-l bt b--black-10 sc-bZQynM kAKEsN"
           >
             <div
               class="mb4-l cf"
@@ -2553,7 +2653,7 @@ Object {
                 <p
                   class="f7 black-70 dib pr3 mb3 white"
                 >
-                  Version 0.0.17
+                  Version 0.0.18
                 </p>
               </div>
             </div>
@@ -2647,7 +2747,7 @@ Object {
             >
               <img
                 alt="level"
-                class="h2 h3-ns center"
+                class="h3 center"
                 src="gem2.png"
               />
               <p
@@ -2670,7 +2770,7 @@ Object {
             >
               <img
                 alt="grade"
-                class="h2 h3-ns center"
+                class="h3 center"
                 src="gem1.png"
               />
               <p
@@ -2693,13 +2793,13 @@ Object {
             >
               <img
                 alt="rate"
-                class="h2 h3-ns center"
+                class="h3 center"
                 src="gem3.png"
               />
               <p
                 class="ttu f5 mt2 o-50 black tc pt1 b false"
               >
-                2%
+                +2.00%
               </p>
             </div>
           </div>
@@ -2712,7 +2812,7 @@ Object {
       >
         <img
           alt="1"
-          class="h2 h3-ns center"
+          class="h3 center"
           src="1"
         />
         <p
@@ -2747,7 +2847,7 @@ Object {
             </p>
           </div>
           <div
-            class="MobileHeader__Triangle-favzpq-0 iMdFlc"
+            class="sc-gzVnrw efLbUj"
           />
         </div>
         <div
@@ -2772,7 +2872,7 @@ Object {
                 >
                   <img
                     alt="level"
-                    class="h2 h3-ns center"
+                    class="h3 center"
                     src="gem2.png"
                   />
                   <p
@@ -2795,7 +2895,7 @@ Object {
                 >
                   <img
                     alt="grade"
-                    class="h2 h3-ns center"
+                    class="h3 center"
                     src="gem1.png"
                   />
                   <p
@@ -2818,13 +2918,13 @@ Object {
                 >
                   <img
                     alt="rate"
-                    class="h2 h3-ns center"
+                    class="h3 center"
                     src="gem3.png"
                   />
                   <p
                     class="ttu f5 mt2 o-50 black tc pt1 b false"
                   >
-                    2%
+                    +2.00%
                   </p>
                 </div>
               </div>
@@ -3009,7 +3109,7 @@ exports[`Question renders correctly 1`] = `
     </h2>
     <details>
       <summary
-        class="underlined blue"
+        class="underlined blue pointer"
       >
         How does this work?
       </summary>
@@ -3019,7 +3119,7 @@ exports[`Question renders correctly 1`] = `
     </details>
     <details>
       <summary
-        class="underlined blue"
+        class="underlined blue pointer"
       >
         How often do auctions run?
       </summary>
@@ -3029,7 +3129,7 @@ exports[`Question renders correctly 1`] = `
     </details>
     <details>
       <summary
-        class="underlined blue"
+        class="underlined blue pointer"
       >
         Can I resell an Item?
       </summary>
@@ -3039,7 +3139,7 @@ exports[`Question renders correctly 1`] = `
     </details>
     <details>
       <summary
-        class="underlined blue"
+        class="underlined blue pointer"
       >
         How do I bid?
       </summary>
@@ -3067,7 +3167,7 @@ exports[`Ripple Button renders correctly 1`] = `
     href="#"
   >
     <button
-      class="RippleButton__Button-sc-8zvudi-0 jadjVY"
+      class="sc-bwzfXH fbRjTD"
     >
       title
     </button>
