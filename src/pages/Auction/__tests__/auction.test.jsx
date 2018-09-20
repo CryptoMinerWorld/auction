@@ -7,6 +7,7 @@ import {
 } from "react-testing-library";
 import "jest-dom/extend-expect";
 import Auction from "..";
+import { calculateGemName } from "../helpers";
 
 import { calcMiningRate } from "../helpers";
 
@@ -34,7 +35,7 @@ describe("Auction page tests", () => {
     grade: 5,
     rate: 53,
     color: 10,
-    name: "Amethyst Thingymajig",
+    name: "Amethyst #12345",
     buyNow: jest.fn(),
     showConfirm: jest.fn(),
     gemId: 12345,
@@ -163,8 +164,8 @@ describe("Auction page tests", () => {
   });
 
   test("calcMiningRate accurately calculates the mining rate", () => {
-    expect(calcMiningRate(1, 200000)).toEqual(1);
-    expect(calcMiningRate(6, 1000000)).toEqual(400);
+    expect(calcMiningRate(5, 700203)).toEqual(117.505075);
+    expect(calcMiningRate(1, 659700)).toEqual(3.2985);
   });
 
   test.skip("auction lets people buy after a deadline is passed", () => {
@@ -172,4 +173,17 @@ describe("Auction page tests", () => {
     // jest.advanceTimersByTime(1000); might be useful somewhere
     // https://jestjs.io/docs/en/timer-mocks.html#advance-timers-by-time
   });
+
+  test("The gem name renders correctly", async () => {
+    const { getByTestId } = render(<Auction {...props} />);
+    const name = await waitForElement(() => getByTestId("gemName"));
+    expect(name).toHaveTextContent(props.name);
+
+    const testname = calculateGemName(2, 12355);
+    expect(testname).toEqual("Amethyst #12355");
+  });
+
+  test.skip("Auction form can be submitted with 0 as the final price", async () => {});
+  test.skip("When you pourchase a gem the auction is no longer accessible without a refresh", async () => {});
+  test.skip("When you purchase a gem the redirect waits for transfer event", async () => {});
 });

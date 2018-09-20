@@ -1,22 +1,26 @@
 import React from "react";
-import styled from "styled-components";
+// import styled from "styled-components";
 import PropTypes from "prop-types";
 
-const Image = styled.div`
-  background-image: url(${props => props.sourceImage});
-  height: 60vh;
-  @media (min-width: 120em) {
-    height: 30vh;
-  }
-`;
+// const Image = styled.div`
+//   background-image: url(${props => props.sourceImage};
+// `;
 
 const AuctionImage = ({ sourceImage }) => (
   <div className="pa3-ns">
-    <div className="mw9">
-      <Image
-        className="v-mid bg-transparent contain bg-right-l bg-center mr6-l "
-        sourceImage={sourceImage}
-      />
+    <div className="w-100 flex jcc vh-50 aic">
+      <div className="w-40-l dn dib-l" />
+      <div className="w-60-l tc h-100">
+        {/* <Image className="bg-center tc center" sourceImage={sourceImage} /> */}
+        {sourceImage && (
+          <img
+            style={{ backgroundposition: `center` }}
+            src={sourceImage}
+            alt="gem for sale"
+            className="w-auto h-100"
+          />
+        )}
+      </div>
     </div>
   </div>
 );

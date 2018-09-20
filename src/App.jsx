@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import styled from "styled-components";
 import FontFaceObserver from "fontfaceobserver";
-import { Alert } from "antd";
+import { Alert, Modal } from "antd";
 import ReactGA from "react-ga";
 import MobileHeader from "./components/MobileHeader";
 import Navbar from "./components/Nav";
@@ -10,11 +10,7 @@ import getWeb3 from "./utils/getWeb3";
 import Routes from "./routes";
 import "antd/dist/antd.css";
 import "./css/root.css";
-import {
-  showConfirm,
-  showExpired,
-  confirmInMetamask
-} from "./components/Modal";
+import { showConfirm, showExpired } from "./components/Modal";
 import {
   isTokenForSale,
   getAuctionDetails,
@@ -23,7 +19,8 @@ import {
   getGemStory,
   getGemImage,
   getPrice,
-  nonExponential
+  nonExponential,
+  calculateGemName
 } from "./pages/Auction/helpers";
 import { createAuction } from "./pages/Create/helpers";
 import DutchAuction from "../build/contracts/DutchAuction.json";
@@ -78,7 +75,8 @@ class App extends PureComponent {
       priceInWei: "",
       currentAccount: "",
       releaseConfetti: false,
-      err: ""
+      err: "",
+      visible: false
     };
   }
 
@@ -167,6 +165,7 @@ class App extends PureComponent {
       // @notice get gem qualities from gem contract
       getGemQualities(gemsContractInstance, tokenId).then(result => {
         const [color, level, gradeType, gradeValue] = result;
+
         this.setState({
           grade: gradeType,
           level: Number(level),
@@ -221,7 +220,9 @@ class App extends PureComponent {
   // @notice lets users buy a gem in an active auction
   handleBuyNow = async (_tokenId, _from) => {
     const { dutchAuctionContractInstance, priceInWei } = this.state;
-    confirmInMetamask();
+
+    this.setState({ visible: true });
+
     await dutchAuctionContractInstance.methods
       .buy(_tokenId)
 
@@ -232,8 +233,16 @@ class App extends PureComponent {
       .on("transactionHash", () => {
         this.setState({ releaseConfetti: true });
       })
+<<<<<<< HEAD
       .on("receipt", () => {
         window.location = "https://cryptominerworld.com/workshop/";
+=======
+      .on("confirmation", () => {
+        setTimeout(
+          (window.location = "https://cryptominerworld.com/workshop"),
+          5000
+        );
+>>>>>>> master
       })
       .on("error", err => this.setState({ err }));
   };
@@ -258,7 +267,8 @@ class App extends PureComponent {
       story,
       releaseConfetti,
       err,
-      currentAccount
+      currentAccount,
+      visible
     } = this.state;
 
     // @notice if the token is not on auction a modal tells people the auction is over
@@ -276,6 +286,21 @@ class App extends PureComponent {
             closable
           />
         )}
+        <Modal
+          visible={visible}
+          title="Please Confirm Your Transaction In Metamask to Proceed"
+          iconType="loading"
+          zIndex={1000}
+          footer={false}
+          maskClosable={false}
+          closable={false}
+        >
+          <p>
+            Once you pay for the Gem using Metamask, you will be redirected to
+            your workshop.
+          </p>
+          <strong>This may take a few moments.</strong>
+        </Modal>
         <StickyHeader>
           <Navbar />
         </StickyHeader>
@@ -298,7 +323,7 @@ class App extends PureComponent {
           buyNow={this.handleBuyNow}
           auctionStartTime={auctionStartTime}
           deadline={auctionEndTime}
-          name={`#${tokenId}`}
+          name={calculateGemName(color, tokenId)}
           tokenId={tokenId}
           createAuction={this.handleCreateAuction}
           handleRemoveGemFromAuction={this.handleRemoveGemFromAuction}

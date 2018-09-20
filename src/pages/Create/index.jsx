@@ -84,7 +84,7 @@ class CreateAuction extends PureComponent {
               <div>
                 <Button
                   className="ma3"
-                  disabled={!(gemId && duration && startPrice && endPrice)}
+                  disabled={!(gemId && duration && startPrice)}
                   onClick={() =>
                     createAuction(
                       gemId,

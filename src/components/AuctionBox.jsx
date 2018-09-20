@@ -6,11 +6,15 @@ import Gembox from "./Gembox";
 import buyNow from "../images/pinkBuyNowButton.png";
 import ProgressMeter from "./ProgressMeter";
 
-const TopHighlight = styled.div`
+const TopHighLight = styled.div`
   background: linear-gradient(to right, #e36d2d, #b91a78);
-  border-radius: 4px 4px 0px 0px;
   height: 4px;
 `;
+
+const tophighlight = {
+  background: "linear-gradient(to right, #e36d2d, #b91a78)",
+  height: "4px"
+};
 
 const BuyNow = styled.button`
   background-image: url(${buyNow});
@@ -52,13 +56,15 @@ const AuctionBox = ({
   currentAccount
 }) => (
   <OverlapOnDesktopView
-    className="bg-dark-gray br3 measure-l w-100 shadow-3"
+    className="bg-dark-gray measure-l w-100 shadow-3"
     style={{
+      WebkitClipPath:
+        "polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)",
       clipPath:
-        "polygon(3% 0, 97% 0, 100% 2%, 100% 98%, 97% 100%, 3% 100%, 0 98%, 0 2%)"
+        "polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)"
     }}
   >
-    <TopHighlight />
+    <TopHighLight style={tophighlight} />
     <div className="white pa3">
       <h1 className="tc pb3 b white" style={{ wordBreak: "break-all" }}>
         {name}

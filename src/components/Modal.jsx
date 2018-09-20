@@ -4,12 +4,13 @@ export const confirmInMetamask = () => {
   Modal.info({
     title: "Please Confirm Your Transaction In Metamask to Proceed",
     content:
-      "Once you pay for the Gem using Metamask, you will be redirected to your workshop. This may take a moment.",
+      "Once you pay for the Gem using Metamask, you will be redirected to your workshop. This may take a few moments. Thank you for your patience.",
 
-    maskClosable: true,
-    keyboard: true,
+    maskClosable: false,
+    keyboard: false,
     iconType: "loading",
-    zIndex: 1000
+    zIndex: 1000,
+    okText: false
   });
 };
 
