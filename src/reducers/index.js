@@ -1,8 +1,8 @@
 import {combineReducers} from 'redux'
-import auctions from '../pages/market/marketReducers'
-
-
+import market from '../pages/market/marketReducers'
+import auction from '../pages/Auction/auctionReducer'
 
 export default combineReducers({
-    auctions
+    market,
+    auction
 })

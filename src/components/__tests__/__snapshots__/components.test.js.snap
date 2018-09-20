@@ -197,11 +197,7 @@ exports[`AuctionImage renders correctly 1`] = `
       class="w-100 flex jcc vh-50 aic"
     >
       <div
-<<<<<<< HEAD
-        class="v-mid bg-transparent contain bg-right-l bg-center mr6-l  AuctionImage__Image-sc-971sy0-0 dLAuTy"
-=======
         class="w-40-l dn dib-l"
->>>>>>> master
       />
       <div
         class="w-60-l tc h-100"
@@ -310,14 +306,10 @@ exports[`DescriptionBox renders correctly 1`] = `
                   class="w-100 bg-dark-blue h-auto flex aic jcb mt3 br--left-ns pa3"
                 >
                   <div
-<<<<<<< HEAD
-                    class="Gembox__Feature-a9qxbj-0 iIshpl"
-=======
                     class="w-20 tc"
->>>>>>> master
                   >
                     <div
-                      class="sc-bdVaJa giFZti"
+                      class="Gembox__Feature-a9qxbj-0 iIshpl"
                     >
                       <img
                         alt="grade"
@@ -356,14 +348,10 @@ exports[`DescriptionBox renders correctly 1`] = `
                   class="w-100 bg-dark-orange h-auto flex aic jcb mt3 br--left-ns pa3"
                 >
                   <div
-<<<<<<< HEAD
-                    class="Gembox__Feature-a9qxbj-0 iIshpl"
-=======
                     class="w-20 tc"
->>>>>>> master
                   >
                     <div
-                      class="sc-bdVaJa giFZti"
+                      class="Gembox__Feature-a9qxbj-0 iIshpl"
                     >
                       <img
                         alt="level"
@@ -402,14 +390,10 @@ exports[`DescriptionBox renders correctly 1`] = `
                   class="w-100 bg-dark-purple h-auto flex aic jcb mt3 br--left-ns pa3"
                 >
                   <div
-<<<<<<< HEAD
-                    class="Gembox__Feature-a9qxbj-0 iIshpl"
-=======
                     class="w-20 tc"
->>>>>>> master
                   >
                     <div
-                      class="sc-bdVaJa giFZti"
+                      class="Gembox__Feature-a9qxbj-0 iIshpl"
                     >
                       <img
                         alt="mining rate Bonus"
@@ -457,14 +441,10 @@ exports[`FeatureBand renders correctly 1`] = `
       class="w-100 PropTypes.string.isRequired h-auto flex aic jcb mt3 br--left-ns pa3"
     >
       <div
-<<<<<<< HEAD
-        class="Gembox__Feature-a9qxbj-0 iIshpl"
-=======
         class="w-20 tc"
->>>>>>> master
       >
         <div
-          class="sc-bdVaJa giFZti"
+          class="Gembox__Feature-a9qxbj-0 iIshpl"
         >
           <img
             alt="PropTypes.string.isRequired"
@@ -503,21 +483,13 @@ exports[`Footer & MailingList render correctly 1`] = `
     class="bg-footer-black"
   >
     <div
-<<<<<<< HEAD
       class="Footer__TopHighlight-yndh5b-0 lmXAs"
-=======
-      class="sc-EHOje jtspjU"
->>>>>>> master
     />
     <div
       class="mw9 center"
     >
       <footer
-<<<<<<< HEAD
         class="pa4 pa6-l bt b--black-10 Footer__BackgroundImage-yndh5b-1 rxTKj"
-=======
-        class="pa4 pa6-l bt b--black-10 sc-bZQynM kAKEsN"
->>>>>>> master
       >
         <div
           class="mb4-l cf"
@@ -647,11 +619,7 @@ exports[`Footer & MailingList render correctly 1`] = `
             <p
               class="f7 black-70 dib pr3 mb3 white"
             >
-<<<<<<< HEAD
-              Version 0.0.17
-=======
               Version 0.0.18
->>>>>>> master
             </p>
           </div>
         </div>
@@ -746,14 +714,10 @@ Object {
                       class="w-100 bg-dark-blue h-auto flex aic jcb mt3 br--left-ns pa3"
                     >
                       <div
-<<<<<<< HEAD
-                        class="Gembox__Feature-a9qxbj-0 iIshpl"
-=======
                         class="w-20 tc"
->>>>>>> master
                       >
                         <div
-                          class="sc-bdVaJa giFZti"
+                          class="Gembox__Feature-a9qxbj-0 iIshpl"
                         >
                           <img
                             alt="grade"
@@ -792,14 +756,10 @@ Object {
                       class="w-100 bg-dark-orange h-auto flex aic jcb mt3 br--left-ns pa3"
                     >
                       <div
-<<<<<<< HEAD
-                        class="Gembox__Feature-a9qxbj-0 iIshpl"
-=======
                         class="w-20 tc"
->>>>>>> master
                       >
                         <div
-                          class="sc-bdVaJa giFZti"
+                          class="Gembox__Feature-a9qxbj-0 iIshpl"
                         >
                           <img
                             alt="level"
@@ -838,14 +798,10 @@ Object {
                       class="w-100 bg-dark-purple h-auto flex aic jcb mt3 br--left-ns pa3"
                     >
                       <div
-<<<<<<< HEAD
-                        class="Gembox__Feature-a9qxbj-0 iIshpl"
-=======
                         class="w-20 tc"
->>>>>>> master
                       >
                         <div
-                          class="sc-bdVaJa giFZti"
+                          class="Gembox__Feature-a9qxbj-0 iIshpl"
                         >
                           <img
                             alt="mining rate Bonus"
@@ -890,14 +846,10 @@ Object {
           class="w-100 PropTypes.string.isRequired h-auto flex aic jcb mt3 br--left-ns pa3"
         >
           <div
-<<<<<<< HEAD
-            class="Gembox__Feature-a9qxbj-0 iIshpl"
-=======
             class="w-20 tc"
->>>>>>> master
           >
             <div
-              class="sc-bdVaJa giFZti"
+              class="Gembox__Feature-a9qxbj-0 iIshpl"
             >
               <img
                 alt="PropTypes.string.isRequired"
@@ -939,7 +891,7 @@ Object {
         href="#"
       >
         <button
-          class="sc-bdVaJa gnFgqI"
+          class="RippleButton__Button-sc-8zvudi-0 jadjVY"
         >
           title
         </button>
@@ -953,11 +905,7 @@ Object {
           class="w-100 flex jcc vh-50 aic"
         >
           <div
-<<<<<<< HEAD
-            class="v-mid bg-transparent contain bg-right-l bg-center mr6-l  AuctionImage__Image-sc-971sy0-0 dLAuTy"
-=======
             class="w-40-l dn dib-l"
->>>>>>> master
           />
           <div
             class="w-60-l tc h-100"
@@ -1037,21 +985,13 @@ Object {
         class="bg-footer-black"
       >
         <div
-<<<<<<< HEAD
           class="Footer__TopHighlight-yndh5b-0 lmXAs"
-=======
-          class="sc-EHOje jtspjU"
->>>>>>> master
         />
         <div
           class="mw9 center"
         >
           <footer
-<<<<<<< HEAD
             class="pa4 pa6-l bt b--black-10 Footer__BackgroundImage-yndh5b-1 rxTKj"
-=======
-            class="pa4 pa6-l bt b--black-10 sc-bZQynM kAKEsN"
->>>>>>> master
           >
             <div
               class="mb4-l cf"
@@ -1181,11 +1121,7 @@ Object {
                 <p
                   class="f7 black-70 dib pr3 mb3 white"
                 >
-<<<<<<< HEAD
-                  Version 0.0.17
-=======
                   Version 0.0.18
->>>>>>> master
                 </p>
               </div>
             </div>
@@ -1204,11 +1140,7 @@ Object {
     </div>
     <div>
       <div
-<<<<<<< HEAD
         class="MailingList__OverlapOnDesktopView-sc-1ktwykx-0 jEuRIX"
-=======
-        class="sc-htoDjs cDSmAt"
->>>>>>> master
       >
         <div
           class="pa4-l bg-transparent"
@@ -1266,11 +1198,7 @@ Object {
   </body>,
   "container": <div>
     <div
-<<<<<<< HEAD
       class="MailingList__OverlapOnDesktopView-sc-1ktwykx-0 jEuRIX"
-=======
-      class="sc-htoDjs cDSmAt"
->>>>>>> master
     >
       <div
         class="pa4-l bg-transparent"
@@ -1454,14 +1382,10 @@ Object {
                       class="w-100 bg-dark-blue h-auto flex aic jcb mt3 br--left-ns pa3"
                     >
                       <div
-<<<<<<< HEAD
-                        class="Gembox__Feature-a9qxbj-0 iIshpl"
-=======
                         class="w-20 tc"
->>>>>>> master
                       >
                         <div
-                          class="sc-bdVaJa giFZti"
+                          class="Gembox__Feature-a9qxbj-0 iIshpl"
                         >
                           <img
                             alt="grade"
@@ -1500,14 +1424,10 @@ Object {
                       class="w-100 bg-dark-orange h-auto flex aic jcb mt3 br--left-ns pa3"
                     >
                       <div
-<<<<<<< HEAD
-                        class="Gembox__Feature-a9qxbj-0 iIshpl"
-=======
                         class="w-20 tc"
->>>>>>> master
                       >
                         <div
-                          class="sc-bdVaJa giFZti"
+                          class="Gembox__Feature-a9qxbj-0 iIshpl"
                         >
                           <img
                             alt="level"
@@ -1546,14 +1466,10 @@ Object {
                       class="w-100 bg-dark-purple h-auto flex aic jcb mt3 br--left-ns pa3"
                     >
                       <div
-<<<<<<< HEAD
-                        class="Gembox__Feature-a9qxbj-0 iIshpl"
-=======
                         class="w-20 tc"
->>>>>>> master
                       >
                         <div
-                          class="sc-bdVaJa giFZti"
+                          class="Gembox__Feature-a9qxbj-0 iIshpl"
                         >
                           <img
                             alt="mining rate Bonus"
@@ -1598,14 +1514,10 @@ Object {
           class="w-100 PropTypes.string.isRequired h-auto flex aic jcb mt3 br--left-ns pa3"
         >
           <div
-<<<<<<< HEAD
-            class="Gembox__Feature-a9qxbj-0 iIshpl"
-=======
             class="w-20 tc"
->>>>>>> master
           >
             <div
-              class="sc-bdVaJa giFZti"
+              class="Gembox__Feature-a9qxbj-0 iIshpl"
             >
               <img
                 alt="PropTypes.string.isRequired"
@@ -1647,7 +1559,7 @@ Object {
         href="#"
       >
         <button
-          class="sc-bdVaJa gnFgqI"
+          class="RippleButton__Button-sc-8zvudi-0 jadjVY"
         >
           title
         </button>
@@ -1661,11 +1573,7 @@ Object {
           class="w-100 flex jcc vh-50 aic"
         >
           <div
-<<<<<<< HEAD
-            class="v-mid bg-transparent contain bg-right-l bg-center mr6-l  AuctionImage__Image-sc-971sy0-0 dLAuTy"
-=======
             class="w-40-l dn dib-l"
->>>>>>> master
           />
           <div
             class="w-60-l tc h-100"
@@ -1745,21 +1653,13 @@ Object {
         class="bg-footer-black"
       >
         <div
-<<<<<<< HEAD
           class="Footer__TopHighlight-yndh5b-0 lmXAs"
-=======
-          class="sc-EHOje jtspjU"
->>>>>>> master
         />
         <div
           class="mw9 center"
         >
           <footer
-<<<<<<< HEAD
             class="pa4 pa6-l bt b--black-10 Footer__BackgroundImage-yndh5b-1 rxTKj"
-=======
-            class="pa4 pa6-l bt b--black-10 sc-bZQynM kAKEsN"
->>>>>>> master
           >
             <div
               class="mb4-l cf"
@@ -1889,11 +1789,7 @@ Object {
                 <p
                   class="f7 black-70 dib pr3 mb3 white"
                 >
-<<<<<<< HEAD
-                  Version 0.0.17
-=======
                   Version 0.0.18
->>>>>>> master
                 </p>
               </div>
             </div>
@@ -1912,11 +1808,7 @@ Object {
     </div>
     <div>
       <div
-<<<<<<< HEAD
         class="MailingList__OverlapOnDesktopView-sc-1ktwykx-0 jEuRIX"
-=======
-        class="sc-htoDjs cDSmAt"
->>>>>>> master
       >
         <div
           class="pa4-l bg-transparent"
@@ -2190,11 +2082,7 @@ exports[`MobileHeader renders correctly 1`] = `
         </p>
       </div>
       <div
-<<<<<<< HEAD
-        class="sc-bwzfXH iZAQaR"
-=======
-        class="sc-gzVnrw efLbUj"
->>>>>>> master
+        class="MobileHeader__Triangle-favzpq-0 iMdFlc"
       />
     </div>
     <div
@@ -2358,14 +2246,10 @@ Object {
                       class="w-100 bg-dark-blue h-auto flex aic jcb mt3 br--left-ns pa3"
                     >
                       <div
-<<<<<<< HEAD
-                        class="Gembox__Feature-a9qxbj-0 iIshpl"
-=======
                         class="w-20 tc"
->>>>>>> master
                       >
                         <div
-                          class="sc-bdVaJa giFZti"
+                          class="Gembox__Feature-a9qxbj-0 iIshpl"
                         >
                           <img
                             alt="grade"
@@ -2404,14 +2288,10 @@ Object {
                       class="w-100 bg-dark-orange h-auto flex aic jcb mt3 br--left-ns pa3"
                     >
                       <div
-<<<<<<< HEAD
-                        class="Gembox__Feature-a9qxbj-0 iIshpl"
-=======
                         class="w-20 tc"
->>>>>>> master
                       >
                         <div
-                          class="sc-bdVaJa giFZti"
+                          class="Gembox__Feature-a9qxbj-0 iIshpl"
                         >
                           <img
                             alt="level"
@@ -2450,14 +2330,10 @@ Object {
                       class="w-100 bg-dark-purple h-auto flex aic jcb mt3 br--left-ns pa3"
                     >
                       <div
-<<<<<<< HEAD
-                        class="Gembox__Feature-a9qxbj-0 iIshpl"
-=======
                         class="w-20 tc"
->>>>>>> master
                       >
                         <div
-                          class="sc-bdVaJa giFZti"
+                          class="Gembox__Feature-a9qxbj-0 iIshpl"
                         >
                           <img
                             alt="mining rate Bonus"
@@ -2502,14 +2378,10 @@ Object {
           class="w-100 PropTypes.string.isRequired h-auto flex aic jcb mt3 br--left-ns pa3"
         >
           <div
-<<<<<<< HEAD
-            class="Gembox__Feature-a9qxbj-0 iIshpl"
-=======
             class="w-20 tc"
->>>>>>> master
           >
             <div
-              class="sc-bdVaJa giFZti"
+              class="Gembox__Feature-a9qxbj-0 iIshpl"
             >
               <img
                 alt="PropTypes.string.isRequired"
@@ -2551,7 +2423,7 @@ Object {
         href="#"
       >
         <button
-          class="sc-bdVaJa gnFgqI"
+          class="RippleButton__Button-sc-8zvudi-0 jadjVY"
         >
           title
         </button>
@@ -2565,11 +2437,7 @@ Object {
           class="w-100 flex jcc vh-50 aic"
         >
           <div
-<<<<<<< HEAD
-            class="v-mid bg-transparent contain bg-right-l bg-center mr6-l  AuctionImage__Image-sc-971sy0-0 dLAuTy"
-=======
             class="w-40-l dn dib-l"
->>>>>>> master
           />
           <div
             class="w-60-l tc h-100"
@@ -2649,21 +2517,13 @@ Object {
         class="bg-footer-black"
       >
         <div
-<<<<<<< HEAD
           class="Footer__TopHighlight-yndh5b-0 lmXAs"
-=======
-          class="sc-EHOje jtspjU"
->>>>>>> master
         />
         <div
           class="mw9 center"
         >
           <footer
-<<<<<<< HEAD
             class="pa4 pa6-l bt b--black-10 Footer__BackgroundImage-yndh5b-1 rxTKj"
-=======
-            class="pa4 pa6-l bt b--black-10 sc-bZQynM kAKEsN"
->>>>>>> master
           >
             <div
               class="mb4-l cf"
@@ -2793,11 +2653,7 @@ Object {
                 <p
                   class="f7 black-70 dib pr3 mb3 white"
                 >
-<<<<<<< HEAD
-                  Version 0.0.17
-=======
                   Version 0.0.18
->>>>>>> master
                 </p>
               </div>
             </div>
@@ -2816,11 +2672,7 @@ Object {
     </div>
     <div>
       <div
-<<<<<<< HEAD
         class="MailingList__OverlapOnDesktopView-sc-1ktwykx-0 jEuRIX"
-=======
-        class="sc-htoDjs cDSmAt"
->>>>>>> master
       >
         <div
           class="pa4-l bg-transparent"
@@ -2995,11 +2847,7 @@ Object {
             </p>
           </div>
           <div
-<<<<<<< HEAD
-            class="sc-bwzfXH iZAQaR"
-=======
-            class="sc-gzVnrw efLbUj"
->>>>>>> master
+            class="MobileHeader__Triangle-favzpq-0 iMdFlc"
           />
         </div>
         <div
@@ -3319,7 +3167,7 @@ exports[`Ripple Button renders correctly 1`] = `
     href="#"
   >
     <button
-      class="sc-bdVaJa gnFgqI"
+      class="RippleButton__Button-sc-8zvudi-0 jadjVY"
     >
       title
     </button>

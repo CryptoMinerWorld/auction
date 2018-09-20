@@ -49,14 +49,7 @@ export const  getGemImage = (color, grade, level) => {
         .ref(`gems512/${sourceImage}`)
         .getDownloadURL()
 }
-// export const calcMiningRate = (gradeType) => ({
-//   1: 0,
-//   2: 10 ,
-//   3: 20 ,
-//   4: 40 ,
-//   5: 100 ,
-//   6: 300 
-// }[gradeType]);
+
 
 export const calcMiningRate = (gradeType, gradeValue) => ({
     1: gradeValue / 200000,
@@ -91,10 +84,7 @@ const properties = new BigNumber(_properties)
  export const getPrice =  (_tokenId, _contract) =>  _contract.methods.getCurrentPrice(
         _tokenId).call()
         
-
-
 export const nonExponential = (count) =>     fromExponential(Number(count) / 1000000000000000000)
-
 
 export const calculateGemName = (providedGrade, providedTokenId) => {
     const gemType = {
@@ -103,6 +93,5 @@ export const calculateGemName = (providedGrade, providedTokenId) => {
       1: "Garnet",
       2: "Amethyst"
     }[providedGrade];
-
     return `${gemType} #${providedTokenId}`;
   };

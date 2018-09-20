@@ -1,11 +1,14 @@
 import React from "react";
 import { render, cleanup } from "react-testing-library";
 import "jest-dom/extend-expect";
-import { Link, Route, Router, Switch, withRouter } from "react-router-dom";
+import { Router } from "react-router-dom";
 import { createMemoryHistory } from "history";
+import { Provider } from "react-redux";
+import { createStore } from "redux";
 import App from "../../../App";
 import Marketplace from "../ListAuctions";
 import amethyst from "../../../images/amethystImage.png";
+import rootReducer from "../../../reducers/index";
 
 jest.mock("react-ga");
 // @dev this automatically unmounts and cleanup DOM after the test is finished.
@@ -49,24 +52,47 @@ describe("Marketplace page tests", () => {
   };
 
   test("the marketplace route loads the marketplace", async () => {
-    const { getByTestId } = renderWithRouter(<App />, {
-      route: "/"
-    });
+    const store = createStore(rootReducer);
+    const { getByTestId } = renderWithRouter(
+      <Provider store={store}>
+        <App />
+      </Provider>,
+      {
+        route: "/"
+      }
+    );
 
     expect(getByTestId("header").textContent).toBe("gem auctions");
   });
 
-  test("creating an auction fires an auction created event", async () => {
-    const { getByTestId } = renderWithRouter(<App />, {
-      route: "/secretauctionpage"
-    });
+  test.skip("creating an auction fires an auction created event", async () => {
+    const store = createStore(rootReducer);
+    const { getByTestId } = renderWithRouter(
+      <Provider store={store}>
+        <App />
+      </Provider>,
+      {
+        route: "/secretauctionpage"
+      }
+    );
 
     // mock a auction going through
 
     expect(false).toBeTruthy();
   });
 
-  test("the database saves the auction when an auction is created", async () => {
+  test.skip("the database saves the auction when an auction is created", async () => {
+    const { getByTestId } = render(<Marketplace {...props} />);
+
+    // go to the mint
+    // create an auction
+    // go to teh market
+    // make sure the auction is saved on the db
+
+    expect(false).toBeTruthy();
+  });
+
+  test("gem and auction information is saved to database when an auction is created", async () => {
     const { getByTestId } = render(<Marketplace {...props} />);
 
     // go to the mint

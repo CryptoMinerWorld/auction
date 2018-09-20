@@ -2,7 +2,7 @@ import React from "react";
 import { render, fireEvent, cleanup } from "react-testing-library";
 import "jest-dom/extend-expect";
 import CreateAuction from "..";
-import { ethToWei, daysToMilliseconds, daysToSeconds } from "../helpers";
+import { ethToWei, daysToSeconds } from "../helpers";
 
 // @dev this automatically unmounts and cleanup DOM after the test is finished.
 afterEach(cleanup);
@@ -87,11 +87,11 @@ describe("Auction page tests", () => {
     expect(ethToWei(1)).toEqual(1000000000000000000);
   });
 
-  test("daysToMilliseconds convert units reliably", () => {
-    expect(typeof daysToMilliseconds(1)).toBe("number");
-    expect(daysToMilliseconds(1)).toEqual(86400000);
-    expect(daysToMilliseconds(0.6)).toEqual(51840000);
-    expect(daysToMilliseconds(481)).toEqual(41558400000);
+  test("daysToSeconds convert units reliably", () => {
+    expect(typeof daysToSeconds(1)).toBe("number");
+    expect(daysToSeconds(1)).toEqual(86400);
+    expect(daysToSeconds(0.6)).toEqual(51840);
+    expect(daysToSeconds(481)).toEqual(41558400);
   });
 
   test.skip("List a gem for auction with a single Click", () => {

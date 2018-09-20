@@ -4,7 +4,7 @@ import { Slider } from "antd";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import amethyst from "../../images/amethystImage.png";
-import { createAuction, getAuctions } from "./marketActions";
+import { getAuctions } from "./marketActions";
 
 const Grid = styled.article`
   display: grid;
@@ -30,10 +30,10 @@ const Aside = styled.aside`
 `;
 
 const select = store => ({
-  auctions: store.auctions
+  auctions: store.market
 });
 
-const Marketplace = ({ auctions, handleCreateAuction }) => (
+const Marketplace = ({ auctions }) => (
   <div className="bg-off-black white pa4">
     <AuctionCategories />
     <div className="flex aic mt3">
@@ -42,24 +42,6 @@ const Marketplace = ({ auctions, handleCreateAuction }) => (
         gem auctions
       </h1>
     </div>
-    <button
-      type="button"
-      onClick={() =>
-        handleCreateAuction({
-          id: 4321,
-          minPrice: 1,
-          maxPrice: 4,
-          price: 2.3,
-          deadline: 1537255385592,
-          owner: "Crypto beasts",
-          grade: 1,
-          quality: 2,
-          rate: 3
-        })
-      }
-    >
-      create
-    </button>
     <Grid>
       <Primary>
         <div className="flex pv4">
@@ -101,7 +83,6 @@ const Marketplace = ({ auctions, handleCreateAuction }) => (
 );
 
 const actions = {
-  handleCreateAuction: createAuction,
   handleGetAuctions: getAuctions
 };
 
@@ -111,7 +92,6 @@ export default connect(
 )(Marketplace);
 
 Marketplace.propTypes = {
-  handleCreateAuction: PropTypes.func.isRequired,
   auctions: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number,
