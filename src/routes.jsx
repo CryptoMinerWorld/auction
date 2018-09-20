@@ -9,6 +9,7 @@ const Routes = props => (
   <Router>
     <Fragment>
       <Route exact path="/" component={Marketplace} />
+      <Route exact path="/market" component={Marketplace} />
       <Route
         path="/secretAuctionPage"
         render={() => <CreateAuction {...props} />}

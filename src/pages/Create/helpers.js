@@ -1,14 +1,11 @@
 import { BigNumber } from 'bignumber.js';
+import { addAuction } from "../market/marketActions";
 
 export const ethToWei = eth => Number((eth * 1000000000000000000).toFixed(20));
 
-
-// @note do we need this anymore? tk
-export const daysToMilliseconds = days => Number((days * 86400000).toFixed(20));
-
 export const daysToSeconds = days => Number(days * 86400);
 
-     // converts BigNumber representing Solidity uint256 into String representing Solidity bytes
+// converts BigNumber representing Solidity uint256 into String representing Solidity bytes
 const toBytes = (uint256) => {
         let s = uint256.toString(16);
         const len = s.length;
@@ -37,6 +34,15 @@ export const createAuction = async (
     const p1 = _endPriceInWei;
     const two = new BigNumber(2)
 
+    // the finalAuction object is to store on the database in the .addAuction call on tx receipt
+    const finalAuction = {
+        id: _tokenId,
+        minPrice:_startPriceInWei, 
+        maxPrice: _endPriceInWei, 
+        owner: _currentAccount,
+        deadline: t1
+        }
+
     const data = toBytes(two.pow(224).times(tokenId)
         .plus(two.pow(192).times(t0))
         .plus(two.pow(160).times(t1))
@@ -46,6 +52,5 @@ export const createAuction = async (
     _contract.methods.safeTransferFrom(
         _currentAccount, 
         process.env.REACT_APP_DUTCH_AUCTION, token, data
-    ).send()
-
-};
+    ).send().on('receipt', () =>  addAuction(finalAuction))
+}
