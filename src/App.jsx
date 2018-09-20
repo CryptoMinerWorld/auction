@@ -233,16 +233,8 @@ class App extends PureComponent {
       .on("transactionHash", () => {
         this.setState({ releaseConfetti: true });
       })
-<<<<<<< HEAD
       .on("receipt", () => {
         window.location = "https://cryptominerworld.com/workshop/";
-=======
-      .on("confirmation", () => {
-        setTimeout(
-          (window.location = "https://cryptominerworld.com/workshop"),
-          5000
-        );
->>>>>>> master
       })
       .on("error", err => this.setState({ err }));
   };
