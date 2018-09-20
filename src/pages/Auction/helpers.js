@@ -2,7 +2,6 @@ import fromExponential from 'from-exponential';
 import {BigNumber} from 'bignumber.js';
 import { db, storage } from '../../utils/firebase'
 
-
 export const isTokenForSale = (_contract, _tokenId) =>
  
     _contract.methods.isTokenOnSale(_tokenId).call();
@@ -50,14 +49,24 @@ export const  getGemImage = (color, grade, level) => {
         .ref(`gems512/${sourceImage}`)
         .getDownloadURL()
 }
+// export const calcMiningRate = (gradeType) => ({
+//   1: 0,
+//   2: 10 ,
+//   3: 20 ,
+//   4: 40 ,
+//   5: 100 ,
+//   6: 300 
+// }[gradeType]);
+
 export const calcMiningRate = (gradeType, gradeValue) => ({
-  1: gradeValue / 200000,
-  2: 10 + gradeValue / 200000,
-  3: 20 + gradeValue / 200000,
-  4: 40 + (3 * gradeValue) / 200000,
-  5: 100 + gradeValue / 40000,
-  6: 300 + gradeValue / 10000
-}[gradeType]);
+    1: gradeValue / 200000,
+    2: 10 + gradeValue / 200000,
+    3: 20 + gradeValue / 200000,
+    4: 40 + (3 * gradeValue) / 200000,
+    5: 100 + gradeValue / 40000,
+    6: 300 + gradeValue / 10000
+  }[gradeType]);
+
 
 export const getGemQualities = (_contract, _tokenId) => 
 _contract.methods
@@ -85,3 +94,15 @@ const properties = new BigNumber(_properties)
 
 
 export const nonExponential = (count) =>     fromExponential(Number(count) / 1000000000000000000)
+
+
+export const calculateGemName = (providedGrade, providedTokenId) => {
+    const gemType = {
+      9: "Sapphire",
+      10: "Opal",
+      1: "Garnet",
+      2: "Amethyst"
+    }[providedGrade];
+
+    return `${gemType} #${providedTokenId}`;
+  };
