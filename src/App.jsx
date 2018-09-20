@@ -232,7 +232,7 @@ class App extends PureComponent {
       .on("transactionHash", () => {
         this.setState({ releaseConfetti: true });
       })
-      .on("confirmation", () => {
+      .on("receipt", () => {
         window.location = "https://cryptominerworld.com/workshop/";
       })
       .on("error", err => this.setState({ err }));

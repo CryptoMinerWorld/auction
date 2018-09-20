@@ -1,4 +1,4 @@
-import {AUCTION_CREATED, AUCTIONS_REQUESTED} from './marketConstants'
+import { NEW_AUCTIONS_RECEIVED} from './marketConstants'
 
 const initialState =  [{
     id: 432,
@@ -13,11 +13,8 @@ const initialState =  [{
   }]
 
 export default function marketReducer (state = initialState, action) {
-    if (action.type === AUCTION_CREATED){
-        return [...state, action.payload]
-    } 
-
-    if (action.type === AUCTIONS_REQUESTED){
+    
+    if (action.type === NEW_AUCTIONS_RECEIVED){
         return action.payload
     } 
     

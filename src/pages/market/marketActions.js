@@ -1,14 +1,34 @@
-import {AUCTION_CREATED, AUCTIONS_REQUESTED} from './marketConstants'
+import { NEW_AUCTIONS_RECEIVED,NEW_AUCTION_ADDED} from './marketConstants'
 import {db} from '../../utils/firebase'
+import store from '../../store'
 
-export const createAuction = (auction) => ({type:AUCTION_CREATED, payload: auction})
+
+
 
 export const getAuctions = () => (dispatch) => db
  .collection('auctions')
- .get()
- .then(collection => collection.docs.map(doc => doc.data()))
- .then( auctions => dispatch({type:AUCTIONS_REQUESTED, payload: auctions})
- )
+ .onSnapshot(collection => {
+    const auctions = collection.docs.map(doc => doc.data())
+    dispatch({type:NEW_AUCTIONS_RECEIVED, payload: auctions})
+ })
+
+export const addAuction = auction =>  db
+     .collection('auctions')
+     .add(auction)
+     .then(() => store.dispatch({type:NEW_AUCTION_ADDED}))
+     .catch(error => console.error('error', error))
+
+   
+
+
+
+    
+
+
+
+ 
+ 
+
 
 
 
