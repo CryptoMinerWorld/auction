@@ -8,6 +8,7 @@ import {
   USER_EXISTS,
   NEW_USER
 } from "./authConstants";
+import {getUserGems} from '../dashboard/dashboardActions'
 
 export const checkIfUserExists = (userId) => (dispatch) => 
   db.doc(`users/${userId}`)
@@ -22,10 +23,7 @@ export const createNewUser = (payload) => (dispatch) => {
   return db
   .doc(`users/${walletId}`)
   .set(payload)
-  .then( () => {
-    console.log('payload', payload)
-    dispatch({type: USER_EXISTS, payload}) 
-  })
+  .then( () => dispatch({type: USER_EXISTS, payload}))
   .catch(error => console.error('error', error))
 }
 
@@ -42,6 +40,8 @@ export const getCurrentUser = () => () =>
       if (currentUser !== undefined) {
         store.dispatch({ type: CURRENT_USER_AVAILABLE, payload: currentUser });
         store.dispatch(checkIfUserExists(currentUser))
+        store.dispatch(getUserGems(currentUser))
+        
       } else {
         store.dispatch({ type: CURRENT_USER_NOT_AVAILABLE });
       }

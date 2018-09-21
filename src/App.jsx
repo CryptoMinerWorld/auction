@@ -1,5 +1,6 @@
 import React, { PureComponent } from "react";
 import styled from "styled-components";
+import { BrowserRouter } from "react-router-dom";
 import FontFaceObserver from "fontfaceobserver";
 import ReactGA from "react-ga";
 import Alert from "antd/lib/alert";
@@ -273,68 +274,70 @@ class App extends PureComponent {
     }
 
     return (
-      <main className={font}>
-        {err && (
-          <Alert
-            message="Error Text"
-            description={`${err.message}`}
-            type="error"
-            closable
-          />
-        )}
-        <Modal
-          visible={visible}
-          title="Please Confirm Your Transaction In Metamask to Proceed"
-          iconType="loading"
-          zIndex={1000}
-          footer={false}
-          maskClosable={false}
-          closable={false}
-        >
-          <p>
-            Once you pay for the Gem using Metamask, you will be redirected to
-            your workshop.
-          </p>
-          <strong>This may take a few moments.</strong>
-        </Modal>
-        <Auth />
-        <StickyHeader>
-          <Navbar />
-        </StickyHeader>
-        <NotStickyHeader>
-          <MobileHeader
-            currentPrice={currentPrice}
+      <BrowserRouter>
+        <main className={font}>
+          {err && (
+            <Alert
+              message="Error Text"
+              description={`${err.message}`}
+              type="error"
+              closable
+            />
+          )}
+          <Modal
+            visible={visible}
+            title="Please Confirm Your Transaction In Metamask to Proceed"
+            iconType="loading"
+            zIndex={1000}
+            footer={false}
+            maskClosable={false}
+            closable={false}
+          >
+            <p>
+              Once you pay for the Gem using Metamask, you will be redirected to
+              your workshop.
+            </p>
+            <strong>This may take a few moments.</strong>
+          </Modal>
+          <Auth />
+          <StickyHeader>
+            <Navbar />
+          </StickyHeader>
+          <NotStickyHeader>
+            <MobileHeader
+              currentPrice={currentPrice}
+              level={level}
+              grade={grade}
+              rate={rate}
+            />
+          </NotStickyHeader>
+          <Routes
+            currentPrice={Number(currentPrice).toFixed(3)}
+            minPrice={Number(auctionStartPrice / 1000000000000000000)}
+            maxPrice={Number(auctionEndPrice / 1000000000000000000)}
             level={level}
             grade={grade}
             rate={rate}
+            color={color}
+            buyNow={this.handleBuyNow}
+            auctionStartTime={auctionStartTime}
+            deadline={auctionEndTime}
+            name={calculateGemName(color, tokenId)}
+            tokenId={tokenId}
+            createAuction={this.handleCreateAuction}
+            handleRemoveGemFromAuction={this.handleRemoveGemFromAuction}
+            redirectTo={redirectTo}
+            showConfirm={showConfirm}
+            web3={web3}
+            sourceImage={gemImage}
+            story={story}
+            releaseConfetti={releaseConfetti}
+            provider={!!web3}
+            currentAccount={currentAccount}
           />
-        </NotStickyHeader>
-        <Routes
-          currentPrice={Number(currentPrice).toFixed(3)}
-          minPrice={Number(auctionStartPrice / 1000000000000000000)}
-          maxPrice={Number(auctionEndPrice / 1000000000000000000)}
-          level={level}
-          grade={grade}
-          rate={rate}
-          color={color}
-          buyNow={this.handleBuyNow}
-          auctionStartTime={auctionStartTime}
-          deadline={auctionEndTime}
-          name={calculateGemName(color, tokenId)}
-          tokenId={tokenId}
-          createAuction={this.handleCreateAuction}
-          handleRemoveGemFromAuction={this.handleRemoveGemFromAuction}
-          redirectTo={redirectTo}
-          showConfirm={showConfirm}
-          web3={web3}
-          sourceImage={gemImage}
-          story={story}
-          releaseConfetti={releaseConfetti}
-          provider={!!web3}
-          currentAccount={currentAccount}
-        />
-        <Footer />
-      </main>
+          <Footer />
+        </main>
+      </BrowserRouter>
     );
   }
 }
