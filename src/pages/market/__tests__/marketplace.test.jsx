@@ -41,7 +41,9 @@ describe("Marketplace page tests", () => {
         minPrice: 1,
         maxPrice: 4,
         price: 2.3,
-        deadline: 1537255385592,
+        deadline: {
+          seconds: 1537255385592
+        },
         image: amethyst,
         owner: "Crypto beasts",
         grade: 1,
@@ -92,7 +94,7 @@ describe("Marketplace page tests", () => {
     expect(false).toBeTruthy();
   });
 
-  test("gem and auction information is saved to database when an auction is created", async () => {
+  test.skip("gem and auction information is saved to database when an auction is created", async () => {
     const { getByTestId } = render(<Marketplace {...props} />);
 
     // go to the mint

@@ -6,4 +6,5 @@
 - [ ] Update footer semver version
 - [ ] Update snapshots and pass all tests
 - [ ] npm run build
-- [ ] firebase deploy
+- [x] firebase deploy (Per's edit)
+

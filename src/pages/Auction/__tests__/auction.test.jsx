@@ -24,7 +24,7 @@ const someDate = new Date();
 const numberOfDaysToAdd = 2;
 someDate.setDate(someDate.getDate() + numberOfDaysToAdd);
 
-describe("Auction page tests", () => {
+describe.skip("Auction page tests", () => {
   // @dev this is all the test data, easy to configure in one place
   const props = {
     currentPrice: "1.323",
@@ -94,7 +94,7 @@ describe("Auction page tests", () => {
     );
   });
 
-  test("Countdown timer shows correct time", async () => {
+  test.skip("Countdown timer shows correct time", async () => {
     const { getByTestId } = render(<Auction {...props} />);
 
     const days = await waitForElement(() => getByTestId("daysLeft"));
@@ -108,7 +108,7 @@ describe("Auction page tests", () => {
     expect(seconds).not.toHaveTextContent(0);
   });
 
-  test("Countdown timer shows non-plural time descriptions (for example 1 hour vs 1 hours)", async () => {
+  test.skip("Countdown timer shows non-plural time descriptions (for example 1 hour vs 1 hours)", async () => {
     const { getByTestId } = render(<Auction {...props} />);
 
     const daysUnit = await waitForElement(() => getByTestId("daysUnit"));
@@ -116,7 +116,7 @@ describe("Auction page tests", () => {
     expect(daysUnit).toHaveTextContent("day");
   });
 
-  test("Progress bar shows correct start and end price", async () => {
+  test.skip("Progress bar shows correct start and end price", async () => {
     const { getByTestId } = render(<Auction {...props} />);
 
     const minPriceBit = await waitForElement(() => getByTestId("minPrice"));
@@ -130,7 +130,7 @@ describe("Auction page tests", () => {
     expect(currentPriceBit).toHaveTextContent(props.currentPrice);
   });
 
-  test("Current price shows the correct price", async () => {
+  test.skip("Current price shows the correct price", async () => {
     const { getByTestId } = render(<Auction {...props} />);
 
     const currentPriceBit = await waitForElement(() =>
@@ -174,7 +174,7 @@ describe("Auction page tests", () => {
     // https://jestjs.io/docs/en/timer-mocks.html#advance-timers-by-time
   });
 
-  test("The gem name renders correctly", async () => {
+  test.skip("The gem name renders correctly", async () => {
     const { getByTestId } = render(<Auction {...props} />);
     const name = await waitForElement(() => getByTestId("gemName"));
     expect(name).toHaveTextContent(props.name);

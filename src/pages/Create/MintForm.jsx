@@ -1,8 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Select, Input, Icon } from "antd";
+import Select from "antd/lib/select";
+import Input from "antd/lib/input";
+import Icon from "antd/lib/icon";
 
-const { Option } = Select;
+require("antd/lib/input/style/css");
+require("antd/lib/icon/style/css");
+require("antd/lib/select/style/css");
 
 const MintForm = ({
   randomGradeValue,
@@ -36,12 +40,12 @@ const MintForm = ({
             style={{ width: 120 }}
             onChange={handleNetworkChange}
           >
-            <Option value="0x6afd5f5f431279b0cac7f5ff406f13d804b183c9">
+            <Select.Option value="0x6afd5f5f431279b0cac7f5ff406f13d804b183c9">
               Rinkeby
-            </Option>
-            <Option value="0xc3b54e757fD79264828eCBb78f5Bceae7fF118bC">
+            </Select.Option>
+            <Select.Option value="0xc3b54e757fD79264828eCBb78f5Bceae7fF118bC">
               Mainnet
-            </Option>
+            </Select.Option>
           </Select>
         </label>
       </div>
@@ -55,11 +59,11 @@ const MintForm = ({
             style={{ width: 120 }}
             onChange={handleChange("color")}
           >
-            <Option value="9">Sapphire (September)</Option>
-            <Option value="10">Opal (October)</Option>
+            <Select.Option value="9">Sapphire (September)</Select.Option>
+            <Select.Option value="10">Opal (October)</Select.Option>
 
-            <Option value="1">Garnet (January)</Option>
-            <Option value="2">Amethyst (February)</Option>
+            <Select.Option value="1">Garnet (January)</Select.Option>
+            <Select.Option value="2">Amethyst (February)</Select.Option>
           </Select>
         </label>
       </div>
@@ -74,11 +78,11 @@ const MintForm = ({
             style={{ width: 120 }}
             onChange={handleChange("level")}
           >
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
+            <Select.Option value="1">1</Select.Option>
+            <Select.Option value="2">2</Select.Option>
+            <Select.Option value="3">3</Select.Option>
+            <Select.Option value="4">4</Select.Option>
+            <Select.Option value="5">5</Select.Option>
           </Select>
         </label>
       </div>
@@ -93,12 +97,12 @@ const MintForm = ({
             style={{ width: 120 }}
             onChange={handleChange("gradeType")}
           >
-            <option value="1">D</option>
-            <option value="2">C</option>
-            <option value="3">B</option>
-            <option value="4">A</option>
-            <option value="5">AA</option>
-            <option value="6">AAA</option>
+            <Select.Option value="1">D</Select.Option>
+            <Select.Option value="2">C</Select.Option>
+            <Select.Option value="3">B</Select.Option>
+            <Select.Option value="4">A</Select.Option>
+            <Select.Option value="5">AA</Select.Option>
+            <Select.Option value="6">AAA</Select.Option>
           </Select>
         </label>
       </div>

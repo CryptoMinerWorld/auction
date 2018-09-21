@@ -1,10 +1,12 @@
 import React from "react";
 import styled from "styled-components";
-import { Slider } from "antd";
+import Slider from "antd/lib/slider";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import amethyst from "../../images/amethystImage.png";
 import { getAuctions } from "./marketActions";
+
+require("antd/lib/slider/style/css");
 
 const Grid = styled.article`
   display: grid;
@@ -98,7 +100,12 @@ Marketplace.propTypes = {
       minPrice: PropTypes.number,
       maxPrice: PropTypes.number,
       price: PropTypes.number,
-      deadline: PropTypes.number,
+      deadline: PropTypes.oneOfType([
+        PropTypes.shape({
+          seconds: PropTypes.number.isRequired
+        }).isRequired,
+        PropTypes.number
+      ]).isRequired,
       image: PropTypes.string,
       owner: PropTypes.string,
       grade: PropTypes.number,
@@ -171,7 +178,12 @@ Cards.propTypes = {
     minPrice: PropTypes.number,
     maxPrice: PropTypes.number,
     price: PropTypes.number,
-    deadline: PropTypes.number,
+    deadline: PropTypes.oneOfType([
+      PropTypes.shape({
+        seconds: PropTypes.number.isRequired
+      }).isRequired,
+      PropTypes.number
+    ]).isRequired,
     image: PropTypes.string,
     owner: PropTypes.string,
     grade: PropTypes.number,

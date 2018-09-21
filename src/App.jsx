@@ -1,14 +1,14 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import styled from "styled-components";
 import FontFaceObserver from "fontfaceobserver";
-import { Alert, Modal } from "antd";
 import ReactGA from "react-ga";
+import Alert from "antd/lib/alert";
+import Modal from "antd/lib/modal";
 import MobileHeader from "./components/MobileHeader";
 import Navbar from "./components/Nav";
 import Footer from "./components/Footer";
 import getWeb3 from "./utils/getWeb3";
 import Routes from "./routes";
-import "antd/dist/antd.css";
 import "./css/root.css";
 import { showConfirm, showExpired } from "./components/Modal";
 import {
@@ -25,6 +25,10 @@ import {
 import { createAuction } from "./pages/Create/helpers";
 import DutchAuction from "../build/contracts/DutchAuction.json";
 import Gems from "../build/contracts/GemERC721.json";
+import Auth from "./pages/authentication";
+
+require("antd/lib/alert/style/css");
+require("antd/lib/modal/style/css");
 
 // analytics breaks testing so you have to turn testmode on in development
 const testMode = process.env.NODE_ENV === "development";
@@ -51,7 +55,7 @@ const NotStickyHeader = styled.div`
   z-index: 2;
 `;
 
-class App extends PureComponent {
+class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -293,6 +297,7 @@ class App extends PureComponent {
           </p>
           <strong>This may take a few moments.</strong>
         </Modal>
+        <Auth />
         <StickyHeader>
           <Navbar />
         </StickyHeader>

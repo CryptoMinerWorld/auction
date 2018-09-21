@@ -66,7 +66,11 @@ const AuctionBox = ({
   >
     <TopHighLight style={tophighlight} />
     <div className="white pa3">
-      <h1 className="tc pb3 b white" style={{ wordBreak: "break-all" }}>
+      <h1
+        className="tc pb3 b white"
+        style={{ wordBreak: "break-all" }}
+        data-testid="gemName"
+      >
         {name}
       </h1>
       {deadline && <CountdownTimer deadline={deadline} />}
