@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Avatar from "antd/lib/avatar";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import { NavLink } from "react-router-dom";
 import RippleButton from "./RippleButton/RippleButton";
 import img from "../images/Profile-Image-Logo-60x60.png";
 
@@ -15,10 +16,11 @@ const BottomHighlight = styled.div`
 `;
 
 const select = store => ({
-  userImage: store.auth.user && store.auth.user.imageURL
+  userImage: store.auth.user && store.auth.user.imageURL,
+  userId: store.auth.user && store.auth.user.walletId
 });
 
-const Navbar = ({ userImage }) => (
+const Navbar = ({ userImage, userId }) => (
   <div className="shadow-1 z-9 bg-white w-100">
     <nav className="db dt-l w-100 border-box pa3 ph5-l bg-white mw9 center">
       <div className="dn db-ns">
@@ -72,9 +74,15 @@ const Navbar = ({ userImage }) => (
         >
           Workshop
         </a>
-        <p className="link dim dark-gray f6 f5-l dib mr3 mr4-l bb b-primary bw1 pointer">
+        <NavLink
+          to="/market"
+          activeStyle={{
+            borderBottom: `2px solid purple`
+          }}
+          className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
+        >
           Market
-        </p>
+        </NavLink>
         <a
           className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
           href="https://cryptominerworld.com/world/"
@@ -89,7 +97,17 @@ const Navbar = ({ userImage }) => (
         >
           FAQ
         </a>
-        {userImage && <Avatar src={userImage} />}
+        {userImage && (
+          <NavLink
+            to={`/profile/${userId}`}
+            activeStyle={{
+              borderBottom: `2px solid purple`,
+              padding: `1rem`
+            }}
+          >
+            <Avatar src={userImage} />
+          </NavLink>
+        )}
         <div className="dn dib-ns">
           <RippleButton
             onClick={() => {}}
@@ -107,9 +125,11 @@ const Navbar = ({ userImage }) => (
 export default connect(select)(Navbar);
 
 Navbar.propTypes = {
-  userImage: PropTypes.oneOf([PropTypes.bool, PropTypes.string])
+  userImage: PropTypes.oneOf([PropTypes.bool, PropTypes.string]),
+  userId: PropTypes.string
 };
 
 Navbar.defaultProps = {
-  userImage: false
+  userImage: false,
+  userId: false
 };
