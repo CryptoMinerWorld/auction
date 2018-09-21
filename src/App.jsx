@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import styled from "styled-components";
 import FontFaceObserver from "fontfaceobserver";
 import ReactGA from "react-ga";
@@ -55,7 +55,7 @@ const NotStickyHeader = styled.div`
   z-index: 2;
 `;
 
-class App extends Component {
+class App extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {

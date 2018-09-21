@@ -5,7 +5,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const url = require('url');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 const paths = require('./paths');
 const getClientEnvironment = require('./env');
 
@@ -90,7 +90,7 @@ module.exports = {
 
   optimization: {
     minimizer: [
-      new UglifyJsPlugin()
+      new UglifyJSPlugin()
     ]
   },
 
@@ -256,14 +256,26 @@ module.exports = {
     // if (process.env.NODE_ENV === 'production') { ... }. See `./env.js`.
     // It is absolutely essential that NODE_ENV was set to production here.
     // Otherwise React will be compiled in the very slow development mode.
-    new webpack.DefinePlugin(env),
+
+    // new webpack.DefinePlugin(env),
+    new webpack.DefinePlugin({ 
+      'process.env': {
+        'NODE_ENV': JSON.stringify('production')
+      }
+    }),
+
+
+    new webpack.optimize.AggressiveMergingPlugin(),
+
+    
+
     // This helps ensure the builds are consistent if source hasn't changed:
     new webpack.optimize.OccurrenceOrderPlugin(),
     // Try to dedupe duplicated modules, if any:
     new webpack.optimize.DedupePlugin(),
     // Minify the code.
-
-    // new webpack.optimize.UglifyJsPlugin({
+   
+    // new webpack.optimize.UglifyJSPlugin({
     //   compress: {
     //     screw_ie8: true, // React doesn't support IE8
     //     warnings: false

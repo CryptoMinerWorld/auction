@@ -5,16 +5,29 @@ import {
   CURRENT_USER_AVAILABLE,
   CURRENT_USER_NOT_AVAILABLE,
   WEB3_AVAILABLE,
-  USER_EXISTS
+  USER_EXISTS,
+  NEW_USER
 } from "./authConstants";
 
 export const checkIfUserExists = (userId) => (dispatch) => 
   db.doc(`users/${userId}`)
   .get()
   .then(doc => 
-     doc.exists && dispatch({type: USER_EXISTS, payload:doc.data()})
+     doc.exists ? dispatch({type: USER_EXISTS, payload: doc.data()}) : dispatch({type: NEW_USER})
   )
   .catch(error => console.error('error', error))
+
+export const createNewUser = (payload) => (dispatch) => {
+  const {walletId} = payload
+  return db
+  .doc(`users/${walletId}`)
+  .set(payload)
+  .then( () => {
+    console.log('payload', payload)
+    dispatch({type: USER_EXISTS, payload}) 
+  })
+  .catch(error => console.error('error', error))
+}
 
 
 
@@ -36,14 +49,4 @@ export const getCurrentUser = () => () =>
 
 
 
-export const createNewUser = () => () => {
-  const Web3 = getWeb3;
-  const { web3 } = Web3;
 
-  web3.eth
-    .getAccounts()
-    .then(accounts => accounts[0])
-    .then(currentUser =>
-      store.dispatch({ type: CURRENT_USER_AVAILABLE, payload: currentUser })
-    );
-};
