@@ -1,10 +1,14 @@
 import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Input, Button } from "antd";
+import Input from "antd/lib/input";
+import Button from "antd/lib/button";
 import rockBackground from "../../images/rockBackground.png";
 import Mint from "./Mint";
 import { ethToWei, daysToSeconds } from "./helpers";
+
+require("antd/lib/button/style/css");
+require("antd/lib/input/style/css");
 
 const RockOverlay = styled.div`
   background-image: url(${rockBackground});

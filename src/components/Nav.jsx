@@ -1,8 +1,12 @@
 import React from "react";
 import styled from "styled-components";
-
+import Avatar from "antd/lib/avatar";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 import RippleButton from "./RippleButton/RippleButton";
 import img from "../images/Profile-Image-Logo-60x60.png";
+
+require("antd/lib/avatar/style/css");
 
 const BottomHighlight = styled.div`
   background: linear-gradient(to right, #bc197c, #fc01ca);
@@ -10,7 +14,11 @@ const BottomHighlight = styled.div`
   height: 3px;
 `;
 
-const Navbar = () => (
+const select = store => ({
+  userImage: store.auth.user && store.auth.user.imageURL
+});
+
+const Navbar = ({ userImage }) => (
   <div className="shadow-1 z-9 bg-white w-100">
     <nav className="db dt-l w-100 border-box pa3 ph5-l bg-white mw9 center">
       <div className="dn db-ns">
@@ -81,6 +89,7 @@ const Navbar = () => (
         >
           FAQ
         </a>
+        {userImage && <Avatar src={userImage} />}
         <div className="dn dib-ns">
           <RippleButton
             onClick={() => {}}
@@ -95,4 +104,12 @@ const Navbar = () => (
   </div>
 );
 
-export default Navbar;
+export default connect(select)(Navbar);
+
+Navbar.propTypes = {
+  userImage: PropTypes.oneOf([PropTypes.bool, PropTypes.string])
+};
+
+Navbar.defaultProps = {
+  userImage: false
+};

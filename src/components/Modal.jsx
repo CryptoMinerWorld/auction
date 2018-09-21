@@ -1,4 +1,5 @@
-import { Modal } from "antd";
+const Modal = require("antd/lib/modal");
+require("antd/lib/modal/style/css");
 
 export const confirmInMetamask = () => {
   Modal.info({

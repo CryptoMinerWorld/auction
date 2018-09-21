@@ -18,8 +18,6 @@ const getWeb3 = new Promise(((resolve) => {
         web3
       };
 
-
-
       resolve(results);
     } else {
       // Fallback to localhost if no web3 injection. We've configured this to
