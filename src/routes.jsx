@@ -11,17 +11,10 @@ const Routes = props => (
   <Fragment>
     <Route exact path="/" component={Marketplace} />
     <Route exact path="/market" component={Marketplace} />
-    <Route
-      path="/secretAuctionPage"
-      render={() => <CreateAuction {...props} />}
-    />
+    <Route path="/mint" render={() => <CreateAuction {...props} />} />
     <Route path="/auction/:auctionid" render={() => <Auction {...props} />} />
     <Route path="/profile/:userId" render={() => <Dashboard {...props} />} />
-    <Route
-      path="/gem/:gemId"
-      // render={() => <GemPage />}
-      component={GemPage}
-    />
+    <Route path="/gem/:gemId" render={() => <GemPage {...props} />} />
   </Fragment>
 );
 

@@ -2,6 +2,8 @@ import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import ReactCSSTransitionGroup from "react-addons-css-transition-group";
+import { withRouter } from "react-router-dom";
+
 import { connect } from "react-redux";
 import AuctionImage from "../../components/AuctionImage";
 import DescriptionBox from "../../components/DescriptionBox/index";
@@ -11,6 +13,7 @@ import "./animations.css";
 import { getGemDetails } from "./auctionActions";
 import { calculateGemName } from "./helpers";
 import rockBackground from "../../images/rockBackground.png";
+import TradingBox from "../../components/TradingBox";
 
 export const OverlapOnDesktopView = styled.div`
   @media (min-width: 64em) {
@@ -42,23 +45,34 @@ class GemPage extends PureComponent {
     details: PropTypes.shape({
       color: PropTypes.number,
       gemImage: PropTypes.string,
-      story: PropTypes.string
+      story: PropTypes.string,
+      auctionIsLive: PropTypes.bool
     }).isRequired,
     handleGetGemDetails: PropTypes.func.isRequired,
-    match: PropTypes.shape({
-      params: PropTypes.shape({
-        gemId: PropTypes.string
-      })
-    }).isRequired
+    match: PropTypes.func,
+    createAuction: PropTypes.func.isRequired,
+    handleRemoveGemFromAuction: PropTypes.func.isRequired
+  };
+
+  static defaultProps = {
+    match: () => {}
   };
 
   componentDidMount() {
     const { match, handleGetGemDetails } = this.props;
-    handleGetGemDetails(match.params.gemId);
+    if (match.params) {
+      handleGetGemDetails(match.params.gemId);
+    }
   }
 
   render() {
-    const { gemName, details } = this.props;
+    const {
+      gemName,
+      details,
+      createAuction,
+      handleRemoveGemFromAuction,
+      match
+    } = this.props;
     return (
       <div>
         <div className="bg-off-black ">
@@ -73,7 +87,14 @@ class GemPage extends PureComponent {
                 transitionAppearTimeout={5000}
                 transitionEnterTimeout={5000}
                 transitionLeaveTimeout={5000}
-              />
+              >
+                <TradingBox
+                  createAuction={createAuction}
+                  handleRemoveGemFromAuction={handleRemoveGemFromAuction}
+                  gemId={match.params && match.params.gemId}
+                  auctionIsLive={details.auctionIsLive}
+                />
+              </ReactCSSTransitionGroup>
             </div>
           </RockOverlay>
           <div className="bg-off-black">
@@ -112,7 +133,9 @@ const actions = {
   handleGetGemDetails: getGemDetails
 };
 
-export default connect(
-  select,
-  actions
-)(GemPage);
+export default withRouter(
+  connect(
+    select,
+    actions
+  )(GemPage)
+);
