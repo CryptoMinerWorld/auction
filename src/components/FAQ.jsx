@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 class FAQ extends PureComponent {
   state = {
-    focusedDetail: 0
+    focusedDetail: 1
   };
 
   handleChange = index => () => this.setState({ focusedDetail: index });
