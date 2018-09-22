@@ -20,7 +20,7 @@ class DescriptionBox extends PureComponent {
   };
 
   state = {
-    inView: false
+    inView: true
   };
 
   componentDidMount() {
