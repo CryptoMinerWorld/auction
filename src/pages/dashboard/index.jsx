@@ -59,8 +59,8 @@ const Dashboard = ({ auctions, user }) => (
         <CardBox>
           {auctions &&
             auctions.map(auction => (
-              <Link to={`/gems/${auction.id}`}>
-                <Cards auction={auction} key={auction.id} />
+              <Link to={`/gem/${auction.id}`} key={auction.id}>
+                <Cards auction={auction} />
               </Link>
             ))}
         </CardBox>

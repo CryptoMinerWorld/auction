@@ -9,6 +9,8 @@ import img from "../images/Profile-Image-Logo-60x60.png";
 
 require("antd/lib/avatar/style/css");
 
+// const userImageSelector = state => state.user.imageURL,
+
 const BottomHighlight = styled.div`
   background: linear-gradient(to right, #bc197c, #fc01ca);
   border-radius: 4px 4px 0px 0px;
@@ -125,8 +127,8 @@ const Navbar = ({ userImage, userId }) => (
 export default connect(select)(Navbar);
 
 Navbar.propTypes = {
-  userImage: PropTypes.oneOf([PropTypes.bool, PropTypes.string]),
-  userId: PropTypes.string
+  userImage: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
+  userId: PropTypes.oneOfType([PropTypes.bool, PropTypes.string])
 };
 
 Navbar.defaultProps = {
