@@ -1,12 +1,12 @@
 import {  AUCTION_DETAILS_RECEIVED} from './auctionConstants'
 import {db} from '../../utils/firebase'
-import store from '../../store'
+// import store from '../../store'
 
 
-export const getGemDetails = tokenId => () => db
+export const getGemDetails = tokenId => dispatch => db
  .doc(`auctions/${tokenId}`)
  .get()
- .then(doc => store.dispatch({
+ .then(doc => dispatch({
      type:AUCTION_DETAILS_RECEIVED, 
      payload: doc.data()
     }))

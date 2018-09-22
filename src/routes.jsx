@@ -17,7 +17,11 @@ const Routes = props => (
     />
     <Route path="/auction/:auctionid" render={() => <Auction {...props} />} />
     <Route path="/profile/:userId" render={() => <Dashboard {...props} />} />
-    <Route path="/gem/:gemId" render={() => <GemPage {...props} />} />
+    <Route
+      path="/gem/:gemId"
+      // render={() => <GemPage />}
+      component={GemPage}
+    />
   </Fragment>
 );
 
