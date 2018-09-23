@@ -14,9 +14,7 @@ const appReducer = (state = { } , action) => {
         return {...state, web3: action.payload}
     }
     
-    
     if (action.type === GEM_CONTRACT_ADDED){
-        console.log('xxx', action.payload)
         return {...state, gemsContractInstance: action.payload}
     }
 
