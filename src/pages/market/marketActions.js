@@ -1,6 +1,5 @@
-import { NEW_AUCTIONS_RECEIVED,NEW_AUCTION_ADDED} from './marketConstants'
+import { NEW_AUCTIONS_RECEIVED} from './marketConstants'
 import {db} from '../../utils/firebase'
-import store from '../../store'
 
 export const getAuctions = () => (dispatch) => db
  .collection('auctions')
@@ -9,11 +8,7 @@ export const getAuctions = () => (dispatch) => db
     dispatch({type:NEW_AUCTIONS_RECEIVED, payload: auctions})
  })
 
-export const addAuction = (tokenId, auction ) =>  db
-     .doc(`auctions/${tokenId}`)
-     .set(auction)
-     .then(() => store.dispatch({type:NEW_AUCTION_ADDED}))
-     .catch(error => console.error('error', error))
+ export const temp = () => console.log('temp')
 
 
  

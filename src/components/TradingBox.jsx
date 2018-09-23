@@ -65,6 +65,30 @@ class TradingBox extends PureComponent {
             {auctionIsLive ? (
               <div className="pa5 flex jcc col">
                 <Input
+                  type="text"
+                  placeholder="gemId"
+                  className="db"
+                  value={gemId}
+                  onChange={e =>
+                    this.handleChange(Number(e.target.value), "gemId")
+                  }
+                  data-testid="removeGemInputField"
+                  required
+                />
+                <div>
+                  <Button
+                    type="danger"
+                    className="ma3"
+                    onClick={() => handleRemoveGemFromAuction(gemId)}
+                    data-testid="removeGemButton"
+                  >
+                    Remove Gem From Auction
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="pa5 flex jcc col">
+                <Input
                   type="number"
                   placeholder="duration in days"
                   className="db"
@@ -101,41 +125,18 @@ class TradingBox extends PureComponent {
                   <Button
                     className="ma3"
                     disabled={!(gemId && duration && startPrice)}
-                    onClick={() =>
-                      createAuction(
+                    onClick={() => {
+                      const payload = {
                         gemId,
-                        daysToSeconds(duration),
-                        ethToWei(startPrice),
-                        ethToWei(endPrice)
-                      )
-                    }
+                        duration: daysToSeconds(duration),
+                        startPrice: ethToWei(startPrice),
+                        endPrice: ethToWei(endPrice)
+                      };
+                      createAuction(payload);
+                    }}
                     data-testid="createAuctionButton"
                   >
                     Create Auction
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <div className="pa5 flex jcc col">
-                <Input
-                  type="text"
-                  placeholder="gemId"
-                  className="db"
-                  value={gemId}
-                  onChange={e =>
-                    this.handleChange(Number(e.target.value), "gemId")
-                  }
-                  data-testid="removeGemInputField"
-                  required
-                />
-                <div>
-                  <Button
-                    type="danger"
-                    className="ma3"
-                    onClick={() => handleRemoveGemFromAuction(gemId)}
-                    data-testid="removeGemButton"
-                  >
-                    Remove Gem From Auction
                   </Button>
                 </div>
               </div>

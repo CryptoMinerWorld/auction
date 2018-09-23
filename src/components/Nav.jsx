@@ -19,10 +19,11 @@ const BottomHighlight = styled.div`
 
 const select = store => ({
   userImage: store.auth.user && store.auth.user.imageURL,
-  userId: store.auth.user && store.auth.user.walletId
+  userId: store.auth.user && store.auth.user.walletId,
+  userName: store.auth.user && store.auth.user.name
 });
 
-const Navbar = ({ userImage, userId }) => (
+const Navbar = ({ userImage, userId, userName }) => (
   <div className="shadow-1 z-9 bg-white w-100">
     <nav className="db dt-l w-100 border-box pa3 ph5-l bg-white mw9 center">
       <div className="dn db-ns">
@@ -99,17 +100,21 @@ const Navbar = ({ userImage, userId }) => (
         >
           FAQ
         </a>
-        {userImage && (
-          <NavLink
-            to={`/profile/${userId}`}
-            activeStyle={{
-              borderBottom: `2px solid purple`,
-              padding: `1rem`
-            }}
-          >
-            <Avatar src={userImage} />
-          </NavLink>
-        )}
+        {userImage &&
+          userName && (
+            <NavLink
+              to={`/profile/${userId}`}
+              activeStyle={{
+                borderBottom: `2px solid purple`,
+                padding: `1rem`
+              }}
+            >
+              <div className="dib">
+                <Avatar src={userImage} className="dib" />
+                <p className="dib">{userName}</p>
+              </div>
+            </NavLink>
+          )}
         <div className="dn dib-ns">
           <RippleButton
             onClick={() => {}}
@@ -128,7 +133,8 @@ export default connect(select)(Navbar);
 
 Navbar.propTypes = {
   userImage: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
-  userId: PropTypes.oneOfType([PropTypes.bool, PropTypes.string])
+  userId: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
+  userName: PropTypes.string.isRequired
 };
 
 Navbar.defaultProps = {

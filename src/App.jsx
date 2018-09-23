@@ -1,7 +1,10 @@
 import React, { PureComponent } from "react";
+import { compose, setPropTypes } from "recompose";
+import PropTypes from "prop-types";
 import styled from "styled-components";
 import { BrowserRouter } from "react-router-dom";
 import FontFaceObserver from "fontfaceobserver";
+import { connect } from "react-redux";
 import ReactGA from "react-ga";
 import Alert from "antd/lib/alert";
 import Modal from "antd/lib/modal";
@@ -23,7 +26,7 @@ import {
   nonExponential,
   calculateGemName
 } from "./pages/Auction/helpers";
-import { createAuction } from "./pages/Create/helpers";
+import { sendContractsToRedux } from "./app/appActions";
 import DutchAuction from "../build/contracts/DutchAuction.json";
 import Gems from "../build/contracts/GemERC721.json";
 import Auth from "./pages/authentication";
@@ -86,6 +89,7 @@ class App extends PureComponent {
   }
 
   async componentDidMount() {
+    const { handleSendContractsToRedux } = this.props;
     // @notice loading a custom font when app mounts
     const font = new FontFaceObserver("Muli", {
       weight: 400
@@ -94,44 +98,60 @@ class App extends PureComponent {
       .load()
       .then(() => this.setState({ font: "muli" }))
       .catch(error => error);
+
     // @notice loading web3 when component mounts
     const Web3 = await getWeb3;
     const { web3 } = Web3;
-    const currentAccount = await web3.eth
+
+    const currentAccountId = await web3.eth
       .getAccounts()
       .then(accounts => accounts[0]);
+
     const tokenId = Number(window.location.href.split("/").pop());
     // @notice instantiating auction contract
-    const dutchAuctionContractInstance = await new web3.eth.Contract(
+    const dutchContract = new web3.eth.Contract(
       dutchAuctionABI,
       process.env.REACT_APP_DUTCH_AUCTION,
       {
-        from: currentAccount
+        from: currentAccountId
       }
     );
     // @notice instantiating gem contract
-    const gemsContractInstance = await new web3.eth.Contract(
+    const gemsContract = new web3.eth.Contract(
       gemsABI,
-
       process.env.REACT_APP_GEM_ERC721,
       {
-        from: currentAccount
+        from: currentAccountId
       }
     );
-    // @notice set instances to component state for easy access
-    this.setState({
-      dutchAuctionContractInstance,
-      gemsContractInstance,
-      web3,
-      currentAccount
-    });
+
+    Promise.all([dutchContract, gemsContract, currentAccountId])
+      .then(
+        ([
+          dutchAuctionContractInstance,
+          gemsContractInstance,
+          currentAccount
+        ]) => {
+          handleSendContractsToRedux(
+            dutchAuctionContractInstance,
+            gemsContractInstance,
+            web3
+          );
+          this.setState({
+            dutchAuctionContractInstance,
+            gemsContractInstance,
+            web3,
+            currentAccount
+          });
+        }
+      )
+      .catch(err => {
+        this.setState({ err });
+      });
 
     if (tokenId) {
       // @notice get auction details from contract
-      const gemDetails = await getAuctionDetails(
-        dutchAuctionContractInstance,
-        tokenId
-      );
+      const gemDetails = await getAuctionDetails(dutchContract, tokenId);
       const [startTime, endTime, startPrice, endPrice] = await gemDetails;
       // @notice set auction details to app state
       this.setState(
@@ -144,22 +164,22 @@ class App extends PureComponent {
         },
         () => {
           // @notice get current price from contract
-          getPrice(tokenId, dutchAuctionContractInstance).then(result =>
+          getPrice(tokenId, dutchContract).then(result =>
             this.setState({
               priceInWei: result,
               currentPrice: nonExponential(result)
             })
           );
           // @notice check if the token is on sale
-          isTokenForSale(dutchAuctionContractInstance, tokenId).then(
-            isTokenOnSale => this.setState({ isTokenOnSale })
+          isTokenForSale(dutchContract, tokenId).then(isTokenOnSale =>
+            this.setState({ isTokenOnSale })
           );
         }
       );
 
       // @notice updates the price every 10 seconds
       this.priceInterval = setInterval(() => {
-        getPrice(tokenId, dutchAuctionContractInstance).then(result =>
+        getPrice(tokenId, dutchContract).then(result =>
           this.setState({
             priceInWei: result,
             currentPrice: nonExponential(result)
@@ -168,7 +188,7 @@ class App extends PureComponent {
       }, 10000);
 
       // @notice get gem qualities from gem contract
-      getGemQualities(gemsContractInstance, tokenId).then(result => {
+      getGemQualities(gemsContract, tokenId).then(result => {
         const [color, level, gradeType, gradeValue] = result;
 
         this.setState({
@@ -196,24 +216,6 @@ class App extends PureComponent {
     // @notice clear price update interval when you leav ethe app to stop any memory leaks
     clearInterval(this.priceInterval);
   }
-
-  // @notice creates an auction
-  handleCreateAuction = async (
-    _tokenId,
-    _duration,
-    _startPriceInWei,
-    _endPriceInWei
-  ) => {
-    const { gemsContractInstance, currentAccount } = this.state;
-    createAuction(
-      _tokenId,
-      _duration,
-      _startPriceInWei,
-      _endPriceInWei,
-      gemsContractInstance,
-      currentAccount
-    );
-  };
 
   // @notice removes a gem from an auction
   handleRemoveGemFromAuction = async _tokenId => {
@@ -265,7 +267,8 @@ class App extends PureComponent {
       releaseConfetti,
       err,
       currentAccount,
-      visible
+      visible,
+      gemsContractInstance
     } = this.state;
 
     // @notice if the token is not on auction a modal tells people the auction is over
@@ -324,7 +327,7 @@ class App extends PureComponent {
             deadline={auctionEndTime}
             name={calculateGemName(color, tokenId)}
             tokenId={tokenId}
-            createAuction={this.handleCreateAuction}
+            gemsContractInstance={gemsContractInstance}
             handleRemoveGemFromAuction={this.handleRemoveGemFromAuction}
             redirectTo={redirectTo}
             showConfirm={showConfirm}
@@ -342,4 +345,16 @@ class App extends PureComponent {
   }
 }
 
-export default App;
+const actions = {
+  handleSendContractsToRedux: sendContractsToRedux
+};
+
+export default compose(
+  connect(
+    null,
+    actions
+  ),
+  setPropTypes({
+    handleSendContractsToRedux: PropTypes.func.isRequired
+  })
+)(App);
