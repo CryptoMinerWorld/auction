@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "cryptominerworld-7afd6"
+    "default": "dev-cryptominerworld",
+    "dev": "dev-cryptominerworld",
+    "prod": "cryptominerworld-7afd6"
   }
 }

@@ -3,14 +3,13 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import ReactCSSTransitionGroup from "react-addons-css-transition-group";
 import { withRouter } from "react-router-dom";
-
 import { connect } from "react-redux";
 import AuctionImage from "../../components/AuctionImage";
 import DescriptionBox from "../../components/DescriptionBox/index";
 import FAQ from "../../components/FAQ";
 import MailingList from "../../components/MailingList";
 import "./animations.css";
-import { getGemDetails } from "./auctionActions";
+import { getGemDetails, createAuction } from "./gemActions";
 import { calculateGemName } from "./helpers";
 import rockBackground from "../../images/rockBackground.png";
 import TradingBox from "../../components/TradingBox";
@@ -50,7 +49,7 @@ class GemPage extends PureComponent {
     }).isRequired,
     handleGetGemDetails: PropTypes.func.isRequired,
     match: PropTypes.func,
-    createAuction: PropTypes.func.isRequired,
+    handleCreateAuction: PropTypes.func.isRequired,
     handleRemoveGemFromAuction: PropTypes.func.isRequired
   };
 
@@ -69,7 +68,7 @@ class GemPage extends PureComponent {
     const {
       gemName,
       details,
-      createAuction,
+      handleCreateAuction,
       handleRemoveGemFromAuction,
       match
     } = this.props;
@@ -89,7 +88,7 @@ class GemPage extends PureComponent {
                 transitionLeaveTimeout={5000}
               >
                 <TradingBox
-                  createAuction={createAuction}
+                  createAuction={handleCreateAuction}
                   handleRemoveGemFromAuction={handleRemoveGemFromAuction}
                   gemId={match.params && match.params.gemId}
                   auctionIsLive={details.auctionIsLive}
@@ -130,7 +129,8 @@ class GemPage extends PureComponent {
 }
 
 const actions = {
-  handleGetGemDetails: getGemDetails
+  handleGetGemDetails: getGemDetails,
+  handleCreateAuction: createAuction
 };
 
 export default withRouter(
