@@ -43,7 +43,9 @@ export const Cards = ({ auction }) => (
     </div>
     <div className="tc">
       <big className="db b">{auction.price}</big>
-      <small>Auction ends on {auction.deadline.seconds}</small>
+      <small>
+        Auction ends on {auction.deadline && auction.deadline.seconds}
+      </small>
     </div>
     <hr />
     <div className="flex pa3 pb0">

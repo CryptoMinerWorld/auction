@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import Slider from "antd/lib/slider";
+// import Slider from "antd/lib/slider";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
@@ -24,13 +24,13 @@ const CardBox = styled.section`
 `;
 
 const Primary = styled.section`
-  grid-column-start: span 4;
+  grid-column-start: span 5;
   width: 100%;
 `;
 
-const Aside = styled.aside`
-  grid-column: 5/5;
-`;
+// const Aside = styled.aside`
+//   grid-column: 5/5;
+// `;
 
 const select = store => ({
   auctions: store.dashboard.userGems,
@@ -66,7 +66,7 @@ const Dashboard = ({ auctions, user }) => (
         </CardBox>
         <p>pagination</p>
       </Primary>
-      <Aside>
+      {/* <Aside>
         <p className="ttu pv4">hide filters</p>
         <div>
           <div className="ba pa3 mv4">
@@ -86,7 +86,7 @@ const Dashboard = ({ auctions, user }) => (
             <Slider range defaultValue={[20, 50]} />
           </div>
         </div>
-      </Aside>
+      </Aside> */}
     </Grid>
   </div>
 );
@@ -167,7 +167,7 @@ const ProgressDivider = styled.progress`
 const Cards = ({ auction }) => (
   <Card className="bg-dark-gray shadow-3">
     <figure className="ma0 pa0">
-      <img src={auction.image} alt="gem" className="ma0 pa3 pb0" />
+      <img src={auction.gemImage} alt="gem" className="ma0 pa3 pb0" />
       <figcaption hidden>{auction.quality}</figcaption>
     </figure>
     <ProgressDivider value="22" max="100" />
@@ -176,7 +176,9 @@ const Cards = ({ auction }) => (
     </div>
     <div className="tc">
       <big className="db b">{auction.price}</big>
-      <small>Auction ends on {auction.deadline.seconds}</small>
+      <small>
+        Auction ends on {auction.deadline && auction.deadline.seconds}
+      </small>
     </div>
     <hr />
     <div className="flex pa3 pb0">

@@ -8,7 +8,7 @@ import {
   USER_EXISTS,
   NEW_USER
 } from "./authConstants";
-import {getUserGems} from '../dashboard/dashboardActions'
+import {getUserGems, getDetailsForAllGemsAUserCurrentlyOwns} from '../dashboard/dashboardActions'
 
 export const checkIfUserExists = (userId) => (dispatch) => 
   db.doc(`users/${userId}`)
@@ -18,17 +18,24 @@ export const checkIfUserExists = (userId) => (dispatch) =>
   )
   .catch(error => console.error('error', error))
 
+
+// this is called in `authentocation/index` when you submit a new form
 export const createNewUser = (payload) => (dispatch) => {
   const {walletId} = payload
   return db
   .doc(`users/${walletId}`)
   .set(payload)
-  .then( () => dispatch({type: USER_EXISTS, payload}))
+  .then( () => {
+    dispatch({type: USER_EXISTS, payload})
+    getDetailsForAllGemsAUserCurrentlyOwns(walletId)
+  })
   .catch(error => console.error('error', error))
 }
 
 
 
+
+// @dev this action fires when the app starts up
 export const getCurrentUser = () => () =>
   getWeb3
     .then(result => result.web3)
@@ -41,7 +48,6 @@ export const getCurrentUser = () => () =>
         store.dispatch({ type: CURRENT_USER_AVAILABLE, payload: currentUser });
         store.dispatch(checkIfUserExists(currentUser))
         store.dispatch(getUserGems(currentUser))
-        
       } else {
         store.dispatch({ type: CURRENT_USER_NOT_AVAILABLE });
       }
