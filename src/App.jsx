@@ -217,12 +217,12 @@ class App extends PureComponent {
     clearInterval(this.priceInterval);
   }
 
-  // @notice removes a gem from an auction
-  handleRemoveGemFromAuction = async _tokenId => {
-    const tokenId = Number(_tokenId);
-    const { dutchAuctionContractInstance } = this.state;
-    await dutchAuctionContractInstance.methods.remove(tokenId).send();
-  };
+  // // @notice removes a gem from an auction
+  // handleRemoveGemFromAuction = async _tokenId => {
+  //   const tokenId = Number(_tokenId);
+  //   const { dutchAuctionContractInstance } = this.state;
+  //   await dutchAuctionContractInstance.methods.remove(tokenId).send();
+  // };
 
   // @notice lets users buy a gem in an active auction
   handleBuyNow = async (_tokenId, _from) => {
@@ -328,7 +328,7 @@ class App extends PureComponent {
             name={calculateGemName(color, tokenId)}
             tokenId={tokenId}
             gemsContractInstance={gemsContractInstance}
-            handleRemoveGemFromAuction={this.handleRemoveGemFromAuction}
+            // handleRemoveGemFromAuction={this.handleRemoveGemFromAuction}
             redirectTo={redirectTo}
             showConfirm={showConfirm}
             web3={web3}

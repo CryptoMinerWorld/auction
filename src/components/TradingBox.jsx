@@ -64,7 +64,7 @@ class TradingBox extends PureComponent {
           <div className="flex col jcc ">
             {auctionIsLive ? (
               <div className="pa5 flex jcc col">
-                <Input
+                {/* <Input
                   type="text"
                   placeholder="gemId"
                   className="db"
@@ -74,7 +74,7 @@ class TradingBox extends PureComponent {
                   }
                   data-testid="removeGemInputField"
                   required
-                />
+                /> */}
                 <div>
                   <Button
                     type="danger"

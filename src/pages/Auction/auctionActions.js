@@ -4,15 +4,20 @@ import store from '../../store'
 
 
 export const getAuctionDetails = tokenId => db
- .doc(`auctions/${tokenId}`)
- .get()
- .then(doc => store.dispatch({
-     type:AUCTION_DETAILS_RECEIVED, 
-     payload: doc.data()
-    }))
- .catch(error => console.error('error', error))
-    
- 
+ .collection(`stones`)
+ .where(`id`, `==`, tokenId)
+ .onSnapshot(coll => {
+
+    const gemDetails = coll.docs.map(doc => doc.data());
+
+    store.dispatch({
+        type:AUCTION_DETAILS_RECEIVED, 
+        payload: gemDetails[0]
+    })
+
+ })
+
+
  export const temp = () => console.log('temp')
  
  
