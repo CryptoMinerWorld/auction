@@ -3,5 +3,13 @@ service cloud.firestore {
     match /{document=**} {
       allow read;
     }
+
+    match /users/{walletId} {
+      allow read, create;
+    }
+
+    match /stones/{gemId} {
+      allow read, create;
+    }
   }
 }

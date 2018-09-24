@@ -37,7 +37,7 @@ require("antd/lib/modal/style/css");
 // analytics breaks testing so you have to turn testmode on in development
 const testMode = process.env.NODE_ENV === "development";
 
-ReactGA.initialize("UA-125801446-1", {
+ReactGA.initialize(process.env.REACT_APP_ANALYTICS, {
   testMode
 });
 
