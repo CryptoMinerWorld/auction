@@ -65,7 +65,7 @@ export const getDetailsForAllGemsAUserCurrentlyOwns = userId => {
       Promise.all([gemImages, gemStories])
       .then(([images, stories]) => {
         const completeGemDetails = listOfGemIds.map((gemId, index) => ({
-          id: gemId,
+          id: Number(gemId),
           ...responses[index],
           auctionIsLive: false,
           owner: userId,

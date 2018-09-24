@@ -153,7 +153,8 @@ export const createAuctionHelper = async (
     );
   
     // submit the auction
-    const auctionSuccessfullyCreated = _contract.methods
+    // const auctionSuccessfullyCreated = 
+    return _contract.methods
       .safeTransferFrom(
         _currentAccount,
         process.env.REACT_APP_DUTCH_AUCTION,
@@ -161,45 +162,44 @@ export const createAuctionHelper = async (
         data
       )
       .send()
-      .on("receipt", () => true)
-      .catch(() => false);
+      // .on("receipt", () => return true)
+      // .catch(() => false);
   
-    // get gem details
-    const gemProperties = getGemQualities(_contract, _tokenId);
+    // // get gem details
+    // const gemProperties = getGemQualities(_contract, _tokenId);
   
-    // only proceed if auction was successfully created and you have gem details
-    Promise.all([auctionSuccessfullyCreated, gemProperties])
-      .then(result => {
-        // destructure and format gem properties from result
-        const [color, level, gradeType, gradeValue] = result[1];
-        const grade = gradeType;
-        const gemLevel = Number(level);
-        const rate = Number(calcMiningRate(gradeType, gradeValue));
+    // // only proceed if auction was successfully created and you have gem details
+    // return Promise.all([auctionSuccessfullyCreated, gemProperties])
+    //   .then(result => {
+    //     // destructure and format gem properties from result
+    //     const [color, level, gradeType, gradeValue] = result[1];
+    //     const grade = gradeType;
+    //     const gemLevel = Number(level);
+    //     const rate = Number(calcMiningRate(gradeType, gradeValue));
   
-        // get the gem image and story since they are not stored on blockchain
-        const image = getGemImage(color, gradeType, gemLevel);
-        const story = getGemStory(color, gemLevel);
+    //     // get the gem image and story since they are not stored on blockchain
+    //     const image = getGemImage(color, gradeType, gemLevel);
+    //     const story = getGemStory(color, gemLevel);
   
-        // only proceed once you have gem image and story
-        Promise.all([image, story])
-          .then(([_image, _story]) => {
-            const finalAuction = {
-              id: _tokenId,
-              minPrice: _startPriceInWei,
-              maxPrice: _endPriceInWei,
-              owner: _currentAccount,
-              deadline: t1,
-              gemImage: _image,
-              story: _story,
-              grade,
-              gemLevel,
-              color,
-              rate
-            };
+    //     // only proceed once you have gem image and story
+    //     return Promise.all([image, story])
+    //       .then(([_image, _story]) => {
+    //         const finalAuction = {
+    //           id: _tokenId,
+    //           minPrice: _startPriceInWei,
+    //           maxPrice: _endPriceInWei,
+    //           owner: _currentAccount,
+    //           deadline: t1,
+    //           gemImage: _image,
+    //           story: _story,
+    //           grade,
+    //           gemLevel,
+    //           color,
+    //           rate
+    //         };
   
-            return finalAuction
-          })
-          .catch(err => console.error(err));
-      })
-      .catch(err => console.error(err));
+    //         return finalAuction
+    //       })
+    //   })
+    //   .catch(err => console.error(err));
   };

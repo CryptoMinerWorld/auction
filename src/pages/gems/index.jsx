@@ -9,7 +9,7 @@ import DescriptionBox from "../../components/DescriptionBox/index";
 import FAQ from "../../components/FAQ";
 import MailingList from "../../components/MailingList";
 import "./animations.css";
-import { getGemDetails, createAuction } from "./gemActions";
+import { getGemDetails, createAuction, removeFromAuction } from "./gemActions";
 import { calculateGemName } from "./helpers";
 import rockBackground from "../../images/rockBackground.png";
 import TradingBox from "../../components/TradingBox";
@@ -130,7 +130,8 @@ class GemPage extends PureComponent {
 
 const actions = {
   handleGetGemDetails: getGemDetails,
-  handleCreateAuction: createAuction
+  handleCreateAuction: createAuction,
+  handleRemoveGemFromAuction: removeFromAuction
 };
 
 export default withRouter(
