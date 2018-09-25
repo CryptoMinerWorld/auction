@@ -31,6 +31,7 @@ import DutchAuction from "../../build/contracts/DutchAuction.json";
 import Gems from "../../build/contracts/GemERC721.json";
 import Auth from "../features/auth";
 import { updatePriceOnAllLiveAuctions } from "../features/market/marketActions";
+import { updateGemOwnership } from "../features/auction/auctionActions";
 
 require("antd/lib/alert/style/css");
 require("antd/lib/modal/style/css");
@@ -230,6 +231,7 @@ class App extends PureComponent {
   // @notice lets users buy a gem in an active auction
   handleBuyNow = async (_tokenId, _from) => {
     const { dutchAuctionContractInstance, priceInWei } = this.state;
+    const { handleUpdateGemOwnership } = this.props;
 
     this.setState({ visible: true });
 
@@ -244,6 +246,7 @@ class App extends PureComponent {
         this.setState({ releaseConfetti: true });
       })
       .on("receipt", () => {
+        handleUpdateGemOwnership(_tokenId, _from, priceInWei);
         window.location = "https://cryptominerworld.com/workshop/";
       })
       .on("error", err => this.setState({ err }));
@@ -349,7 +352,8 @@ class App extends PureComponent {
 
 const actions = {
   handleSendContractsToRedux: sendContractsToRedux,
-  handleUpdatePriceOnAllLiveAuctions: updatePriceOnAllLiveAuctions
+  handleUpdatePriceOnAllLiveAuctions: updatePriceOnAllLiveAuctions,
+  handleUpdateGemOwnership: updateGemOwnership
 };
 
 export default compose(
@@ -361,5 +365,6 @@ export default compose(
 
 App.propTypes = {
   handleSendContractsToRedux: PropTypes.func.isRequired,
-  handleUpdatePriceOnAllLiveAuctions: PropTypes.func.isRequired
+  handleUpdatePriceOnAllLiveAuctions: PropTypes.func.isRequired,
+  handleUpdateGemOwnership: PropTypes.func.isRequired
 };
