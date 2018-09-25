@@ -1,14 +1,32 @@
 {
-  // Example:
-  //
-  // "indexes": [
-  //   {
-  //     "collectionId": "widgets",
-  //     "fields": [
-  //       { "fieldPath": "foo", "mode": "ASCENDING" },
-  //       { "fieldPath": "bar", "mode": "DESCENDING" }
-  //     ]
-  //   }
-  // ]
-  "indexes": []
+  "indexes": [
+    {
+      "collectionId": "stones",
+      "fields": [
+        { "fieldPath": "auctionIsLive", "mode": "ASCENDING" },
+        { "fieldPath": "level", "mode": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionId": "stones",
+      "fields": [
+        { "fieldPath": "auctionIsLive", "mode": "ASCENDING" },
+        { "fieldPath": "rate", "mode": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionId": "stones",
+      "fields": [
+        { "fieldPath": "auctionIsLive", "mode": "ASCENDING" },
+        { "fieldPath": "currentPrice", "mode": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionId": "stones",
+      "fields": [
+        { "fieldPath": "auctionIsLive", "mode": "ASCENDING" },
+        { "fieldPath": "gradeType", "mode": "ASCENDING" }
+      ]
+    }
+  ]
 }

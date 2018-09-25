@@ -1,25 +1,41 @@
-
 import {
   USER_GEMS_RETRIEVED,
   ALL_USER_GEMS_RETRIEVED,
   ALL_USER_GEMS_UPLOADED,
   USER_HAS_NO_GEMS_IN_WORKSHOP,
-  AUCTION_DETAILS_RECEIVED, NEW_AUCTION_CREATED 
+  AUCTION_DETAILS_RECEIVED,
+  NEW_AUCTION_CREATED,
+  ONLY_WANT_TO_SEE_GEMS_IN_AUCTIONS,
+  WANT_TO_SEE_ALL_GEMS
 } from "./dashboardConstants";
 import { db } from "../../app/utils/firebase";
 import store from "../../app/store";
-import { getGemQualities } from "../auction/helpers";
+import { getGemQualities, calcMiningRate } from "../auction/helpers";
 import { getGemImage, getGemStory, createAuctionHelper } from "./helpers";
+
+// export const getAuctions = () => dispatch =>
+//   db
+//     .collection("stones")
+//     .where("auctionIsLive", "==", true)
+//     .onSnapshot(collection => {
+//       const auctions = collection.docs.map(doc => doc.data());
+//       dispatch({ type: NEW_AUCTIONS_RECEIVED, payload: auctions });
+//     });
 
 // this gets all the gems from the database
 export const getUserGems = userId => () => {
   db.collection("stones")
     .where("owner", "==", userId)
-    .get()
-    .then(collection => {
+    .onSnapshot(collection => {
       const gems = collection.docs.map(doc => doc.data());
       store.dispatch({ type: USER_GEMS_RETRIEVED, payload: gems });
     });
+
+  // .get()
+  // .then(collection => {
+  //   const gems = collection.docs.map(doc => doc.data());
+  //   store.dispatch({ type: USER_GEMS_RETRIEVED, payload: gems });
+  // });
 };
 
 // this checks the smart contract to see what gems a user owns
@@ -38,6 +54,8 @@ export const getAllUserGems = (userId, gemContract) =>
 // this is called in authActions when you create a new User
 export const getDetailsForAllGemsAUserCurrentlyOwns = userId => {
   const gemContract = store.getState().app.gemsContractInstance;
+  const userName = store.getState().auth.user.imageURL;
+  const userImage = store.getState().auth.user.name;
 
   const listOfGemIds = [];
 
@@ -65,33 +83,35 @@ export const getDetailsForAllGemsAUserCurrentlyOwns = userId => {
       );
 
       Promise.all([gemImages, gemStories])
-      .then(([images, stories]) => {
-        const completeGemDetails = listOfGemIds.map((gemId, index) => ({
-          id: Number(gemId),
-          ...responses[index],
-          auctionIsLive: false,
-          owner: userId,
-          gemImage: images[index],
-          story: stories[index],
-        }));
+        .then(([images, stories]) => {
+          const completeGemDetails = listOfGemIds.map((gemId, index) => ({
+            id: Number(gemId),
+            ...responses[index],
+            rate: Number(calcMiningRate(responses[index].gradeType, responses[index].gradeValue)), 
+            auctionIsLive: false,
+            owner: userId,
+            gemImage: images[index],
+            story: stories[index],
+            userName,
+            userImage
+          }));
 
-        if (completeGemDetails.length === 0) {
-          store.dispatch({
-            type: USER_HAS_NO_GEMS_IN_WORKSHOP
-          });
-        } else {
-          completeGemDetails.forEach(gem => db.collection("stones").add(gem));
-
-          store.dispatch({
-            type: ALL_USER_GEMS_UPLOADED,
-            payload: completeGemDetails
-          });
-        }
-      }).catch(error => console.log('error', error))
+          if (completeGemDetails.length === 0) {
+            store.dispatch({
+              type: USER_HAS_NO_GEMS_IN_WORKSHOP
+            });
+          } else {
+            completeGemDetails.forEach(gem => db.collection("stones").add(gem));
+            store.dispatch({
+              type: ALL_USER_GEMS_UPLOADED,
+              payload: completeGemDetails
+            });
+          }
+        })
+        .catch(error => console.warn("error s", error));
     })
   );
 };
-
 
 export const createAuction = payload => (dispatch, getState) => {
   //  eslint-disable-next-line
@@ -109,15 +129,18 @@ export const createAuction = payload => (dispatch, getState) => {
       endPrice,
       gemsContractInstance,
       currentAccount
-    ).then( ({deadline, minPrice, maxPrice}) => {
-
+    ).then(({ deadline, minPrice, maxPrice }) => {
       db.collection(`stones`)
-        .where(`id`, `==`, payload.gemId)
+        .where(`id`, `==`, Number(payload.gemId))
         .get()
         .then(coll =>
-          coll.docs.map(doc =>  db.doc(`stones/${doc.id}`).update({ auctionIsLive: true,
-          deadline, minPrice, maxPrice
-           })
+          coll.docs.map(doc =>
+            db.doc(`stones/${doc.id}`).update({
+              auctionIsLive: true,
+              deadline,
+              minPrice,
+              maxPrice
+            })
           )
         )
         .catch(err => console.log("err", err));
@@ -136,31 +159,27 @@ export const createAuction = payload => (dispatch, getState) => {
 export const removeFromAuction = tokenId => async (dispatch, getState) => {
   getState()
     .app.dutchContractInstance.methods.remove(tokenId)
-    .send()
-  
-      db
-        .collection(`stones`)
-        .where(`id`, `==`, tokenId)
-        .get()
-        .then(coll => {
-          coll.docs.map(doc => {
-            
-            dispatch({
-              type: "GEM_REMOVED_FROM_AUCTION"
-            });
-            return db.doc(`stones/${doc.id}`).update({
-              auctionIsLive: false
-            });
-          });
-        })
-   
-};
+    .send();
 
+  db.collection(`stones`)
+    .where(`id`, `==`, Number(tokenId))
+    .get()
+    .then(coll => {
+      coll.docs.map(doc => {
+        dispatch({
+          type: "GEM_REMOVED_FROM_AUCTION"
+        });
+        return db.doc(`stones/${doc.id}`).update({
+          auctionIsLive: false
+        });
+      });
+    });
+};
 
 export const getGemDetails = tokenId => dispatch =>
   db
     .collection(`stones`)
-    .where(`id`, `==`, tokenId)
+    .where(`id`, `==`, Number(tokenId))
     .onSnapshot(coll => {
       const gemDetails = coll.docs.map(doc => doc.data());
       dispatch({
@@ -169,3 +188,10 @@ export const getGemDetails = tokenId => dispatch =>
       });
     });
 
+export const onlyGemsInAuction = () => ({
+  type: ONLY_WANT_TO_SEE_GEMS_IN_AUCTIONS
+});
+
+export const allMyGems = () => ({
+  type: WANT_TO_SEE_ALL_GEMS
+});

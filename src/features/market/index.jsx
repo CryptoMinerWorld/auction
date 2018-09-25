@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import Slider from "antd/lib/slider";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -8,6 +7,7 @@ import amethyst from "../../app/images/amethystImage.png";
 import { getAuctions } from "./marketActions";
 import { Cards } from "./components/Card";
 import SortBox from "./components/SortBox";
+import Filters from "./components/Filters";
 
 require("antd/lib/slider/style/css");
 
@@ -40,7 +40,7 @@ const select = store => ({
 
 const Marketplace = ({ auctions }) => (
   <div className="bg-off-black white pa4">
-    <AuctionCategories />
+    {/* <AuctionCategories /> */}
     <div className="flex aic mt3">
       <img src={amethyst} className="h3 w-auto pr3 dib" alt="gem auctions" />
       <h1 className="white" data-testid="header">
@@ -61,25 +61,7 @@ const Marketplace = ({ auctions }) => (
         <p>pagination</p>
       </Primary>
       <Aside>
-        <p className="ttu pv4">hide filters</p>
-        <div>
-          <div className="ba pa3 mv4">
-            <p>filter 1</p>
-            <Slider range defaultValue={[20, 50]} />
-          </div>
-          <div className="ba pa3 mv4">
-            <p>filter 2</p>
-            <Slider range defaultValue={[20, 50]} />
-          </div>
-          <div className="ba pa3 mv4">
-            <p>filter 3</p>
-            <Slider range defaultValue={[20, 50]} />
-          </div>
-          <div className="ba pa3 mv4">
-            <p>filter 4</p>
-            <Slider range defaultValue={[20, 50]} />
-          </div>
-        </div>
+        <Filters />
       </Aside>
     </Grid>
   </div>
@@ -115,37 +97,3 @@ Marketplace.propTypes = {
     })
   ).isRequired
 };
-
-const AuctionCategories = () => (
-  <div className="flex jcb ba pa2 mb4">
-    <div className="flex br w-auto">
-      <img src={amethyst} alt="" className="h2" />
-      <p>GEMS</p>
-    </div>
-
-    <div className="flex br w-auto">
-      <img src={amethyst} alt="" className="h2" />
-      <p>GEMS</p>
-    </div>
-
-    <div className="flex br w-auto">
-      <img src={amethyst} alt="" className="h2" />
-      <p>GEMS</p>
-    </div>
-
-    <div className="flex br w-auto">
-      <img src={amethyst} alt="" className="h2" />
-      <p>GEMS</p>
-    </div>
-
-    <div className="flex br w-auto">
-      <img src={amethyst} alt="" className="h2" />
-      <p>GEMS</p>
-    </div>
-
-    <div className="flex w-auto">
-      <img src={amethyst} alt="" className="h2" />
-      <p>GEMS</p>
-    </div>
-  </div>
-);

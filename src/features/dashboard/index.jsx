@@ -5,7 +5,8 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter, Link } from "react-router-dom";
-import { getAuctions } from "../market/marketActions";
+import { getUserGems } from "./dashboardActions";
+import GemSortBox from "./components/GemSortBox";
 
 require("antd/lib/slider/style/css");
 
@@ -33,7 +34,7 @@ const Primary = styled.section`
 // `;
 
 const select = store => ({
-  auctions: store.dashboard.userGems,
+  auctions: store.dashboard.filter,
   user: store.auth && store.auth.user
 });
 
@@ -51,11 +52,7 @@ const Dashboard = ({ auctions, user }) => (
     </div>
     <Grid>
       <Primary>
-        <div className="flex pv4">
-          <p className="ttu pr4">All My Gems</p>
-          <p className="ttu pr4">The ones in Auction</p>
-          <p className="ttu pr4">The ones out mining</p>
-        </div>
+        <GemSortBox />
         <CardBox>
           {auctions &&
             auctions.map(auction => (
@@ -92,7 +89,7 @@ const Dashboard = ({ auctions, user }) => (
 );
 
 const actions = {
-  handleGetAuctions: getAuctions
+  handleGetAuctions: getUserGems
 };
 
 export default compose(
