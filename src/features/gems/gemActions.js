@@ -1,5 +1,5 @@
 import { AUCTION_DETAILS_RECEIVED, NEW_AUCTION_CREATED } from "./gemConstants";
-import { db } from "../../utils/firebase";
+import { db } from "../../app/utils/firebase";
 // import store from '../../store'
 import { createAuctionHelper } from "./helpers";
 
@@ -64,22 +64,22 @@ export const createAuction = payload => (dispatch, getState) => {
 export const removeFromAuction = tokenId => async (dispatch, getState) => {
   getState()
     .app.dutchContractInstance.methods.remove(tokenId)
-    .send().on('receipt', (receipt) => console.log('receipt',receipt ))
-    // .then(() =>
-    //   db
-    //     .collection(`stones`)
-    //     .where(`id`, `==`, tokenId)
-    //     .get()
-    //     .then(coll => {
-    //       coll.docs.map(doc => {
-    //         console.log("doc.id2", doc.id);
-    //         dispatch({
-    //           type: "GEM_REMOVED_FROM_AUCTION"
-    //         });
-    //         return db.doc(`stones/${doc.id}`).update({
-    //           auctionIsLive: false
-    //         });
-    //       });
-    //     })
-    // );
+    .send()
+  
+      db
+        .collection(`stones`)
+        .where(`id`, `==`, tokenId)
+        .get()
+        .then(coll => {
+          coll.docs.map(doc => {
+            
+            dispatch({
+              type: "GEM_REMOVED_FROM_AUCTION"
+            });
+            return db.doc(`stones/${doc.id}`).update({
+              auctionIsLive: false
+            });
+          });
+        })
+   
 };

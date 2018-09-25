@@ -11,7 +11,7 @@ import MailingList from "../../components/MailingList";
 import "./animations.css";
 import { getGemDetails, createAuction, removeFromAuction } from "./gemActions";
 import { calculateGemName } from "./helpers";
-import rockBackground from "../../images/rockBackground.png";
+import rockBackground from "../../app/images/rockBackground.png";
 import TradingBox from "../../components/TradingBox";
 
 export const OverlapOnDesktopView = styled.div`

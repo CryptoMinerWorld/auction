@@ -1,6 +1,6 @@
 import {  AUCTION_DETAILS_RECEIVED} from './auctionConstants'
-import {db} from '../../utils/firebase'
-import store from '../../store'
+import {db} from '../../app/utils/firebase'
+import store from '../../app/store'
 
 
 export const getAuctionDetails = tokenId => db

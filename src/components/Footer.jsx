@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import img from "../images/footer_geodes.png";
+import img from "../app/images/footer_geodes.png";
 
 const TopHighlight = styled.div`
   background: linear-gradient(to right, #fc01ca, #bc197c);

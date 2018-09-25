@@ -2,12 +2,12 @@ import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import ReactCSSTransitionGroup from "react-addons-css-transition-group";
 import Waypoint from "react-waypoint";
-import gem1 from "../../images/icons/gem1.png";
-import gem2 from "../../images/icons/gem2.png";
-import gem3 from "../../images/icons/gem3.png";
-import tinyDiamond from "../../images/tinyDiamond.png";
+import gem1 from "../../app/images/icons/gem1.png";
+import gem2 from "../../app/images/icons/gem2.png";
+import gem3 from "../../app/images/icons/gem3.png";
+import tinyDiamond from "../../app/images/tinyDiamond.png";
 import "./animations.css";
-import logo from "../../images/Profile-Image-Logo-60x60.png";
+import logo from "../../app/images/Profile-Image-Logo-60x60.png";
 import { Gem } from "../Gembox";
 
 class DescriptionBox extends PureComponent {

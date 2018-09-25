@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { Observable } from "rxjs";
-import getWeb3 from "../../utils/getWeb3";
-import { db, storage } from "../../utils/firebase";
+import getWeb3 from "../../app/utils/getWeb3";
+import { db, storage } from "../../app/utils/firebase";
 import DisplayCard from "./DisplayCard";
 import MintForm from "./MintForm";
 

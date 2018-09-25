@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Provider} from 'react-redux'
-import App from './App';
-import store from './store'
-import {getAuctions} from "./pages/market/marketActions"
-import {getCurrentUser} from './pages/authentication/authActions'
+import App from './app/App';
+import store from './app/store'
+import {getAuctions} from "./features/market/marketActions"
+import {getCurrentUser} from './features/authentication/authActions'
 
 // @notice these are all the actions fired when the app starts up
 store.dispatch(getCurrentUser())

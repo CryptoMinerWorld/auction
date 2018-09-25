@@ -4,9 +4,10 @@ import Slider from "antd/lib/slider";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import amethyst from "../../images/amethystImage.png";
+import amethyst from "../../app/images/amethystImage.png";
 import { getAuctions } from "./marketActions";
-import { Cards } from "./Card";
+import { Cards } from "./components/Card";
+import SortBox from "./components/SortBox";
 
 require("antd/lib/slider/style/css");
 
@@ -48,11 +49,7 @@ const Marketplace = ({ auctions }) => (
     </div>
     <Grid>
       <Primary>
-        <div className="flex pv4">
-          <p className="ttu pr4">finishing soonest</p>
-          <p className="ttu pr4">lowest price</p>
-          <p className="ttu pr4">highest price</p>
-        </div>
+        <SortBox />
         <CardBox>
           {auctions &&
             auctions.map(auction => (

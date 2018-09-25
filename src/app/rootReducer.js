@@ -1,10 +1,10 @@
 import {combineReducers} from 'redux'
-import market from '../pages/market/marketReducers'
-import auction from '../pages/Auction/auctionReducer'
-import auth from '../pages/authentication/authReducer'
-import dashboard from '../pages/dashboard/dashboardReducer'
+import market from '../features/market/marketReducers'
+import auction from '../features/auction/auctionReducer'
+import auth from '../features/authentication/authReducer'
+import dashboard from '../features/dashboard/dashboardReducer'
 
-import {WEB3_ADDED, DUTCH_CONTRACT_ADDED, GEM_CONTRACT_ADDED}  from '../app/reduxConstants'
+import {WEB3_ADDED, DUTCH_CONTRACT_ADDED, GEM_CONTRACT_ADDED}  from './reduxConstants'
 
 
 
