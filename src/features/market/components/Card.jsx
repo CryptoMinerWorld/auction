@@ -32,7 +32,7 @@ const ProgressDivider = styled.progress`
 `;
 
 export const Cards = ({ auction }) => (
-  <Card className="bg-dark-gray shadow-3">
+  <Card className="bg-dark-gray shadow-3 mw5">
     <figure className="ma0 pa0">
       <img src={auction.gemImage} alt="gem" className="ma0 pa3 pb0" />
       <figcaption hidden>{auction.quality}</figcaption>
@@ -42,16 +42,14 @@ export const Cards = ({ auction }) => (
       <small>{auction.minPrice}</small> <small>{auction.maxPrice}</small>
     </div>
     <div className="tc">
-      <big className="db b">{auction.price}</big>
-      <small>
-        Auction ends on {auction.deadline && auction.deadline.seconds}
-      </small>
+      <big className="db b">{auction.currentPrice}</big>
+      <small>Auction ends on {auction.deadline && auction.deadline}</small>
     </div>
     <hr />
     <div className="flex pa3 pb0">
-      <img src={auction.image} alt="" className="h3" />
+      <img src={auction.gemImage} alt="" className="h3" />
       <div className="pl3 ma0 pa0">
-        <p>by {auction.name}</p>
+        <p>by {auction.name || auction.owner}</p>
         <Gembox
           level={auction.gemLevel}
           grade={auction.grade}

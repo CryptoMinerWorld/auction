@@ -41,3 +41,23 @@ it("users can order auctions by time and price", () => {
 it("a profile page shows all a users gems, both in auction and othewise", () => {
   expect(true).toBeFalsy();
 });
+
+it("market updates in realtime", () => {
+  expect(true).toBeFalsy();
+});
+
+it("dashboard updates in realtime", () => {
+  expect(true).toBeFalsy();
+});
+
+it("gems contain all requited fields when created", () => {
+  expect(true).toBeFalsy();
+});
+
+it("5 ordering buttons work", () => {
+  expect(true).toBeFalsy();
+});
+
+it("4 filters work", () => {
+  expect(true).toBeFalsy();
+});
