@@ -4,15 +4,19 @@ import styled from "styled-components";
 import ReactCSSTransitionGroup from "react-addons-css-transition-group";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import AuctionImage from "../../components/AuctionImage";
-import DescriptionBox from "../../components/DescriptionBox/index";
-import FAQ from "../../components/FAQ";
-import MailingList from "../../components/MailingList";
+import AuctionImage from "../../../components/AuctionImage";
+import DescriptionBox from "../../../components/DescriptionBox";
+import FAQ from "../../../components/FAQ";
+import MailingList from "../../../components/MailingList";
 import "./animations.css";
-import { getGemDetails, createAuction, removeFromAuction } from "./gemActions";
-import { calculateGemName } from "./helpers";
-import rockBackground from "../../app/images/rockBackground.png";
-import TradingBox from "../../components/TradingBox";
+import {
+  getGemDetails,
+  createAuction,
+  removeFromAuction
+} from "../dashboardActions";
+import { calculateGemName } from "../helpers";
+import rockBackground from "../../../app/images/rockBackground.png";
+import TradingBox from "../../../components/TradingBox";
 
 export const OverlapOnDesktopView = styled.div`
   @media (min-width: 64em) {

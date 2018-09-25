@@ -7,14 +7,11 @@ export const getAuctionDetails = tokenId => db
  .collection(`stones`)
  .where(`id`, `==`, tokenId)
  .onSnapshot(coll => {
-
     const gemDetails = coll.docs.map(doc => doc.data());
-
     store.dispatch({
         type:AUCTION_DETAILS_RECEIVED, 
         payload: gemDetails[0]
     })
-
  })
 
 
