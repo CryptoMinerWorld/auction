@@ -1,13 +1,15 @@
+
 import {
   USER_GEMS_RETRIEVED,
   ALL_USER_GEMS_RETRIEVED,
   ALL_USER_GEMS_UPLOADED,
-  USER_HAS_NO_GEMS_IN_WORKSHOP
+  USER_HAS_NO_GEMS_IN_WORKSHOP,
+  AUCTION_DETAILS_RECEIVED, NEW_AUCTION_CREATED 
 } from "./dashboardConstants";
 import { db } from "../../app/utils/firebase";
 import store from "../../app/store";
 import { getGemQualities } from "../auction/helpers";
-import { getGemImage, getGemStory } from "../gems/helpers";
+import { getGemImage, getGemStory, createAuctionHelper } from "./helpers";
 
 // this gets all the gems from the database
 export const getUserGems = userId => () => {
@@ -90,5 +92,80 @@ export const getDetailsForAllGemsAUserCurrentlyOwns = userId => {
   );
 };
 
-// check if gems exist in db
-// // if they don't add them/ remove
+
+export const createAuction = payload => (dispatch, getState) => {
+  //  eslint-disable-next-line
+  const currentAccount = getState().auth.currentUserId;
+  //  eslint-disable-next-line
+  const gemsContractInstance = getState().app.gemsContractInstance;
+
+  try {
+    const { gemId, duration, startPrice, endPrice } = payload;
+
+    createAuctionHelper(
+      gemId,
+      duration,
+      startPrice,
+      endPrice,
+      gemsContractInstance,
+      currentAccount
+    ).then( ({deadline, minPrice, maxPrice}) => {
+
+      db.collection(`stones`)
+        .where(`id`, `==`, payload.gemId)
+        .get()
+        .then(coll =>
+          coll.docs.map(doc =>  db.doc(`stones/${doc.id}`).update({ auctionIsLive: true,
+          deadline, minPrice, maxPrice
+           })
+          )
+        )
+        .catch(err => console.log("err", err));
+
+      dispatch({
+        type: NEW_AUCTION_CREATED,
+        payload
+      });
+    });
+  } catch (error) {
+    console.log("error", error);
+  }
+};
+
+// @notice removes a gem from an auction
+export const removeFromAuction = tokenId => async (dispatch, getState) => {
+  getState()
+    .app.dutchContractInstance.methods.remove(tokenId)
+    .send()
+  
+      db
+        .collection(`stones`)
+        .where(`id`, `==`, tokenId)
+        .get()
+        .then(coll => {
+          coll.docs.map(doc => {
+            
+            dispatch({
+              type: "GEM_REMOVED_FROM_AUCTION"
+            });
+            return db.doc(`stones/${doc.id}`).update({
+              auctionIsLive: false
+            });
+          });
+        })
+   
+};
+
+
+export const getGemDetails = tokenId => dispatch =>
+  db
+    .collection(`stones`)
+    .where(`id`, `==`, tokenId)
+    .onSnapshot(coll => {
+      const gemDetails = coll.docs.map(doc => doc.data());
+      dispatch({
+        type: AUCTION_DETAILS_RECEIVED,
+        payload: gemDetails[0]
+      });
+    });
+

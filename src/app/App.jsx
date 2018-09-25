@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { compose, setPropTypes } from "recompose";
+import { compose } from "recompose";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { BrowserRouter } from "react-router-dom";
@@ -29,7 +29,8 @@ import {
 import { sendContractsToRedux } from "./appActions";
 import DutchAuction from "../../build/contracts/DutchAuction.json";
 import Gems from "../../build/contracts/GemERC721.json";
-import Auth from "../features/authentication";
+import Auth from "../features/auth";
+import { updatePriceOnAllLiveAuctions } from "../features/market/marketActions";
 
 require("antd/lib/alert/style/css");
 require("antd/lib/modal/style/css");
@@ -89,7 +90,10 @@ class App extends PureComponent {
   }
 
   async componentDidMount() {
-    const { handleSendContractsToRedux } = this.props;
+    const {
+      handleSendContractsToRedux,
+      handleUpdatePriceOnAllLiveAuctions
+    } = this.props;
     // @notice loading a custom font when app mounts
     const font = new FontFaceObserver("Muli", {
       weight: 400
@@ -148,6 +152,11 @@ class App extends PureComponent {
       .catch(err => {
         this.setState({ err });
       });
+
+    this.updatePriceOnAllLiveAuctions = setInterval(
+      () => handleUpdatePriceOnAllLiveAuctions(),
+      10000
+    );
 
     if (tokenId) {
       // @notice get auction details from contract
@@ -215,14 +224,8 @@ class App extends PureComponent {
   componentWillUnmount() {
     // @notice clear price update interval when you leav ethe app to stop any memory leaks
     clearInterval(this.priceInterval);
+    clearInterval(this.updatePriceOnAllLiveAuctions);
   }
-
-  // // @notice removes a gem from an auction
-  // handleRemoveGemFromAuction = async _tokenId => {
-  //   const tokenId = Number(_tokenId);
-  //   const { dutchAuctionContractInstance } = this.state;
-  //   await dutchAuctionContractInstance.methods.remove(tokenId).send();
-  // };
 
   // @notice lets users buy a gem in an active auction
   handleBuyNow = async (_tokenId, _from) => {
@@ -328,7 +331,6 @@ class App extends PureComponent {
             name={calculateGemName(color, tokenId)}
             tokenId={tokenId}
             gemsContractInstance={gemsContractInstance}
-            // handleRemoveGemFromAuction={this.handleRemoveGemFromAuction}
             redirectTo={redirectTo}
             showConfirm={showConfirm}
             web3={web3}
@@ -346,15 +348,18 @@ class App extends PureComponent {
 }
 
 const actions = {
-  handleSendContractsToRedux: sendContractsToRedux
+  handleSendContractsToRedux: sendContractsToRedux,
+  handleUpdatePriceOnAllLiveAuctions: updatePriceOnAllLiveAuctions
 };
 
 export default compose(
   connect(
     null,
     actions
-  ),
-  setPropTypes({
-    handleSendContractsToRedux: PropTypes.func.isRequired
-  })
+  )
 )(App);
+
+App.propTypes = {
+  handleSendContractsToRedux: PropTypes.func.isRequired,
+  handleUpdatePriceOnAllLiveAuctions: PropTypes.func.isRequired
+};

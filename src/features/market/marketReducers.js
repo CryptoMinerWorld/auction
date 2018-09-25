@@ -1,5 +1,5 @@
 import { NEW_AUCTIONS_RECEIVED} from './marketConstants'
-import {NEW_AUCTION_CREATED} from '../gems/gemConstants'
+import {NEW_AUCTION_CREATED} from '../dashboard/dashboardConstants'
 
 export default function marketReducer (state = [] , action) {
     

@@ -40,15 +40,6 @@ const SortBox = ({
   </div>
 );
 
-SortBox.propTypes = {
-  match: PropTypes.shape({
-    url: PropTypes.string
-  }).isRequired,
-  handleGetSoonest: PropTypes.func.isRequired,
-  handleGetLowest: PropTypes.func.isRequired,
-  handleGetHighest: PropTypes.func.isRequired
-};
-
 const actions = {
   handleGetSoonest: getSoonestAuctions,
   handleGetLowest: getLowestAuctions,
@@ -62,3 +53,12 @@ export default compose(
     actions
   )
 )(SortBox);
+
+SortBox.propTypes = {
+  match: PropTypes.shape({
+    url: PropTypes.string
+  }).isRequired,
+  handleGetSoonest: PropTypes.func.isRequired,
+  handleGetLowest: PropTypes.func.isRequired,
+  handleGetHighest: PropTypes.func.isRequired
+};

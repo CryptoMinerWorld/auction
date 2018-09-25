@@ -99,30 +99,6 @@ export const calculateGemName = (providedGrade, providedTokenId) => {
     return `${gemType} #${providedTokenId}`;
   };
 
-
-
-
-
-
-
-
-// converts BigNumber representing Solidity uint256 into String representing Solidity bytes
-const toBytes = uint256 => {
-  let s = uint256.toString(16);
-  const len = s.length;
-  // 256 bits must occupy exactly 64 hex digits
-  if (len > 64) {
-    s = s.substr(0, 64);
-  }
-  for (let i = 0; i < 64 - len; i += 1) {
-    s = `0${s}`;
-  }
-  return `0x${s}`;
-};
-
-
-
-
   // @notice creates an auction
 export const createAuctionHelper = async (
     _tokenId,
@@ -140,6 +116,20 @@ export const createAuctionHelper = async (
     const p0 = _startPriceInWei;
     const p1 = _endPriceInWei;
     const two = new BigNumber(2);
+
+    // converts BigNumber representing Solidity uint256 into String representing Solidity bytes
+const toBytes = uint256 => {
+  let s = uint256.toString(16);
+  const len = s.length;
+  // 256 bits must occupy exactly 64 hex digits
+  if (len > 64) {
+    s = s.substr(0, 64);
+  }
+  for (let i = 0; i < 64 - len; i += 1) {
+    s = `0${s}`;
+  }
+  return `0x${s}`;
+};
   
     // convert auction parameters to bytecode for smart contract
     const data = toBytes(
@@ -153,7 +143,6 @@ export const createAuctionHelper = async (
     );
   
     // submit the auction
-    // const auctionSuccessfullyCreated = 
     return _contract.methods
       .safeTransferFrom(
         _currentAccount,
@@ -161,11 +150,29 @@ export const createAuctionHelper = async (
         token,
         data
       )
-      .send()
-      // .on("receipt", () => return true)
+      .send().then(() => {
+        const auctionDetails = {
+          deadline: t1,
+          maxPrice: _startPriceInWei,
+          minPrice: _endPriceInWei,
+        }
+  
+        return auctionDetails
+      })
+
+      
+  };
+
+
+
+
+   // .on("receipt", () => {
+      //   console.log('auction created')
+      // })
       // .catch(() => false);
   
     // // get gem details
+
     // const gemProperties = getGemQualities(_contract, _tokenId);
   
     // // only proceed if auction was successfully created and you have gem details
@@ -202,4 +209,3 @@ export const createAuctionHelper = async (
     //       })
     //   })
     //   .catch(err => console.error(err));
-  };

@@ -1,7 +1,7 @@
 import {combineReducers} from 'redux'
 import market from '../features/market/marketReducers'
 import auction from '../features/auction/auctionReducer'
-import auth from '../features/authentication/authReducer'
+import auth from '../features/auth/authReducer'
 import dashboard from '../features/dashboard/dashboardReducer'
 
 import {WEB3_ADDED, DUTCH_CONTRACT_ADDED, GEM_CONTRACT_ADDED}  from './reduxConstants'

@@ -97,7 +97,7 @@ export default connect(
 Marketplace.propTypes = {
   auctions: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.number,
+      id: PropTypes.string,
       minPrice: PropTypes.number,
       maxPrice: PropTypes.number,
       price: PropTypes.number,

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import React, { PureComponent } from "react";
 import Input from "antd/lib/input";
 import Button from "antd/lib/button";
-import { ethToWei, daysToSeconds } from "../features/create/helpers";
+import { ethToWei, daysToSeconds } from "../features/mint/helpers";
 
 const TopHighLight = styled.div`
   background: linear-gradient(to right, #e36d2d, #b91a78);

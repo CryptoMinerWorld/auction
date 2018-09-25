@@ -64,7 +64,7 @@ export const Cards = ({ auction }) => (
 
 Cards.propTypes = {
   auction: PropTypes.shape({
-    id: PropTypes.number,
+    id: PropTypes.string,
     minPrice: PropTypes.number,
     maxPrice: PropTypes.number,
     price: PropTypes.number,
