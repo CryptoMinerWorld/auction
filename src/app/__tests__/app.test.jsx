@@ -61,3 +61,11 @@ it("5 ordering buttons work", () => {
 it("4 filters work", () => {
   expect(true).toBeFalsy();
 });
+
+it("filters and orders work together", () => {
+  expect(true).toBeFalsy();
+});
+
+it("when a gem is bought the owner of a gem updates on db", () => {
+  expect(true).toBeFalsy();
+});

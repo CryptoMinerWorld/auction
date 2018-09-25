@@ -15,7 +15,30 @@ export const getAuctionDetails = tokenId => db
  })
 
 
- export const temp = () => console.log('temp')
+ export const updateGemOwnership = (gemId, newOwner, priceInWei) =>  {
+
+    console.log('newOwner', newOwner)
+    console.log('gemId', gemId)
+
+
+    // get name and image
+    const newGemOwner = db.doc(`users/${newOwner}`).get().then( doc => doc.data())
+    const {name, imageURL} = newGemOwner;
+    console.log('name, imageURL', name, imageURL)
+
+    // update gem with new owner, name and image
+    db
+ .collection(`stones`)
+ .where(`id`, `==`, Number(gemId)).get().then(doc => {
+    db.doc(`stones/${doc.id}`).update({
+        userName: name,
+        userImage: imageURL,
+        lastSoldFor: priceInWei
+      })
+ })
+
+ }
+
  
  
  
