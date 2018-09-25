@@ -4,9 +4,9 @@ import {
   ALL_USER_GEMS_UPLOADED,
   USER_HAS_NO_GEMS_IN_WORKSHOP
 } from "./dashboardConstants";
-import { db } from "../../utils/firebase";
-import store from "../../store";
-import { getGemQualities } from "../Auction/helpers";
+import { db } from "../../app/utils/firebase";
+import store from "../../app/store";
+import { getGemQualities } from "../auction/helpers";
 import { getGemImage, getGemStory } from "../gems/helpers";
 
 // this gets all the gems from the database

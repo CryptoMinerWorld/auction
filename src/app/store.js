@@ -1,6 +1,6 @@
 import {createStore, compose, applyMiddleware} from 'redux'
 import thunk from 'redux-thunk'
-import reducer from './reducers'
+import reducer from './rootReducer'
 
 const middleware = [thunk]
 // eslint-disable-next-line

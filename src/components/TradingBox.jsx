@@ -3,7 +3,7 @@ import styled from "styled-components";
 import React, { PureComponent } from "react";
 import Input from "antd/lib/input";
 import Button from "antd/lib/button";
-import { ethToWei, daysToSeconds } from "../pages/Create/helpers";
+import { ethToWei, daysToSeconds } from "../features/create/helpers";
 
 const TopHighLight = styled.div`
   background: linear-gradient(to right, #e36d2d, #b91a78);
@@ -64,17 +64,6 @@ class TradingBox extends PureComponent {
           <div className="flex col jcc ">
             {auctionIsLive ? (
               <div className="pa5 flex jcc col">
-                {/* <Input
-                  type="text"
-                  placeholder="gemId"
-                  className="db"
-                  value={gemId}
-                  onChange={e =>
-                    this.handleChange(Number(e.target.value), "gemId")
-                  }
-                  data-testid="removeGemInputField"
-                  required
-                /> */}
                 <div>
                   <Button
                     type="danger"

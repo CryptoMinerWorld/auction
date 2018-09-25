@@ -1,6 +1,6 @@
 import fromExponential from 'from-exponential';
 import {BigNumber} from 'bignumber.js';
-import { db, storage } from '../../utils/firebase'
+import { db, storage } from '../../app/utils/firebase'
 
 export const isTokenForSale = (_contract, _tokenId) =>
  

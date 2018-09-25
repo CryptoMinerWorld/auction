@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import rockBackground from "../../images/rockBackground.png";
+import rockBackground from "../../app/images/rockBackground.png";
 import Mint from "./Mint";
 
 require("antd/lib/button/style/css");

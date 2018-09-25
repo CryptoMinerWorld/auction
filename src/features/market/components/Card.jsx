@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import Gembox from "../../components/Gembox";
+import Gembox from "../../../components/Gembox";
 
 const Card = styled.aside`
   grid-column: span 1;

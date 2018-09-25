@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
 import RippleButton from "./RippleButton/RippleButton";
-import img from "../images/Profile-Image-Logo-60x60.png";
+import img from "../app/images/Profile-Image-Logo-60x60.png";
 
 require("antd/lib/avatar/style/css");
 
@@ -134,10 +134,11 @@ export default connect(select)(Navbar);
 Navbar.propTypes = {
   userImage: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
   userId: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
-  userName: PropTypes.string.isRequired
+  userName: PropTypes.string
 };
 
 Navbar.defaultProps = {
   userImage: false,
-  userId: false
+  userId: false,
+  userName: null
 };

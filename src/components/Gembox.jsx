@@ -1,9 +1,9 @@
 import React, { PureComponent } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import gem1 from "../images/icons/gem1.png";
-import gem2 from "../images/icons/gem2.png";
-import gem3 from "../images/icons/gem3.png";
+import gem1 from "../app/images/icons/gem1.png";
+import gem2 from "../app/images/icons/gem2.png";
+import gem3 from "../app/images/icons/gem3.png";
 
 class Gembox extends PureComponent {
   static propTypes = {

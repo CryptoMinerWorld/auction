@@ -1,6 +1,6 @@
-import {db} from '../../utils/firebase'
-import store from "../../store";
-import getWeb3 from "../../utils/getWeb3";
+import {db} from '../../app/utils/firebase'
+import store from "../../app/store";
+import getWeb3 from "../../app/utils/getWeb3";
 import {
   CURRENT_USER_AVAILABLE,
   CURRENT_USER_NOT_AVAILABLE,

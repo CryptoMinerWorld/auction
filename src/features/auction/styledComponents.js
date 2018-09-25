@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import rockBackground from "../../images/rockBackground.png";
+import rockBackground from "../../app/images/rockBackground.png";
 
 
 export const OverlapOnDesktopView = styled.div`

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import CountdownTimer from "./CountdownTimer";
 import Gembox from "./Gembox";
-import buyNow from "../images/pinkBuyNowButton.png";
+import buyNow from "../app/images/pinkBuyNowButton.png";
 import ProgressMeter from "./ProgressMeter";
 
 const TopHighLight = styled.div`

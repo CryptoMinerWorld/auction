@@ -8,13 +8,13 @@ import { connect } from "react-redux";
 import ReactGA from "react-ga";
 import Alert from "antd/lib/alert";
 import Modal from "antd/lib/modal";
-import MobileHeader from "./components/MobileHeader";
-import Navbar from "./components/Nav";
-import Footer from "./components/Footer";
+import MobileHeader from "../components/MobileHeader";
+import Navbar from "../components/Nav";
+import Footer from "../components/Footer";
 import getWeb3 from "./utils/getWeb3";
 import Routes from "./routes";
 import "./css/root.css";
-import { showConfirm, showExpired } from "./components/Modal";
+import { showConfirm, showExpired } from "../components/Modal";
 import {
   isTokenForSale,
   getAuctionDetails,
@@ -25,11 +25,11 @@ import {
   getPrice,
   nonExponential,
   calculateGemName
-} from "./pages/Auction/helpers";
-import { sendContractsToRedux } from "./app/appActions";
-import DutchAuction from "../build/contracts/DutchAuction.json";
-import Gems from "../build/contracts/GemERC721.json";
-import Auth from "./pages/authentication";
+} from "../features/auction/helpers";
+import { sendContractsToRedux } from "./appActions";
+import DutchAuction from "../../build/contracts/DutchAuction.json";
+import Gems from "../../build/contracts/GemERC721.json";
+import Auth from "../features/authentication";
 
 require("antd/lib/alert/style/css");
 require("antd/lib/modal/style/css");

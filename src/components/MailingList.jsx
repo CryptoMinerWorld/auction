@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import styled from "styled-components";
 import MailchimpSubscribe from "react-mailchimp-subscribe";
-import gemKid from "../images/gemKid.png";
+import gemKid from "../app/images/gemKid.png";
 
 const url =
   "https://joshpitzalis.us14.list-manage.com/subscribe/post?u=2c6088d1532d8f6a70091ef05&amp;id=1d31a52e03";
