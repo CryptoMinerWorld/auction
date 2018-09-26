@@ -78,7 +78,7 @@ export const updatePriceOnAllLiveAuctions = () => async (
       );
     });
   } catch (err) {
-    console.console.log("err", err);
+    console.log("err", err);
   }
 };
 
