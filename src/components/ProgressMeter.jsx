@@ -1,15 +1,13 @@
 import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import Progress from "antd/lib/progress";
+import { calculatePercentage } from "../features/market/helpers";
 
 require("antd/lib/progress/style/css");
 
 class ProgressMeter extends PureComponent {
-  calculatePercentage = (max, current) => ((max - current) / max) * 100;
-
   render() {
     const { currentPrice, minPrice, maxPrice } = this.props;
-
     return (
       <div className="white ma0 pa3 tc ">
         <small className="white ttu ">current price</small>
@@ -18,7 +16,7 @@ class ProgressMeter extends PureComponent {
         </p>
 
         <Progress
-          percent={this.calculatePercentage(minPrice, currentPrice)}
+          percent={calculatePercentage(minPrice, currentPrice)}
           showInfo={false}
           className="ba br-pill pb1 ph2 mb1  b--white-40"
           strokeColor="#c018ab"

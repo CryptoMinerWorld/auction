@@ -9,4 +9,7 @@ export const updateDBwithNewPrice = (auctionId) => db
       return gemId[0];
     })
 
-export const temp = () => console.log('temp')
+export const calculatePercentage = (max, current) => ((max - current) / max) * 100;
+
+
+export const weiToEth = wei => Number((wei / 1000000000000000000).toFixed(3));

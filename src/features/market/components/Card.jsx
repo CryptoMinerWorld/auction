@@ -1,10 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import Gembox from "../../../components/Gembox";
+import Progress from "antd/lib/progress";
+import format from "date-fns/format";
+import { calculatePercentage, weiToEth } from "../helpers";
+import MiniGemBox from "./MiniGemBox";
+
+require("antd/lib/progress/style/css");
 
 const Card = styled.aside`
-  grid-column: span 1;
   clip-path: polygon(
     5% 0%,
     95% 0%,
@@ -17,41 +21,46 @@ const Card = styled.aside`
   );
 `;
 
-const ProgressDivider = styled.progress`
-  appearance: none;
-  width: 100%;
-  height: 5px;
-  margin: 0;
-  padding: 0;
-  &:-webkit-progress-value {
-    color: red;
-  }
-  &:-moz-progress-bar {
-    color: red;
-  }
-`;
-
-export const Cards = ({ auction }) => (
-  <Card className="bg-dark-gray shadow-3 mw5">
+const Cards = ({ auction }) => (
+  <Card className="bg-dark-gray shadow-3 white">
     <figure className="ma0 pa0">
       <img src={auction.gemImage} alt="gem" className="ma0 pa3 pb0" />
       <figcaption hidden>{auction.quality}</figcaption>
     </figure>
-    <ProgressDivider value="22" max="100" />
+    <Progress
+      strokeLinecap="square"
+      percent={calculatePercentage(auction.maxPrice, auction.currentPrice)}
+      status="active"
+      showInfo={false}
+      strokeColor="#ffc584"
+      className="o-50"
+    />
     <div className="flex jcb ph3">
-      <small>{auction.minPrice}</small> <small>{auction.maxPrice}</small>
+      <small className="basic">
+        Ξ <small>{weiToEth(auction.minPrice)}</small>
+      </small>
+      <small className="basic">
+        Ξ <small>{weiToEth(auction.maxPrice)}</small>
+      </small>
     </div>
     <div className="tc">
-      <big className="db b">{auction.currentPrice}</big>
-      <small>Auction ends on {auction.deadline && auction.deadline}</small>
+      <big className="db b f3">
+        {" "}
+        <span className="basic">Ξ</span> {weiToEth(auction.currentPrice)}
+      </big>
+      <small>
+        Auction ends on{" "}
+        {auction.deadline &&
+          format(new Date(auction.deadline * 1000), "EEEE do of MMMM")}
+      </small>
     </div>
     <hr />
-    <div className="flex pa3 pb0">
-      <img src={auction.gemImage} alt="" className="h3" />
+    <div className="flex pa3 pb0 w100">
+      <img src={auction.userImage} alt={auction.userName} className="h3" />
       <div className="pl3 ma0 pa0">
-        <p>by {auction.name || auction.owner}</p>
-        <Gembox
-          level={auction.gemLevel}
+        <p>by {auction.userName}</p>
+        <MiniGemBox
+          level={auction.level}
           grade={auction.grade}
           rate={auction.rate}
         />
@@ -80,4 +89,4 @@ Cards.propTypes = {
   }).isRequired
 };
 
-export const temp = () => console.log("frog");
+export default Cards;

@@ -54,8 +54,8 @@ export const getAllUserGems = (userId, gemContract) =>
 // this is called in authActions when you create a new User
 export const getDetailsForAllGemsAUserCurrentlyOwns = userId => {
   const gemContract = store.getState().app.gemsContractInstance;
-  const userName = store.getState().auth.user.imageURL;
-  const userImage = store.getState().auth.user.name;
+  const userName = store.getState().auth.user.name;
+  const userImage = store.getState().auth.user.imageURL;
 
   const listOfGemIds = [];
 
