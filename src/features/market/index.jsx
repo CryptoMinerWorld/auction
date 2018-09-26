@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import amethyst from "../../app/images/amethystImage.png";
 import { getAuctions } from "./marketActions";
-import { Cards } from "./components/Card";
+import Cards from "./components/Card";
 import SortBox from "./components/SortBox";
 import Filters from "./components/Filters";
 
@@ -53,12 +53,12 @@ const Marketplace = ({ auctions }) => (
         <CardBox>
           {auctions &&
             auctions.map(auction => (
-              <Link to={`/auction/${auction.id}`} key={auction.id}>
+              <Link to={`/auction/${auction.id}`}>
                 <Cards auction={auction} />
               </Link>
             ))}
         </CardBox>
-        <p>pagination</p>
+        {/* <p>pagination</p> */}
       </Primary>
       <Aside>
         <Filters />

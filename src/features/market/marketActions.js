@@ -4,7 +4,7 @@ import {
   MARKETPLACE_WAS_FILTERED
 } from "./marketConstants";
 import { db } from "../../app/utils/firebase";
-import { getPrice } from "../auction/helpers";
+// import { getPrice } from "../auction/helpers";
 import { updateDBwithNewPrice } from "./helpers";
 
 export const getAuctions = () => dispatch =>
@@ -64,13 +64,15 @@ export const updatePriceOnAllLiveAuctions = () => async (
   //   });
 
   // get list of Ids for all auctions in view
-  const activeAuctionIds = getState().market
+  const activeAuctions = getState().market
  
   // get price for each auction, then update db with new price
   try {
-    activeAuctionIds.forEach(auctionId => {
-      getPrice(auctionId, dutchContract).then(currentPrice =>
-        updateDBwithNewPrice(auctionId).then(docid =>
+    activeAuctions.forEach(auction => {
+      // getPrice(auctionId, dutchContract)
+      
+      dutchContract.methods.getCurrentPrice(auction.id).call().then(currentPrice =>
+        updateDBwithNewPrice(auction.id).then(docid =>
           db.doc(`stones/${docid}`).update({
             currentPrice: Number(currentPrice)
           })
