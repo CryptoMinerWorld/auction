@@ -33,11 +33,11 @@ export const showExpired = () => {
   Modal.error({
     title: "This Auction No Longer Exists.",
     content: "The Item was most likely sold or you may have the wrong link.",
-    okText: "Take Me To My Workshop",
+    okText: "Take Me To The Marketplace",
     maskClosable: false,
     keyboard: false,
     onOk() {
-      window.location = "https://cryptominerworld.com/workshop/";
+      window.location.href = `${process.env.REACT_APP_BASE_URL}/market`;
     }
   });
 };

@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import { compose } from "recompose";
 import PropTypes from "prop-types";
 import styled from "styled-components";
@@ -61,7 +61,7 @@ const NotStickyHeader = styled.div`
   z-index: 2;
 `;
 
-class App extends PureComponent {
+class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -229,15 +229,14 @@ class App extends PureComponent {
   }
 
   // @notice lets users buy a gem in an active auction
-  handleBuyNow = async (_tokenId, _from) => {
+  handleBuyNow = (_tokenId, _from) => {
     const { dutchAuctionContractInstance, priceInWei } = this.state;
     const { handleUpdateGemOwnership } = this.props;
 
     this.setState({ visible: true });
 
-    await dutchAuctionContractInstance.methods
-      .buy(_tokenId)
-
+    dutchAuctionContractInstance.methods
+      .buy(Number(_tokenId))
       .send({
         from: _from,
         value: Number(priceInWei)
@@ -246,8 +245,7 @@ class App extends PureComponent {
         this.setState({ releaseConfetti: true });
       })
       .on("receipt", () => {
-        handleUpdateGemOwnership(_tokenId, _from, priceInWei);
-        window.location = "https://cryptominerworld.com/workshop/";
+        handleUpdateGemOwnership(_tokenId, _from);
       })
       .on("error", err => this.setState({ err }));
   };
