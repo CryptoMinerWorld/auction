@@ -61,4 +61,12 @@ describe("auntentication module tests", () => {
   test.skip("listen for metamask changes in realtime", async () => {
     expect(true).toBeFalsy();
   });
+
+  test.skip("all usernames get capilazed and trimmed", async () => {
+    expect(true).toBeFalsy();
+  });
+
+  test.skip("no xml attacks through teh input fields on sign in box", async () => {
+    expect(true).toBeFalsy();
+  });
 });

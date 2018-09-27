@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
 import RippleButton from "./RippleButton/RippleButton";
 import img from "../app/images/Profile-Image-Logo-60x60.png";
+import { showSignInModal } from "../features/auth/authActions";
 
 require("antd/lib/avatar/style/css");
 
@@ -23,7 +24,7 @@ const select = store => ({
   userName: store.auth.user && store.auth.user.name
 });
 
-const Navbar = ({ userImage, userId, userName }) => (
+const Navbar = ({ userImage, userId, userName, handleShowSignInModal }) => (
   <div className="shadow-1 z-9 bg-white w-100">
     <nav className="db dt-l w-100 border-box pa3 ph5-l bg-white mw9 center">
       <div className="dn db-ns">
@@ -70,13 +71,17 @@ const Navbar = ({ userImage, userId, userName }) => (
         >
           Founder Geode Pre-Sale
         </a>
-        <a
+        <NavLink
           className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
-          href="https://cryptominerworld.com/workshop/"
+          to={userId && `/profile/${userId}`}
           title="Workshop"
+          activeStyle={{
+            borderBottom: `2px solid purple`
+          }}
+          onClick={() => !userId && handleShowSignInModal()}
         >
           Workshop
-        </a>
+        </NavLink>
         <NavLink
           to="/market"
           activeStyle={{
@@ -129,12 +134,20 @@ const Navbar = ({ userImage, userId, userName }) => (
   </div>
 );
 
-export default connect(select)(Navbar);
+const actions = {
+  handleShowSignInModal: showSignInModal
+};
+
+export default connect(
+  select,
+  actions
+)(Navbar);
 
 Navbar.propTypes = {
   userImage: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
   userId: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
-  userName: PropTypes.string
+  userName: PropTypes.string,
+  handleShowSignInModal: PropTypes.func.isRequired
 };
 
 Navbar.defaultProps = {

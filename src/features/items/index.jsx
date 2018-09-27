@@ -8,7 +8,7 @@ import ReactCSSTransitionGroup from "react-addons-css-transition-group";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import AuctionImage from "./components/AuctionImage";
-import AuctionBox from "./components/AuctionBox";
+import AuctionBox from "../../components/AuctionBox";
 import TradingBox from "./components/TradingBox";
 import DescriptionBox from "./components/DescriptionBox/index";
 import FAQ from "./components/FAQ";

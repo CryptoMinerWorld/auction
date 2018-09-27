@@ -89,3 +89,15 @@ it("dashbpard username shows up publicly even if they have no gems", () => {
 it("sold by button on auction page goes to public profile", () => {
   expect(true).toBeFalsy();
 });
+
+it("sign in box appears when you click on workshop", () => {
+  expect(true).toBeFalsy();
+});
+
+it("sign in box appears when you buy a gem", () => {
+  expect(true).toBeFalsy();
+});
+
+it("the system logs you in automatically if you have an account", () => {
+  expect(true).toBeFalsy();
+});
