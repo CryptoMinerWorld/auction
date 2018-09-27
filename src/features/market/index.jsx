@@ -8,6 +8,7 @@ import { getAuctions } from "./marketActions";
 import Cards from "../../components/Card";
 import SortBox from "./components/SortBox";
 import Filters from "./components/Filters";
+import LoadingCard from "../../components/LoadingCard";
 
 require("antd/lib/slider/style/css");
 
@@ -34,11 +35,27 @@ const Aside = styled.aside`
   grid-column: 5/5;
 `;
 
+const Card = styled.aside`
+  clip-path: polygon(
+    5% 0%,
+    95% 0%,
+    100% 5%,
+    100% 95%,
+    95% 100%,
+    5% 100%,
+    0% 95%,
+    0% 5%
+  );
+`;
+
 const select = store => ({
-  auctions: store.market
+  auctions: store.market,
+  // loading: store.marketActions.loading,
+  loading: true,
+  error: store.marketActions.error
 });
 
-const Marketplace = ({ auctions }) => (
+const Marketplace = ({ auctions, loading }) => (
   <div className="bg-off-black white pa4">
     {/* <AuctionCategories /> */}
     <div className="flex aic mt3">
@@ -51,12 +68,18 @@ const Marketplace = ({ auctions }) => (
       <Primary>
         <SortBox />
         <CardBox>
-          {auctions &&
+          {loading && [1, 2, 3, 4, 5, 6].map(num => <LoadingCard key={num} />)}
+          {auctions && auctions.length > 0 ? (
             auctions.map(auction => (
               <Link to={`/gem/${auction.id}`} key={auction.id}>
                 <Cards auction={auction} />
               </Link>
-            ))}
+            ))
+          ) : (
+            <Card className="bg-dark-gray h5 flex x wrap">
+              <p className="f4">No Active Auctions Right Now.</p>
+            </Card>
+          )}
         </CardBox>
         {/* <p>pagination</p> */}
       </Primary>
@@ -79,7 +102,7 @@ export default connect(
 Marketplace.propTypes = {
   auctions: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string,
+      id: PropTypes.number,
       minPrice: PropTypes.number,
       maxPrice: PropTypes.number,
       price: PropTypes.number,
@@ -95,5 +118,6 @@ Marketplace.propTypes = {
       quality: PropTypes.number,
       rate: PropTypes.number
     })
-  ).isRequired
+  ).isRequired,
+  loading: PropTypes.bool.isRequired
 };

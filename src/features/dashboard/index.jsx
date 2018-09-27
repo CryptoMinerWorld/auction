@@ -8,7 +8,8 @@ import { lifecycle } from "recompose";
 import { getUserGems, getUserDetails } from "./dashboardActions";
 import GemSortBox from "./components/GemSortBox";
 import Cards from "../../components/Card";
-import Loading from "../../components/Loading";
+import LoadingCard from "../../components/LoadingCard";
+import NoCard from "../../components/NoCard";
 
 require("antd/lib/slider/style/css");
 
@@ -46,10 +47,6 @@ const Dashboard = ({ auctions, loading, error, userName, userImage }) => {
     return <div>Error! {error.message}</div>;
   }
 
-  if (loading) {
-    return <Loading />;
-  }
-
   return (
     <div className="bg-off-black white pa4">
       <div className="flex aic mt3">
@@ -66,14 +63,19 @@ const Dashboard = ({ auctions, loading, error, userName, userImage }) => {
         <Primary>
           <GemSortBox />
           <CardBox>
-            {auctions &&
+            {loading &&
+              [1, 2, 3, 4, 5, 6].map(num => <LoadingCard key={num} />)}
+            {auctions && auctions.length > 1 ? (
               auctions.map(auction => (
                 <Link to={`/gem/${auction.id}`} key={auction.id}>
                   <Cards auction={auction} />
                 </Link>
-              ))}
+              ))
+            ) : (
+              <NoCard />
+            )}
           </CardBox>
-          <p>pagination</p>
+          {/* <p>pagination</p> */}
         </Primary>
       </Grid>
     </div>

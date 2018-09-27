@@ -35,7 +35,7 @@ export default function dashboardReducer(state = {
   }
 
   if (action.type === FETCH_USER_GEMS_BEGUN) {
-    return { ...state, gemsLoaded: false, error: false };
+    return { ...state, gemsLoading: false, gemsLoadingError: false };
   }
 
   if (action.type === FETCH_USER_GEMS_BEGUN) {

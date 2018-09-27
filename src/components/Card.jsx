@@ -72,7 +72,7 @@ const Cards = ({ auction }) => (
 
 Cards.propTypes = {
   auction: PropTypes.shape({
-    id: PropTypes.string,
+    id: PropTypes.number,
     minPrice: PropTypes.number,
     maxPrice: PropTypes.number,
     price: PropTypes.number,

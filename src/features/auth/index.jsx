@@ -153,6 +153,7 @@ class Auth extends PureComponent {
             <div className="flex wrap jcb">
               {images.map(url => (
                 <Avatar
+                  key={url}
                   src={url}
                   onClick={() => this.updateImage(url)}
                   size={64}

@@ -8,16 +8,20 @@ import { onlyGemsInAuction, allMyGems } from "../dashboardActions";
 const GemSortBox = ({ handleShowAllGems, handleShowGemsInAuction, match }) => (
   <div className="flex pv4">
     <NavLink
-      to={`${match.url}/all`}
-      className="ttu pr4"
+      exact
+      to={`${match.url}`}
+      className="ttu link white mh3 tc"
       onClick={handleShowAllGems}
+      activeStyle={{ borderBottom: "1px solid purple" }}
     >
       All My Gems
     </NavLink>
     <NavLink
+      exact
       to={`${match.url}/live`}
-      className="ttu pr4"
+      className="ttu link white mh3 tc"
       onClick={handleShowGemsInAuction}
+      activeStyle={{ borderBottom: "1px solid purple" }}
     >
       Only The Ones In Auction
     </NavLink>
@@ -30,11 +34,13 @@ const actions = {
 };
 
 export default compose(
-  withRouter,
   connect(
     null,
-    actions
-  )
+    actions,
+    null,
+    { pure: false }
+  ),
+  withRouter
 )(GemSortBox);
 
 GemSortBox.propTypes = {

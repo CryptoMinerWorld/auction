@@ -8,6 +8,7 @@
   --dark-blue: #344054;
   --dark-purple: #413e58;
   --footer-black: #010e17;
+  --dark-pink: #54214e;
 }
 
 .primary {
@@ -45,6 +46,10 @@
 
 .bg-dark-blue {
   background-color: var(--dark-blue);
+}
+
+.bg-dark-pink {
+  background-color: var(--dark-pink);
 }
 
 .bg-dark-purple {
