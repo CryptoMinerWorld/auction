@@ -69,3 +69,11 @@ it("filters and orders work together", () => {
 it("when a gem is bought the owner of a gem updates on db", () => {
   expect(true).toBeFalsy();
 });
+
+it("auction/edit and stats page all appear on /gem/gemID page", () => {
+  expect(true).toBeFalsy();
+});
+
+it("shouldn't need metamask to access the pages", () => {
+  expect(true).toBeFalsy();
+});

@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import Gembox from "./Gembox";
+import Gembox from "../features/items/components/Gembox";
 
 const Triangle = styled.div`
   width: 140px;

@@ -15,23 +15,13 @@ import getWeb3 from "./utils/getWeb3";
 import Routes from "./routes";
 import "./css/root.css";
 import { showConfirm, showExpired } from "../components/Modal";
-import {
-  isTokenForSale,
-  getAuctionDetails,
-  calcMiningRate,
-  getGemQualities,
-  getGemStory,
-  getGemImage,
-  getPrice,
-  nonExponential,
-  calculateGemName
-} from "../features/auction/helpers";
+import { calculateGemName } from "../features/items/helpers";
 import { sendContractsToRedux } from "./appActions";
 import DutchAuction from "../../build/contracts/DutchAuction.json";
 import Gems from "../../build/contracts/GemERC721.json";
 import Auth from "../features/auth";
 import { updatePriceOnAllLiveAuctions } from "../features/market/marketActions";
-import { updateGemOwnership } from "../features/auction/auctionActions";
+import { updateGemOwnership } from "../features/items/itemActions";
 
 require("antd/lib/alert/style/css");
 require("antd/lib/modal/style/css");
@@ -112,7 +102,6 @@ class App extends Component {
       .getAccounts()
       .then(accounts => accounts[0]);
 
-    const tokenId = Number(window.location.href.split("/").pop());
     // @notice instantiating auction contract
     const dutchContract = new web3.eth.Contract(
       dutchAuctionABI,
@@ -158,68 +147,6 @@ class App extends Component {
       () => handleUpdatePriceOnAllLiveAuctions(),
       10000
     );
-
-    if (tokenId) {
-      // @notice get auction details from contract
-      const gemDetails = await getAuctionDetails(dutchContract, tokenId);
-      const [startTime, endTime, startPrice, endPrice] = await gemDetails;
-      // @notice set auction details to app state
-      this.setState(
-        {
-          tokenId,
-          auctionStartTime: Number(startTime),
-          auctionEndTime: Number(endTime),
-          auctionStartPrice: Number(startPrice),
-          auctionEndPrice: Number(endPrice)
-        },
-        () => {
-          // @notice get current price from contract
-          getPrice(tokenId, dutchContract).then(result =>
-            this.setState({
-              priceInWei: result,
-              currentPrice: nonExponential(result)
-            })
-          );
-          // @notice check if the token is on sale
-          isTokenForSale(dutchContract, tokenId).then(isTokenOnSale =>
-            this.setState({ isTokenOnSale })
-          );
-        }
-      );
-
-      // @notice updates the price every 10 seconds
-      this.priceInterval = setInterval(() => {
-        getPrice(tokenId, dutchContract).then(result =>
-          this.setState({
-            priceInWei: result,
-            currentPrice: nonExponential(result)
-          })
-        );
-      }, 10000);
-
-      // @notice get gem qualities from gem contract
-      getGemQualities(gemsContract, tokenId).then(result => {
-        const [color, level, gradeType, gradeValue] = result;
-
-        this.setState({
-          grade: gradeType,
-          level: Number(level),
-          color,
-          rate: Number(calcMiningRate(gradeType, gradeValue))
-        });
-
-        const image = getGemImage(color, gradeType, level);
-        const story = getGemStory(color, level);
-
-        Promise.all([image, story])
-          .then(([_image, _story]) =>
-            this.setState({ gemImage: _image, story: _story })
-          )
-          .catch(err => {
-            this.setState({ err });
-          });
-      });
-    }
   }
 
   componentWillUnmount() {

@@ -4,14 +4,13 @@ import {
   ALL_USER_GEMS_UPLOADED,
   USER_HAS_NO_GEMS_IN_WORKSHOP,
   AUCTION_DETAILS_RECEIVED,
-  NEW_AUCTION_CREATED,
   ONLY_WANT_TO_SEE_GEMS_IN_AUCTIONS,
   WANT_TO_SEE_ALL_GEMS
 } from "./dashboardConstants";
 import { db } from "../../app/utils/firebase";
 import store from "../../app/store";
-import { getGemQualities, calcMiningRate } from "../auction/helpers";
-import { getGemImage, getGemStory, createAuctionHelper } from "./helpers";
+import { getGemQualities, calcMiningRate } from "../items/helpers";
+import { getGemImage, getGemStory} from "./helpers";
 
 // export const getAuctions = () => dispatch =>
 //   db
@@ -111,69 +110,6 @@ export const getDetailsForAllGemsAUserCurrentlyOwns = userId => {
         .catch(error => console.warn("error s", error));
     })
   );
-};
-
-export const createAuction = payload => (dispatch, getState) => {
-  //  eslint-disable-next-line
-  const currentAccount = getState().auth.currentUserId;
-  //  eslint-disable-next-line
-  const gemsContractInstance = getState().app.gemsContractInstance;
-
-  try {
-    const { gemId, duration, startPrice, endPrice } = payload;
-
-    createAuctionHelper(
-      gemId,
-      duration,
-      startPrice,
-      endPrice,
-      gemsContractInstance,
-      currentAccount
-    ).then(({ deadline, minPrice, maxPrice }) => {
-      db.collection(`stones`)
-        .where(`id`, `==`, Number(payload.gemId))
-        .get()
-        .then(coll =>
-          coll.docs.map(doc =>
-            db.doc(`stones/${doc.id}`).update({
-              auctionIsLive: true,
-              deadline,
-              minPrice,
-              maxPrice
-            })
-          )
-        )
-        .catch(err => console.log("err", err));
-
-      dispatch({
-        type: NEW_AUCTION_CREATED,
-        payload
-      });
-    });
-  } catch (error) {
-    console.log("error", error);
-  }
-};
-
-// @notice removes a gem from an auction
-export const removeFromAuction = tokenId => async (dispatch, getState) => {
-  getState()
-    .app.dutchContractInstance.methods.remove(tokenId)
-    .send();
-
-  db.collection(`stones`)
-    .where(`id`, `==`, Number(tokenId))
-    .get()
-    .then(coll => {
-      coll.docs.map(doc => {
-        dispatch({
-          type: "GEM_REMOVED_FROM_AUCTION"
-        });
-        return db.doc(`stones/${doc.id}`).update({
-          auctionIsLive: false
-        });
-      });
-    });
 };
 
 export const getGemDetails = tokenId => dispatch =>

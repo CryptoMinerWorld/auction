@@ -1,10 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import CountdownTimer from "./CountdownTimer";
-import Gembox from "./Gembox";
+import CountdownTimer from "../features/items/components/CountdownTimer";
+import Gembox from "../features/items/components/Gembox";
 import buyNow from "../app/images/pinkBuyNowButton.png";
-import ProgressMeter from "./ProgressMeter";
+import ProgressMeter from "../features/items/components/ProgressMeter";
 
 const TopHighLight = styled.div`
   background: linear-gradient(to right, #e36d2d, #b91a78);
@@ -104,7 +104,7 @@ export default AuctionBox;
 AuctionBox.propTypes = {
   currentPrice: PropTypes.string.isRequired,
   handleBuyNow: PropTypes.func.isRequired,
-  level: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  level: PropTypes.number.isRequired,
   grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   deadline: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
