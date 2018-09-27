@@ -5,36 +5,46 @@ import {
   USER_HAS_NO_GEMS_IN_WORKSHOP,
   AUCTION_DETAILS_RECEIVED,
   ONLY_WANT_TO_SEE_GEMS_IN_AUCTIONS,
-  WANT_TO_SEE_ALL_GEMS
+  WANT_TO_SEE_ALL_GEMS,
+  FETCH_USER_GEMS_BEGUN,
+  FETCH_USER_GEMS_SUCCEEDED, 
+  FETCH_USER_GEMS_FAILED,
+  FETCH_USER_DETAILS_BEGUN, FETCH_USER_DETAILS_SUCCEEDED, USER_DETAILS_RETRIEVED, FETCH_USER_DETAILS_FAILED
 } from "./dashboardConstants";
 import { db } from "../../app/utils/firebase";
 import store from "../../app/store";
 import { getGemQualities, calcMiningRate } from "../items/helpers";
 import { getGemImage, getGemStory} from "./helpers";
 
-// export const getAuctions = () => dispatch =>
-//   db
-//     .collection("stones")
-//     .where("auctionIsLive", "==", true)
-//     .onSnapshot(collection => {
-//       const auctions = collection.docs.map(doc => doc.data());
-//       dispatch({ type: NEW_AUCTIONS_RECEIVED, payload: auctions });
-//     });
-
 // this gets all the gems from the database
-export const getUserGems = userId => () => {
-  db.collection("stones")
-    .where("owner", "==", userId)
-    .onSnapshot(collection => {
-      const gems = collection.docs.map(doc => doc.data());
-      store.dispatch({ type: USER_GEMS_RETRIEVED, payload: gems });
-    });
+export const getUserGems = userId => (dispatch) => {
+  dispatch({type:FETCH_USER_GEMS_BEGUN})
+  try {
+    db.collection("stones")
+      .where("owner", "==", userId)
+      .onSnapshot(collection => {
+        const gems = collection.docs.map(doc => doc.data());
+        dispatch({type:FETCH_USER_GEMS_SUCCEEDED})
+        dispatch({ type: USER_GEMS_RETRIEVED, payload: gems });
+      });
+  } catch (err) {
+    dispatch({type:FETCH_USER_GEMS_FAILED, payload: err })
+  }
+};
 
-  // .get()
-  // .then(collection => {
-  //   const gems = collection.docs.map(doc => doc.data());
-  //   store.dispatch({ type: USER_GEMS_RETRIEVED, payload: gems });
-  // });
+export const getUserDetails =  userId => dispatch => {
+  dispatch({type:FETCH_USER_DETAILS_BEGUN})
+  try {
+    db.collection("users")
+      .where("walletId", "==", userId)
+      .onSnapshot(collection => {
+        const userDetails = collection.docs.map(doc => doc.data());
+        dispatch({type:FETCH_USER_DETAILS_SUCCEEDED})
+        dispatch({ type: USER_DETAILS_RETRIEVED, payload: userDetails[0] });
+      });
+  } catch (err) {
+    dispatch({type:FETCH_USER_DETAILS_FAILED, payload: err })
+  }
 };
 
 // this checks the smart contract to see what gems a user owns

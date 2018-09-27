@@ -1,19 +1,17 @@
 import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
-import gem1 from "../../../app/images/icons/gem1.png";
-import gem2 from "../../../app/images/icons/gem2.png";
-import gem3 from "../../../app/images/icons/gem3.png";
+import gem1 from "../app/images/icons/gem1.png";
+import gem2 from "../app/images/icons/gem2.png";
+import gem3 from "../app/images/icons/gem3.png";
 
 class Gembox extends PureComponent {
   static propTypes = {
     level: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    styling: PropTypes.string
+    rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
   };
 
   static defaultProps = {
-    styling: "",
     level: 2,
     grade: 2,
     rate: 2
@@ -29,21 +27,13 @@ class Gembox extends PureComponent {
       6: "AAA"
     }[gradeValue]);
 
-  // rateConverter = rate => Math.round((rate / 400) * 100);
-
   render() {
-    const { level, grade, rate, styling } = this.props;
+    const { level, grade, rate } = this.props;
     return (
-      <div className={styling}>
-        <div className="flex">
-          <Nugget quality="level" value={level} gem={gem2} />
-          <Nugget
-            quality="grade"
-            value={this.gradeConverter(grade)}
-            gem={gem1}
-          />
-          <Nugget quality="rate" value={rate} gem={gem3} />
-        </div>
+      <div className="flex jcc">
+        <Nugget quality="level" value={level} gem={gem2} />
+        <Nugget quality="grade" value={this.gradeConverter(grade)} gem={gem1} />
+        <Nugget quality="rate" value={rate} gem={gem3} />
       </div>
     );
   }

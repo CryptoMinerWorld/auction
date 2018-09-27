@@ -77,3 +77,15 @@ it("auction/edit and stats page all appear on /gem/gemID page", () => {
 it("shouldn't need metamask to access the pages", () => {
   expect(true).toBeFalsy();
 });
+
+it("dashboard is publicly viewable", () => {
+  expect(true).toBeFalsy();
+});
+
+it("dashbpard username shows up publicly even if they have no gems", () => {
+  expect(true).toBeFalsy();
+});
+
+it("sold by button on auction page goes to public profile", () => {
+  expect(true).toBeFalsy();
+});
