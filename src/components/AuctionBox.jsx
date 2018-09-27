@@ -1,10 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { connect } from "react-redux";
 import CountdownTimer from "../features/items/components/CountdownTimer";
 import Gembox from "../features/items/components/Gembox";
 import buyNow from "../app/images/pinkBuyNowButton.png";
 import ProgressMeter from "../features/items/components/ProgressMeter";
+import { showSignInModal } from "../features/auth/authActions";
 
 const TopHighLight = styled.div`
   background: linear-gradient(to right, #e36d2d, #b91a78);
@@ -40,6 +42,8 @@ const OverlapOnDesktopView = styled.div`
   }
 `;
 
+const select = store => ({ accountExists: store.auth.existingUser });
+
 const AuctionBox = ({
   currentPrice,
   handleBuyNow,
@@ -50,10 +54,12 @@ const AuctionBox = ({
   name,
   tokenId,
   provider,
-  showConfirm,
   minPrice,
   maxPrice,
-  currentAccount
+  currentAccount,
+  handleShowSignInModal,
+  accountExists,
+  showConfirm
 }) => (
   <OverlapOnDesktopView
     className="bg-dark-gray measure-l w-100 shadow-3"
@@ -79,15 +85,19 @@ const AuctionBox = ({
 
       <div className="w-100 w5-ns h3 center mt4">
         <BuyNow
-          onClick={() =>
-            provider
-              ? handleBuyNow(tokenId, currentAccount)
-              : showConfirm(handleBuyNow, tokenId, currentAccount)
-          }
+          onClick={() => {
+            if (provider && accountExists) {
+              handleBuyNow(tokenId, currentAccount);
+            } else if (provider && !accountExists) {
+              handleShowSignInModal();
+            } else {
+              showConfirm();
+            }
+          }}
           className="b"
           data-testid="buyNowButton"
         >
-          {currentAccount ? "Buy Now" : "Loading..."}
+          Buy Now
         </BuyNow>
       </div>
       <ProgressMeter
@@ -99,7 +109,12 @@ const AuctionBox = ({
   </OverlapOnDesktopView>
 );
 
-export default AuctionBox;
+const actions = { handleShowSignInModal: showSignInModal };
+
+export default connect(
+  select,
+  actions
+)(AuctionBox);
 
 AuctionBox.propTypes = {
   currentPrice: PropTypes.string.isRequired,
@@ -110,10 +125,12 @@ AuctionBox.propTypes = {
   deadline: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     .isRequired,
   name: PropTypes.string.isRequired,
-  showConfirm: PropTypes.func.isRequired,
+  handleShowSignInModal: PropTypes.func.isRequired,
   tokenId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   maxPrice: PropTypes.number.isRequired,
   minPrice: PropTypes.number.isRequired,
   provider: PropTypes.bool.isRequired,
-  currentAccount: PropTypes.string.isRequired
+  currentAccount: PropTypes.string.isRequired,
+  showConfirm: PropTypes.func.isRequired,
+  accountExists: PropTypes.bool.isRequired
 };

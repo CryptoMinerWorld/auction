@@ -6,7 +6,8 @@ import {
   CURRENT_USER_NOT_AVAILABLE,
   WEB3_AVAILABLE,
   USER_EXISTS,
-  NEW_USER
+  NEW_USER,
+  NO_USER_EXISTS
 } from "./authConstants";
 import {getUserGems, getDetailsForAllGemsAUserCurrentlyOwns} from '../dashboard/dashboardActions'
 
@@ -14,12 +15,11 @@ export const checkIfUserExists = (userId) => (dispatch) =>
   db.doc(`users/${userId}`)
   .get()
   .then(doc => 
-     doc.exists ? dispatch({type: USER_EXISTS, payload: doc.data()}) : dispatch({type: NEW_USER})
+     doc.exists ? dispatch({type: USER_EXISTS, payload: doc.data()}) : dispatch({type: NO_USER_EXISTS})
   )
   .catch(error => console.error('error', error))
 
-
-// this is called in `authentocation/index` when you submit a new form
+// this is called in `authentication/index` when you submit a new form
 export const createNewUser = (payload) => (dispatch) => {
   const {walletId} = payload
   return db
@@ -32,6 +32,7 @@ export const createNewUser = (payload) => (dispatch) => {
   .catch(error => console.error('error', error))
 }
 
+export const showSignInModal = () => (dispatch) => dispatch({type: NEW_USER})
 
 
 

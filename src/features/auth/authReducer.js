@@ -1,7 +1,7 @@
 
-import {CURRENT_USER_AVAILABLE, CURRENT_USER_NOT_AVAILABLE, WEB3_AVAILABLE, USER_EXISTS, NEW_USER} from './authConstants'
+import {CURRENT_USER_AVAILABLE, CURRENT_USER_NOT_AVAILABLE, WEB3_AVAILABLE, USER_EXISTS, NEW_USER, NO_USER_EXISTS} from './authConstants'
 
-export default function marketReducer (state = { } , action) {
+export default function authReducer (state = { } , action) {
 
     if (action.type === WEB3_AVAILABLE){
         return {...state, web3: action.payload}
@@ -16,13 +16,16 @@ export default function marketReducer (state = { } , action) {
     }
 
     if (action.type ===  USER_EXISTS){
-        return {...state, user: action.payload, newUser: false }
+        return {...state, user: action.payload, newUser: false, existingUser:true }
     }
 
     if (action.type ===  NEW_USER){
         return {...state, newUser: true }
     }
-
+    
+    if (action.type ===  NO_USER_EXISTS){
+        return {...state, existingUser: false }
+    }
 
     return state
     
