@@ -98,7 +98,7 @@ class Auction extends PureComponent {
                       currentAccount={currentAccount}
                       story={details.story}
                       owner={details.owner}
-                      auctionIsLive={details.auctionIsLive}
+                      userImage={details.userImage}
                     />
                   )}
               </ReactCSSTransitionGroup>
@@ -116,6 +116,9 @@ class Auction extends PureComponent {
                     color={details.color}
                     story={details.story}
                     name={gemName}
+                    userName={details.userName}
+                    auctionIsLive={details.auctionIsLive}
+                    ownerId={details.owner}
                   />
                 )}
               <div className="w-50-l measure-wide-l">

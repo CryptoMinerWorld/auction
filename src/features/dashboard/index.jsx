@@ -1,12 +1,14 @@
 import React from "react";
 import styled from "styled-components";
-// import Slider from "antd/lib/slider";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter, Link } from "react-router-dom";
-import { getUserGems } from "./dashboardActions";
+import { lifecycle } from "recompose";
+import { getUserGems, getUserDetails } from "./dashboardActions";
 import GemSortBox from "./components/GemSortBox";
+import Cards from "../../components/Card";
+import Loading from "../../components/Loading";
 
 require("antd/lib/slider/style/css");
 
@@ -29,67 +31,58 @@ const Primary = styled.section`
   width: 100%;
 `;
 
-// const Aside = styled.aside`
-//   grid-column: 5/5;
-// `;
-
 const select = store => ({
-  auctions: store.dashboard.filter,
-  user: store.auth && store.auth.user
+  auctions: store.dashboard.userGems,
+  loading: store.dashboard.gemsLoading,
+  error: store.dashboard.gemsLoadingError,
+  userName: store.dashboard.userDetails && store.dashboard.userDetails.name,
+  userImage: store.dashboard.userDetails && store.dashboard.userDetails.imageURL
 });
 
-const Dashboard = ({ auctions, user }) => (
-  <div className="bg-off-black white pa4">
-    <div className="flex aic mt3">
-      <img
-        src={user.imageURL}
-        className="h3 w-auto pr3 dib"
-        alt="gem auctions"
-      />
-      <h1 className="white" data-testid="header">
-        {`${user.name}'s Dashboard`}
-      </h1>
+// @notice the username name and image is also stored on every gem object so I render whichever one shows up first, the reason I make two calls is because not every users has gems
+
+const Dashboard = ({ auctions, loading, error, userName, userImage }) => {
+  if (error) {
+    return <div>Error! {error.message}</div>;
+  }
+
+  if (loading) {
+    return <Loading />;
+  }
+
+  return (
+    <div className="bg-off-black white pa4">
+      <div className="flex aic mt3">
+        <img
+          src={userImage || auctions[0].userImage}
+          className="h3 w-auto pr3 dib"
+          alt="gem auctions"
+        />
+        <h1 className="white" data-testid="header">
+          {`${userName || auctions[0].userName}'s Dashboard`}
+        </h1>
+      </div>
+      <Grid>
+        <Primary>
+          <GemSortBox />
+          <CardBox>
+            {auctions &&
+              auctions.map(auction => (
+                <Link to={`/gem/${auction.id}`} key={auction.id}>
+                  <Cards auction={auction} />
+                </Link>
+              ))}
+          </CardBox>
+          <p>pagination</p>
+        </Primary>
+      </Grid>
     </div>
-    <Grid>
-      <Primary>
-        <GemSortBox />
-        <CardBox>
-          {auctions &&
-            auctions.map(auction => (
-              <Link to={`/gem/${auction.id}`} key={auction.id}>
-                <Cards auction={auction} />
-              </Link>
-            ))}
-        </CardBox>
-        <p>pagination</p>
-      </Primary>
-      {/* <Aside>
-        <p className="ttu pv4">hide filters</p>
-        <div>
-          <div className="ba pa3 mv4">
-            <p>filter 1</p>
-            <Slider range defaultValue={[20, 50]} />
-          </div>
-          <div className="ba pa3 mv4">
-            <p>filter 2</p>
-            <Slider range defaultValue={[20, 50]} />
-          </div>
-          <div className="ba pa3 mv4">
-            <p>filter 3</p>
-            <Slider range defaultValue={[20, 50]} />
-          </div>
-          <div className="ba pa3 mv4">
-            <p>filter 4</p>
-            <Slider range defaultValue={[20, 50]} />
-          </div>
-        </div>
-      </Aside> */}
-    </Grid>
-  </div>
-);
+  );
+};
 
 const actions = {
-  handleGetAuctions: getUserGems
+  handleGetAuctions: getUserGems,
+  handleGetUserDetails: getUserDetails
 };
 
 export default compose(
@@ -97,14 +90,16 @@ export default compose(
     select,
     actions
   ),
-  withRouter
+  withRouter,
+  lifecycle({
+    componentDidMount() {
+      this.props.handleGetAuctions(this.props.match.params.userId);
+      this.props.handleGetUserDetails(this.props.match.params.userId);
+    }
+  })
 )(Dashboard);
 
 Dashboard.propTypes = {
-  user: PropTypes.shape({
-    name: PropTypes.string,
-    imageURL: PropTypes.string
-  }),
   auctions: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number,
@@ -113,101 +108,38 @@ Dashboard.propTypes = {
       price: PropTypes.number,
       deadline: PropTypes.oneOfType([
         PropTypes.shape({
-          seconds: PropTypes.number.isRequired
-        }).isRequired,
+          seconds: PropTypes.number
+        }),
         PropTypes.number
-      ]).isRequired,
+      ]),
       image: PropTypes.string,
       owner: PropTypes.string,
-      grade: PropTypes.number,
+      gradeType: PropTypes.number,
       quality: PropTypes.number,
       rate: PropTypes.number
     })
-  ).isRequired
+  ),
+  loading: PropTypes.bool.isRequired,
+  error: PropTypes.bool.isRequired,
+  userName: PropTypes.string,
+  userImage: PropTypes.string
 };
 
 Dashboard.defaultProps = {
-  user: PropTypes.shape({
-    name: "PropTypes.string",
-    imageURL: "PropTypes.string"
-  })
-};
-
-const Card = styled.aside`
-  grid-column: span 1;
-  clip-path: polygon(
-    5% 0%,
-    95% 0%,
-    100% 5%,
-    100% 95%,
-    95% 100%,
-    5% 100%,
-    0% 95%,
-    0% 5%
-  );
-`;
-
-const ProgressDivider = styled.progress`
-  appearance: none;
-  width: 100%;
-  height: 5px;
-  margin: 0;
-  padding: 0;
-  &:-webkit-progress-value {
-    color: red;
-  }
-  &:-moz-progress-bar {
-    color: red;
-  }
-`;
-
-const Cards = ({ auction }) => (
-  <Card className="bg-dark-gray shadow-3">
-    <figure className="ma0 pa0">
-      <img src={auction.gemImage} alt="gem" className="ma0 pa3 pb0" />
-      <figcaption hidden>{auction.quality}</figcaption>
-    </figure>
-    <ProgressDivider value="22" max="100" />
-    <div className="flex jcb ph3">
-      <small>{auction.minPrice}</small> <small>{auction.maxPrice}</small>
-    </div>
-    <div className="tc">
-      <big className="db b">{auction.price}</big>
-      <small>
-        Auction ends on {auction.deadline && auction.deadline.seconds}
-      </small>
-    </div>
-    <hr />
-    <div className="flex pa3 pb0">
-      <img src={auction.image} alt="" className="h3" />
-      <div className="pl3 ma0 pa0">
-        <p>by {auction.owner}</p>
-        <div>
-          <p>{auction.grade}</p>
-          <p>{auction.quality}</p>
-          <p>{auction.rate}</p>
-        </div>
-      </div>
-    </div>
-  </Card>
-);
-
-Cards.propTypes = {
-  auction: PropTypes.shape({
-    id: PropTypes.number,
-    minPrice: PropTypes.number,
-    maxPrice: PropTypes.number,
-    price: PropTypes.number,
-    deadline: PropTypes.oneOfType([
-      PropTypes.shape({
-        seconds: PropTypes.number.isRequired
-      }).isRequired,
-      PropTypes.number
-    ]).isRequired,
-    image: PropTypes.string,
-    owner: PropTypes.string,
-    grade: PropTypes.number,
-    quality: PropTypes.number,
-    rate: PropTypes.number
-  }).isRequired
+  auctions: [
+    {
+      id: 1,
+      minPrice: 0,
+      maxPrice: 1,
+      price: 0.5,
+      deadline: new Date().getTime(),
+      image: "PropTypes.string",
+      owner: "PropTypes.string",
+      gradeType: 1,
+      quality: 1,
+      rate: 1
+    }
+  ],
+  userName: "PropTypes.string",
+  userImage: "PropTypes.string"
 };

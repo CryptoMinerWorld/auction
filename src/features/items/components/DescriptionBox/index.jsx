@@ -1,5 +1,6 @@
 import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 import ReactCSSTransitionGroup from "react-addons-css-transition-group";
 import Waypoint from "react-waypoint";
 import gem1 from "../../../../app/images/icons/gem1.png";
@@ -16,7 +17,10 @@ class DescriptionBox extends PureComponent {
     grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     name: PropTypes.string.isRequired,
-    story: PropTypes.string.isRequired
+    story: PropTypes.string.isRequired,
+    userName: PropTypes.string.isRequired,
+    userImage: PropTypes.string.isRequired,
+    ownerId: PropTypes.string.isRequired
   };
 
   state = {
@@ -55,7 +59,16 @@ class DescriptionBox extends PureComponent {
     }[gradeValue]);
 
   render() {
-    const { level, grade, rate, name, story } = this.props;
+    const {
+      level,
+      grade,
+      rate,
+      name,
+      story,
+      userName,
+      userImage,
+      ownerId
+    } = this.props;
     const { inView } = this.state;
     return (
       <div className="bg-off-black white ma0 ">
@@ -78,7 +91,8 @@ class DescriptionBox extends PureComponent {
                     className="dib ml3"
                   />
                 </div>
-                <div
+                <Link
+                  to={ownerId && `/profile/${ownerId}`}
                   className="flex aic bg-white-10 w5-ns w-auto black h-auto pa1"
                   style={{
                     WebkitClipPath:
@@ -88,15 +102,14 @@ class DescriptionBox extends PureComponent {
                   }}
                 >
                   <img
-                    src={logo}
+                    src={userImage || logo}
                     alt="seller logo"
                     className="br-100 h2 pl3-ns"
                   />
                   <small className="pl3 white-60 dn dib-m dib-l">
-                    <span className="dn dib-l">Sold By {""}</span> CryptoMiner
-                    World
+                    <span className="dn dib-l">Sold By {userName}</span>
                   </small>
-                </div>
+                </Link>
               </div>
               <p className="o-50">{story}</p>
             </div>
