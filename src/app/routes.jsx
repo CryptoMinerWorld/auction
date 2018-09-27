@@ -1,10 +1,9 @@
 import React, { Fragment } from "react";
 import { Route } from "react-router-dom";
 import CreateAuction from "../features/mint";
-import Auction from "../features/auction";
+import Items from "../features/items";
 import Marketplace from "../features/market";
 import Dashboard from "../features/dashboard/index";
-import GemPage from "../features/dashboard/components/gems";
 
 const Routes = props => (
   <Fragment>
@@ -12,9 +11,13 @@ const Routes = props => (
     {/* <Redirect exact from="/" to="/market" /> */}
     <Route path="/market" component={Marketplace} />
     <Route path="/mint" render={() => <CreateAuction {...props} />} />
-    <Route path="/auction/:auctionid" render={() => <Auction {...props} />} />
+    <Route path="/auction/:auctionid" render={() => <Items {...props} />} />
     <Route path="/profile/:userId" render={() => <Dashboard {...props} />} />
-    <Route path="/gem/:gemId" render={() => <GemPage {...props} />} />
+    <Route
+      path="/gem/:gemId"
+      // component={Items}
+      render={() => <Items {...props} />}
+    />
   </Fragment>
 );
 

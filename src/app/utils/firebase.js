@@ -14,14 +14,6 @@ const config = {
   messagingSenderId: process.env.REACT_APP_FB_MSG_SENDER_ID
 };
 
-// const config = {
-//   apiKey: "AIzaSyBoyoAOL0NHEaAu36rxiNtRLCk2NmyAEXU",
-//   authDomain: "dev-cryptominerworld.firebaseapp.com",
-//   databaseURL: "https://dev-cryptominerworld.firebaseio.com",
-//   projectId: "dev-cryptominerworld",
-//   storageBucket: "dev-cryptominerworld.appspot.com",
-//   messagingSenderId: "525391164254"
-// };
 
 firebase.initializeApp(config);
 

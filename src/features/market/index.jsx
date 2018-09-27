@@ -44,7 +44,7 @@ const Marketplace = ({ auctions }) => (
     <div className="flex aic mt3">
       <img src={amethyst} className="h3 w-auto pr3 dib" alt="gem auctions" />
       <h1 className="white" data-testid="header">
-        gem auctions
+        Gem Auctions
       </h1>
     </div>
     <Grid>
@@ -53,7 +53,7 @@ const Marketplace = ({ auctions }) => (
         <CardBox>
           {auctions &&
             auctions.map(auction => (
-              <Link to={`/auction/${auction.id}`}>
+              <Link to={`/gem/${auction.id}`} key={auction.id}>
                 <Cards auction={auction} />
               </Link>
             ))}

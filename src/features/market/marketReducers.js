@@ -1,5 +1,5 @@
 import { NEW_AUCTIONS_RECEIVED, MARKETPLACE_WAS_FILTERED} from './marketConstants'
-import {NEW_AUCTION_CREATED} from '../dashboard/dashboardConstants'
+import {NEW_AUCTION_CREATED} from '../items/itemConstants'
 
 export default function marketReducer (state = [] , action) {
     

@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import Slider from "antd/lib/slider";
 import { connect } from "react-redux";
 import { filterMarketplaceResults } from "../marketActions";
+import { weiToEth } from "../helpers";
 
 class Filters extends PureComponent {
   static propTypes = {};
@@ -40,7 +41,7 @@ class Filters extends PureComponent {
       <div>
         <p className="ttu pv4">hide filters</p>
         <div>
-          <div className=" pa3 mv4">
+          <div className="pa3 mv4">
             <p>{`Only Show Levels ${level.min} to ${level.max}`}</p>
             <Slider
               range
@@ -71,9 +72,9 @@ class Filters extends PureComponent {
             />
           </div>
           <div className="pa3 mv4">
-            <p>{`Only Show Prices from ${currentPrice.min} to ${
-              currentPrice.max
-            }`}</p>
+            <p>{`Only Show Prices from ${weiToEth(
+              currentPrice.min
+            )} to ${weiToEth(currentPrice.max)}`}</p>
             <Slider
               range
               defaultValue={[currentPrice.min, currentPrice.max]}
