@@ -73,7 +73,7 @@ const Navbar = ({ userImage, userId, userName, handleShowSignInModal }) => (
         </a>
         <NavLink
           className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
-          to={userId && `/profile/${userId}`}
+          to={`/profile/${userId}`}
           title="Workshop"
           activeStyle={{
             borderBottom: `2px solid purple`
@@ -108,14 +108,7 @@ const Navbar = ({ userImage, userId, userName, handleShowSignInModal }) => (
         </a>
         {userImage &&
           userName && (
-            <NavLink
-              exact
-              to={`/profile/${userId}`}
-              activeStyle={{
-                borderBottom: `2px solid purple`,
-                padding: `1rem`
-              }}
-            >
+            <NavLink to={`/profile/${userId}`}>
               <div className="dib">
                 <Avatar src={userImage} className="dib" />
                 <p className="dib">{userName}</p>

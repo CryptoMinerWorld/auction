@@ -1,20 +1,31 @@
 import {
   NEW_AUCTIONS_RECEIVED,
   AUCTION_PRICE_UPDATES_BEGIN,
-  MARKETPLACE_WAS_FILTERED
+  MARKETPLACE_WAS_FILTERED,
+  FETCH_NEW_AUCTIONS_FAILED,
+  FETCH_NEW_AUCTIONS_BEGUN,
+  FETCH_NEW_AUCTIONS_SUCCEEDED
 } from "./marketConstants";
 import { db } from "../../app/utils/firebase";
 // import { getPrice } from "../auction/helpers";
 import { updateDBwithNewPrice } from "./helpers";
 
 export const getAuctions = () => dispatch =>
+{
+  dispatch({ type: FETCH_NEW_AUCTIONS_BEGUN })
+try {
   db
     .collection("stones")
     .where("auctionIsLive", "==", true)
     .onSnapshot(collection => {
       const auctions = collection.docs.map(doc => doc.data());
+      dispatch({ type: FETCH_NEW_AUCTIONS_SUCCEEDED })
       dispatch({ type: NEW_AUCTIONS_RECEIVED, payload: auctions });
     });
+  } catch(err) {
+    dispatch({ type: FETCH_NEW_AUCTIONS_FAILED, payload: err })
+  }
+  }
 
 export const getSoonestAuctions = () => dispatch =>
   db
