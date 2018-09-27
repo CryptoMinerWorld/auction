@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { compose } from "recompose";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { BrowserRouter } from "react-router-dom";
@@ -281,11 +280,9 @@ const actions = {
   handleUpdateGemOwnership: updateGemOwnership
 };
 
-export default compose(
-  connect(
-    null,
-    actions
-  )
+export default connect(
+  null,
+  actions
 )(App);
 
 App.propTypes = {
