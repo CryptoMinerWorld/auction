@@ -83,6 +83,7 @@ const Navbar = ({ userImage, userId, userName, handleShowSignInModal }) => (
           Workshop
         </NavLink>
         <NavLink
+          exact
           to="/market"
           activeStyle={{
             borderBottom: `2px solid purple`
@@ -108,6 +109,7 @@ const Navbar = ({ userImage, userId, userName, handleShowSignInModal }) => (
         {userImage &&
           userName && (
             <NavLink
+              exact
               to={`/profile/${userId}`}
               activeStyle={{
                 borderBottom: `2px solid purple`,
@@ -140,7 +142,9 @@ const actions = {
 
 export default connect(
   select,
-  actions
+  actions,
+  null,
+  { pure: false }
 )(Navbar);
 
 Navbar.propTypes = {
