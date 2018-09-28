@@ -60,7 +60,7 @@ const Marketplace = ({ auctions, loading }) => (
     {/* <AuctionCategories /> */}
     <div className="flex aic mt3">
       <img src={amethyst} className="h3 w-auto pr3 dib" alt="gem auctions" />
-      <h1 className="white" data-testid="header">
+      <h1 className="white f1 b o-90" data-testid="header">
         Gem Auctions
       </h1>
     </div>

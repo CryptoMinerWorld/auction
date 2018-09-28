@@ -35,8 +35,8 @@ const Footer = () => (
   <div className="bg-footer-black">
     <TopHighlight />
     <div className="mw9 center">
-      <BackgroundImage className="pa4 pa6-l bt b--black-10">
-        <div className="mb4-l cf">
+      <BackgroundImage className="pa4 bt b--black-10">
+        <div className="mb6-l cf">
           <article className="fl w-50 dib-ns w-auto-ns mr4-m mr5-l mb4 pr2 pr0-ns white">
             <FooterLink link="https://cryptominerworld.com/" title="Home" />
             <FooterLink

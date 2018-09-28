@@ -26,7 +26,7 @@ const select = store => ({
 
 const Navbar = ({ userImage, userId, userName, handleShowSignInModal }) => (
   <div className="shadow-1 z-9 bg-white w-100">
-    <nav className="db dt-l w-100 border-box pa3 ph5-l bg-white mw9 center">
+    <nav className="db dt-l w-100 border-box pa3 ph4-l bg-white mw9 center">
       <div className="dn db-ns">
         <a
           className="dtc-l v-mid mid-gray link dim tl mb2 mb0-l dib"
@@ -35,7 +35,7 @@ const Navbar = ({ userImage, userId, userName, handleShowSignInModal }) => (
         >
           <img
             src={img}
-            className="dib h-auto w3 br-100 pl3"
+            className="dib h-auto w3 br-100 pl3 pl0-ns ph2-ns"
             alt="CryptoMiner World"
           />
         </a>
