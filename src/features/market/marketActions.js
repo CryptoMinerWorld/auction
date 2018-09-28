@@ -30,7 +30,7 @@ try {
   }
   }
 
-export const getSoonestAuctions = () => dispatch =>
+export const getSoonestAuctions = () => dispatch => 
   db
     .collection("stones")
     .where("auctionIsLive", "==", true)
@@ -40,7 +40,7 @@ export const getSoonestAuctions = () => dispatch =>
       dispatch({ type: NEW_AUCTIONS_RECEIVED, payload: auctions });
     });
 
-export const getLowestAuctions = () => dispatch =>
+export const getHighestAuctions = () => dispatch =>
   db
     .collection("stones")
     .where("auctionIsLive", "==", true)
@@ -50,15 +50,16 @@ export const getLowestAuctions = () => dispatch =>
       dispatch({ type: NEW_AUCTIONS_RECEIVED, payload: auctions });
     });
 
-export const getHighestAuctions = () => dispatch =>
+export const getLowestAuctions = () => dispatch => 
   db
-    .collection("stones")
-    .where("auctionIsLive", "==", true)
-    .orderBy("currentPrice")
-    .onSnapshot(collection => {
-      const auctions = collection.docs.map(doc => doc.data());
-      dispatch({ type: NEW_AUCTIONS_RECEIVED, payload: auctions });
-    });
+  .collection("stones")
+  .where("auctionIsLive", "==", true)
+  .orderBy("currentPrice")
+  .onSnapshot(collection => {
+    const auctions = collection.docs.map(doc => doc.data());
+    dispatch({ type: NEW_AUCTIONS_RECEIVED, payload: auctions });
+  });
+  
 
 export const updatePriceOnAllLiveAuctions = () => async (
   dispatch,

@@ -99,6 +99,8 @@ class Auction extends PureComponent {
                       story={details.story}
                       owner={details.owner}
                       userImage={details.userImage}
+                      auctionIsLive={details.auctionIsLive}
+                      gemId={details.gemId}
                     />
                   )}
               </ReactCSSTransitionGroup>
@@ -119,6 +121,7 @@ class Auction extends PureComponent {
                     userName={details.userName}
                     auctionIsLive={details.auctionIsLive}
                     ownerId={details.owner}
+                    gemId={details.id}
                   />
                 )}
               <div className="w-50-l measure-wide-l">
@@ -200,25 +203,23 @@ const DisplayBoxStateMachine = props => {
 
   let state = "";
 
-  switch ((owner, currentAccount, auctionIsLive)) {
-    case owner === currentAccount:
-      state = "owner";
-      break;
-    case auctionIsLive && owner !== currentAccount:
-      state = "buyer";
-      break;
-    case !auctionIsLive && owner !== currentAccount:
-      state = "Tuesday";
-      break;
-    default:
-      state = "buyer";
+  if (owner === currentAccount) {
+    state = "owner";
+  }
+
+  if (auctionIsLive && owner !== currentAccount) {
+    state = "buyer";
+  }
+
+  if (!auctionIsLive && owner !== currentAccount) {
+    state = "viewer";
   }
 
   return (
     <div>
       {
         {
-          owner: <TradingBox />,
+          owner: <TradingBox {...props} />,
           buyer: <AuctionBox {...props} />,
           viewer: <StatsBox />
         }[state]

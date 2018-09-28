@@ -28,7 +28,7 @@ const OverlapOnDesktopView = styled.div`
 
 class TradingBox extends PureComponent {
   static propTypes = {
-    gemId: PropTypes.string.isRequired,
+    tokenId: PropTypes.number.isRequired,
     handleCreateAuction: PropTypes.func.isRequired,
     handleRemoveGemFromAuction: PropTypes.func.isRequired,
     auctionIsLive: PropTypes.bool.isRequired
@@ -37,20 +37,22 @@ class TradingBox extends PureComponent {
   state = {
     duration: "",
     startPrice: "",
-    endPrice: ""
+    endPrice: "",
+    formSubmitted: false
   };
 
   handleChange = (value, field) => this.setState({ [field]: value });
+
+  turnLoaderOff = () => this.setState({ formSubmitted: false });
 
   render() {
     const {
       handleCreateAuction,
       handleRemoveGemFromAuction,
-      gemId,
+      tokenId,
       auctionIsLive
     } = this.props;
-    const { duration, startPrice, endPrice } = this.state;
-
+    const { duration, startPrice, endPrice, formSubmitted } = this.state;
     return (
       <OverlapOnDesktopView
         className="bg-dark-gray measure-l w-100 shadow-3"
@@ -70,8 +72,11 @@ class TradingBox extends PureComponent {
                   <Button
                     type="danger"
                     className="ma3"
-                    onClick={() => handleRemoveGemFromAuction(gemId)}
+                    onClick={() => {
+                      handleRemoveGemFromAuction(Number(tokenId));
+                    }}
                     data-testid="removeGemButton"
+                    loading={formSubmitted}
                   >
                     Remove Gem From Auction
                   </Button>
@@ -114,18 +119,22 @@ class TradingBox extends PureComponent {
                 />
                 <div>
                   <Button
+                    type="submit"
                     className="ma3"
-                    disabled={!(gemId && duration && startPrice)}
+                    disabled={!(tokenId && duration && startPrice)}
                     onClick={() => {
                       const payload = {
-                        gemId,
+                        tokenId: Number(tokenId),
                         duration: daysToSeconds(duration),
                         startPrice: ethToWei(startPrice),
                         endPrice: ethToWei(endPrice)
                       };
-                      handleCreateAuction(payload);
+
+                      this.setState({ formSubmitted: true });
+                      handleCreateAuction(payload, this.turnLoaderOff);
                     }}
                     data-testid="createAuctionButton"
+                    loading={formSubmitted}
                   >
                     Create Auction
                   </Button>

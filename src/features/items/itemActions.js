@@ -9,7 +9,7 @@ import {
   FETCH_DATA_FAILED
 } from "../../app/reduxConstants";
 import { db } from "../../app/utils/firebase";
-import {createAuctionHelper} from './helpers'
+import { createAuctionHelper } from "./helpers";
 
 export const getAuctionDetails = tokenId => dispatch => {
   dispatch({ type: FETCH_DATA_BEGUN });
@@ -60,18 +60,17 @@ export const updateGemOwnership = (gemId, newOwner) => async dispatch => {
     });
 };
 
-
-export const createAuction = payload => (dispatch, getState) => {
+export const createAuction = (payload, turnLoaderOff) => (dispatch, getState) => {
   //  eslint-disable-next-line
   const currentAccount = getState().auth.currentUserId;
   //  eslint-disable-next-line
   const gemsContractInstance = getState().app.gemsContractInstance;
 
   try {
-    const { gemId, duration, startPrice, endPrice } = payload;
+    const { tokenId, duration, startPrice, endPrice } = payload;
 
     createAuctionHelper(
-      gemId,
+      tokenId,
       duration,
       startPrice,
       endPrice,
@@ -79,7 +78,7 @@ export const createAuction = payload => (dispatch, getState) => {
       currentAccount
     ).then(({ deadline, minPrice, maxPrice }) => {
       db.collection(`stones`)
-        .where(`id`, `==`, Number(payload.gemId))
+        .where(`id`, `==`, tokenId)
         .get()
         .then(coll =>
           coll.docs.map(doc =>
@@ -91,6 +90,7 @@ export const createAuction = payload => (dispatch, getState) => {
             })
           )
         )
+        .then(() => turnLoaderOff())
         .catch(err => console.log("err", err));
 
       dispatch({
@@ -104,10 +104,13 @@ export const createAuction = payload => (dispatch, getState) => {
 };
 
 // @notice removes a gem from an auction
-export const removeFromAuction = tokenId => async (dispatch, getState) => {
-  getState()
+export const removeFromAuction = tokenId =>  (dispatch, getState) => {
+   getState()
     .app.dutchContractInstance.methods.remove(tokenId)
-    .send();
+    .send()
+    .then((x)=> 
+      console.log("x remove done", x )
+    );
 
   db.collection(`stones`)
     .where(`id`, `==`, Number(tokenId))
@@ -121,5 +124,6 @@ export const removeFromAuction = tokenId => async (dispatch, getState) => {
           auctionIsLive: false
         });
       });
-    });
+    })
+    .catch(err => console.log("err", err));
 };

@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import ReactCSSTransitionGroup from "react-addons-css-transition-group";
 import Icon from "antd/lib/icon";
 import { filterMarketplaceResults } from "../marketActions";
-import { weiToEth } from "../helpers";
+import { weiToEth, gradeConverter } from "../helpers";
 
 const Loading1 = () => (
   <Icon type="loading" style={{ fontSize: 24, color: "#bb207e" }} spin />
@@ -36,12 +36,12 @@ class Filters extends PureComponent {
       max: 3
     },
     gradeType: {
-      min: 0,
+      min: 1,
       max: 3
     },
     rate: {
       min: 0,
-      max: 3
+      max: 400
     },
     currentPrice: {
       min: 0,
@@ -136,13 +136,15 @@ class Filters extends PureComponent {
                   <p className="o-60">Only Show </p>
                   <p>
                     <span className="o-60">Grade </span>
-                    <span className=" f3" style={{ color: "#765495" }}>{`${
-                      gradeType.min
-                    }`}</span>{" "}
+                    <span
+                      className=" f3"
+                      style={{ color: "#765495" }}
+                    >{`${gradeConverter(gradeType.min)}`}</span>{" "}
                     <span className="o-60"> to </span>
-                    <span className=" f3" style={{ color: "#765495" }}>{`${
-                      gradeType.max
-                    }`}</span>
+                    <span
+                      className=" f3"
+                      style={{ color: "#765495" }}
+                    >{`${gradeConverter(gradeType.max)}`}</span>
                   </p>
                 </div>
               )}
@@ -150,10 +152,12 @@ class Filters extends PureComponent {
               <Slider
                 range
                 defaultValue={[gradeType.min, gradeType.max]}
-                max={5}
+                max={6}
+                min={1}
                 onChange={this.handleChange(`gradeType`)}
                 onAfterChange={this.finalFilter()}
                 className="slider2"
+                tipFormatter={val => gradeConverter(val)}
               />
             </div>
           </ReactCSSTransitionGroup>
@@ -196,7 +200,7 @@ class Filters extends PureComponent {
               <Slider
                 range
                 defaultValue={[rate.min, rate.max]}
-                max={5}
+                max={400}
                 onChange={this.handleChange(`rate`)}
                 onAfterChange={this.finalFilter()}
                 className="slider3"
@@ -225,14 +229,15 @@ class Filters extends PureComponent {
                 </div>
               ) : (
                 <div>
-                  <p className="o-60">Only Show </p>
+                  <p className="o-60">Only Show Prices from </p>
                   <p>
-                    <span className="o-60">Prices from </span>
+                    <span className="basic">Ξ </span>
                     <span
                       className=" f3"
                       style={{ color: "#d9a06c" }}
                     >{`${weiToEth(currentPrice.min)}`}</span>{" "}
                     <span className="o-60"> to </span>
+                    <span className="basic">Ξ </span>
                     <span
                       className=" f3"
                       style={{ color: "#d9a06c" }}
@@ -248,6 +253,7 @@ class Filters extends PureComponent {
                 onChange={this.handleChange(`currentPrice`)}
                 onAfterChange={this.finalFilter()}
                 className="slider4"
+                tipFormatter={val => weiToEth(val)}
               />
             </div>
           </ReactCSSTransitionGroup>

@@ -135,9 +135,13 @@ class Auth extends PureComponent {
           ]}
         >
           {name && (
-            <div className="flex aic pa3">
-              <Avatar src={imageURL} />
-              <p className="pl4 f2 b">{name}</p>
+            <div className="flex aic pa3 mb3">
+              <div>
+                <Avatar src={imageURL} size={64} />
+              </div>
+              <div className=" flex aic">
+                <p className="pl4 f2 b pa0 ma0">{name}</p>
+              </div>
             </div>
           )}
           <Input value={currentUser} disabled size="large" />
