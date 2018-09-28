@@ -62,7 +62,7 @@ class Filters extends PureComponent {
     const { filterLoading } = this.props;
     return (
       <div>
-        {/* <p className="ttu pv4 pl4">hide filters</p> */}
+        <p className="ttu pv4 pl4">{/* hide filters */}</p>
         <div>
           <ReactCSSTransitionGroup
             transitionName="example1"

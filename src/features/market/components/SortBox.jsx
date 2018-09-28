@@ -9,31 +9,32 @@ import {
   getHighestAuctions
 } from "../marketActions";
 
-const SortBox = ({
-  match,
-  handleGetSoonest,
-  handleGetLowest,
-  handleGetHighest
-}) => (
-  <div className="flex pv4">
+const SortBox = ({ handleGetSoonest, handleGetLowest, handleGetHighest }) => (
+  <div className="flex pv4 ">
     <NavLink
-      to={`${match.url}/soonest`}
-      className="ttu pr4"
+      exact
+      to="/market"
+      className="ttu mr4 white o-90 link"
       onClick={handleGetSoonest}
+      activeStyle={{ borderBottom: "1px solid purple" }}
     >
       finishing soonest
     </NavLink>
     <NavLink
-      to={`${match.url}/lowest`}
-      className="ttu pr4"
+      exact
+      to="/market/lowest"
+      className="ttu mr4 white o-90 link"
       onClick={handleGetLowest}
+      activeStyle={{ borderBottom: "1px solid purple" }}
     >
       lowest price
     </NavLink>
     <NavLink
-      to={`${match.url}/highest`}
-      className="ttu pr4"
+      exact
+      to="/market/highest"
+      className="ttu mr4 white o-90 link"
       onClick={handleGetHighest}
+      activeStyle={{ borderBottom: "1px solid purple" }}
     >
       highest price
     </NavLink>
@@ -47,17 +48,16 @@ const actions = {
 };
 
 export default compose(
-  withRouter,
   connect(
     null,
-    actions
-  )
+    actions,
+    null,
+    { pure: false }
+  ),
+  withRouter
 )(SortBox);
 
 SortBox.propTypes = {
-  match: PropTypes.shape({
-    url: PropTypes.string
-  }).isRequired,
   handleGetSoonest: PropTypes.func.isRequired,
   handleGetLowest: PropTypes.func.isRequired,
   handleGetHighest: PropTypes.func.isRequired
