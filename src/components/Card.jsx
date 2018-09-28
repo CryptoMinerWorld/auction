@@ -62,7 +62,7 @@ const Cards = ({ auction }) => (
 
         <MiniGemBox
           level={auction.level}
-          grade={auction.grade}
+          grade={auction.gradeType}
           rate={auction.rate}
         />
       </div>

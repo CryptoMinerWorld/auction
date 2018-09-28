@@ -9,12 +9,8 @@ service cloud.firestore {
     }
 
     match /stones/{gemId} {
-      allow read, create;
-      allow update, create: if ('auctionIsLive' in request.writeFields);
-      allow update, create: if ('currentPrice' in request.writeFields);
-      allow update, create: if ('maxPrice' in request.writeFields);
-      allow update, create: if ('minPrice' in request.writeFields);
-      allow update, create: if ('deadline' in request.writeFields);
+      allow read, create, update;
+    
     }
   }
 }

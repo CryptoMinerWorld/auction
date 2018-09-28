@@ -63,7 +63,7 @@ Gem.defaultProps = {
 };
 
 const Nugget = ({ quality, value, gem }) => (
-  <div className="flex pr3 aic">
+  <div className="flex pr3 aic jca">
     <small className="ttu white dn-ns pl2">{quality}</small>
     <Gem quality={quality} image={gem} amount={value} />
   </div>

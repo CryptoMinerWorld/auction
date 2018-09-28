@@ -7,43 +7,46 @@ import {
   ONLY_WANT_TO_SEE_GEMS_IN_AUCTIONS,
   WANT_TO_SEE_ALL_GEMS,
   FETCH_USER_GEMS_BEGUN,
-  FETCH_USER_GEMS_SUCCEEDED, 
+  FETCH_USER_GEMS_SUCCEEDED,
   FETCH_USER_GEMS_FAILED,
-  FETCH_USER_DETAILS_BEGUN, FETCH_USER_DETAILS_SUCCEEDED, USER_DETAILS_RETRIEVED, FETCH_USER_DETAILS_FAILED
+  FETCH_USER_DETAILS_BEGUN,
+  FETCH_USER_DETAILS_SUCCEEDED,
+  USER_DETAILS_RETRIEVED,
+  FETCH_USER_DETAILS_FAILED
 } from "./dashboardConstants";
 import { db } from "../../app/utils/firebase";
 import store from "../../app/store";
 import { getGemQualities, calcMiningRate } from "../items/helpers";
-import { getGemImage, getGemStory} from "./helpers";
+import { getGemImage, getGemStory } from "./helpers";
 
 // this gets all the gems from the database
-export const getUserGems = userId => (dispatch) => {
-  dispatch({type:FETCH_USER_GEMS_BEGUN})
+export const getUserGems = userId => dispatch => {
+  dispatch({ type: FETCH_USER_GEMS_BEGUN });
   try {
     db.collection("stones")
       .where("owner", "==", userId)
       .onSnapshot(collection => {
         const gems = collection.docs.map(doc => doc.data());
-        dispatch({type:FETCH_USER_GEMS_SUCCEEDED})
+        dispatch({ type: FETCH_USER_GEMS_SUCCEEDED });
         dispatch({ type: USER_GEMS_RETRIEVED, payload: gems });
       });
   } catch (err) {
-    dispatch({type:FETCH_USER_GEMS_FAILED, payload: err })
+    dispatch({ type: FETCH_USER_GEMS_FAILED, payload: err });
   }
 };
 
-export const getUserDetails =  userId => dispatch => {
-  dispatch({type:FETCH_USER_DETAILS_BEGUN})
+export const getUserDetails = userId => dispatch => {
+  dispatch({ type: FETCH_USER_DETAILS_BEGUN });
   try {
     db.collection("users")
       .where("walletId", "==", userId)
       .onSnapshot(collection => {
         const userDetails = collection.docs.map(doc => doc.data());
-        dispatch({type:FETCH_USER_DETAILS_SUCCEEDED})
+        dispatch({ type: FETCH_USER_DETAILS_SUCCEEDED });
         dispatch({ type: USER_DETAILS_RETRIEVED, payload: userDetails[0] });
       });
   } catch (err) {
-    dispatch({type:FETCH_USER_DETAILS_FAILED, payload: err })
+    dispatch({ type: FETCH_USER_DETAILS_FAILED, payload: err });
   }
 };
 
@@ -62,6 +65,7 @@ export const getAllUserGems = (userId, gemContract) =>
 
 // this is called in authActions when you create a new User
 export const getDetailsForAllGemsAUserCurrentlyOwns = userId => {
+  store.dispatch({ type: FETCH_USER_GEMS_BEGUN });
   const gemContract = store.getState().app.gemsContractInstance;
   const userName = store.getState().auth.user.name;
   const userImage = store.getState().auth.user.imageURL;
@@ -96,7 +100,12 @@ export const getDetailsForAllGemsAUserCurrentlyOwns = userId => {
           const completeGemDetails = listOfGemIds.map((gemId, index) => ({
             id: Number(gemId),
             ...responses[index],
-            rate: Number(calcMiningRate(responses[index].gradeType, responses[index].gradeValue)), 
+            rate: Number(
+              calcMiningRate(
+                responses[index].gradeType,
+                responses[index].gradeValue
+              )
+            ),
             auctionIsLive: false,
             owner: userId,
             gemImage: images[index],
@@ -106,18 +115,25 @@ export const getDetailsForAllGemsAUserCurrentlyOwns = userId => {
           }));
 
           if (completeGemDetails.length === 0) {
+            store.dispatch({ type: FETCH_USER_GEMS_SUCCEEDED });
             store.dispatch({
               type: USER_HAS_NO_GEMS_IN_WORKSHOP
             });
           } else {
-            completeGemDetails.forEach(gem => db.collection("stones").add(gem));
-            store.dispatch({
-              type: ALL_USER_GEMS_UPLOADED,
-              payload: completeGemDetails
-            });
+            completeGemDetails
+              .forEach(gem => db.collection("stones").add(gem))
+              .then(() => {
+                store.dispatch({ type: FETCH_USER_GEMS_SUCCEEDED });
+                store.dispatch({
+                  type: ALL_USER_GEMS_UPLOADED,
+                  payload: completeGemDetails
+                });
+              });
           }
         })
-        .catch(error => console.warn("error s", error));
+        .catch(error =>
+          store.dispatch({ type: FETCH_USER_GEMS_FAILED, payload: error })
+        );
     })
   );
 };

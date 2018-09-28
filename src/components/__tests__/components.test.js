@@ -175,3 +175,47 @@ it('ProgressMeter renders correctly', () => {
     expect(container).toMatchSnapshot();
 });
 
+
+it('filter show correct filter results', () => {
+    const { container } = render(Navbar);
+    expect(container).toMatchSnapshot();
+});
+
+it('frade and rate modifications are bound, chnaging one should result in correct adjustmnet in teh other', () => {
+    const { container } = render(Navbar);
+    expect(container).toMatchSnapshot();
+});
+
+
+it('grade always show letters form D - AAA', () => {
+    const { container } = render(Navbar);
+    expect(container).toMatchSnapshot();
+});
+
+it('price slider shows a 3 digit number on slide', () => {
+    const { container } = render(Navbar);
+    expect(container).toMatchSnapshot();
+});
+
+it('grade shows letters on slide', () => {
+    const { container } = render(Navbar);
+    expect(container).toMatchSnapshot();
+});
+
+it('only dis[lay 2 rows of 3 images', () => {
+    const { container } = render(Navbar);
+    expect(container).toMatchSnapshot();
+});
+
+it('pink gem dude shows up as gem page mascot', () => {
+    const { container } = render(Navbar);
+    expect(container).toMatchSnapshot();
+});
+
+
+
+
+
+
+
+

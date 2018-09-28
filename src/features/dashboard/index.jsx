@@ -7,7 +7,7 @@ import { withRouter, Link } from "react-router-dom";
 import { lifecycle } from "recompose";
 import { getUserGems, getUserDetails } from "./dashboardActions";
 import GemSortBox from "./components/GemSortBox";
-import Cards from "../../components/Card";
+import Cards from "./components/GemCard";
 import LoadingCard from "../../components/LoadingCard";
 import NoCard from "../../components/NoCard";
 
@@ -59,13 +59,14 @@ const Dashboard = ({ auctions, loading, error, userName, userImage }) => {
           {`${userName || auctions[0].userName}'s Dashboard`}
         </h1>
       </div>
+
       <Grid>
         <Primary>
           <GemSortBox />
           <CardBox>
             {loading &&
               [1, 2, 3, 4, 5, 6].map(num => <LoadingCard key={num} />)}
-            {auctions && auctions.length > 1 ? (
+            {auctions && auctions.length > 0 ? (
               auctions.map(auction => (
                 <Link to={`/gem/${auction.id}`} key={auction.id}>
                   <Cards auction={auction} />
@@ -135,13 +136,15 @@ Dashboard.defaultProps = {
       maxPrice: 1,
       price: 0.5,
       deadline: new Date().getTime(),
-      image: "PropTypes.string",
-      owner: "PropTypes.string",
+      image:
+        "https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FAquamarine%20Face%20Emoji.png?alt=media&token=b759ae07-bb8c-4ec8-9399-d3844d5428ef",
+      owner: "Someone",
       gradeType: 1,
       quality: 1,
       rate: 1
     }
   ],
-  userName: "PropTypes.string",
-  userImage: "PropTypes.string"
+  userName: "Someone",
+  userImage:
+    "https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FAquamarine%20Face%20Emoji.png?alt=media&token=b759ae07-bb8c-4ec8-9399-d3844d5428ef"
 };
