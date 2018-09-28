@@ -3,8 +3,29 @@ import PropTypes from "prop-types";
 import Slider from "antd/lib/slider";
 import { connect } from "react-redux";
 import ReactCSSTransitionGroup from "react-addons-css-transition-group";
+import Icon from "antd/lib/icon";
 import { filterMarketplaceResults } from "../marketActions";
 import { weiToEth } from "../helpers";
+
+const Loading1 = () => (
+  <Icon type="loading" style={{ fontSize: 24, color: "#bb207e" }} spin />
+);
+
+const Loading2 = () => (
+  <Icon type="loading" style={{ fontSize: 24, color: "#765495" }} spin />
+);
+
+const Loading3 = () => (
+  <Icon type="loading" style={{ fontSize: 24, color: "#5073c7" }} spin />
+);
+
+const Loading4 = () => (
+  <Icon type="loading" style={{ fontSize: 24, color: "#d9a06c" }} spin />
+);
+
+const select = store => ({
+  filterLoading: store.marketActions.filterLoading
+});
 
 class Filters extends PureComponent {
   static propTypes = {};
@@ -38,9 +59,10 @@ class Filters extends PureComponent {
 
   render() {
     const { level, gradeType, rate, currentPrice } = this.state;
+    const { filterLoading } = this.props;
     return (
       <div>
-        <p className="ttu pv4 pl4">hide filters</p>
+        {/* <p className="ttu pv4 pl4">hide filters</p> */}
         <div>
           <ReactCSSTransitionGroup
             transitionName="example1"
@@ -50,7 +72,7 @@ class Filters extends PureComponent {
             transitionLeaveTimeout={5000}
           >
             <div
-              className="pa3 mv4 bg-dark-pink relative left-2 pl4"
+              className="pa3 mv4 bg-dark-pink-50 relative left-2 pl4 b"
               style={{
                 clipPath:
                   window.screen.availWidth >= 1920
@@ -58,15 +80,35 @@ class Filters extends PureComponent {
                     : "polygon(0 84%, 1% 96%, 5% 100%, 97% 100%, 100% 100%, 100% 90%, 100% 14%, 100% 0, 96% 0, 5% 0%, 1% 2%, 0 12%)"
               }}
             >
-              <p>{`Only Show Levels ${level.min} to ${level.max}`}</p>
-              <Slider
-                range
-                defaultValue={[level.min, level.max]}
-                max={5}
-                className="red"
-                onChange={this.handleChange(`level`)}
-                onAfterChange={this.finalFilter()}
-              />
+              <div>
+                {filterLoading ? (
+                  <div className="w-100 flex jcc pv4">
+                    <Loading1 />
+                  </div>
+                ) : (
+                  <div>
+                    <p className="o-60">Only Show </p>
+                    <p>
+                      <span className="o-60">Levels </span>
+                      <span className=" f3" style={{ color: "#bb207e" }}>{`${
+                        level.min
+                      }`}</span>{" "}
+                      <span className="o-60"> to </span>
+                      <span className=" f3" style={{ color: "#bb207e" }}>{`${
+                        level.max
+                      }`}</span>
+                    </p>
+                  </div>
+                )}
+                <Slider
+                  range
+                  defaultValue={[level.min, level.max]}
+                  max={5}
+                  className="slider1"
+                  onChange={this.handleChange(`level`)}
+                  onAfterChange={this.finalFilter()}
+                />
+              </div>
             </div>
           </ReactCSSTransitionGroup>
           <ReactCSSTransitionGroup
@@ -77,7 +119,7 @@ class Filters extends PureComponent {
             transitionLeaveTimeout={5000}
           >
             <div
-              className="pa3 mv4 bg-dark-purple relative left-2 pl4"
+              className="pa3 mv4 bg-dark-purple-50 relative left-2 pl4 b"
               style={{
                 clipPath:
                   window.screen.availWidth >= 1920
@@ -85,13 +127,33 @@ class Filters extends PureComponent {
                     : "polygon(0 84%, 1% 96%, 5% 100%, 97% 100%, 100% 100%, 100% 90%, 100% 14%, 100% 0, 96% 0, 5% 0%, 1% 2%, 0 12%)"
               }}
             >
-              <p>{`Only Show Grade ${gradeType.min} to ${gradeType.max}`}</p>
+              {filterLoading ? (
+                <div className="w-100 flex jcc pv4">
+                  <Loading2 />
+                </div>
+              ) : (
+                <div>
+                  <p className="o-60">Only Show </p>
+                  <p>
+                    <span className="o-60">Grade </span>
+                    <span className=" f3" style={{ color: "#765495" }}>{`${
+                      gradeType.min
+                    }`}</span>{" "}
+                    <span className="o-60"> to </span>
+                    <span className=" f3" style={{ color: "#765495" }}>{`${
+                      gradeType.max
+                    }`}</span>
+                  </p>
+                </div>
+              )}
+
               <Slider
                 range
                 defaultValue={[gradeType.min, gradeType.max]}
                 max={5}
                 onChange={this.handleChange(`gradeType`)}
                 onAfterChange={this.finalFilter()}
+                className="slider2"
               />
             </div>
           </ReactCSSTransitionGroup>
@@ -103,7 +165,7 @@ class Filters extends PureComponent {
             transitionLeaveTimeout={5000}
           >
             <div
-              className="pa3 mv4 bg-dark-blue relative left-2 pl4"
+              className="pa3 mv4 bg-dark-blue-50 relative left-2 pl4 b"
               style={{
                 clipPath:
                   window.screen.availWidth >= 1920
@@ -111,13 +173,33 @@ class Filters extends PureComponent {
                     : "polygon(0 84%, 1% 96%, 5% 100%, 97% 100%, 100% 100%, 100% 90%, 100% 14%, 100% 0, 96% 0, 5% 0%, 1% 2%, 0 12%)"
               }}
             >
-              <p>{`Only Show Rates from ${rate.min} to ${rate.max}`}</p>
+              {filterLoading ? (
+                <div className="w-100 flex jcc pv4">
+                  <Loading3 />
+                </div>
+              ) : (
+                <div>
+                  <p className="o-60">Only Show </p>
+                  <p>
+                    <span className="o-60">Rates from </span>
+                    <span className=" f3" style={{ color: "#5073c7" }}>{`${
+                      rate.min
+                    }`}</span>{" "}
+                    <span className="o-60"> to </span>
+                    <span className=" f3" style={{ color: "#5073c7" }}>{`${
+                      rate.max
+                    }`}</span>
+                  </p>
+                </div>
+              )}
+
               <Slider
                 range
                 defaultValue={[rate.min, rate.max]}
                 max={5}
                 onChange={this.handleChange(`rate`)}
                 onAfterChange={this.finalFilter()}
+                className="slider3"
               />
             </div>
           </ReactCSSTransitionGroup>
@@ -129,7 +211,7 @@ class Filters extends PureComponent {
             transitionLeaveTimeout={5000}
           >
             <div
-              className="pa3 mv4 bg-dark-orange relative left-2 pl4"
+              className="pa3 mv4 bg-dark-orange-50 relative left-2 pl4 b "
               style={{
                 clipPath:
                   window.screen.availWidth >= 1920
@@ -137,15 +219,35 @@ class Filters extends PureComponent {
                     : "polygon(0 84%, 1% 96%, 5% 100%, 97% 100%, 100% 100%, 100% 90%, 100% 14%, 100% 0, 96% 0, 5% 0%, 1% 2%, 0 12%)"
               }}
             >
-              <p>{`Only Show Prices from ${weiToEth(
-                currentPrice.min
-              )} to ${weiToEth(currentPrice.max)}`}</p>
+              {filterLoading ? (
+                <div className="w-100 flex jcc pv4">
+                  <Loading4 />
+                </div>
+              ) : (
+                <div>
+                  <p className="o-60">Only Show </p>
+                  <p>
+                    <span className="o-60">Prices from </span>
+                    <span
+                      className=" f3"
+                      style={{ color: "#d9a06c" }}
+                    >{`${weiToEth(currentPrice.min)}`}</span>{" "}
+                    <span className="o-60"> to </span>
+                    <span
+                      className=" f3"
+                      style={{ color: "#d9a06c" }}
+                    >{`${weiToEth(currentPrice.max)}`}</span>
+                  </p>
+                </div>
+              )}
+
               <Slider
                 range
                 defaultValue={[currentPrice.min, currentPrice.max]}
                 max={10000000000000000000}
                 onChange={this.handleChange(`currentPrice`)}
                 onAfterChange={this.finalFilter()}
+                className="slider4"
               />
             </div>
           </ReactCSSTransitionGroup>
@@ -160,8 +262,11 @@ const actions = {
 };
 
 export default connect(
-  null,
+  select,
   actions
 )(Filters);
 
-Filters.propTypes = { handleFilterMarketResults: PropTypes.func.isRequired };
+Filters.propTypes = {
+  handleFilterMarketResults: PropTypes.func.isRequired,
+  filterLoading: PropTypes.bool.isRequired
+};

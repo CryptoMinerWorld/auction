@@ -4,7 +4,10 @@ import {
   MARKETPLACE_WAS_FILTERED,
   FETCH_NEW_AUCTIONS_FAILED,
   FETCH_NEW_AUCTIONS_BEGUN,
-  FETCH_NEW_AUCTIONS_SUCCEEDED
+  FETCH_NEW_AUCTIONS_SUCCEEDED,
+  MARKETPLACE_FILTER_BEGUN,
+  MARKETPLACE_FILTER_FAILED
+
 } from "./marketConstants";
 import { db } from "../../app/utils/firebase";
 // import { getPrice } from "../auction/helpers";
@@ -96,6 +99,7 @@ export const updatePriceOnAllLiveAuctions = () => async (
 };
 
 export const filterMarketplaceResults = state => dispatch => {
+  dispatch({type: MARKETPLACE_FILTER_BEGUN})
   const price = db
     .collection("stones")
     .where("auctionIsLive", "==", true)
@@ -167,5 +171,5 @@ export const filterMarketplaceResults = state => dispatch => {
       type: MARKETPLACE_WAS_FILTERED,
       payload: finalPayload
     });
-  });
+  }).catch(err =>  dispatch({type: MARKETPLACE_FILTER_FAILED, payload: err}))
 };
