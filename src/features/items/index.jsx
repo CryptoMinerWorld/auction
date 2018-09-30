@@ -21,6 +21,7 @@ import {
 } from "./styledComponents";
 import { getAuctionDetails } from "./itemActions";
 import { calculateGemName } from "./selectors";
+import StatsBox from "./components/StatsBox";
 
 const select = store => ({
   details: store.auction,
@@ -197,8 +198,6 @@ Auction.defaultProps = {
   })
 };
 
-const StatsBox = () => <div>stats</div>;
-
 const DisplayBoxStateMachine = props => {
   const { owner, currentAccount, auctionIsLive } = props;
 
@@ -222,7 +221,7 @@ const DisplayBoxStateMachine = props => {
         {
           owner: <TradingBox {...props} />,
           buyer: <AuctionBox {...props} />,
-          viewer: <StatsBox />
+          viewer: <StatsBox {...props} />
         }[state]
       }
     </div>

@@ -101,3 +101,7 @@ it("sign in box appears when you buy a gem", () => {
 it("the system logs you in automatically if you have an account", () => {
   expect(true).toBeFalsy();
 });
+
+it("metamsk changes account in real time, pushes you to mark, then refershes you id, name, gems details", () => {
+  expect(true).toBeFalsy();
+});
