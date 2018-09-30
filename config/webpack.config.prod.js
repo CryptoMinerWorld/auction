@@ -6,6 +6,7 @@ const ManifestPlugin = require('webpack-manifest-plugin');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const url = require('url');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
+const Dotenv = require('dotenv-webpack');
 const paths = require('./paths');
 const getClientEnvironment = require('./env');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
@@ -233,6 +234,7 @@ module.exports = {
     // <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
     // In production, it will be an empty string unless you specify "homepage"
     // in `package.json`, in which case it will be the pathname of that URL.
+    new Dotenv(),
     new InterpolateHtmlPlugin({
       PUBLIC_URL: publicUrl
     }),

@@ -5,6 +5,8 @@ import { db, storage } from "../../app/utils/firebase";
 import DisplayCard from "./DisplayCard";
 import MintForm from "./MintForm";
 
+require("dotenv").config();
+
 const mintABI = [
   {
     constant: false,

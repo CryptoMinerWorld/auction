@@ -27,6 +27,20 @@
         { "fieldPath": "auctionIsLive", "mode": "ASCENDING" },
         { "fieldPath": "gradeType", "mode": "ASCENDING" }
       ]
+    },
+    {
+      "collectionId": "stones",
+      "fields": [
+        { "fieldPath": "auctionIsLive", "mode": "ASCENDING" },
+        { "fieldPath": "currentPrice", "mode": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionId": "stones",
+      "fields": [
+        { "fieldPath": "auctionIsLive", "mode": "ASCENDING" },
+        { "fieldPath": "deadline", "mode": "DESCENDING" }
+      ]
     }
   ]
 }

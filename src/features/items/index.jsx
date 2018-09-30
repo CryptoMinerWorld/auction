@@ -122,6 +122,7 @@ class Auction extends PureComponent {
                     auctionIsLive={details.auctionIsLive}
                     ownerId={details.owner}
                     gemId={details.id}
+                    userImage={details.userImage}
                   />
                 )}
               <div className="w-50-l measure-wide-l">

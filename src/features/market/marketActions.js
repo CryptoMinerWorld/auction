@@ -7,30 +7,27 @@ import {
   FETCH_NEW_AUCTIONS_SUCCEEDED,
   MARKETPLACE_FILTER_BEGUN,
   MARKETPLACE_FILTER_FAILED
-
 } from "./marketConstants";
 import { db } from "../../app/utils/firebase";
 // import { getPrice } from "../auction/helpers";
 import { updateDBwithNewPrice } from "./helpers";
 
-export const getAuctions = () => dispatch =>
-{
-  dispatch({ type: FETCH_NEW_AUCTIONS_BEGUN })
-try {
-  db
-    .collection("stones")
-    .where("auctionIsLive", "==", true)
-    .onSnapshot(collection => {
-      const auctions = collection.docs.map(doc => doc.data());
-      dispatch({ type: FETCH_NEW_AUCTIONS_SUCCEEDED })
-      dispatch({ type: NEW_AUCTIONS_RECEIVED, payload: auctions });
-    });
-  } catch(err) {
-    dispatch({ type: FETCH_NEW_AUCTIONS_FAILED, payload: err })
+export const getAuctions = () => dispatch => {
+  dispatch({ type: FETCH_NEW_AUCTIONS_BEGUN });
+  try {
+    db.collection("stones")
+      .where("auctionIsLive", "==", true)
+      .onSnapshot(collection => {
+        const auctions = collection.docs.map(doc => doc.data());
+        dispatch({ type: FETCH_NEW_AUCTIONS_SUCCEEDED });
+        dispatch({ type: NEW_AUCTIONS_RECEIVED, payload: auctions });
+      });
+  } catch (err) {
+    dispatch({ type: FETCH_NEW_AUCTIONS_FAILED, payload: err });
   }
-  }
+};
 
-export const getSoonestAuctions = () => dispatch => 
+export const getSoonestAuctions = () => dispatch =>
   db
     .collection("stones")
     .where("auctionIsLive", "==", true)
@@ -50,16 +47,15 @@ export const getHighestAuctions = () => dispatch =>
       dispatch({ type: NEW_AUCTIONS_RECEIVED, payload: auctions });
     });
 
-export const getLowestAuctions = () => dispatch => 
+export const getLowestAuctions = () => dispatch =>
   db
-  .collection("stones")
-  .where("auctionIsLive", "==", true)
-  .orderBy("currentPrice")
-  .onSnapshot(collection => {
-    const auctions = collection.docs.map(doc => doc.data());
-    dispatch({ type: NEW_AUCTIONS_RECEIVED, payload: auctions });
-  });
-  
+    .collection("stones")
+    .where("auctionIsLive", "==", true)
+    .orderBy("currentPrice")
+    .onSnapshot(collection => {
+      const auctions = collection.docs.map(doc => doc.data());
+      dispatch({ type: NEW_AUCTIONS_RECEIVED, payload: auctions });
+    });
 
 export const updatePriceOnAllLiveAuctions = () => async (
   dispatch,
@@ -79,28 +75,29 @@ export const updatePriceOnAllLiveAuctions = () => async (
   //   });
 
   // get list of Ids for all auctions in view
-  const activeAuctions = getState().market
- 
+  const activeAuctions = getState().market;
+
   // get price for each auction, then update db with new price
   try {
     activeAuctions.forEach(auction => {
-      // getPrice(auctionId, dutchContract)
-      
-      dutchContract.methods.getCurrentPrice(auction.id).call().then(currentPrice =>
-        updateDBwithNewPrice(auction.id).then(docid =>
-          db.doc(`stones/${docid}`).update({
-            currentPrice: Number(currentPrice)
-          })
-        )
-      );
+      dutchContract.methods
+        .getCurrentPrice(auction.id)
+        .call({ from: getState().auth.currentUserId })
+        .then(currentPrice =>
+          updateDBwithNewPrice(auction.id).then(docid =>
+            db.doc(`stones/${docid}`).update({
+              currentPrice: Number(currentPrice)
+            })
+          )
+        );
     });
   } catch (err) {
-    console.log("err", err);
+    console.log("err x", err);
   }
 };
 
 export const filterMarketplaceResults = state => dispatch => {
-  dispatch({type: MARKETPLACE_FILTER_BEGUN})
+  dispatch({ type: MARKETPLACE_FILTER_BEGUN });
   const price = db
     .collection("stones")
     .where("auctionIsLive", "==", true)
@@ -146,31 +143,32 @@ export const filterMarketplaceResults = state => dispatch => {
       return activeAuctions;
     });
 
-  Promise.all([rate, grade, level, price]).then(payload => {
-    // flatten all arrays in one array
-    const flatArray = payload.flat();
+  Promise.all([rate, grade, level, price])
+    .then(payload => {
+      // flatten all arrays in one array
+      const flatArray = payload.flat();
 
-    // create a tally of how many times each item appears
-    const tally = flatArray.reduce((results, gem) => {
-      // eslint-disable-next-line
-      results[gem.id] = (results[gem.id] || 0) + 1;
-      return results;
-    }, {});
+      // create a tally of how many times each item appears
+      const tally = flatArray.reduce((results, gem) => {
+        // eslint-disable-next-line
+        results[gem.id] = (results[gem.id] || 0) + 1;
+        return results;
+      }, {});
 
-    // only list ids that appear 4 times in the array
-    const filteredIds = Object.keys(tally)
-    .filter(key => tally[key] === 4);
+      // only list ids that appear 4 times in the array
+      const filteredIds = Object.keys(tally).filter(key => tally[key] === 4);
 
-    // return the objects in the initial flatArray that have the filetered Ids
-    const finalPayload = [];
-    filteredIds.forEach(id => {
-      const selection = flatArray.find(obj => obj.id === Number(id));
-      finalPayload.push(selection);
-    });
+      // return the objects in the initial flatArray that have the filetered Ids
+      const finalPayload = [];
+      filteredIds.forEach(id => {
+        const selection = flatArray.find(obj => obj.id === Number(id));
+        finalPayload.push(selection);
+      });
 
-    dispatch({
-      type: MARKETPLACE_WAS_FILTERED,
-      payload: finalPayload
-    });
-  }).catch(err =>  dispatch({type: MARKETPLACE_FILTER_FAILED, payload: err}))
+      dispatch({
+        type: MARKETPLACE_WAS_FILTERED,
+        payload: finalPayload
+      });
+    })
+    .catch(err => dispatch({ type: MARKETPLACE_FILTER_FAILED, payload: err }));
 };

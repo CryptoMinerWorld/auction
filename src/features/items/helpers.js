@@ -2,6 +2,8 @@ import fromExponential from 'from-exponential';
 import {BigNumber} from 'bignumber.js';
 import { db, storage } from '../../app/utils/firebase'
 
+require('dotenv').config()
+
 export const isTokenForSale = (_contract, _tokenId) =>
  
     _contract.methods.isTokenOnSale(_tokenId).call();
@@ -94,6 +96,9 @@ export const calculateGemName = (providedGrade, providedTokenId) => {
     }[providedGrade];
     return `${gemType} #${providedTokenId}`;
   };
+
+
+export const removeAuctionHelper = (dutchContract,tokenId ) => dutchContract.methods.remove(tokenId)
 
 export const createAuctionHelper = async (
     _tokenId,

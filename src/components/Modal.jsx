@@ -1,5 +1,6 @@
 const Modal = require("antd/lib/modal");
 require("antd/lib/modal/style/css");
+require("dotenv").config();
 
 export const confirmInMetamask = () => {
   Modal.info({
