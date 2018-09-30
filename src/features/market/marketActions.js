@@ -83,7 +83,7 @@ export const updatePriceOnAllLiveAuctions = () => async (
 
   // get price for each auction, then update db with new price
   try {
-    activeAuctions.forEach(auction => {
+  activeAuctions.forEach(auction => {
       dutchContract.methods
         .getCurrentPrice(auction.id)
         .call({ from: getState().auth.currentUserId })

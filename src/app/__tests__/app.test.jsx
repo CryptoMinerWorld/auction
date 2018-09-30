@@ -105,3 +105,11 @@ it("the system logs you in automatically if you have an account", () => {
 it("metamsk changes account in real time, pushes you to mark, then refershes you id, name, gems details", () => {
   expect(true).toBeFalsy();
 });
+
+it("of there is no provider sign in bo should tell you to install metamask", () => {
+  expect(true).toBeFalsy();
+});
+
+it("stats page shows correct stats", () => {
+  expect(true).toBeFalsy();
+});

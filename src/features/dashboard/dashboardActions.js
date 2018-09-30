@@ -73,7 +73,7 @@ export const getDetailsForAllGemsAUserCurrentlyOwns = userId => {
   const userImage = store.getState().auth.user.imageURL;
 
   const listOfGemIds = [];
-
+  console.log("getDetailsForAllGemsAUserCurrentlyOwns started");
   // export const getAllGems
   getAllUserGems(userId, gemContract).then(listOfGemIdsTheUserOwns =>
     Promise.all(
@@ -89,6 +89,8 @@ export const getDetailsForAllGemsAUserCurrentlyOwns = userId => {
         );
       })
     ).then(responses => {
+
+      console.log("gem details", responses );
       const gemImages = Promise.all(
         responses.map(gem => getGemImage(gem.color, gem.gradeType, gem.level))
       );
@@ -131,6 +133,7 @@ export const getDetailsForAllGemsAUserCurrentlyOwns = userId => {
                   payload: completeGemDetails
                 });
               });
+              console.log("completed gem details", completeGemDetails );
           }
         })
         .catch(error =>

@@ -47,7 +47,6 @@ export const updateWalletId = walletId => (dispatch, getState) => {
           .map(item => (typeof item === "string" ? item.toLowerCase() : item))
           .join("");
 
-        console.log("oldAddress, newAddress", oldAddress, newAddress);
 
         if (oldAddress !== newAddress) {
   dispatch(checkIfUserExists(walletId));
