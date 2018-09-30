@@ -64,10 +64,12 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
+    "abi-decoder": "^1.2.0",
     "antd": "^3.8.4",
     "bignumber.js": "^7.2.1",
     "date-fns": "^2.0.0-alpha.16",
     "dotenv": "^6.0.0",
+    "dotenv-webpack": "^1.5.7",
     "firebase": "5.4.2",
     "fontfaceobserver": "^2.0.13",
     "from-exponential": "^1.0.0",

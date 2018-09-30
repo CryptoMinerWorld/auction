@@ -1,5 +1,6 @@
 require('dotenv').config();
-var HDWalletProvider = require('truffle-hdwallet-provider');
+const HDWalletProvider = require('truffle-hdwallet-provider');
+require('dotenv').config()
 
 module.exports = {
   networks: {
@@ -9,10 +10,10 @@ module.exports = {
       network_id: '*'
     },
     ropsten: {
-      provider: function() {
+      provider() {
         return new HDWalletProvider(
           process.env.INFURA_RINKBY_MNEMONIC,
-          'https://rinkeby.infura.io/' + process.env.INFURA_RINKBY_KEY
+          `https://rinkeby.infura.io/${  process.env.INFURA_RINKBY_KEY}`
         );
       },
       network_id: '4'

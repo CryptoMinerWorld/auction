@@ -9,7 +9,9 @@ import {
   FETCH_DATA_FAILED
 } from "../../app/reduxConstants";
 import { db } from "../../app/utils/firebase";
-import { createAuctionHelper } from "./helpers";
+import { createAuctionHelper, removeAuctionHelper } from "./helpers";
+
+require("dotenv").config();
 
 export const getAuctionDetails = tokenId => dispatch => {
   dispatch({ type: FETCH_DATA_BEGUN });
@@ -60,7 +62,10 @@ export const updateGemOwnership = (gemId, newOwner) => async dispatch => {
     });
 };
 
-export const createAuction = (payload, turnLoaderOff) => (dispatch, getState) => {
+export const createAuction = (payload, turnLoaderOff) => (
+  dispatch,
+  getState
+) => {
   //  eslint-disable-next-line
   const currentAccount = getState().auth.currentUserId;
   //  eslint-disable-next-line
@@ -104,13 +109,18 @@ export const createAuction = (payload, turnLoaderOff) => (dispatch, getState) =>
 };
 
 // @notice removes a gem from an auction
-export const removeFromAuction = tokenId =>  (dispatch, getState) => {
-   getState()
-    .app.dutchContractInstance.methods.remove(tokenId)
-    .send()
-    .then((x)=> 
-      console.log("x remove done", x )
-    );
+export const removeFromAuction = tokenId => async (dispatch, getState) => {
+  const dutchContract = getState().app.dutchContractInstance;
+  const currentUser = getState().auth.currentUserId;
+
+
+  await removeAuctionHelper(dutchContract, tokenId ).send(
+    {
+      from: currentUser
+    }
+  )
+
+console.log('ha!')
 
   db.collection(`stones`)
     .where(`id`, `==`, Number(tokenId))
@@ -125,5 +135,7 @@ export const removeFromAuction = tokenId =>  (dispatch, getState) => {
         });
       });
     })
-    .catch(err => console.log("err", err));
+    .catch(error => console.log("error 2", error));
+
+  
 };

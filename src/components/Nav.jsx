@@ -80,7 +80,7 @@ const Navbar = ({ userImage, userId, userName, handleShowSignInModal }) => (
           }}
           onClick={() => !userId && handleShowSignInModal()}
         >
-          Workshop
+          My Workshop
         </NavLink>
         <NavLink
           exact
