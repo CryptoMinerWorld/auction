@@ -16,7 +16,7 @@ import "./css/root.css";
 import { showConfirm, showExpired } from "../components/Modal";
 import { calculateGemName } from "../features/items/helpers";
 import { sendContractsToRedux } from "./appActions";
-
+import { updateWalletId } from "../features/auth/authActions";
 import Auth from "../features/auth";
 import { updatePriceOnAllLiveAuctions } from "../features/market/marketActions";
 import { updateGemOwnership } from "../features/items/itemActions";
@@ -89,7 +89,8 @@ class App extends Component {
   async componentDidMount() {
     const {
       handleSendContractsToRedux,
-      handleUpdatePriceOnAllLiveAuctions
+      handleUpdatePriceOnAllLiveAuctions,
+      handleUpdateWalletId
     } = this.props;
     // @notice loading a custom font when app mounts
     const font = new FontFaceObserver("Muli", {
@@ -107,6 +108,14 @@ class App extends Component {
     const currentAccountId = await web3.eth
       .getAccounts()
       .then(accounts => accounts[0]);
+
+    web3.currentProvider.publicConfigStore.on(
+      "update",
+      ({ selectedAddress }) => {
+        console.log("update");
+        return handleUpdateWalletId(selectedAddress);
+      }
+    );
 
     // @notice instantiating auction contract
     const dutchContract = new web3.eth.Contract(
@@ -284,7 +293,8 @@ class App extends Component {
 const actions = {
   handleSendContractsToRedux: sendContractsToRedux,
   handleUpdatePriceOnAllLiveAuctions: updatePriceOnAllLiveAuctions,
-  handleUpdateGemOwnership: updateGemOwnership
+  handleUpdateGemOwnership: updateGemOwnership,
+  handleUpdateWalletId: updateWalletId
 };
 
 export default connect(
@@ -295,5 +305,6 @@ export default connect(
 App.propTypes = {
   handleSendContractsToRedux: PropTypes.func.isRequired,
   handleUpdatePriceOnAllLiveAuctions: PropTypes.func.isRequired,
-  handleUpdateGemOwnership: PropTypes.func.isRequired
+  handleUpdateGemOwnership: PropTypes.func.isRequired,
+  handleUpdateWalletId: PropTypes.func.isRequired
 };

@@ -113,14 +113,13 @@ export const removeFromAuction = tokenId => async (dispatch, getState) => {
   const dutchContract = getState().app.dutchContractInstance;
   const currentUser = getState().auth.currentUserId;
 
-
-  await removeAuctionHelper(dutchContract, tokenId ).send(
+  removeAuctionHelper(dutchContract, tokenId ).send(
     {
       from: currentUser
     }
   )
 
-console.log('ha!')
+
 
   db.collection(`stones`)
     .where(`id`, `==`, Number(tokenId))

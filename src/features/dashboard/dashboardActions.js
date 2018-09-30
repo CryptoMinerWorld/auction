@@ -52,6 +52,7 @@ export const getUserDetails = userId => dispatch => {
 
 // this checks the smart contract to see what gems a user owns
 export const getAllUserGems = (userId, gemContract) =>
+
   gemContract.methods
     .getCollection(userId)
     .call()
@@ -60,6 +61,7 @@ export const getAllUserGems = (userId, gemContract) =>
         type: ALL_USER_GEMS_RETRIEVED,
         payload
       });
+      console.log('collection of gems user owns', payload)
       return payload;
     });
 

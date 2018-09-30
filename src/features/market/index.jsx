@@ -3,7 +3,8 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import { getAuctions } from "./marketActions";
+import { lifecycle, compose } from "recompose";
+import { getAuctions, redirectedHome } from "./marketActions";
 import Cards from "../../components/Card";
 import SortBox from "./components/SortBox";
 import Filters from "./components/Filters";
@@ -90,12 +91,20 @@ const Marketplace = ({ auctions, loading }) => (
 );
 
 const actions = {
-  handleGetAuctions: getAuctions
+  handleGetAuctions: getAuctions,
+  handleRedirectedHome: redirectedHome
 };
 
-export default connect(
-  select,
-  actions
+export default compose(
+  connect(
+    select,
+    actions
+  ),
+  lifecycle({
+    componentDidMount() {
+      this.props.handleRedirectedHome();
+    }
+  })
 )(Marketplace);
 
 Marketplace.propTypes = {

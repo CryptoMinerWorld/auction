@@ -1,4 +1,5 @@
 import { USER_GEMS_RETRIEVED, ALL_USER_GEMS_RETRIEVED, ALL_USER_GEMS_UPLOADED, USER_HAS_NO_GEMS_IN_WORKSHOP, WANT_TO_SEE_ALL_GEMS, ONLY_WANT_TO_SEE_GEMS_IN_AUCTIONS, FETCH_USER_GEMS_BEGUN,FETCH_USER_GEMS_SUCCEEDED, FETCH_USER_GEMS_FAILED, FETCH_USER_DETAILS_BEGUN, FETCH_USER_DETAILS_SUCCEEDED, USER_DETAILS_RETRIEVED, FETCH_USER_DETAILS_FAILED } from "./dashboardConstants";
+import {NO_USER_EXISTS} from '../auth/authConstants'
 
 export default function dashboardReducer(state = {
   gemsLoading: true, 
@@ -7,6 +8,11 @@ export default function dashboardReducer(state = {
   if (action.type === USER_GEMS_RETRIEVED) {
     return { ...state, userGems: action.payload, filter:action.payload };
   }
+
+
+  if (action.type ===  NO_USER_EXISTS){
+    return {...state, userGems: '', filter:'' }
+}
   
   if (action.type === ALL_USER_GEMS_RETRIEVED) {
    
