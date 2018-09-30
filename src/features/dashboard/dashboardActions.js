@@ -51,19 +51,23 @@ export const getUserDetails = userId => dispatch => {
 };
 
 // this checks the smart contract to see what gems a user owns
-export const getAllUserGems = (userId, gemContract) =>
-
-  gemContract.methods
+export const getAllUserGems = (userId, gemContract) => {
+  console.log('userId, gemContract', userId, gemContract)
+  return gemContract.methods
     .getCollection(userId)
-    .call()
-    .then(payload => {
-      store.dispatch({
-        type: ALL_USER_GEMS_RETRIEVED,
-        payload
-      });
-      console.log('collection of gems user owns', payload)
-      return payload;
-    });
+    .call({from: userId}, (error, result) => {
+      if (!error){
+        store.dispatch({
+          type: ALL_USER_GEMS_RETRIEVED,
+          payload: result
+        });
+        console.log('collection of gems user owns', result)
+        return result;
+      }
+      console.log('get all user gems error',  error)
+      return error
+  })
+}
 
 // this is called in authActions when you create a new User
 export const getDetailsForAllGemsAUserCurrentlyOwns = userId => {
@@ -75,7 +79,7 @@ export const getDetailsForAllGemsAUserCurrentlyOwns = userId => {
   const listOfGemIds = [];
   console.log("getDetailsForAllGemsAUserCurrentlyOwns started");
   // export const getAllGems
-  getAllUserGems(userId, gemContract).then(listOfGemIdsTheUserOwns =>
+  return getAllUserGems(userId, gemContract).then(listOfGemIdsTheUserOwns =>
     Promise.all(
       listOfGemIdsTheUserOwns.map(gemId => {
         listOfGemIds.push(gemId);

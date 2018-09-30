@@ -159,22 +159,21 @@ class Auth extends PureComponent {
             size="large"
             className="mv3"
           />
-          {name && (
-            <div className="pa3">
-              <p className="center">Please select an avatar</p>
-              <div className="flex wrap jcb">
-                {images.map(url => (
-                  <Avatar
-                    key={url}
-                    src={url}
-                    onClick={() => this.updateImage(url)}
-                    size={64}
-                    className="mv2"
-                  />
-                ))}
-              </div>
+
+          <div className="pa3">
+            <p className="center">Please select an avatar</p>
+            <div className="flex wrap jcb">
+              {images.map(url => (
+                <Avatar
+                  key={url}
+                  src={url}
+                  onClick={() => this.updateImage(url)}
+                  size={64}
+                  className="mv2"
+                />
+              ))}
             </div>
-          )}
+          </div>
         </Modal>
       </div>
     );
