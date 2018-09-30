@@ -6,8 +6,13 @@ const getWeb3 = new Promise(((resolve) => {
     let results;
     let { web3 } = window;
 
+    
+
+
     // Checking if Web3 has been injected by the browser (Mist/MetaMask)
     if (typeof web3 !== 'undefined') {
+
+     
 
       // Use Mist/MetaMask's provider.
       web3 = new Web3(web3.currentProvider);

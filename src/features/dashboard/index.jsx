@@ -10,6 +10,7 @@ import GemSortBox from "./components/GemSortBox";
 import Cards from "./components/GemCard";
 import LoadingCard from "../../components/LoadingCard";
 import NoCard from "../../components/NoCard";
+import { redirectedHome } from "../market/marketActions";
 
 require("antd/lib/slider/style/css");
 
@@ -37,7 +38,9 @@ const select = store => ({
   loading: store.dashboard.gemsLoading,
   error: store.dashboard.gemsLoadingError,
   userName: store.dashboard.userDetails && store.dashboard.userDetails.name,
-  userImage: store.dashboard.userDetails && store.dashboard.userDetails.imageURL
+  userImage:
+    store.dashboard.userDetails && store.dashboard.userDetails.imageURL,
+  redirectToHome: store.auth.redirectToHome
 });
 
 // @notice the username name and image is also stored on every gem object so I render whichever one shows up first, the reason I make two calls is because not every users has gems
@@ -85,7 +88,8 @@ const Dashboard = ({ auctions, loading, error, userName, userImage }) => {
 
 const actions = {
   handleGetAuctions: getUserGems,
-  handleGetUserDetails: getUserDetails
+  handleGetUserDetails: getUserDetails,
+  handleRedirectedHome: redirectedHome
 };
 
 export default compose(
@@ -98,6 +102,11 @@ export default compose(
     componentDidMount() {
       this.props.handleGetAuctions(this.props.match.params.userId);
       this.props.handleGetUserDetails(this.props.match.params.userId);
+    },
+    componentDidUpdate() {
+      if (this.props.redirectToHome) {
+        this.props.history.push("/");
+      }
     }
   })
 )(Dashboard);

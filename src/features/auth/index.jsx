@@ -86,6 +86,10 @@ class Auth extends PureComponent {
       walletId: currentUser
     };
     handleCreateNewUser(payload);
+    this.setState({
+      name: "",
+      imageURL: ""
+    });
   };
 
   updateName = value => {

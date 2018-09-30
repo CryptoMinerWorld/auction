@@ -8,6 +8,8 @@ import {
   MARKETPLACE_FILTER_BEGUN,
   MARKETPLACE_FILTER_FAILED
 } from "./marketConstants";
+
+import {REDIRECTED_HOME} from '../auth/authConstants'
 import { db } from "../../app/utils/firebase";
 // import { getPrice } from "../auction/helpers";
 import { updateDBwithNewPrice } from "./helpers";
@@ -26,6 +28,8 @@ export const getAuctions = () => dispatch => {
     dispatch({ type: FETCH_NEW_AUCTIONS_FAILED, payload: err });
   }
 };
+
+export const redirectedHome = () => dispatch => dispatch({type: REDIRECTED_HOME})
 
 export const getSoonestAuctions = () => dispatch =>
   db
