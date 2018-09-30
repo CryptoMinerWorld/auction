@@ -70,6 +70,13 @@ class Auth extends PureComponent {
     return null;
   }
 
+  componentWillUnmount() {
+    this.setState({
+      name: "",
+      imageURL: ""
+    });
+  }
+
   showModal = () => {
     this.setState({
       visible: true,
@@ -77,7 +84,7 @@ class Auth extends PureComponent {
     });
   };
 
-  handleOk = () => {
+  handleOk = async () => {
     const { name, imageURL } = this.state;
     const { currentUser, handleCreateNewUser } = this.props;
     const payload = {
@@ -86,10 +93,6 @@ class Auth extends PureComponent {
       walletId: currentUser
     };
     handleCreateNewUser(payload);
-    this.setState({
-      name: "",
-      imageURL: ""
-    });
   };
 
   updateName = value => {
@@ -156,20 +159,22 @@ class Auth extends PureComponent {
             size="large"
             className="mv3"
           />
-          <div className="pa3">
-            <p className="center">Please select an avatar</p>
-            <div className="flex wrap jcb">
-              {images.map(url => (
-                <Avatar
-                  key={url}
-                  src={url}
-                  onClick={() => this.updateImage(url)}
-                  size={64}
-                  className="mv2"
-                />
-              ))}
+          {name && (
+            <div className="pa3">
+              <p className="center">Please select an avatar</p>
+              <div className="flex wrap jcb">
+                {images.map(url => (
+                  <Avatar
+                    key={url}
+                    src={url}
+                    onClick={() => this.updateImage(url)}
+                    size={64}
+                    className="mv2"
+                  />
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </Modal>
       </div>
     );

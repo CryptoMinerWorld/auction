@@ -109,12 +109,8 @@ class App extends Component {
       .getAccounts()
       .then(accounts => accounts[0]);
 
-    web3.currentProvider.publicConfigStore.on(
-      "update",
-      ({ selectedAddress }) => {
-        console.log("update");
-        return handleUpdateWalletId(selectedAddress);
-      }
+    web3.currentProvider.publicConfigStore.on("update", ({ selectedAddress }) =>
+      handleUpdateWalletId(selectedAddress)
     );
 
     // @notice instantiating auction contract

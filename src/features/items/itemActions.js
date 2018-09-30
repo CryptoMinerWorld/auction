@@ -113,28 +113,25 @@ export const removeFromAuction = tokenId => async (dispatch, getState) => {
   const dutchContract = getState().app.dutchContractInstance;
   const currentUser = getState().auth.currentUserId;
 
-  removeAuctionHelper(dutchContract, tokenId ).send(
-    {
+  removeAuctionHelper(dutchContract, tokenId)
+    .send({
       from: currentUser
-    }
-  )
-
-
-
-  db.collection(`stones`)
-    .where(`id`, `==`, Number(tokenId))
-    .get()
-    .then(coll => {
-      coll.docs.map(doc => {
-        dispatch({
-          type: "GEM_REMOVED_FROM_AUCTION"
-        });
-        return db.doc(`stones/${doc.id}`).update({
-          auctionIsLive: false
-        });
-      });
     })
-    .catch(error => console.log("error 2", error));
-
-  
+    .then(() =>
+      db
+        .collection(`stones`)
+        .where(`id`, `==`, Number(tokenId))
+        .get()
+        .then(coll => {
+          coll.docs.map(doc => {
+            dispatch({
+              type: "GEM_REMOVED_FROM_AUCTION"
+            });
+            return db.doc(`stones/${doc.id}`).update({
+              auctionIsLive: false
+            });
+          });
+        })
+    )
+    .catch(error => console.log("remove auction error ", error));
 };
