@@ -20,15 +20,9 @@ import { updateWalletId } from "../features/auth/authActions";
 import Auth from "../features/auth";
 import { updatePriceOnAllLiveAuctions } from "../features/market/marketActions";
 import { updateGemOwnership } from "../features/items/itemActions";
-import DutchAuction from "../../build/contracts/DutchAuction.json";
-import Gems from "../../build/contracts/GemERC721.json";
+import DutchAuction from "./ABI/DutchAuction.json";
+import Gems from "./ABI/GemERC721.json";
 
-const abiDecoder = require("abi-decoder");
-
-abiDecoder.addABI(DutchAuction.abi);
-abiDecoder.addABI(Gems.abi);
-
-require("dotenv").config();
 require("antd/lib/alert/style/css");
 require("antd/lib/modal/style/css");
 
