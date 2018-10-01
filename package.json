@@ -12,6 +12,7 @@
     "prop-types": "^15.6.2",
     "react": "^16.4.2",
     "react-addons-css-transition-group": "^15.6.2",
+    "react-automata": "^4.0.4",
     "react-confetti": "^2.3.0",
     "react-dom": "16.4.2",
     "react-ga": "^2.5.3",
@@ -64,5 +65,8 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "react-test-renderer": "^16.5.2"
+  }
 }

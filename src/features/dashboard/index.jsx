@@ -1,18 +1,18 @@
-import React from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import { withRouter, Link } from "react-router-dom";
-import { lifecycle } from "recompose";
-import { getUserGems, getUserDetails } from "./dashboardActions";
-import GemSortBox from "./components/GemSortBox";
-import Cards from "./components/GemCard";
-import LoadingCard from "../../components/LoadingCard";
-import NoCard from "../../components/NoCard";
-import { redirectedHome } from "../market/marketActions";
-
-require("antd/lib/slider/style/css");
+import React from 'react';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { withRouter, Link } from 'react-router-dom';
+import { lifecycle } from 'recompose';
+import { getUserGems, getUserDetails } from './dashboardActions';
+import GemSortBox from './components/GemSortBox';
+import Cards from './components/GemCard';
+import LoadingCard from '../../components/LoadingCard';
+import NoCard from '../../components/NoCard';
+import { redirectedHome } from '../market/marketActions';
+import ReSync from './components/ResyncButton';
+require('antd/lib/slider/style/css');
 
 const Grid = styled.article`
   display: grid;
@@ -65,7 +65,11 @@ const Dashboard = ({ auctions, loading, error, userName, userImage }) => {
 
       <Grid>
         <Primary>
-          <GemSortBox />
+          <div className="flex jcb">
+            <GemSortBox />
+            <ReSync />
+          </div>
+
           <CardBox>
             {loading &&
               [1, 2, 3, 4, 5, 6].map(num => <LoadingCard key={num} />)}
@@ -105,7 +109,7 @@ export default compose(
     },
     componentDidUpdate() {
       if (this.props.redirectToHome) {
-        this.props.history.push("/");
+        this.props.history.push('/');
       }
     }
   })
@@ -144,16 +148,16 @@ Dashboard.defaultProps = {
       minPrice: 0,
       maxPrice: 1,
       price: 0.5,
-      deadline: new Date().getTime(),
+      deadline: 1548390590016,
       image:
-        "https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FAquamarine%20Face%20Emoji.png?alt=media&token=b759ae07-bb8c-4ec8-9399-d3844d5428ef",
-      owner: "Someone",
+        'https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FAquamarine%20Face%20Emoji.png?alt=media&token=b759ae07-bb8c-4ec8-9399-d3844d5428ef',
+      owner: 'Someone',
       gradeType: 1,
       quality: 1,
       rate: 1
     }
   ],
-  userName: "Someone",
+  userName: 'Someone',
   userImage:
-    "https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FAquamarine%20Face%20Emoji.png?alt=media&token=b759ae07-bb8c-4ec8-9399-d3844d5428ef"
+    'https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FAquamarine%20Face%20Emoji.png?alt=media&token=b759ae07-bb8c-4ec8-9399-d3844d5428ef'
 };

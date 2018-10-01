@@ -1,12 +1,12 @@
-import React from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import Progress from "antd/lib/progress";
-import { calculatePercentage } from "../../market/helpers";
-import MiniGemBox from "../../../components/MiniGemBox";
-import { calculateGemName } from "../helpers";
+import React from 'react';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import Progress from 'antd/lib/progress';
+import { calculatePercentage } from '../../market/helpers';
+import MiniGemBox from '../../../components/MiniGemBox';
+import { calculateGemName } from '../helpers';
 
-require("antd/lib/progress/style/css");
+require('antd/lib/progress/style/css');
 
 const Card = styled.aside`
   clip-path: polygon(
@@ -70,12 +70,6 @@ Cards.propTypes = {
     minPrice: PropTypes.number,
     maxPrice: PropTypes.number,
     price: PropTypes.number,
-    deadline: PropTypes.oneOfType([
-      PropTypes.shape({
-        seconds: PropTypes.number.isRequired
-      }).isRequired,
-      PropTypes.number
-    ]).isRequired,
     image: PropTypes.string,
     owner: PropTypes.string,
     grade: PropTypes.number,

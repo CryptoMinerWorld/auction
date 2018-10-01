@@ -1,7 +1,7 @@
-import React from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import img from "../app/images/footer_geodes.png";
+import React from 'react';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import img from '../app/images/footer_geodes.png';
 
 const TopHighlight = styled.div`
   background: linear-gradient(to right, #fc01ca, #bc197c);
@@ -90,7 +90,7 @@ const Footer = () => (
             <p className="f7 black-70 dib pr3 mb3 white">
               Copyright © Cryptominer World 2018
             </p>
-            <p className="f7 black-70 dib pr3 mb3 white">Version 0.1.6</p>
+            <p className="f7 black-70 dib pr3 mb3 white">Version 0.1.8</p>
           </div>
         </div>
         <div className="db dn-ns">
@@ -128,7 +128,7 @@ SocialIcons.propTypes = {
 };
 
 SocialIcons.defaultProps = {
-  link: "",
-  title: "",
-  path: ""
+  link: '',
+  title: '',
+  path: ''
 };

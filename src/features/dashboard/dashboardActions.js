@@ -13,18 +13,18 @@ import {
   FETCH_USER_DETAILS_SUCCEEDED,
   USER_DETAILS_RETRIEVED,
   FETCH_USER_DETAILS_FAILED
-} from "./dashboardConstants";
-import { db } from "../../app/utils/firebase";
-import store from "../../app/store";
-import { getGemQualities, calcMiningRate } from "../items/helpers";
-import { getGemImage, getGemStory } from "./helpers";
+} from './dashboardConstants';
+import { db } from '../../app/utils/firebase';
+import store from '../../app/store';
+import { getGemQualities, calcMiningRate } from '../items/helpers';
+import { getGemImage, getGemStory } from './helpers';
 
 // this gets all the gems from the database
 export const getUserGems = userId => dispatch => {
   dispatch({ type: FETCH_USER_GEMS_BEGUN });
   try {
-    db.collection("stones")
-      .where("owner", "==", userId)
+    db.collection('stones')
+      .where('owner', '==', userId)
       .onSnapshot(collection => {
         const gems = collection.docs.map(doc => doc.data());
         dispatch({ type: FETCH_USER_GEMS_SUCCEEDED });
@@ -38,8 +38,8 @@ export const getUserGems = userId => dispatch => {
 export const getUserDetails = userId => dispatch => {
   dispatch({ type: FETCH_USER_DETAILS_BEGUN });
   try {
-    db.collection("users")
-      .where("walletId", "==", userId)
+    db.collection('users')
+      .where('walletId', '==', userId)
       .onSnapshot(collection => {
         const userDetails = collection.docs.map(doc => doc.data());
         dispatch({ type: FETCH_USER_DETAILS_SUCCEEDED });
@@ -52,22 +52,22 @@ export const getUserDetails = userId => dispatch => {
 
 // this checks the smart contract to see what gems a user owns
 export const getAllUserGems = (userId, gemContract) => {
-  console.log('userId, gemContract', userId, gemContract)
+  console.log('userId, gemContract', userId, gemContract);
   return gemContract.methods
     .getCollection(userId)
-    .call({from: userId}, (error, result) => {
-      if (!error){
+    .call({ from: userId }, (error, result) => {
+      if (!error) {
         store.dispatch({
           type: ALL_USER_GEMS_RETRIEVED,
           payload: result
         });
-        console.log('collection of gems user owns', result)
+        console.log('collection of gems user owns', result);
         return result;
       }
-      console.log('get all user gems error',  error)
-      return error
-  })
-}
+      console.log('get all user gems error', error);
+      return error;
+    });
+};
 
 // this is called in authActions when you create a new User
 export const getDetailsForAllGemsAUserCurrentlyOwns = userId => {
@@ -77,9 +77,8 @@ export const getDetailsForAllGemsAUserCurrentlyOwns = userId => {
   const userImage = store.getState().auth.user.imageURL;
 
   const listOfGemIds = [];
-  console.log("getDetailsForAllGemsAUserCurrentlyOwns started");
-  // export const getAllGems
-  return getAllUserGems(userId, gemContract).then(listOfGemIdsTheUserOwns =>
+
+  getAllUserGems(userId, gemContract).then(listOfGemIdsTheUserOwns =>
     Promise.all(
       listOfGemIdsTheUserOwns.map(gemId => {
         listOfGemIds.push(gemId);
@@ -93,8 +92,6 @@ export const getDetailsForAllGemsAUserCurrentlyOwns = userId => {
         );
       })
     ).then(responses => {
-
-      console.log("gem details", responses );
       const gemImages = Promise.all(
         responses.map(gem => getGemImage(gem.color, gem.gradeType, gem.level))
       );
@@ -129,7 +126,7 @@ export const getDetailsForAllGemsAUserCurrentlyOwns = userId => {
             });
           } else {
             completeGemDetails
-              .forEach(gem => db.collection("stones").add(gem))
+              .forEach(gem => db.collection('stones').add(gem))
               .then(() => {
                 store.dispatch({ type: FETCH_USER_GEMS_SUCCEEDED });
                 store.dispatch({
@@ -137,7 +134,7 @@ export const getDetailsForAllGemsAUserCurrentlyOwns = userId => {
                   payload: completeGemDetails
                 });
               });
-              console.log("completed gem details", completeGemDetails );
+            console.log('completed gem details', completeGemDetails);
           }
         })
         .catch(error =>
@@ -166,3 +163,86 @@ export const onlyGemsInAuction = () => ({
 export const allMyGems = () => ({
   type: WANT_TO_SEE_ALL_GEMS
 });
+
+export const updateGemDetails = (userId,gemContract, userName, userImage ) => async (dispatch, getState) => {
+
+  console.table({userId, gemContract, userName, userImage} )
+
+  try {
+    const idsOfGemsUserOwns = await gemContract.methods
+      .getCollection(userId)
+      .call();
+
+    return Promise.all(
+      idsOfGemsUserOwns.map(gemId =>
+        getGemQualities(gemContract, gemId).then(
+          ([color, level, gradeType, gradeValue]) => ({
+            color,
+            level,
+            gradeType,
+            gradeValue,
+            gemId
+          })
+        )
+      )
+    ).then(smartContractDetails => {
+      const gemImages = Promise.all(
+        smartContractDetails.map(gem =>
+          getGemImage(gem.color, gem.gradeType, gem.level)
+        )
+      );
+
+      const gemStories = Promise.all(
+        smartContractDetails.map(gem => getGemStory(gem.color, gem.level))
+      );
+
+      return Promise.all([gemImages, gemStories]).then(([images, stories]) => {
+        const arrayofCompleteGemDetails = idsOfGemsUserOwns.map(
+          (gemId, index) => ({
+            id: Number(gemId),
+            ...smartContractDetails[index],
+            rate: Number(
+              calcMiningRate(
+                smartContractDetails[index].gradeType,
+                smartContractDetails[index].gradeValue
+              )
+            ),
+            auctionIsLive: false,
+            owner: userId,
+            gemImage: images[index],
+            story: stories[index],
+            userName,
+            userImage
+          })
+        );
+
+        if (arrayofCompleteGemDetails.length === 0) {
+          return Promise.reject('No Gems Available');
+        }
+
+        // check if document exists, update it if it does and create one if it doesn't
+       
+        return Promise.all(arrayofCompleteGemDetails
+          .forEach( gem => 
+             db.collection('stones')
+              .where('id', '==', gem.id)
+              .get()
+              .then(coll => {
+          
+                const doc = coll.docs.map(doc => doc.id)[0];
+
+                if (doc) {
+                  // update it
+                  return db.collection("stones").doc(doc).update(gem)
+                }
+                // or else create it
+                return db.collection("stones").add(gem)
+              })
+          )).then(() => 'Gems Updated.')
+          
+      });
+    });
+  } catch (err) {
+    return err;
+  }
+};
