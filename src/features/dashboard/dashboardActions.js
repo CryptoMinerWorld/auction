@@ -21,18 +21,18 @@ import { getGemImage, getGemStory } from "./helpers";
 
 // this gets all the gems from the database
 export const getUserGems = userId => dispatch => {
-  dispatch({ type: FETCH_USER_GEMS_BEGUN });
-  try {
-    db.collection("stones")
+  // dispatch({ type: FETCH_USER_GEMS_BEGUN });
+  // try {
+    return db.collection("stones")
       .where("owner", "==", userId)
       .onSnapshot(collection => {
         const gems = collection.docs.map(doc => doc.data());
         dispatch({ type: FETCH_USER_GEMS_SUCCEEDED });
         dispatch({ type: USER_GEMS_RETRIEVED, payload: gems });
       });
-  } catch (err) {
-    dispatch({ type: FETCH_USER_GEMS_FAILED, payload: err });
-  }
+  // } catch (err) {
+  //   dispatch({ type: FETCH_USER_GEMS_FAILED, payload: err });
+  // }
 };
 
 export const getUserDetails = userId => dispatch => {
@@ -53,8 +53,7 @@ export const getUserDetails = userId => dispatch => {
 // this checks the smart contract to see what gems a user owns
 export const getAllUserGems = (userId, gemContract) => {
   console.log('userId, gemContract', userId, gemContract)
-  return gemContract.methods
-    .getCollection(userId)
+  return gemContract.getCollection(userId)
     .call({from: userId}, (error, result) => {
       if (!error){
         store.dispatch({

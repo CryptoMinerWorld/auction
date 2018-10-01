@@ -9,9 +9,12 @@ export const isTokenForSale = (_contract, _tokenId) =>
 
 
 export const getAuctionDetails = (_contract, _tokenId) =>
-    _contract.methods.items(_tokenId).call().then( result => {
-      const {t0, t1, p0, p1} = result;
-      return([t0, t1, p0, p1])
+    _contract.methods.items(_tokenId).call( (error, result) => {
+        if (!error) {
+            const {t0, t1, p0, p1} = result;
+            return([t0, t1, p0, p1])
+        }
+      console.log('get auction details error',  error)
     })
 
 export const getGemStory = (color, level) => {

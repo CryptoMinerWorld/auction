@@ -7,16 +7,18 @@ export default function authReducer (state = { } , action) {
         return {...state, web3: action.payload}
     }
     
-    if (action.type === CURRENT_USER_AVAILABLE){
-        return {...state, currentUserId: action.payload}
-    }
+    // if (action.type === CURRENT_USER_AVAILABLE){
+    //     return {...state, currentUserId: action.payload}
+    // }
    
     if (action.type ===  CURRENT_USER_NOT_AVAILABLE){
         return {...state, currentUserId: 'META MASK NOT AVAILABLE'}
     }
 
     if (action.type ===  USER_EXISTS){
-        return {...state, user: action.payload, newUser: false, existingUser:true, currentUserId: action.payload.walletId  }
+        return {...state, user: action.payload, newUser: false, existingUser:true
+            // , currentUserId: action.payload.walletId  
+        }
     }
 
     if (action.type ===  NEW_USER){

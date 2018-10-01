@@ -21,10 +21,14 @@ export const getAuctions = () => dispatch => {
       .where("auctionIsLive", "==", true)
       .onSnapshot(collection => {
         const auctions = collection.docs.map(doc => doc.data());
-        dispatch({ type: FETCH_NEW_AUCTIONS_SUCCEEDED });
-        dispatch({ type: NEW_AUCTIONS_RECEIVED, payload: auctions });
+        // console.log('auctions', auctions)
+          dispatch({ type: FETCH_NEW_AUCTIONS_SUCCEEDED })
+          dispatch({ type: NEW_AUCTIONS_RECEIVED, payload: auctions })
+
+       
       });
   } catch (err) {
+    console.log('retrieving live auctions error',  err)
     dispatch({ type: FETCH_NEW_AUCTIONS_FAILED, payload: err });
   }
 };
@@ -82,22 +86,21 @@ export const updatePriceOnAllLiveAuctions = () => async (
   const activeAuctions = getState().market;
 
   // get price for each auction, then update db with new price
-  try {
+
   activeAuctions.forEach(auction => {
-      dutchContract.methods
-        .getCurrentPrice(auction.id)
-        .call({ from: getState().auth.currentUserId })
-        .then(currentPrice =>
-          updateDBwithNewPrice(auction.id).then(docid =>
+      dutchContract
+        .getCurrentPrice(auction.id, { from: getState().auth.currentUserId }, (error, currentPrice) => { if(!error){
+updateDBwithNewPrice(auction.id).then(docid =>
             db.doc(`stones/${docid}`).update({
               currentPrice: Number(currentPrice)
             })
           )
-        );
+        } 
+        console.log("get active auction price error", error);
+      })
+        
     });
-  } catch (err) {
-    console.log("err x", err);
-  }
+  
 };
 
 export const filterMarketplaceResults = state => dispatch => {

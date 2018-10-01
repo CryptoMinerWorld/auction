@@ -13,10 +13,7 @@ import Footer from "../components/Footer";
 import getWeb3 from "./utils/getWeb3";
 import Routes from "./routes";
 import "./css/root.css";
-import { showConfirm, showExpired } from "../components/Modal";
-import { calculateGemName } from "../features/items/helpers";
 import { sendContractsToRedux } from "./appActions";
-import { updateWalletId } from "../features/auth/authActions";
 import Auth from "../features/auth";
 import { updatePriceOnAllLiveAuctions } from "../features/market/marketActions";
 import { updateGemOwnership } from "../features/items/itemActions";
@@ -55,36 +52,17 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      web3: "",
       font: "",
-      auctionStartPrice: "",
-      auctionEndPrice: "",
-      currentPrice: "",
-      dutchAuctionContractInstance: "",
-      gemsContractInstance: "",
-      auctionStartTime: "",
-      auctionEndTime: "",
-      tokenId: "",
-      grade: 1,
-      level: 2,
-      rate: 2,
-      color: "",
-      isTokenOnSale: true,
-      gemImage: "",
-      story: "",
-      priceInWei: "",
-      currentAccount: "",
+      visible: false,
       releaseConfetti: false,
-      err: "",
-      visible: false
+      err: false
     };
   }
 
   async componentDidMount() {
     const {
       handleSendContractsToRedux,
-      handleUpdatePriceOnAllLiveAuctions,
-      handleUpdateWalletId
+      handleUpdatePriceOnAllLiveAuctions
     } = this.props;
     // @notice loading a custom font when app mounts
     const font = new FontFaceObserver("Muli", {
@@ -99,54 +77,23 @@ class App extends Component {
     const Web3 = await getWeb3;
     const { web3 } = Web3;
 
-    const currentAccountId = await web3.eth
-      .getAccounts()
-      .then(accounts => accounts[0]);
-
-    web3.currentProvider.publicConfigStore.on("update", ({ selectedAddress }) =>
-      handleUpdateWalletId(selectedAddress)
-    );
+    const currentAccountId = web3.eth.accounts[0];
 
     // @notice instantiating auction contract
-    const dutchContract = new web3.eth.Contract(
-      dutchAuctionABI,
-      process.env.REACT_APP_DUTCH_AUCTION,
-      {
-        from: currentAccountId
-      }
-    );
-    // @notice instantiating gem contract
-    const gemsContract = new web3.eth.Contract(
-      gemsABI,
-      process.env.REACT_APP_GEM_ERC721,
-      {
-        from: currentAccountId
-      }
+    const contract1 = web3.eth.contract(dutchAuctionABI);
+    const dutchContract = await contract1.at(
+      process.env.REACT_APP_DUTCH_AUCTION
     );
 
-    Promise.all([dutchContract, gemsContract, currentAccountId])
-      .then(
-        ([
-          dutchAuctionContractInstance,
-          gemsContractInstance,
-          currentAccount
-        ]) => {
-          handleSendContractsToRedux(
-            dutchAuctionContractInstance,
-            gemsContractInstance,
-            web3
-          );
-          this.setState({
-            dutchAuctionContractInstance,
-            gemsContractInstance,
-            web3,
-            currentAccount
-          });
-        }
-      )
-      .catch(err => {
-        this.setState({ err });
-      });
+    const contract2 = web3.eth.contract(gemsABI);
+    const gemsContract = contract2.at(process.env.REACT_APP_GEM_ERC721);
+
+    handleSendContractsToRedux(
+      dutchContract,
+      gemsContract,
+      web3,
+      currentAccountId
+    );
 
     this.updatePriceOnAllLiveAuctions = setInterval(
       () => handleUpdatePriceOnAllLiveAuctions(),
@@ -183,34 +130,7 @@ class App extends Component {
   };
 
   render() {
-    const {
-      redirectTo,
-      tokenId,
-      auctionEndTime,
-      auctionStartTime,
-      auctionStartPrice,
-      auctionEndPrice,
-      font,
-      currentPrice,
-      level,
-      grade,
-      rate,
-      color,
-      isTokenOnSale,
-      web3,
-      gemImage,
-      story,
-      releaseConfetti,
-      err,
-      currentAccount,
-      visible,
-      gemsContractInstance
-    } = this.state;
-
-    // @notice if the token is not on auction a modal tells people the auction is over
-    if (!isTokenOnSale && window.location.href.includes("/auction/")) {
-      showExpired();
-    }
+    const { font, err, visible } = this.state;
 
     return (
       <BrowserRouter>
@@ -242,37 +162,10 @@ class App extends Component {
           <StickyHeader>
             <Navbar />
           </StickyHeader>
-          <NotStickyHeader>
-            <MobileHeader
-              currentPrice={currentPrice}
-              level={level}
-              grade={grade}
-              rate={rate}
-            />
-          </NotStickyHeader>
-          <Routes
-            currentPrice={Number(currentPrice).toFixed(3)}
-            minPrice={Number(auctionStartPrice / 1000000000000000000)}
-            maxPrice={Number(auctionEndPrice / 1000000000000000000)}
-            level={level}
-            grade={grade}
-            rate={rate}
-            color={color}
-            buyNow={this.handleBuyNow}
-            auctionStartTime={auctionStartTime}
-            deadline={auctionEndTime}
-            name={calculateGemName(color, tokenId)}
-            tokenId={tokenId}
-            gemsContractInstance={gemsContractInstance}
-            redirectTo={redirectTo}
-            showConfirm={showConfirm}
-            web3={web3}
-            sourceImage={gemImage}
-            story={story}
-            releaseConfetti={releaseConfetti}
-            provider={!!web3}
-            currentAccount={currentAccount}
-          />
+          {/* <NotStickyHeader>
+            <MobileHeader />
+          </NotStickyHeader> */}
+          <Routes />
           <Footer />
         </main>
       </BrowserRouter>
@@ -283,8 +176,7 @@ class App extends Component {
 const actions = {
   handleSendContractsToRedux: sendContractsToRedux,
   handleUpdatePriceOnAllLiveAuctions: updatePriceOnAllLiveAuctions,
-  handleUpdateGemOwnership: updateGemOwnership,
-  handleUpdateWalletId: updateWalletId
+  handleUpdateGemOwnership: updateGemOwnership
 };
 
 export default connect(
@@ -295,6 +187,5 @@ export default connect(
 App.propTypes = {
   handleSendContractsToRedux: PropTypes.func.isRequired,
   handleUpdatePriceOnAllLiveAuctions: PropTypes.func.isRequired,
-  handleUpdateGemOwnership: PropTypes.func.isRequired,
-  handleUpdateWalletId: PropTypes.func.isRequired
+  handleUpdateGemOwnership: PropTypes.func.isRequired
 };

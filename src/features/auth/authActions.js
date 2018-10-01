@@ -4,7 +4,6 @@ import getWeb3 from "../../app/utils/getWeb3";
 import {
   CURRENT_USER_AVAILABLE,
   CURRENT_USER_NOT_AVAILABLE,
-  WEB3_AVAILABLE,
   USER_EXISTS,
   NEW_USER,
   NO_USER_EXISTS,
@@ -16,23 +15,16 @@ import {
   getUserDetails
 } from "../dashboard/dashboardActions";
 
-export const checkIfUserExists = userId => (dispatch) => {
-  const userIdToLowerCase = userId
-    .split("")
-    .map(item => (typeof item === "string" ? item.toLowerCase() : item))
-    .join("");
-
-  return db
-    .doc(`users/${userIdToLowerCase}`)
+export const checkIfUserExists = userId => (dispatch) =>  db
+    .doc(`users/${userId}`)
     .get()
     .then(
       doc =>
         doc.exists
-          ? dispatch({ type: USER_EXISTS, payload: doc.data() })
+          ?  dispatch({ type: USER_EXISTS, payload: doc.data() })
           : dispatch({ type: NO_USER_EXISTS })
     )
-    .catch(error => console.error("error", error));
-};
+    // .catch(error => console.error("error", error));
 
 export const updateWalletId = walletId => (dispatch, getState) => {
 
@@ -79,20 +71,18 @@ export const createNewUser = payload => dispatch => {
 export const showSignInModal = () => dispatch => dispatch({ type: NEW_USER });
 
 // @dev this action fires when the app starts up
-export const getCurrentUser = () => () =>
-  getWeb3
-    .then(result => result.web3)
-    .then(web3 => {
-      store.dispatch({ type: WEB3_AVAILABLE, payload: web3 });
-      return web3.eth.getAccounts();
-    })
-    .then(accounts => accounts[0])
-    .then(currentUser => {
+export const getCurrentUser = () => async () => {
+
+    const Web3 = await getWeb3;
+    const { web3 } = Web3;
+    const currentUser = web3.eth.accounts[0];
+
       if (currentUser !== undefined) {
-        store.dispatch({ type: CURRENT_USER_AVAILABLE, payload: currentUser });
+        console.log('currentUser',currentUser )
+        // store.dispatch({ type: CURRENT_USER_AVAILABLE, payload: currentUser });
         store.dispatch(checkIfUserExists(currentUser));
         store.dispatch(getUserGems(currentUser));
       } else {
         store.dispatch({ type: CURRENT_USER_NOT_AVAILABLE });
       }
-    });
+    };
