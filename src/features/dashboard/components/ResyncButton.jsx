@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import Button from 'antd/lib/button';
 import { withStateMachine } from 'react-automata';
 import { connect } from 'react-redux';

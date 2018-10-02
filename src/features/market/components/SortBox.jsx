@@ -1,14 +1,37 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import styled from 'styled-components';
-import { NavLink, withRouter } from 'react-router-dom';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { compose } from 'recompose';
-import {
-  getSoonestAuctions,
-  getLowestAuctions,
-  getHighestAuctions
-} from '../marketActions';
+import { orderMarketBy } from '../marketActions';
+import { withStateMachine } from 'react-automata';
+import { compose } from 'redux';
+
+const stateMachine = {
+  initial: 'price',
+  states: {
+    price: {
+      onEntry: 'orderByPrice',
+      on: {
+        RATE: 'rate',
+        TIME: 'time'
+      }
+    },
+    time: {
+      onEntry: 'orderByTime',
+      on: {
+        PRICE: 'price',
+        RATE: 'rate'
+      }
+    },
+    rate: {
+      onEntry: 'orderByRate',
+      on: {
+        PRICE: 'price',
+        TIME: 'time'
+      }
+    }
+  }
+};
 
 const Primary = styled.section`
   display: grid;
@@ -18,56 +41,77 @@ const Primary = styled.section`
   grid-row-gap: 20px;
 `;
 
-const SortBox = ({ handleGetSoonest, handleGetLowest, handleGetHighest }) => (
-  <Primary className="pv4 ">
-    <NavLink
-      exact
-      to="/market"
-      className="ttu mr4 white o-90 link tc"
-      onClick={handleGetSoonest}
-      activeStyle={{ borderBottom: '1px solid purple' }}
-    >
-      finishing soonest
-    </NavLink>
-    <NavLink
-      exact
-      to="/market/lowest"
-      className="ttu mr4 white o-90 link tc"
-      onClick={handleGetLowest}
-      activeStyle={{ borderBottom: '1px solid purple' }}
-    >
-      lowest price
-    </NavLink>
-    <NavLink
-      exact
-      to="/market/highest"
-      className="ttu mr4 white o-90 link tc"
-      onClick={handleGetHighest}
-      activeStyle={{ borderBottom: '1px solid purple' }}
-    >
-      highest price
-    </NavLink>
-  </Primary>
-);
+class SortBox extends PureComponent {
+  orderByPrice = () => this.props.handleOrderBy('currentPrice');
+  orderByTime = () => this.props.handleOrderBy('deadline');
+  orderByRate = () => this.props.handleOrderBy('rate');
+
+  render() {
+    const { transition, machineState } = this.props;
+
+    console.log('machineState', machineState.value);
+    return (
+      <Primary className="pv4 ">
+        <p
+          exact
+          to="/market"
+          className={`pointer ttu mr4 white link tc ${
+            machineState.value === 'price' ? 'o-90' : 'o-30'
+          }`}
+          onClick={() => transition('PRICE')}
+        >
+          by price{' '}
+          <span
+            dangerouslySetInnerHTML={{
+              __html: machineState.value === 'price' ? '&#8593;' : '&#8595;'
+            }}
+          />
+        </p>
+        <p
+          exact
+          to="/market/lowest"
+          className={`pointer ttu mr4 white link tc ${
+            machineState.value === 'time' ? 'o-90' : 'o-30'
+          }`}
+          onClick={() => transition('TIME')}
+        >
+          by time{' '}
+          <span
+            dangerouslySetInnerHTML={{
+              __html:
+                machineState.value === 'time' ? '   &#8593;' : '   &#8595;'
+            }}
+          />
+        </p>
+        <p
+          exact
+          to="/market/highest"
+          className={`pointer ttu mr4 white link tc ${
+            machineState.value === 'rate' ? 'o-90' : 'o-30'
+          }`}
+          onClick={() => transition('RATE')}
+        >
+          by mining rate bonus
+          <span
+            dangerouslySetInnerHTML={{
+              __html:
+                machineState.value === 'rate' ? '   &#8593;' : '   &#8595;'
+            }}
+          />
+        </p>
+      </Primary>
+    );
+  }
+}
 
 const actions = {
-  handleGetSoonest: getSoonestAuctions,
-  handleGetLowest: getLowestAuctions,
-  handleGetHighest: getHighestAuctions
+  handleOrderBy: orderMarketBy
 };
 
 export default compose(
   connect(
     null,
-    actions,
-    null,
-    { pure: false }
+    actions
   ),
-  withRouter
+  withStateMachine(stateMachine)
 )(SortBox);
-
-SortBox.propTypes = {
-  handleGetSoonest: PropTypes.func.isRequired,
-  handleGetLowest: PropTypes.func.isRequired,
-  handleGetHighest: PropTypes.func.isRequired
-};
