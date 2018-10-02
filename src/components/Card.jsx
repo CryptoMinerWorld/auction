@@ -56,16 +56,15 @@ const Cards = ({ auction }) => (
       </small>
     </div>
     <hr />
-    <div className="flex pa3 pb0 w-100">
-      <img src={auction.userImage} alt={auction.userName} className="h3" />
-      <div className="pl3 ma0 pa0 w-100">
-        <p>by {auction.userName}</p>
-
-        <MiniGemBox
-          level={auction.level}
-          grade={auction.gradeType}
-          rate={auction.rate}
-        />
+    <div className="flex col pa3 pb0 w-100">
+      <MiniGemBox
+        level={auction.level}
+        grade={auction.gradeType}
+        rate={auction.rate}
+      />
+      <div className="flex jcc ph3 o-70 ">
+        <img src={auction.userImage} alt={auction.userName} className="h2" />
+        <p>Auction by {auction.userName}</p>
       </div>
     </div>
   </Card>
