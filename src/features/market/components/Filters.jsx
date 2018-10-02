@@ -168,10 +168,11 @@ class Filters extends Component {
                     >{`${weiToEth(currentPrice.min)}`}</span>{' '}
                     <span className="o-60"> to </span>
                     <span className="basic">Ξ </span>
-                    <span
-                      className=" f3"
-                      style={{ color: '#d9a06c' }}
-                    >{`${weiToEth(currentPrice.max)}`}</span>
+                    <span className=" f3" style={{ color: '#d9a06c' }}>{`${
+                      weiToEth(currentPrice.max) === 10
+                        ? 'MAX'
+                        : weiToEth(currentPrice.max)
+                    }`}</span>
                   </p>
                 </div>
               )}
