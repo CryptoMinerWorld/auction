@@ -1,17 +1,26 @@
-import React from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import { lifecycle, compose } from "recompose";
-import { getAuctions, redirectedHome } from "./marketActions";
-import Cards from "../../components/Card";
-import SortBox from "./components/SortBox";
-import Filters from "./components/Filters";
-import LoadingCard from "../../components/LoadingCard";
-import gemKid from "../../app/images/gemKid.png";
+import React from 'react';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { lifecycle, compose } from 'recompose';
+import { getAuctions, redirectedHome } from './marketActions';
+import Cards from '../../components/Card';
+import SortBox from './components/SortBox';
+import LoadingCard from '../../components/LoadingCard';
+import gemKid from '../../app/images/gemKid.png';
+import Filters from './components/Filters';
+import GemFilters from './components/GemFilters';
 
-require("antd/lib/slider/style/css");
+require('antd/lib/slider/style/css');
+
+const LeftAside = styled.aside`
+  grid-column: 1;
+`;
+
+const RightAside = styled.aside`
+  grid-column: 5;
+`;
 
 const Grid = styled.article`
   display: grid;
@@ -28,12 +37,7 @@ const CardBox = styled.section`
 `;
 
 const Primary = styled.section`
-  grid-column-start: span 4;
-  width: 100%;
-`;
-
-const Aside = styled.aside`
-  grid-column: 5/5;
+  grid-column: 2/5;
 `;
 
 const Card = styled.aside`
@@ -58,13 +62,16 @@ const select = store => ({
 const Marketplace = ({ auctions, loading }) => (
   <div className="bg-off-black white pa4">
     {/* <AuctionCategories /> */}
-    <div className="flex aic mt3">
+    <div className="flex aic jcc ">
       <img src={gemKid} className="h3 w-auto pr3 dib" alt="gem auctions" />
       <h1 className="white f1 b o-90" data-testid="header">
         Gem Auctions
       </h1>
     </div>
     <Grid>
+      <LeftAside>
+        <GemFilters />
+      </LeftAside>
       <Primary>
         <SortBox />
         <CardBox>
@@ -77,15 +84,15 @@ const Marketplace = ({ auctions, loading }) => (
             ))
           ) : (
             <Card className="bg-dark-gray h5 flex x wrap">
-              <p className="f4">No Active Auctions Right Now.</p>
+              <p className="f4 tc">No Active Auctions Right Now.</p>
             </Card>
           )}
         </CardBox>
         {/* <p>pagination</p> */}
       </Primary>
-      <Aside>
+      <RightAside>
         <Filters />
-      </Aside>
+      </RightAside>
     </Grid>
   </div>
 );

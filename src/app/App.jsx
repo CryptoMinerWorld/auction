@@ -1,33 +1,33 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { BrowserRouter } from "react-router-dom";
-import FontFaceObserver from "fontfaceobserver";
-import { connect } from "react-redux";
-import ReactGA from "react-ga";
-import Alert from "antd/lib/alert";
-import Modal from "antd/lib/modal";
-import MobileHeader from "../components/MobileHeader";
-import Navbar from "../components/Nav";
-import Footer from "../components/Footer";
-import getWeb3 from "./utils/getWeb3";
-import Routes from "./routes";
-import "./css/root.css";
-import { showConfirm, showExpired } from "../components/Modal";
-import { calculateGemName } from "../features/items/helpers";
-import { sendContractsToRedux } from "./appActions";
-import { updateWalletId } from "../features/auth/authActions";
-import Auth from "../features/auth";
-import { updatePriceOnAllLiveAuctions } from "../features/market/marketActions";
-import { updateGemOwnership } from "../features/items/itemActions";
-import DutchAuction from "./ABI/DutchAuction.json";
-import Gems from "./ABI/GemERC721.json";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
+import { BrowserRouter } from 'react-router-dom';
+import FontFaceObserver from 'fontfaceobserver';
+import { connect } from 'react-redux';
+import ReactGA from 'react-ga';
+import Alert from 'antd/lib/alert';
+import Modal from 'antd/lib/modal';
+import MobileHeader from '../components/MobileHeader';
+import Navbar from '../components/Nav';
+import Footer from '../components/Footer';
+import getWeb3 from './utils/getWeb3';
+import Routes from './routes';
+import './css/root.css';
+import { showConfirm, showExpired } from '../components/Modal';
+import { calculateGemName } from '../features/items/helpers';
+import { sendContractsToRedux } from './appActions';
+import { updateWalletId } from '../features/auth/authActions';
+import Auth from '../features/auth';
+import { updatePriceOnAllLiveAuctions } from '../features/market/marketActions';
+import { updateGemOwnership } from '../features/items/itemActions';
+import DutchAuction from './ABI/DutchAuction.json';
+import Gems from './ABI/GemERC721.json';
 
-require("antd/lib/alert/style/css");
-require("antd/lib/modal/style/css");
+require('antd/lib/alert/style/css');
+require('antd/lib/modal/style/css');
 
 // analytics breaks testing so you have to turn testmode on in development
-const testMode = process.env.NODE_ENV === "development";
+const testMode = process.env.NODE_ENV === 'development';
 
 ReactGA.initialize(process.env.REACT_APP_ANALYTICS, {
   testMode
@@ -55,27 +55,27 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      web3: "",
-      font: "",
-      auctionStartPrice: "",
-      auctionEndPrice: "",
-      currentPrice: "",
-      dutchAuctionContractInstance: "",
-      gemsContractInstance: "",
-      auctionStartTime: "",
-      auctionEndTime: "",
-      tokenId: "",
+      web3: '',
+      font: '',
+      auctionStartPrice: '',
+      auctionEndPrice: '',
+      currentPrice: '',
+      dutchAuctionContractInstance: '',
+      gemsContractInstance: '',
+      auctionStartTime: '',
+      auctionEndTime: '',
+      tokenId: '',
       grade: 1,
       level: 2,
       rate: 2,
-      color: "",
+      color: '',
       isTokenOnSale: true,
-      gemImage: "",
-      story: "",
-      priceInWei: "",
-      currentAccount: "",
+      gemImage: '',
+      story: '',
+      priceInWei: '',
+      currentAccount: '',
       releaseConfetti: false,
-      err: "",
+      err: '',
       visible: false
     };
   }
@@ -87,12 +87,12 @@ class App extends Component {
       handleUpdateWalletId
     } = this.props;
     // @notice loading a custom font when app mounts
-    const font = new FontFaceObserver("Muli", {
+    const font = new FontFaceObserver('Muli', {
       weight: 400
     });
     font
       .load()
-      .then(() => this.setState({ font: "muli" }))
+      .then(() => this.setState({ font: 'muli' }))
       .catch(error => error);
 
     // @notice loading web3 when component mounts
@@ -103,7 +103,7 @@ class App extends Component {
       .getAccounts()
       .then(accounts => accounts[0]);
 
-    web3.currentProvider.publicConfigStore.on("update", ({ selectedAddress }) =>
+    web3.currentProvider.publicConfigStore.on('update', ({ selectedAddress }) =>
       handleUpdateWalletId(selectedAddress)
     );
 
@@ -173,13 +173,13 @@ class App extends Component {
         from: _from,
         value: Number(priceInWei)
       })
-      .on("transactionHash", () => {
+      .on('transactionHash', () => {
         this.setState({ releaseConfetti: true });
       })
-      .on("receipt", () => {
+      .on('receipt', () => {
         handleUpdateGemOwnership(_tokenId, _from);
       })
-      .on("error", err => this.setState({ err }));
+      .on('error', err => this.setState({ err }));
   };
 
   render() {
@@ -208,7 +208,7 @@ class App extends Component {
     } = this.state;
 
     // @notice if the token is not on auction a modal tells people the auction is over
-    if (!isTokenOnSale && window.location.href.includes("/auction/")) {
+    if (!isTokenOnSale && window.location.href.includes('/auction/')) {
       showExpired();
     }
 

@@ -1,12 +1,12 @@
-import React from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import Progress from "antd/lib/progress";
-import format from "date-fns/format";
-import { calculatePercentage, weiToEth } from "../features/market/helpers";
-import MiniGemBox from "./MiniGemBox";
+import React from 'react';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import Progress from 'antd/lib/progress';
+import format from 'date-fns/format';
+import { calculatePercentage, weiToEth } from '../features/market/helpers';
+import MiniGemBox from './MiniGemBox';
 
-require("antd/lib/progress/style/css");
+require('antd/lib/progress/style/css');
 
 const Card = styled.aside`
   clip-path: polygon(
@@ -45,13 +45,14 @@ const Cards = ({ auction }) => (
     </div>
     <div className="tc">
       <big className="db b f3">
-        {" "}
+        {' '}
         <span className="basic">Ξ</span> {weiToEth(auction.currentPrice)}
       </big>
       <small>
-        Auction ends on{" "}
+        Auction ends on
+        <br />
         {auction.deadline &&
-          format(new Date(auction.deadline * 1000), "EEEE do of MMMM")}
+          format(new Date(auction.deadline * 1000), 'EEEE do of MMMM')}
       </small>
     </div>
     <hr />

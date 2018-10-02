@@ -77,15 +77,15 @@
 }
 
 .slider1 > .ant-slider-track-1 {
-  background-color: #bb207e !important;
+  background-color: #5073c7 !important;
 }
 
 .slider1 > .ant-slider-handle-1 {
-  border-color: #bb207e !important;
+  border-color: #5073c7 !important;
 }
 
 .slider1 > .ant-slider-handle-2 {
-  border-color: #bb207e !important;
+  border-color: #5073c7 !important;
 }
 
 .slider2 > .ant-slider-track-1 {
@@ -98,18 +98,6 @@
 
 .slider2 > .ant-slider-handle-2 {
   border-color: #765495 !important;
-}
-
-.slider3 > .ant-slider-track-1 {
-  background-color: #5073c7 !important;
-}
-
-.slider3 > .ant-slider-handle-1 {
-  border-color: #5073c7 !important;
-}
-
-.slider3 > .ant-slider-handle-2 {
-  border-color: #5073c7 !important;
 }
 
 .slider4 > .ant-slider-track-1 {

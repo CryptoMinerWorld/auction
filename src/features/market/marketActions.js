@@ -6,7 +6,9 @@ import {
   FETCH_NEW_AUCTIONS_BEGUN,
   FETCH_NEW_AUCTIONS_SUCCEEDED,
   MARKETPLACE_FILTER_BEGUN,
-  MARKETPLACE_FILTER_FAILED
+  MARKETPLACE_FILTER_FAILED,
+  CHANGE_FILTER_GEM_VALUES,
+  CHANGE_FILTER_VALUES
 } from "./marketConstants";
 
 import {REDIRECTED_HOME} from '../auth/authConstants'
@@ -16,11 +18,13 @@ import { updateDBwithNewPrice } from "./helpers";
 
 export const getAuctions = () => dispatch => {
   dispatch({ type: FETCH_NEW_AUCTIONS_BEGUN });
+
   try {
     db.collection("stones")
       .where("auctionIsLive", "==", true)
-      .onSnapshot(collection => {
+      .get().then(collection => {
         const auctions = collection.docs.map(doc => doc.data());
+        console.log('plug')
         dispatch({ type: FETCH_NEW_AUCTIONS_SUCCEEDED });
         dispatch({ type: NEW_AUCTIONS_RECEIVED, payload: auctions });
       });
@@ -80,6 +84,7 @@ export const updatePriceOnAllLiveAuctions = () => async (
 
   // get list of Ids for all auctions in view
   const activeAuctions = getState().market;
+  console.log('activeAuctions', activeAuctions )
 
   // get price for each auction, then update db with new price
   try {
@@ -96,11 +101,16 @@ export const updatePriceOnAllLiveAuctions = () => async (
         );
     });
   } catch (err) {
-    console.log("err x", err);
+    console.log("error on updatePriceOnAllLiveAuctions", err);
   }
 };
 
-export const filterMarketplaceResults = state => dispatch => {
+
+
+export const filterMarketplaceResults = () => (dispatch, getState) => {
+
+  const state = getState().marketActions
+
   dispatch({ type: MARKETPLACE_FILTER_BEGUN });
   const price = db
     .collection("stones")
@@ -136,36 +146,53 @@ export const filterMarketplaceResults = state => dispatch => {
       return activeAuctions;
     });
 
-  const rate = db
-    .collection("stones")
-    .where("auctionIsLive", "==", true)
-    .where("rate", ">=", state.rate.min)
-    .where("rate", "<=", state.rate.max)
-    .get()
-    .then(collection => {
-      const activeAuctions = collection.docs.map(doc => doc.data());
-      return activeAuctions;
-    });
+  // const rate = db
+  //   .collection("stones")
+  //   .where("auctionIsLive", "==", true)
+  //   .where("rate", ">=", state.rate.min)
+  //   .where("rate", "<=", state.rate.max)
+  //   .get()
+  //   .then(collection => {
+  //     const activeAuctions = collection.docs.map(doc => doc.data());
+  //     return activeAuctions;
+  //   });
 
-  Promise.all([rate, grade, level, price])
+  return Promise.all([grade,  level, price])
     .then(payload => {
       // flatten all arrays in one array
+
       const flatArray = payload.flat();
 
+      // filter out all the gem types you don't want
+      const filteredFlatArray = flatArray.reduce((result, gem) => {
+        if (
+          (state.gems.amethyst && gem.color === 2) || 
+          (state.gems.garnet && gem.color === 1) || 
+          (state.gems.sapphire && gem.color === 9) || 
+          (state.gems.opal && gem.color === 10)) {
+          result.push(gem)
+        }
+        return result
+      }, [])
+
+
+ 
+
+
       // create a tally of how many times each item appears
-      const tally = flatArray.reduce((results, gem) => {
+      const tally = filteredFlatArray.reduce((results, gem) => {
         // eslint-disable-next-line
         results[gem.id] = (results[gem.id] || 0) + 1;
         return results;
       }, {});
 
       // only list ids that appear 4 times in the array
-      const filteredIds = Object.keys(tally).filter(key => tally[key] === 4);
+      const filteredIds = Object.keys(tally).filter(key => tally[key] === 3);
 
       // return the objects in the initial flatArray that have the filetered Ids
       const finalPayload = [];
       filteredIds.forEach(id => {
-        const selection = flatArray.find(obj => obj.id === Number(id));
+        const selection = filteredFlatArray.find(obj => obj.id === Number(id));
         finalPayload.push(selection);
       });
 
@@ -173,6 +200,28 @@ export const filterMarketplaceResults = state => dispatch => {
         type: MARKETPLACE_WAS_FILTERED,
         payload: finalPayload
       });
+
+      
+      return true
     })
     .catch(err => dispatch({ type: MARKETPLACE_FILTER_FAILED, payload: err }));
 };
+
+
+
+
+
+export const toggleGem = gemType => async (dispatch) => {
+
+   dispatch({type: CHANGE_FILTER_GEM_VALUES, payload: gemType })
+  dispatch(filterMarketplaceResults())
+}
+
+export const filterChange = (filterName, values) =>  dispatch => {
+
+const payload = [filterName, values ]
+
+  dispatch({type: CHANGE_FILTER_VALUES, payload })
+//  dispatch(filterMarketplaceResults())
+}
+

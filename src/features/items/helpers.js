@@ -2,7 +2,6 @@ import fromExponential from 'from-exponential';
 import {BigNumber} from 'bignumber.js';
 import { db, storage } from '../../app/utils/firebase'
 
-require('dotenv').config()
 
 export const isTokenForSale = (_contract, _tokenId) =>
  

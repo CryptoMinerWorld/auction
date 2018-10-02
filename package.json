@@ -32,23 +32,11 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "node scripts/test.js --env=jsdom",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
     "coverage": "jest --env=jsdom --coverage"
   },
   "babel": {
-    "presets": [
-      [
-        "env",
-        {
-          "targets": {
-            "node": "current",
-            "uglify": true
-          }
-        }
-      ],
-      "es2015",
-      "react-app"
-    ],
     "plugins": [
       "styled-components",
       [
@@ -67,6 +55,8 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "react-test-renderer": "^16.5.2"
+    "jest-dom": "^1.12.1",
+    "react-test-renderer": "^16.5.2",
+    "react-testing-library": "^5.1.0"
   }
 }

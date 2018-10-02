@@ -1,32 +1,33 @@
-import React, { PureComponent } from "react";
-import message from "antd/lib/message";
-import PropTypes from "prop-types";
-import { withRouter } from "react-router-dom";
-import Confetti from "react-confetti";
-import sizeMe from "react-sizeme";
-import ReactCSSTransitionGroup from "react-addons-css-transition-group";
-import { connect } from "react-redux";
-import { compose } from "redux";
-import AuctionImage from "./components/AuctionImage";
-import AuctionBox from "../../components/AuctionBox";
-import TradingBox from "./components/TradingBox";
-import DescriptionBox from "./components/DescriptionBox/index";
-import FAQ from "./components/FAQ";
-import MailingList from "../../components/MailingList";
-import "./animations.css";
+import React, { PureComponent } from 'react';
+import message from 'antd/lib/message';
+import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
+import Confetti from 'react-confetti';
+import sizeMe from 'react-sizeme';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import AuctionImage from './components/AuctionImage';
+import AuctionBox from '../../components/AuctionBox';
+import TradingBox from './components/TradingBox';
+import DescriptionBox from './components/DescriptionBox/index';
+import FAQ from './components/FAQ';
+import MailingList from '../../components/MailingList';
+import './animations.css';
 import {
   OverlapOnDesktopView,
   RockOverlay,
   TopHighlight
-} from "./styledComponents";
-import { getAuctionDetails } from "./itemActions";
-import { calculateGemName } from "./selectors";
-import StatsBox from "./components/StatsBox";
+} from './styledComponents';
+import { getAuctionDetails } from './itemActions';
+import { calculateGemName } from './selectors';
+import StatsBox from './components/StatsBox';
 
 const select = store => ({
   details: store.auction,
   gemName: calculateGemName(store.auction.color, store.auction.id),
-  error: store.app.error
+  error: store.app.error,
+  currentAccount: store.auth.currentUserId
 });
 
 class Auction extends PureComponent {
@@ -54,12 +55,12 @@ class Auction extends PureComponent {
         {releaseConfetti && (
           <div
             style={{
-              position: "absolute",
+              position: 'absolute',
               top: 0,
               left: 0,
-              width: "100%",
-              height: "100%",
-              zIndex: "999"
+              width: '100%',
+              height: '100%',
+              zIndex: '999'
             }}
           >
             <Confetti {...size} />
@@ -183,9 +184,9 @@ Auction.propTypes = {
 };
 
 Auction.defaultProps = {
-  redirectTo: "",
+  redirectTo: '',
   details: PropTypes.shape({
-    sourceImage: "http://thecodeplayer.com/uploads/wt/13.png",
+    sourceImage: 'http://thecodeplayer.com/uploads/wt/13.png',
     level: 1,
     currentPrice: 0,
     deadline: 0,
@@ -201,18 +202,18 @@ Auction.defaultProps = {
 const DisplayBoxStateMachine = props => {
   const { owner, currentAccount, auctionIsLive } = props;
 
-  let state = "";
+  let state = '';
 
   if (owner === currentAccount) {
-    state = "owner";
+    state = 'owner';
   }
 
   if (auctionIsLive && owner !== currentAccount) {
-    state = "buyer";
+    state = 'buyer';
   }
 
   if (!auctionIsLive && owner !== currentAccount) {
-    state = "viewer";
+    state = 'viewer';
   }
 
   return (
