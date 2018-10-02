@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import Button from 'antd/lib/button';
 import { withStateMachine } from 'react-automata';
 import { connect } from 'react-redux';
@@ -49,7 +49,7 @@ class ReSync extends PureComponent {
       userImage
     } = this.props;
     handleUpdateGemDetails(userId, gemContract, userName, userImage)
-      .then(() => transition('SUCCESS'))
+      .then(result => transition('SUCCESS', { success: result }))
       .catch(error => transition('FAILURE', { error }));
   };
 
@@ -60,18 +60,19 @@ class ReSync extends PureComponent {
       userId,
       gemContract,
       userName,
-      userImage
+      userImage,
+      success,
+      error
     } = this.props;
-    console.log('this.props.error', this.props.error);
-    console.log('machineState.value', machineState.value);
-    console.log('this.props.newGems', this.props.newGems);
-    return (
-      <div className="flex">
-        {/* {machineState.value === 'error' &&
-          this.props.error && <p className="red pr4">{this.props.error}</p>} */}
 
-        {machineState.value === 'start' &&
-          this.props.success && <p className="green pr4">Gems updated.</p>}
+    return (
+      <div className="flex aic">
+        <div className="flex aic">
+          {machineState.value === 'error' &&
+            error && <p className="red pr4 ma0">{error}</p>}
+          {machineState.value === 'start' &&
+            success && <p className="green pr4 ma0">{success}</p>}
+        </div>
         {userId &&
           gemContract &&
           userName &&
@@ -100,3 +101,5 @@ export default compose(
   ),
   withStateMachine(statechart)
 )(ReSync);
+
+export const TestReSync = withStateMachine(statechart)(ReSync);

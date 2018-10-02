@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import img from '../app/images/footer_geodes.png';
+import img from '../app/images/rockFooter.png';
 
 const TopHighlight = styled.div`
   background: linear-gradient(to right, #fc01ca, #bc197c);
@@ -32,10 +32,10 @@ FooterLink.propTypes = {
 };
 
 const Footer = () => (
-  <div className="bg-footer-black">
+  <BackgroundImage className="bg-footer-black">
     <TopHighlight />
     <div className="mw9 center">
-      <BackgroundImage className="pa4 bt b--black-10">
+      <div className="pa4 bt b--black-10">
         <div className="mb6-l cf">
           <article className="fl w-50 dib-ns w-auto-ns mr4-m mr5-l mb4 pr2 pr0-ns white">
             <FooterLink link="https://cryptominerworld.com/" title="Home" />
@@ -85,20 +85,20 @@ const Footer = () => (
           </article>
         </div>
 
-        <div className="dt dt--fixed w-100">
+        <div className="dt dt--fixed w-100 pb5-ns">
           <div className="dn dtc-ns v-mid">
             <p className="f7 black-70 dib pr3 mb3 white">
               Copyright © Cryptominer World 2018
             </p>
-            <p className="f7 black-70 dib pr3 mb3 white">Version 0.1.8</p>
+            <p className="f7 black-70 dib pr3 mb3 white">Version 0.1.9</p>
           </div>
         </div>
         <div className="db dn-ns">
-          <p className="f7 white mt4 tl">Copyright © Cryptominer World 2018</p>
+          <p className="f7 white mt4 tc">Copyright © Cryptominer World 2018</p>
         </div>
-      </BackgroundImage>
+      </div>
     </div>
-  </div>
+  </BackgroundImage>
 );
 
 export default Footer;

@@ -22,6 +22,7 @@ import { getGemImage, getGemStory } from './helpers';
 // this gets all the gems from the database
 export const getUserGems = userId => dispatch => {
   dispatch({ type: FETCH_USER_GEMS_BEGUN });
+  console.log('get userGems fired')
   try {
     db.collection('stones')
       .where('owner', '==', userId)
@@ -220,25 +221,25 @@ export const updateGemDetails = (userId,gemContract, userName, userImage ) => as
           return Promise.reject('No Gems Available');
         }
 
-        // check if document exists, update it if it does and create one if it doesn't
-       
-        return Promise.all(arrayofCompleteGemDetails
-          .forEach( gem => 
-             db.collection('stones')
-              .where('id', '==', gem.id)
-              .get()
-              .then(coll => {
-          
-                const doc = coll.docs.map(doc => doc.id)[0];
+        const updateOrCreate = arrayofCompleteGemDetails
+        .map( gem => 
+           db.collection('stones')
+            .where('id', '==', gem.id)
+            .get()
+            .then(coll => {
+        
+              const doc = coll.docs.map(doc => doc.id)[0];
 
-                if (doc) {
-                  // update it
-                  return db.collection("stones").doc(doc).update(gem)
-                }
-                // or else create it
-                return db.collection("stones").add(gem)
-              })
-          )).then(() => 'Gems Updated.')
+              if (doc) {
+                // update it
+                return db.collection("stones").doc(doc).update(gem)
+              }
+              // or else create it
+              return db.collection("stones").add(gem)
+            })
+        )
+        // check if document exists, update it if it does and create one if it doesn't
+        return Promise.all(updateOrCreate).then(() => 'Gems Updated.')
           
       });
     });

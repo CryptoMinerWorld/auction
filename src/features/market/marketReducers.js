@@ -1,5 +1,5 @@
 import { NEW_AUCTIONS_RECEIVED, MARKETPLACE_WAS_FILTERED, FETCH_NEW_AUCTIONS_SUCCEEDED, FETCH_NEW_AUCTIONS_FAILED, FETCH_NEW_AUCTIONS_BEGUN, MARKETPLACE_FILTER_BEGUN,
-    MARKETPLACE_FILTER_FAILED} from './marketConstants'
+    MARKETPLACE_FILTER_FAILED, CHANGE_FILTER_GEM_VALUES, CHANGE_FILTER_VALUES} from './marketConstants'
 import {NEW_AUCTION_CREATED} from '../items/itemConstants'
 
 export const  marketReducer = (state = [] , action) => {
@@ -30,7 +30,25 @@ const initialState = {
     loading: false, 
     error: false,
     filterLoading: false, 
-    filterError: false
+    filterError: false,
+    gems: {
+      amethyst: true,
+      garnet: true,
+      sapphire: true,
+      opal: true
+    },
+    level: {
+      min: 0,
+      max: 5
+    },
+    gradeType: {
+      min: 1,
+      max: 6
+    },
+    currentPrice: {
+      min: 0,
+      max: 10000000000000000000
+    }
 }
 
 export const marketActionsReducer = (state = initialState , action) => {
@@ -61,6 +79,20 @@ export const marketActionsReducer = (state = initialState , action) => {
         return {...state, filterLoading: true, filterError: false}
     }
 
+    if (action.type === CHANGE_FILTER_GEM_VALUES){
+        const newGems = {...state.gems}
+        newGems[action.payload] = !newGems[action.payload]
+        return {...state, gems: newGems}
+        
+    }
+
+   
+    if (action.type ===  CHANGE_FILTER_VALUES){
+        const min = action.payload && action.payload[1] && action.payload[1][0]
+        const max = action.payload && action.payload[1] && action.payload[1][1]
+        return {...state, [action.payload && action.payload[0]] : { min , max }}
+        
+    }
 
 
     

@@ -11,7 +11,6 @@ import {
 import { db } from "../../app/utils/firebase";
 import { createAuctionHelper, removeAuctionHelper } from "./helpers";
 
-require("dotenv").config();
 
 export const getAuctionDetails = tokenId => dispatch => {
   dispatch({ type: FETCH_DATA_BEGUN });

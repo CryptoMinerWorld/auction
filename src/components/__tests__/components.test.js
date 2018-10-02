@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from 'react-testing-library';
-import DescriptionBox, { FeatureBand } from "../DescriptionBox"
+import DescriptionBox, { FeatureBand } from "../../features/items/components/DescriptionBox"
 import Ripple from '../RippleButton/Ripple'
 import RippleButton from '../RippleButton/RippleButton'
 import AuctionBox from '../AuctionBox'
