@@ -9,22 +9,22 @@ import {
   MARKETPLACE_FILTER_FAILED,
   CHANGE_FILTER_GEM_VALUES,
   CHANGE_FILTER_VALUES
-} from "./marketConstants";
+} from './marketConstants';
 
-import {REDIRECTED_HOME} from '../auth/authConstants'
-import { db } from "../../app/utils/firebase";
+import { REDIRECTED_HOME } from '../auth/authConstants';
+import { db } from '../../app/utils/firebase';
 // import { getPrice } from "../auction/helpers";
-import { updateDBwithNewPrice } from "./helpers";
+import { updateDBwithNewPrice } from './helpers';
 
 export const getAuctions = () => dispatch => {
   dispatch({ type: FETCH_NEW_AUCTIONS_BEGUN });
 
   try {
-    db.collection("stones")
-      .where("auctionIsLive", "==", true)
-      .get().then(collection => {
+    db.collection('stones')
+      .where('auctionIsLive', '==', true)
+      .get()
+      .then(collection => {
         const auctions = collection.docs.map(doc => doc.data());
-        console.log('plug')
         dispatch({ type: FETCH_NEW_AUCTIONS_SUCCEEDED });
         dispatch({ type: NEW_AUCTIONS_RECEIVED, payload: auctions });
       });
@@ -33,37 +33,8 @@ export const getAuctions = () => dispatch => {
   }
 };
 
-export const redirectedHome = () => dispatch => dispatch({type: REDIRECTED_HOME})
-
-export const getSoonestAuctions = () => dispatch =>
-  db
-    .collection("stones")
-    .where("auctionIsLive", "==", true)
-    .orderBy("deadline")
-    .onSnapshot(collection => {
-      const auctions = collection.docs.map(doc => doc.data());
-      dispatch({ type: NEW_AUCTIONS_RECEIVED, payload: auctions });
-    });
-
-export const getHighestAuctions = () => dispatch =>
-  db
-    .collection("stones")
-    .where("auctionIsLive", "==", true)
-    .orderBy("currentPrice", "desc")
-    .onSnapshot(collection => {
-      const auctions = collection.docs.map(doc => doc.data());
-      dispatch({ type: NEW_AUCTIONS_RECEIVED, payload: auctions });
-    });
-
-export const getLowestAuctions = () => dispatch =>
-  db
-    .collection("stones")
-    .where("auctionIsLive", "==", true)
-    .orderBy("currentPrice")
-    .onSnapshot(collection => {
-      const auctions = collection.docs.map(doc => doc.data());
-      dispatch({ type: NEW_AUCTIONS_RECEIVED, payload: auctions });
-    });
+export const redirectedHome = () => dispatch =>
+  dispatch({ type: REDIRECTED_HOME });
 
 export const updatePriceOnAllLiveAuctions = () => async (
   dispatch,
@@ -84,11 +55,11 @@ export const updatePriceOnAllLiveAuctions = () => async (
 
   // get list of Ids for all auctions in view
   const activeAuctions = getState().market;
-  console.log('activeAuctions', activeAuctions )
+  console.log('activeAuctions', activeAuctions);
 
   // get price for each auction, then update db with new price
   try {
-  activeAuctions.forEach(auction => {
+    activeAuctions.forEach(auction => {
       dutchContract.methods
         .getCurrentPrice(auction.id)
         .call({ from: getState().auth.currentUserId })
@@ -101,22 +72,19 @@ export const updatePriceOnAllLiveAuctions = () => async (
         );
     });
   } catch (err) {
-    console.log("error on updatePriceOnAllLiveAuctions", err);
+    console.log('error on updatePriceOnAllLiveAuctions', err);
   }
 };
 
-
-
 export const filterMarketplaceResults = () => (dispatch, getState) => {
-
-  const state = getState().marketActions
+  const state = getState().marketActions;
 
   dispatch({ type: MARKETPLACE_FILTER_BEGUN });
   const price = db
-    .collection("stones")
-    .where("auctionIsLive", "==", true)
-    .where("currentPrice", ">=", state.currentPrice.min)
-    .where("currentPrice", "<=", state.currentPrice.max)
+    .collection('stones')
+    .where('auctionIsLive', '==', true)
+    .where('currentPrice', '>=', state.currentPrice.min)
+    .where('currentPrice', '<=', state.currentPrice.max)
     .get()
     .then(collection => {
       const activeAuctions = collection.docs.map(doc => doc.data());
@@ -124,10 +92,10 @@ export const filterMarketplaceResults = () => (dispatch, getState) => {
     });
 
   const level = db
-    .collection("stones")
-    .where("auctionIsLive", "==", true)
-    .where("level", ">=", state.level.min)
-    .where("level", "<=", state.level.max)
+    .collection('stones')
+    .where('auctionIsLive', '==', true)
+    .where('level', '>=', state.level.min)
+    .where('level', '<=', state.level.max)
     .get()
     .then(collection => {
       const activeAuctions = collection.docs.map(doc => doc.data());
@@ -135,10 +103,10 @@ export const filterMarketplaceResults = () => (dispatch, getState) => {
     });
 
   const grade = db
-    .collection("stones")
-    .where("auctionIsLive", "==", true)
-    .where("gradeType", ">=", state.gradeType.min)
-    .where("gradeType", "<=", state.gradeType.max)
+    .collection('stones')
+    .where('auctionIsLive', '==', true)
+    .where('gradeType', '>=', state.gradeType.min)
+    .where('gradeType', '<=', state.gradeType.max)
 
     .get()
     .then(collection => {
@@ -157,7 +125,7 @@ export const filterMarketplaceResults = () => (dispatch, getState) => {
   //     return activeAuctions;
   //   });
 
-  return Promise.all([grade,  level, price])
+  return Promise.all([grade, level, price])
     .then(payload => {
       // flatten all arrays in one array
 
@@ -166,18 +134,15 @@ export const filterMarketplaceResults = () => (dispatch, getState) => {
       // filter out all the gem types you don't want
       const filteredFlatArray = flatArray.reduce((result, gem) => {
         if (
-          (state.gems.amethyst && gem.color === 2) || 
-          (state.gems.garnet && gem.color === 1) || 
-          (state.gems.sapphire && gem.color === 9) || 
-          (state.gems.opal && gem.color === 10)) {
-          result.push(gem)
+          (state.gems.amethyst && gem.color === 2) ||
+          (state.gems.garnet && gem.color === 1) ||
+          (state.gems.sapphire && gem.color === 9) ||
+          (state.gems.opal && gem.color === 10)
+        ) {
+          result.push(gem);
         }
-        return result
-      }, [])
-
-
- 
-
+        return result;
+      }, []);
 
       // create a tally of how many times each item appears
       const tally = filteredFlatArray.reduce((results, gem) => {
@@ -201,27 +166,22 @@ export const filterMarketplaceResults = () => (dispatch, getState) => {
         payload: finalPayload
       });
 
-      
-      return true
+      return true;
     })
     .catch(err => dispatch({ type: MARKETPLACE_FILTER_FAILED, payload: err }));
 };
 
+export const toggleGem = gemType => async dispatch => {
+  dispatch({ type: CHANGE_FILTER_GEM_VALUES, payload: gemType });
+  dispatch(filterMarketplaceResults());
+};
 
+export const filterChange = (filterName, values) => dispatch => {
+  const payload = [filterName, values];
+  dispatch({ type: CHANGE_FILTER_VALUES, payload });
+};
 
-
-
-export const toggleGem = gemType => async (dispatch) => {
-
-   dispatch({type: CHANGE_FILTER_GEM_VALUES, payload: gemType })
-  dispatch(filterMarketplaceResults())
+export const orderMarketBy = (key) => (dispatch, getState) => {
+  const newMarket = [...getState().market ].sort((a, b) =>  b[key] - a[key]  )
+  dispatch({type: MARKETPLACE_WAS_FILTERED, payload:newMarket })
 }
-
-export const filterChange = (filterName, values) =>  dispatch => {
-
-const payload = [filterName, values ]
-
-  dispatch({type: CHANGE_FILTER_VALUES, payload })
-//  dispatch(filterMarketplaceResults())
-}
-

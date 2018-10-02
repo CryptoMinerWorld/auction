@@ -22,7 +22,7 @@ import { getGemImage, getGemStory } from './helpers';
 // this gets all the gems from the database
 export const getUserGems = userId => dispatch => {
   dispatch({ type: FETCH_USER_GEMS_BEGUN });
-  console.log('get userGems fired')
+
   try {
     db.collection('stones')
       .where('owner', '==', userId)
@@ -53,7 +53,7 @@ export const getUserDetails = userId => dispatch => {
 
 // this checks the smart contract to see what gems a user owns
 export const getAllUserGems = (userId, gemContract) => {
-  console.log('userId, gemContract', userId, gemContract);
+
   return gemContract.methods
     .getCollection(userId)
     .call({ from: userId }, (error, result) => {
@@ -62,10 +62,9 @@ export const getAllUserGems = (userId, gemContract) => {
           type: ALL_USER_GEMS_RETRIEVED,
           payload: result
         });
-        console.log('collection of gems user owns', result);
+       
         return result;
       }
-      console.log('get all user gems error', error);
       return error;
     });
 };
@@ -135,7 +134,6 @@ export const getDetailsForAllGemsAUserCurrentlyOwns = userId => {
                   payload: completeGemDetails
                 });
               });
-            console.log('completed gem details', completeGemDetails);
           }
         })
         .catch(error =>
@@ -165,7 +163,7 @@ export const allMyGems = () => ({
   type: WANT_TO_SEE_ALL_GEMS
 });
 
-export const updateGemDetails = (userId,gemContract, userName, userImage ) => async (dispatch, getState) => {
+export const updateGemDetails = (userId,gemContract, userName, userImage ) => async () => {
 
   console.table({userId, gemContract, userName, userImage} )
 

@@ -84,7 +84,7 @@ const Marketplace = ({ auctions, loading }) => (
             ))
           ) : (
             <Card className="bg-dark-gray h5 flex x wrap">
-              <p className="f4 tc">No Active Auctions Right Now.</p>
+              <p className="f4 tc">No Auctions Available.</p>
             </Card>
           )}
         </CardBox>

@@ -118,4 +118,16 @@ describe.skip('App tests', () => {
   it('resync button resunc gems', () => {
     expect(true).toBeFalsy();
   });
+
+  it('filters and gem filters work together', () => {
+    expect(true).toBeFalsy();
+  });
+
+  it('realtime updates dont reset filter categories', () => {
+    expect(true).toBeFalsy();
+  });
+
+  it('sort by bittons sort info', () => {
+    expect(true).toBeFalsy();
+  });
 });
