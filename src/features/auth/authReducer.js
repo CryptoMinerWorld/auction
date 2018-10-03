@@ -1,7 +1,7 @@
 
 import {CURRENT_USER_AVAILABLE, CURRENT_USER_NOT_AVAILABLE, WEB3_AVAILABLE, USER_EXISTS, NEW_USER, NO_USER_EXISTS, REDIRECTED_HOME, REDIRECT_TO_HOME} from './authConstants'
 
-export default function authReducer (state = { } , action) {
+export default function authReducer (state = { currentUserId: 'Loading...'} , action) {
 
     if (action.type === WEB3_AVAILABLE){
         return {...state, web3: action.payload}
@@ -12,7 +12,7 @@ export default function authReducer (state = { } , action) {
     }
    
     if (action.type ===  CURRENT_USER_NOT_AVAILABLE){
-        return {...state, currentUserId: 'META MASK NOT AVAILABLE'}
+        return {...state, currentUserId: 'PLEASE SIGN IN TO METAMASK'}
     }
 
     if (action.type ===  USER_EXISTS){

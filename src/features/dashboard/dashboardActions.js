@@ -209,7 +209,7 @@ export const updateGemDetails = (userId,gemContract, userName, userImage ) => as
             auctionIsLive: false,
             owner: userId,
             gemImage: images[index],
-            story: stories[index],
+            story: stories[index] || 'No story for this gem yet.',
             userName,
             userImage
           })

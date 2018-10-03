@@ -13,16 +13,13 @@ import Footer from '../components/Footer';
 import getWeb3 from './utils/getWeb3';
 import Routes from './routes';
 import './css/root.css';
-import { showConfirm, showExpired } from '../components/Modal';
-import { calculateGemName } from '../features/items/helpers';
 import { sendContractsToRedux } from './appActions';
 import { updateWalletId } from '../features/auth/authActions';
 import Auth from '../features/auth';
 import { updatePriceOnAllLiveAuctions } from '../features/market/marketActions';
-import { updateGemOwnership } from '../features/items/itemActions';
 import DutchAuction from './ABI/DutchAuction.json';
 import Gems from './ABI/GemERC721.json';
-
+import Presale from './ABI/Presale.json';
 require('antd/lib/alert/style/css');
 require('antd/lib/modal/style/css');
 
@@ -37,6 +34,7 @@ ReactGA.pageview(window.location.pathname + window.location.search);
 
 const dutchAuctionABI = DutchAuction.abi;
 const gemsABI = Gems.abi;
+const presaleABI = Presale.abi;
 
 // @dev keeping component specific styling inside each component file is optimising for deletability. Change or delete this component in the future and all the relevant styles are removed and no more zombie css
 const StickyHeader = styled.div`
@@ -51,30 +49,15 @@ const NotStickyHeader = styled.div`
   z-index: 2;
 `;
 
+const select = store => ({
+  visible: store.app.modalVisible
+});
+
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      web3: '',
       font: '',
-      auctionStartPrice: '',
-      auctionEndPrice: '',
-      currentPrice: '',
-      dutchAuctionContractInstance: '',
-      gemsContractInstance: '',
-      auctionStartTime: '',
-      auctionEndTime: '',
-      tokenId: '',
-      grade: 1,
-      level: 2,
-      rate: 2,
-      color: '',
-      isTokenOnSale: true,
-      gemImage: '',
-      story: '',
-      priceInWei: '',
-      currentAccount: '',
-      releaseConfetti: false,
       err: '',
       visible: false
     };
@@ -115,6 +98,15 @@ class App extends Component {
         from: currentAccountId
       }
     );
+
+    const presaleContract = new web3.eth.Contract(
+      presaleABI,
+      process.env.REACT_APP_PRESALE,
+      {
+        from: currentAccountId
+      }
+    );
+
     // @notice instantiating gem contract
     const gemsContract = new web3.eth.Contract(
       gemsABI,
@@ -124,24 +116,26 @@ class App extends Component {
       }
     );
 
-    Promise.all([dutchContract, gemsContract, currentAccountId])
+    Promise.all([
+      dutchContract,
+      gemsContract,
+      currentAccountId,
+      presaleContract
+    ])
       .then(
         ([
           dutchAuctionContractInstance,
           gemsContractInstance,
-          currentAccount
+          currentAccount,
+          presaleContract
         ]) => {
           handleSendContractsToRedux(
             dutchAuctionContractInstance,
             gemsContractInstance,
-            web3
-          );
-          this.setState({
-            dutchAuctionContractInstance,
-            gemsContractInstance,
             web3,
+            presaleContract,
             currentAccount
-          });
+          );
         }
       )
       .catch(err => {
@@ -160,58 +154,31 @@ class App extends Component {
     clearInterval(this.updatePriceOnAllLiveAuctions);
   }
 
-  // @notice lets users buy a gem in an active auction
-  handleBuyNow = (_tokenId, _from) => {
-    const { dutchAuctionContractInstance, priceInWei } = this.state;
-    const { handleUpdateGemOwnership } = this.props;
+  // // @notice lets users buy a gem in an active auction
+  // handleBuyNow = (_tokenId, _from) => {
+  //   const { dutchAuctionContractInstance, priceInWei } = this.state;
+  //   const { handleUpdateGemOwnership } = this.props;
 
-    this.setState({ visible: true });
+  //   this.setState({ visible: true });
 
-    dutchAuctionContractInstance.methods
-      .buy(Number(_tokenId))
-      .send({
-        from: _from,
-        value: Number(priceInWei)
-      })
-      .on('transactionHash', () => {
-        this.setState({ releaseConfetti: true });
-      })
-      .on('receipt', () => {
-        handleUpdateGemOwnership(_tokenId, _from);
-      })
-      .on('error', err => this.setState({ err }));
-  };
+  //   dutchAuctionContractInstance.methods
+  //     .buy(Number(_tokenId))
+  //     .send({
+  //       from: _from,
+  //       value: Number(priceInWei)
+  //     })
+  //     .on('transactionHash', () => {
+  //       this.setState({ releaseConfetti: true });
+  //     })
+  //     .on('receipt', () => {
+  //       handleUpdateGemOwnership(_tokenId, _from);
+  //     })
+  //     .on('error', err => this.setState({ err }));
+  // };
 
   render() {
-    const {
-      redirectTo,
-      tokenId,
-      auctionEndTime,
-      auctionStartTime,
-      auctionStartPrice,
-      auctionEndPrice,
-      font,
-      currentPrice,
-      level,
-      grade,
-      rate,
-      color,
-      isTokenOnSale,
-      web3,
-      gemImage,
-      story,
-      releaseConfetti,
-      err,
-      currentAccount,
-      visible,
-      gemsContractInstance
-    } = this.state;
-
-    // @notice if the token is not on auction a modal tells people the auction is over
-    if (!isTokenOnSale && window.location.href.includes('/auction/')) {
-      showExpired();
-    }
-
+    const { font, err } = this.state;
+    const { visible } = this.props;
     return (
       <BrowserRouter>
         <main className={font}>
@@ -243,36 +210,9 @@ class App extends Component {
             <Navbar />
           </StickyHeader>
           <NotStickyHeader>
-            <MobileHeader
-              currentPrice={currentPrice}
-              level={level}
-              grade={grade}
-              rate={rate}
-            />
+            <MobileHeader />
           </NotStickyHeader>
-          <Routes
-            currentPrice={Number(currentPrice).toFixed(3)}
-            minPrice={Number(auctionStartPrice / 1000000000000000000)}
-            maxPrice={Number(auctionEndPrice / 1000000000000000000)}
-            level={level}
-            grade={grade}
-            rate={rate}
-            color={color}
-            buyNow={this.handleBuyNow}
-            auctionStartTime={auctionStartTime}
-            deadline={auctionEndTime}
-            name={calculateGemName(color, tokenId)}
-            tokenId={tokenId}
-            gemsContractInstance={gemsContractInstance}
-            redirectTo={redirectTo}
-            showConfirm={showConfirm}
-            web3={web3}
-            sourceImage={gemImage}
-            story={story}
-            releaseConfetti={releaseConfetti}
-            provider={!!web3}
-            currentAccount={currentAccount}
-          />
+          <Routes />
           <Footer />
         </main>
       </BrowserRouter>
@@ -283,12 +223,11 @@ class App extends Component {
 const actions = {
   handleSendContractsToRedux: sendContractsToRedux,
   handleUpdatePriceOnAllLiveAuctions: updatePriceOnAllLiveAuctions,
-  handleUpdateGemOwnership: updateGemOwnership,
   handleUpdateWalletId: updateWalletId
 };
 
 export default connect(
-  null,
+  select,
   actions
 )(App);
 

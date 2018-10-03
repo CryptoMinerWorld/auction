@@ -2,15 +2,16 @@ import {
   AUCTION_DETAILS_RECEIVED,
   OWNERSHIP_TRANSFERRED,
   NEW_AUCTION_CREATED
-} from "./itemConstants";
+} from './itemConstants';
 import {
   FETCH_DATA_BEGUN,
   FETCH_DATA_SUCCEEDED,
-  FETCH_DATA_FAILED
-} from "../../app/reduxConstants";
-import { db } from "../../app/utils/firebase";
-import { createAuctionHelper, removeAuctionHelper } from "./helpers";
-
+  FETCH_DATA_FAILED,
+  MODAL_VISIBLE,
+  RELEASE_CONFETTI
+} from '../../app/reduxConstants';
+import { db } from '../../app/utils/firebase';
+import { createAuctionHelper, removeAuctionHelper } from './helpers';
 
 export const getAuctionDetails = tokenId => dispatch => {
   dispatch({ type: FETCH_DATA_BEGUN });
@@ -57,7 +58,7 @@ export const updateGemOwnership = (gemId, newOwner) => async dispatch => {
             process.env.REACT_APP_BASE_URL
           }/profile/${newOwner}`;
         })
-        .catch(err => console.log("err", err));
+        .catch(err => console.log('err', err));
     });
 };
 
@@ -95,7 +96,7 @@ export const createAuction = (payload, turnLoaderOff) => (
           )
         )
         .then(() => turnLoaderOff())
-        .catch(err => console.log("err", err));
+        .catch(err => console.log('err', err));
 
       dispatch({
         type: NEW_AUCTION_CREATED,
@@ -103,7 +104,7 @@ export const createAuction = (payload, turnLoaderOff) => (
       });
     });
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
   }
 };
 
@@ -124,7 +125,7 @@ export const removeFromAuction = tokenId => async (dispatch, getState) => {
         .then(coll => {
           coll.docs.map(doc => {
             dispatch({
-              type: "GEM_REMOVED_FROM_AUCTION"
+              type: 'GEM_REMOVED_FROM_AUCTION'
             });
             return db.doc(`stones/${doc.id}`).update({
               auctionIsLive: false
@@ -132,5 +133,36 @@ export const removeFromAuction = tokenId => async (dispatch, getState) => {
           });
         })
     )
-    .catch(error => console.log("remove auction error ", error));
+    .catch(error => console.log('remove auction error ', error));
+};
+
+// @notice lets users buy a gem in an active auction
+export const buyNow = (_tokenId, _from) => (dispatch, getState) => {
+  const dutchAuctionContractInstance = getState().app.dutchContractInstance;
+  const priceInWei = getState().auction.currentPrice;
+
+  dispatch({ type: MODAL_VISIBLE });
+
+  dutchAuctionContractInstance.methods
+    .buy(Number(_tokenId))
+    .send({
+      from: _from,
+      value: Number(priceInWei)
+    })
+    .on('transactionHash', () => {
+      dispatch({ type: RELEASE_CONFETTI });
+    })
+    .on('receipt', () => {
+      updateGemOwnership(_tokenId, _from);
+    })
+    .on('error', err => dispatch({ type: FETCH_DATA_FAILED, payload: err }));
+};
+
+export const getRestingEnergy = tokenId => async (dispatch, getState) => {
+  //  getState().app.presaleContractInstance.methods
+  //   .getTokenCreationTime(tokenId)
+  //   .call()
+  //   .then(result => console.log('result', result));
+
+  console.log('tokenId', tokenId)
 };

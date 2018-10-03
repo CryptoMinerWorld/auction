@@ -130,4 +130,8 @@ describe.skip('App tests', () => {
   it('sort by bittons sort info', () => {
     expect(true).toBeFalsy();
   });
+
+  it('if gam is A grade it should show resting energy', () => {
+    expect(true).toBeFalsy();
+  });
 });

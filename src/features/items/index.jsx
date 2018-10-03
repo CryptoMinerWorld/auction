@@ -22,12 +22,14 @@ import {
 import { getAuctionDetails } from './itemActions';
 import { calculateGemName } from './selectors';
 import StatsBox from './components/StatsBox';
+import { getRestingEnergy } from './itemActions';
 
 const select = store => ({
   details: store.auction,
   gemName: calculateGemName(store.auction.color, store.auction.id),
   error: store.app.error,
-  currentAccount: store.auth.currentUserId
+  currentAccount: store.auth.currentUserId,
+  releaseConfetti: store.app.releaseConfetti
 });
 
 class Auction extends PureComponent {
@@ -49,6 +51,10 @@ class Auction extends PureComponent {
       gemName,
       error
     } = this.props;
+
+    if (details.gradeType >= 4) {
+      this.props.handleGetRestingEnergy(this.props.match.params.gemId);
+    }
 
     return (
       <div>
@@ -142,7 +148,8 @@ class Auction extends PureComponent {
 }
 
 const actions = {
-  handleGetAuctionDetails: getAuctionDetails
+  handleGetAuctionDetails: getAuctionDetails,
+  handleGetRestingEnergy: getRestingEnergy
 };
 
 export default compose(
