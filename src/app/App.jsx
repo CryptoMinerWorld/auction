@@ -15,7 +15,6 @@ import Routes from './routes';
 import './css/root.css';
 import { sendContractsToRedux } from './appActions';
 import { updateWalletId } from '../features/auth/authActions';
-import Auth from '../features/auth';
 import { updatePriceOnAllLiveAuctions } from '../features/market/marketActions';
 import DutchAuction from './ABI/DutchAuction.json';
 import Gems from './ABI/GemERC721.json';
@@ -154,28 +153,6 @@ class App extends Component {
     clearInterval(this.updatePriceOnAllLiveAuctions);
   }
 
-  // // @notice lets users buy a gem in an active auction
-  // handleBuyNow = (_tokenId, _from) => {
-  //   const { dutchAuctionContractInstance, priceInWei } = this.state;
-  //   const { handleUpdateGemOwnership } = this.props;
-
-  //   this.setState({ visible: true });
-
-  //   dutchAuctionContractInstance.methods
-  //     .buy(Number(_tokenId))
-  //     .send({
-  //       from: _from,
-  //       value: Number(priceInWei)
-  //     })
-  //     .on('transactionHash', () => {
-  //       this.setState({ releaseConfetti: true });
-  //     })
-  //     .on('receipt', () => {
-  //       handleUpdateGemOwnership(_tokenId, _from);
-  //     })
-  //     .on('error', err => this.setState({ err }));
-  // };
-
   render() {
     const { font, err } = this.state;
     const { visible } = this.props;
@@ -205,7 +182,7 @@ class App extends Component {
             </p>
             <strong>This may take a few moments.</strong>
           </Modal>
-          <Auth />
+
           <StickyHeader>
             <Navbar />
           </StickyHeader>
