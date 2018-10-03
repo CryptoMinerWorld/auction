@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Progress from 'antd/lib/progress';
 import format from 'date-fns/format';
-import { calculatePercentage, weiToEth } from '../features/market/helpers';
-import MiniGemBox from './MiniGemBox';
+import { calculatePercentage, weiToEth } from '../helpers';
+import MiniGemBox from '../../../components/MiniGemBox';
 
 require('antd/lib/progress/style/css');
 

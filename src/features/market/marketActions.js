@@ -42,7 +42,7 @@ export const updatePriceOnAllLiveAuctions = () => async (
 ) => {
   dispatch({ type: AUCTION_PRICE_UPDATES_BEGIN });
   const dutchContract = getState().app.dutchContractInstance;
-
+  const gemContractAddress = getState().app.gemsContractInstance._address 
   // // get list of all active auctions
   // const activeAuctionIds = await db
   //   .collection("stones")
@@ -55,14 +55,13 @@ export const updatePriceOnAllLiveAuctions = () => async (
 
   // get list of Ids for all auctions in view
   const activeAuctions = getState().market;
-  console.log('activeAuctions', activeAuctions);
 
   // get price for each auction, then update db with new price
   try {
     activeAuctions.forEach(auction => {
       dutchContract.methods
-        .getCurrentPrice(auction.id)
-        .call({ from: getState().auth.currentUserId })
+      .getCurrentPrice(gemContractAddress, auction.id)
+        .call()
         .then(currentPrice =>
           updateDBwithNewPrice(auction.id).then(docid =>
             db.doc(`stones/${docid}`).update({

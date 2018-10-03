@@ -211,6 +211,5 @@ export default connect(
 App.propTypes = {
   handleSendContractsToRedux: PropTypes.func.isRequired,
   handleUpdatePriceOnAllLiveAuctions: PropTypes.func.isRequired,
-  handleUpdateGemOwnership: PropTypes.func.isRequired,
   handleUpdateWalletId: PropTypes.func.isRequired
 };

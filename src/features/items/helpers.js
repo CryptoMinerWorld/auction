@@ -82,7 +82,7 @@ const properties = new BigNumber(_properties)
       })
   
       
- export const getPrice =  (_tokenId, _contract) =>  _contract.methods.getCurrentPrice(Number(_tokenId)).call()
+ export const getPrice =  (_tokenId, _contract, gemContract) =>  _contract.methods.getCurrentPrice(gemContract, Number(_tokenId)).call()
         
 export const nonExponential = (count) =>     fromExponential(Number(count) / 1000000000000000000)
 
@@ -97,7 +97,9 @@ export const calculateGemName = (providedGrade, providedTokenId) => {
   };
 
 
-export const removeAuctionHelper = (dutchContract,tokenId ) => dutchContract.methods.remove(tokenId)
+export const removeAuctionHelper = (dutchContract,tokenId, gemContract ) => 
+dutchContract.methods.remove(gemContract, tokenId)
+// dutchContract.methods.remove(tokenId)
 
 export const createAuctionHelper = async (
     _tokenId,
