@@ -102,7 +102,7 @@ class Auth extends PureComponent {
 
   render() {
     const { imageURL, name } = this.state;
-    const { currentUser, transition, machineState, newUser } = this.props;
+    const { currentUser, transition, machineState } = this.props;
 
     return (
       <div>
@@ -126,6 +126,7 @@ class Auth extends PureComponent {
                     href="https://www.apple.com/support/products/pdf/applecare_ipod_t_and_c_11182003.pdf"
                     target="_blank"
                     className="dib"
+                    rel="noopener noreferrer"
                   >
                     {' '}
                     Terms & Conditions

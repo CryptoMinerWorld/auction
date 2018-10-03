@@ -84,7 +84,7 @@ const properties = new BigNumber(_properties)
       })
   
       
- export const getPrice =  (_tokenId, _contract) =>  _contract.methods.getCurrentPrice(
+ export const getPrice =  (_tokenId, _contract, gemContract) =>  _contract.methods.getCurrentPrice(gemContract,
         _tokenId).call()
         
 export const nonExponential = (count) =>     fromExponential(Number(count) / 1000000000000000000)

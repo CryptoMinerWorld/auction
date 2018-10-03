@@ -8,7 +8,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import AuctionImage from './components/AuctionImage';
-import AuctionBox from '../../components/AuctionBox';
+import AuctionBox from './components/AuctionBox';
 import TradingBox from './components/TradingBox';
 import DescriptionBox from './components/DescriptionBox/index';
 import FAQ from './components/FAQ';
@@ -23,13 +23,15 @@ import { getAuctionDetails } from './itemActions';
 import { calculateGemName } from './selectors';
 import StatsBox from './components/StatsBox';
 import { getRestingEnergy } from './itemActions';
+import { showConfirm } from '../../components/Modal';
 
 const select = store => ({
   details: store.auction,
   gemName: calculateGemName(store.auction.color, store.auction.id),
   error: store.app.error,
   currentAccount: store.auth.currentUserId,
-  releaseConfetti: store.app.releaseConfetti
+  releaseConfetti: store.app.releaseConfetti,
+  provider: store.auth.web3 && !!store.auth.web3.currentProvider
 });
 
 class Auction extends PureComponent {
@@ -44,7 +46,6 @@ class Auction extends PureComponent {
       size,
       buyNow,
       redirectTo,
-      showConfirm,
       provider,
       currentAccount,
       details,
@@ -149,7 +150,8 @@ class Auction extends PureComponent {
 
 const actions = {
   handleGetAuctionDetails: getAuctionDetails,
-  handleGetRestingEnergy: getRestingEnergy
+  handleGetRestingEnergy: getRestingEnergy,
+  showConfirm
 };
 
 export default compose(
@@ -181,8 +183,7 @@ Auction.propTypes = {
     monitorHeight: PropTypes.bool,
     monitorWidth: PropTypes.bool
   }).isRequired,
-  buyNow: PropTypes.func.isRequired,
-  name: PropTypes.string.isRequired,
+
   showConfirm: PropTypes.func.isRequired,
   redirectTo: PropTypes.string,
   story: PropTypes.string.isRequired,
@@ -203,7 +204,9 @@ Auction.defaultProps = {
     grade: 1,
     rate: 100,
     tokenId: 1
-  })
+  }),
+  provider: false,
+  story: 'Loading...'
 };
 
 const DisplayBoxStateMachine = props => {

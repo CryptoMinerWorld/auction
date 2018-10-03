@@ -1,8 +1,8 @@
-import React, { PureComponent } from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import Gembox from "../features/items/components/Gembox";
-
+import React, { PureComponent } from 'react';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import Gembox from '../features/items/components/Gembox';
+import { connect } from 'react-redux';
 const Triangle = styled.div`
   width: 140px;
   height: 10px;
@@ -11,16 +11,31 @@ const Triangle = styled.div`
   border-top: 20px solid #5f1763;
 `;
 
+const select = store => ({
+  rate: store.auction.rate,
+  grade: store.auction.gradeType,
+  level: store.auction.level,
+  currentPrice: store.auction.currentPrice
+});
+
 class MobileHeader extends PureComponent {
   static propTypes = {
-    currentPrice: PropTypes.string.isRequired,
-    level: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
+    currentPrice: PropTypes.number,
+    level: PropTypes.number,
+    grade: PropTypes.number,
+    rate: PropTypes.number
+  };
+
+  static defaultProp = {
+    currentPrice: 1,
+    level: 1,
+    grade: 1,
+    rate: 1
   };
 
   render() {
     const { currentPrice, level, grade, rate } = this.props;
+
     return (
       <div className="flex-s dn-ns jca bg-base shadow-1">
         <div className="absolute left-1">
@@ -48,4 +63,4 @@ class MobileHeader extends PureComponent {
   }
 }
 
-export default MobileHeader;
+export default connect(select)(MobileHeader);

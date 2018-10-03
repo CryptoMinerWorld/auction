@@ -112,8 +112,9 @@ export const createAuction = (payload, turnLoaderOff) => (
 export const removeFromAuction = tokenId => async (dispatch, getState) => {
   const dutchContract = getState().app.dutchContractInstance;
   const currentUser = getState().auth.currentUserId;
+  const gemContractAddress = getState().app.gemsContractInstance._address;
 
-  removeAuctionHelper(dutchContract, tokenId)
+  removeAuctionHelper(dutchContract, tokenId, gemContractAddress)
     .send({
       from: currentUser
     })
@@ -137,17 +138,20 @@ export const removeFromAuction = tokenId => async (dispatch, getState) => {
 };
 
 // @notice lets users buy a gem in an active auction
-export const buyNow = (_tokenId, _from) => (dispatch, getState) => {
+export const handleBuyNow = (_tokenId, _from) => (dispatch, getState) => {
   const dutchAuctionContractInstance = getState().app.dutchContractInstance;
   const priceInWei = getState().auction.currentPrice;
+  const gemContractAddress = getState().app.gemsContractInstance._address;
+
+
+  console.log('gemContractAddress', gemContractAddress, _tokenId, _from, priceInWei, dutchAuctionContractInstance._address);
 
   dispatch({ type: MODAL_VISIBLE });
 
   dutchAuctionContractInstance.methods
-    .buy(Number(_tokenId))
+    .buy(gemContractAddress, _tokenId)
     .send({
-      from: _from,
-      value: Number(priceInWei)
+      value: priceInWei
     })
     .on('transactionHash', () => {
       dispatch({ type: RELEASE_CONFETTI });
@@ -155,7 +159,13 @@ export const buyNow = (_tokenId, _from) => (dispatch, getState) => {
     .on('receipt', () => {
       updateGemOwnership(_tokenId, _from);
     })
-    .on('error', err => dispatch({ type: FETCH_DATA_FAILED, payload: err }));
+    .on('error', err =>
+    console.log('buy gem error', err)
+      // dispatch({
+      //   type: FETCH_DATA_FAILED,
+      //   payload: JSON.stringify(err)
+      // })
+    );
 };
 
 export const getRestingEnergy = tokenId => async (dispatch, getState) => {
@@ -163,6 +173,5 @@ export const getRestingEnergy = tokenId => async (dispatch, getState) => {
   //   .getTokenCreationTime(tokenId)
   //   .call()
   //   .then(result => console.log('result', result));
-
-  console.log('tokenId', tokenId)
+  // console.log('tokenId', tokenId)
 };

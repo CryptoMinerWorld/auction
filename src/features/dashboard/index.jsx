@@ -9,7 +9,7 @@ import { lifecycle } from 'recompose';
 import { getUserGems, getUserDetails } from './dashboardActions';
 import GemSortBox from './components/GemSortBox';
 import Cards from './components/GemCard';
-import LoadingCard from '../../components/LoadingCard';
+import LoadingCard from '../market/components/LoadingCard';
 import NoCard from '../../components/NoCard';
 import { redirectedHome } from '../market/marketActions';
 import ReSync from './components/ResyncButton';

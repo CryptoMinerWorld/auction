@@ -1,6 +1,6 @@
-import React from "react";
-import styled from "styled-components";
-import Loading from "./Loading";
+import React from 'react';
+import styled from 'styled-components';
+import Loading from '../../../components/Loading';
 
 const Card = styled.aside`
   clip-path: polygon(
