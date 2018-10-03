@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import Auth from '../auth';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter, Link } from 'react-router-dom';
@@ -40,18 +41,27 @@ const select = store => ({
   userName: store.dashboard.userDetails && store.dashboard.userDetails.name,
   userImage:
     store.dashboard.userDetails && store.dashboard.userDetails.imageURL,
-  redirectToHome: store.auth.redirectToHome
+  redirectToHome: store.auth.redirectToHome,
+  newUser: store.auth.newUser
 });
 
 // @notice the username name and image is also stored on every gem object so I render whichever one shows up first, the reason I make two calls is because not every users has gems
 
-const Dashboard = ({ auctions, loading, error, userName, userImage }) => {
+const Dashboard = ({
+  auctions,
+  loading,
+  error,
+  userName,
+  userImage,
+  newUser
+}) => {
   if (error) {
     return <div>Error! {error.message}</div>;
   }
 
   return (
     <div className="bg-off-black white pa4">
+      {newUser && <Auth />}
       <div className="flex aic mt3">
         <img
           src={userImage || auctions[0].userImage}
@@ -62,7 +72,6 @@ const Dashboard = ({ auctions, loading, error, userName, userImage }) => {
           {`${userName || auctions[0].userName}'s Dashboard`}
         </h1>
       </div>
-
       <Grid>
         <Primary>
           <div className="flex jcb">

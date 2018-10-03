@@ -34,8 +34,7 @@ const images = [
 ];
 const select = store => ({
   currentUser: store.auth.currentUserId,
-  web3: store.auth.web3,
-  newUser: store.auth.newUser
+  web3: store.auth.web3
 });
 
 class Auth extends PureComponent {
@@ -62,16 +61,6 @@ class Auth extends PureComponent {
     walletId: '',
     terms: ''
   };
-
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (prevState.walletId !== nextProps.newUser) {
-      return {
-        walletId: nextProps.newUser
-      };
-    }
-    // Return null to indicate no change to state.
-    return null;
-  }
 
   componentWillUnmount() {
     this.setState({
@@ -114,8 +103,6 @@ class Auth extends PureComponent {
   render() {
     const { imageURL, name } = this.state;
     const { currentUser, transition, machineState, newUser } = this.props;
-
-    console.log('newUser', newUser);
 
     return (
       <div>
