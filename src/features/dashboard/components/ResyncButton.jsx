@@ -50,7 +50,9 @@ class ReSync extends PureComponent {
     } = this.props;
     handleUpdateGemDetails(userId, gemContract, userName, userImage)
       .then(result => transition('SUCCESS', { success: result }))
-      .catch(error => transition('FAILURE', { error }));
+      .catch(error =>
+        transition('FAILURE', { error: error.message_ || error })
+      );
   };
 
   render() {

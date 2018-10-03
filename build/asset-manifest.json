@@ -1,7 +1,7 @@
 {
   "main.css": "/static/css/main.5e56c57a.chunk.css",
-  "main.js": "/static/js/main.6cf4cf25.chunk.js",
-  "main.js.map": "/static/js/main.6cf4cf25.chunk.js.map",
+  "main.js": "/static/js/main.e99dc0f8.chunk.js",
+  "main.js.map": "/static/js/main.e99dc0f8.chunk.js.map",
   "static/css/1.7e530391.chunk.css": "/static/css/1.7e530391.chunk.css",
   "static/js/1.c0c4ea23.chunk.js": "/static/js/1.c0c4ea23.chunk.js",
   "static/js/1.c0c4ea23.chunk.js.map": "/static/js/1.c0c4ea23.chunk.js.map",
@@ -10,11 +10,11 @@
   "static/media/rockBackground.png": "/static/media/rockBackground.ca7bfdfb.png",
   "static/media/rockFooter.png": "/static/media/rockFooter.ab0f1d4b.png",
   "static/media/pinkBuyNowButton.png": "/static/media/pinkBuyNowButton.c4c1ace6.png",
-  "static/media/root.css": "/static/media/muli-v11-latin-900.3f016a1f.woff",
+  "static/media/root.css": "/static/media/muli-v11-latin-900.7f69621e.woff2",
   "static/media/gemKid.png": "/static/media/gemKid.970bf8d7.png",
   "static/css/main.5e56c57a.chunk.css.map": "/static/css/main.5e56c57a.chunk.css.map",
   "static/css/1.7e530391.chunk.css.map": "/static/css/1.7e530391.chunk.css.map",
   "index.html": "/index.html",
-  "precache-manifest.299acdf3177a3b77724a17d1c0758fe0.js": "/precache-manifest.299acdf3177a3b77724a17d1c0758fe0.js",
+  "precache-manifest.f11bd2205cb2b34e132ef502bd8765b3.js": "/precache-manifest.f11bd2205cb2b34e132ef502bd8765b3.js",
   "service-worker.js": "/service-worker.js"
 }

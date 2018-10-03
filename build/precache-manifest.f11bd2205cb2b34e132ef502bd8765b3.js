@@ -4,12 +4,12 @@ self.__precacheManifest = [
     "url": "/static/media/rockFooter.ab0f1d4b.png"
   },
   {
-    "revision": "6cf4cf256b6001bd1d20",
+    "revision": "e99dc0f87a9ab952d865",
     "url": "/static/css/main.5e56c57a.chunk.css"
   },
   {
-    "revision": "3f016a1fd0a668cfb421ddafb044ba30",
-    "url": "/static/media/muli-v11-latin-900.3f016a1f.woff"
+    "revision": "7f69621e9f4f5b5c7b6ea88b99cd2fcc",
+    "url": "/static/media/muli-v11-latin-900.7f69621e.woff2"
   },
   {
     "revision": "c0c4ea234ed4dd6ab5e0",
@@ -28,8 +28,8 @@ self.__precacheManifest = [
     "url": "/static/media/gemKid.970bf8d7.png"
   },
   {
-    "revision": "6cf4cf256b6001bd1d20",
-    "url": "/static/js/main.6cf4cf25.chunk.js"
+    "revision": "e99dc0f87a9ab952d865",
+    "url": "/static/js/main.e99dc0f8.chunk.js"
   },
   {
     "revision": "c4c1ace647ba931bd8e97f06bd09fbe2",
@@ -40,19 +40,19 @@ self.__precacheManifest = [
     "url": "/static/media/muli-v11-latin-regular.45e555f9.woff2"
   },
   {
-    "revision": "7f69621e9f4f5b5c7b6ea88b99cd2fcc",
-    "url": "/static/media/muli-v11-latin-900.7f69621e.woff2"
-  },
-  {
     "revision": "e40161a93339af51847eee49c683f08f",
     "url": "/static/media/muli-v11-latin-regular.e40161a9.woff"
+  },
+  {
+    "revision": "3f016a1fd0a668cfb421ddafb044ba30",
+    "url": "/static/media/muli-v11-latin-900.3f016a1f.woff"
   },
   {
     "revision": "c0c4ea234ed4dd6ab5e0",
     "url": "/static/css/1.7e530391.chunk.css"
   },
   {
-    "revision": "6723feea6fd909915b6ab6f63165dcbf",
+    "revision": "99109729786843a9906f94d480c9e0e4",
     "url": "/index.html"
   }
 ];

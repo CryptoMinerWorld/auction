@@ -1,21 +1,22 @@
-import React from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import { connect } from "react-redux";
-import CountdownTimer from "../features/items/components/CountdownTimer";
-import Gembox from "../features/items/components/Gembox";
-import buyNow from "../app/images/pinkBuyNowButton.png";
-import ProgressMeter from "../features/items/components/ProgressMeter";
-import { showSignInModal } from "../features/auth/authActions";
-
+import React from 'react';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
+import { connect } from 'react-redux';
+import CountdownTimer from '../features/items/components/CountdownTimer';
+import Gembox from '../features/items/components/Gembox';
+import buyNow from '../app/images/pinkBuyNowButton.png';
+import ProgressMeter from '../features/items/components/ProgressMeter';
+import { showSignInModal } from '../features/auth/authActions';
+import { buyNowAction } from '../itemActions';
+import { showConfirm } from '../../../components/Modal';
 const TopHighLight = styled.div`
   background: linear-gradient(to right, #e36d2d, #b91a78);
   height: 4px;
 `;
 
 const tophighlight = {
-  background: "linear-gradient(to right, #e36d2d, #b91a78)",
-  height: "4px"
+  background: 'linear-gradient(to right, #e36d2d, #b91a78)',
+  height: '4px'
 };
 
 const BuyNow = styled.button`
@@ -42,7 +43,9 @@ const OverlapOnDesktopView = styled.div`
   }
 `;
 
-const select = store => ({ accountExists: store.auth.existingUser });
+const select = store => ({
+  accountExists: store.auth.existingUser,
+});
 
 const AuctionBox = ({
   currentPrice,
@@ -59,22 +62,22 @@ const AuctionBox = ({
   currentAccount,
   handleShowSignInModal,
   accountExists,
-  showConfirm
+  provider
 }) => (
   <OverlapOnDesktopView
     className="bg-dark-gray measure-l w-100 shadow-3"
     style={{
       WebkitClipPath:
-        "polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)",
+        'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)',
       clipPath:
-        "polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)"
+        'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)'
     }}
   >
     <TopHighLight style={tophighlight} />
     <div className="white pa3">
       <h1
         className="tc pb3 b white"
-        style={{ wordBreak: "break-all" }}
+        style={{ wordBreak: 'break-all' }}
         data-testid="gemName"
       >
         {name}
@@ -109,7 +112,10 @@ const AuctionBox = ({
   </OverlapOnDesktopView>
 );
 
-const actions = { handleShowSignInModal: showSignInModal };
+const actions = {
+  handleShowSignInModal: showSignInModal,
+  handleBuyNow: buyNowAction
+};
 
 export default connect(
   select,
@@ -131,6 +137,5 @@ AuctionBox.propTypes = {
   minPrice: PropTypes.number.isRequired,
   provider: PropTypes.bool.isRequired,
   currentAccount: PropTypes.string.isRequired,
-  showConfirm: PropTypes.func.isRequired,
   accountExists: PropTypes.bool.isRequired
 };
