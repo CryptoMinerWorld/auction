@@ -11,7 +11,6 @@ import LoadingCard from './components/LoadingCard';
 import gemKid from '../../app/images/gemKid.png';
 import Filters from './components/Filters';
 import GemFilters from './components/GemFilters';
-
 require('antd/lib/slider/style/css');
 
 const LeftAside = styled.aside`
@@ -61,7 +60,6 @@ const select = store => ({
 
 const Marketplace = ({ auctions, loading }) => (
   <div className="bg-off-black white pa4">
-    {/* <AuctionCategories /> */}
     <div className="flex aic jcc ">
       <img src={gemKid} className="h3 w-auto pr3 dib" alt="gem auctions" />
       <h1 className="white f1 b o-90" data-testid="header">
