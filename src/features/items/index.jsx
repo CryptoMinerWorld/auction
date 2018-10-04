@@ -73,6 +73,10 @@ class Auction extends PureComponent {
           .catch(err => console.log('resting energy fetch error', err));
     }
 
+    const socialShareUrl = `${process.env.REACT_APP_BASE_URL}${
+      this.props.match.url
+    }`;
+
     return (
       <div>
         <MobileHeader />
@@ -151,6 +155,7 @@ class Auction extends PureComponent {
                     ownerId={details.owner}
                     gemId={details.id}
                     userImage={details.userImage}
+                    shareUrl={socialShareUrl}
                   />
                 )}
               <div className="w-50-l measure-wide-l">
