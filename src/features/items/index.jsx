@@ -24,6 +24,7 @@ import { calculateGemName } from './selectors';
 import StatsBox from './components/StatsBox';
 import { getRestingEnergy } from './itemActions';
 import { showConfirm } from '../../components/Modal';
+import MobileHeader from './components/MobileHeader';
 
 const select = store => ({
   details: store.auction,
@@ -35,6 +36,10 @@ const select = store => ({
 });
 
 class Auction extends PureComponent {
+  state = {
+    restingEnergyMinutes: ''
+  };
+
   componentDidMount() {
     const { match, handleGetAuctionDetails } = this.props;
     handleGetAuctionDetails(match.params.gemId);
@@ -53,12 +58,18 @@ class Auction extends PureComponent {
       error
     } = this.props;
 
-    if (details.gradeType >= 4) {
-      this.props.handleGetRestingEnergy(this.props.match.params.gemId);
+    if (details && details.gradeType >= 4) {
+      const tokenId = this.props.match.params.gemId;
+      tokenId &&
+        this.props
+          .handleGetRestingEnergy(this.props.match.params.gemId)
+          .then(restingEnergyMinutes => this.setState({ restingEnergyMinutes }))
+          .catch(err => console.log('resting energy fetch error', err));
     }
 
     return (
       <div>
+        <MobileHeader />
         {releaseConfetti && (
           <div
             style={{
@@ -73,7 +84,6 @@ class Auction extends PureComponent {
             <Confetti {...size} />
           </div>
         )}
-
         {error && message.error(error)}
         <div className="bg-off-black ">
           <RockOverlay>
@@ -110,6 +120,7 @@ class Auction extends PureComponent {
                       userImage={details.userImage}
                       auctionIsLive={details.auctionIsLive}
                       gemId={details.gemId}
+                      restingEnergyMinutes={this.state.restingEnergyMinutes}
                     />
                   )}
               </ReactCSSTransitionGroup>

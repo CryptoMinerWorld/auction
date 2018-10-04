@@ -131,7 +131,7 @@ describe.skip('App tests', () => {
     expect(true).toBeFalsy();
   });
 
-  it('if gam is A grade it should show resting energy', () => {
+  it('if gem is A grade it should show resting energy', () => {
     expect(true).toBeFalsy();
   });
 });

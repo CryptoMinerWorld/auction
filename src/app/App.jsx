@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import ReactGA from 'react-ga';
 import Alert from 'antd/lib/alert';
 import Modal from 'antd/lib/modal';
-import MobileHeader from '../components/MobileHeader';
 import Navbar from '../components/Nav';
 import Footer from '../components/Footer';
 import getWeb3 from './utils/getWeb3';
@@ -186,9 +185,6 @@ class App extends Component {
           <StickyHeader>
             <Navbar />
           </StickyHeader>
-          <NotStickyHeader>
-            <MobileHeader />
-          </NotStickyHeader>
           <Routes />
           <Footer />
         </main>
