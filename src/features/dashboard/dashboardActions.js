@@ -15,7 +15,8 @@ import {
   FETCH_USER_DETAILS_FAILED,
   DASHBOARD_WAS_FILTERED,
   RERENDER_SORT_BOX,
-  SORT_BOX_RERENDERED
+  SORT_BOX_RERENDERED,
+  PAGINATE
 } from './dashboardConstants';
 import { db } from '../../app/utils/firebase';
 import store from '../../app/store';
@@ -310,3 +311,5 @@ export const getGemsForDashboardFilter = selection => (dispatch, getState) => {
 
 export const rerenderSortBox = () => dispatch => dispatch({ type: RERENDER_SORT_BOX});
 export const sortBoxReredendered = () => dispatch => dispatch({ type: SORT_BOX_RERENDERED});
+
+export const paginate = (pageNumber, pagePerView) => dispatch => dispatch({ type: PAGINATE, payload: [pageNumber, pagePerView]});

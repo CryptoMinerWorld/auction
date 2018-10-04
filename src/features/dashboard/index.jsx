@@ -1,15 +1,17 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import Auth from '../auth';
+import Pagination from 'antd/lib/pagination';
+import { withStateMachine } from 'react-automata';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter, Link } from 'react-router-dom';
-import { lifecycle } from 'recompose';
 import {
   getUserGemsOnce,
   getUserDetails,
-  filterUserGemsOnPageLoad
+  filterUserGemsOnPageLoad,
+  paginate
 } from './dashboardActions';
 import GemSortBox from './components/GemSortBox';
 import Cards from './components/GemCard';
@@ -18,8 +20,21 @@ import NoCard from './components/NoCard';
 import { redirectedHome } from '../market/marketActions';
 import ReSync from './components/ResyncButton';
 import SortBox from './components/SortBox';
+import AuctionCategories from './components/AuctionCategories';
+require('antd/lib/pagination/style/css');
 require('antd/lib/slider/style/css');
 
+const stateMachine = {
+  initial: 'start',
+  states: {
+    start: {
+      onEntry: 'fetch',
+      on: {
+        NEXT: 'fetch'
+      }
+    }
+  }
+};
 const Grid = styled.article`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
@@ -40,7 +55,9 @@ const Primary = styled.section`
 `;
 
 const select = store => ({
+  totalGems: store.dashboard.userGems.length,
   auctions: store.dashboard.filter,
+  paginated: store.dashboard.paginate,
   loading: store.dashboard.gemsLoading,
   error: store.dashboard.gemsLoadingError,
   userName: store.dashboard.userDetails && store.dashboard.userDetails.name,
@@ -53,67 +70,97 @@ const select = store => ({
 
 // @notice the username name and image is also stored on every gem object so I render whichever one shows up first, the reason I make two calls is because not every users has gems
 
-const Dashboard = ({
-  auctions,
-  loading,
-  error,
-  userName,
-  userImage,
-  newUser,
-  sortBox
-}) => {
-  if (error) {
-    return <div>Error! {error.message}</div>;
+class Dashboard extends PureComponent {
+  static propTypes = {};
+
+  componentDidMount() {
+    this.props.handleGetAuctions(this.props.match.params.userId);
+    this.props.handleGetUserDetails(this.props.match.params.userId);
+    this.props.handlePagination(1, 8);
   }
 
-  return (
-    <div className="bg-off-black white pa4">
-      {newUser && <Auth />}
-      <div className="flex jcb aic  mt3">
-        <div className=" flex aic">
-          <img
-            src={userImage || auctions[0].userImage}
-            className="h3 w-auto pr3 dib"
-            alt="gem auctions"
-          />
-          <h1 className="white" data-testid="header">
-            {`${userName || auctions[0].userName}'s Dashboard`}
-          </h1>
-        </div>
-        <ReSync />
-      </div>
-      <Grid>
-        <Primary>
-          <div className="flex jcb aic">
-            <GemSortBox />
-            {sortBox && <SortBox />}
-          </div>
+  componentDidUpdate() {
+    if (this.props.redirectToHome) {
+      this.props.history.push('/');
+    }
+  }
 
-          <CardBox>
-            {loading &&
-              [1, 2, 3, 4, 5, 6].map(num => <LoadingCard key={num} />)}
-            {auctions && auctions.length > 0 ? (
-              auctions.map(auction => (
-                <Link to={`/gem/${auction.id}`} key={auction.id}>
-                  <Cards auction={auction} />
-                </Link>
-              ))
-            ) : (
-              <NoCard />
-            )}
-          </CardBox>
-          {/* <p>pagination</p> */}
-        </Primary>
-      </Grid>
-    </div>
-  );
-};
+  render() {
+    const {
+      auctions,
+      loading,
+      error,
+      userName,
+      userImage,
+      newUser,
+      sortBox,
+      totalGems,
+      paginated,
+      handlePagination
+    } = this.props;
+
+    if (error) {
+      return <div>Error! {error.message}</div>;
+    }
+
+    console.log('totalGems', Math.ceil(totalGems / 8));
+    return (
+      <div className="bg-off-black white pa4">
+        {newUser && <Auth />}
+        <AuctionCategories gemCount={totalGems} />
+        <div className="flex jcb aic  mt3">
+          <div className=" flex aic">
+            <img
+              src={userImage || auctions[0].userImage}
+              className="h3 w-auto pr3 dib"
+              alt="gem auctions"
+            />
+            <h1 className="white" data-testid="header">
+              {`${userName || auctions[0].userName}'s Dashboard`}
+            </h1>
+          </div>
+          <ReSync />
+        </div>
+        <Grid>
+          <Primary>
+            <div className="flex jcb aic">
+              <GemSortBox />
+              {sortBox && <SortBox />}
+            </div>
+            <CardBox>
+              {loading &&
+                [1, 2, 3, 4, 5, 6].map(num => <LoadingCard key={num} />)}
+              {paginated && paginated.length > 0 ? (
+                paginated.map(auction => (
+                  <Link to={`/gem/${auction.id}`} key={auction.id}>
+                    <Cards auction={auction} />
+                  </Link>
+                ))
+              ) : (
+                <NoCard />
+              )}
+            </CardBox>
+            <div className="white w-100 tc pv4">
+              <Pagination
+                pageSize={8}
+                total={Math.ceil(totalGems / 8)}
+                hideOnSinglePage
+                onChange={(page, pageSize) => handlePagination(page, pageSize)}
+              />
+            </div>
+          </Primary>
+        </Grid>
+      </div>
+    );
+  }
+}
 
 const actions = {
   handleGetAuctions: getUserGemsOnce,
   handleGetUserDetails: getUserDetails,
   handleRedirectedHome: redirectedHome,
-  handleFilterUserGemsOnPageLoad: filterUserGemsOnPageLoad
+  handleFilterUserGemsOnPageLoad: filterUserGemsOnPageLoad,
+  handlePagination: paginate
 };
 
 export default compose(
@@ -122,17 +169,7 @@ export default compose(
     actions
   ),
   withRouter,
-  lifecycle({
-    componentDidMount() {
-      this.props.handleGetAuctions(this.props.match.params.userId);
-      this.props.handleGetUserDetails(this.props.match.params.userId);
-    },
-    componentDidUpdate() {
-      if (this.props.redirectToHome) {
-        this.props.history.push('/');
-      }
-    }
-  })
+  withStateMachine(stateMachine)
 )(Dashboard);
 
 Dashboard.propTypes = {

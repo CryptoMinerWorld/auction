@@ -1,5 +1,5 @@
 import { USER_GEMS_RETRIEVED, ALL_USER_GEMS_RETRIEVED, ALL_USER_GEMS_UPLOADED, USER_HAS_NO_GEMS_IN_WORKSHOP, WANT_TO_SEE_ALL_GEMS, ONLY_WANT_TO_SEE_GEMS_IN_AUCTIONS, FETCH_USER_GEMS_BEGUN,FETCH_USER_GEMS_SUCCEEDED, FETCH_USER_GEMS_FAILED, FETCH_USER_DETAILS_BEGUN, FETCH_USER_DETAILS_SUCCEEDED, USER_DETAILS_RETRIEVED, FETCH_USER_DETAILS_FAILED, DASHBOARD_WAS_FILTERED, RERENDER_SORT_BOX,
-  SORT_BOX_RERENDERED } from "./dashboardConstants";
+  SORT_BOX_RERENDERED, PAGINATE } from "./dashboardConstants";
 
 import {NO_USER_EXISTS} from '../auth/authConstants'
 
@@ -8,7 +8,8 @@ export default function dashboardReducer(state = {
   gemsLoadingError: false,
   userGems: [],
   filter: [],
-  sortBox: true
+  sortBox: true,
+  paginate: []
 }, action) {
   if (action.type === USER_GEMS_RETRIEVED) {
     return { ...state, userGems: action.payload };
@@ -91,6 +92,12 @@ export default function dashboardReducer(state = {
 
   if (action.type ===  SORT_BOX_RERENDERED) {
     return { ...state, sortBox:true};
+  }
+
+  if (action.type ===  PAGINATE) {
+    const start = (action.payload[0] * action.payload[1]) - action.payload[1] 
+    const end = action.payload[0] * action.payload[1]
+    return { ...state, paginate:[...state.filter.slice(start, end)]};
   }
 
   return state;

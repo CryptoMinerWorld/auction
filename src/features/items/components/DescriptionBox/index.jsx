@@ -82,17 +82,6 @@ class DescriptionBox extends PureComponent {
             <div className="pa5-ns pa3">
               <div className="flex jcb aic">
                 <div className="flex aic tc tl-ns">
-                  <CopyToClipboard
-                    text={shareUrl}
-                    onCopy={() => this.setState({ copied: true })}
-                  >
-                    <Icon
-                      type="link"
-                      style={{ fontSize: '24px' }}
-                      className={` pointer blue pr3 ${copied && 'o-50'}`}
-                    />
-                  </CopyToClipboard>
-
                   <img
                     src={tinyDiamond}
                     alt="tiny decorative orange triangle"
@@ -108,6 +97,17 @@ class DescriptionBox extends PureComponent {
                   />
                 </div>
                 <div className="flex aic jcb">
+                  <CopyToClipboard
+                    text={shareUrl}
+                    onCopy={() => this.setState({ copied: true })}
+                  >
+                    <Icon
+                      type="link"
+                      style={{ fontSize: '24px' }}
+                      className={` pointer blue pr3 ${copied && 'o-50'}`}
+                    />
+                  </CopyToClipboard>
+
                   <Link
                     to={ownerId && `/profile/${ownerId}`}
                     className="flex aic bg-white-10 w5-ns w-auto black h-auto pa1"

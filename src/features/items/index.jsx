@@ -67,7 +67,6 @@ class Auction extends PureComponent {
         this.props
           .handleGetRestingEnergy(this.props.match.params.gemId)
           .then(restingEnergyMinutes => {
-            console.log('restingEnergyMinutes', restingEnergyMinutes);
             this.setState({ restingEnergyMinutes });
           })
           .catch(err => console.log('resting energy fetch error', err));
