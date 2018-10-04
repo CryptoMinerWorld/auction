@@ -59,13 +59,26 @@ class Auth extends PureComponent {
     name: '',
     imageURL: '',
     walletId: '',
-    terms: ''
+    terms: false
   };
+
+  static getDerivedStateFromProps(props, state) {
+    // update local state based on currentid from metamask
+    if (props.currentUser !== state.walletId) {
+      return {
+        walletId: props.currentUser
+      };
+    }
+    // Return null if the state hasn't changed
+    return null;
+  }
 
   componentWillUnmount() {
     this.setState({
       name: '',
-      imageURL: ''
+      imageURL: '',
+      walletId: '',
+      terms: false
     });
   }
 
@@ -114,7 +127,7 @@ class Auth extends PureComponent {
           }
           onCancel={() => transition('CLOSE')}
           footer={[
-            <div className="flex jcb">
+            <div className="flex jcb" key="AuthDialogueFooterButtons">
               <Checkbox
                 checked={this.state.terms}
                 onChange={e => this.setState({ terms: e.target.checked })}

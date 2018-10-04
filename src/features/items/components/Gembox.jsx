@@ -49,6 +49,7 @@ class Gembox extends PureComponent {
       mobileHeader,
       restingEnergyMinutes
     } = this.props;
+
     return (
       <div className={styling}>
         <div className="flex tc pa3">

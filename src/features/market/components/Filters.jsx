@@ -205,22 +205,19 @@ export default connect(
 )(Filters);
 
 Filters.propTypes = {
-  handleFilterMarketResults: PropTypes.func.isRequired,
   filterLoading: PropTypes.bool.isRequired,
   handleChange: PropTypes.func.isRequired,
   finalFilter: PropTypes.func.isRequired,
-  selection: PropTypes.shape({
-    level: PropTypes.shape({
-      min: PropTypes.number,
-      max: PropTypes.number
-    }),
-    gradeType: PropTypes.shape({
-      min: PropTypes.number,
-      max: PropTypes.number
-    }),
-    currentPrice: PropTypes.shape({
-      min: PropTypes.number,
-      max: PropTypes.number
-    })
+  level: PropTypes.shape({
+    min: PropTypes.number,
+    max: PropTypes.number
+  }).isRequired,
+  gradeType: PropTypes.shape({
+    min: PropTypes.number,
+    max: PropTypes.number
+  }).isRequired,
+  currentPrice: PropTypes.shape({
+    min: PropTypes.number,
+    max: PropTypes.number
   }).isRequired
 };
