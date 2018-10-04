@@ -143,9 +143,6 @@ export const handleBuyNow = (_tokenId, _from) => (dispatch, getState) => {
   const priceInWei = getState().auction.currentPrice;
   const gemContractAddress = getState().app.gemsContractInstance._address;
 
-
-  console.log('gemContractAddress', gemContractAddress, _tokenId, _from, priceInWei, dutchAuctionContractInstance._address);
-
   dispatch({ type: MODAL_VISIBLE });
 
   dutchAuctionContractInstance.methods
@@ -160,18 +157,22 @@ export const handleBuyNow = (_tokenId, _from) => (dispatch, getState) => {
       updateGemOwnership(_tokenId, _from);
     })
     .on('error', err =>
-    console.log('buy gem error', err)
-      // dispatch({
-      //   type: FETCH_DATA_FAILED,
-      //   payload: JSON.stringify(err)
-      // })
+      dispatch({
+        type: FETCH_DATA_FAILED,
+        payload: JSON.stringify(err)
+      })
     );
 };
 
 export const getRestingEnergy = tokenId => async (dispatch, getState) => {
-  //  getState().app.presaleContractInstance.methods
-  //   .getTokenCreationTime(tokenId)
-  //   .call()
-  //   .then(result => console.log('result', result));
-  // console.log('tokenId', tokenId)
+
+  const gemContract = getState().app.gemsContractInstance
+  gemContract && gemContract.methods.getCreationTime(tokenId).call()
+  .then(result => {
+    const ageSeconds = (Date.now() / 1000 || 0) - result 
+    const ageMinutes = Math.floor(ageSeconds / 60)
+    const restingEnergyMinutes = Math.floor(-7E-06 * Math.pow(ageMinutes, 2) + 0.5406 * ageMinutes)
+
+return restingEnergyMinutes
+  })
 };

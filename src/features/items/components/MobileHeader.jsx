@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import Gembox from '../features/items/components/Gembox';
+import Gembox from './Gembox';
 import { connect } from 'react-redux';
 const Triangle = styled.div`
   width: 140px;
@@ -56,6 +56,7 @@ class MobileHeader extends PureComponent {
             grade={grade}
             rate={rate}
             styling="w-60 fr mr6-ns"
+            mobileHeader={true}
           />
         </div>
       </div>

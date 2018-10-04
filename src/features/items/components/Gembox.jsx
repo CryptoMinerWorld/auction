@@ -1,9 +1,12 @@
-import React, { PureComponent } from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import gem1 from "../../../app/images/icons/gem1.png";
-import gem2 from "../../../app/images/icons/gem2.png";
-import gem3 from "../../../app/images/icons/gem3.png";
+import React, { PureComponent } from 'react';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import gem1 from '../../../app/images/icons/gem1.png';
+import gem2 from '../../../app/images/icons/gem2.png';
+import gem3 from '../../../app/images/icons/gem3.png';
+import restingEnergy from '../../../app/images/icons/EnergySymbolDull.png';
+import formatDistance from 'date-fns/formatDistance';
+import subMinutes from 'date-fns/subMinutes';
 
 class Gembox extends PureComponent {
   static propTypes = {
@@ -14,7 +17,7 @@ class Gembox extends PureComponent {
   };
 
   static defaultProps = {
-    styling: "",
+    styling: '',
     level: 2,
     grade: 2,
     rate: 2
@@ -22,18 +25,30 @@ class Gembox extends PureComponent {
 
   gradeConverter = gradeValue =>
     ({
-      1: "D",
-      2: "C",
-      3: "B",
-      4: "A",
-      5: "AA",
-      6: "AAA"
+      1: 'D',
+      2: 'C',
+      3: 'B',
+      4: 'A',
+      5: 'AA',
+      6: 'AAA'
     }[gradeValue]);
 
-  // rateConverter = rate => Math.round((rate / 400) * 100);
+  restingEnergyConverter = restingEnergyMinutes => {
+    const now = Date.now();
+    const nowMinusMinutes = subMinutes(now, restingEnergyMinutes);
+    const differenceInWords = formatDistance(nowMinusMinutes, now);
+    return differenceInWords;
+  };
 
   render() {
-    const { level, grade, rate, styling } = this.props;
+    const {
+      level,
+      grade,
+      rate,
+      styling,
+      mobileHeader,
+      restingEnergyMinutes
+    } = this.props;
     return (
       <div className={styling}>
         <div className="flex tc pa3">
@@ -45,6 +60,17 @@ class Gembox extends PureComponent {
           />
           <Nugget quality="rate" value={rate} gem={gem3} />
         </div>
+        {!mobileHeader &&
+          grade >= 4 && (
+            <div className="w-100">
+              <div className="flex jcc aic">
+                <img src={restingEnergy} alt="Resting Energy" className="h3 " />
+                <p className="ttu f5 mt2 o-50 white tc pt1 b pr2">
+                  {this.restingEnergyConverter(restingEnergyMinutes)}
+                </p>
+              </div>
+            </div>
+          )}
       </div>
     );
   }
@@ -64,15 +90,15 @@ export const Gem = ({ quality, image, amount }) => (
     <img
       src={image}
       alt={quality}
-      style={{ gridColumn: "1 / -1", gridRow: "2" }}
+      style={{ gridColumn: '1 / -1', gridRow: '2' }}
       className="h3 center"
     />
     <p
       style={{ gridRow: 2, gridColumn: 2 }}
-      className={`ttu f5 mt2 o-50 black tc pt1 b ${quality === "grade" &&
-        "pr2"}`}
+      className={`ttu f5 mt2 o-50 black tc pt1 b ${quality === 'grade' &&
+        'pr2'}`}
     >
-      {quality === "rate" ? `+${amount.toFixed(2)}%` : amount}
+      {quality === 'rate' ? `+${amount.toFixed(2)}%` : amount}
     </p>
   </Feature>
 );
