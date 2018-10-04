@@ -2,19 +2,14 @@ import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 // import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { orderMarketBy } from '../marketActions';
+import { orderDashboardBy } from '../dashboardActions';
 import { withStateMachine, State } from 'react-automata';
 import { compose } from 'redux';
 import { ReactComponent as DownArrowCircle } from '../../../app/images/svg/arrow-down-circle.svg';
 import { ReactComponent as UpArrowCircle } from '../../../app/images/svg/arrow-up-circle.svg';
 
-import { ReactComponent as TrendingDown } from '../../../app/images/svg/trending-down.svg';
-import { ReactComponent as TrendingUp } from '../../../app/images/svg/trending-up.svg';
-
-import { ReactComponent as ChevronsDown } from '../../../app/images/svg/chevrons-down.svg';
-import { ReactComponent as ChevronsUp } from '../../../app/images/svg/chevrons-up.svg';
-const stateMachine = {
-  initial: 'priceASC',
+export const stateMachine = {
+  initial: 'rateASC',
   states: {
     priceASC: {
       onEntry: 'orderByPrice',
@@ -70,23 +65,22 @@ const stateMachine = {
 const Primary = styled.section`
   display: grid;
   width: 100%;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-column-gap: 20px;
-  grid-row-gap: 20px;
+  grid-template-columns: 1fr 1fr;
 `;
 
 class SortBox extends PureComponent {
-  orderByPrice = () => this.props.handleOrderBy('currentPrice', 'asc');
-  orderByPriceDesc = () => this.props.handleOrderBy('currentPriceDesc', 'desc');
-  orderByTime = () => this.props.handleOrderBy('deadline', 'asc');
-  orderByTimeDesc = () => this.props.handleOrderBy('deadline', 'desc');
+  orderByTime = () => this.props.handleOrderBy('level', 'asc');
+  orderByTimeDesc = () => this.props.handleOrderBy('level', 'desc');
   orderByRate = () => this.props.handleOrderBy('rate', 'asc');
   orderByRateDesc = () => this.props.handleOrderBy('rate', 'desc');
+  orderByPrice = () => this.props.handleOrderBy('gradeType', 'asc');
+  orderByPriceDesc = () => this.props.handleOrderBy('gradeType', 'desc');
 
   render() {
     const { transition, machineState } = this.props;
+
     return (
-      <Primary className="pv4 ">
+      <Primary className="pv4 flex jce">
         <p
           className={`flex aic jcc pointer mr4 white link
   ${
@@ -96,20 +90,21 @@ class SortBox extends PureComponent {
   }`}
           onClick={() => transition('TOGGLE_PRICE')}
         >
-          BY PRICE
-          <State is="priceASC">
+          BY GRADE
+          <State is="priceDESC">
             <UpArrowCircle
               className="ml2"
               onClick={() => transition('TOGGLE_PRICE')}
             />
           </State>
-          <State is="priceDESC">
+          <State is="priceASC">
             <DownArrowCircle
               className="ml2"
               onClick={() => transition('TOGGLE_PRICE')}
             />
           </State>
         </p>
+
         <p
           className={`flex aic jcc pointer  mr4 white link  ${
             machineState.value === 'timeASC' ||
@@ -119,22 +114,22 @@ class SortBox extends PureComponent {
           }`}
           onClick={() => transition('TOGGLE_TIME')}
         >
-          BY TIME
-          <State is="timeASC">
-            <ChevronsUp
+          BY LEVEL
+          <State is="timeDESC">
+            <UpArrowCircle
               className="ml2"
               onClick={() => transition('TOGGLE_TIME')}
             />
           </State>
-          <State is="timeDESC">
-            <ChevronsDown
+          <State is="timeASC">
+            <DownArrowCircle
               className="ml2"
               onClick={() => transition('TOGGLE_TIME')}
             />
           </State>
         </p>
         <p
-          className={`flex aic jcc pointer mr4 white link ${
+          className={`flex aic jcc pointer white link ${
             machineState.value === 'rateASC' ||
             machineState.value === 'rateDESC'
               ? 'o-90'
@@ -143,14 +138,14 @@ class SortBox extends PureComponent {
           onClick={() => transition('TOGGLE_RATE')}
         >
           BY MINING RATE BONUS
-          <State is="rateASC">
-            <TrendingUp
+          <State is="rateDESC">
+            <UpArrowCircle
               className="ml2"
               onClick={() => transition('TOGGLE_RATE')}
             />
           </State>
-          <State is="rateDESC">
-            <TrendingDown
+          <State is="rateASC">
+            <DownArrowCircle
               className="ml2"
               onClick={() => transition('TOGGLE_RATE')}
             />
@@ -162,7 +157,7 @@ class SortBox extends PureComponent {
 }
 
 const actions = {
-  handleOrderBy: orderMarketBy
+  handleOrderBy: orderDashboardBy
 };
 
 export default compose(

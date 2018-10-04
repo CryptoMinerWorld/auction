@@ -12,7 +12,10 @@ import {
   FETCH_USER_DETAILS_BEGUN,
   FETCH_USER_DETAILS_SUCCEEDED,
   USER_DETAILS_RETRIEVED,
-  FETCH_USER_DETAILS_FAILED
+  FETCH_USER_DETAILS_FAILED,
+  DASHBOARD_WAS_FILTERED,
+  RERENDER_SORT_BOX,
+  SORT_BOX_RERENDERED
 } from './dashboardConstants';
 import { db } from '../../app/utils/firebase';
 import store from '../../app/store';
@@ -36,6 +39,24 @@ export const getUserGems = userId => dispatch => {
   }
 };
 
+export const getUserGemsOnce = userId => dispatch => {
+  dispatch({ type: FETCH_USER_GEMS_BEGUN });
+
+  try {
+    db.collection('stones')
+      .where('owner', '==', userId)
+      .orderBy('rate', 'desc')
+      .get()
+      .then(collection => {
+        const gems = collection.docs.map(doc => doc.data());
+        dispatch({ type: FETCH_USER_GEMS_SUCCEEDED });
+        dispatch({ type: DASHBOARD_WAS_FILTERED, payload: gems });
+      });
+  } catch (err) {
+    dispatch({ type: FETCH_USER_GEMS_FAILED, payload: err });
+  }
+};
+
 export const getUserDetails = userId => dispatch => {
   dispatch({ type: FETCH_USER_DETAILS_BEGUN });
   try {
@@ -53,7 +74,6 @@ export const getUserDetails = userId => dispatch => {
 
 // this checks the smart contract to see what gems a user owns
 export const getAllUserGems = (userId, gemContract) => {
-
   return gemContract.methods
     .getCollection(userId)
     .call({ from: userId }, (error, result) => {
@@ -62,7 +82,7 @@ export const getAllUserGems = (userId, gemContract) => {
           type: ALL_USER_GEMS_RETRIEVED,
           payload: result
         });
-       
+
         return result;
       }
       return error;
@@ -163,9 +183,13 @@ export const allMyGems = () => ({
   type: WANT_TO_SEE_ALL_GEMS
 });
 
-export const updateGemDetails = (userId,gemContract, userName, userImage ) => async () => {
-
-  console.table({userId, gemContract, userName, userImage} )
+export const updateGemDetails = (
+  userId,
+  gemContract,
+  userName,
+  userImage
+) => async () => {
+  console.table({ userId, gemContract, userName, userImage });
 
   try {
     const idsOfGemsUserOwns = await gemContract.methods
@@ -219,29 +243,70 @@ export const updateGemDetails = (userId,gemContract, userName, userImage ) => as
           return Promise.reject('No Gems Available');
         }
 
-        const updateOrCreate = arrayofCompleteGemDetails
-        .map( gem => 
-           db.collection('stones')
+        const updateOrCreate = arrayofCompleteGemDetails.map(gem =>
+          db
+            .collection('stones')
             .where('id', '==', gem.id)
             .get()
             .then(coll => {
-        
               const doc = coll.docs.map(doc => doc.id)[0];
 
               if (doc) {
                 // update it
-                return db.collection("stones").doc(doc).update(gem)
+                return db
+                  .collection('stones')
+                  .doc(doc)
+                  .update(gem);
               }
               // or else create it
-              return db.collection("stones").add(gem)
+              return db.collection('stones').add(gem);
             })
-        )
+        );
         // check if document exists, update it if it does and create one if it doesn't
-        return Promise.all(updateOrCreate).then(() => 'Gems Updated.')
-          
+        return Promise.all(updateOrCreate).then(() => 'Gems Updated.');
       });
     });
   } catch (err) {
     return err;
   }
 };
+
+export const filterUserGemsOnPageLoad = (key, direction) => (
+  dispatch,
+  getState
+) => {
+  const allUserGemItems = getState().dashboard.userGems;
+
+  const newMarket = [...allUserGemItems].sort((a, b) => a.rate - b.rate);
+  dispatch({ type: DASHBOARD_WAS_FILTERED, payload: newMarket });
+};
+
+export const orderDashboardBy = (key, direction) => (dispatch, getState) => {
+  const currentDashboardItems = getState().dashboard.filter;
+  const newMarket = [...currentDashboardItems].sort(
+    (a, b) => (direction === 'desc' ? a[key] - b[key] : b[key] - a[key])
+  );
+  dispatch({ type: DASHBOARD_WAS_FILTERED, payload: newMarket });
+};
+
+export const getGemsForDashboardFilter = selection => (dispatch, getState) => {
+  console.log('selection', selection);
+  const allGems = getState().dashboard.userGems;
+  let newGemSelection;
+  if (selection === 'all') {
+    newGemSelection = [...allGems];
+  }
+
+  if (selection === 'inAuction') {
+    newGemSelection = allGems.filter(gem => gem.auctionIsLive === true);
+  }
+
+  if (selection === 'notInAuction') {
+    newGemSelection = allGems.filter(gem => gem.auctionIsLive === false);
+  }
+
+  dispatch({ type: DASHBOARD_WAS_FILTERED, payload: newGemSelection });
+};
+
+export const rerenderSortBox = () => dispatch => dispatch({ type: RERENDER_SORT_BOX});
+export const sortBoxReredendered = () => dispatch => dispatch({ type: SORT_BOX_RERENDERED});

@@ -180,7 +180,7 @@ export const filterChange = (filterName, values) => dispatch => {
   dispatch({ type: CHANGE_FILTER_VALUES, payload });
 };
 
-export const orderMarketBy = (key) => (dispatch, getState) => {
-  const newMarket = [...getState().market ].sort((a, b) =>  b[key] - a[key]  )
+export const orderMarketBy = (key, descending) => (dispatch, getState) => {
+  const newMarket = [...getState().market ].sort((a, b) =>  descending === 'desc' ?  a[key] - b[key]  : b[key] - a[key]  )
   dispatch({type: MARKETPLACE_WAS_FILTERED, payload:newMarket })
 }
