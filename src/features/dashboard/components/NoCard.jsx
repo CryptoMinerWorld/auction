@@ -1,7 +1,7 @@
-import React from "react";
-import styled from "styled-components";
-import { Link } from "react-router-dom";
-import Button from "antd/lib/button";
+import React from 'react';
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import Button from 'antd/lib/button';
 
 const Card = styled.aside`
   clip-path: polygon(
@@ -18,12 +18,12 @@ const Card = styled.aside`
 
 const NoCards = () => (
   <Card className="bg-dark-gray h5 flex x col">
-    <p className="f3">You Have No Gems.</p>
-    <Link to="/market">
+    <p className="f3">No Gems.</p>
+    {/* <Link to="/market">
       <Button htmlType="button" className="white bg-base bn">
         Head over to the Marketplace.
       </Button>
-    </Link>
+    </Link> */}
   </Card>
 );
 

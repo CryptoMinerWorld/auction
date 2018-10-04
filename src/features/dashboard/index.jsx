@@ -6,13 +6,18 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter, Link } from 'react-router-dom';
 import { lifecycle } from 'recompose';
-import { getUserGems, getUserDetails } from './dashboardActions';
+import {
+  getUserGemsOnce,
+  getUserDetails,
+  filterUserGemsOnPageLoad
+} from './dashboardActions';
 import GemSortBox from './components/GemSortBox';
 import Cards from './components/GemCard';
 import LoadingCard from '../market/components/LoadingCard';
-import NoCard from '../../components/NoCard';
+import NoCard from './components/NoCard';
 import { redirectedHome } from '../market/marketActions';
 import ReSync from './components/ResyncButton';
+import SortBox from './components/SortBox';
 require('antd/lib/slider/style/css');
 
 const Grid = styled.article`
@@ -24,7 +29,7 @@ const Grid = styled.article`
 const CardBox = styled.section`
   display: grid;
   width: 100%;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-column-gap: 20px;
   grid-row-gap: 20px;
 `;
@@ -35,14 +40,15 @@ const Primary = styled.section`
 `;
 
 const select = store => ({
-  auctions: store.dashboard.userGems,
+  auctions: store.dashboard.filter,
   loading: store.dashboard.gemsLoading,
   error: store.dashboard.gemsLoadingError,
   userName: store.dashboard.userDetails && store.dashboard.userDetails.name,
   userImage:
     store.dashboard.userDetails && store.dashboard.userDetails.imageURL,
   redirectToHome: store.auth.redirectToHome,
-  newUser: store.auth.newUser
+  newUser: store.auth.newUser,
+  sortBox: store.dashboard.sortBox
 });
 
 // @notice the username name and image is also stored on every gem object so I render whichever one shows up first, the reason I make two calls is because not every users has gems
@@ -53,7 +59,8 @@ const Dashboard = ({
   error,
   userName,
   userImage,
-  newUser
+  newUser,
+  sortBox
 }) => {
   if (error) {
     return <div>Error! {error.message}</div>;
@@ -62,21 +69,24 @@ const Dashboard = ({
   return (
     <div className="bg-off-black white pa4">
       {newUser && <Auth />}
-      <div className="flex aic mt3">
-        <img
-          src={userImage || auctions[0].userImage}
-          className="h3 w-auto pr3 dib"
-          alt="gem auctions"
-        />
-        <h1 className="white" data-testid="header">
-          {`${userName || auctions[0].userName}'s Dashboard`}
-        </h1>
+      <div className="flex jcb aic  mt3">
+        <div className=" flex aic">
+          <img
+            src={userImage || auctions[0].userImage}
+            className="h3 w-auto pr3 dib"
+            alt="gem auctions"
+          />
+          <h1 className="white" data-testid="header">
+            {`${userName || auctions[0].userName}'s Dashboard`}
+          </h1>
+        </div>
+        <ReSync />
       </div>
       <Grid>
         <Primary>
-          <div className="flex jcb">
+          <div className="flex jcb aic">
             <GemSortBox />
-            <ReSync />
+            {sortBox && <SortBox />}
           </div>
 
           <CardBox>
@@ -100,9 +110,10 @@ const Dashboard = ({
 };
 
 const actions = {
-  handleGetAuctions: getUserGems,
+  handleGetAuctions: getUserGemsOnce,
   handleGetUserDetails: getUserDetails,
-  handleRedirectedHome: redirectedHome
+  handleRedirectedHome: redirectedHome,
+  handleFilterUserGemsOnPageLoad: filterUserGemsOnPageLoad
 };
 
 export default compose(
