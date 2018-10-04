@@ -62,7 +62,8 @@ const AuctionBox = ({
   currentAccount,
   handleShowSignInModal,
   accountExists,
-  provider
+  provider,
+  restingEnergyMinutes
 }) => {
   return (
     <OverlapOnDesktopView
@@ -83,7 +84,12 @@ const AuctionBox = ({
         >
           {name}
         </h1>
-        {deadline && <CountdownTimer deadline={deadline} />}
+        {deadline && (
+          <CountdownTimer
+            deadline={deadline}
+            restingEnergyMinutes={restingEnergyMinutes}
+          />
+        )}
         <div className="mt3" />
         <Gembox level={level} grade={grade} rate={rate} />
 

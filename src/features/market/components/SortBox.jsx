@@ -49,12 +49,9 @@ class SortBox extends PureComponent {
   render() {
     const { transition, machineState } = this.props;
 
-    console.log('machineState', machineState.value);
     return (
       <Primary className="pv4 ">
         <p
-          exact
-          to="/market"
           className={`pointer ttu mr4 white link tc ${
             machineState.value === 'price' ? 'o-90' : 'o-30'
           }`}
@@ -68,8 +65,6 @@ class SortBox extends PureComponent {
           />
         </p>
         <p
-          exact
-          to="/market/lowest"
           className={`pointer ttu mr4 white link tc ${
             machineState.value === 'time' ? 'o-90' : 'o-30'
           }`}
@@ -84,8 +79,6 @@ class SortBox extends PureComponent {
           />
         </p>
         <p
-          exact
-          to="/market/highest"
           className={`pointer ttu mr4 white link tc ${
             machineState.value === 'rate' ? 'o-90' : 'o-30'
           }`}

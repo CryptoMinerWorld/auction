@@ -164,11 +164,12 @@ export const handleBuyNow = (_tokenId, _from) => (dispatch, getState) => {
     );
 };
 
-export const getRestingEnergy = tokenId => async (dispatch, getState) => {
+export const getRestingEnergy = tokenId => (dispatch, getState) => {
 
   const gemContract = getState().app.gemsContractInstance
-  gemContract && gemContract.methods.getCreationTime(tokenId).call()
+  return gemContract && gemContract.methods.getCreationTime(tokenId).call()
   .then(result => {
+   
     const ageSeconds = (Date.now() / 1000 || 0) - result 
     const ageMinutes = Math.floor(ageSeconds / 60)
     const restingEnergyMinutes = Math.floor(-7E-06 * Math.pow(ageMinutes, 2) + 0.5406 * ageMinutes)

@@ -34,17 +34,11 @@ const dutchAuctionABI = DutchAuction.abi;
 const gemsABI = Gems.abi;
 const presaleABI = Presale.abi;
 
-// @dev keeping component specific styling inside each component file is optimising for deletability. Change or delete this component in the future and all the relevant styles are removed and no more zombie css
 const StickyHeader = styled.div`
   position: -webkit-sticky; /* Safari */
   position: sticky;
   top: 0;
   z-index: 3;
-`;
-
-const NotStickyHeader = styled.div`
-  position: relative;
-  z-index: 2;
 `;
 
 const select = store => ({

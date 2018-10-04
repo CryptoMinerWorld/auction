@@ -58,12 +58,18 @@ class Auction extends PureComponent {
       error
     } = this.props;
 
-    if (details && details.gradeType >= 4) {
+    const { restingEnergyMinutes } = this.state;
+
+    if (this.props.match.params.gemId && details && details.gradeType >= 4) {
       const tokenId = this.props.match.params.gemId;
+
       tokenId &&
         this.props
           .handleGetRestingEnergy(this.props.match.params.gemId)
-          .then(restingEnergyMinutes => this.setState({ restingEnergyMinutes }))
+          .then(restingEnergyMinutes => {
+            console.log('restingEnergyMinutes', restingEnergyMinutes);
+            this.setState({ restingEnergyMinutes });
+          })
           .catch(err => console.log('resting energy fetch error', err));
     }
 
@@ -120,7 +126,9 @@ class Auction extends PureComponent {
                       userImage={details.userImage}
                       auctionIsLive={details.auctionIsLive}
                       gemId={details.gemId}
-                      restingEnergyMinutes={this.state.restingEnergyMinutes}
+                      restingEnergyMinutes={
+                        restingEnergyMinutes && restingEnergyMinutes
+                      }
                     />
                   )}
               </ReactCSSTransitionGroup>

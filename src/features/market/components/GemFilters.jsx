@@ -17,7 +17,7 @@ const Loading = () => (
 
 class Filters extends Component {
   static propTypes = {
-    toggleGem: PropTypes.func.isRequired,
+    handleToggleGem: PropTypes.func,
     filterLoading: PropTypes.bool.isRequired,
     selection: PropTypes.shape({
       amethyst: PropTypes.bool.isRequired,
@@ -83,6 +83,7 @@ class Filters extends Component {
                       filterLoading={filterLoading}
                     />
                   </div>
+
                   {/* <div className="w-33">
                         <GemFilter
                           gemType="amethyst"
@@ -183,7 +184,7 @@ const GemFilter = ({
 };
 
 GemFilter.propTypes = {
-  toggleGem: PropTypes.func.isRequired,
+  handleToggleGem: PropTypes.func,
   ifItsSelected: PropTypes.bool.isRequired,
   url: PropTypes.string.isRequired,
   gemType: PropTypes.string.isRequired
