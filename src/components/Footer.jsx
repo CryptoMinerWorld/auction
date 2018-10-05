@@ -109,7 +109,7 @@ const Footer = () => (
             <p className="f7 black-70 dib pr3 mb3 white">
               Copyright © Cryptominer World 2018
             </p>
-            <p className="f7 black-70 dib pr3 mb3 white">Version 0.1.9</p>
+            <p className="f7 black-70 dib pr3 mb3 white">Version 0.1.10</p>
           </div>
         </div>
         <div className="db dn-ns">

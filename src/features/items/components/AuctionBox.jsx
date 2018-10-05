@@ -84,14 +84,14 @@ const AuctionBox = ({
         >
           {name}
         </h1>
-        {deadline && (
-          <CountdownTimer
-            deadline={deadline}
-            restingEnergyMinutes={restingEnergyMinutes}
-          />
-        )}
+        {deadline && <CountdownTimer deadline={deadline} />}
         <div className="mt3" />
-        <Gembox level={level} grade={grade} rate={rate} />
+        <Gembox
+          level={level}
+          grade={grade}
+          rate={rate}
+          restingEnergyMinutes={restingEnergyMinutes}
+        />
 
         <div className="w-100 w5-ns h3 center mt4">
           <BuyNow

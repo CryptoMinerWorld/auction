@@ -92,7 +92,7 @@ export const Gem = ({ quality, image, amount }) => (
       src={image}
       alt={quality}
       style={{ gridColumn: '1 / -1', gridRow: '2' }}
-      className="h3 center"
+      className={`w-auto center h3`}
     />
     <p
       style={{ gridRow: 2, gridColumn: 2 }}

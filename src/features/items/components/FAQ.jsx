@@ -1,9 +1,9 @@
-import React, { PureComponent } from "react";
-import PropTypes from "prop-types";
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 
 class FAQ extends PureComponent {
   state = {
-    focusedDetail: 1
+    focusedDetail: 0
   };
 
   handleChange = index => () => this.setState({ focusedDetail: index });
@@ -52,9 +52,9 @@ const Question = ({ focusedDetail, handleChange, question, answer, index }) => (
     <p>{answer}</p>
     {index === 4 && (
       <p>
-        For more information on how to install MetaMask{" "}
+        For more information on how to install MetaMask{' '}
         <a href="https://cryptominerworld.com/game_info/#GameInfoMetaMask">
-          Click here{" "}
+          Click here{' '}
         </a>
       </p>
     )}

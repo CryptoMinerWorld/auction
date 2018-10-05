@@ -175,5 +175,5 @@ export const getRestingEnergy = tokenId => (dispatch, getState) => {
     const restingEnergyMinutes = Math.floor(-7E-06 * Math.pow(ageMinutes, 2) + 0.5406 * ageMinutes)
 
 return restingEnergyMinutes
-  })
+  }).catch(err => console.log('resting energy action err', err))
 };

@@ -32,7 +32,7 @@ const Cards = ({ auction }) => (
       percent={calculatePercentage(auction.maxPrice, auction.currentPrice)}
       status="active"
       showInfo={false}
-      strokeColor="#FFB700"
+      strokeColor="#c214a7"
       className="o-70"
     />
     <div className="flex jcb ph3">
