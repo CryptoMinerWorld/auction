@@ -132,6 +132,88 @@ class Auction extends PureComponent {
                 transitionEnterTimeout={5000}
                 transitionLeaveTimeout={5000}
               >
+                {/* {details &&
+                  Object.keys(details).length > 0 &&
+                  details.owner === currentAccount && (
+                    <TradingBox
+                      currentPrice={details.currentPrice}
+                      minPrice={details.minPrice}
+                      maxPrice={details.maxPrice}
+                      deadline={details.deadline}
+                      handleBuyNow={buyNow}
+                      level={details.level}
+                      grade={details.gradeType}
+                      rate={details.rate}
+                      name={gemName}
+                      tokenId={details.id}
+                      redirectTo={redirectTo}
+                      showConfirm={showConfirm}
+                      provider={provider}
+                      currentAccount={currentAccount}
+                      story={details.story}
+                      owner={details.owner}
+                      userImage={details.userImage}
+                      auctionIsLive={details.auctionIsLive}
+                      gemId={details.gemId}
+                      restingEnergyMinutes={restingEnergyMinutes}
+                    />
+                  )}
+                {details &&
+                  Object.keys(details).length > 0 &&
+                  details.auctionIsLive &&
+                  details.owner === currentAccount && (
+                    <AuctionBox
+                      currentPrice={details.currentPrice}
+                      minPrice={details.minPrice}
+                      maxPrice={details.maxPrice}
+                      deadline={details.deadline}
+                      handleBuyNow={buyNow}
+                      level={details.level}
+                      grade={details.gradeType}
+                      rate={details.rate}
+                      name={gemName}
+                      tokenId={details.id}
+                      redirectTo={redirectTo}
+                      showConfirm={showConfirm}
+                      provider={provider}
+                      currentAccount={currentAccount}
+                      story={details.story}
+                      owner={details.owner}
+                      userImage={details.userImage}
+                      auctionIsLive={details.auctionIsLive}
+                      gemId={details.gemId}
+                      restingEnergyMinutes={restingEnergyMinutes}
+                    />
+                  )}
+
+                {details &&
+                  Object.keys(details).length > 0 &&
+                  !details.auctionIsLive &&
+                  details.owner !== currentAccount && (
+                    <StatsBox
+                      currentPrice={details.currentPrice}
+                      minPrice={details.minPrice}
+                      maxPrice={details.maxPrice}
+                      deadline={details.deadline}
+                      handleBuyNow={buyNow}
+                      level={details.level}
+                      grade={details.gradeType}
+                      rate={details.rate}
+                      name={gemName}
+                      tokenId={details.id}
+                      redirectTo={redirectTo}
+                      showConfirm={showConfirm}
+                      provider={provider}
+                      currentAccount={currentAccount}
+                      story={details.story}
+                      owner={details.owner}
+                      userImage={details.userImage}
+                      auctionIsLive={details.auctionIsLive}
+                      gemId={details.gemId}
+                      restingEnergyMinutes={restingEnergyMinutes}
+                    />
+                  )} */}
+
                 <DisplayBoxStateMachine
                   currentPrice={details.currentPrice}
                   minPrice={details.minPrice}
@@ -254,8 +336,16 @@ Auction.defaultProps = {
 
 const DisplayBoxStateMachine = props => {
   const { owner, currentAccount, auctionIsLive } = props;
+  console.log('', { owner, currentAccount, auctionIsLive });
+  let state = 'owner';
 
-  let state = 'buyer';
+  // if (owner === currentAccount) {
+  //   state = 'owner';
+  // } else if (auctionIsLive && owner !== currentAccount) {
+  //   state = 'buyer';
+  // } else {
+  //   state = 'viewer';
+  // }
 
   if (owner === currentAccount) {
     state = 'owner';
@@ -269,15 +359,9 @@ const DisplayBoxStateMachine = props => {
     state = 'viewer';
   }
 
-  return (
-    <div>
-      {
-        {
-          owner: <TradingBox {...props} />,
-          buyer: <AuctionBox {...props} />,
-          viewer: <StatsBox {...props} />
-        }[state]
-      }
-    </div>
-  );
+  return {
+    owner: <TradingBox {...props} />,
+    buyer: <AuctionBox {...props} />,
+    viewer: <StatsBox {...props} />
+  }[state];
 };
