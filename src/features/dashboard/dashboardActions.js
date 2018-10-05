@@ -190,7 +190,7 @@ export const updateGemDetails = (
   userName,
   userImage
 ) => async () => {
-  console.table({ userId, gemContract, userName, userImage });
+ 
 
   try {
     const idsOfGemsUserOwns = await gemContract.methods
