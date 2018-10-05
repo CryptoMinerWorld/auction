@@ -85,6 +85,13 @@ class TradingBox extends PureComponent {
                     Remove Gem From Auction
                   </Button>
                 </div>
+                {formSubmitted && (
+                  <p className="red pt3 pl3 measure">
+                    Please do not nagivate away from this page while the
+                    transaction is processing. You will be redirected once it is
+                    done.
+                  </p>
+                )}
               </div>
             ) : (
               <div className="pa5 flex jcc col">
@@ -133,7 +140,6 @@ class TradingBox extends PureComponent {
                         startPrice: ethToWei(startPrice),
                         endPrice: ethToWei(endPrice)
                       };
-
                       this.setState({ formSubmitted: true });
                       handleCreateAuction(payload, this.turnLoaderOff, history);
                     }}
@@ -143,6 +149,13 @@ class TradingBox extends PureComponent {
                     Create Auction
                   </Button>
                 </div>
+                {formSubmitted && (
+                  <p className="red pt3 measure">
+                    Please do not nagivate away from this page while the
+                    transaction is processing. You will be redirected once it is
+                    done.
+                  </p>
+                )}
               </div>
             )}
           </div>

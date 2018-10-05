@@ -176,10 +176,15 @@ export const handleBuyNow = (_tokenId, _from, history) => (
     })
     .on('receipt', () => dispatch(updateGemOwnership(_tokenId, _from, history)))
     .on('error', err =>
+    {      
+      dispatch({
+        type: MODAL_GONE
+      })
       dispatch({
         type: FETCH_DATA_FAILED,
         payload: JSON.stringify(err)
       })
+    }
     );
 };
 
