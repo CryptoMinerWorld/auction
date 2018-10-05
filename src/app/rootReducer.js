@@ -48,7 +48,8 @@ const appReducer = (state = initialState, action) =>
     },
     [MODAL_GONE]: {
       ...state,
-      modalVisible: false
+      modalVisible: false,
+      releaseConfetti: false
     },
     [RELEASE_CONFETTI]:{
       ...state,

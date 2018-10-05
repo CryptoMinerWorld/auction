@@ -78,7 +78,7 @@ export const updateGemOwnership = (
     });
 };
 
-export const createAuction = (payload, turnLoaderOff) => (
+export const createAuction = (payload, turnLoaderOff, history) => (
   dispatch,
   getState
 ) => {
@@ -115,7 +115,8 @@ export const createAuction = (payload, turnLoaderOff) => (
             payload: completeGemInfo
           });
         })
-        .then(() => turnLoaderOff())
+        .then(() => {turnLoaderOff()
+          history.push(`/profile/${currentAccount}`)})
         .catch(err => console.log('err', err));
     });
   } catch (error) {
@@ -124,7 +125,7 @@ export const createAuction = (payload, turnLoaderOff) => (
 };
 
 // @notice removes a gem from an auction
-export const removeFromAuction = tokenId => async (dispatch, getState) => {
+export const removeFromAuction = (tokenId,history) => async (dispatch, getState) => {
   const dutchContract = getState().app.dutchContractInstance;
   const currentUser = getState().auth.currentUserId;
   const gemContractAddress = getState().app.gemsContractInstance._address;
@@ -139,13 +140,14 @@ export const removeFromAuction = tokenId => async (dispatch, getState) => {
         .where(`id`, `==`, Number(tokenId))
         .get()
         .then(coll => {
-          coll.docs.map(doc => {
+          coll.docs.map(async doc => {
             dispatch({
               type: 'GEM_REMOVED_FROM_AUCTION'
             });
-            return db.doc(`stones/${doc.id}`).update({
+            await  db.doc(`stones/${doc.id}`).update({
               auctionIsLive: false
-            });
+            })
+            history.push(`/profile/${currentUser}`)
           });
         })
     )

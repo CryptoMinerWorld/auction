@@ -1,11 +1,13 @@
-import PropTypes from "prop-types";
-import styled from "styled-components";
-import React, { PureComponent } from "react";
-import Input from "antd/lib/input";
-import Button from "antd/lib/button";
-import { connect } from "react-redux";
-import { ethToWei, daysToSeconds } from "../../mint/helpers";
-import { createAuction, removeFromAuction } from "../itemActions";
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
+import React, { PureComponent } from 'react';
+import Input from 'antd/lib/input';
+import Button from 'antd/lib/button';
+import { connect } from 'react-redux';
+import { ethToWei, daysToSeconds } from '../../mint/helpers';
+import { createAuction, removeFromAuction } from '../itemActions';
+import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 
 const TopHighLight = styled.div`
   background: linear-gradient(to right, #e36d2d, #b91a78);
@@ -13,8 +15,8 @@ const TopHighLight = styled.div`
 `;
 
 const tophighlight = {
-  background: "linear-gradient(to right, #e36d2d, #b91a78)",
-  height: "4px"
+  background: 'linear-gradient(to right, #e36d2d, #b91a78)',
+  height: '4px'
 };
 
 const OverlapOnDesktopView = styled.div`
@@ -35,9 +37,9 @@ class TradingBox extends PureComponent {
   };
 
   state = {
-    duration: "",
-    startPrice: "",
-    endPrice: "",
+    duration: '',
+    startPrice: '',
+    endPrice: '',
     formSubmitted: false
   };
 
@@ -50,7 +52,8 @@ class TradingBox extends PureComponent {
       handleCreateAuction,
       handleRemoveGemFromAuction,
       tokenId,
-      auctionIsLive
+      auctionIsLive,
+      history
     } = this.props;
     const { duration, startPrice, endPrice, formSubmitted } = this.state;
     return (
@@ -58,9 +61,9 @@ class TradingBox extends PureComponent {
         className="bg-dark-gray measure-l w-100 shadow-3"
         style={{
           WebkitClipPath:
-            "polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)",
+            'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)',
           clipPath:
-            "polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)"
+            'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)'
         }}
       >
         <TopHighLight style={tophighlight} />
@@ -73,7 +76,8 @@ class TradingBox extends PureComponent {
                     type="danger"
                     className="ma3"
                     onClick={() => {
-                      handleRemoveGemFromAuction(Number(tokenId));
+                      this.setState({ formSubmitted: true });
+                      handleRemoveGemFromAuction(Number(tokenId), history);
                     }}
                     data-testid="removeGemButton"
                     loading={formSubmitted}
@@ -90,7 +94,7 @@ class TradingBox extends PureComponent {
                   className="db"
                   value={duration}
                   onChange={e =>
-                    this.handleChange(Number(e.target.value), "duration")
+                    this.handleChange(Number(e.target.value), 'duration')
                   }
                   data-testid="durationInputField"
                   required
@@ -101,7 +105,7 @@ class TradingBox extends PureComponent {
                   className="db"
                   value={startPrice}
                   onChange={e =>
-                    this.handleChange(Number(e.target.value), "startPrice")
+                    this.handleChange(Number(e.target.value), 'startPrice')
                   }
                   data-testid="startPriceInputField"
                   required
@@ -112,7 +116,7 @@ class TradingBox extends PureComponent {
                   className="db"
                   value={endPrice}
                   onChange={e =>
-                    this.handleChange(Number(e.target.value), "endPrice")
+                    this.handleChange(Number(e.target.value), 'endPrice')
                   }
                   data-testid="endPriceInputField"
                   required
@@ -131,7 +135,7 @@ class TradingBox extends PureComponent {
                       };
 
                       this.setState({ formSubmitted: true });
-                      handleCreateAuction(payload, this.turnLoaderOff);
+                      handleCreateAuction(payload, this.turnLoaderOff, history);
                     }}
                     data-testid="createAuctionButton"
                     loading={formSubmitted}
@@ -153,7 +157,10 @@ const actions = {
   handleRemoveGemFromAuction: removeFromAuction
 };
 
-export default connect(
-  null,
-  actions
+export default compose(
+  connect(
+    null,
+    actions
+  ),
+  withRouter
 )(TradingBox);
