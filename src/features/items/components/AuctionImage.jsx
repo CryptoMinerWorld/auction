@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 // import styled from "styled-components";
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
 // const Image = styled.div`
 //   background-image: url(${props => props.sourceImage};
@@ -8,7 +8,7 @@ import PropTypes from "prop-types";
 
 const AuctionImage = ({ sourceImage }) => (
   <div className="pa3-ns">
-    <div className="w-100 flex jcc vh-50 aic">
+    <div className="w-100 flex jcc vh-60 aic">
       <div className="w-40-l dn dib-l" />
       <div className="w-60-l tc h-100">
         {/* <Image className="bg-center tc center" sourceImage={sourceImage} /> */}

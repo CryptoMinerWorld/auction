@@ -5,8 +5,8 @@ import { connect } from 'react-redux';
 import { orderDashboardBy } from '../dashboardActions';
 import { withStateMachine, State } from 'react-automata';
 import { compose } from 'redux';
-import { ReactComponent as DownArrowCircle } from '../../../app/images/svg/arrow-down-circle.svg';
-import { ReactComponent as UpArrowCircle } from '../../../app/images/svg/arrow-up-circle.svg';
+import { ReactComponent as DownArrowCircle } from '../../../app/images/svg/chevrons-down.svg';
+import { ReactComponent as UpArrowCircle } from '../../../app/images/svg/chevrons-up.svg';
 
 export const stateMachine = {
   initial: 'rateASC',

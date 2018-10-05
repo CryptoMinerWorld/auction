@@ -58,11 +58,6 @@ const Footer = () => (
               hover="hover-gold"
             />
             <FooterLink
-              link="https://cryptominerworld.com/founders_geode_pre-sale/"
-              title="Founder Geode Pre-Sale"
-              hover="hover-green"
-            />
-            <FooterLink
               link="https://cryptominerworld.com/workshop/"
               title="Workshop"
             />
@@ -109,7 +104,7 @@ const Footer = () => (
             <p className="f7 black-70 dib pr3 mb3 white">
               Copyright © Cryptominer World 2018
             </p>
-            <p className="f7 black-70 dib pr3 mb3 white">Version 0.1.10</p>
+            <p className="f7 black-70 dib pr3 mb3 white">Version 0.1.11</p>
           </div>
         </div>
         <div className="db dn-ns">
