@@ -57,7 +57,10 @@ const Primary = styled.section`
 const select = store => ({
   totalGems: store.dashboard.userGems.length,
   auctions: store.dashboard.filter,
-  paginated: store.dashboard.paginate,
+  paginated: [
+    ...store.dashboard.filter.slice(store.dashboard.start, store.dashboard.end)
+  ],
+  pageNumber: store.dashboard.page,
   loading: store.dashboard.gemsLoading,
   error: store.dashboard.gemsLoadingError,
   userName: store.dashboard.userDetails && store.dashboard.userDetails.name,
@@ -96,14 +99,14 @@ class Dashboard extends PureComponent {
       sortBox,
       totalGems,
       paginated,
-      handlePagination
+      handlePagination,
+      pageNumber
     } = this.props;
 
     if (error) {
       return <div>Error! {error.message}</div>;
     }
 
-    console.log('totalGems', Math.ceil(totalGems / 8));
     return (
       <div className="bg-off-black white pa4">
         {newUser && <Auth />}
@@ -142,8 +145,9 @@ class Dashboard extends PureComponent {
             </CardBox>
             <div className="white w-100 tc pv4">
               <Pagination
+                current={pageNumber}
                 pageSize={8}
-                total={Math.ceil(totalGems / 8)}
+                total={totalGems}
                 hideOnSinglePage
                 onChange={(page, pageSize) => handlePagination(page, pageSize)}
               />

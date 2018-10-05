@@ -12,6 +12,7 @@ import Footer from '../components/Footer';
 import getWeb3 from './utils/getWeb3';
 import Routes from './routes';
 import './css/root.css';
+import ScrollToTop from '../components/ScrollToTop';
 import { sendContractsToRedux } from './appActions';
 import { updateWalletId } from '../features/auth/authActions';
 import { updatePriceOnAllLiveAuctions } from '../features/market/marketActions';
@@ -151,37 +152,39 @@ class App extends Component {
     const { visible } = this.props;
     return (
       <BrowserRouter>
-        <main className={font}>
-          {err && (
-            <Alert
-              message="Error Text"
-              description={`${err.message}`}
-              type="error"
-              closable
-            />
-          )}
-          <Modal
-            visible={visible}
-            title="Please Confirm Your Transaction In Metamask to Proceed"
-            iconType="loading"
-            zIndex={1000}
-            footer={false}
-            maskClosable={false}
-            closable={false}
-          >
-            <p>
-              Once you pay for the Gem using Metamask, you will be redirected to
-              your workshop.
-            </p>
-            <strong>This may take a few moments.</strong>
-          </Modal>
+        <ScrollToTop>
+          <main className={font}>
+            {err && (
+              <Alert
+                message="Error Text"
+                description={`${err.message}`}
+                type="error"
+                closable
+              />
+            )}
+            <Modal
+              visible={visible}
+              title="Please Confirm Your Transaction In Metamask to Proceed"
+              iconType="loading"
+              zIndex={1000}
+              footer={false}
+              maskClosable={false}
+              closable={false}
+            >
+              <p>
+                Once you pay for the Gem using Metamask, you will be redirected
+                to your workshop.
+              </p>
+              <strong>This may take a few moments.</strong>
+            </Modal>
 
-          <StickyHeader>
-            <Navbar />
-          </StickyHeader>
-          <Routes />
-          <Footer />
-        </main>
+            <StickyHeader>
+              <Navbar />
+            </StickyHeader>
+            <Routes />
+            <Footer />
+          </main>
+        </ScrollToTop>
       </BrowserRouter>
     );
   }

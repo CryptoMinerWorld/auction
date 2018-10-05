@@ -8,7 +8,8 @@ import {
   MARKETPLACE_FILTER_BEGUN,
   MARKETPLACE_FILTER_FAILED,
   CHANGE_FILTER_GEM_VALUES,
-  CHANGE_FILTER_VALUES
+  CHANGE_FILTER_VALUES,
+  PAGINATE_MARKET
 } from './marketConstants';
 
 import { REDIRECTED_HOME } from '../auth/authConstants';
@@ -173,14 +174,21 @@ export const filterMarketplaceResults = () => (dispatch, getState) => {
 export const toggleGem = gemType => async dispatch => {
   dispatch({ type: CHANGE_FILTER_GEM_VALUES, payload: gemType });
   dispatch(filterMarketplaceResults());
+  
 };
 
 export const filterChange = (filterName, values) => dispatch => {
   const payload = [filterName, values];
   dispatch({ type: CHANGE_FILTER_VALUES, payload });
+  dispatch({ type: PAGINATE_MARKET, payload: [1, 6]})
 };
 
 export const orderMarketBy = (key, descending) => (dispatch, getState) => {
   const newMarket = [...getState().market ].sort((a, b) =>  descending === 'desc' ?  a[key] - b[key]  : b[key] - a[key]  )
   dispatch({type: MARKETPLACE_WAS_FILTERED, payload:newMarket })
+  dispatch({ type: PAGINATE_MARKET, payload: [1, 6]})
+
 }
+
+export const paginate = (pageNumber, pagePerView) => dispatch =>
+ dispatch({ type: PAGINATE_MARKET, payload: [pageNumber, pagePerView]})
