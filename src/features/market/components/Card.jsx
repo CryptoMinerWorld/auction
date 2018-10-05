@@ -32,30 +32,33 @@ const Cards = ({ auction }) => (
       percent={calculatePercentage(auction.maxPrice, auction.currentPrice)}
       status="active"
       showInfo={false}
-      strokeColor="#ffc584"
-      className="o-50"
+      strokeColor="#FFB700"
+      className="o-70"
     />
     <div className="flex jcb ph3">
       <small className="basic">
         Ξ <small>{weiToEth(auction.maxPrice)}</small>
       </small>
+      <big className="db b f3 o-70">
+        <span className="basic" style={{ color: '#FFB700' }}>
+          Ξ
+        </span>{' '}
+        <span style={{ color: '#FFB700' }}>
+          {weiToEth(auction.currentPrice)}
+        </span>
+      </big>
       <small className="basic">
         Ξ <small>{weiToEth(auction.minPrice)}</small>
       </small>
     </div>
     <div className="tc">
-      <big className="db b f3">
-        {' '}
-        <span className="basic">Ξ</span> {weiToEth(auction.currentPrice)}
-      </big>
       <small>
-        Auction ends on
-        <br />
+        Ends on{' '}
         {auction.deadline &&
           format(new Date(auction.deadline * 1000), 'EEEE do of MMMM')}
       </small>
     </div>
-    <hr />
+
     <div className="flex col pa3 pb0 w-100">
       <MiniGemBox
         level={auction.level}
@@ -64,7 +67,7 @@ const Cards = ({ auction }) => (
       />
       <div className="flex jcc ph3 o-70 ">
         <img src={auction.userImage} alt={auction.userName} className="h2" />
-        <p>Auction by {auction.userName}</p>
+        <p>Owned by {auction.userName}</p>
       </div>
     </div>
   </Card>

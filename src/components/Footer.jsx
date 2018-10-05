@@ -2,11 +2,18 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import img from '../app/images/rockFooter.png';
+import rockBackground from '../app/images/rockBackground.png';
 
 const TopHighlight = styled.div`
   background: linear-gradient(to right, #fc01ca, #bc197c);
   border-radius: 4px 4px 0px 0px;
   height: 3px;
+`;
+
+const RockOverlay = styled.div`
+  background-image: url(${rockBackground});
+  background-repeat: repeat;
+  background-size: contain;
 `;
 
 const BackgroundImage = styled.footer`
@@ -16,10 +23,10 @@ const BackgroundImage = styled.footer`
   background-repeat: no-repeat;
 `;
 
-const FooterLink = ({ link, title }) => (
+const FooterLink = ({ link, title, hover }) => (
   <a
     href={link}
-    className="f5 db fw6 pv3 black-70 link dim white"
+    className={`f5 db fw6 pv3 black-70 link dim white ${hover}`}
     title={title}
   >
     {title}
@@ -34,59 +41,71 @@ FooterLink.propTypes = {
 const Footer = () => (
   <BackgroundImage className="bg-footer-black">
     <TopHighlight />
-    <div className="mw9 center">
+    <RockOverlay className="mw9 center">
       <div className="pa4 bt b--black-10">
-        <div className="mb6-l cf">
-          <article className="fl w-50 dib-ns w-auto-ns mr4-m mr5-l mb4 pr2 pr0-ns white">
-            <FooterLink link="https://cryptominerworld.com/" title="Home" />
+        <div className="mb6-l">
+          <article className="flex jcb w-75 center mt5">
+            <FooterLink
+              link="https://cryptominerworld.com/"
+              title="Home"
+              hover="
+              hover-light-purple"
+            />
+
             <FooterLink
               link="https://cryptominerworld.com/game_info/"
               title="Game Info"
+              hover="hover-gold"
             />
             <FooterLink
               link="https://cryptominerworld.com/founders_geode_pre-sale/"
               title="Founder Geode Pre-Sale"
+              hover="hover-green"
             />
             <FooterLink
               link="https://cryptominerworld.com/workshop/"
               title="Workshop"
             />
+
             <FooterLink
               link="https://cryptominerworld.com/market/"
               title="Market"
+              hover="
+              hover-light-purple"
             />
             <FooterLink
               link="https://cryptominerworld.com/world/"
               title="World"
+              hover="hover-green"
+            />
+            <FooterLink
+              link="https://cryptominerworld.com/faq/"
+              title="FAQ"
+              hover="hover-gold"
+            />
+            <FooterLink
+              link="http://www.sophophilia.com/press/sheet.php?p=cryptoMiner_world"
+              title="Press Kit"
             />
           </article>
-          <article
-            className="fl-ns w-50-ns
-          db w-100 dib-ns w-auto-ns mr4-m mr5-l mb4 pr2 pr0-ns"
-          >
-            <FooterLink link="https://cryptominerworld.com/faq/" title="FAQ" />
-          </article>
-          <div className="cf dn-ns" />
 
-          <article className="fr w-50-ns w-100 dib-ns w-auto-ns mr4-m mr5-l mb4 pr2 pr0-ns ">
-            <div className="db dtc-ns tc tr-ns v-mid">
-              <SocialIcons
-                link="https://www.facebook.com/CryptoMinerWorld/"
-                title="Cryptominer World on Facebook"
-                path="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
-              />
+          <div className="flex jcc mt5">
+            <SocialIcons
+              link="https://www.facebook.com/CryptoMinerWorld/"
+              title="Cryptominer World on Facebook"
+              path="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
+            />
 
-              <SocialIcons
-                link="https://twitter.com/CryptoMiner_W"
-                title="Cryptominer World on Twitter"
-                path="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"
-              />
-            </div>
-          </article>
+            <SocialIcons
+              link="https://twitter.com/CryptoMiner_W"
+              title="Cryptominer World on Twitter"
+              path="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"
+            />
+          </div>
         </div>
 
-        <div className="dt dt--fixed w-100 pb5-ns">
-          <div className="dn dtc-ns v-mid">
+        <div className="flex jcc pb5-ns">
+          <div className="flex jcc">
             <p className="f7 black-70 dib pr3 mb3 white">
               Copyright © Cryptominer World 2018
             </p>
@@ -97,7 +116,7 @@ const Footer = () => (
           <p className="f7 white mt4 tc">Copyright © Cryptominer World 2018</p>
         </div>
       </div>
-    </div>
+    </RockOverlay>
   </BackgroundImage>
 );
 

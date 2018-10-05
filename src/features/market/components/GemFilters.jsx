@@ -28,29 +28,34 @@ class Filters extends Component {
   render() {
     const { handleToggleGem, filterLoading, selection } = this.props;
     return (
-      <div>
-        <p className="ttu pv4 pl4">{/* hide filters */}</p>
+      <div className="w-100">
+        {/* <p className="ttu pv4 pl4">hide filters</p> */}
         <div>
           <ReactCSSTransitionGroup
-            transitionName="slideinFromLeft"
+            // transitionName="slideinFromLeft"
+            transitionName="example1"
             transitionAppear
             transitionAppearTimeout={5000}
             transitionEnterTimeout={5000}
             transitionLeaveTimeout={5000}
           >
             <div
-              className="mv4 pa3 bg-dark-pink-50 relative pl4 b"
+              className=" pa3 bg-dark-pink-50 relative pl4 b left-2"
               style={{
-                right: '6rem',
+                // right: '6rem',
                 clipPath:
                   window.screen.availWidth >= 1920
                     ? 'polygon(0 84%, 1% 96%, 5% 100%, 97% 100%, 99% 97%, 100% 90%, 100% 14%, 99% 4%, 96% 0, 5% 0%, 1% 2%, 0 12%)'
-                    : 'polygon(0.5% 101.33%, 92.54% 99.33%, 98.51% 95.33%, 100.25% 82.67%, 100% 18%, 99.26% 8px, 96% 0px, -0.49% -1.33%)'
+                    : 'polygon(0 84%, 1% 96%, 5% 100%, 97% 100%, 100% 100%, 100% 90%, 100% 14%, 100% 0, 96% 0, 5% 0%, 1% 2%, 0 12%)'
+                // clipPath:
+                //   window.screen.availWidth >= 1920
+                //     ? 'polygon(0 84%, 1% 96%, 5% 100%, 97% 100%, 99% 97%, 100% 90%, 100% 14%, 99% 4%, 96% 0, 5% 0%, 1% 2%, 0 12%)'
+                //     : 'polygon(0.5% 101.33%, 92.54% 99.33%, 98.51% 95.33%, 100.25% 82.67%, 100% 18%, 99.26% 8px, 96% 0px, -0.49% -1.33%)'
               }}
             >
               <div>
                 {/* <p className="o-60 tc">X</p> */}
-                <div className="flex mw5 jcc pl3">
+                <div className="flex mw5 jca ">
                   <div className="w-33">
                     <GemFilter
                       gemType="amethyst"
@@ -67,7 +72,8 @@ class Filters extends Component {
                       toggleGem={handleToggleGem}
                       filterLoading={filterLoading}
                     />
-
+                  </div>
+                  <div className="w-33">
                     <GemFilter
                       gemType="opal"
                       ifItsSelected={selection.opal}
