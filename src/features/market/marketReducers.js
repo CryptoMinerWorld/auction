@@ -52,7 +52,7 @@ const initialState = {
   },
   currentPrice: {
     min: 0,
-    max: 30000000000000000000
+    max: 10000000000000000000
   }
 };
 

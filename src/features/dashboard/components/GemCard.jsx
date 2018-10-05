@@ -53,7 +53,7 @@ const Cards = ({ auction }) => (
     </div> */}
     <div className="tc">
       <big className="db b f3">
-        {calculateGemName(auction.gradeType, auction.id)}
+        {calculateGemName(auction.color, auction.id)}
       </big>
       {/* <small>
         Auction ends on{" "}
