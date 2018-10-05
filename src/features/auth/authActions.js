@@ -52,7 +52,6 @@ export const updateWalletId = walletId => (dispatch, getState) => {
   dispatch(checkIfUserExists(walletId));
   dispatch(getUserGems(walletId));
   dispatch(getUserDetails(walletId));
-  
   dispatch({ type: REDIRECT_TO_HOME });
 }
 };

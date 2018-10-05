@@ -12,8 +12,7 @@ import {
   PAGINATE_MARKET
 } from './marketConstants';
 import {AUCTION_DETAILS_RECEIVED} from '../items/itemConstants'
-
-import { REDIRECTED_HOME } from '../auth/authConstants';
+// import { REDIRECTED_HOME } from '../auth/authConstants';
 import { db } from '../../app/utils/firebase';
 // import { getPrice } from "../auction/helpers";
 import { updateDBwithNewPrice } from './helpers';
@@ -35,8 +34,8 @@ export const getAuctions = () => dispatch => {
   }
 };
 
-export const redirectedHome = () => dispatch =>
-  dispatch({ type: REDIRECTED_HOME });
+// export const redirectedHome = () => dispatch =>
+//   dispatch({ type: REDIRECTED_HOME });
 
 export const updatePriceOnAllLiveAuctions = () => async (
   dispatch,
@@ -66,6 +65,7 @@ export const updatePriceOnAllLiveAuctions = () => async (
         .call()
         .then(currentPrice =>
           updateDBwithNewPrice(auction.id).then(docid =>
+            
             db.doc(`stones/${docid}`).update({
               currentPrice: Number(currentPrice)
             })

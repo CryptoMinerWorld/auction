@@ -15,14 +15,6 @@ const RockOverlay = styled.div`
   background-repeat: repeat;
   background-size: contain;
 `;
-
-const BackgroundImage = styled.footer`
-  background-image: url(${img});
-  background-size: contain;
-  background-position: bottom;
-  background-repeat: no-repeat;
-`;
-
 const FooterLink = ({ link, title, hover }) => (
   <a
     href={link}
@@ -39,7 +31,7 @@ FooterLink.propTypes = {
 };
 
 const Footer = () => (
-  <BackgroundImage className="bg-footer-black">
+  <div className="bg-footer-black">
     <TopHighlight />
     <RockOverlay className="mw9 center">
       <div className="pa4 bt b--black-10">
@@ -111,8 +103,9 @@ const Footer = () => (
           <p className="f7 white mt4 tc">Copyright © Cryptominer World 2018</p>
         </div>
       </div>
+      <img src={img} alt="" className="w-100 h-auto" />
     </RockOverlay>
-  </BackgroundImage>
+  </div>
 );
 
 export default Footer;

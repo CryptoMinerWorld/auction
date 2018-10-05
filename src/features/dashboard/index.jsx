@@ -17,7 +17,7 @@ import GemSortBox from './components/GemSortBox';
 import Cards from './components/GemCard';
 import LoadingCard from '../market/components/LoadingCard';
 import NoCard from './components/NoCard';
-import { redirectedHome } from '../market/marketActions';
+import { preLoadAuctionPage } from '../market/marketActions';
 import ReSync from './components/ResyncButton';
 import SortBox from './components/SortBox';
 import AuctionCategories from './components/AuctionCategories';
@@ -100,7 +100,8 @@ class Dashboard extends PureComponent {
       totalGems,
       paginated,
       handlePagination,
-      pageNumber
+      pageNumber,
+      handlePreLoadAuctionPage
     } = this.props;
 
     if (error) {
@@ -135,7 +136,11 @@ class Dashboard extends PureComponent {
                 [1, 2, 3, 4, 5, 6].map(num => <LoadingCard key={num} />)}
               {paginated && paginated.length > 0 ? (
                 paginated.map(auction => (
-                  <Link to={`/gem/${auction.id}`} key={auction.id}>
+                  <Link
+                    to={`/gem/${auction.id}`}
+                    key={auction.id}
+                    onClick={() => handlePreLoadAuctionPage(auction)}
+                  >
                     <Cards auction={auction} />
                   </Link>
                 ))
@@ -162,9 +167,9 @@ class Dashboard extends PureComponent {
 const actions = {
   handleGetAuctions: getUserGemsOnce,
   handleGetUserDetails: getUserDetails,
-  handleRedirectedHome: redirectedHome,
   handleFilterUserGemsOnPageLoad: filterUserGemsOnPageLoad,
-  handlePagination: paginate
+  handlePagination: paginate,
+  handlePreLoadAuctionPage: preLoadAuctionPage
 };
 
 export default compose(
