@@ -11,6 +11,7 @@ import { handleBuyNow } from '../itemActions';
 import { showConfirm } from '../../../components/Modal';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
+import Auth from '../../auth/index';
 
 const TopHighLight = styled.div`
   background: linear-gradient(to right, #e36d2d, #b91a78);
@@ -47,7 +48,8 @@ const OverlapOnDesktopView = styled.div`
 `;
 
 const select = store => ({
-  accountExists: store.auth.existingUser
+  accountExists: store.auth.existingUser,
+  newUser: store.auth && store.auth.newUser ? store.auth.newUser : false
 });
 
 const AuctionBox = ({
@@ -66,7 +68,8 @@ const AuctionBox = ({
   accountExists,
   provider,
   restingEnergyMinutes,
-  history
+  history,
+  newUser
 }) => {
   return (
     <OverlapOnDesktopView
@@ -101,8 +104,8 @@ const AuctionBox = ({
             onClick={() => {
               if (provider && accountExists) {
                 handleBuyNow(tokenId, currentAccount, history);
-              } else if (provider && !accountExists) {
-                handleShowSignInModal();
+                // } else if (provider) {
+                //   handleShowSignInModal();
               } else {
                 showConfirm();
               }

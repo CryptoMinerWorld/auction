@@ -24,7 +24,7 @@ export default function authReducer (state = { currentUserId: 'Loading...'} , ac
     }
     
     if (action.type ===  NO_USER_EXISTS){
-        return {...state, existingUser: false, user: null, newUser: true }
+        return {...state, existingUser: false, user: null, newUser: true, currentUserId: action.payload }
     }
 
     if (action.type ===  REDIRECT_TO_HOME){

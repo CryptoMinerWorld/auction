@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import FontFaceObserver from 'fontfaceobserver';
 import { connect } from 'react-redux';
 import ReactGA from 'react-ga';
+
 import Alert from 'antd/lib/alert';
 import Modal from 'antd/lib/modal';
 import Navbar from '../components/Nav';
@@ -181,6 +182,7 @@ class App extends Component {
               <Navbar />
             </StickyHeader>
             <Routes />
+
             <Footer />
           </main>
         </ScrollToTop>

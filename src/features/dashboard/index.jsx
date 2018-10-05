@@ -63,7 +63,8 @@ const select = store => ({
   pageNumber: store.dashboard.page,
   loading: store.dashboard.gemsLoading,
   error: store.dashboard.gemsLoadingError,
-  userName: store.dashboard.userDetails && store.dashboard.userDetails.name,
+  userName: store.auth.user && store.auth.user.name,
+  // userName: store.dashboard.userDetails && store.dashboard.userDetails.name,
   userImage:
     store.dashboard.userDetails && store.dashboard.userDetails.imageURL,
   redirectToHome: store.auth.redirectToHome,
@@ -120,7 +121,9 @@ class Dashboard extends PureComponent {
               alt="gem auctions"
             />
             <h1 className="white" data-testid="header">
-              {`${userName || auctions[0].userName}'s Dashboard`}
+              {`${userName ||
+                (auctions[0] && auctions[0].userName) ||
+                'Someone'}'s Dashboard`}
             </h1>
           </div>
           <ReSync />
@@ -217,7 +220,7 @@ Dashboard.defaultProps = {
       deadline: 1548390590016,
       image:
         'https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FAquamarine%20Face%20Emoji.png?alt=media&token=b759ae07-bb8c-4ec8-9399-d3844d5428ef',
-      owner: 'Someone',
+      owner: 'User',
       gradeType: 1,
       quality: 1,
       rate: 1
