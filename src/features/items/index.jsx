@@ -33,7 +33,8 @@ const select = store => ({
   currentAccount: store.auth.currentUserId,
   releaseConfetti: store.app.releaseConfetti,
   provider: store.auth.web3 && !!store.auth.web3.currentProvider,
-  gemContract: store.app.gemsContractInstance
+  gemContract: store.app.gemsContractInstance,
+  web3: store.app.web3
 });
 
 class Auction extends PureComponent {
@@ -47,6 +48,14 @@ class Auction extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    const transform = result =>
+      this.props.web3.eth.getBlock(result, (err, result) => {
+        if (err) {
+          return err;
+        }
+        return result;
+      });
+
     if (
       this.props.gemContract &&
       this.props.match.params.gemId &&
@@ -55,11 +64,16 @@ class Auction extends PureComponent {
       this.props.gemContract.methods
         .getCreationTime(this.props.match.params.gemId)
         .call()
-        .then(result => {
-          const ageSeconds = (Date.now() / 1000 || 0) - result;
+        .then(async blockNumber => {
+          const { timestamp } = await transform(blockNumber);
+          const linearThreshold = 37193;
+          const ageSeconds = ((Date.now() / 1000) | 0) - timestamp;
           const ageMinutes = Math.floor(ageSeconds / 60);
+
           const restingEnergyMinutes = Math.floor(
-            -7e-6 * Math.pow(ageMinutes, 2) + 0.5406 * ageMinutes
+            -7e-6 * Math.pow(Math.min(ageMinutes, linearThreshold), 2) +
+              0.5406 * Math.min(ageMinutes, linearThreshold) +
+              0.0199 * Math.max(ageMinutes - linearThreshold, 0)
           );
 
           this.setState({ restingEnergyMinutes });

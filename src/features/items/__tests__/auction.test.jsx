@@ -5,12 +5,16 @@ import {
   waitForElement,
   cleanup
 } from 'react-testing-library';
-
 import 'jest-dom/extend-expect';
-import Auction from '..';
+import Auction from '../index';
 import { calculateGemName } from '../helpers';
-
 import { calcMiningRate } from '../helpers';
+import { Router } from 'react-router-dom';
+import { createMemoryHistory } from 'history';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+// import App from '../../../app/App';
+import rootReducer from '../../../app/rootReducer.js';
 
 // var firebasemock = require('firebase-mock');
 
@@ -48,6 +52,22 @@ const someDate = new Date();
 const numberOfDaysToAdd = 2;
 someDate.setDate(someDate.getDate() + numberOfDaysToAdd);
 
+function renderWithRouter(
+  ui,
+  {
+    route = '/',
+    history = createMemoryHistory({ initialEntries: [route] })
+  } = {}
+) {
+  return {
+    ...render(<Router history={history}>{ui}</Router>),
+    // adding `history` to the returned utilities to allow us
+    // to reference it in our tests (just try to avoid using
+    // this to test implementation details).
+    history
+  };
+}
+
 describe('Auction page tests', () => {
   // @dev this is all the test data, easy to configure in one place
   const props = {
@@ -73,13 +93,37 @@ describe('Auction page tests', () => {
       'https://i.kym-cdn.com/photos/images/original/001/225/594/18a.gif',
     provider: true,
     currentTime: 1536908786405,
-    currentAccount: '123'
+    currentAccount: '123',
+    fetchRestingEnergyValue: jest.fn(),
+    gemContract: jest.fn(),
+    handleGetAuctionDetails: jest.fn(),
+    match: { params: { gemId: 12345 } }
   };
 
-  test('Auction Page renders the correct resting energy minutes', () => {
-    const { debug, getByTestId } = render(<Auction {...props} />);
+  test('the gem page route loads a gem', async () => {
+    const store = createStore(rootReducer);
+    const { getByTestId, debug } = renderWithRouter(
+      <Provider store={store}>
+        <Auction {...props} />
+      </Provider>,
+      {
+        route: '/gem/12345'
+      }
+    );
+
+    const GemPageTitle = await waitForElement(() => getByTestId('gemName'));
+
     // debug();
-    expect(false).toBeFalsy();
+    expect(GemPageTitle.textContent).toBe('Amethyst #12345');
+  });
+
+  test.skip('Auction Page renders the correct resting energy minutes', async () => {
+    const { debug, getByTestId } = render(<Auction {...props} />);
+    const RestingEnergySymbol = await waitForElement(() =>
+      getByTestId('restingEnergy')
+    );
+
+    expect(props.fetchRestingEnergyValue).toHaveBeenCalledTimes(1);
   });
 
   test.skip('Auction Page render correctly', async () => {
