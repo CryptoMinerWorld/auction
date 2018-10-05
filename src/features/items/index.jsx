@@ -32,7 +32,8 @@ const select = store => ({
   error: store.app.error,
   currentAccount: store.auth.currentUserId,
   releaseConfetti: store.app.releaseConfetti,
-  provider: store.auth.web3 && !!store.auth.web3.currentProvider
+  provider: store.auth.web3 && !!store.auth.web3.currentProvider,
+  gemContract: store.app.gemsContractInstance
 });
 
 class Auction extends PureComponent {
@@ -43,6 +44,28 @@ class Auction extends PureComponent {
   componentDidMount() {
     const { match, handleGetAuctionDetails } = this.props;
     handleGetAuctionDetails(match.params.gemId);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      this.props.gemContract &&
+      this.props.match.params.gemId &&
+      !this.state.restingEnergyMinutes
+    ) {
+      this.props.gemContract.methods
+        .getCreationTime(this.props.match.params.gemId)
+        .call()
+        .then(result => {
+          const ageSeconds = (Date.now() / 1000 || 0) - result;
+          const ageMinutes = Math.floor(ageSeconds / 60);
+          const restingEnergyMinutes = Math.floor(
+            -7e-6 * Math.pow(ageMinutes, 2) + 0.5406 * ageMinutes
+          );
+
+          this.setState({ restingEnergyMinutes });
+        })
+        .catch(err => console.log('resting energy action err', err));
+    }
   }
 
   render() {
@@ -59,18 +82,6 @@ class Auction extends PureComponent {
     } = this.props;
 
     const { restingEnergyMinutes } = this.state;
-
-    if (this.props.match.params.gemId && details && details.gradeType >= 4) {
-      const tokenId = this.props.match.params.gemId;
-
-      tokenId &&
-        this.props
-          .handleGetRestingEnergy(this.props.match.params.gemId)
-          .then(restingEnergyMinutes => {
-            this.setState({ restingEnergyMinutes });
-          })
-          .catch(err => console.log('resting energy fetch error', err));
-    }
 
     const socialShareUrl = `${process.env.REACT_APP_BASE_URL}${
       this.props.match.url
@@ -107,33 +118,28 @@ class Auction extends PureComponent {
                 transitionEnterTimeout={5000}
                 transitionLeaveTimeout={5000}
               >
-                {details &&
-                  Object.keys(details).length > 0 && (
-                    <DisplayBoxStateMachine
-                      currentPrice={details.currentPrice}
-                      minPrice={details.minPrice}
-                      maxPrice={details.maxPrice}
-                      deadline={details.deadline}
-                      handleBuyNow={buyNow}
-                      level={details.level}
-                      grade={details.gradeType}
-                      rate={details.rate}
-                      name={gemName}
-                      tokenId={details.id}
-                      redirectTo={redirectTo}
-                      showConfirm={showConfirm}
-                      provider={provider}
-                      currentAccount={currentAccount}
-                      story={details.story}
-                      owner={details.owner}
-                      userImage={details.userImage}
-                      auctionIsLive={details.auctionIsLive}
-                      gemId={details.gemId}
-                      restingEnergyMinutes={
-                        restingEnergyMinutes && restingEnergyMinutes
-                      }
-                    />
-                  )}
+                <DisplayBoxStateMachine
+                  currentPrice={details.currentPrice}
+                  minPrice={details.minPrice}
+                  maxPrice={details.maxPrice}
+                  deadline={details.deadline}
+                  handleBuyNow={buyNow}
+                  level={details.level}
+                  grade={details.gradeType}
+                  rate={details.rate}
+                  name={gemName}
+                  tokenId={details.id}
+                  redirectTo={redirectTo}
+                  showConfirm={showConfirm}
+                  provider={provider}
+                  currentAccount={currentAccount}
+                  story={details.story}
+                  owner={details.owner}
+                  userImage={details.userImage}
+                  auctionIsLive={details.auctionIsLive}
+                  gemId={details.gemId}
+                  restingEnergyMinutes={restingEnergyMinutes}
+                />
               </ReactCSSTransitionGroup>
             </div>
           </RockOverlay>
@@ -235,7 +241,7 @@ Auction.defaultProps = {
 const DisplayBoxStateMachine = props => {
   const { owner, currentAccount, auctionIsLive } = props;
 
-  let state = '';
+  let state = 'buyer';
 
   if (owner === currentAccount) {
     state = 'owner';

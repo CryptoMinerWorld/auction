@@ -85,7 +85,7 @@ class SortBox extends PureComponent {
     return (
       <Primary className="pv4 ">
         <p
-          className={`flex aic jcs pointer mr5 white link
+          className={`flex aic jcs pointer mr5 white link hover-gold
   ${
     machineState.value === 'priceASC' || machineState.value === 'priceDESC'
       ? 'o-90'
@@ -108,7 +108,7 @@ class SortBox extends PureComponent {
           </State>
         </p>
         <p
-          className={`flex aic jcc pointer  mr5 white link  ${
+          className={`flex aic jcc pointer  mr5 white link hover-time-purple ${
             machineState.value === 'timeASC' ||
             machineState.value === 'timeDESC'
               ? 'o-90'
@@ -131,7 +131,7 @@ class SortBox extends PureComponent {
           </State>
         </p>
         <p
-          className={`flex aic jcc pointer mr5 white link ${
+          className={`flex aic jcc pointer mr5 white link hover-light-purple ${
             machineState.value === 'rateASC' ||
             machineState.value === 'rateDESC'
               ? 'o-90'

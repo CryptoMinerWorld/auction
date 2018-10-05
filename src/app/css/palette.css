@@ -111,3 +111,7 @@
 .slider4 > .ant-slider-handle-2 {
   border-color: #945cbe !important;
 }
+
+.hover-time-purple:hover {
+  color: #c214a7;
+}
