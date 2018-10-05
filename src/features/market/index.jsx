@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { lifecycle, compose } from 'recompose';
-import { getAuctions, paginate } from './marketActions';
+import { getAuctions, paginate, preLoadAuctionPage } from './marketActions';
 import Cards from './components/Card';
 import SortBox from './components/SortBox';
 import LoadingCard from './components/LoadingCard';
@@ -12,6 +12,7 @@ import gemKid from '../../app/images/gemKid.png';
 import Filters from './components/Filters';
 import GemFilters from './components/GemFilters';
 import Pagination from 'antd/lib/pagination';
+
 require('antd/lib/pagination/style/css');
 require('antd/lib/slider/style/css');
 
@@ -67,7 +68,8 @@ const Marketplace = ({
   paginated,
   handlePagination,
   pageNumber,
-  totalGems
+  totalGems,
+  handlePreLoadAuctionPage
 }) => (
   <div className="bg-off-black white pa4">
     <div className="flex aic jcs ">
@@ -83,7 +85,11 @@ const Marketplace = ({
           {loading && [1, 2, 3, 4, 5, 6].map(num => <LoadingCard key={num} />)}
           {paginated && paginated.length > 0 ? (
             paginated.map(auction => (
-              <Link to={`/gem/${auction.id}`} key={auction.id}>
+              <Link
+                to={`/gem/${auction.id}`}
+                key={auction.id}
+                onClick={() => handlePreLoadAuctionPage(auction)}
+              >
                 <Cards auction={auction} />
               </Link>
             ))
@@ -113,7 +119,8 @@ const Marketplace = ({
 
 const actions = {
   handleGetAuctions: getAuctions,
-  handlePagination: paginate
+  handlePagination: paginate,
+  handlePreLoadAuctionPage: preLoadAuctionPage
 };
 
 export default compose(
