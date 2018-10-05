@@ -5,11 +5,11 @@ import { connect } from 'react-redux';
 import { orderMarketBy } from '../marketActions';
 import { withStateMachine, State } from 'react-automata';
 import { compose } from 'redux';
-import { ReactComponent as DownArrowCircle } from '../../../app/images/svg/arrow-down-circle.svg';
-import { ReactComponent as UpArrowCircle } from '../../../app/images/svg/arrow-up-circle.svg';
+import { ReactComponent as DownArrowCircle } from '../../../app/images/svg/chevrons-down.svg';
+import { ReactComponent as UpArrowCircle } from '../../../app/images/svg/chevrons-up.svg';
 
-import { ReactComponent as TrendingDown } from '../../../app/images/svg/trending-down.svg';
-import { ReactComponent as TrendingUp } from '../../../app/images/svg/trending-up.svg';
+import { ReactComponent as TrendingDown } from '../../../app/images/svg/chevrons-down.svg';
+import { ReactComponent as TrendingUp } from '../../../app/images/svg/chevrons-up.svg';
 
 import { ReactComponent as ChevronsDown } from '../../../app/images/svg/chevrons-down.svg';
 import { ReactComponent as ChevronsUp } from '../../../app/images/svg/chevrons-up.svg';

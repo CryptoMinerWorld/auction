@@ -63,13 +63,7 @@ const Navbar = ({ userImage, userId, userName, handleShowSignInModal }) => (
         >
           Game Info
         </a>
-        <a
-          className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
-          href="https://cryptominerworld.com/founders_geode_pre-sale/"
-          title="Geode Pre-Sale"
-        >
-          Founder Geode Pre-Sale
-        </a>
+
         <NavLink
           className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
           to={`/profile/${userId}`}
