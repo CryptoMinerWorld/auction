@@ -1,14 +1,13 @@
-import React from "react";
-import styled from "styled-components";
-import Avatar from "antd/lib/avatar";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import { NavLink } from "react-router-dom";
-import RippleButton from "./RippleButton/RippleButton";
-import img from "../app/images/Profile-Image-Logo-60x60.png";
-import { showSignInModal } from "../features/auth/authActions";
-
-require("antd/lib/avatar/style/css");
+import React from 'react';
+import styled from 'styled-components';
+import Avatar from 'antd/lib/avatar';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { NavLink } from 'react-router-dom';
+import RippleButton from './RippleButton/RippleButton';
+import img from '../app/images/Profile-Image-Logo-60x60.png';
+import { showSignInModal } from '../features/auth/authActions';
+require('antd/lib/avatar/style/css');
 
 // const userImageSelector = state => state.user.imageURL,
 

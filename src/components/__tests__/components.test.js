@@ -4,17 +4,48 @@ import DescriptionBox, { FeatureBand } from "../../features/items/components/Des
 import Ripple from '../RippleButton/Ripple'
 import RippleButton from '../RippleButton/RippleButton'
 import AuctionBox from '../../features/items/components/AuctionBox'
-import AuctionImage from '../AuctionImage'
-import CountdownTimer from '../CountdownTimer'
-import Question from '../FAQ'
+import AuctionImage from '../../features/items/components/AuctionImage'
+import CountdownTimer from '../../features/items/components/CountdownTimer'
+import Question from '../../features/items/components/FAQ'
 import Footer from '../Footer'
-import Gembox, { Gem } from '../Gembox'
-import MobileHeader from '../MobileHeader'
+import Gembox, { Gem } from '../../features/items/components/Gembox'
+import MobileHeader from '../../features/items/components/MobileHeader'
 import MailingList from '../MailingList'
 import Navbar from '../Nav'
-import ProgressMeter from '../ProgressMeter'
+import ProgressMeter from '../../features/items/components/ProgressMeter'
 
-it('DescriptionBox renders correctly', () => {
+// var firebasemock = require('firebase-mock');
+
+// var mockfirestore = new firebasemock.MockFirestore();
+// var mockstorage = new firebasemock.MockStorage();
+// var mocksdk = new firebasemock.MockFirebaseSdk(
+//   // use null if your code does not use RTDB
+//   null,
+//   // use null if your code does not use AUTHENTICATION
+//   null,
+//   // use null if your code does not use FIRESTORE
+//   () => {
+//     return mockfirestore;
+//   },
+//   // use null if your code does not use STORAGE
+//   () => {
+//     return mockstorage;
+//   },
+//   // use null if your code does not use MESSAGING
+//   null
+// );
+
+// jest.mock('react-ga');
+
+// jest.mock('../../app/utils/firebase.js', () => {
+//   return mocksdk;
+// });
+
+// mocksdk.firestore().flush();
+
+describe.skip('Auction page tests', () => {
+
+it.skip('DescriptionBox renders correctly', () => {
 
     const props = {
         level: 1,
@@ -93,7 +124,7 @@ it('AuctionImage renders correctly', () => {
     expect(container).toMatchSnapshot();
 });
 
-it.skip('CountdownTimer renders correctly', () => {
+it('CountdownTimer renders correctly', () => {
     const props = {
         deadline: 100
     }
@@ -146,9 +177,7 @@ it('Gem renders correctly', () => {
 });
 
 
-
-
-it('MobileHeader renders correctly', () => {
+it.skip('MobileHeader renders correctly', () => {
     const props = {
         currentPrice: 'PropTypes.string.isRequired',
         level: 2,
@@ -160,14 +189,10 @@ it('MobileHeader renders correctly', () => {
 });
 
 
-it('showExpired renders correctly', () => {
-    const { container } = render(Navbar);
-    expect(container).toMatchSnapshot();
-});
 
 it('ProgressMeter renders correctly', () => {
     const props = {
-        currentPrice: '1.2',
+        currentPrice: 1.2,
         minPrice: 100,
         maxPrice: 10
     };
@@ -176,46 +201,97 @@ it('ProgressMeter renders correctly', () => {
 });
 
 
-it('filter show correct filter results', () => {
-    const { container } = render(Navbar);
-    expect(container).toMatchSnapshot();
-});
-
-it('frade and rate modifications are bound, chnaging one should result in correct adjustmnet in teh other', () => {
-    const { container } = render(Navbar);
-    expect(container).toMatchSnapshot();
-});
 
 
-it('grade always show letters form D - AAA', () => {
-    const { container } = render(Navbar);
-    expect(container).toMatchSnapshot();
-});
-
-it('price slider shows a 3 digit number on slide', () => {
-    const { container } = render(Navbar);
-    expect(container).toMatchSnapshot();
-});
-
-it('grade shows letters on slide', () => {
-    const { container } = render(Navbar);
-    expect(container).toMatchSnapshot();
-});
-
-it('only dis[lay 2 rows of 3 images', () => {
-    const { container } = render(Navbar);
-    expect(container).toMatchSnapshot();
-});
-
-it('pink gem dude shows up as gem page mascot', () => {
-    const { container } = render(Navbar);
-    expect(container).toMatchSnapshot();
-});
+})
 
 
 
 
+describe.skip('navbar snapshot tests', () => {
 
+    it('showExpired renders correctly', () => {
+        const props = {
+            level: 1,
+            grade: 2,
+            rate: 2,
+        }
+        const { container } = render(<Gem {...props} />);
+        expect(container).toMatchSnapshot();
+    });
+    
+
+    it('filter show correct filter results', () => {
+        const props = {
+            level: 1,
+            grade: 2,
+            rate: 2,
+        }
+        const { container } = render(<Gem {...props} />);
+        expect(container).toMatchSnapshot();
+    });
+    
+    it('grade and rate modifications are bound, chnaging one should result in correct adjustmnet in teh other', () => {
+        const props = {
+            level: 1,
+            grade: 2,
+            rate: 2,
+        }
+        const { container } = render(<Gem {...props} />);
+        expect(container).toMatchSnapshot();
+    });
+    
+    
+    it('grade always show letters form D - AAA', () => {
+        const props = {
+            level: 1,
+            grade: 2,
+            rate: 2,
+        }
+        const { container } = render(<Gem {...props} />);
+        expect(container).toMatchSnapshot();
+    });
+    
+    it('price slider shows a 3 digit number on slide', () => {
+        const props = {
+            level: 1,
+            grade: 2,
+            rate: 2,
+        }
+        const { container } = render(<Gem {...props} />);
+        expect(container).toMatchSnapshot();
+    });
+    
+    it('grade shows letters on slide', () => {
+        const props = {
+            level: 1,
+            grade: 2,
+            rate: 2,
+        }
+        const { container } = render(<Gem {...props} />);
+        expect(container).toMatchSnapshot();
+    });
+    
+    it('only display 2 rows of 3 images', () => {
+        const props = {
+            level: 1,
+            grade: 2,
+            rate: 2,
+        }
+        const { container } = render(<Gem {...props} />);
+        expect(container).toMatchSnapshot();
+    });
+    
+    it('pink gem dude shows up as gem page mascot', () => {
+        const props = {
+            level: 1,
+            grade: 2,
+            rate: 2,
+        }
+        const { container } = render(<Gem {...props} />);
+        expect(container).toMatchSnapshot();
+    });
+})
 
 
 

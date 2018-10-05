@@ -66,7 +66,10 @@ class Gembox extends PureComponent {
             <div className="w-100">
               <div className="flex jcc aic">
                 <img src={restingEnergy} alt="Resting Energy" className="h3 " />
-                <p className="ttu f5 mt2 o-50 white tc pt1 b pr2">
+                <p
+                  className="ttu f5 mt2 o-50 white tc pt1 b pr2"
+                  data-testid="restingEnergy"
+                >
                   {this.restingEnergyConverter(restingEnergyMinutes)}
                 </p>
               </div>

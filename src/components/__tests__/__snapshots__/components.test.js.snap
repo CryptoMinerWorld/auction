@@ -1,194 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AuctionBox renders correctly 1`] = `
-<div>
-  <div
-    class="bg-dark-gray br3 measure-l w-100 shadow-3 sc-EHOje fnvQJE"
-  >
-    <div
-      class="sc-bxivhb fmgrTl"
-    />
-    <div
-      class="white pa3"
-    >
-      <h1
-        class="tc pb3 b white"
-        style="word-break: break-all;"
-      >
-        PropTypes.string.isRequired
-      </h1>
-      <div
-        class="tc bg-blue pa2 br3 shadow-3 sc-htpNat bEMcrA"
-      >
-        <p
-          class="b"
-        >
-          Auction ends on
-        </p>
-        <time
-          class="measure"
-        >
-          Thursday 1st of January, 5:31 AM
-        </time>
-      </div>
-      <div
-        class="mt3"
-      />
-      <div
-        class=""
-      >
-        <div
-          class="flex tc pa3"
-        >
-          <div
-            class="w-100"
-          >
-            <small
-              class="ttu white b dn-ns"
-            >
-              level
-            </small>
-            <div
-              class="sc-bdVaJa giFZti"
-            >
-              <img
-                alt="rate"
-                class="h3 center"
-                src="gem2.png"
-              />
-              <p
-                class="ttu f5 mt2 b o-50 black tc false"
-              >
-                2%
-              </p>
-            </div>
-          </div>
-          <div
-            class="w-100"
-          >
-            <small
-              class="ttu white b dn-ns"
-            >
-              grade
-            </small>
-            <div
-              class="sc-bdVaJa giFZti"
-            >
-              <img
-                alt="rate"
-                class="h3 center"
-                src="gem1.png"
-              />
-              <p
-                class="ttu f5 mt2 b o-50 black tc false"
-              >
-                C%
-              </p>
-            </div>
-          </div>
-          <div
-            class="w-100"
-          >
-            <small
-              class="ttu white b dn-ns"
-            >
-              rate
-            </small>
-            <div
-              class="sc-bdVaJa giFZti"
-            >
-              <img
-                alt="rate"
-                class="h3 center"
-                src="gem3.png"
-              />
-              <p
-                class="ttu f5 mt2 b o-50 black tc false"
-              >
-                1%
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="w-100 w5-ns h3 center mt4"
-      >
-        <button
-          class="b sc-ifAKCX jxHKIH"
-          data-testid="buyNowButton"
-        >
-          Buy Now
-        </button>
-      </div>
-      <div
-        class="white ma0 pa3 tc "
-      >
-        <small
-          class="white ttu "
-        >
-          current price
-        </small>
-        <p
-          class="basic"
-          style="font-size: xx-large;"
-        >
-          Ξ 
-          <span
-            data-testid="currentPrice"
-          >
-            PropTypes.string.isRequired
-          </span>
-        </p>
-        <div
-          class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default ba br-pill pb1 ph2 mb1  b--white-40"
-        >
-          <div>
-            <div
-              class="ant-progress-outer"
-            >
-              <div
-                class="ant-progress-inner"
-              >
-                <div
-                  class="ant-progress-bg"
-                  style="width: 0%; height: 8px; background: rgb(192, 24, 171); border-radius: 100px;"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="flex jcb"
-        >
-          <small
-            class="basic"
-          >
-            Ξ 
-            <span
-              data-testid="minPrice"
-            >
-              10
-            </span>
-          </small>
-          <small
-            class="basic"
-          >
-            Ξ 
-            <span
-              data-testid="maxPrice"
-            >
-              100
-            </span>
-          </small>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-`;
-
-exports[`AuctionImage renders correctly 1`] = `
+exports[`Auction page tests AuctionImage renders correctly 1`] = `
 <div>
   <div
     class="pa3-ns"
@@ -213,15 +25,15 @@ exports[`AuctionImage renders correctly 1`] = `
 </div>
 `;
 
-exports[`CountdownTimer renders correctly 1`] = `
+exports[`Auction page tests CountdownTimer renders correctly 1`] = `
 <div>
   <div
-    class="tc bg-blue pa2 br3 shadow-3 sc-htpNat bEMcrA"
+    class="tc pa2"
   >
     <p
       class="b"
     >
-      Auction ends on
+      Lowest price on
     </p>
     <time
       class="measure"
@@ -232,207 +44,7 @@ exports[`CountdownTimer renders correctly 1`] = `
 </div>
 `;
 
-exports[`DescriptionBox renders correctly 1`] = `
-<div>
-  <div
-    class="bg-off-black white ma0 "
-  >
-    <div
-      class="flex-l jce mw9 center"
-    >
-      <div
-        class="w-60-l pl5-l"
-      >
-        <div
-          class="pa5-ns pa3"
-        >
-          <div
-            class="flex jcb aic"
-          >
-            <div
-              class="flex aic tc tl-ns"
-            >
-              <img
-                alt="tiny decorative orange triangle"
-                class="dib mr3"
-                src="tinyDiamond.png"
-              />
-              <h1
-                class="dib b white"
-                data-testid="gemName"
-              >
-                PropTypes.string.isRequired
-              </h1>
-              <img
-                alt="tiny decorative orange triangle"
-                class="dib ml3"
-                src="tinyDiamond.png"
-              />
-            </div>
-            <div
-              class="flex aic bg-white-10 w5-ns w-auto black h-auto pa1"
-            >
-              <img
-                alt="seller logo"
-                class="br-100 h2 pl3-ns"
-                src="Profile-Image-Logo-60x60.png"
-              />
-              <small
-                class="pl3 white-60 dn dib-m dib-l"
-              >
-                <span
-                  class="dn dib-l"
-                >
-                  Sold By 
-                  
-                </span>
-                 CryptoMiner World
-              </small>
-            </div>
-          </div>
-          <p
-            class="o-50"
-          >
-            PropTypes.string.isRequired
-          </p>
-        </div>
-        <div>
-          <div>
-            <span>
-              <div
-                class="relative example1-appear"
-              >
-                <div
-                  class="w-100 bg-dark-blue h-auto flex aic jcb mt3 br--left-ns pa3"
-                >
-                  <div
-                    class="w-20 tc"
-                  >
-                    <div
-                      class="Gembox__Feature-a9qxbj-0 iIshpl"
-                    >
-                      <img
-                        alt="grade"
-                        class="h3 center"
-                        src="gem1.png"
-                      />
-                      <p
-                        class="ttu f5 mt2 o-50 black tc pt1 b pr2"
-                      >
-                        D
-                      </p>
-                    </div>
-                  </div>
-                  <div
-                    class="w-80 pl3 pl0-ns"
-                  >
-                    <p
-                      class="b ttu"
-                    >
-                      grade
-                    </p>
-                    <p
-                      class=" pr4-ns"
-                    >
-                      A Gem’s Grade determines how fast it can mine. There are 6 Grades, D, C, B, A, AA, and AAA. Grade As and better all store Resting Energy when they are not mining!
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </span>
-            <span>
-              <div
-                class="relative example2-appear"
-              >
-                <div
-                  class="w-100 bg-dark-orange h-auto flex aic jcb mt3 br--left-ns pa3"
-                >
-                  <div
-                    class="w-20 tc"
-                  >
-                    <div
-                      class="Gembox__Feature-a9qxbj-0 iIshpl"
-                    >
-                      <img
-                        alt="level"
-                        class="h3 center"
-                        src="gem2.png"
-                      />
-                      <p
-                        class="ttu f5 mt2 o-50 black tc pt1 b false"
-                      >
-                        1
-                      </p>
-                    </div>
-                  </div>
-                  <div
-                    class="w-80 pl3 pl0-ns"
-                  >
-                    <p
-                      class="b ttu"
-                    >
-                      level
-                    </p>
-                    <p
-                      class=" pr4-ns"
-                    >
-                      A Gem’s level determines how far down that Gem can mine. There are 5 tiers of land and 5 levels of gems. Each successive level allows for another type of land to be mined.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </span>
-            <span>
-              <div
-                class="relative example3-appear"
-              >
-                <div
-                  class="w-100 bg-dark-purple h-auto flex aic jcb mt3 br--left-ns pa3"
-                >
-                  <div
-                    class="w-20 tc"
-                  >
-                    <div
-                      class="Gembox__Feature-a9qxbj-0 iIshpl"
-                    >
-                      <img
-                        alt="mining rate Bonus"
-                        class="h3 center"
-                        src="gem3.png"
-                      />
-                      <p
-                        class="ttu f5 mt2 o-50 black tc pt1 b false"
-                      >
-                        +1000.00%
-                      </p>
-                    </div>
-                  </div>
-                  <div
-                    class="w-80 pl3 pl0-ns"
-                  >
-                    <p
-                      class="b ttu"
-                    >
-                      mining rate Bonus
-                    </p>
-                    <p
-                      class=" pr4-ns"
-                    >
-                      This is the percentage of how much faster a Gem mines compared to the base speed. +100% is twice as fast as base, +400% is five times faster. All Mining Rate Bonuses are tied to Grades. Grades give you a general sense of how how fast a Gem mines but Mining Rate Bonuses tells you exactly how much fast it is.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-`;
-
-exports[`FeatureBand renders correctly 1`] = `
+exports[`Auction page tests FeatureBand renders correctly 1`] = `
 <div>
   <div
     class="relative"
@@ -444,11 +56,11 @@ exports[`FeatureBand renders correctly 1`] = `
         class="w-20 tc"
       >
         <div
-          class="Gembox__Feature-a9qxbj-0 iIshpl"
+          class="sc-bdVaJa giFZti"
         >
           <img
             alt="PropTypes.string.isRequired"
-            class="h3 center"
+            class="w-auto center h3"
             src="PropTypes.string.isRequired"
           />
           <p
@@ -477,139 +89,135 @@ exports[`FeatureBand renders correctly 1`] = `
 </div>
 `;
 
-exports[`Footer & MailingList render correctly 1`] = `
+exports[`Auction page tests Footer & MailingList render correctly 1`] = `
 <div>
-  <div
-    class="bg-footer-black"
+  <footer
+    class="bg-footer-black sc-gzVnrw hLDReS"
   >
     <div
-      class="Footer__TopHighlight-yndh5b-0 lmXAs"
+      class="sc-EHOje jtspjU"
     />
     <div
-      class="mw9 center"
+      class="mw9 center sc-bZQynM kWSAPn"
     >
-      <footer
-        class="pa4 pa6-l bt b--black-10 Footer__BackgroundImage-yndh5b-1 rxTKj"
+      <div
+        class="pa4 bt b--black-10"
       >
         <div
-          class="mb4-l cf"
+          class="mb6-l"
         >
           <article
-            class="fl w-50 dib-ns w-auto-ns mr4-m mr5-l mb4 pr2 pr0-ns white"
+            class="flex jcb w-75 center mt5"
           >
             <a
-              class="f5 db fw6 pv3 black-70 link dim white"
+              class="f5 db fw6 pv3 black-70 link dim white  hover-light-purple"
               href="https://cryptominerworld.com/"
               title="Home"
             >
               Home
             </a>
             <a
-              class="f5 db fw6 pv3 black-70 link dim white"
+              class="f5 db fw6 pv3 black-70 link dim white hover-gold"
               href="https://cryptominerworld.com/game_info/"
               title="Game Info"
             >
               Game Info
             </a>
             <a
-              class="f5 db fw6 pv3 black-70 link dim white"
+              class="f5 db fw6 pv3 black-70 link dim white hover-green"
               href="https://cryptominerworld.com/founders_geode_pre-sale/"
               title="Founder Geode Pre-Sale"
             >
               Founder Geode Pre-Sale
             </a>
             <a
-              class="f5 db fw6 pv3 black-70 link dim white"
+              class="f5 db fw6 pv3 black-70 link dim white undefined"
               href="https://cryptominerworld.com/workshop/"
               title="Workshop"
             >
               Workshop
             </a>
             <a
-              class="f5 db fw6 pv3 black-70 link dim white"
+              class="f5 db fw6 pv3 black-70 link dim white  hover-light-purple"
               href="https://cryptominerworld.com/market/"
               title="Market"
             >
               Market
             </a>
             <a
-              class="f5 db fw6 pv3 black-70 link dim white"
+              class="f5 db fw6 pv3 black-70 link dim white hover-green"
               href="https://cryptominerworld.com/world/"
               title="World"
             >
               World
             </a>
-          </article>
-          <article
-            class="fl-ns w-50-ns db w-100 dib-ns w-auto-ns mr4-m mr5-l mb4 pr2 pr0-ns"
-          >
             <a
-              class="f5 db fw6 pv3 black-70 link dim white"
+              class="f5 db fw6 pv3 black-70 link dim white hover-gold"
               href="https://cryptominerworld.com/faq/"
               title="FAQ"
             >
               FAQ
             </a>
+            <a
+              class="f5 db fw6 pv3 black-70 link dim white undefined"
+              href="http://www.sophophilia.com/press/sheet.php?p=cryptoMiner_world"
+              title="Press Kit"
+            >
+              Press Kit
+            </a>
           </article>
           <div
-            class="cf dn-ns"
-          />
-          <article
-            class="fr w-50-ns w-100 dib-ns w-auto-ns mr4-m mr5-l mb4 pr2 pr0-ns "
+            class="flex jcc mt5"
           >
-            <div
-              class="db dtc-ns tc tr-ns v-mid"
+            <a
+              class="link dim dib mr3 white"
+              href="https://www.facebook.com/CryptoMinerWorld/"
+              title="Cryptominer World on Facebook"
             >
-              <a
-                class="link dim dib mr3 white"
-                href="https://www.facebook.com/CryptoMinerWorld/"
-                title="Cryptominer World on Facebook"
+              <svg
+                fill="none"
+                height="24"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                <svg
-                  fill="none"
-                  height="24"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                  width="24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
-                  />
-                </svg>
-              </a>
-              <a
-                class="link dim dib mr3 white"
-                href="https://twitter.com/CryptoMiner_W"
-                title="Cryptominer World on Twitter"
+                <path
+                  d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
+                />
+              </svg>
+            </a>
+            <a
+              class="link dim dib mr3 white"
+              href="https://twitter.com/CryptoMiner_W"
+              title="Cryptominer World on Twitter"
+            >
+              <svg
+                fill="none"
+                height="24"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                <svg
-                  fill="none"
-                  height="24"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                  width="24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"
-                  />
-                </svg>
-              </a>
-            </div>
-          </article>
+                <path
+                  d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"
+                />
+              </svg>
+            </a>
+          </div>
         </div>
         <div
-          class="dt dt--fixed w-100"
+          class="flex jcc pb5-ns"
         >
           <div
-            class="dn dtc-ns v-mid"
+            class="flex jcc"
           >
             <p
               class="f7 black-70 dib pr3 mb3 white"
@@ -619,7 +227,7 @@ exports[`Footer & MailingList render correctly 1`] = `
             <p
               class="f7 black-70 dib pr3 mb3 white"
             >
-              Version 0.0.18
+              Version 0.1.10
             </p>
           </div>
         </div>
@@ -627,217 +235,20 @@ exports[`Footer & MailingList render correctly 1`] = `
           class="db dn-ns"
         >
           <p
-            class="f7 white mt4 tl"
+            class="f7 white mt4 tc"
           >
             Copyright © Cryptominer World 2018
           </p>
         </div>
-      </footer>
+      </div>
     </div>
-  </div>
+  </footer>
 </div>
 `;
 
-exports[`Footer & MailingList render correctly 2`] = `
+exports[`Auction page tests Footer & MailingList render correctly 2`] = `
 Object {
   "baseElement": <body>
-    <div>
-      <div
-        class="bg-off-black white ma0 "
-      >
-        <div
-          class="flex-l jce mw9 center"
-        >
-          <div
-            class="w-60-l pl5-l"
-          >
-            <div
-              class="pa5-ns pa3"
-            >
-              <div
-                class="flex jcb aic"
-              >
-                <div
-                  class="flex aic tc tl-ns"
-                >
-                  <img
-                    alt="tiny decorative orange triangle"
-                    class="dib mr3"
-                    src="tinyDiamond.png"
-                  />
-                  <h1
-                    class="dib b white"
-                    data-testid="gemName"
-                  >
-                    PropTypes.string.isRequired
-                  </h1>
-                  <img
-                    alt="tiny decorative orange triangle"
-                    class="dib ml3"
-                    src="tinyDiamond.png"
-                  />
-                </div>
-                <div
-                  class="flex aic bg-white-10 w5-ns w-auto black h-auto pa1"
-                >
-                  <img
-                    alt="seller logo"
-                    class="br-100 h2 pl3-ns"
-                    src="Profile-Image-Logo-60x60.png"
-                  />
-                  <small
-                    class="pl3 white-60 dn dib-m dib-l"
-                  >
-                    <span
-                      class="dn dib-l"
-                    >
-                      Sold By 
-                      
-                    </span>
-                     CryptoMiner World
-                  </small>
-                </div>
-              </div>
-              <p
-                class="o-50"
-              >
-                PropTypes.string.isRequired
-              </p>
-            </div>
-            <div>
-              <div>
-                <span>
-                  <div
-                    class="relative example1-appear"
-                  >
-                    <div
-                      class="w-100 bg-dark-blue h-auto flex aic jcb mt3 br--left-ns pa3"
-                    >
-                      <div
-                        class="w-20 tc"
-                      >
-                        <div
-                          class="Gembox__Feature-a9qxbj-0 iIshpl"
-                        >
-                          <img
-                            alt="grade"
-                            class="h3 center"
-                            src="gem1.png"
-                          />
-                          <p
-                            class="ttu f5 mt2 o-50 black tc pt1 b pr2"
-                          >
-                            D
-                          </p>
-                        </div>
-                      </div>
-                      <div
-                        class="w-80 pl3 pl0-ns"
-                      >
-                        <p
-                          class="b ttu"
-                        >
-                          grade
-                        </p>
-                        <p
-                          class=" pr4-ns"
-                        >
-                          A Gem’s Grade determines how fast it can mine. There are 6 Grades, D, C, B, A, AA, and AAA. Grade As and better all store Resting Energy when they are not mining!
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </span>
-                <span>
-                  <div
-                    class="relative example2-appear"
-                  >
-                    <div
-                      class="w-100 bg-dark-orange h-auto flex aic jcb mt3 br--left-ns pa3"
-                    >
-                      <div
-                        class="w-20 tc"
-                      >
-                        <div
-                          class="Gembox__Feature-a9qxbj-0 iIshpl"
-                        >
-                          <img
-                            alt="level"
-                            class="h3 center"
-                            src="gem2.png"
-                          />
-                          <p
-                            class="ttu f5 mt2 o-50 black tc pt1 b false"
-                          >
-                            1
-                          </p>
-                        </div>
-                      </div>
-                      <div
-                        class="w-80 pl3 pl0-ns"
-                      >
-                        <p
-                          class="b ttu"
-                        >
-                          level
-                        </p>
-                        <p
-                          class=" pr4-ns"
-                        >
-                          A Gem’s level determines how far down that Gem can mine. There are 5 tiers of land and 5 levels of gems. Each successive level allows for another type of land to be mined.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </span>
-                <span>
-                  <div
-                    class="relative example3-appear"
-                  >
-                    <div
-                      class="w-100 bg-dark-purple h-auto flex aic jcb mt3 br--left-ns pa3"
-                    >
-                      <div
-                        class="w-20 tc"
-                      >
-                        <div
-                          class="Gembox__Feature-a9qxbj-0 iIshpl"
-                        >
-                          <img
-                            alt="mining rate Bonus"
-                            class="h3 center"
-                            src="gem3.png"
-                          />
-                          <p
-                            class="ttu f5 mt2 o-50 black tc pt1 b false"
-                          >
-                            +1000.00%
-                          </p>
-                        </div>
-                      </div>
-                      <div
-                        class="w-80 pl3 pl0-ns"
-                      >
-                        <p
-                          class="b ttu"
-                        >
-                          mining rate Bonus
-                        </p>
-                        <p
-                          class=" pr4-ns"
-                        >
-                          This is the percentage of how much faster a Gem mines compared to the base speed. +100% is twice as fast as base, +400% is five times faster. All Mining Rate Bonuses are tied to Grades. Grades give you a general sense of how how fast a Gem mines but Mining Rate Bonuses tells you exactly how much fast it is.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
     <div>
       <div
         class="relative"
@@ -849,11 +260,11 @@ Object {
             class="w-20 tc"
           >
             <div
-              class="Gembox__Feature-a9qxbj-0 iIshpl"
+              class="sc-bdVaJa giFZti"
             >
               <img
                 alt="PropTypes.string.isRequired"
-                class="h3 center"
+                class="w-auto center h3"
                 src="PropTypes.string.isRequired"
               />
               <p
@@ -891,7 +302,7 @@ Object {
         href="#"
       >
         <button
-          class="RippleButton__Button-sc-8zvudi-0 jadjVY"
+          class="sc-bwzfXH fbRjTD"
         >
           title
         </button>
@@ -917,6 +328,22 @@ Object {
             />
           </div>
         </div>
+      </div>
+    </div>
+    <div>
+      <div
+        class="tc pa2"
+      >
+        <p
+          class="b"
+        >
+          Lowest price on
+        </p>
+        <time
+          class="measure"
+        >
+          Thursday 1st of January, 5:31 AM
+        </time>
       </div>
     </div>
     <div>
@@ -981,137 +408,133 @@ Object {
       </div>
     </div>
     <div>
-      <div
-        class="bg-footer-black"
+      <footer
+        class="bg-footer-black sc-gzVnrw hLDReS"
       >
         <div
-          class="Footer__TopHighlight-yndh5b-0 lmXAs"
+          class="sc-EHOje jtspjU"
         />
         <div
-          class="mw9 center"
+          class="mw9 center sc-bZQynM kWSAPn"
         >
-          <footer
-            class="pa4 pa6-l bt b--black-10 Footer__BackgroundImage-yndh5b-1 rxTKj"
+          <div
+            class="pa4 bt b--black-10"
           >
             <div
-              class="mb4-l cf"
+              class="mb6-l"
             >
               <article
-                class="fl w-50 dib-ns w-auto-ns mr4-m mr5-l mb4 pr2 pr0-ns white"
+                class="flex jcb w-75 center mt5"
               >
                 <a
-                  class="f5 db fw6 pv3 black-70 link dim white"
+                  class="f5 db fw6 pv3 black-70 link dim white  hover-light-purple"
                   href="https://cryptominerworld.com/"
                   title="Home"
                 >
                   Home
                 </a>
                 <a
-                  class="f5 db fw6 pv3 black-70 link dim white"
+                  class="f5 db fw6 pv3 black-70 link dim white hover-gold"
                   href="https://cryptominerworld.com/game_info/"
                   title="Game Info"
                 >
                   Game Info
                 </a>
                 <a
-                  class="f5 db fw6 pv3 black-70 link dim white"
+                  class="f5 db fw6 pv3 black-70 link dim white hover-green"
                   href="https://cryptominerworld.com/founders_geode_pre-sale/"
                   title="Founder Geode Pre-Sale"
                 >
                   Founder Geode Pre-Sale
                 </a>
                 <a
-                  class="f5 db fw6 pv3 black-70 link dim white"
+                  class="f5 db fw6 pv3 black-70 link dim white undefined"
                   href="https://cryptominerworld.com/workshop/"
                   title="Workshop"
                 >
                   Workshop
                 </a>
                 <a
-                  class="f5 db fw6 pv3 black-70 link dim white"
+                  class="f5 db fw6 pv3 black-70 link dim white  hover-light-purple"
                   href="https://cryptominerworld.com/market/"
                   title="Market"
                 >
                   Market
                 </a>
                 <a
-                  class="f5 db fw6 pv3 black-70 link dim white"
+                  class="f5 db fw6 pv3 black-70 link dim white hover-green"
                   href="https://cryptominerworld.com/world/"
                   title="World"
                 >
                   World
                 </a>
-              </article>
-              <article
-                class="fl-ns w-50-ns db w-100 dib-ns w-auto-ns mr4-m mr5-l mb4 pr2 pr0-ns"
-              >
                 <a
-                  class="f5 db fw6 pv3 black-70 link dim white"
+                  class="f5 db fw6 pv3 black-70 link dim white hover-gold"
                   href="https://cryptominerworld.com/faq/"
                   title="FAQ"
                 >
                   FAQ
                 </a>
+                <a
+                  class="f5 db fw6 pv3 black-70 link dim white undefined"
+                  href="http://www.sophophilia.com/press/sheet.php?p=cryptoMiner_world"
+                  title="Press Kit"
+                >
+                  Press Kit
+                </a>
               </article>
               <div
-                class="cf dn-ns"
-              />
-              <article
-                class="fr w-50-ns w-100 dib-ns w-auto-ns mr4-m mr5-l mb4 pr2 pr0-ns "
+                class="flex jcc mt5"
               >
-                <div
-                  class="db dtc-ns tc tr-ns v-mid"
+                <a
+                  class="link dim dib mr3 white"
+                  href="https://www.facebook.com/CryptoMinerWorld/"
+                  title="Cryptominer World on Facebook"
                 >
-                  <a
-                    class="link dim dib mr3 white"
-                    href="https://www.facebook.com/CryptoMinerWorld/"
-                    title="Cryptominer World on Facebook"
+                  <svg
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
                   >
-                    <svg
-                      fill="none"
-                      height="24"
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      viewBox="0 0 24 24"
-                      width="24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
-                      />
-                    </svg>
-                  </a>
-                  <a
-                    class="link dim dib mr3 white"
-                    href="https://twitter.com/CryptoMiner_W"
-                    title="Cryptominer World on Twitter"
+                    <path
+                      d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
+                    />
+                  </svg>
+                </a>
+                <a
+                  class="link dim dib mr3 white"
+                  href="https://twitter.com/CryptoMiner_W"
+                  title="Cryptominer World on Twitter"
+                >
+                  <svg
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
                   >
-                    <svg
-                      fill="none"
-                      height="24"
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      viewBox="0 0 24 24"
-                      width="24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"
-                      />
-                    </svg>
-                  </a>
-                </div>
-              </article>
+                    <path
+                      d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"
+                    />
+                  </svg>
+                </a>
+              </div>
             </div>
             <div
-              class="dt dt--fixed w-100"
+              class="flex jcc pb5-ns"
             >
               <div
-                class="dn dtc-ns v-mid"
+                class="flex jcc"
               >
                 <p
                   class="f7 black-70 dib pr3 mb3 white"
@@ -1121,7 +544,7 @@ Object {
                 <p
                   class="f7 black-70 dib pr3 mb3 white"
                 >
-                  Version 0.0.18
+                  Version 0.1.10
                 </p>
               </div>
             </div>
@@ -1129,18 +552,18 @@ Object {
               class="db dn-ns"
             >
               <p
-                class="f7 white mt4 tl"
+                class="f7 white mt4 tc"
               >
                 Copyright © Cryptominer World 2018
               </p>
             </div>
-          </footer>
+          </div>
         </div>
-      </div>
+      </footer>
     </div>
     <div>
       <div
-        class="MailingList__OverlapOnDesktopView-sc-1ktwykx-0 jEuRIX"
+        class="sc-dnqmqq hOzadq"
       >
         <div
           class="pa4-l bg-transparent"
@@ -1198,7 +621,7 @@ Object {
   </body>,
   "container": <div>
     <div
-      class="MailingList__OverlapOnDesktopView-sc-1ktwykx-0 jEuRIX"
+      class="sc-dnqmqq hOzadq"
     >
       <div
         class="pa4-l bg-transparent"
@@ -1257,6 +680,8 @@ Object {
   "getAllByAltText": [Function],
   "getAllByLabelText": [Function],
   "getAllByPlaceholderText": [Function],
+  "getAllByRole": [Function],
+  "getAllBySelectText": [Function],
   "getAllByTestId": [Function],
   "getAllByText": [Function],
   "getAllByTitle": [Function],
@@ -1264,6 +689,8 @@ Object {
   "getByAltText": [Function],
   "getByLabelText": [Function],
   "getByPlaceholderText": [Function],
+  "getByRole": [Function],
+  "getBySelectText": [Function],
   "getByTestId": [Function],
   "getByText": [Function],
   "getByTitle": [Function],
@@ -1271,6 +698,8 @@ Object {
   "queryAllByAltText": [Function],
   "queryAllByLabelText": [Function],
   "queryAllByPlaceholderText": [Function],
+  "queryAllByRole": [Function],
+  "queryAllBySelectText": [Function],
   "queryAllByTestId": [Function],
   "queryAllByText": [Function],
   "queryAllByTitle": [Function],
@@ -1278,6 +707,8 @@ Object {
   "queryByAltText": [Function],
   "queryByLabelText": [Function],
   "queryByPlaceholderText": [Function],
+  "queryByRole": [Function],
+  "queryBySelectText": [Function],
   "queryByTestId": [Function],
   "queryByText": [Function],
   "queryByTitle": [Function],
@@ -1287,14 +718,14 @@ Object {
 }
 `;
 
-exports[`Gem renders correctly 1`] = `
+exports[`Auction page tests Gem renders correctly 1`] = `
 <div>
   <div
-    class="Gembox__Feature-a9qxbj-0 iIshpl"
+    class="sc-bdVaJa giFZti"
   >
     <img
       alt="1"
-      class="h3 center"
+      class="w-auto center h3"
       src="1"
     />
     <p
@@ -1306,206 +737,9 @@ exports[`Gem renders correctly 1`] = `
 </div>
 `;
 
-exports[`Gembox renders correctly 1`] = `
+exports[`Auction page tests Gembox renders correctly 1`] = `
 Object {
   "baseElement": <body>
-    <div>
-      <div
-        class="bg-off-black white ma0 "
-      >
-        <div
-          class="flex-l jce mw9 center"
-        >
-          <div
-            class="w-60-l pl5-l"
-          >
-            <div
-              class="pa5-ns pa3"
-            >
-              <div
-                class="flex jcb aic"
-              >
-                <div
-                  class="flex aic tc tl-ns"
-                >
-                  <img
-                    alt="tiny decorative orange triangle"
-                    class="dib mr3"
-                    src="tinyDiamond.png"
-                  />
-                  <h1
-                    class="dib b white"
-                    data-testid="gemName"
-                  >
-                    PropTypes.string.isRequired
-                  </h1>
-                  <img
-                    alt="tiny decorative orange triangle"
-                    class="dib ml3"
-                    src="tinyDiamond.png"
-                  />
-                </div>
-                <div
-                  class="flex aic bg-white-10 w5-ns w-auto black h-auto pa1"
-                >
-                  <img
-                    alt="seller logo"
-                    class="br-100 h2 pl3-ns"
-                    src="Profile-Image-Logo-60x60.png"
-                  />
-                  <small
-                    class="pl3 white-60 dn dib-m dib-l"
-                  >
-                    <span
-                      class="dn dib-l"
-                    >
-                      Sold By 
-                      
-                    </span>
-                     CryptoMiner World
-                  </small>
-                </div>
-              </div>
-              <p
-                class="o-50"
-              >
-                PropTypes.string.isRequired
-              </p>
-            </div>
-            <div>
-              <div>
-                <span>
-                  <div
-                    class="relative example1-appear"
-                  >
-                    <div
-                      class="w-100 bg-dark-blue h-auto flex aic jcb mt3 br--left-ns pa3"
-                    >
-                      <div
-                        class="w-20 tc"
-                      >
-                        <div
-                          class="Gembox__Feature-a9qxbj-0 iIshpl"
-                        >
-                          <img
-                            alt="grade"
-                            class="h3 center"
-                            src="gem1.png"
-                          />
-                          <p
-                            class="ttu f5 mt2 o-50 black tc pt1 b pr2"
-                          >
-                            D
-                          </p>
-                        </div>
-                      </div>
-                      <div
-                        class="w-80 pl3 pl0-ns"
-                      >
-                        <p
-                          class="b ttu"
-                        >
-                          grade
-                        </p>
-                        <p
-                          class=" pr4-ns"
-                        >
-                          A Gem’s Grade determines how fast it can mine. There are 6 Grades, D, C, B, A, AA, and AAA. Grade As and better all store Resting Energy when they are not mining!
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </span>
-                <span>
-                  <div
-                    class="relative example2-appear"
-                  >
-                    <div
-                      class="w-100 bg-dark-orange h-auto flex aic jcb mt3 br--left-ns pa3"
-                    >
-                      <div
-                        class="w-20 tc"
-                      >
-                        <div
-                          class="Gembox__Feature-a9qxbj-0 iIshpl"
-                        >
-                          <img
-                            alt="level"
-                            class="h3 center"
-                            src="gem2.png"
-                          />
-                          <p
-                            class="ttu f5 mt2 o-50 black tc pt1 b false"
-                          >
-                            1
-                          </p>
-                        </div>
-                      </div>
-                      <div
-                        class="w-80 pl3 pl0-ns"
-                      >
-                        <p
-                          class="b ttu"
-                        >
-                          level
-                        </p>
-                        <p
-                          class=" pr4-ns"
-                        >
-                          A Gem’s level determines how far down that Gem can mine. There are 5 tiers of land and 5 levels of gems. Each successive level allows for another type of land to be mined.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </span>
-                <span>
-                  <div
-                    class="relative example3-appear"
-                  >
-                    <div
-                      class="w-100 bg-dark-purple h-auto flex aic jcb mt3 br--left-ns pa3"
-                    >
-                      <div
-                        class="w-20 tc"
-                      >
-                        <div
-                          class="Gembox__Feature-a9qxbj-0 iIshpl"
-                        >
-                          <img
-                            alt="mining rate Bonus"
-                            class="h3 center"
-                            src="gem3.png"
-                          />
-                          <p
-                            class="ttu f5 mt2 o-50 black tc pt1 b false"
-                          >
-                            +1000.00%
-                          </p>
-                        </div>
-                      </div>
-                      <div
-                        class="w-80 pl3 pl0-ns"
-                      >
-                        <p
-                          class="b ttu"
-                        >
-                          mining rate Bonus
-                        </p>
-                        <p
-                          class=" pr4-ns"
-                        >
-                          This is the percentage of how much faster a Gem mines compared to the base speed. +100% is twice as fast as base, +400% is five times faster. All Mining Rate Bonuses are tied to Grades. Grades give you a general sense of how how fast a Gem mines but Mining Rate Bonuses tells you exactly how much fast it is.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
     <div>
       <div
         class="relative"
@@ -1517,11 +751,11 @@ Object {
             class="w-20 tc"
           >
             <div
-              class="Gembox__Feature-a9qxbj-0 iIshpl"
+              class="sc-bdVaJa giFZti"
             >
               <img
                 alt="PropTypes.string.isRequired"
-                class="h3 center"
+                class="w-auto center h3"
                 src="PropTypes.string.isRequired"
               />
               <p
@@ -1559,7 +793,7 @@ Object {
         href="#"
       >
         <button
-          class="RippleButton__Button-sc-8zvudi-0 jadjVY"
+          class="sc-bwzfXH fbRjTD"
         >
           title
         </button>
@@ -1585,6 +819,22 @@ Object {
             />
           </div>
         </div>
+      </div>
+    </div>
+    <div>
+      <div
+        class="tc pa2"
+      >
+        <p
+          class="b"
+        >
+          Lowest price on
+        </p>
+        <time
+          class="measure"
+        >
+          Thursday 1st of January, 5:31 AM
+        </time>
       </div>
     </div>
     <div>
@@ -1649,137 +899,133 @@ Object {
       </div>
     </div>
     <div>
-      <div
-        class="bg-footer-black"
+      <footer
+        class="bg-footer-black sc-gzVnrw hLDReS"
       >
         <div
-          class="Footer__TopHighlight-yndh5b-0 lmXAs"
+          class="sc-EHOje jtspjU"
         />
         <div
-          class="mw9 center"
+          class="mw9 center sc-bZQynM kWSAPn"
         >
-          <footer
-            class="pa4 pa6-l bt b--black-10 Footer__BackgroundImage-yndh5b-1 rxTKj"
+          <div
+            class="pa4 bt b--black-10"
           >
             <div
-              class="mb4-l cf"
+              class="mb6-l"
             >
               <article
-                class="fl w-50 dib-ns w-auto-ns mr4-m mr5-l mb4 pr2 pr0-ns white"
+                class="flex jcb w-75 center mt5"
               >
                 <a
-                  class="f5 db fw6 pv3 black-70 link dim white"
+                  class="f5 db fw6 pv3 black-70 link dim white  hover-light-purple"
                   href="https://cryptominerworld.com/"
                   title="Home"
                 >
                   Home
                 </a>
                 <a
-                  class="f5 db fw6 pv3 black-70 link dim white"
+                  class="f5 db fw6 pv3 black-70 link dim white hover-gold"
                   href="https://cryptominerworld.com/game_info/"
                   title="Game Info"
                 >
                   Game Info
                 </a>
                 <a
-                  class="f5 db fw6 pv3 black-70 link dim white"
+                  class="f5 db fw6 pv3 black-70 link dim white hover-green"
                   href="https://cryptominerworld.com/founders_geode_pre-sale/"
                   title="Founder Geode Pre-Sale"
                 >
                   Founder Geode Pre-Sale
                 </a>
                 <a
-                  class="f5 db fw6 pv3 black-70 link dim white"
+                  class="f5 db fw6 pv3 black-70 link dim white undefined"
                   href="https://cryptominerworld.com/workshop/"
                   title="Workshop"
                 >
                   Workshop
                 </a>
                 <a
-                  class="f5 db fw6 pv3 black-70 link dim white"
+                  class="f5 db fw6 pv3 black-70 link dim white  hover-light-purple"
                   href="https://cryptominerworld.com/market/"
                   title="Market"
                 >
                   Market
                 </a>
                 <a
-                  class="f5 db fw6 pv3 black-70 link dim white"
+                  class="f5 db fw6 pv3 black-70 link dim white hover-green"
                   href="https://cryptominerworld.com/world/"
                   title="World"
                 >
                   World
                 </a>
-              </article>
-              <article
-                class="fl-ns w-50-ns db w-100 dib-ns w-auto-ns mr4-m mr5-l mb4 pr2 pr0-ns"
-              >
                 <a
-                  class="f5 db fw6 pv3 black-70 link dim white"
+                  class="f5 db fw6 pv3 black-70 link dim white hover-gold"
                   href="https://cryptominerworld.com/faq/"
                   title="FAQ"
                 >
                   FAQ
                 </a>
+                <a
+                  class="f5 db fw6 pv3 black-70 link dim white undefined"
+                  href="http://www.sophophilia.com/press/sheet.php?p=cryptoMiner_world"
+                  title="Press Kit"
+                >
+                  Press Kit
+                </a>
               </article>
               <div
-                class="cf dn-ns"
-              />
-              <article
-                class="fr w-50-ns w-100 dib-ns w-auto-ns mr4-m mr5-l mb4 pr2 pr0-ns "
+                class="flex jcc mt5"
               >
-                <div
-                  class="db dtc-ns tc tr-ns v-mid"
+                <a
+                  class="link dim dib mr3 white"
+                  href="https://www.facebook.com/CryptoMinerWorld/"
+                  title="Cryptominer World on Facebook"
                 >
-                  <a
-                    class="link dim dib mr3 white"
-                    href="https://www.facebook.com/CryptoMinerWorld/"
-                    title="Cryptominer World on Facebook"
+                  <svg
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
                   >
-                    <svg
-                      fill="none"
-                      height="24"
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      viewBox="0 0 24 24"
-                      width="24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
-                      />
-                    </svg>
-                  </a>
-                  <a
-                    class="link dim dib mr3 white"
-                    href="https://twitter.com/CryptoMiner_W"
-                    title="Cryptominer World on Twitter"
+                    <path
+                      d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
+                    />
+                  </svg>
+                </a>
+                <a
+                  class="link dim dib mr3 white"
+                  href="https://twitter.com/CryptoMiner_W"
+                  title="Cryptominer World on Twitter"
+                >
+                  <svg
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
                   >
-                    <svg
-                      fill="none"
-                      height="24"
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      viewBox="0 0 24 24"
-                      width="24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"
-                      />
-                    </svg>
-                  </a>
-                </div>
-              </article>
+                    <path
+                      d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"
+                    />
+                  </svg>
+                </a>
+              </div>
             </div>
             <div
-              class="dt dt--fixed w-100"
+              class="flex jcc pb5-ns"
             >
               <div
-                class="dn dtc-ns v-mid"
+                class="flex jcc"
               >
                 <p
                   class="f7 black-70 dib pr3 mb3 white"
@@ -1789,7 +1035,7 @@ Object {
                 <p
                   class="f7 black-70 dib pr3 mb3 white"
                 >
-                  Version 0.0.18
+                  Version 0.1.10
                 </p>
               </div>
             </div>
@@ -1797,18 +1043,18 @@ Object {
               class="db dn-ns"
             >
               <p
-                class="f7 white mt4 tl"
+                class="f7 white mt4 tc"
               >
                 Copyright © Cryptominer World 2018
               </p>
             </div>
-          </footer>
+          </div>
         </div>
-      </div>
+      </footer>
     </div>
     <div>
       <div
-        class="MailingList__OverlapOnDesktopView-sc-1ktwykx-0 jEuRIX"
+        class="sc-dnqmqq hOzadq"
       >
         <div
           class="pa4-l bg-transparent"
@@ -1879,11 +1125,11 @@ Object {
               level
             </small>
             <div
-              class="Gembox__Feature-a9qxbj-0 iIshpl"
+              class="sc-bdVaJa giFZti"
             >
               <img
                 alt="level"
-                class="h3 center"
+                class="w-auto center h3"
                 src="gem2.png"
               />
               <p
@@ -1902,11 +1148,11 @@ Object {
               grade
             </small>
             <div
-              class="Gembox__Feature-a9qxbj-0 iIshpl"
+              class="sc-bdVaJa giFZti"
             >
               <img
                 alt="grade"
-                class="h3 center"
+                class="w-auto center h3"
                 src="gem1.png"
               />
               <p
@@ -1925,11 +1171,11 @@ Object {
               rate
             </small>
             <div
-              class="Gembox__Feature-a9qxbj-0 iIshpl"
+              class="sc-bdVaJa giFZti"
             >
               <img
                 alt="rate"
-                class="h3 center"
+                class="w-auto center h3"
                 src="gem3.png"
               />
               <p
@@ -1959,11 +1205,11 @@ Object {
             level
           </small>
           <div
-            class="Gembox__Feature-a9qxbj-0 iIshpl"
+            class="sc-bdVaJa giFZti"
           >
             <img
               alt="level"
-              class="h3 center"
+              class="w-auto center h3"
               src="gem2.png"
             />
             <p
@@ -1982,11 +1228,11 @@ Object {
             grade
           </small>
           <div
-            class="Gembox__Feature-a9qxbj-0 iIshpl"
+            class="sc-bdVaJa giFZti"
           >
             <img
               alt="grade"
-              class="h3 center"
+              class="w-auto center h3"
               src="gem1.png"
             />
             <p
@@ -2005,11 +1251,11 @@ Object {
             rate
           </small>
           <div
-            class="Gembox__Feature-a9qxbj-0 iIshpl"
+            class="sc-bdVaJa giFZti"
           >
             <img
               alt="rate"
-              class="h3 center"
+              class="w-auto center h3"
               src="gem3.png"
             />
             <p
@@ -2026,6 +1272,8 @@ Object {
   "getAllByAltText": [Function],
   "getAllByLabelText": [Function],
   "getAllByPlaceholderText": [Function],
+  "getAllByRole": [Function],
+  "getAllBySelectText": [Function],
   "getAllByTestId": [Function],
   "getAllByText": [Function],
   "getAllByTitle": [Function],
@@ -2033,6 +1281,8 @@ Object {
   "getByAltText": [Function],
   "getByLabelText": [Function],
   "getByPlaceholderText": [Function],
+  "getByRole": [Function],
+  "getBySelectText": [Function],
   "getByTestId": [Function],
   "getByText": [Function],
   "getByTitle": [Function],
@@ -2040,6 +1290,8 @@ Object {
   "queryAllByAltText": [Function],
   "queryAllByLabelText": [Function],
   "queryAllByPlaceholderText": [Function],
+  "queryAllByRole": [Function],
+  "queryAllBySelectText": [Function],
   "queryAllByTestId": [Function],
   "queryAllByText": [Function],
   "queryAllByTitle": [Function],
@@ -2047,6 +1299,8 @@ Object {
   "queryByAltText": [Function],
   "queryByLabelText": [Function],
   "queryByPlaceholderText": [Function],
+  "queryByRole": [Function],
+  "queryBySelectText": [Function],
   "queryByTestId": [Function],
   "queryByText": [Function],
   "queryByTitle": [Function],
@@ -2056,320 +1310,9 @@ Object {
 }
 `;
 
-exports[`MobileHeader renders correctly 1`] = `
-<div>
-  <div
-    class="flex-s dn-ns jca bg-base shadow-1"
-  >
-    <div
-      class="absolute left-1"
-    >
-      <div
-        class="bg-deep-purple pa3 tc"
-      >
-        <small
-          class="white ttu b tc center"
-        >
-          current 
-          <br />
-           price
-        </small>
-        <p
-          class="white f3 tc"
-        >
-          Ξ 
-          NaN
-        </p>
-      </div>
-      <div
-        class="MobileHeader__Triangle-favzpq-0 iMdFlc"
-      />
-    </div>
-    <div
-      class="w-100"
-    >
-      <div
-        class="w-60 fr mr6-ns"
-      >
-        <div
-          class="flex tc pa3"
-        >
-          <div
-            class="w-100"
-          >
-            <small
-              class="ttu white dn-ns"
-            >
-              level
-            </small>
-            <div
-              class="Gembox__Feature-a9qxbj-0 iIshpl"
-            >
-              <img
-                alt="level"
-                class="h3 center"
-                src="gem2.png"
-              />
-              <p
-                class="ttu f5 mt2 o-50 black tc pt1 b false"
-              >
-                2
-              </p>
-            </div>
-          </div>
-          <div
-            class="w-100"
-          >
-            <small
-              class="ttu white dn-ns"
-            >
-              grade
-            </small>
-            <div
-              class="Gembox__Feature-a9qxbj-0 iIshpl"
-            >
-              <img
-                alt="grade"
-                class="h3 center"
-                src="gem1.png"
-              />
-              <p
-                class="ttu f5 mt2 o-50 black tc pt1 b pr2"
-              >
-                C
-              </p>
-            </div>
-          </div>
-          <div
-            class="w-100"
-          >
-            <small
-              class="ttu white dn-ns"
-            >
-              rate
-            </small>
-            <div
-              class="Gembox__Feature-a9qxbj-0 iIshpl"
-            >
-              <img
-                alt="rate"
-                class="h3 center"
-                src="gem3.png"
-              />
-              <p
-                class="ttu f5 mt2 o-50 black tc pt1 b false"
-              >
-                +2.00%
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-`;
-
-exports[`ProgressMeter renders correctly 1`] = `
+exports[`Auction page tests ProgressMeter renders correctly 1`] = `
 Object {
   "baseElement": <body>
-    <div>
-      <div
-        class="bg-off-black white ma0 "
-      >
-        <div
-          class="flex-l jce mw9 center"
-        >
-          <div
-            class="w-60-l pl5-l"
-          >
-            <div
-              class="pa5-ns pa3"
-            >
-              <div
-                class="flex jcb aic"
-              >
-                <div
-                  class="flex aic tc tl-ns"
-                >
-                  <img
-                    alt="tiny decorative orange triangle"
-                    class="dib mr3"
-                    src="tinyDiamond.png"
-                  />
-                  <h1
-                    class="dib b white"
-                    data-testid="gemName"
-                  >
-                    PropTypes.string.isRequired
-                  </h1>
-                  <img
-                    alt="tiny decorative orange triangle"
-                    class="dib ml3"
-                    src="tinyDiamond.png"
-                  />
-                </div>
-                <div
-                  class="flex aic bg-white-10 w5-ns w-auto black h-auto pa1"
-                >
-                  <img
-                    alt="seller logo"
-                    class="br-100 h2 pl3-ns"
-                    src="Profile-Image-Logo-60x60.png"
-                  />
-                  <small
-                    class="pl3 white-60 dn dib-m dib-l"
-                  >
-                    <span
-                      class="dn dib-l"
-                    >
-                      Sold By 
-                      
-                    </span>
-                     CryptoMiner World
-                  </small>
-                </div>
-              </div>
-              <p
-                class="o-50"
-              >
-                PropTypes.string.isRequired
-              </p>
-            </div>
-            <div>
-              <div>
-                <span>
-                  <div
-                    class="relative example1-appear"
-                  >
-                    <div
-                      class="w-100 bg-dark-blue h-auto flex aic jcb mt3 br--left-ns pa3"
-                    >
-                      <div
-                        class="w-20 tc"
-                      >
-                        <div
-                          class="Gembox__Feature-a9qxbj-0 iIshpl"
-                        >
-                          <img
-                            alt="grade"
-                            class="h3 center"
-                            src="gem1.png"
-                          />
-                          <p
-                            class="ttu f5 mt2 o-50 black tc pt1 b pr2"
-                          >
-                            D
-                          </p>
-                        </div>
-                      </div>
-                      <div
-                        class="w-80 pl3 pl0-ns"
-                      >
-                        <p
-                          class="b ttu"
-                        >
-                          grade
-                        </p>
-                        <p
-                          class=" pr4-ns"
-                        >
-                          A Gem’s Grade determines how fast it can mine. There are 6 Grades, D, C, B, A, AA, and AAA. Grade As and better all store Resting Energy when they are not mining!
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </span>
-                <span>
-                  <div
-                    class="relative example2-appear"
-                  >
-                    <div
-                      class="w-100 bg-dark-orange h-auto flex aic jcb mt3 br--left-ns pa3"
-                    >
-                      <div
-                        class="w-20 tc"
-                      >
-                        <div
-                          class="Gembox__Feature-a9qxbj-0 iIshpl"
-                        >
-                          <img
-                            alt="level"
-                            class="h3 center"
-                            src="gem2.png"
-                          />
-                          <p
-                            class="ttu f5 mt2 o-50 black tc pt1 b false"
-                          >
-                            1
-                          </p>
-                        </div>
-                      </div>
-                      <div
-                        class="w-80 pl3 pl0-ns"
-                      >
-                        <p
-                          class="b ttu"
-                        >
-                          level
-                        </p>
-                        <p
-                          class=" pr4-ns"
-                        >
-                          A Gem’s level determines how far down that Gem can mine. There are 5 tiers of land and 5 levels of gems. Each successive level allows for another type of land to be mined.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </span>
-                <span>
-                  <div
-                    class="relative example3-appear"
-                  >
-                    <div
-                      class="w-100 bg-dark-purple h-auto flex aic jcb mt3 br--left-ns pa3"
-                    >
-                      <div
-                        class="w-20 tc"
-                      >
-                        <div
-                          class="Gembox__Feature-a9qxbj-0 iIshpl"
-                        >
-                          <img
-                            alt="mining rate Bonus"
-                            class="h3 center"
-                            src="gem3.png"
-                          />
-                          <p
-                            class="ttu f5 mt2 o-50 black tc pt1 b false"
-                          >
-                            +1000.00%
-                          </p>
-                        </div>
-                      </div>
-                      <div
-                        class="w-80 pl3 pl0-ns"
-                      >
-                        <p
-                          class="b ttu"
-                        >
-                          mining rate Bonus
-                        </p>
-                        <p
-                          class=" pr4-ns"
-                        >
-                          This is the percentage of how much faster a Gem mines compared to the base speed. +100% is twice as fast as base, +400% is five times faster. All Mining Rate Bonuses are tied to Grades. Grades give you a general sense of how how fast a Gem mines but Mining Rate Bonuses tells you exactly how much fast it is.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
     <div>
       <div
         class="relative"
@@ -2381,11 +1324,11 @@ Object {
             class="w-20 tc"
           >
             <div
-              class="Gembox__Feature-a9qxbj-0 iIshpl"
+              class="sc-bdVaJa giFZti"
             >
               <img
                 alt="PropTypes.string.isRequired"
-                class="h3 center"
+                class="w-auto center h3"
                 src="PropTypes.string.isRequired"
               />
               <p
@@ -2423,7 +1366,7 @@ Object {
         href="#"
       >
         <button
-          class="RippleButton__Button-sc-8zvudi-0 jadjVY"
+          class="sc-bwzfXH fbRjTD"
         >
           title
         </button>
@@ -2449,6 +1392,22 @@ Object {
             />
           </div>
         </div>
+      </div>
+    </div>
+    <div>
+      <div
+        class="tc pa2"
+      >
+        <p
+          class="b"
+        >
+          Lowest price on
+        </p>
+        <time
+          class="measure"
+        >
+          Thursday 1st of January, 5:31 AM
+        </time>
       </div>
     </div>
     <div>
@@ -2513,137 +1472,133 @@ Object {
       </div>
     </div>
     <div>
-      <div
-        class="bg-footer-black"
+      <footer
+        class="bg-footer-black sc-gzVnrw hLDReS"
       >
         <div
-          class="Footer__TopHighlight-yndh5b-0 lmXAs"
+          class="sc-EHOje jtspjU"
         />
         <div
-          class="mw9 center"
+          class="mw9 center sc-bZQynM kWSAPn"
         >
-          <footer
-            class="pa4 pa6-l bt b--black-10 Footer__BackgroundImage-yndh5b-1 rxTKj"
+          <div
+            class="pa4 bt b--black-10"
           >
             <div
-              class="mb4-l cf"
+              class="mb6-l"
             >
               <article
-                class="fl w-50 dib-ns w-auto-ns mr4-m mr5-l mb4 pr2 pr0-ns white"
+                class="flex jcb w-75 center mt5"
               >
                 <a
-                  class="f5 db fw6 pv3 black-70 link dim white"
+                  class="f5 db fw6 pv3 black-70 link dim white  hover-light-purple"
                   href="https://cryptominerworld.com/"
                   title="Home"
                 >
                   Home
                 </a>
                 <a
-                  class="f5 db fw6 pv3 black-70 link dim white"
+                  class="f5 db fw6 pv3 black-70 link dim white hover-gold"
                   href="https://cryptominerworld.com/game_info/"
                   title="Game Info"
                 >
                   Game Info
                 </a>
                 <a
-                  class="f5 db fw6 pv3 black-70 link dim white"
+                  class="f5 db fw6 pv3 black-70 link dim white hover-green"
                   href="https://cryptominerworld.com/founders_geode_pre-sale/"
                   title="Founder Geode Pre-Sale"
                 >
                   Founder Geode Pre-Sale
                 </a>
                 <a
-                  class="f5 db fw6 pv3 black-70 link dim white"
+                  class="f5 db fw6 pv3 black-70 link dim white undefined"
                   href="https://cryptominerworld.com/workshop/"
                   title="Workshop"
                 >
                   Workshop
                 </a>
                 <a
-                  class="f5 db fw6 pv3 black-70 link dim white"
+                  class="f5 db fw6 pv3 black-70 link dim white  hover-light-purple"
                   href="https://cryptominerworld.com/market/"
                   title="Market"
                 >
                   Market
                 </a>
                 <a
-                  class="f5 db fw6 pv3 black-70 link dim white"
+                  class="f5 db fw6 pv3 black-70 link dim white hover-green"
                   href="https://cryptominerworld.com/world/"
                   title="World"
                 >
                   World
                 </a>
-              </article>
-              <article
-                class="fl-ns w-50-ns db w-100 dib-ns w-auto-ns mr4-m mr5-l mb4 pr2 pr0-ns"
-              >
                 <a
-                  class="f5 db fw6 pv3 black-70 link dim white"
+                  class="f5 db fw6 pv3 black-70 link dim white hover-gold"
                   href="https://cryptominerworld.com/faq/"
                   title="FAQ"
                 >
                   FAQ
                 </a>
+                <a
+                  class="f5 db fw6 pv3 black-70 link dim white undefined"
+                  href="http://www.sophophilia.com/press/sheet.php?p=cryptoMiner_world"
+                  title="Press Kit"
+                >
+                  Press Kit
+                </a>
               </article>
               <div
-                class="cf dn-ns"
-              />
-              <article
-                class="fr w-50-ns w-100 dib-ns w-auto-ns mr4-m mr5-l mb4 pr2 pr0-ns "
+                class="flex jcc mt5"
               >
-                <div
-                  class="db dtc-ns tc tr-ns v-mid"
+                <a
+                  class="link dim dib mr3 white"
+                  href="https://www.facebook.com/CryptoMinerWorld/"
+                  title="Cryptominer World on Facebook"
                 >
-                  <a
-                    class="link dim dib mr3 white"
-                    href="https://www.facebook.com/CryptoMinerWorld/"
-                    title="Cryptominer World on Facebook"
+                  <svg
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
                   >
-                    <svg
-                      fill="none"
-                      height="24"
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      viewBox="0 0 24 24"
-                      width="24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
-                      />
-                    </svg>
-                  </a>
-                  <a
-                    class="link dim dib mr3 white"
-                    href="https://twitter.com/CryptoMiner_W"
-                    title="Cryptominer World on Twitter"
+                    <path
+                      d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
+                    />
+                  </svg>
+                </a>
+                <a
+                  class="link dim dib mr3 white"
+                  href="https://twitter.com/CryptoMiner_W"
+                  title="Cryptominer World on Twitter"
+                >
+                  <svg
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
                   >
-                    <svg
-                      fill="none"
-                      height="24"
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      viewBox="0 0 24 24"
-                      width="24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"
-                      />
-                    </svg>
-                  </a>
-                </div>
-              </article>
+                    <path
+                      d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"
+                    />
+                  </svg>
+                </a>
+              </div>
             </div>
             <div
-              class="dt dt--fixed w-100"
+              class="flex jcc pb5-ns"
             >
               <div
-                class="dn dtc-ns v-mid"
+                class="flex jcc"
               >
                 <p
                   class="f7 black-70 dib pr3 mb3 white"
@@ -2653,7 +1608,7 @@ Object {
                 <p
                   class="f7 black-70 dib pr3 mb3 white"
                 >
-                  Version 0.0.18
+                  Version 0.1.10
                 </p>
               </div>
             </div>
@@ -2661,18 +1616,18 @@ Object {
               class="db dn-ns"
             >
               <p
-                class="f7 white mt4 tl"
+                class="f7 white mt4 tc"
               >
                 Copyright © Cryptominer World 2018
               </p>
             </div>
-          </footer>
+          </div>
         </div>
-      </div>
+      </footer>
     </div>
     <div>
       <div
-        class="MailingList__OverlapOnDesktopView-sc-1ktwykx-0 jEuRIX"
+        class="sc-dnqmqq hOzadq"
       >
         <div
           class="pa4-l bg-transparent"
@@ -2743,11 +1698,11 @@ Object {
               level
             </small>
             <div
-              class="Gembox__Feature-a9qxbj-0 iIshpl"
+              class="sc-bdVaJa giFZti"
             >
               <img
                 alt="level"
-                class="h3 center"
+                class="w-auto center h3"
                 src="gem2.png"
               />
               <p
@@ -2766,11 +1721,11 @@ Object {
               grade
             </small>
             <div
-              class="Gembox__Feature-a9qxbj-0 iIshpl"
+              class="sc-bdVaJa giFZti"
             >
               <img
                 alt="grade"
-                class="h3 center"
+                class="w-auto center h3"
                 src="gem1.png"
               />
               <p
@@ -2789,11 +1744,11 @@ Object {
               rate
             </small>
             <div
-              class="Gembox__Feature-a9qxbj-0 iIshpl"
+              class="sc-bdVaJa giFZti"
             >
               <img
                 alt="rate"
-                class="h3 center"
+                class="w-auto center h3"
                 src="gem3.png"
               />
               <p
@@ -2808,11 +1763,11 @@ Object {
     </div>
     <div>
       <div
-        class="Gembox__Feature-a9qxbj-0 iIshpl"
+        class="sc-bdVaJa giFZti"
       >
         <img
           alt="1"
-          class="h3 center"
+          class="w-auto center h3"
           src="1"
         />
         <p
@@ -2822,118 +1777,6 @@ Object {
         </p>
       </div>
     </div>
-    <div>
-      <div
-        class="flex-s dn-ns jca bg-base shadow-1"
-      >
-        <div
-          class="absolute left-1"
-        >
-          <div
-            class="bg-deep-purple pa3 tc"
-          >
-            <small
-              class="white ttu b tc center"
-            >
-              current 
-              <br />
-               price
-            </small>
-            <p
-              class="white f3 tc"
-            >
-              Ξ 
-              NaN
-            </p>
-          </div>
-          <div
-            class="MobileHeader__Triangle-favzpq-0 iMdFlc"
-          />
-        </div>
-        <div
-          class="w-100"
-        >
-          <div
-            class="w-60 fr mr6-ns"
-          >
-            <div
-              class="flex tc pa3"
-            >
-              <div
-                class="w-100"
-              >
-                <small
-                  class="ttu white dn-ns"
-                >
-                  level
-                </small>
-                <div
-                  class="Gembox__Feature-a9qxbj-0 iIshpl"
-                >
-                  <img
-                    alt="level"
-                    class="h3 center"
-                    src="gem2.png"
-                  />
-                  <p
-                    class="ttu f5 mt2 o-50 black tc pt1 b false"
-                  >
-                    2
-                  </p>
-                </div>
-              </div>
-              <div
-                class="w-100"
-              >
-                <small
-                  class="ttu white dn-ns"
-                >
-                  grade
-                </small>
-                <div
-                  class="Gembox__Feature-a9qxbj-0 iIshpl"
-                >
-                  <img
-                    alt="grade"
-                    class="h3 center"
-                    src="gem1.png"
-                  />
-                  <p
-                    class="ttu f5 mt2 o-50 black tc pt1 b pr2"
-                  >
-                    C
-                  </p>
-                </div>
-              </div>
-              <div
-                class="w-100"
-              >
-                <small
-                  class="ttu white dn-ns"
-                >
-                  rate
-                </small>
-                <div
-                  class="Gembox__Feature-a9qxbj-0 iIshpl"
-                >
-                  <img
-                    alt="rate"
-                    class="h3 center"
-                    src="gem3.png"
-                  />
-                  <p
-                    class="ttu f5 mt2 o-50 black tc pt1 b false"
-                  >
-                    +2.00%
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div />
     <div>
       <div
         class="white ma0 pa3 tc "
@@ -2951,11 +1794,11 @@ Object {
           <span
             data-testid="currentPrice"
           >
-            1.2
+            0
           </span>
         </p>
         <div
-          class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default ba br-pill pb1 ph2 mb1  b--white-40"
+          class="ant-progress ant-progress-line ant-progress-status-active ant-progress-default ba br-pill pb1 ph2 mb1  b--white-40"
         >
           <div>
             <div
@@ -2966,7 +1809,7 @@ Object {
               >
                 <div
                   class="ant-progress-bg"
-                  style="width: 98.8%; height: 8px; background: rgb(192, 24, 171); border-radius: 100px;"
+                  style="width: 88.00000000000001%; height: 8px; background: rgb(192, 24, 171); border-radius: 100px;"
                 />
               </div>
             </div>
@@ -2982,7 +1825,7 @@ Object {
             <span
               data-testid="minPrice"
             >
-              100
+              0
             </span>
           </small>
           <small
@@ -2992,7 +1835,7 @@ Object {
             <span
               data-testid="maxPrice"
             >
-              10
+              0
             </span>
           </small>
         </div>
@@ -3016,11 +1859,11 @@ Object {
         <span
           data-testid="currentPrice"
         >
-          1.2
+          0
         </span>
       </p>
       <div
-        class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default ba br-pill pb1 ph2 mb1  b--white-40"
+        class="ant-progress ant-progress-line ant-progress-status-active ant-progress-default ba br-pill pb1 ph2 mb1  b--white-40"
       >
         <div>
           <div
@@ -3031,7 +1874,7 @@ Object {
             >
               <div
                 class="ant-progress-bg"
-                style="width: 98.8%; height: 8px; background: rgb(192, 24, 171); border-radius: 100px;"
+                style="width: 88.00000000000001%; height: 8px; background: rgb(192, 24, 171); border-radius: 100px;"
               />
             </div>
           </div>
@@ -3047,7 +1890,7 @@ Object {
           <span
             data-testid="minPrice"
           >
-            100
+            0
           </span>
         </small>
         <small
@@ -3057,7 +1900,7 @@ Object {
           <span
             data-testid="maxPrice"
           >
-            10
+            0
           </span>
         </small>
       </div>
@@ -3067,6 +1910,8 @@ Object {
   "getAllByAltText": [Function],
   "getAllByLabelText": [Function],
   "getAllByPlaceholderText": [Function],
+  "getAllByRole": [Function],
+  "getAllBySelectText": [Function],
   "getAllByTestId": [Function],
   "getAllByText": [Function],
   "getAllByTitle": [Function],
@@ -3074,6 +1919,8 @@ Object {
   "getByAltText": [Function],
   "getByLabelText": [Function],
   "getByPlaceholderText": [Function],
+  "getByRole": [Function],
+  "getBySelectText": [Function],
   "getByTestId": [Function],
   "getByText": [Function],
   "getByTitle": [Function],
@@ -3081,6 +1928,8 @@ Object {
   "queryAllByAltText": [Function],
   "queryAllByLabelText": [Function],
   "queryAllByPlaceholderText": [Function],
+  "queryAllByRole": [Function],
+  "queryAllBySelectText": [Function],
   "queryAllByTestId": [Function],
   "queryAllByText": [Function],
   "queryAllByTitle": [Function],
@@ -3088,6 +1937,8 @@ Object {
   "queryByAltText": [Function],
   "queryByLabelText": [Function],
   "queryByPlaceholderText": [Function],
+  "queryByRole": [Function],
+  "queryBySelectText": [Function],
   "queryByTestId": [Function],
   "queryByText": [Function],
   "queryByTitle": [Function],
@@ -3097,7 +1948,7 @@ Object {
 }
 `;
 
-exports[`Question renders correctly 1`] = `
+exports[`Auction page tests Question renders correctly 1`] = `
 <div>
   <div
     class="bg-off-black white ma0 pa3 measure"
@@ -3161,13 +2012,13 @@ exports[`Question renders correctly 1`] = `
 </div>
 `;
 
-exports[`Ripple Button renders correctly 1`] = `
+exports[`Auction page tests Ripple Button renders correctly 1`] = `
 <div>
   <a
     href="#"
   >
     <button
-      class="RippleButton__Button-sc-8zvudi-0 jadjVY"
+      class="sc-bwzfXH fbRjTD"
     >
       title
     </button>
@@ -3175,7 +2026,7 @@ exports[`Ripple Button renders correctly 1`] = `
 </div>
 `;
 
-exports[`Ripple Effect renders correctly 1`] = `
+exports[`Auction page tests Ripple Effect renders correctly 1`] = `
 <div>
   <div
     class="Ripple"
@@ -3184,4 +2035,154 @@ exports[`Ripple Effect renders correctly 1`] = `
 </div>
 `;
 
-exports[`showExpired renders correctly 1`] = `<div />`;
+exports[`navbar snapshot tests filter show correct filter results 1`] = `
+<div>
+  <div
+    class="sc-bdVaJa giFZti"
+  >
+    <img
+      alt="1"
+      class="w-auto center h3"
+      src="1"
+    />
+    <p
+      class="ttu f5 mt2 o-50 black tc pt1 b false"
+    >
+      1
+    </p>
+  </div>
+</div>
+`;
+
+exports[`navbar snapshot tests grade always show letters form D - AAA 1`] = `
+<div>
+  <div
+    class="sc-bdVaJa giFZti"
+  >
+    <img
+      alt="1"
+      class="w-auto center h3"
+      src="1"
+    />
+    <p
+      class="ttu f5 mt2 o-50 black tc pt1 b false"
+    >
+      1
+    </p>
+  </div>
+</div>
+`;
+
+exports[`navbar snapshot tests grade and rate modifications are bound, chnaging one should result in correct adjustmnet in teh other 1`] = `
+<div>
+  <div
+    class="sc-bdVaJa giFZti"
+  >
+    <img
+      alt="1"
+      class="w-auto center h3"
+      src="1"
+    />
+    <p
+      class="ttu f5 mt2 o-50 black tc pt1 b false"
+    >
+      1
+    </p>
+  </div>
+</div>
+`;
+
+exports[`navbar snapshot tests grade shows letters on slide 1`] = `
+<div>
+  <div
+    class="sc-bdVaJa giFZti"
+  >
+    <img
+      alt="1"
+      class="w-auto center h3"
+      src="1"
+    />
+    <p
+      class="ttu f5 mt2 o-50 black tc pt1 b false"
+    >
+      1
+    </p>
+  </div>
+</div>
+`;
+
+exports[`navbar snapshot tests only display 2 rows of 3 images 1`] = `
+<div>
+  <div
+    class="sc-bdVaJa giFZti"
+  >
+    <img
+      alt="1"
+      class="w-auto center h3"
+      src="1"
+    />
+    <p
+      class="ttu f5 mt2 o-50 black tc pt1 b false"
+    >
+      1
+    </p>
+  </div>
+</div>
+`;
+
+exports[`navbar snapshot tests pink gem dude shows up as gem page mascot 1`] = `
+<div>
+  <div
+    class="sc-bdVaJa giFZti"
+  >
+    <img
+      alt="1"
+      class="w-auto center h3"
+      src="1"
+    />
+    <p
+      class="ttu f5 mt2 o-50 black tc pt1 b false"
+    >
+      1
+    </p>
+  </div>
+</div>
+`;
+
+exports[`navbar snapshot tests price slider shows a 3 digit number on slide 1`] = `
+<div>
+  <div
+    class="sc-bdVaJa giFZti"
+  >
+    <img
+      alt="1"
+      class="w-auto center h3"
+      src="1"
+    />
+    <p
+      class="ttu f5 mt2 o-50 black tc pt1 b false"
+    >
+      1
+    </p>
+  </div>
+</div>
+`;
+
+exports[`navbar snapshot tests showExpired renders correctly 1`] = `
+<div>
+  <div
+    class="sc-bdVaJa giFZti"
+  >
+    <img
+      alt="1"
+      class="w-auto center h3"
+      src="1"
+    />
+    <p
+      class="ttu f5 mt2 o-50 black tc pt1 b false"
+    >
+      1
+    </p>
+  </div>
+</div>
+`;
