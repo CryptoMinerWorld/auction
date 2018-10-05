@@ -68,7 +68,6 @@ const AuctionBox = ({
   restingEnergyMinutes,
   history
 }) => {
-  console.log('history', history);
   return (
     <OverlapOnDesktopView
       className="bg-dark-gray measure-l w-100 shadow-3"
