@@ -15,10 +15,6 @@ import Pagination from 'antd/lib/pagination';
 require('antd/lib/pagination/style/css');
 require('antd/lib/slider/style/css');
 
-const LeftAside = styled.aside`
-  grid-column: 1;
-`;
-
 const RightAside = styled.aside`
   grid-column: 5;
 `;

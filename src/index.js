@@ -5,6 +5,17 @@ import App from "./app/App";
 import store from "./app/store";
 import { getAuctions } from "./features/market/marketActions";
 import { getCurrentUser } from "./features/auth/authActions";
+
+// import firebase from './app/utils/firebase';
+
+// var ref = firebase.firestore().doc('users/123');
+// ref.get().then(function(doc) {
+//   console.log(doc.data());
+// }).catch(function(err) {
+//   console.error(err);
+// });
+
+
 // @notice these are all the actions fired when the app starts up
 store.dispatch(getCurrentUser());
 store.dispatch(getAuctions());

@@ -9,11 +9,60 @@ import App from '../../../app/App';
 import Marketplace from '../ListAuctions';
 import amethyst from '../../../images/amethystImage.png';
 import rootReducer from '../../../reducers/index';
+var firebasemock = require('firebase-mock');
+
+var mockfirestore = new firebasemock.MockFirestore();
+var mockstorage = new firebasemock.MockStorage();
+var mocksdk = new firebasemock.MockFirebaseSdk(
+  // use null if your code does not use RTDB
+  null,
+  // use null if your code does not use AUTHENTICATION
+  null,
+  // use null if your code does not use FIRESTORE
+  () => {
+    return mockfirestore;
+  },
+  // use null if your code does not use STORAGE
+  () => {
+    return mockstorage;
+  },
+  // use null if your code does not use MESSAGING
+  null
+);
 
 jest.mock('react-ga');
+jest.mock('../../../app/utils/firebase.js', () => {
+  return mocksdk;
+});
+
+mocksdk.firestore().flush();
 // @dev this automatically unmounts and cleanup DOM after the test is finished.
 afterEach(cleanup);
 
+// Testing Reads
+MockFirebase.override();
+var greeted = [];
+people.greet = function(person) {
+  greeted.push(person);
+};
+people.collection().add({
+  first: 'Michael'
+});
+people.collection().add({
+  first: 'Ben'
+});
+people.process();
+people.collection().flush();
+console.assert(greeted.length === 2, '2 people greeted');
+console.assert(greeted[0].first === 'Michael', 'Michael greeted');
+console.assert(greeted[1].first === 'Ben', 'Ben greeted');
+
+// Testing Writes
+var newPersonRef = people.create('James');
+newPersonRef.then(function(doc) {
+  console.assert(doc.get('first') === 'James', 'James was created');
+});
+people.collection().flush();
 // this is a handy function that I utilize for any component
 // that relies on the router being in context
 function renderWithRouter(
@@ -32,7 +81,7 @@ function renderWithRouter(
   };
 }
 
-describe('Marketplace page tests', () => {
+describe.skip('Marketplace page tests', () => {
   // @dev this is all the test data, easy to configure in one place
   const props = {
     auctions: [

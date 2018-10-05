@@ -3,7 +3,7 @@ import { render } from 'react-testing-library';
 import DescriptionBox, { FeatureBand } from "../../features/items/components/DescriptionBox"
 import Ripple from '../RippleButton/Ripple'
 import RippleButton from '../RippleButton/RippleButton'
-import AuctionBox from '../AuctionBox'
+import AuctionBox from '../../features/items/components/AuctionBox'
 import AuctionImage from '../AuctionImage'
 import CountdownTimer from '../CountdownTimer'
 import Question from '../FAQ'
