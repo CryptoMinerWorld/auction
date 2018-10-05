@@ -8,15 +8,17 @@ import {
   USER_EXISTS,
   NEW_USER,
   NO_USER_EXISTS,
-  REDIRECT_TO_HOME
+  REDIRECT_TO_HOME,
 } from "./authConstants";
+import { showConfirm } from '../../components/Modal';
+import {MODAL_VISIBLE} from '../../app/reduxConstants'
 import {
   getUserGems,
   getDetailsForAllGemsAUserCurrentlyOwns,
   getUserDetails
 } from "../dashboard/dashboardActions";
 
-export const checkIfUserExists = userId => (dispatch) => {
+export const checkIfUserExists = userId => dispatch => {
   const userIdToLowerCase = userId
     .split("")
     .map(item => (typeof item === "string" ? item.toLowerCase() : item))
@@ -29,13 +31,12 @@ export const checkIfUserExists = userId => (dispatch) => {
       doc =>
         doc.exists
           ? dispatch({ type: USER_EXISTS, payload: doc.data() })
-          : dispatch({ type: NO_USER_EXISTS })
+          : dispatch({ type: NO_USER_EXISTS, payload: userId })
     )
     .catch(error => console.error("error", error));
 };
 
 export const updateWalletId = walletId => (dispatch, getState) => {
-
 
   const oldAddress = getState().auth.currentUserId
           .split("")
@@ -65,7 +66,6 @@ export const createNewUser = payload => dispatch => {
     .map(item => (typeof item === "string" ? item.toLowerCase() : item))
     .join("");
 
-  console.log("walletId", userIdToLowerCase);
   return db
     .doc(`users/${userIdToLowerCase}`)
     .set(payload)
@@ -77,7 +77,8 @@ export const createNewUser = payload => dispatch => {
 };
 
 export const showSignInModal = () => 
-dispatch => dispatch({ type: NEW_USER });
+dispatch =>  dispatch({ type: NEW_USER })
+
 
 // @dev this action fires when the app starts up
 export const getCurrentUser = () => () =>

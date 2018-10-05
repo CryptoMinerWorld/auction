@@ -52,7 +52,7 @@ export const updateGemOwnership = (
     .then(doc => doc.data())
     .catch(err => console.log('error fetching new gem owner details', err));
 
-  console.log('newGemOwner', newGemOwner);
+ 
   const { name, imageURL } = newGemOwner;
 
   // update gem with new owner, name and image
@@ -159,7 +159,7 @@ export const handleBuyNow = (_tokenId, _from, history) => (
   dispatch,
   getState
 ) => {
-  console.log('from', _from);
+ 
   const dutchAuctionContractInstance = getState().app.dutchContractInstance;
   const priceInWei = getState().auction.currentPrice;
   const gemContractAddress = getState().app.gemsContractInstance._address;
