@@ -14,21 +14,22 @@ import { db } from '../../app/utils/firebase';
 import { createAuctionHelper, removeAuctionHelper } from './helpers';
 
 export const getAuctionDetails = tokenId => dispatch => {
+
   dispatch({ type: FETCH_DATA_BEGUN });
-  try {
-    db.collection(`stones`)
+
+
+    return db.collection(`stones`)
       .where(`id`, `==`, Number(tokenId))
-      .onSnapshot(coll => {
-        const gemDetails = coll.docs.map(doc => doc.data());
-        dispatch({ type: FETCH_DATA_SUCCEEDED });
-        dispatch({
+      .onSnapshot(async coll => {
+        const gemDetails = await coll.docs.map(doc => doc.data());
+         dispatch({ type: FETCH_DATA_SUCCEEDED });
+         dispatch({
           type: AUCTION_DETAILS_RECEIVED,
           payload: gemDetails[0]
         });
-      });
-  } catch (err) {
-    dispatch({ type: FETCH_DATA_FAILED, payload: err });
-  }
+      }, 
+      error =>  dispatch({ type: FETCH_DATA_FAILED, payload: error }))
+  
 };
 
 export const updateGemOwnership = (gemId, newOwner) => async dispatch => {
