@@ -9,6 +9,8 @@ import ProgressMeter from './ProgressMeter';
 import { showSignInModal } from '../../auth/authActions';
 import { handleBuyNow } from '../itemActions';
 import { showConfirm } from '../../../components/Modal';
+import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 
 const TopHighLight = styled.div`
   background: linear-gradient(to right, #e36d2d, #b91a78);
@@ -63,8 +65,10 @@ const AuctionBox = ({
   handleShowSignInModal,
   accountExists,
   provider,
-  restingEnergyMinutes
+  restingEnergyMinutes,
+  history
 }) => {
+  console.log('history', history);
   return (
     <OverlapOnDesktopView
       className="bg-dark-gray measure-l w-100 shadow-3"
@@ -97,7 +101,7 @@ const AuctionBox = ({
           <BuyNow
             onClick={() => {
               if (provider && accountExists) {
-                handleBuyNow(tokenId, currentAccount);
+                handleBuyNow(tokenId, currentAccount, history);
               } else if (provider && !accountExists) {
                 handleShowSignInModal();
               } else {
@@ -125,9 +129,12 @@ const actions = {
   handleBuyNow
 };
 
-export default connect(
-  select,
-  actions
+export default compose(
+  connect(
+    select,
+    actions
+  ),
+  withRouter
 )(AuctionBox);
 
 AuctionBox.propTypes = {

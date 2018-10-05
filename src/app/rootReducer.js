@@ -18,7 +18,8 @@ import {
   CURRENT_ACCOUNT_ADDED,
   PRESALE_CONTRACT_ADDED,
   MODAL_VISIBLE,
-  RELEASE_CONFETTI
+  RELEASE_CONFETTI,
+  MODAL_GONE
 } from './reduxConstants';
 
 const initialState = {
@@ -44,6 +45,10 @@ const appReducer = (state = initialState, action) =>
     [MODAL_VISIBLE]: {
       ...state,
       modalVisible: true
+    },
+    [MODAL_GONE]: {
+      ...state,
+      modalVisible: false
     },
     [RELEASE_CONFETTI]:{
       ...state,

@@ -82,11 +82,11 @@ class Dashboard extends PureComponent {
     this.props.handlePagination(1, 8);
   }
 
-  componentDidUpdate() {
-    if (this.props.redirectToHome) {
-      this.props.history.push('/');
-    }
-  }
+  // componentDidUpdate() {
+  //   if (this.props.redirectToHome) {
+  //     this.props.history.push('/');
+  //   }
+  // }
 
   render() {
     const {
