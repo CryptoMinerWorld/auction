@@ -77,7 +77,8 @@ export const createNewUser = payload => dispatch => {
     .catch(error => console.error("error", error));
 };
 
-export const showSignInModal = () => dispatch => dispatch({ type: NEW_USER });
+export const showSignInModal = () => 
+dispatch => dispatch({ type: NEW_USER });
 
 // @dev this action fires when the app starts up
 export const getCurrentUser = () => () =>

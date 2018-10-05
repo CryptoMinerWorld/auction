@@ -12,10 +12,33 @@ import { calculateGemName } from '../helpers';
 
 import { calcMiningRate } from '../helpers';
 
-const firebasemock = require('firebase-mock');
+// var firebasemock = require('firebase-mock');
 
-const mockfirestore = new firebasemock.MockFirestore();
-const mockstorage = new firebasemock.MockStorage();
+// var mockfirestore = new firebasemock.MockFirestore();
+// var mockstorage = new firebasemock.MockStorage();
+// var mocksdk = new firebasemock.MockFirebaseSdk(
+//   // use null if your code does not use RTDB
+//   null,
+//   // use null if your code does not use AUTHENTICATION
+//   null,
+//   // use null if your code does not use FIRESTORE
+//   () => {
+//     return mockfirestore;
+//   },
+//   // use null if your code does not use STORAGE
+//   () => {
+//     return mockstorage;
+//   },
+//   // use null if your code does not use MESSAGING
+//   null
+// );
+
+// jest.mock('react-ga');
+// jest.mock('../../../app/utils/firebase.js', () => {
+//   return mocksdk;
+// });
+
+// mocksdk.firestore().flush();
 
 // @dev this automatically unmounts and cleanup DOM after the test is finished.
 afterEach(cleanup);
@@ -25,7 +48,7 @@ const someDate = new Date();
 const numberOfDaysToAdd = 2;
 someDate.setDate(someDate.getDate() + numberOfDaysToAdd);
 
-describe.skip('Auction page tests', () => {
+describe('Auction page tests', () => {
   // @dev this is all the test data, easy to configure in one place
   const props = {
     currentPrice: '1.323',
@@ -52,6 +75,12 @@ describe.skip('Auction page tests', () => {
     currentTime: 1536908786405,
     currentAccount: '123'
   };
+
+  test('Auction Page renders the correct resting energy minutes', () => {
+    const { debug, getByTestId } = render(<Auction {...props} />);
+    // debug();
+    expect(false).toBeFalsy();
+  });
 
   test.skip('Auction Page render correctly', async () => {
     const { container } = render(<Auction {...props} />);
