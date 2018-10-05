@@ -87,9 +87,11 @@ class DescriptionBox extends PureComponent {
                     alt="tiny decorative orange triangle"
                     className="dib mr3"
                   />
+
                   <h1 className="dib b white" data-testid="gemName">
                     {name}
                   </h1>
+
                   <img
                     src={tinyDiamond}
                     alt="tiny decorative orange triangle"

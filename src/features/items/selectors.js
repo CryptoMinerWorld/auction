@@ -9,4 +9,6 @@ export const calculateGemName = (providedGrade, providedTokenId) => {
   };
 
 
-  export const temp = () => console.log('temp')
+  export const TEMP = (market, gemId) => market.find(
+    gem => Number(gem.gemId) === Number(gemId)
+  )

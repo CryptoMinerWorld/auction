@@ -1,7 +1,8 @@
 import {
   AUCTION_DETAILS_RECEIVED,
   OWNERSHIP_TRANSFERRED,
-  NEW_AUCTION_CREATED
+  NEW_AUCTION_CREATED,
+  CLEAR_GEM_PAGE
 } from './itemConstants';
 import {
   FETCH_DATA_BEGUN,
@@ -17,10 +18,10 @@ export const getAuctionDetails = tokenId => dispatch => {
 
   dispatch({ type: FETCH_DATA_BEGUN });
 
-
-    return db.collection(`stones`)
+  return db.collection(`stones`)
       .where(`id`, `==`, Number(tokenId))
-      .onSnapshot(async coll => {
+      .get()
+      .then(async coll => {
         const gemDetails = await coll.docs.map(doc => doc.data());
          dispatch({ type: FETCH_DATA_SUCCEEDED });
          dispatch({
@@ -67,9 +68,8 @@ export const createAuction = (payload, turnLoaderOff) => (
   dispatch,
   getState
 ) => {
-  //  eslint-disable-next-line
+
   const currentAccount = getState().auth.currentUserId;
-  //  eslint-disable-next-line
   const gemsContractInstance = getState().app.gemsContractInstance;
 
   try {
@@ -83,26 +83,33 @@ export const createAuction = (payload, turnLoaderOff) => (
       gemsContractInstance,
       currentAccount
     ).then(({ deadline, minPrice, maxPrice }) => {
+
       db.collection(`stones`)
         .where(`id`, `==`, tokenId)
         .get()
-        .then(coll =>
-          coll.docs.map(doc =>
-            db.doc(`stones/${doc.id}`).update({
+        .then(async coll =>
+          {
+            const document = await coll.docs.map(doc => doc)[0]
+
+            await db.doc(`stones/${document.id}`).update({
               auctionIsLive: true,
               deadline,
               minPrice,
               maxPrice
             })
-          )
+          
+       
+const completeGemInfo = {...document.data(), ...payload}
+console.log('completeGemInfo', completeGemInfo)
+
+          return dispatch({
+            type: NEW_AUCTION_CREATED,
+            payload: completeGemInfo
+          });
+        }
         )
         .then(() => turnLoaderOff())
         .catch(err => console.log('err', err));
-
-      dispatch({
-        type: NEW_AUCTION_CREATED,
-        payload
-      });
     });
   } catch (error) {
     console.log('error', error);
@@ -178,3 +185,7 @@ export const getRestingEnergy = tokenId => (dispatch, getState) => {
 return restingEnergyMinutes
   }).catch(err => console.log('resting energy action err', err))
 };
+
+
+export const clearGemPageOnExit = (gemId) => (dispatch) => dispatch({type: CLEAR_GEM_PAGE})
+

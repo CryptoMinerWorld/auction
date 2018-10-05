@@ -11,6 +11,7 @@ import {
   CHANGE_FILTER_VALUES,
   PAGINATE_MARKET
 } from './marketConstants';
+import {AUCTION_DETAILS_RECEIVED} from '../items/itemConstants'
 
 import { REDIRECTED_HOME } from '../auth/authConstants';
 import { db } from '../../app/utils/firebase';
@@ -192,3 +193,5 @@ export const orderMarketBy = (key, descending) => (dispatch, getState) => {
 
 export const paginate = (pageNumber, pagePerView) => dispatch =>
  dispatch({ type: PAGINATE_MARKET, payload: [pageNumber, pagePerView]})
+
+ export const preLoadAuctionPage = (auction) => dispatch => dispatch({ type: AUCTION_DETAILS_RECEIVED, payload: auction})

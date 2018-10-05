@@ -177,7 +177,6 @@ class App extends Component {
               </p>
               <strong>This may take a few moments.</strong>
             </Modal>
-
             <StickyHeader>
               <Navbar />
             </StickyHeader>

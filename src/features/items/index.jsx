@@ -25,10 +25,12 @@ import StatsBox from './components/StatsBox';
 import { getRestingEnergy } from './itemActions';
 import { showConfirm } from '../../components/Modal';
 import MobileHeader from './components/MobileHeader';
+import { clearGemPageOnExit } from './itemActions';
 
 const select = store => ({
   details: store.auction,
-  gemName: calculateGemName(store.auction.color, store.auction.id),
+  gemName:
+    store.auction && calculateGemName(store.auction.color, store.auction.id),
   error: store.app.error,
   currentAccount: store.auth.currentUserId,
   releaseConfetti: store.app.releaseConfetti,
@@ -44,7 +46,10 @@ class Auction extends PureComponent {
 
   componentDidMount() {
     const { match, handleGetAuctionDetails } = this.props;
-    handleGetAuctionDetails(match.params.gemId);
+    match &&
+      match.params &&
+      match.params.gemId &&
+      handleGetAuctionDetails(match.params.gemId);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -80,6 +85,10 @@ class Auction extends PureComponent {
         })
         .catch(err => console.log('resting energy action err', err));
     }
+  }
+
+  componentWillUnmount() {
+    this.props.handleClearGemPage(this.props.match.params.gemId);
   }
 
   render() {
@@ -194,7 +203,8 @@ class Auction extends PureComponent {
 const actions = {
   handleGetAuctionDetails: getAuctionDetails,
   handleGetRestingEnergy: getRestingEnergy,
-  showConfirm
+  showConfirm,
+  handleClearGemPage: clearGemPageOnExit
 };
 
 export default compose(
@@ -254,7 +264,6 @@ Auction.defaultProps = {
 
 const DisplayBoxStateMachine = props => {
   const { owner, currentAccount, auctionIsLive } = props;
-  console.log('', { owner, currentAccount, auctionIsLive });
   let state = 'owner';
 
   if (owner === currentAccount) {
