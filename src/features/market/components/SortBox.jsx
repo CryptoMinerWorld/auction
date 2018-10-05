@@ -68,11 +68,8 @@ const stateMachine = {
 };
 
 const Primary = styled.section`
-  display: grid;
+  display: flex;
   width: 100%;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-column-gap: 20px;
-  grid-row-gap: 20px;
 `;
 
 class SortBox extends PureComponent {
@@ -88,7 +85,7 @@ class SortBox extends PureComponent {
     return (
       <Primary className="pv4 ">
         <p
-          className={`flex aic jcc pointer mr4 white link
+          className={`flex aic jcs pointer mr5 white link
   ${
     machineState.value === 'priceASC' || machineState.value === 'priceDESC'
       ? 'o-90'
@@ -111,7 +108,7 @@ class SortBox extends PureComponent {
           </State>
         </p>
         <p
-          className={`flex aic jcc pointer  mr4 white link  ${
+          className={`flex aic jcc pointer  mr5 white link  ${
             machineState.value === 'timeASC' ||
             machineState.value === 'timeDESC'
               ? 'o-90'
@@ -134,7 +131,7 @@ class SortBox extends PureComponent {
           </State>
         </p>
         <p
-          className={`flex aic jcc pointer mr4 white link ${
+          className={`flex aic jcc pointer mr5 white link ${
             machineState.value === 'rateASC' ||
             machineState.value === 'rateDESC'
               ? 'o-90'

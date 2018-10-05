@@ -25,7 +25,7 @@ const RightAside = styled.aside`
 
 const Grid = styled.article`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-column-gap: 20px;
 `;
 
@@ -38,7 +38,7 @@ const CardBox = styled.section`
 `;
 
 const Primary = styled.section`
-  grid-column: 2/5;
+  grid-column: 1/5;
 `;
 
 const Card = styled.aside`
@@ -74,16 +74,13 @@ const Marketplace = ({
   totalGems
 }) => (
   <div className="bg-off-black white pa4">
-    <div className="flex aic jcc ">
+    <div className="flex aic jcs ">
       <img src={gemKid} className="h3 w-auto pr3 dib" alt="gem auctions" />
       <h1 className="white f1 b o-90" data-testid="header">
         Gem Auctions
       </h1>
     </div>
     <Grid>
-      <LeftAside>
-        <GemFilters />
-      </LeftAside>
       <Primary>
         <SortBox />
         <CardBox>
@@ -103,7 +100,7 @@ const Marketplace = ({
         <div className="w-100 tc pv4">
           <Pagination
             current={pageNumber}
-            pageSize={6}
+            pageSize={9}
             total={totalGems}
             hideOnSinglePage
             onChange={(page, pageSize) => handlePagination(page, pageSize)}
@@ -112,6 +109,7 @@ const Marketplace = ({
       </Primary>
       <RightAside>
         <Filters />
+        <GemFilters />
       </RightAside>
     </Grid>
   </div>
@@ -129,7 +127,7 @@ export default compose(
   ),
   lifecycle({
     componentDidMount() {
-      this.props.handlePagination(1, 6);
+      this.props.handlePagination(1, 9);
     }
   })
 )(Marketplace);
