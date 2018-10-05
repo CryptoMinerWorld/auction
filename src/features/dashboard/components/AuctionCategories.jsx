@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 // import PropTypes from 'prop-types';
 import { ReactComponent as Gem } from '../../../app/images/dashboard/gems.svg';
 import { ReactComponent as Artifact } from '../../../app/images/dashboard/artifacts.svg';

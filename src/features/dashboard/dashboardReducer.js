@@ -97,7 +97,7 @@ export default function dashboardReducer(state = {
   if (action.type ===  PAGINATE) {
     const start = (action.payload[0] * action.payload[1]) - action.payload[1] 
     const end = action.payload[0] * action.payload[1]
-    return { ...state, paginate:[...state.filter.slice(start, end)]};
+    return { ...state, start, end, page:action.payload[0]};
   }
 
   return state;

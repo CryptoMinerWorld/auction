@@ -1,5 +1,5 @@
 import { NEW_AUCTIONS_RECEIVED, MARKETPLACE_WAS_FILTERED, FETCH_NEW_AUCTIONS_SUCCEEDED, FETCH_NEW_AUCTIONS_FAILED, FETCH_NEW_AUCTIONS_BEGUN, MARKETPLACE_FILTER_BEGUN,
-    MARKETPLACE_FILTER_FAILED, CHANGE_FILTER_GEM_VALUES, CHANGE_FILTER_VALUES} from './marketConstants'
+    MARKETPLACE_FILTER_FAILED, CHANGE_FILTER_GEM_VALUES, CHANGE_FILTER_VALUES, PAGINATE_MARKET} from './marketConstants'
 import {NEW_AUCTION_CREATED} from '../items/itemConstants'
 
 export const  marketReducer = (state = [] , action) => {
@@ -85,7 +85,6 @@ export const marketActionsReducer = (state = initialState , action) => {
         return {...state, gems: newGems}
         
     }
-
    
     if (action.type ===  CHANGE_FILTER_VALUES){
         const min = action.payload && action.payload[1] && action.payload[1][0]
@@ -94,9 +93,13 @@ export const marketActionsReducer = (state = initialState , action) => {
         
     }
 
-
+    if (action.type === PAGINATE_MARKET){
+        const start = (action.payload[0] * action.payload[1]) - action.payload[1] 
+        const end = action.payload[0] * action.payload[1]
+        return { ...state, start, end, page:action.payload[0]};
+        
+    }
     
-
     return state
     
 }

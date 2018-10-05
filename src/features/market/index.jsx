@@ -4,13 +4,15 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { lifecycle, compose } from 'recompose';
-import { getAuctions, redirectedHome } from './marketActions';
+import { getAuctions, paginate } from './marketActions';
 import Cards from './components/Card';
 import SortBox from './components/SortBox';
 import LoadingCard from './components/LoadingCard';
 import gemKid from '../../app/images/gemKid.png';
 import Filters from './components/Filters';
 import GemFilters from './components/GemFilters';
+import Pagination from 'antd/lib/pagination';
+require('antd/lib/pagination/style/css');
 require('antd/lib/slider/style/css');
 
 const LeftAside = styled.aside`
@@ -55,10 +57,22 @@ const Card = styled.aside`
 const select = store => ({
   auctions: store.market,
   loading: store.marketActions.loading,
-  error: store.marketActions.error
+  error: store.marketActions.error,
+  totalGems: store.market.length,
+  paginated: [
+    ...store.market.slice(store.marketActions.start, store.marketActions.end)
+  ],
+  pageNumber: store.marketActions.page
 });
 
-const Marketplace = ({ auctions, loading }) => (
+const Marketplace = ({
+  auctions,
+  loading,
+  paginated,
+  handlePagination,
+  pageNumber,
+  totalGems
+}) => (
   <div className="bg-off-black white pa4">
     <div className="flex aic jcc ">
       <img src={gemKid} className="h3 w-auto pr3 dib" alt="gem auctions" />
@@ -74,8 +88,8 @@ const Marketplace = ({ auctions, loading }) => (
         <SortBox />
         <CardBox>
           {loading && [1, 2, 3, 4, 5, 6].map(num => <LoadingCard key={num} />)}
-          {auctions && auctions.length > 0 ? (
-            auctions.map(auction => (
+          {paginated && paginated.length > 0 ? (
+            paginated.map(auction => (
               <Link to={`/gem/${auction.id}`} key={auction.id}>
                 <Cards auction={auction} />
               </Link>
@@ -86,7 +100,15 @@ const Marketplace = ({ auctions, loading }) => (
             </Card>
           )}
         </CardBox>
-        {/* <p>pagination</p> */}
+        <div className="w-100 tc pv4">
+          <Pagination
+            current={pageNumber}
+            pageSize={6}
+            total={totalGems}
+            hideOnSinglePage
+            onChange={(page, pageSize) => handlePagination(page, pageSize)}
+          />
+        </div>
       </Primary>
       <RightAside>
         <Filters />
@@ -97,7 +119,7 @@ const Marketplace = ({ auctions, loading }) => (
 
 const actions = {
   handleGetAuctions: getAuctions,
-  handleRedirectedHome: redirectedHome
+  handlePagination: paginate
 };
 
 export default compose(
@@ -107,7 +129,7 @@ export default compose(
   ),
   lifecycle({
     componentDidMount() {
-      this.props.handleRedirectedHome();
+      this.props.handlePagination(1, 6);
     }
   })
 )(Marketplace);

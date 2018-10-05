@@ -288,10 +288,11 @@ export const orderDashboardBy = (key, direction) => (dispatch, getState) => {
     (a, b) => (direction === 'desc' ? a[key] - b[key] : b[key] - a[key])
   );
   dispatch({ type: DASHBOARD_WAS_FILTERED, payload: newMarket });
+  dispatch({ type: PAGINATE, payload: [1, 8]});
 };
 
 export const getGemsForDashboardFilter = selection => (dispatch, getState) => {
-  console.log('selection', selection);
+
   const allGems = getState().dashboard.userGems;
   let newGemSelection;
   if (selection === 'all') {
@@ -307,9 +308,11 @@ export const getGemsForDashboardFilter = selection => (dispatch, getState) => {
   }
 
   dispatch({ type: DASHBOARD_WAS_FILTERED, payload: newGemSelection });
+  dispatch({ type: PAGINATE, payload: [1, 8]});
 };
 
 export const rerenderSortBox = () => dispatch => dispatch({ type: RERENDER_SORT_BOX});
 export const sortBoxReredendered = () => dispatch => dispatch({ type: SORT_BOX_RERENDERED});
 
-export const paginate = (pageNumber, pagePerView) => dispatch => dispatch({ type: PAGINATE, payload: [pageNumber, pagePerView]});
+export const paginate = (pageNumber, pagePerView) => dispatch =>
+ dispatch({ type: PAGINATE, payload: [pageNumber, pagePerView]})

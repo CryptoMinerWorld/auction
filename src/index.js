@@ -5,10 +5,8 @@ import App from "./app/App";
 import store from "./app/store";
 import { getAuctions } from "./features/market/marketActions";
 import { getCurrentUser } from "./features/auth/authActions";
-
 // @notice these are all the actions fired when the app starts up
 store.dispatch(getCurrentUser());
-
 store.dispatch(getAuctions());
 
 // eslint-disable-next-line
