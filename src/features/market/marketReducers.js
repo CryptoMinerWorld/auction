@@ -20,7 +20,7 @@ export const marketReducer = (state = [], action) => {
   if (action.type === NEW_AUCTION_CREATED) {
     const newAuction = action.payload;
     newAuction.currentPrice = action.payload.maxPrice;
-    console.log('newAuction', newAuction )
+
     return [...state, newAuction];
   }
 

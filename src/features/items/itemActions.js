@@ -113,14 +113,16 @@ export const createAuction = (payload, turnLoaderOff, history) => (
             deadline,
             minPrice,
             maxPrice };
+
           return dispatch({
             type: NEW_AUCTION_CREATED,
             payload: completeGemInfo
           });
         })
-        .then(() => {turnLoaderOff()
-          history.push(`/profile/${currentAccount}`)})
-        .catch(err => console.log('err', err));
+        .then(() => {
+          turnLoaderOff()
+          history.push(`/profile/${currentAccount}`)}
+          ).catch(err => console.log('err', err));
     });
   } catch (error) {
     console.log('error', error);

@@ -32,12 +32,13 @@ export default function dashboardReducer(
   action
 ) {
   if (action.type === USER_GEMS_RETRIEVED) {
-    return { ...state, userGems: action.payload };
-    // const paginated =
-    //   action.payload.length > 8 ? action.payload.slice(0, 8) : action.payload;
-    // const orderedByMiningBonus = [...paginated].sort((a, b) => a.rate - b.rate);
+    // return { ...state, userGems: action.payload };
+    // console.log('action.payload.', action.payload)
+    const paginated =
+      action.payload.length > 8 ? action.payload.slice(0, 8) : action.payload;
+    const orderedByMiningBonus = [...paginated].sort((a, b) => a.rate - b.rate);
   
-    // return { ...state, userGems: action.payload, filter: orderedByMiningBonus };
+    return { ...state, userGems: action.payload, filter: orderedByMiningBonus };
   }
 
   if (action.type === NO_USER_EXISTS) {

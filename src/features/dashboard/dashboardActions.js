@@ -25,18 +25,24 @@ import { getGemImage, getGemStory } from './helpers';
 
 // this gets all the gems from the database
 export const getUserGems = userId => dispatch => {
+
   dispatch({ type: FETCH_USER_GEMS_BEGUN });
-console.log('getUserGems called')
-const userIdToLowerCase = userId
-    .split("")
-    .map(item => (typeof item === "string" ? item.toLowerCase() : item))
-    .join("");
+
+// console.log('getUserGems called')
+
+// const userIdToLowerCase = userId
+//     .split("")
+//     .map(item => (typeof item === "string" ? item.toLowerCase() : item))
+//     .join("");
+//     console.log('userId', userIdToLowerCase)
+
+// console.log('userId',userId )
   try {
     db.collection('stones')
-      .where('owner', '==', userIdToLowerCase)
-      .onSnapshot(async collection => {
-        const gems = await collection.docs.map(doc => doc.data());
-     
+      .where('owner', '==', userId)
+      .onSnapshot( collection => {
+        const gems =  collection.docs.map(doc => doc.data());
+     console.log('gems', gems)
         dispatch({ type: FETCH_USER_GEMS_SUCCEEDED });
         dispatch({ type: USER_GEMS_RETRIEVED, payload: gems });
       });
@@ -48,6 +54,11 @@ const userIdToLowerCase = userId
 export const getUserGemsOnce = userId => dispatch => {
   dispatch({ type: FETCH_USER_GEMS_BEGUN });
 
+  // const userIdToLowerCase = userId
+  // .split("")
+  // .map(item => (typeof item === "string" ? item.toLowerCase() : item))
+  // .join("");
+console.log('userId', userId)
   try {
     db.collection('stones')
       .where('owner', '==', userId)
@@ -55,6 +66,7 @@ export const getUserGemsOnce = userId => dispatch => {
       .get()
       .then(collection => {
         const gems = collection.docs.map(doc => doc.data());
+        console.log('gems once', gems)
         dispatch({ type: FETCH_USER_GEMS_SUCCEEDED });
         dispatch({ type: DASHBOARD_WAS_FILTERED, payload: gems });
       });
