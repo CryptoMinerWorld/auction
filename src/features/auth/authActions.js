@@ -7,11 +7,8 @@ import {
   WEB3_AVAILABLE,
   USER_EXISTS,
   NEW_USER,
-  NO_USER_EXISTS,
-  REDIRECT_TO_HOME,
+  NO_USER_EXISTS
 } from "./authConstants";
-import { showConfirm } from '../../components/Modal';
-import {MODAL_VISIBLE} from '../../app/reduxConstants'
 import {
   getUserGems,
   getDetailsForAllGemsAUserCurrentlyOwns,
@@ -53,7 +50,6 @@ export const updateWalletId = walletId => (dispatch, getState) => {
   dispatch(checkIfUserExists(walletId));
   dispatch(getUserGems(walletId));
   dispatch(getUserDetails(walletId));
-  dispatch({ type: REDIRECT_TO_HOME });
 }
 };
 

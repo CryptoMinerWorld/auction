@@ -32,8 +32,9 @@ export const statechart = {
 const select = store => ({
   userId: store.auth.currentUserId,
   gemContract: store.app.gemsContractInstance,
-  userName: store.auth.user && store.auth.user.name,
-  userImage: store.auth.user && store.auth.user.imageURL
+  userName: store.auth.user && store.auth.user.name && store.auth.user.name,
+  userImage:
+    store.auth.user && store.auth.user.imageURL && store.auth.user.imageURL
 });
 
 class ReSync extends PureComponent {
