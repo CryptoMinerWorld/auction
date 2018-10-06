@@ -42,7 +42,7 @@ export const getUserGems = userId => dispatch => {
       .where('owner', '==', userId)
       .onSnapshot( collection => {
         const gems =  collection.docs.map(doc => doc.data());
-     console.log('gems', gems)
+        console.log('gems', gems)
         dispatch({ type: FETCH_USER_GEMS_SUCCEEDED });
         dispatch({ type: USER_GEMS_RETRIEVED, payload: gems });
       });

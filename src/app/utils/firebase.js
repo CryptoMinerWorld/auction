@@ -22,6 +22,11 @@ export let db = firebase.firestore();
 const settings = {timestampsInSnapshots: true};
 db.settings(settings);
 
+
+// const firestore = new Firestore();
+//   const settings = {/* your settings... */ timestampsInSnapshots: true};
+//   firestore.settings(settings);
+
 // firebase
 //   .firestore()
 //   .enablePersistence()
