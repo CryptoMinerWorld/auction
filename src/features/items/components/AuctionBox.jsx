@@ -11,7 +11,7 @@ import { handleBuyNow } from '../itemActions';
 import { showConfirm } from '../../../components/Modal';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
-import Auth from '../../auth/index';
+// import Auth from '../../auth/index';
 
 const TopHighLight = styled.div`
   background: linear-gradient(to right, #e36d2d, #b91a78);

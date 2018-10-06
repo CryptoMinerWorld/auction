@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import styled from 'styled-components';
+// import styled from 'styled-components';
 // import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { orderDashboardBy } from '../dashboardActions';
@@ -62,11 +62,11 @@ export const stateMachine = {
   }
 };
 
-const Primary = styled.section`
-  display: grid;
-  width: 100%;
-  grid-template-columns: 1fr 1fr;
-`;
+// const Primary = styled.section`
+//   display: grid;
+//   width: 100%;
+//   grid-template-columns: 1fr 1fr;
+// `;
 
 class SortBox extends PureComponent {
   orderByTime = () => this.props.handleOrderBy('level', 'asc');
@@ -80,7 +80,7 @@ class SortBox extends PureComponent {
     const { transition, machineState } = this.props;
 
     return (
-      <Primary className="pv4 flex jce">
+      <div className="flex jce aic w-100 pv4">
         <p
           className={`flex aic jcc pointer mr4 white link
   ${
@@ -151,7 +151,7 @@ class SortBox extends PureComponent {
             />
           </State>
         </p>
-      </Primary>
+      </div>
     );
   }
 }

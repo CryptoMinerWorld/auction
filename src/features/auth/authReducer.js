@@ -1,5 +1,5 @@
 
-import {CURRENT_USER_AVAILABLE, CURRENT_USER_NOT_AVAILABLE, WEB3_AVAILABLE, USER_EXISTS, NEW_USER, NO_USER_EXISTS, REDIRECT_TO_HOME} from './authConstants'
+import {CURRENT_USER_AVAILABLE, CURRENT_USER_NOT_AVAILABLE, WEB3_AVAILABLE, USER_EXISTS, NEW_USER, NO_USER_EXISTS} from './authConstants'
 
 export default function authReducer (state = { currentUserId: 'Loading...'} , action) {
 
@@ -27,13 +27,7 @@ export default function authReducer (state = { currentUserId: 'Loading...'} , ac
         return {...state, existingUser: false, user: null, newUser: true, currentUserId: action.payload }
     }
 
-    if (action.type ===  REDIRECT_TO_HOME){
-        return {...state, redirectToHome: true }
-    }
-
-    // if (action.type ===  REDIRECTED_HOME){
-    //     return {...state, redirectToHome: false }
-    // }
+   
 
 
     return state

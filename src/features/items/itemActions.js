@@ -14,7 +14,7 @@ import {
 } from '../../app/reduxConstants';
 import { db } from '../../app/utils/firebase';
 import { createAuctionHelper, removeAuctionHelper } from './helpers';
-import { browserHistory } from 'react-router';
+// import { browserHistory } from 'react-router';
 export const getAuctionDetails = tokenId => dispatch => {
   dispatch({ type: FETCH_DATA_BEGUN });
 
@@ -109,7 +109,10 @@ export const createAuction = (payload, turnLoaderOff, history) => (
             maxPrice
           });
 
-          const completeGemInfo = { ...document.data(), ...payload };
+          const completeGemInfo = { ...document.data(), auctionIsLive: true,
+            deadline,
+            minPrice,
+            maxPrice };
           return dispatch({
             type: NEW_AUCTION_CREATED,
             payload: completeGemInfo

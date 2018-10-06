@@ -85,7 +85,10 @@ class StatsBox extends PureComponent {
 export default StatsBox;
 
 StatsBox.propTypes = {
-  restingEnergyMinutes: PropTypes.number.isRequired,
+  restingEnergyMinutes: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]).isRequired,
   level: PropTypes.number.isRequired,
   grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,

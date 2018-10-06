@@ -74,7 +74,7 @@ const Primary = styled.section`
 
 class SortBox extends PureComponent {
   orderByPrice = () => this.props.handleOrderBy('currentPrice', 'asc');
-  orderByPriceDesc = () => this.props.handleOrderBy('currentPriceDesc', 'desc');
+  orderByPriceDesc = () => this.props.handleOrderBy('currentPrice', 'desc');
   orderByTime = () => this.props.handleOrderBy('deadline', 'asc');
   orderByTimeDesc = () => this.props.handleOrderBy('deadline', 'desc');
   orderByRate = () => this.props.handleOrderBy('rate', 'asc');

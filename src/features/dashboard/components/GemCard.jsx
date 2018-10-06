@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+// import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Progress from 'antd/lib/progress';
 import { calculatePercentage } from '../../market/helpers';
@@ -7,19 +7,6 @@ import MiniGemBox from '../../../components/MiniGemBox';
 import { calculateGemName } from '../helpers';
 
 require('antd/lib/progress/style/css');
-
-// const Card = styled.aside`
-//   clip-path: polygon(
-//     5% 0%,
-//     95% 0%,
-//     100% 5%,
-//     100% 95%,
-//     95% 100%,
-//     5% 100%,
-//     0% 95%,
-//     0% 5%
-//   );
-// `;
 
 const Cards = ({ auction }) => (
   <div

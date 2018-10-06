@@ -26,12 +26,17 @@ import { getGemImage, getGemStory } from './helpers';
 // this gets all the gems from the database
 export const getUserGems = userId => dispatch => {
   dispatch({ type: FETCH_USER_GEMS_BEGUN });
-
+console.log('getUserGems called')
+const userIdToLowerCase = userId
+    .split("")
+    .map(item => (typeof item === "string" ? item.toLowerCase() : item))
+    .join("");
   try {
     db.collection('stones')
-      .where('owner', '==', userId)
-      .onSnapshot(collection => {
-        const gems = collection.docs.map(doc => doc.data());
+      .where('owner', '==', userIdToLowerCase)
+      .onSnapshot(async collection => {
+        const gems = await collection.docs.map(doc => doc.data());
+     
         dispatch({ type: FETCH_USER_GEMS_SUCCEEDED });
         dispatch({ type: USER_GEMS_RETRIEVED, payload: gems });
       });
@@ -184,6 +189,8 @@ export const allMyGems = () => ({
   type: WANT_TO_SEE_ALL_GEMS
 });
 
+
+// this is not an action its just a regular function, no dispatch
 export const updateGemDetails = (
   userId,
   gemContract,
@@ -192,7 +199,7 @@ export const updateGemDetails = (
 ) => async () => {
 
  console.log('Gems for the following user being updated =>', userId )
-
+ 
   try {
     const idsOfGemsUserOwns = await gemContract.methods
       .getCollection(userId)
@@ -283,8 +290,8 @@ export const filterUserGemsOnPageLoad = (key, direction) => (
   dispatch({ type: DASHBOARD_WAS_FILTERED, payload: newMarket });
 };
 
-export const orderDashboardBy = (key, direction) => (dispatch, getState) => {
-  const currentDashboardItems = getState().dashboard.filter;
+export const orderDashboardBy = (key, direction) => async (dispatch, getState) => {
+  const currentDashboardItems = await getState().dashboard.filter;
   const newMarket = [...currentDashboardItems].sort(
     (a, b) => (direction === 'desc' ? a[key] - b[key] : b[key] - a[key])
   );

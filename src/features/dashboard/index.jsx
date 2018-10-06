@@ -64,10 +64,8 @@ const select = store => ({
   loading: store.dashboard.gemsLoading,
   error: store.dashboard.gemsLoadingError,
   userName: store.auth.user && store.auth.user.name,
-  // userName: store.dashboard.userDetails && store.dashboard.userDetails.name,
   userImage:
     store.dashboard.userDetails && store.dashboard.userDetails.imageURL,
-  redirectToHome: store.auth.redirectToHome,
   newUser: store.auth.newUser,
   sortBox: store.dashboard.sortBox
 });
@@ -82,12 +80,6 @@ class Dashboard extends PureComponent {
     this.props.handleGetUserDetails(this.props.match.params.userId);
     this.props.handlePagination(1, 8);
   }
-
-  // componentDidUpdate() {
-  //   if (this.props.redirectToHome) {
-  //     this.props.history.push('/');
-  //   }
-  // }
 
   render() {
     const {
@@ -116,7 +108,7 @@ class Dashboard extends PureComponent {
         <div className="flex jcb aic  mt3">
           <div className=" flex aic">
             <img
-              src={userImage || auctions[0].userImage}
+              src={(auctions[0] && auctions[0].userImage) || userImage}
               className="h3 w-auto pr3 dib"
               alt="gem auctions"
             />
