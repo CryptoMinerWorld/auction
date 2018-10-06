@@ -1,98 +1,61 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+var Web3 = require('web3');
+
 admin.initializeApp();
+// admin.initializeApp(functions.config().firebase);
+const db = admin.database();
 
-exports.updateGemDetails = functions.https.onRequest(
-   (request, response) => {
-    const listofAllUserIds =  admin
-      .firestore()
-      .collection('users')
-      .get()
-      .then(coll => coll.docs.map(doc => doc.data())).then(listofAllUserIds => response.json({listofAllUserIds: `${listofAllUserIds}`}))
-
-      
-  }
+const web3 = new Web3(
+  new Web3.providers.HttpProvider(
+    'https://rinkeby.infura.io/qWWCAOLoD65CmWAo4jLg'
+  )
 );
 
-//    (userId,gemContract, userName, userImage )
+// Define the ABI of the contract, used to return the desired values
+const Gems = require('./GemABI.json');
+const gemsABI = Gems.abi;
 
-// listofAllUserIds
-// get data from contract for each of their gems
+// @notice instantiating gem contract
+const gemsContract = new web3.eth.Contract(gemsABI);
+gemsContract.options.address = '0x82ff6bbd7b64f707e704034907d582c7b6e09d97';
 
-// try {
-//   const idsOfGemsUserOwns = await gemContract.methods
-//     .getCollection(userId)
-//     .call();
+exports.updateGemDetails = functions.https.onRequest(
+  () =>
+    admin
+      .firestore()
+      .collection('stones')
+      .get()
+      .then(coll => {
+        const docs = coll.docs.map(doc => [doc.id, doc.data()]);
+        return docs;
+      })
+      .then(docs =>
+        Promise.all(
+          docs.map(doc =>
+            gemsContract.methods
+              .ownerOf(doc[1].id)
+              .call()
+              .then(address => [doc[0], address])
+          )
+        )
+      )
+      .then(addresses => {
+        // maybe in the future get image and name from db and update that too
+        return addresses.forEach(address =>
+          admin
+            .firestore()
+            .collection('stones')
+            .doc(address[0])
+            .update({
+              owner: address[1],
+              auctionIsLive: false
+            })
+        );
 
-//   return Promise.all(
-//     idsOfGemsUserOwns.map(gemId =>
-//       getGemQualities(gemContract, gemId).then(
-//         ([color, level, gradeType, gradeValue]) => ({
-//           color,
-//           level,
-//           gradeType,
-//           gradeValue,
-//           gemId
-//         })
-//       )
-//     )
-//   ).then(smartContractDetails => {
-//     const gemImages = Promise.all(
-//       smartContractDetails.map(gem =>
-//         getGemImage(gem.color, gem.gradeType, gem.level)
-//       )
-//     );
+        // how do I get it to stop timing out here? Is there a done()?
+      })
+      .catch(err => console.log('err', err))
 
-//     const gemStories = Promise.all(
-//       smartContractDetails.map(gem => getGemStory(gem.color, gem.level))
-//     );
-
-//     return Promise.all([gemImages, gemStories]).then(([images, stories]) => {
-//       const arrayofCompleteGemDetails = idsOfGemsUserOwns.map(
-//         (gemId, index) => ({
-//           id: Number(gemId),
-//           ...smartContractDetails[index],
-//           rate: Number(
-//             calcMiningRate(
-//               smartContractDetails[index].gradeType,
-//               smartContractDetails[index].gradeValue
-//             )
-//           ),
-//           auctionIsLive: false,
-//           owner: userId,
-//           gemImage: images[index],
-//           story: stories[index],
-//           userName,
-//           userImage
-//         })
-//       );
-
-//       if (arrayofCompleteGemDetails.length === 0) {
-//         return Promise.reject('No Gems Available');
-//       }
-
-//       const updateOrCreate = arrayofCompleteGemDetails
-//       .map( gem =>
-//          db.collection('stones')
-//           .where('id', '==', gem.id)
-//           .get()
-//           .then(coll => {
-
-//             const doc = coll.docs.map(doc => doc.id)[0];
-
-//             if (doc) {
-//               // update it
-//               return db.collection("stones").doc(doc).update(gem)
-//             }
-//             // or else create it
-//             return db.collection("stones").add(gem)
-//           })
-//       )
-//       // check if document exists, update it if it does and create one if it doesn't
-//       return Promise.all(updateOrCreate).then(() => 'Gems Updated.')
-
-//     });
-//   });
-// } catch (err) {
-//   return err;
-// }
+  // maybe run another function agianst the auction contract to confim projects are in auction
+);
