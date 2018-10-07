@@ -3,8 +3,8 @@
 # Before you deploy
 
 - [ ] Switch to production environmnet variables
+- [ ] Switch to production environmnet variables in functions/index
 - [ ] Update footer semver version
 - [ ] Update snapshots and pass all tests
 - [ ] npm run build
-- [x] firebase deploy (Per's edit)
-
+- [ ] firebase deploy

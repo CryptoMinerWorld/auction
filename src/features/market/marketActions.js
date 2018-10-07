@@ -37,13 +37,15 @@ export const getAuctions = () => dispatch => {
 // export const redirectedHome = () => dispatch =>
 //   dispatch({ type: REDIRECTED_HOME });
 
-export const updatePriceOnAllLiveAuctions = () => async (
+export const updatePriceOnAllLiveAuctions = (dutchContract, gemContractAddress) => async (
   dispatch,
   getState
 ) => {
   dispatch({ type: AUCTION_PRICE_UPDATES_BEGIN });
-  const dutchContract = getState().app.dutchContractInstance;
-  const gemContractAddress = getState().app.gemsContractInstance._address 
+  
+  // const dutchContract = getState().app.dutchContractInstance;
+  // const gemContractAddress = getState().app.gemsContractInstance._address 
+
   // // get list of all active auctions
   // const activeAuctionIds = await db
   //   .collection("stones")
@@ -108,7 +110,6 @@ export const filterMarketplaceResults = () => (dispatch, getState) => {
     .where('auctionIsLive', '==', true)
     .where('gradeType', '>=', state.gradeType.min)
     .where('gradeType', '<=', state.gradeType.max)
-
     .get()
     .then(collection => {
       const activeAuctions = collection.docs.map(doc => doc.data());

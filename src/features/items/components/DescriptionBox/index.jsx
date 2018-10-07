@@ -112,7 +112,7 @@ class DescriptionBox extends PureComponent {
                     <img
                       src={userImage || logo}
                       alt="seller logo"
-                      className="br-100 h2 pl3-ns"
+                      className="br-100 h2 w-auto pl3-ns"
                     />
                     <small className="pl3 white-60 dn dib-m dib-l">
                       <span className="dn dib-l">Owned By {userName}</span>

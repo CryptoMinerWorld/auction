@@ -62,7 +62,7 @@ const Cards = ({ auction }) => (
       />
       <div className="flex jcc ph3 o-70 ">
         <img src={auction.userImage} alt={auction.userName} className="h2" />
-        <p>Owned by {auction.userName}</p>
+        <p className="pl2">Owned by {auction.userName}</p>
       </div>
     </div>
   </div>

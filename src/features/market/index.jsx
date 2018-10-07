@@ -12,7 +12,7 @@ import gemKid from '../../app/images/gemKid.png';
 import Filters from './components/Filters';
 import GemFilters from './components/GemFilters';
 import Pagination from 'antd/lib/pagination';
-
+import { updatePriceOnAllLiveAuctions } from './marketActions';
 require('antd/lib/pagination/style/css');
 require('antd/lib/slider/style/css');
 
@@ -59,7 +59,10 @@ const select = store => ({
   paginated: [
     ...store.market.slice(store.marketActions.start, store.marketActions.end)
   ],
-  pageNumber: store.marketActions.page
+  pageNumber: store.marketActions.page,
+  dutchContract: store.app.dutchContractInstance,
+  gemContractAddress:
+    store.app.gemsContractInstance && store.app.gemsContractInstance._address
 });
 
 const Marketplace = ({
@@ -120,7 +123,8 @@ const Marketplace = ({
 const actions = {
   handleGetAuctions: getAuctions,
   handlePagination: paginate,
-  handlePreLoadAuctionPage: preLoadAuctionPage
+  handlePreLoadAuctionPage: preLoadAuctionPage,
+  handleUpdatePriceOnAllLiveAuctions: updatePriceOnAllLiveAuctions
 };
 
 export default compose(
@@ -130,7 +134,12 @@ export default compose(
   ),
   lifecycle({
     componentDidMount() {
+      this.props.handleGetAuctions();
       this.props.handlePagination(1, 9);
+      this.props.handleUpdatePriceOnAllLiveAuctions(
+        this.props.dutchContract,
+        this.props.gemContractAddress
+      );
     }
   })
 )(Marketplace);

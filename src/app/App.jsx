@@ -16,7 +16,7 @@ import './css/root.css';
 import ScrollToTop from '../components/ScrollToTop';
 import { sendContractsToRedux } from './appActions';
 import { updateWalletId } from '../features/auth/authActions';
-import { updatePriceOnAllLiveAuctions } from '../features/market/marketActions';
+// import { updatePriceOnAllLiveAuctions } from '../features/market/marketActions';
 import DutchAuction from './ABI/DutchAuction.json';
 import Gems from './ABI/GemERC721.json';
 import Presale from './ABI/Presale.json';
@@ -60,7 +60,7 @@ class App extends Component {
   async componentDidMount() {
     const {
       handleSendContractsToRedux,
-      handleUpdatePriceOnAllLiveAuctions,
+      // handleUpdatePriceOnAllLiveAuctions,
       handleUpdateWalletId
     } = this.props;
     // @notice loading a custom font when app mounts
@@ -80,6 +80,7 @@ class App extends Component {
       .getAccounts()
       .then(accounts => accounts[0]);
 
+    // this ensures that the wallet in metamask is always the wallet in the currentAccountId, however this is a problem because it means that you cant view someone eles profile page
     web3.currentProvider.publicConfigStore.on('update', ({ selectedAddress }) =>
       handleUpdateWalletId(selectedAddress)
     );
@@ -135,17 +136,12 @@ class App extends Component {
       .catch(err => {
         this.setState({ err });
       });
-
-    this.updatePriceOnAllLiveAuctions = setInterval(
-      () => handleUpdatePriceOnAllLiveAuctions(),
-      10000
-    );
   }
 
   componentWillUnmount() {
     // @notice clear price update interval when you leav ethe app to stop any memory leaks
     clearInterval(this.priceInterval);
-    clearInterval(this.updatePriceOnAllLiveAuctions);
+    // clearInterval(this.updatePriceOnAllLiveAuctions);
   }
 
   render() {
@@ -193,7 +189,7 @@ class App extends Component {
 
 const actions = {
   handleSendContractsToRedux: sendContractsToRedux,
-  handleUpdatePriceOnAllLiveAuctions: updatePriceOnAllLiveAuctions,
+  // handleUpdatePriceOnAllLiveAuctions: updatePriceOnAllLiveAuctions,
   handleUpdateWalletId: updateWalletId
 };
 
@@ -204,6 +200,6 @@ export default connect(
 
 App.propTypes = {
   handleSendContractsToRedux: PropTypes.func.isRequired,
-  handleUpdatePriceOnAllLiveAuctions: PropTypes.func.isRequired,
+  // handleUpdatePriceOnAllLiveAuctions: PropTypes.func.isRequired,
   handleUpdateWalletId: PropTypes.func.isRequired
 };

@@ -36,12 +36,16 @@ const select = store => ({
   releaseConfetti: store.app.releaseConfetti,
   provider: store.auth.web3 && !!store.auth.web3.currentProvider,
   gemContract: store.app.gemsContractInstance,
-  web3: store.app.web3
+  web3: store.app.web3,
+  dutchContract: store.app.dutchContractInstance,
+  gemContractAddress:
+    store.app.gemsContractInstance && store.app.gemsContractInstance._address
 });
 
 class Auction extends PureComponent {
   state = {
-    restingEnergyMinutes: ''
+    restingEnergyMinutes: '',
+    currentPrice: ''
   };
 
   componentDidMount() {
@@ -74,13 +78,11 @@ class Auction extends PureComponent {
           const linearThreshold = 37193;
           const ageSeconds = ((Date.now() / 1000) | 0) - timestamp;
           const ageMinutes = Math.floor(ageSeconds / 60);
-
           const restingEnergyMinutes = Math.floor(
             -7e-6 * Math.pow(Math.min(ageMinutes, linearThreshold), 2) +
               0.5406 * Math.min(ageMinutes, linearThreshold) +
               0.0199 * Math.max(ageMinutes - linearThreshold, 0)
           );
-
           this.setState({ restingEnergyMinutes });
         })
         .catch(err => console.log('resting energy action err', err));
@@ -89,6 +91,7 @@ class Auction extends PureComponent {
 
   componentWillUnmount() {
     this.props.handleClearGemPage(this.props.match.params.gemId);
+    clearInterval(this.Priceinterval);
   }
 
   render() {
@@ -101,10 +104,26 @@ class Auction extends PureComponent {
       currentAccount,
       details,
       gemName,
-      error
+      error,
+      dutchContract,
+      gemContractAddress,
+      match
     } = this.props;
 
-    const { restingEnergyMinutes } = this.state;
+    this.Priceinterval =
+      dutchContract &&
+      gemContractAddress &&
+      setInterval(() => {
+        dutchContract.methods
+          .getCurrentPrice(gemContractAddress, match.params.gemId)
+          .call()
+          .then(currentPrice =>
+            this.setState({ currentPrice: Number(currentPrice) })
+          )
+          .catch(error => console.log('error', error));
+      }, 2000);
+
+    const { restingEnergyMinutes, currentPrice } = this.state;
 
     const socialShareUrl = `${process.env.REACT_APP_BASE_URL}${
       this.props.match.url
@@ -142,7 +161,7 @@ class Auction extends PureComponent {
                 transitionLeaveTimeout={5000}
               >
                 <DisplayBoxStateMachine
-                  currentPrice={details.currentPrice}
+                  currentPrice={currentPrice || details.currentPrice}
                   minPrice={details.minPrice}
                   maxPrice={details.maxPrice}
                   deadline={details.deadline}
