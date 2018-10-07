@@ -72,12 +72,16 @@ exports.updateGemDetails = functions.https.onRequest(() =>
               auctionIsLive: true
             });
         } else {
+          const userIdToLowerCase = address[1]
+          .split("")
+          .map(item => (typeof item === "string" ? item.toLowerCase() : item))
+          .join("");
           admin
             .firestore()
             .collection('stones')
             .doc(address[0])
             .update({
-              owner: address[1],
+              owner: userIdToLowerCase,
               auctionIsLive: false
             });
         }

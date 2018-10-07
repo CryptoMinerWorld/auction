@@ -36,8 +36,7 @@ export default function dashboardReducer(
     // console.log('action.payload.', action.payload)
     const paginated =
       action.payload.length > 8 ? action.payload.slice(0, 8) : action.payload;
-    
-  
+
     return { ...state, userGems: action.payload, filter: paginated };
   }
 
@@ -56,7 +55,17 @@ export default function dashboardReducer(
   }
 
   if (action.type === ALL_USER_GEMS_UPLOADED) {
-    return { ...state, allUserGems: action.payload };
+    console.log('ALL_USER_GEMS_UPLOADED action.payload', action.payload);
+
+    const paginated =
+      action.payload.length > 8 ? action.payload.slice(0, 8) : action.payload;
+
+    return {
+      ...state,
+      allUserGems: action.payload,
+      userGems: action.payload,
+      filter: paginated
+    };
   }
 
   if (action.type === USER_HAS_NO_GEMS_IN_WORKSHOP) {

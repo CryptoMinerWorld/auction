@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Auth from '../auth';
 import Pagination from 'antd/lib/pagination';
-import { withStateMachine } from 'react-automata';
+// import { withStateMachine } from 'react-automata';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter, Link } from 'react-router-dom';
@@ -24,17 +24,18 @@ import AuctionCategories from './components/AuctionCategories';
 require('antd/lib/pagination/style/css');
 require('antd/lib/slider/style/css');
 
-const stateMachine = {
-  initial: 'start',
-  states: {
-    start: {
-      onEntry: 'fetch',
-      on: {
-        NEXT: 'fetch'
-      }
-    }
-  }
-};
+// const stateMachine = {
+//   initial: 'start',
+//   states: {
+//     start: {
+//       onEntry: 'fetch',
+//       on: {
+//         NEXT: 'fetch'
+//       }
+//     }
+//   }
+// };
+
 const Grid = styled.article`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
@@ -67,7 +68,8 @@ const select = store => ({
   userImage:
     store.dashboard.userDetails && store.dashboard.userDetails.imageURL,
   newUser: store.auth.newUser,
-  sortBox: store.dashboard.sortBox
+  sortBox: store.dashboard.sortBox,
+  currentUserId: store.auth.currentUserId
 });
 
 // @notice the username name and image is also stored on every gem object so I render whichever one shows up first, the reason I make two calls is because not every users has gems
@@ -76,8 +78,8 @@ class Dashboard extends PureComponent {
   static propTypes = {};
 
   componentDidMount() {
-    this.props.handleGetAuctions(this.props.match.params.userId);
-    this.props.handleGetUserDetails(this.props.match.params.userId);
+    this.props.handleGetAuctions(this.props.currentUserId);
+    this.props.handleGetUserDetails(this.props.currentUserId);
     this.props.handlePagination(1, 8);
   }
 
@@ -85,7 +87,7 @@ class Dashboard extends PureComponent {
     const {
       auctions,
       loading,
-      error,
+
       userName,
       userImage,
       newUser,
@@ -97,9 +99,9 @@ class Dashboard extends PureComponent {
       handlePreLoadAuctionPage
     } = this.props;
 
-    if (error) {
-      return <div>Error! {error.message}</div>;
-    }
+    // if (error) {
+    //   return <div>Error! {error.message}</div>;
+    // }
 
     return (
       <div className="bg-off-black white pa4">
@@ -172,8 +174,8 @@ export default compose(
     select,
     actions
   ),
-  withRouter,
-  withStateMachine(stateMachine)
+  withRouter
+  // withStateMachine(stateMachine)
 )(Dashboard);
 
 Dashboard.propTypes = {

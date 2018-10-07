@@ -67,7 +67,7 @@ export const createNewUser = payload => dispatch => {
     .set(payload)
     .then(() => {
       dispatch({ type: USER_EXISTS, payload });
-      getDetailsForAllGemsAUserCurrentlyOwns(walletId);
+      getDetailsForAllGemsAUserCurrentlyOwns(userIdToLowerCase);
     })
     .catch(error => console.error("error", error));
 };
