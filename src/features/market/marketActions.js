@@ -11,7 +11,7 @@ import {
   CHANGE_FILTER_VALUES,
   PAGINATE_MARKET
 } from './marketConstants';
-import {AUCTION_DETAILS_RECEIVED} from '../items/itemConstants'
+import { AUCTION_DETAILS_RECEIVED } from '../items/itemConstants';
 // import { REDIRECTED_HOME } from '../auth/authConstants';
 import { db } from '../../app/utils/firebase';
 // import { getPrice } from "../auction/helpers";
@@ -37,14 +37,14 @@ export const getAuctions = () => dispatch => {
 // export const redirectedHome = () => dispatch =>
 //   dispatch({ type: REDIRECTED_HOME });
 
-export const updatePriceOnAllLiveAuctions = (dutchContract, gemContractAddress) => async (
-  dispatch,
-  getState
-) => {
+export const updatePriceOnAllLiveAuctions = (
+  dutchContract,
+  gemContractAddress
+) => async (dispatch, getState) => {
   dispatch({ type: AUCTION_PRICE_UPDATES_BEGIN });
-  
+
   // const dutchContract = getState().app.dutchContractInstance;
-  // const gemContractAddress = getState().app.gemsContractInstance._address 
+  // const gemContractAddress = getState().app.gemsContractInstance._address
 
   // // get list of all active auctions
   // const activeAuctionIds = await db
@@ -57,17 +57,18 @@ export const updatePriceOnAllLiveAuctions = (dutchContract, gemContractAddress) 
   //   });
 
   // get list of Ids for all auctions in view
+  console.log('price updating...', dutchContract, gemContractAddress);
+
   const activeAuctions = getState().market;
 
   // get price for each auction, then update db with new price
   try {
     activeAuctions.forEach(auction => {
       dutchContract.methods
-      .getCurrentPrice(gemContractAddress, auction.id)
+        .getCurrentPrice(gemContractAddress, auction.id)
         .call()
         .then(currentPrice =>
           updateDBwithNewPrice(auction.id).then(docid =>
-            
             db.doc(`stones/${docid}`).update({
               currentPrice: Number(currentPrice)
             })
@@ -176,23 +177,24 @@ export const filterMarketplaceResults = () => (dispatch, getState) => {
 export const toggleGem = gemType => async dispatch => {
   dispatch({ type: CHANGE_FILTER_GEM_VALUES, payload: gemType });
   dispatch(filterMarketplaceResults());
-  
 };
 
 export const filterChange = (filterName, values) => dispatch => {
   const payload = [filterName, values];
   dispatch({ type: CHANGE_FILTER_VALUES, payload });
-  dispatch({ type: PAGINATE_MARKET, payload: [1, 9]})
+  dispatch({ type: PAGINATE_MARKET, payload: [1, 9] });
 };
 
 export const orderMarketBy = (key, descending) => (dispatch, getState) => {
-  const newMarket = [...getState().market ].sort((a, b) =>  descending === 'desc' ?  a[key] - b[key]  : b[key] - a[key]  )
-  dispatch({type: MARKETPLACE_WAS_FILTERED, payload:newMarket })
-  dispatch({ type: PAGINATE_MARKET, payload: [1, 9]})
-
-}
+  const newMarket = [...getState().market].sort(
+    (a, b) => (descending === 'desc' ? a[key] - b[key] : b[key] - a[key])
+  );
+  dispatch({ type: MARKETPLACE_WAS_FILTERED, payload: newMarket });
+  dispatch({ type: PAGINATE_MARKET, payload: [1, 9] });
+};
 
 export const paginate = (pageNumber, pagePerView) => dispatch =>
- dispatch({ type: PAGINATE_MARKET, payload: [pageNumber, pagePerView]})
+  dispatch({ type: PAGINATE_MARKET, payload: [pageNumber, pagePerView] });
 
- export const preLoadAuctionPage = (auction) => dispatch => dispatch({ type: AUCTION_DETAILS_RECEIVED, payload: auction})
+export const preLoadAuctionPage = auction => dispatch =>
+  dispatch({ type: AUCTION_DETAILS_RECEIVED, payload: auction });

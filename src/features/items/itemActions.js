@@ -1,6 +1,6 @@
 import {
   AUCTION_DETAILS_RECEIVED,
-  OWNERSHIP_TRANSFERRED,
+  // OWNERSHIP_TRANSFERRED,
   NEW_AUCTION_CREATED,
   CLEAR_GEM_PAGE
 } from './itemConstants';
@@ -66,17 +66,16 @@ export const updateGemOwnership = (
         .update({
           userName: name,
           userImage: imageURL,
-          owner: newOwner,
+          owner: userIdToLowerCase,
           auctionIsLive: false
         })
         .then(() => {
-
-          const payload = {...doc.data(), userName: name,
-            userImage: imageURL,
-            owner: userIdToLowerCase,
-            auctionIsLive: false}
-          dispatch({ type: OWNERSHIP_TRANSFERRED, payload });
-          // getUserGemsOnce(userIdToLowerCase)
+          // const payload = {...doc.data(), userName: name,
+          //   userImage: imageURL,
+          //   owner: userIdToLowerCase,
+          //   auctionIsLive: false}
+          //   console.log('payload ownership', payload)
+          // dispatch({ type: OWNERSHIP_TRANSFERRED, payload });
           history.push(`/profile/${userIdToLowerCase}`);
           dispatch({ type: MODAL_GONE });
         })
@@ -112,7 +111,8 @@ export const createAuction = (payload, turnLoaderOff, history) => (
             auctionIsLive: true,
             deadline,
             minPrice,
-            maxPrice
+            maxPrice,
+            currentPrice:maxPrice
           });
 
           const completeGemInfo = {
@@ -120,7 +120,8 @@ export const createAuction = (payload, turnLoaderOff, history) => (
             auctionIsLive: true,
             deadline,
             minPrice,
-            maxPrice
+            maxPrice,
+            currentPrice:maxPrice
           };
 
           return dispatch({
