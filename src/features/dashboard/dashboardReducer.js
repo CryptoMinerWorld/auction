@@ -19,7 +19,10 @@ import {
 } from './dashboardConstants';
 
 import { NO_USER_EXISTS } from '../auth/authConstants';
-
+import {
+  NEW_AUCTION_CREATED,
+  OWNERSHIP_TRANSFERRED
+} from '../items/itemConstants';
 export default function dashboardReducer(
   state = {
     gemsLoading: true,
@@ -56,14 +59,29 @@ export default function dashboardReducer(
 
   if (action.type === ALL_USER_GEMS_UPLOADED) {
     console.log('ALL_USER_GEMS_UPLOADED action.payload', action.payload);
+    console.log('state.userGems', state.userGems);
 
-    const paginated =
-      action.payload.length > 8 ? action.payload.slice(0, 8) : action.payload;
+    // merge without duplicates
+    const newGems = state.userGems.concat(action.payload).reduce((total, item) => {
 
+      if (!total.find(current => item.id === current.id)) {
+        total.push(item);
+      }
+
+      return total;
+    }, []);
+
+
+    
+
+    // const newGems = unionBy(state.allUserGems, action.payload, 'id');
+    const paginated = newGems.length > 8 ? newGems.slice(0, 8) : newGems;
+
+    console.log('newGems', newGems);
     return {
       ...state,
-      allUserGems: action.payload,
-      userGems: action.payload,
+      allUserGems: newGems,
+      userGems: newGems,
       filter: paginated
     };
   }
@@ -135,6 +153,44 @@ export default function dashboardReducer(
     const start = action.payload[0] * action.payload[1] - action.payload[1];
     const end = action.payload[0] * action.payload[1];
     return { ...state, start, end, page: action.payload[0] };
+  }
+
+  if (action.type === OWNERSHIP_TRANSFERRED) {
+    console.log('action.payload', action.payload);
+    // const newFilter = state.userGems.map(gem => {
+    //   if (gem.id === action.payload.id) {
+    //     return { ...gem, auctionIsLive: true };
+    //   } else {
+    //     return gem;
+    //   }
+    // });
+
+    return { ...state, userGems: [...state.userGems, action.payload] };
+  }
+
+  if (action.type === NEW_AUCTION_CREATED) {
+    console.log('action.payload', action.payload);
+    const newFilter = state.userGems.map(gem => {
+      if (gem.id === action.payload.id) {
+        return { ...gem, auctionIsLive: true };
+      } else {
+        return gem;
+      }
+    });
+
+    return { ...state, userGems: newFilter };
+  }
+
+  if (action.type === 'GEM_REMOVED_FROM_AUCTION') {
+    const newFilter = state.userGems.map(gem => {
+      if (gem.id === action.payload) {
+        return { ...gem, auctionIsLive: false };
+      } else {
+        return gem;
+      }
+    });
+
+    return { ...state, userGems: newFilter };
   }
 
   return state;

@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Auth from '../auth';
@@ -74,7 +74,7 @@ const select = store => ({
 
 // @notice the username name and image is also stored on every gem object so I render whichever one shows up first, the reason I make two calls is because not every users has gems
 
-class Dashboard extends PureComponent {
+class Dashboard extends Component {
   static propTypes = {};
 
   componentDidMount() {
@@ -87,7 +87,6 @@ class Dashboard extends PureComponent {
     const {
       auctions,
       loading,
-
       userName,
       userImage,
       newUser,

@@ -15,6 +15,8 @@ import {
 import { db } from '../../app/utils/firebase';
 import { createAuctionHelper, removeAuctionHelper } from './helpers';
 // import { browserHistory } from 'react-router';
+
+// import {getUserGemsOnce} from '../dashboard/dashboardActions'
 export const getAuctionDetails = tokenId => dispatch => {
   dispatch({ type: FETCH_DATA_BEGUN });
 
@@ -57,9 +59,10 @@ export const updateGemOwnership = (
     .collection(`stones`)
     .where(`id`, `==`, gemId)
     .get()
-    .then(coll => {
-      const gem = coll.docs.map(doc => doc.id);
-      db.doc(`stones/${gem[0]}`)
+    .then(coll => 
+      // doc.id);
+    coll.docs.map(doc => 
+      db.doc(`stones/${doc.id}`)
         .update({
           userName: name,
           userImage: imageURL,
@@ -67,12 +70,18 @@ export const updateGemOwnership = (
           auctionIsLive: false
         })
         .then(() => {
-          dispatch({ type: OWNERSHIP_TRANSFERRED });
-          history.push(`/profile/${newOwner}`);
+
+          const payload = {...doc.data(), userName: name,
+            userImage: imageURL,
+            owner: userIdToLowerCase,
+            auctionIsLive: false}
+          dispatch({ type: OWNERSHIP_TRANSFERRED, payload });
+          // getUserGemsOnce(userIdToLowerCase)
+          history.push(`/profile/${userIdToLowerCase}`);
           dispatch({ type: MODAL_GONE });
         })
-        .catch(err => console.log('err', err));
-    });
+        .catch(err => console.log('err', err)))
+    );
 };
 
 export const createAuction = (payload, turnLoaderOff, history) => (
@@ -120,6 +129,8 @@ export const createAuction = (payload, turnLoaderOff, history) => (
           });
         })
         .then(() => {
+          // getUserGemsOnce(currentAccount)
+         
           turnLoaderOff();
           history.push(`/profile/${currentAccount}`);
         })
@@ -150,12 +161,15 @@ export const removeFromAuction = (tokenId, history) => async (
         .get()
         .then(coll => {
           coll.docs.map(async doc => {
-            dispatch({
-              type: 'GEM_REMOVED_FROM_AUCTION'
-            });
+            
             await db.doc(`stones/${doc.id}`).update({
               auctionIsLive: false
             });
+            dispatch({
+              type: 'GEM_REMOVED_FROM_AUCTION', 
+              payload: doc.data().id
+            });
+            // getUserGemsOnce(currentUser)
             history.push(`/profile/${currentUser}`);
           });
         })
@@ -173,6 +187,8 @@ export const handleBuyNow = (_tokenId, _from, history) => (
   const gemContractAddress = getState().app.gemsContractInstance._address;
 
   dispatch({ type: MODAL_VISIBLE });
+
+  console.log('_tokenId, _from', _tokenId, _from)
 
   return dutchAuctionContractInstance.methods
     .buy(gemContractAddress, _tokenId)
