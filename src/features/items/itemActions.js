@@ -22,17 +22,15 @@ export const getAuctionDetails = tokenId => dispatch => {
     .collection(`stones`)
     .where(`id`, `==`, Number(tokenId))
     .get()
-    .then(
-      async coll => {
-        const gemDetails = await coll.docs.map(doc => doc.data());
-        dispatch({ type: FETCH_DATA_SUCCEEDED });
-        dispatch({
-          type: AUCTION_DETAILS_RECEIVED,
-          payload: gemDetails[0]
-        });
-      },
-      error => dispatch({ type: FETCH_DATA_FAILED, payload: error })
-    );
+    .then(coll => {
+      const gemDetails = coll.docs.map(doc => doc.data());
+      dispatch({ type: FETCH_DATA_SUCCEEDED });
+      dispatch({
+        type: AUCTION_DETAILS_RECEIVED,
+        payload: gemDetails[0]
+      });
+    })
+    .catch(error => console.log('error getting Auction Details', error));
 };
 
 export const updateGemOwnership = (
@@ -52,7 +50,6 @@ export const updateGemOwnership = (
     .then(doc => doc.data())
     .catch(err => console.log('error fetching new gem owner details', err));
 
- 
   const { name, imageURL } = newGemOwner;
 
   // update gem with new owner, name and image
@@ -109,10 +106,13 @@ export const createAuction = (payload, turnLoaderOff, history) => (
             maxPrice
           });
 
-          const completeGemInfo = { ...document.data(), auctionIsLive: true,
+          const completeGemInfo = {
+            ...document.data(),
+            auctionIsLive: true,
             deadline,
             minPrice,
-            maxPrice };
+            maxPrice
+          };
 
           return dispatch({
             type: NEW_AUCTION_CREATED,
@@ -120,9 +120,10 @@ export const createAuction = (payload, turnLoaderOff, history) => (
           });
         })
         .then(() => {
-          turnLoaderOff()
-          history.push(`/profile/${currentAccount}`)}
-          ).catch(err => console.log('err', err));
+          turnLoaderOff();
+          history.push(`/profile/${currentAccount}`);
+        })
+        .catch(err => console.log('err', err));
     });
   } catch (error) {
     console.log('error', error);
@@ -130,7 +131,10 @@ export const createAuction = (payload, turnLoaderOff, history) => (
 };
 
 // @notice removes a gem from an auction
-export const removeFromAuction = (tokenId,history) => async (dispatch, getState) => {
+export const removeFromAuction = (tokenId, history) => async (
+  dispatch,
+  getState
+) => {
   const dutchContract = getState().app.dutchContractInstance;
   const currentUser = getState().auth.currentUserId;
   const gemContractAddress = getState().app.gemsContractInstance._address;
@@ -149,10 +153,10 @@ export const removeFromAuction = (tokenId,history) => async (dispatch, getState)
             dispatch({
               type: 'GEM_REMOVED_FROM_AUCTION'
             });
-            await  db.doc(`stones/${doc.id}`).update({
+            await db.doc(`stones/${doc.id}`).update({
               auctionIsLive: false
-            })
-            history.push(`/profile/${currentUser}`)
+            });
+            history.push(`/profile/${currentUser}`);
           });
         })
     )
@@ -164,7 +168,6 @@ export const handleBuyNow = (_tokenId, _from, history) => (
   dispatch,
   getState
 ) => {
- 
   const dutchAuctionContractInstance = getState().app.dutchContractInstance;
   const priceInWei = getState().auction.currentPrice;
   const gemContractAddress = getState().app.gemsContractInstance._address;
@@ -180,17 +183,15 @@ export const handleBuyNow = (_tokenId, _from, history) => (
       dispatch({ type: RELEASE_CONFETTI });
     })
     .on('receipt', () => dispatch(updateGemOwnership(_tokenId, _from, history)))
-    .on('error', err =>
-    {      
+    .on('error', err => {
       dispatch({
         type: MODAL_GONE
-      })
+      });
       dispatch({
         type: FETCH_DATA_FAILED,
         payload: JSON.stringify(err)
-      })
-    }
-    );
+      });
+    });
 };
 
 export const getRestingEnergy = tokenId => (dispatch, getState) => {
@@ -215,6 +216,3 @@ export const getRestingEnergy = tokenId => (dispatch, getState) => {
 
 export const clearGemPageOnExit = gemId => dispatch =>
   dispatch({ type: CLEAR_GEM_PAGE });
-
-
-
