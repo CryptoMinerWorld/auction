@@ -49,7 +49,6 @@ export const getUserGems = userId => dispatch => {
 
 export const getUserGemsOnce = userId => dispatch => {
   dispatch({ type: 'FETCH_USER_GEMS_ONCE_BEGUN' });
-
   const userIdToLowerCase = userId
     .split('')
     .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
@@ -62,8 +61,6 @@ export const getUserGemsOnce = userId => dispatch => {
       .get()
       .then(collection => {
         const gems = collection.docs.map(doc => doc.data());
-        console.log('user gems', gems);
-
         dispatch({ type: FETCH_USER_GEMS_SUCCEEDED });
         dispatch({ type: DASHBOARD_WAS_FILTERED, payload: gems });
       });
@@ -137,6 +134,12 @@ export const getDetailsForAllGemsAUserCurrentlyOwns = userId => {
 
       Promise.all([gemImages, gemStories])
         .then(async ([images, stories]) => {
+
+          const userIdToLowerCase = userId
+    .split('')
+    .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
+    .join('');
+
           const completeGemDetails = listOfGemIds.map((gemId, index) => ({
             id: Number(gemId),
             ...responses[index],
@@ -147,7 +150,7 @@ export const getDetailsForAllGemsAUserCurrentlyOwns = userId => {
               )
             ),
             auctionIsLive: false,
-            owner: userId,
+            owner: userIdToLowerCase,
             gemImage: images[index],
             story: stories[index],
             userName,
@@ -212,9 +215,14 @@ export const updateGemDetails = (
 ) => async () => {
   console.log('Gems for the following user being updated =>', userId);
 
+  const userIdToLowerCase = userId
+  .split('')
+  .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
+  .join('');
+
   try {
     const idsOfGemsUserOwns = await gemContract.methods
-      .getCollection(userId)
+      .getCollection(userIdToLowerCase)
       .call();
 
     return Promise.all(
@@ -252,7 +260,7 @@ export const updateGemDetails = (
               )
             ),
             auctionIsLive: false,
-            owner: userId,
+            owner: userIdToLowerCase,
             gemImage: images[index],
             story: stories[index] || 'No story for this gem yet.',
             userName,
@@ -264,27 +272,39 @@ export const updateGemDetails = (
           return Promise.reject('No Gems Available');
         }
 
-        const updateOrCreate = arrayofCompleteGemDetails.map(gem =>
-          db
-            .collection('stones')
-            .where('id', '==', gem.id)
-            .get()
-            .then(coll => {
-              const doc = coll.docs.map(doc => doc.id)[0];
+        const updateOrCreate = arrayofCompleteGemDetails.map(
+          gem =>
+            db
+              .collection('stones')
+              .doc(`${gem.id}`)
+              .set(gem, { merge: true })
 
-              if (doc) {
-                // update it
-                return db
-                  .collection('stones')
-                  .doc(doc)
-                  .update(gem);
-              }
-              // or else create it
-              return db.collection('stones').add(gem);
-            })
+          // db
+          //   .collection('stones')
+          //   .where('id', '==', gem.id)
+          //   .get()
+          //   .then(coll => {
+          //     const doc = coll.docs.map(doc => doc.id)[0];
+
+          //     if (doc) {
+          //       // update it
+          //       return db
+          //         .collection('stones')
+          //         .doc(doc)
+          //         .update(gem);
+          //     }
+          //     // or else create it
+          //     return db.collection('stones').add(gem);
+          //   })
         );
         // check if document exists, update it if it does and create one if it doesn't
-        return Promise.all(updateOrCreate).then(() => 'Gems Updated.');
+        return Promise.all(updateOrCreate).then(() => {
+          store.dispatch({
+            type: ALL_USER_GEMS_UPLOADED,
+            payload: arrayofCompleteGemDetails
+          });
+          return 'Gems Updated.';
+        });
       });
     });
   } catch (err) {

@@ -283,17 +283,32 @@ Auction.defaultProps = {
 
 const DisplayBoxStateMachine = props => {
   const { owner, currentAccount, auctionIsLive } = props;
+
+  const currentAccountLowerCase =
+    currentAccount &&
+    currentAccount
+      .split('')
+      .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
+      .join('');
+
+  const ownerLowerCase =
+    owner &&
+    owner
+      .split('')
+      .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
+      .join('');
+
   let state = 'owner';
 
-  if (owner === currentAccount) {
+  if (ownerLowerCase === currentAccountLowerCase) {
     state = 'owner';
   }
 
-  if (auctionIsLive && owner !== currentAccount) {
+  if (auctionIsLive && ownerLowerCase !== currentAccountLowerCase) {
     state = 'buyer';
   }
 
-  if (!auctionIsLive && owner !== currentAccount) {
+  if (!auctionIsLive && ownerLowerCase !== currentAccountLowerCase) {
     state = 'viewer';
   }
 
