@@ -1,16 +1,31 @@
-const AUCTION_CONTRACT = '0x4ec415d87e00101867fbfa28db19cce0d564d8b3';
-const GEM_CONTRACT = '0x82ff6bbd7b64f707e704034907d582c7b6e09d97';
+// // DEV
+// const AUCTION_CONTRACT = '0x4ec415d87e00101867fbfa28db19cce0d564d8b3';
+// const GEM_CONTRACT = '0x82ff6bbd7b64f707e704034907d582c7b6e09d97';
+
+// PROD
+const AUCTION_CONTRACT = '0x1F4f6625e92C4789dCe4B92886981D7b5f484750';
+const GEM_CONTRACT = '0xeae9d154da7a1cd05076db1b83233f3213a95e4f';
+
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 var Web3 = require('web3');
 
 admin.initializeApp();
-// admin.initializeApp(functions.config().firebase);
+
 const db = admin.database();
 
+// // DEV
+// const web3 = new Web3(
+//   new Web3.providers.HttpProvider(
+//     'https://rinkeby.infura.io/qWWCAOLoD65CmWAo4jLg'
+//   )
+// );
+
+
+// PROD
 const web3 = new Web3(
   new Web3.providers.HttpProvider(
-    'https://rinkeby.infura.io/qWWCAOLoD65CmWAo4jLg'
+    'https://mainnet.infura.io/qWWCAOLoD65CmWAo4jLg '
   )
 );
 
@@ -44,15 +59,7 @@ exports.updateGemDetails = functions.https.onRequest(() =>
     .then(addresses => {
       // maybe in the future get image and name from db and update that too
       return addresses.forEach(address => {
-        console.log(
-          'gem',
-          address[0],
-          'gem owner',
-          address[1],
-          web3.utils.toChecksumAddress(address[1]),
-          web3.utils.toChecksumAddress(address[1]) ===
-            web3.utils.toChecksumAddress(AUCTION_CONTRACT)
-        );
+        
         if (
           web3.utils.toChecksumAddress(address[1]) ===
           web3.utils.toChecksumAddress(AUCTION_CONTRACT)

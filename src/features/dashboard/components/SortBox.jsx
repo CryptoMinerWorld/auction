@@ -9,12 +9,12 @@ import { ReactComponent as DownArrowCircle } from '../../../app/images/svg/chevr
 import { ReactComponent as UpArrowCircle } from '../../../app/images/svg/chevrons-up.svg';
 
 export const stateMachine = {
-  initial: 'rateASC',
+  initial: 'priceASC',
   states: {
     priceASC: {
       onEntry: 'orderByPrice',
       on: {
-        TOGGLE_RATE: 'rateASC',
+        // TOGGLE_RATE: 'rateASC',
         TOGGLE_TIME: 'timeASC',
         TOGGLE_PRICE: 'priceDESC'
       }
@@ -22,7 +22,7 @@ export const stateMachine = {
     priceDESC: {
       onEntry: 'orderByPriceDesc',
       on: {
-        TOGGLE_RATE: 'rateASC',
+        // TOGGLE_RATE: 'rateASC',
         TOGGLE_TIME: 'timeASC',
         TOGGLE_PRICE: 'priceASC'
       }
@@ -31,7 +31,7 @@ export const stateMachine = {
       onEntry: 'orderByTime',
       on: {
         TOGGLE_PRICE: 'priceASC',
-        TOGGLE_RATE: 'rateASC',
+        // TOGGLE_RATE: 'rateASC',
         TOGGLE_TIME: 'timeDESC'
       }
     },
@@ -39,26 +39,26 @@ export const stateMachine = {
       onEntry: 'orderByTimeDesc',
       on: {
         TOGGLE_PRICE: 'priceASC',
-        TOGGLE_RATE: 'rateASC',
+        // TOGGLE_RATE: 'rateASC',
         TOGGLE_TIME: 'timeASC'
       }
-    },
-    rateASC: {
-      onEntry: 'orderByRate',
-      on: {
-        TOGGLE_PRICE: 'priceASC',
-        TOGGLE_TIME: 'timeASC',
-        TOGGLE_RATE: 'rateDESC'
-      }
-    },
-    rateDESC: {
-      onEntry: 'orderByRateDesc',
-      on: {
-        TOGGLE_PRICE: 'priceASC',
-        TOGGLE_TIME: 'timeASC',
-        TOGGLE_RATE: 'rateASC'
-      }
     }
+    // rateASC: {
+    //   onEntry: 'orderByRate',
+    //   on: {
+    //     TOGGLE_PRICE: 'priceASC',
+    //     TOGGLE_TIME: 'timeASC',
+    //     TOGGLE_RATE: 'rateDESC'
+    //   }
+    // },
+    // rateDESC: {
+    //   onEntry: 'orderByRateDesc',
+    //   on: {
+    //     TOGGLE_PRICE: 'priceASC',
+    //     TOGGLE_TIME: 'timeASC',
+    //     TOGGLE_RATE: 'rateASC'
+    //   }
+    // }
   }
 };
 
@@ -71,8 +71,8 @@ export const stateMachine = {
 class SortBox extends PureComponent {
   orderByTime = () => this.props.handleOrderBy('level', 'asc');
   orderByTimeDesc = () => this.props.handleOrderBy('level', 'desc');
-  orderByRate = () => this.props.handleOrderBy('rate', 'asc');
-  orderByRateDesc = () => this.props.handleOrderBy('rate', 'desc');
+  // orderByRate = () => this.props.handleOrderBy('rate', 'asc');
+  // orderByRateDesc = () => this.props.handleOrderBy('rate', 'desc');
   orderByPrice = () => this.props.handleOrderBy('gradeType', 'asc');
   orderByPriceDesc = () => this.props.handleOrderBy('gradeType', 'desc');
 
@@ -81,30 +81,6 @@ class SortBox extends PureComponent {
 
     return (
       <div className="flex jce aic w-100 pv4">
-        <p
-          className={`flex aic jcc pointer mr4 white link
-  ${
-    machineState.value === 'priceASC' || machineState.value === 'priceDESC'
-      ? 'o-90'
-      : 'o-30'
-  }`}
-          onClick={() => transition('TOGGLE_PRICE')}
-        >
-          BY GRADE
-          <State is="priceDESC">
-            <UpArrowCircle
-              className="ml2"
-              onClick={() => transition('TOGGLE_PRICE')}
-            />
-          </State>
-          <State is="priceASC">
-            <DownArrowCircle
-              className="ml2"
-              onClick={() => transition('TOGGLE_PRICE')}
-            />
-          </State>
-        </p>
-
         <p
           className={`flex aic jcc pointer  mr4 white link  ${
             machineState.value === 'timeASC' ||
@@ -128,7 +104,31 @@ class SortBox extends PureComponent {
             />
           </State>
         </p>
+
         <p
+          className={`flex aic jcc pointer  white link
+  ${
+    machineState.value === 'priceASC' || machineState.value === 'priceDESC'
+      ? 'o-90'
+      : 'o-30'
+  }`}
+          onClick={() => transition('TOGGLE_PRICE')}
+        >
+          BY GRADE
+          <State is="priceDESC">
+            <UpArrowCircle
+              className="ml2"
+              onClick={() => transition('TOGGLE_PRICE')}
+            />
+          </State>
+          <State is="priceASC">
+            <DownArrowCircle
+              className="ml2"
+              onClick={() => transition('TOGGLE_PRICE')}
+            />
+          </State>
+        </p>
+        {/* <p
           className={`flex aic jcc pointer white link ${
             machineState.value === 'rateASC' ||
             machineState.value === 'rateDESC'
@@ -150,7 +150,7 @@ class SortBox extends PureComponent {
               onClick={() => transition('TOGGLE_RATE')}
             />
           </State>
-        </p>
+        </p> */}
       </div>
     );
   }

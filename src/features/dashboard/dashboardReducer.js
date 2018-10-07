@@ -36,9 +36,9 @@ export default function dashboardReducer(
     // console.log('action.payload.', action.payload)
     const paginated =
       action.payload.length > 8 ? action.payload.slice(0, 8) : action.payload;
-    const orderedByMiningBonus = [...paginated].sort((a, b) => a.rate - b.rate);
+    
   
-    return { ...state, userGems: action.payload, filter: orderedByMiningBonus };
+    return { ...state, userGems: action.payload, filter: paginated };
   }
 
   if (action.type === NO_USER_EXISTS) {
@@ -48,11 +48,10 @@ export default function dashboardReducer(
   if (action.type === ALL_USER_GEMS_RETRIEVED) {
     const paginated =
       action.payload.length > 8 ? action.payload.slice(0, 8) : action.payload;
-    const orderedByMiningBonus = [...paginated].sort((a, b) => a.rate - b.rate);
     return {
       ...state,
       allUserGems: action.payload,
-      filter: orderedByMiningBonus
+      filter: paginated
     };
   }
 

@@ -215,3 +215,6 @@ export const getRestingEnergy = tokenId => (dispatch, getState) => {
 
 export const clearGemPageOnExit = gemId => dispatch =>
   dispatch({ type: CLEAR_GEM_PAGE });
+
+
+

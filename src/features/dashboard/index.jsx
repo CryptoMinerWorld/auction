@@ -115,7 +115,7 @@ class Dashboard extends PureComponent {
             <h1 className="white" data-testid="header">
               {`${userName ||
                 (auctions[0] && auctions[0].userName) ||
-                'Someone'}'s Dashboard`}
+                'Someone'}'s Workshop`}
             </h1>
           </div>
           <ReSync />

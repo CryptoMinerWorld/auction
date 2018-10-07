@@ -40,9 +40,10 @@ export const getUserGems = userId => dispatch => {
   try {
     db.collection('stones')
       .where('owner', '==', userId)
-      .onSnapshot( collection => {
+      .orderBy('gradeType', "desc")
+      .get()
+      .then( collection => {
         const gems =  collection.docs.map(doc => doc.data());
-        console.log('gems', gems)
         dispatch({ type: FETCH_USER_GEMS_SUCCEEDED });
         dispatch({ type: USER_GEMS_RETRIEVED, payload: gems });
       });
@@ -52,21 +53,20 @@ export const getUserGems = userId => dispatch => {
 };
 
 export const getUserGemsOnce = userId => dispatch => {
-  dispatch({ type: FETCH_USER_GEMS_BEGUN });
+  dispatch({ type: 'FETCH_USER_GEMS_ONCE_BEGUN' });
 
   // const userIdToLowerCase = userId
   // .split("")
   // .map(item => (typeof item === "string" ? item.toLowerCase() : item))
   // .join("");
-console.log('userId', userId)
+// console.log('userId', userId)
   try {
     db.collection('stones')
       .where('owner', '==', userId)
-      .orderBy('rate', 'desc')
+      .orderBy('gradeType',  "desc")
       .get()
       .then(collection => {
         const gems = collection.docs.map(doc => doc.data());
-        console.log('gems once', gems)
         dispatch({ type: FETCH_USER_GEMS_SUCCEEDED });
         dispatch({ type: DASHBOARD_WAS_FILTERED, payload: gems });
       });
@@ -303,10 +303,11 @@ export const filterUserGemsOnPageLoad = (key, direction) => (
 };
 
 export const orderDashboardBy = (key, direction) => async (dispatch, getState) => {
+  console.log('c', direction, key)
   const currentDashboardItems = await getState().dashboard.filter;
   const newMarket = [...currentDashboardItems].sort(
     (a, b) => (direction === 'desc' ? a[key] - b[key] : b[key] - a[key])
-  );
+  )
   dispatch({ type: DASHBOARD_WAS_FILTERED, payload: newMarket });
   dispatch({ type: PAGINATE, payload: [1, 8]});
 };
