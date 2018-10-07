@@ -49,11 +49,31 @@ class Auction extends PureComponent {
   };
 
   componentDidMount() {
-    const { match, handleGetAuctionDetails } = this.props;
+    const {
+      match,
+      handleGetAuctionDetails,
+      dutchContract,
+      gemContractAddress
+    } = this.props;
+
     match &&
       match.params &&
       match.params.gemId &&
       handleGetAuctionDetails(match.params.gemId);
+
+    this.Priceinterval =
+      dutchContract &&
+      gemContractAddress &&
+      setInterval(() => {
+        dutchContract.methods
+          .getCurrentPrice(gemContractAddress, match.params.gemId)
+          .call()
+          .then(currentPrice => {
+            console.log('currentPrice', currentPrice);
+            this.setState({ currentPrice: Number(currentPrice) });
+          })
+          .catch(error => console.log('error', error));
+      }, 2000);
   }
 
   componentDidUpdate(prevProps, prevState) {

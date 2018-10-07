@@ -21,7 +21,7 @@ import {
 import { NO_USER_EXISTS } from '../auth/authConstants';
 import {
   NEW_AUCTION_CREATED,
-  OWNERSHIP_TRANSFERRED
+  // OWNERSHIP_TRANSFERRED
 } from '../items/itemConstants';
 export default function dashboardReducer(
   state = {
@@ -155,18 +155,10 @@ export default function dashboardReducer(
     return { ...state, start, end, page: action.payload[0] };
   }
 
-  if (action.type === OWNERSHIP_TRANSFERRED) {
-    console.log('action.payload', action.payload);
-    // const newFilter = state.userGems.map(gem => {
-    //   if (gem.id === action.payload.id) {
-    //     return { ...gem, auctionIsLive: true };
-    //   } else {
-    //     return gem;
-    //   }
-    // });
-
-    return { ...state, userGems: [...state.userGems, action.payload] };
-  }
+  // if (action.type === OWNERSHIP_TRANSFERRED) {
+  //   console.log('action.payload', action.payload);
+  //   return { ...state, userGems: [...state.userGems, action.payload], filter: [...state.filter, action.payload]};
+  // }
 
   if (action.type === NEW_AUCTION_CREATED) {
     console.log('action.payload', action.payload);
