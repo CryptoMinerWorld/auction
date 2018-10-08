@@ -78,9 +78,9 @@ class DescriptionBox extends PureComponent {
     return (
       <div className="bg-off-black white ma0 ">
         <div className="flex-l jce mw9 center">
-          <div className="w-60-l pl5-l">
-            <div className="pa5-ns pa3">
-              <div className="flex jcb aic">
+          <div className="w-60-l pl5-l tc tl-ns">
+            <div className="pa5-ns pa3 center">
+              <div className="flex jcb aic wrap">
                 <div className="flex aic tc tl-ns">
                   <img
                     src={tinyDiamond}
@@ -98,7 +98,7 @@ class DescriptionBox extends PureComponent {
                     className="dib ml3"
                   />
                 </div>
-                <div className="flex aic jcb">
+                <div className="flex aic jcb center">
                   <Link
                     to={ownerId && `/profile/${ownerId}`}
                     className="flex aic bg-white-10 w5-ns w-auto black h-auto pa1"
@@ -114,8 +114,8 @@ class DescriptionBox extends PureComponent {
                       alt="seller logo"
                       className="br-100 h2 w-auto pl3-ns"
                     />
-                    <small className="pl3 white-60 dn dib-m dib-l">
-                      <span className="dn dib-l">Owned By {userName}</span>
+                    <small className="pl3 white-60 dib">
+                      <span>Owned By {userName}</span>
                     </small>
                   </Link>
                   <CopyToClipboard
@@ -130,7 +130,7 @@ class DescriptionBox extends PureComponent {
                   </CopyToClipboard>
                 </div>
               </div>
-              <p className="o-50">{story}</p>
+              <p className="o-50 mt3">{story}</p>
             </div>
             <Waypoint onEnter={this.handleWaypointEnter}>
               <div>

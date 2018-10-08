@@ -42,10 +42,19 @@ const Grid = styled.article`
   grid-column-gap: 20px;
 `;
 
+// const CardBox = styled.section`
+//   display: grid;
+//   width: 100%;
+//   grid-template-columns: 1fr 1fr 1fr 1fr;
+
+//   grid-column-gap: 20px;
+//   grid-row-gap: 20px;
+// `;
+
 const CardBox = styled.section`
   display: grid;
   width: 100%;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(auto-fill, minMax(280px, 1fr));
   grid-column-gap: 20px;
   grid-row-gap: 20px;
 `;
@@ -106,7 +115,7 @@ class Dashboard extends Component {
       <div className="bg-off-black white pa4">
         {newUser && <Auth />}
         <AuctionCategories gemCount={totalGems} />
-        <div className="flex jcb aic  mt3">
+        <div className="flex  aic mt3 wrap jcc jcb-ns">
           <div className=" flex aic">
             <img
               src={(auctions[0] && auctions[0].userImage) || userImage}

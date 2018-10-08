@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Gembox from './Gembox';
 import { connect } from 'react-redux';
+
+import { weiToEth } from '../../market/helpers';
 const Triangle = styled.div`
   width: 140px;
   height: 10px;
@@ -35,7 +37,6 @@ class MobileHeader extends PureComponent {
 
   render() {
     const { currentPrice, level, grade, rate } = this.props;
-
     return (
       <div className="flex-s dn-ns jca bg-base shadow-1">
         <div className="absolute left-1">
@@ -44,7 +45,7 @@ class MobileHeader extends PureComponent {
               current <br /> price
             </small>
             <p className="white f3 tc">
-              Ξ {Math.round(currentPrice * 100) / 100}
+              Ξ {Math.round(weiToEth(currentPrice) * 100) / 100}
             </p>
           </div>
           <Triangle />

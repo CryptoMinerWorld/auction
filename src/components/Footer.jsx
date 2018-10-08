@@ -36,7 +36,7 @@ const Footer = () => (
     <RockOverlay className="mw9 center">
       <div className="pa4 bt b--black-10">
         <div className="mb6-l">
-          <article className="flex jcb w-75 center mt5">
+          <article className="flex jcb w-75 center mt5 col row-ns tc">
             <FooterLink
               link="https://cryptominerworld.com/"
               title="Home"
@@ -76,7 +76,7 @@ const Footer = () => (
             />
           </article>
 
-          <div className="flex jcc mt5">
+          <div className="flex jcc mv5">
             <SocialIcons
               link="https://www.facebook.com/CryptoMinerWorld/"
               title="Cryptominer World on Facebook"
@@ -96,7 +96,7 @@ const Footer = () => (
             <p className="f7 black-70 dib pr3 mb3 white">
               Copyright © Cryptominer World 2018
             </p>
-            <p className="f7 black-70 dib pr3 mb3 white">Version 0.1.18</p>
+            <p className="f7 black-70 dib pr3 mb3 white">Version 0.1.19</p>
           </div>
         </div>
         <div className="db dn-ns">
