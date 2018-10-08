@@ -8,7 +8,7 @@ import Keys from '../../../app/images/dashboard/Keys.png';
 import Land from '../../../app/images/dashboard/Land.png';
 
 const AuctionCategories = ({ gemCount }) => (
-  <div className="flex jca pa2 mb4 bg-dark-gray br2">
+  <div className="dn flex-l jca pa2 mb4 bg-dark-gray br2">
     <div className="flex aic w-auto">
       <img src={Gem} alt="" className="h3 w-auto" />
       <p className="pl3 mt2 f5">{`${gemCount || 'NO'} GEMS`} </p>

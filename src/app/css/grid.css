@@ -12,6 +12,22 @@
   }
 }
 
+@media screen and (min-width: 48em) {
+  .row-ns {
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row !important;
+    grid-auto-flow: column;
+  }
+
+  .jcb-ns {
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between !important;
+  }
+}
+
 .grid {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -32,6 +48,7 @@
   flex-direction: row;
   grid-auto-flow: column;
 }
+
 .dense {
   grid-auto-flow: dense;
 }

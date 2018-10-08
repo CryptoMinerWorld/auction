@@ -13,6 +13,11 @@ import { ReactComponent as TrendingUp } from '../../../app/images/svg/chevrons-u
 
 import { ReactComponent as ChevronsDown } from '../../../app/images/svg/chevrons-down.svg';
 import { ReactComponent as ChevronsUp } from '../../../app/images/svg/chevrons-up.svg';
+
+import { ReactComponent as Dollar } from '../../../app/images/svg/dollar-sign.svg';
+import { ReactComponent as Clock } from '../../../app/images/svg/clock.svg';
+import { ReactComponent as Percent } from '../../../app/images/svg/percent.svg';
+
 const stateMachine = {
   initial: 'priceASC',
   states: {
@@ -93,7 +98,9 @@ class SortBox extends PureComponent {
   }`}
           onClick={() => transition('TOGGLE_PRICE')}
         >
-          BY PRICE
+          <span className="dn dib-ns">BY PRICE</span>
+          <Dollar className="dn-ns dib" />
+
           <State is="priceASC">
             <UpArrowCircle
               className="ml2"
@@ -116,7 +123,9 @@ class SortBox extends PureComponent {
           }`}
           onClick={() => transition('TOGGLE_TIME')}
         >
-          BY TIME
+          <span className="dn dib-ns">BY TIME</span>
+          <Clock className="dn-ns dib" />
+
           <State is="timeASC">
             <ChevronsUp
               className="ml2"
@@ -139,7 +148,8 @@ class SortBox extends PureComponent {
           }`}
           onClick={() => transition('TOGGLE_RATE')}
         >
-          BY MINING RATE BONUS
+          <span className="dn dib-ns">BY MINING RATE</span>
+          <Percent className="dn-ns dib" />
           <State is="rateASC">
             <TrendingUp
               className="ml2"

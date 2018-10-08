@@ -80,7 +80,7 @@ class SortBox extends PureComponent {
     const { transition, machineState } = this.props;
 
     return (
-      <div className="flex jce aic w-100 pv4">
+      <div className="flex-ns dn jce aic w-100 pv4">
         <p
           className={`flex aic jcc pointer  mr4 white link  ${
             machineState.value === 'timeASC' ||

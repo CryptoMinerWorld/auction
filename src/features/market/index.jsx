@@ -26,10 +26,18 @@ const Grid = styled.article`
   grid-column-gap: 20px;
 `;
 
+// const CardBox = styled.section`
+//   display: grid;
+//   width: 100%;
+//   grid-template-columns: 1fr 1fr 1fr;
+//   grid-column-gap: 20px;
+//   grid-row-gap: 20px;
+// `;
+
 const CardBox = styled.section`
   display: grid;
   width: 100%;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(auto-fill, minMax(280px, 1fr));
   grid-column-gap: 20px;
   grid-row-gap: 20px;
 `;
@@ -74,9 +82,13 @@ const Marketplace = ({
   totalGems,
   handlePreLoadAuctionPage
 }) => (
-  <div className="bg-off-black white pa4">
+  <div className="bg-off-black white pa4 ">
     <div className="flex aic jcs ">
-      <img src={gemKid} className="h3 w-auto pr3 dib" alt="gem auctions" />
+      <img
+        src={gemKid}
+        className="h3 w-auto pr3 dn dib-ns"
+        alt="gem auctions"
+      />
       <h1 className="white f1 b o-90" data-testid="header">
         Gem Auctions
       </h1>
@@ -112,7 +124,8 @@ const Marketplace = ({
           />
         </div>
       </Primary>
-      <RightAside>
+
+      <RightAside className="dn dib-l">
         <Filters />
         <GemFilters />
       </RightAside>

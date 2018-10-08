@@ -57,7 +57,7 @@ const Navbar = ({ userImage, userId, userName, handleShowSignInModal }) => (
           />
         </a>
         <a
-          className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
+          className="link dim dark-gray f6 f5-l dn dib-ns mr3 mr4-l"
           href="https://cryptominerworld.com/game_info/"
           title="Game Information"
         >
@@ -86,7 +86,7 @@ const Navbar = ({ userImage, userId, userName, handleShowSignInModal }) => (
           Market
         </NavLink>
         <a
-          className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
+          className="link dim dark-gray f6 f5-l dn dib-ns mr3 mr4-l"
           href="https://cryptominerworld.com/world/"
           title="World"
         >
@@ -95,13 +95,13 @@ const Navbar = ({ userImage, userId, userName, handleShowSignInModal }) => (
         <a
           href="https://cryptominerworld.com/faq/"
           title="Home"
-          className="dib  dn-ns link dim dark-gray f6 f5-l"
+          className="dib dn-ns link dim dark-gray f6 f5-l"
         >
           FAQ
         </a>
         {userImage &&
           userName && (
-            <NavLink to={`/profile/${userId}`}>
+            <NavLink to={`/profile/${userId}`} className="dn dib-ns">
               <div className="dib">
                 <Avatar src={userImage} className="dib" />
                 <p className="dib">{userName}</p>
