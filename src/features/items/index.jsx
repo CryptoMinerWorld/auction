@@ -110,7 +110,11 @@ class Auction extends PureComponent {
   }
 
   componentWillUnmount() {
-    this.props.handleClearGemPage(this.props.match.params.gemId);
+    const { match } = this.props;
+    match &&
+      match.params &&
+      match.params.gemId &&
+      this.props.handleClearGemPage(match.params.gemId);
     clearInterval(this.Priceinterval);
   }
 
@@ -275,7 +279,7 @@ Auction.propTypes = {
     monitorHeight: PropTypes.bool,
     monitorWidth: PropTypes.bool
   }).isRequired,
-
+  gemName: PropTypes.string.isRequired,
   showConfirm: PropTypes.func.isRequired,
   redirectTo: PropTypes.string,
   story: PropTypes.string.isRequired,

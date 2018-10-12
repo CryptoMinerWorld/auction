@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@sentry/node": "^4.1.1",
     "antd": "^3.10.0",
     "bignumber.js": "^7.2.1",
     "date-fns": "^2.0.0-alpha.16",
@@ -40,10 +41,12 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "coverage": "jest --env=jsdom --coverage",
-    "storybook": "start-storybook -p 9009 -s public",
-    "build-storybook": "build-storybook -s public"
+    "storybook": "start-storybook -p 9001 -c .storybook"
   },
   "babel": {
+    "presets": [
+      "react-app"
+    ],
     "plugins": [
       "styled-components",
       [
@@ -62,12 +65,11 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "@storybook/addon-actions": "^4.0.0-alpha.24",
-    "@storybook/addon-links": "^4.0.0-alpha.24",
-    "@storybook/addons": "^4.0.0-alpha.24",
+    "@sentry/browser": "^4.1.1",
+    "@storybook/addon-backgrounds": "^3.4.11",
     "@storybook/react": "^4.0.0-alpha.24",
-    "babel-core": "^6.26.3",
-    "babel-runtime": "^6.26.0",
+    "babel-plugin-import": "^1.9.1",
+    "babel-plugin-styled-components": "^1.8.0",
     "firebase-mock": "^2.2.10",
     "history": "^4.7.2",
     "jest-dom": "^2.0.2",

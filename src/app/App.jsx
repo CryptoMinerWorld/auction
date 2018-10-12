@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { BrowserRouter } from 'react-router-dom';
 import FontFaceObserver from 'fontfaceobserver';
+import * as Sentry from '@sentry/browser';
 import { connect } from 'react-redux';
 import ReactGA from 'react-ga';
-
+import ErrorBoundary from '../components/ErrorBoundary';
 import Alert from 'antd/lib/alert';
 import Modal from 'antd/lib/modal';
 import Navbar from '../components/Nav';
@@ -31,6 +32,12 @@ ReactGA.initialize(process.env.REACT_APP_ANALYTICS, {
 });
 
 ReactGA.pageview(window.location.pathname + window.location.search);
+
+Sentry.init({
+  dsn: 'https://7fc52f2bd8de42f9bf46596f996086e8@sentry.io/1299588',
+
+  environment: process.env.NODE_ENV
+});
 
 const dutchAuctionABI = DutchAuction.abi;
 const gemsABI = Gems.abi;
@@ -147,41 +154,44 @@ class App extends Component {
   render() {
     const { font, err } = this.state;
     const { visible } = this.props;
+
     return (
       <BrowserRouter>
-        <ScrollToTop>
-          <main className={font}>
-            {err && (
-              <Alert
-                message="Error Text"
-                description={`${err.message}`}
-                type="error"
-                closable
-              />
-            )}
-            <Modal
-              visible={visible}
-              title="Please Confirm Your Transaction In Metamask to Proceed"
-              iconType="loading"
-              zIndex={1000}
-              footer={false}
-              maskClosable={false}
-              closable={false}
-            >
-              <p>
-                Once you pay for the Gem using Metamask, you will be redirected
-                to your workshop.
-              </p>
-              <strong>This may take a few moments.</strong>
-            </Modal>
-            <StickyHeader>
-              <Navbar />
-            </StickyHeader>
-            <Routes />
+        <ErrorBoundary>
+          <ScrollToTop>
+            <main className={font}>
+              {err && (
+                <Alert
+                  message="Error Text"
+                  description={`${err.message}`}
+                  type="error"
+                  closable
+                />
+              )}
+              <Modal
+                visible={visible}
+                title="Please Confirm Your Transaction In Metamask to Proceed"
+                iconType="loading"
+                zIndex={1000}
+                footer={false}
+                maskClosable={false}
+                closable={false}
+              >
+                <p>
+                  Once you pay for the Gem using Metamask, you will be
+                  redirected to your workshop.
+                </p>
+                <strong>This may take a few moments.</strong>
+              </Modal>
+              <StickyHeader>
+                <Navbar />
+              </StickyHeader>
+              <Routes />
 
-            <Footer />
-          </main>
-        </ScrollToTop>
+              <Footer />
+            </main>
+          </ScrollToTop>
+        </ErrorBoundary>
       </BrowserRouter>
     );
   }
