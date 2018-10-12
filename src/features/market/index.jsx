@@ -37,9 +37,13 @@ const Grid = styled.article`
 const CardBox = styled.section`
   display: grid;
   width: 100%;
-  grid-template-columns: repeat(auto-fill, minMax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minMax(280px, 1fr));
   grid-column-gap: 20px;
   grid-row-gap: 20px;
+
+  @media (min-width: 64em) {
+    grid-template-columns: repeat(3, minMax(280px, 1fr));
+  }
 `;
 
 const Primary = styled.section`
@@ -120,7 +124,10 @@ const Marketplace = ({
             pageSize={9}
             total={totalGems}
             hideOnSinglePage
-            onChange={(page, pageSize) => handlePagination(page, pageSize)}
+            onChange={(page, pageSize) => {
+              window.scrollTo(0, 0);
+              handlePagination(page, pageSize);
+            }}
           />
         </div>
       </Primary>

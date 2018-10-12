@@ -59,7 +59,7 @@ class GemSortBox extends PureComponent {
   static OrderBy = ({ state, transition, title, to, match }) => {
     return (
       <p
-        className={`pr4 tl pointer white link ${
+        className={`pr4 tc pointer white link ${
           matchesState(state, match) ? 'o-90' : 'o-30'
         }`}
         onClick={() => transition(to)}
