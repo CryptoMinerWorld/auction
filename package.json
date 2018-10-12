@@ -24,6 +24,7 @@
     "react-scripts": "^2.0.3",
     "react-sizeme": "^2.5.2",
     "react-spring": "^5.9.0",
+    "react-tilt": "^0.1.4",
     "react-waypoint": "^8.0.3",
     "recompose": "^0.30.0",
     "redux": "^4.0.0",

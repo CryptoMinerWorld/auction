@@ -8,12 +8,14 @@ const TopHighlight = styled.div`
   background: linear-gradient(to right, #fc01ca, #bc197c);
   border-radius: 4px 4px 0px 0px;
   height: 3px;
+  width: 100%;
 `;
 
 const RockOverlay = styled.div`
   background-image: url(${rockBackground});
   background-repeat: repeat;
   background-size: contain;
+  width: 100%;
 `;
 const FooterLink = ({ link, title, hover }) => (
   <a
@@ -33,7 +35,7 @@ FooterLink.propTypes = {
 const Footer = () => (
   <div className="bg-footer-black">
     <TopHighlight />
-    <RockOverlay className="mw9 center">
+    <RockOverlay className=" center">
       <div className="pa4 bt b--black-10">
         <div className="mb6-l">
           <article className="flex jcb w-75 center mt5 col row-ns tc">
@@ -96,7 +98,7 @@ const Footer = () => (
             <p className="f7 black-70 dib pr3 mb3 white">
               Copyright © Cryptominer World 2018
             </p>
-            <p className="f7 black-70 dib pr3 mb3 white">Version 0.1.20</p>
+            <p className="f7 black-70 dib pr3 mb3 white">Version 0.1.21</p>
           </div>
         </div>
         <div className="db dn-ns">

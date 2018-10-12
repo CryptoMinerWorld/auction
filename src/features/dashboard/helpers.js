@@ -117,3 +117,9 @@ export const calculateGemName = (providedGrade, providedTokenId) => {
   }[providedGrade];
   return `${gemType} #${providedTokenId}`;
 };
+
+
+export const getReferralPoints =  (preSaleContract, userId ) => preSaleContract.methods
+.unusedReferralPoints(userId)
+.call().then(referralPoints => referralPoints ).catch(error => console.log('error getting refrral points', error))
+
