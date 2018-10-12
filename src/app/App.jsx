@@ -20,7 +20,7 @@ import { updateWalletId } from '../features/auth/authActions';
 // import { updatePriceOnAllLiveAuctions } from '../features/market/marketActions';
 import DutchAuction from './ABI/DutchAuction.json';
 import Gems from './ABI/GemERC721.json';
-import Presale from './ABI/Presale.json';
+import Presale from './ABI/Presale2.json';
 require('antd/lib/alert/style/css');
 require('antd/lib/modal/style/css');
 
@@ -103,7 +103,7 @@ class App extends Component {
 
     const presaleContract = new web3.eth.Contract(
       presaleABI,
-      process.env.REACT_APP_PRESALE,
+      process.env.REACT_APP_PRESALE2,
       {
         from: currentAccountId
       }

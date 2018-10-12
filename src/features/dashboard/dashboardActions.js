@@ -54,7 +54,7 @@ export const getUserGemsOnce = userId => dispatch => {
     .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
     .join('');
 
-  console.log('userIdToLowerCase', userIdToLowerCase)
+  // console.log('userIdToLowerCase', userIdToLowerCase)
 
   try {
     db.collection('stones')
@@ -64,7 +64,7 @@ export const getUserGemsOnce = userId => dispatch => {
       .then(collection => {
         const gems = collection.docs.map(doc => doc.data());
         
-        console.log('gems', gems)
+        // console.log('gems', gems)
         dispatch({ type: FETCH_USER_GEMS_SUCCEEDED });
         dispatch({ type: DASHBOARD_WAS_FILTERED, payload: gems });
       });
@@ -217,7 +217,7 @@ export const updateGemDetails = (
   userName,
   userImage
 ) => async () => {
-  console.log('Gems for the following user being updated =>', userId);
+  // console.log('Gems for the following user being updated =>', userId);
 
   const userIdToLowerCase = userId
   .split('')

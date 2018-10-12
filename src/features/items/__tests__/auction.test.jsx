@@ -107,7 +107,7 @@ describe('Auction page tests', () => {
     gemName: 'calculateGemName(10, 12345)'
   };
 
-  test('the gem page route loads a gem', async () => {
+  test.skip('the gem page route loads a gem', async () => {
     const store = createStore(rootReducer);
     const { getByTestId, debug } = renderWithRouter(
       <Provider store={store}>

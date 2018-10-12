@@ -21,6 +21,8 @@ import { preLoadAuctionPage } from '../market/marketActions';
 import ReSync from './components/ResyncButton';
 import SortBox from './components/SortBox';
 import AuctionCategories from './components/AuctionCategories';
+import { getReferralPoints } from './helpers';
+
 require('antd/lib/pagination/style/css');
 require('antd/lib/slider/style/css');
 
@@ -54,9 +56,12 @@ const Grid = styled.article`
 const CardBox = styled.section`
   display: grid;
   width: 100%;
-  grid-template-columns: repeat(auto-fill, minMax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minMax(280px, 1fr));
   grid-column-gap: 20px;
   grid-row-gap: 20px;
+  @media (min-width: 64em) {
+    grid-template-columns: repeat(3, minMax(280px, 1fr));
+  }
 `;
 
 const Primary = styled.section`
@@ -114,7 +119,10 @@ class Dashboard extends Component {
     return (
       <div className="bg-off-black white pa4">
         {newUser && <Auth />}
-        <AuctionCategories gemCount={totalGems} />
+        <AuctionCategories
+          gemCount={totalGems}
+          getReferralPoints={getReferralPoints}
+        />
         <div className="flex  aic mt3 wrap jcc jcb-ns">
           <div className=" flex aic">
             <img
@@ -159,7 +167,10 @@ class Dashboard extends Component {
                 pageSize={8}
                 total={totalGems}
                 hideOnSinglePage
-                onChange={(page, pageSize) => handlePagination(page, pageSize)}
+                onChange={(page, pageSize) => {
+                  window.scrollTo(0, 0);
+                  handlePagination(page, pageSize);
+                }}
               />
             </div>
           </Primary>
