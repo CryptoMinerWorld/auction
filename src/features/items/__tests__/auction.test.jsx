@@ -13,7 +13,7 @@ import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-// import App from '../../../app/App';
+import App from '../../../app/App';
 import rootReducer from '../../../app/rootReducer.js';
 
 // var firebasemock = require('firebase-mock');
@@ -37,7 +37,7 @@ import rootReducer from '../../../app/rootReducer.js';
 //   null
 // );
 
-// jest.mock('react-ga');
+jest.mock('react-ga');
 // jest.mock('../../../app/utils/firebase.js', () => {
 //   return mocksdk;
 // });
@@ -71,46 +71,47 @@ function renderWithRouter(
 describe('Auction page tests', () => {
   // @dev this is all the test data, easy to configure in one place
   const props = {
-    currentPrice: '1.323',
-    minPrice: 0.8,
-    maxPrice: 4.5,
-    deadline: Math.round(someDate / 1000),
-    level: 2,
-    grade: 5,
-    rate: 53,
-    color: 10,
-    name: 'Amethyst #12345',
-    buyNow: jest.fn(),
-    showConfirm: jest.fn(),
-    gemId: 12345,
-    story: 'hello',
-    gemImage: 'hello url',
-    tokenId: 12345,
-    redirectTo: '',
-    auctionStartTime: 2000,
-    auctionEndTime: 1000,
-    sourceImage:
-      'https://i.kym-cdn.com/photos/images/original/001/225/594/18a.gif',
-    provider: true,
-    currentTime: 1536908786405,
-    currentAccount: '123',
-    fetchRestingEnergyValue: jest.fn(),
-    gemContract: jest.fn(),
-    handleGetAuctionDetails: jest.fn(),
-    match: { params: { gemId: 12345 } },
+    // currentPrice: '1.323',
+    // minPrice: 0.8,
+    // maxPrice: 4.5,
+    // deadline: Math.round(someDate / 1000),
+    // level: 2,
+    // grade: 5,
+    // rate: 53,
+    // color: 10,
+    // name: 'Amethyst #12345',
+    // buyNow: jest.fn(),
+    // showConfirm: jest.fn(),
+    // gemId: 12345,
+    // story: 'hello',
+    // gemImage: 'hello url',
+    // tokenId: 12345,
+    // redirectTo: '',
+    // auctionStartTime: 2000,
+    // auctionEndTime: 1000,
+    // sourceImage:
+    //   'https://i.kym-cdn.com/photos/images/original/001/225/594/18a.gif',
+    // provider: true,
+    // currentTime: 1536908786405,
+    // currentAccount: '123',
+    // fetchRestingEnergyValue: jest.fn(),
+    // gemContract: jest.fn(),
+    // handleGetAuctionDetails: jest.fn(),
+    // match: { params: { gemId: 12345 } },
 
-    details: {
-      gemId: 12345,
-      color: 10
-    },
-    gemName: calculateGemName(10, 12345)
+    // details: {
+    //   gemId: 12345,
+    //   color: 10
+    // },
+
+    gemName: 'calculateGemName(10, 12345)'
   };
 
-  test.skip('the gem page route loads a gem', async () => {
+  test('the gem page route loads a gem', async () => {
     const store = createStore(rootReducer);
-    const { getByTestId } = renderWithRouter(
+    const { getByTestId, debug } = renderWithRouter(
       <Provider store={store}>
-        <Auction {...props} />
+        <App {...props} />
       </Provider>,
       {
         route: '/gem/12345'

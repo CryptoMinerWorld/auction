@@ -17,7 +17,7 @@ const AuctionImage = ({ sourceImage }) => (
             style={{ backgroundposition: `center` }}
             src={sourceImage}
             alt="gem for sale"
-            className="w-auto h-100"
+            className="w-auto-ns h-100-ns w-100 h-auto"
           />
         )}
       </div>
