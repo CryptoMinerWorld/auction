@@ -14,7 +14,6 @@ export const stateMachine = {
     priceASC: {
       onEntry: 'orderByPrice',
       on: {
-        // TOGGLE_RATE: 'rateASC',
         TOGGLE_TIME: 'timeASC',
         TOGGLE_PRICE: 'priceDESC'
       }
@@ -22,7 +21,6 @@ export const stateMachine = {
     priceDESC: {
       onEntry: 'orderByPriceDesc',
       on: {
-        // TOGGLE_RATE: 'rateASC',
         TOGGLE_TIME: 'timeASC',
         TOGGLE_PRICE: 'priceASC'
       }
@@ -31,7 +29,6 @@ export const stateMachine = {
       onEntry: 'orderByTime',
       on: {
         TOGGLE_PRICE: 'priceASC',
-        // TOGGLE_RATE: 'rateASC',
         TOGGLE_TIME: 'timeDESC'
       }
     },
@@ -39,40 +36,15 @@ export const stateMachine = {
       onEntry: 'orderByTimeDesc',
       on: {
         TOGGLE_PRICE: 'priceASC',
-        // TOGGLE_RATE: 'rateASC',
         TOGGLE_TIME: 'timeASC'
       }
     }
-    // rateASC: {
-    //   onEntry: 'orderByRate',
-    //   on: {
-    //     TOGGLE_PRICE: 'priceASC',
-    //     TOGGLE_TIME: 'timeASC',
-    //     TOGGLE_RATE: 'rateDESC'
-    //   }
-    // },
-    // rateDESC: {
-    //   onEntry: 'orderByRateDesc',
-    //   on: {
-    //     TOGGLE_PRICE: 'priceASC',
-    //     TOGGLE_TIME: 'timeASC',
-    //     TOGGLE_RATE: 'rateASC'
-    //   }
-    // }
   }
 };
-
-// const Primary = styled.section`
-//   display: grid;
-//   width: 100%;
-//   grid-template-columns: 1fr 1fr;
-// `;
 
 class SortBox extends PureComponent {
   orderByTime = () => this.props.handleOrderBy('level', 'asc');
   orderByTimeDesc = () => this.props.handleOrderBy('level', 'desc');
-  // orderByRate = () => this.props.handleOrderBy('rate', 'asc');
-  // orderByRateDesc = () => this.props.handleOrderBy('rate', 'desc');
   orderByPrice = () => this.props.handleOrderBy('gradeType', 'asc');
   orderByPriceDesc = () => this.props.handleOrderBy('gradeType', 'desc');
 
@@ -128,29 +100,6 @@ class SortBox extends PureComponent {
             />
           </State>
         </p>
-        {/* <p
-          className={`flex aic jcc pointer white link ${
-            machineState.value === 'rateASC' ||
-            machineState.value === 'rateDESC'
-              ? 'o-90'
-              : 'o-30'
-          }`}
-          onClick={() => transition('TOGGLE_RATE')}
-        >
-          BY MINING RATE BONUS
-          <State is="rateDESC">
-            <UpArrowCircle
-              className="ml2"
-              onClick={() => transition('TOGGLE_RATE')}
-            />
-          </State>
-          <State is="rateASC">
-            <DownArrowCircle
-              className="ml2"
-              onClick={() => transition('TOGGLE_RATE')}
-            />
-          </State>
-        </p> */}
       </div>
     );
   }

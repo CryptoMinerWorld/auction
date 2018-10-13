@@ -10,7 +10,7 @@ import Tilt from 'react-tilt';
 require('antd/lib/progress/style/css');
 
 const Cards = ({ auction }) => (
-  <Tilt className="Tilt" options={{ max: 25, scale: 1 }}>
+  <Tilt className="Tilt" options={{ max: 20, scale: 1 }}>
     <div
       className="bg-dark-gray shadow-3 white Tilt-inner"
       style={{

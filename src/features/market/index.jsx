@@ -37,14 +37,14 @@ const Grid = styled.article`
 const CardBox = styled.section`
   display: grid;
   width: 100%;
-  grid-template-columns: repeat(auto-fit, minMax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minMax(280px, 1fr));
   grid-column-gap: 20px;
   grid-row-gap: 20px;
-
-  @media (min-width: 64em) {
-    grid-template-columns: repeat(3, minMax(280px, 1fr));
-  }
 `;
+
+// @media (min-width: 64em) {
+//   grid-template-columns: repeat(3, minMax(280px, 1fr));
+// }
 
 const Primary = styled.section`
   grid-column: 1/5;
@@ -121,7 +121,7 @@ const Marketplace = ({
         <div className="w-100 tc pv4">
           <Pagination
             current={pageNumber}
-            pageSize={9}
+            pageSize={15}
             total={totalGems}
             hideOnSinglePage
             onChange={(page, pageSize) => {
@@ -155,7 +155,7 @@ export default compose(
   lifecycle({
     componentDidMount() {
       this.props.handleGetAuctions();
-      this.props.handlePagination(1, 9);
+      this.props.handlePagination(1, 15);
       this.props.handleUpdatePriceOnAllLiveAuctions(
         this.props.dutchContract,
         this.props.gemContractAddress

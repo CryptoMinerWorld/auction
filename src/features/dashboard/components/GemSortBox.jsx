@@ -43,7 +43,9 @@ class GemSortBox extends PureComponent {
   };
 
   handleFetchAllGems = () => this.props.fetchGems('all');
+
   handleFetchAllGemsInAuction = () => this.props.fetchGems('inAuction');
+
   handleFetchAllGemsNOTInAuction = () => this.props.fetchGems('notInAuction');
 
   hideOtherSortBox = () => this.props.handleRerenderSortBox();
