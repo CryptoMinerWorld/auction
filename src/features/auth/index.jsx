@@ -7,7 +7,7 @@ import Input from 'antd/lib/input';
 import Button from 'antd/lib/button';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
-import { createNewUser } from './authActions';
+import { createNewUser, notInterestedInSigningUp } from './authActions';
 import Checkbox from 'antd/lib/checkbox';
 import { withStateMachine } from 'react-automata';
 import { stateMachine } from './statechart';
@@ -111,7 +111,11 @@ class Auth extends PureComponent {
       .catch(() => transition('FAIL'));
   };
 
-  handleRedirect = () => this.props.history.push('/');
+  handleRedirect = () => {
+    const { handleNotInterestedInSigningUp } = this.props;
+    handleNotInterestedInSigningUp();
+    // history.push('/');
+  };
 
   render() {
     const { imageURL, name } = this.state;
@@ -136,7 +140,7 @@ class Auth extends PureComponent {
                   {' '}
                   I agree to the{' '}
                   <a
-                    href="https://www.apple.com/support/products/pdf/applecare_ipod_t_and_c_11182003.pdf"
+                    href="https://drive.google.com/file/d/1oFMszefIhXJz01QXrSbU7vA-f2M92S3G/view?usp=sharing"
                     target="_blank"
                     className="dib"
                     rel="noopener noreferrer"
@@ -214,7 +218,8 @@ class Auth extends PureComponent {
 }
 
 const actions = {
-  handleCreateNewUser: createNewUser
+  handleCreateNewUser: createNewUser,
+  handleNotInterestedInSigningUp: notInterestedInSigningUp
 };
 
 export default compose(

@@ -123,3 +123,9 @@ export const getReferralPoints =  (preSaleContract, userId ) => preSaleContract.
 .unusedReferralPoints(userId)
 .call().then(referralPoints => referralPoints ).catch(error => console.log('error getting refrral points', error))
 
+
+export const getPlotCount =  (preSaleContract, userId ) => preSaleContract.methods
+.geodeBalances(userId)
+.call().then(referralPoints => referralPoints ).catch(error => console.log('error getting refrral points', error))
+
+

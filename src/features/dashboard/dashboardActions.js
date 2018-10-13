@@ -326,36 +326,41 @@ export const filterUserGemsOnPageLoad = (key, direction) => (
   dispatch({ type: DASHBOARD_WAS_FILTERED, payload: newMarket });
 };
 
-export const orderDashboardBy = (key, direction) => async (
-  dispatch,
-  getState
-) => {
-  const currentDashboardItems = await getState().dashboard.filter;
-  const newMarket = [...currentDashboardItems].sort(
-    (a, b) => (direction === 'desc' ? a[key] - b[key] : b[key] - a[key])
-  );
-  dispatch({ type: DASHBOARD_WAS_FILTERED, payload: newMarket });
-  dispatch({ type: PAGINATE, payload: [1, 8] });
-};
+export const orderDashboardBy = (key, direction) =>({ type: 'REORDER_DASHBOARD', payload: [key, direction]});
 
-export const getGemsForDashboardFilter = selection => (dispatch, getState) => {
-  const allGems = getState().dashboard.userGems;
-  let newGemSelection;
-  if (selection === 'all') {
-    newGemSelection = [...allGems];
-  }
+// async (
+//   dispatch,
+//   getState
+// ) => {
+//   const currentDashboardItems = await getState().dashboard.filter;
+//   const newMarket = [...currentDashboardItems].sort(
+//     (a, b) => (direction === 'desc' ? a[key] - b[key] : b[key] - a[key])
+//   );
+//   dispatch({ type: DASHBOARD_WAS_FILTERED, payload: newMarket });
+//   dispatch({ type: PAGINATE, payload: [1, 14] });
+// };
 
-  if (selection === 'inAuction') {
-    newGemSelection = allGems.filter(gem => gem.auctionIsLive === true);
-  }
+export const getGemsForDashboardFilter = selection => ({ type: 'FILTER_DASHBOARD', payload: selection});
+// export const getGemsForDashboardFilter = selection => (dispatch, getState) => {
 
-  if (selection === 'notInAuction') {
-    newGemSelection = allGems.filter(gem => gem.auctionIsLive === false);
-  }
+//   const allGems =  getState().dashboard.userGems;
+//   let newGemSelection 
 
-  dispatch({ type: DASHBOARD_WAS_FILTERED, payload: newGemSelection });
-  dispatch({ type: PAGINATE, payload: [1, 8] });
-};
+//   if (selection === 'all') {
+//     newGemSelection = [...allGems];
+//   }
+
+//   if (selection === 'inAuction') {
+//     newGemSelection = allGems.filter(gem => gem.auctionIsLive === true);
+//   }
+
+//   if (selection === 'notInAuction') {
+//     newGemSelection = allGems.filter(gem => gem.auctionIsLive === false);
+//   }
+
+//   dispatch({ type: DASHBOARD_WAS_FILTERED, payload: newGemSelection });
+//   dispatch({ type: PAGINATE, payload: [1, 14] });
+// };
 
 export const rerenderSortBox = () => dispatch =>
   dispatch({ type: RERENDER_SORT_BOX });
@@ -364,3 +369,5 @@ export const sortBoxReredendered = () => dispatch =>
 
 export const paginate = (pageNumber, pagePerView) => dispatch =>
   dispatch({ type: PAGINATE, payload: [pageNumber, pagePerView] });
+
+  export const addGemsToDashboard = (gems) => ({ type: 'DASHBOARD_GEMS_READY', payload: gems });

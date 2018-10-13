@@ -75,6 +75,7 @@ export const createNewUser = payload => dispatch => {
 export const showSignInModal = () => 
 dispatch =>  dispatch({ type: NEW_USER })
 
+export const notInterestedInSigningUp = () => ({type: 'NOT_SIGNING_UP' })
 
 // @dev this action fires when the app starts up
 export const getCurrentUser = () => () =>
@@ -89,7 +90,7 @@ export const getCurrentUser = () => () =>
       if (currentUser !== undefined) {
         store.dispatch({ type: CURRENT_USER_AVAILABLE, payload: currentUser });
         store.dispatch(checkIfUserExists(currentUser));
-        store.dispatch(getUserGems(currentUser));
+        // store.dispatch(getUserGems(currentUser));
       } else {
         store.dispatch({ type: CURRENT_USER_NOT_AVAILABLE });
       }
