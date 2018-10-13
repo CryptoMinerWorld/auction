@@ -3,13 +3,12 @@ import styled from 'styled-components';
 import Avatar from 'antd/lib/avatar';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import Auth from '../features/auth';
 import { NavLink } from 'react-router-dom';
 import RippleButton from './RippleButton/RippleButton';
 import img from '../app/images/Profile-Image-Logo-60x60.png';
 import { showSignInModal } from '../features/auth/authActions';
 require('antd/lib/avatar/style/css');
-
-// const userImageSelector = state => state.user.imageURL,
 
 const BottomHighlight = styled.div`
   background: linear-gradient(to right, #bc197c, #fc01ca);
@@ -20,11 +19,21 @@ const BottomHighlight = styled.div`
 const select = store => ({
   userImage: store.auth.user && store.auth.user.imageURL,
   userId: store.auth.user && store.auth.user.walletId,
-  userName: store.auth.user && store.auth.user.name
+  userName: store.auth.user && store.auth.user.name,
+  existingUser: store.auth.existingUser,
+  newUser: store.auth.newUser
 });
 
-const Navbar = ({ userImage, userId, userName, handleShowSignInModal }) => (
+const Navbar = ({
+  userImage,
+  userId,
+  userName,
+  handleShowSignInModal,
+  existingUser,
+  newUser
+}) => (
   <div className="shadow-1 z-9 bg-white w-100">
+    {newUser && <Auth />}
     <nav className="db dt-l w-100 border-box pa3 ph4-l bg-white mw9 center">
       <div className="dn db-ns tc-m">
         <a
@@ -64,17 +73,31 @@ const Navbar = ({ userImage, userId, userName, handleShowSignInModal }) => (
           Game Info
         </a>
 
-        <NavLink
-          className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
-          to={`/profile/${userId}`}
-          title="Workshop"
-          activeStyle={{
-            borderBottom: `2px solid purple`
-          }}
-          onClick={() => !userId && handleShowSignInModal()}
-        >
-          My Workshop
-        </NavLink>
+        {existingUser ? (
+          <NavLink
+            className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
+            to={`/profile/${userId}`}
+            title="Workshop"
+            activeStyle={{
+              borderBottom: `2px solid purple`
+            }}
+            // onClick={() => !userId && handleShowSignInModal()}
+          >
+            My Workshop
+          </NavLink>
+        ) : (
+          <p
+            className=" dim dark-gray f6 f5-l dib mr3 mr4-l pointer"
+            title="Join"
+            activeStyle={{
+              borderBottom: `2px solid purple`
+            }}
+            // onClick={() => console.log('sign in')}
+            onClick={() => handleShowSignInModal()}
+          >
+            Join
+          </p>
+        )}
         <NavLink
           exact
           to="/market"

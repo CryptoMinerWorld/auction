@@ -182,7 +182,7 @@ export const toggleGem = gemType => async dispatch => {
 export const filterChange = (filterName, values) => dispatch => {
   const payload = [filterName, values];
   dispatch({ type: CHANGE_FILTER_VALUES, payload });
-  dispatch({ type: PAGINATE_MARKET, payload: [1, 9] });
+  dispatch({ type: PAGINATE_MARKET, payload: [1, 15] });
 };
 
 export const orderMarketBy = (key, descending) => (dispatch, getState) => {
@@ -190,7 +190,7 @@ export const orderMarketBy = (key, descending) => (dispatch, getState) => {
     (a, b) => (descending === 'desc' ? a[key] - b[key] : b[key] - a[key])
   );
   dispatch({ type: MARKETPLACE_WAS_FILTERED, payload: newMarket });
-  dispatch({ type: PAGINATE_MARKET, payload: [1, 9] });
+  dispatch({ type: PAGINATE_MARKET, payload: [1, 15] });
 };
 
 export const paginate = (pageNumber, pagePerView) => dispatch =>

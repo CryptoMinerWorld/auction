@@ -22,36 +22,53 @@ class PlayerStats extends PureComponent {
   };
 
   state = {
-    referralPoints: ''
+    referralPoints: '',
+    plots: ''
   };
 
   componentDidMount() {
-    const { getReferralPoints, preSaleContract, match } = this.props;
+    const {
+      getReferralPoints,
+      preSaleContract,
+      match,
+      getPlotCount
+    } = this.props;
     if (preSaleContract && match.params.userId !== 'false') {
-      getReferralPoints(preSaleContract, match.params.userId).then(
-        referralPoints => this.setState({ referralPoints })
-      );
+      getReferralPoints(preSaleContract, match.params.userId)
+        .then(referralPoints => this.setState({ referralPoints }))
+        .catch(err => console.log('err fetching user refrral points', err));
+      getPlotCount(preSaleContract, match.params.userId)
+        .then(plots => this.setState({ plots }))
+        .catch(err => console.log('err fetching plots of land', err));
     }
   }
 
   componentDidUpdate(prevProps) {
-    const { getReferralPoints, preSaleContract, match } = this.props;
+    const {
+      getReferralPoints,
+      preSaleContract,
+      match,
+      getPlotCount
+    } = this.props;
     if (
       preSaleContract !== prevProps.preSaleContract &&
       match.params.userId !== 'false'
     ) {
-      getReferralPoints(preSaleContract, match.params.userId).then(
-        referralPoints => this.setState({ referralPoints })
-      );
+      getReferralPoints(preSaleContract, match.params.userId)
+        .then(referralPoints => this.setState({ referralPoints }))
+        .catch(err => console.log('err fetching user refrral points', err));
+      getPlotCount(preSaleContract, match.params.userId)
+        .then(plots => this.setState({ plots }))
+        .catch(err => console.log('err fetching plots of land', err));
     }
   }
 
   render() {
     const { gemCount } = this.props;
-    const { referralPoints } = this.state;
+    const { referralPoints, plots } = this.state;
     return (
       <div className="dn db-l">
-        <AuctionCategories gemCount={gemCount} />
+        <AuctionCategories gemCount={gemCount} plots={plots} />
         {referralPoints === '' ? (
           <p
             data-testid="loadingReferralPoints"
@@ -84,7 +101,7 @@ export default compose(
   withRouter
 )(PlayerStats);
 
-const AuctionCategories = ({ gemCount }) => (
+const AuctionCategories = ({ gemCount, plots }) => (
   <div className="dn flex-l jca pa2 mb4 bg-dark-gray br2">
     <div className="flex aic w-auto">
       <img src={Gem} alt="" className="h3 w-auto" />
@@ -113,7 +130,10 @@ const AuctionCategories = ({ gemCount }) => (
 
     <div className="flex aic w-auto">
       <img src={Land} alt="" className="h3 w-auto" />{' '}
-      <p className="pl3 mt2 f5">NO LAND</p>
+      {/* <p className="pl3 mt2 f5">NO LAND</p> */}
+      <p data-testid="plotsOfLand" className="pl3 mt2 f5">
+        {`${plots || 'NO'} ${plots === 1 ? 'PLOT' : 'PLOTS'}`}
+      </p>
     </div>
   </div>
 );
