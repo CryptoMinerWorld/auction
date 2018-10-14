@@ -137,7 +137,15 @@ class TradingBox extends PureComponent {
                   <Button
                     type="submit"
                     className="ma3"
-                    disabled={!(tokenId && duration && startPrice)}
+                    disabled={
+                      !(
+                        tokenId &&
+                        duration &&
+                        startPrice &&
+                        startPrice > endPrice &&
+                        startPrice !== endPrice
+                      )
+                    }
                     onClick={() => {
                       const payload = {
                         tokenId: Number(tokenId),
