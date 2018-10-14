@@ -77,7 +77,12 @@ class TradingBox extends PureComponent {
                     className="ma3"
                     onClick={() => {
                       this.setState({ formSubmitted: true });
-                      handleRemoveGemFromAuction(Number(tokenId), history);
+
+                      handleRemoveGemFromAuction(
+                        Number(tokenId),
+                        history,
+                        this.turnLoaderOff
+                      );
                     }}
                     data-testid="removeGemButton"
                     loading={formSubmitted}
