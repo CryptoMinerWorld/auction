@@ -103,7 +103,6 @@ export default function dashboardReducer(
   if (action.type === 'REORDER_DASHBOARD') {
     const key = action.payload[0];
     const direction = action.payload[1];
-
     const currentDashboardItems = state.filter;
     const newMarket = [...currentDashboardItems].sort(
       (a, b) => (direction === 'desc' ? a[key] - b[key] : b[key] - a[key])

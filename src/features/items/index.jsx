@@ -204,6 +204,9 @@ class Auction extends PureComponent {
                   auctionIsLive={details.auctionIsLive}
                   gemId={details.gemId}
                   restingEnergyMinutes={restingEnergyMinutes}
+                  lastSoldFor={
+                    details && details.lastSoldFor && details.lastSoldFor
+                  }
                 />
               </ReactCSSTransitionGroup>
             </div>

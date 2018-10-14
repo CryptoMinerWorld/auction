@@ -38,8 +38,8 @@ class StatsBox extends PureComponent {
       grade,
       rate,
       name,
-      currentPrice,
-      restingEnergyMinutes
+      restingEnergyMinutes,
+      lastSoldFor
     } = this.props;
 
     return (
@@ -70,12 +70,15 @@ class StatsBox extends PureComponent {
             restingEnergyMinutes={restingEnergyMinutes}
           />
 
-          <div className="pa3 pt4 mt3 tc" style={gradientAndShape}>
-            <small className="white ttu ">Last Sold For</small>
-            <p className="basic" style={{ fontSize: 'xx-large' }}>
-              Ξ <span data-testid="currentPrice">{weiToEth(currentPrice)}</span>
-            </p>
-          </div>
+          {lastSoldFor && (
+            <div className="pa3 pt4 mt3 tc" style={gradientAndShape}>
+              <small className="white ttu ">Last Sold For</small>
+              <p className="basic" style={{ fontSize: 'xx-large' }}>
+                Ξ{' '}
+                <span data-testid="currentPrice">{weiToEth(lastSoldFor)}</span>
+              </p>
+            </div>
+          )}
         </div>
       </OverlapOnDesktopView>
     );
