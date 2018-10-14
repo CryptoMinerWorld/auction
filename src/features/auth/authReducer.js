@@ -1,7 +1,7 @@
 
 import {CURRENT_USER_AVAILABLE, CURRENT_USER_NOT_AVAILABLE, WEB3_AVAILABLE, USER_EXISTS, NEW_USER, NO_USER_EXISTS} from './authConstants'
 
-export default function authReducer (state = { currentUserId: 'Loading...', signIn: false} , action) {
+export default function authReducer (state = { currentUserId: 'Loading...', signInBox: false} , action) {
 
     if (action.type === WEB3_AVAILABLE){
         return {...state, web3: action.payload}
@@ -23,8 +23,12 @@ export default function authReducer (state = { currentUserId: 'Loading...', sign
         return {...state, newUser: true }
     }
 
+    if (action.type ===  'SHOW_SIGN_IN_BOX'){
+        return {...state, signInBox: true }
+    }
+
     if (action.type ===  'NOT_SIGNING_UP'){
-        return {...state, newUser: false }
+        return {...state, signInBox: false }
     }
     
     if (action.type ===  NO_USER_EXISTS){
