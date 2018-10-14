@@ -69,10 +69,9 @@ class Auction extends PureComponent {
           .getCurrentPrice(gemContractAddress, match.params.gemId)
           .call()
           .then(currentPrice => {
-            console.log('currentPrice', currentPrice);
             this.setState({ currentPrice: Number(currentPrice) });
           })
-          .catch(error => console.log('error', error));
+          .catch(error => console.log('error getting current price', error));
       }, 2000);
   }
 
