@@ -69,7 +69,8 @@ const AuctionBox = ({
   provider,
   restingEnergyMinutes,
   history,
-  newUser
+  newUser,
+  handleShowSignInBox
 }) => {
   return (
     <OverlapOnDesktopView
@@ -107,7 +108,8 @@ const AuctionBox = ({
                 // } else if (provider) {
                 //   handleShowSignInModal();
               } else {
-                showConfirm();
+                // showConfirm();
+                handleShowSignInBox();
               }
             }}
             className="b"
@@ -128,7 +130,8 @@ const AuctionBox = ({
 
 const actions = {
   handleShowSignInModal: showSignInModal,
-  handleBuyNow
+  handleBuyNow,
+  handleShowSignInBox: () => ({ type: 'SHOW_SIGN_IN_BOX' })
 };
 
 export default compose(

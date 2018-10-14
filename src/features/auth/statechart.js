@@ -8,8 +8,8 @@ export const stateMachine =  {
             {
               target: 'loading',
               cond: ({ state }) =>
-                Object.values(state).filter(val => val === '' || val === false || val === 'PLEASE SIGN IN TO METAMASK'
-                || val === 'Loading...' ).length === 0
+                Object.values(state).filter(val => val === '' || val === 'PLEASE SIGN IN TO METAMASK'
+                || val === 'Loading...' ).length === 0 && state.terms === true && state.email.includes('@') && state.email.includes('.')
             },
             { target: 'error' }
           ]
@@ -36,8 +36,8 @@ export const stateMachine =  {
             {
               target: 'loading',
               cond: ({ state }) =>
-                Object.values(state).filter(val => val === '' || val === false || val === 'PLEASE SIGN IN TO METAMASK'
-                || val === 'Loading...' ).length === 0
+              Object.values(state).filter(val => val === '' || val === 'PLEASE SIGN IN TO METAMASK'
+              || val === 'Loading...' ).length === 0 && state.terms === true && state.email.includes('@') && state.email.includes('.')
             },
             { target: 'error' }
           ]
