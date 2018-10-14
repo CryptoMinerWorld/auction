@@ -37,7 +37,8 @@ export const getAuctionDetails = tokenId => dispatch => {
 export const updateGemOwnership = (
   gemId,
   newOwner,
-  history
+  history,
+  priceInWei
 ) => async dispatch => {
   // get name and image
   const userIdToLowerCase = newOwner
@@ -67,7 +68,8 @@ export const updateGemOwnership = (
             userName: name,
             userImage: imageURL,
             owner: userIdToLowerCase,
-            auctionIsLive: false
+            auctionIsLive: false,
+            lastSoldFor: priceInWei
           })
           .then(() => {
             // const payload = {...doc.data(), userName: name,
@@ -201,7 +203,7 @@ export const handleBuyNow = (_tokenId, _from, history) => (
     .on('transactionHash', () => {
       dispatch({ type: RELEASE_CONFETTI });
     })
-    .on('receipt', () => dispatch(updateGemOwnership(_tokenId, _from, history)))
+    .on('receipt', () => dispatch(updateGemOwnership(_tokenId, _from, history, priceInWei)))
     .on('error', err => {
       dispatch({
         type: MODAL_GONE

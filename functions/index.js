@@ -1,10 +1,10 @@
-// DEV
-const AUCTION_CONTRACT = '0x4ec415d87e00101867fbfa28db19cce0d564d8b3';
-const GEM_CONTRACT = '0x82ff6bbd7b64f707e704034907d582c7b6e09d97';
+// // DEV
+// const AUCTION_CONTRACT = '0x4ec415d87e00101867fbfa28db19cce0d564d8b3';
+// const GEM_CONTRACT = '0x82ff6bbd7b64f707e704034907d582c7b6e09d97';
 
-// // PROD
-// const AUCTION_CONTRACT = '0x1F4f6625e92C4789dCe4B92886981D7b5f484750';
-// const GEM_CONTRACT = '0xeae9d154da7a1cd05076db1b83233f3213a95e4f';
+// PROD
+const AUCTION_CONTRACT = '0x1F4f6625e92C4789dCe4B92886981D7b5f484750';
+const GEM_CONTRACT = '0xeae9d154da7a1cd05076db1b83233f3213a95e4f';
 
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
@@ -14,19 +14,19 @@ admin.initializeApp();
 
 const db = admin.database();
 
-// DEV
-const web3 = new Web3(
-  new Web3.providers.HttpProvider(
-    'https://rinkeby.infura.io/qWWCAOLoD65CmWAo4jLg'
-  )
-);
-
-// // PROD
+// // DEV
 // const web3 = new Web3(
 //   new Web3.providers.HttpProvider(
-//     'https://mainnet.infura.io/qWWCAOLoD65CmWAo4jLg '
+//     'https://rinkeby.infura.io/qWWCAOLoD65CmWAo4jLg'
 //   )
 // );
+
+// PROD
+const web3 = new Web3(
+  new Web3.providers.HttpProvider(
+    'https://mainnet.infura.io/qWWCAOLoD65CmWAo4jLg '
+  )
+);
 
 // Define the ABI of the contracts
 const Gems = require('./ABI/GemABI.json');
@@ -105,41 +105,40 @@ exports.updateLiveAuctionDetails = functions.https.onRequest(() =>
       return docs;
     })
     .then(docIds => {
-      console.log('docIds', docIds);
+      const numberedDocIds = docIds.filter(id => !isNaN(Number(id)));
       return Promise.all(
-        docIds.map(doc =>
+        numberedDocIds.map(doc =>
           auctionContract.methods
             .items(GEM_CONTRACT, Number(doc))
             .call()
             .then(details => {
-              console.log('details', details);
-              const { t0, t1, p0, p1 } = result;
-              return [doc, t1, p0, p1];
+              const { t0, t1, p0, p1 } = details;
+              return { doc, t1, p0, p1 };
             })
             .catch(err => console.log('err getting auction details', err))
         )
       );
     })
-    .then(([docId, deadline, maxPrice, minPrice]) => {
-      console.log(
-        'docId, deadline, maxPrice, minPrice',
-        docId,
-        deadline,
-        maxPrice,
-        minPrice
+    .then(allDetails => {
+      const cleanedDetails = allDetails.filter(
+        item => item.t1 !== '0' || item.p0 !== '0'
       );
-      return admin
-        .firestore()
-        .collection('stones')
-        .doc(docId)
-        .update({
-          deadline,
-          maxPrice,
-          minPrice
-        })
-        .catch(err =>
-          console.log('err updating db with new auction details', err)
-        );
+      console.log('cleanedDetails', cleanedDetails);
+
+      return allDetails.forEach(item =>
+        admin
+          .firestore()
+          .collection('stones')
+          .doc(item.doc)
+          .update({
+            deadline: Number(item.t1),
+            maxPrice: Number(item.p0),
+            minPrice: Number(item.p1)
+          })
+          .catch(err =>
+            console.log('err updating db with new auction details', err)
+          )
+      );
     })
     .catch(err => console.log('err updating live auction cloud function', err))
 );
