@@ -59,7 +59,8 @@ class Auth extends PureComponent {
     name: '',
     imageURL: '',
     walletId: '',
-    terms: false
+    terms: false,
+    mailinglist: false
   };
 
   static getDerivedStateFromProps(props, state) {
@@ -78,6 +79,7 @@ class Auth extends PureComponent {
       name: '',
       imageURL: '',
       walletId: '',
+      email: '',
       terms: false
     });
   }
@@ -96,14 +98,18 @@ class Auth extends PureComponent {
     this.setState({ name: CapitalizedAndTrimmedValue });
   };
 
+  updateEmail = email => this.setState({ email });
+
   updateImage = url => this.setState({ imageURL: url });
 
   handleAuthentication = () => {
-    const { name, imageURL } = this.state;
+    const { name, imageURL, email, mailinglist } = this.state;
     const { currentUser, handleCreateNewUser, transition } = this.props;
     const payload = {
       name,
       imageURL,
+      email,
+      mailinglist,
       walletId: currentUser
     };
     handleCreateNewUser(payload)
@@ -118,7 +124,7 @@ class Auth extends PureComponent {
   };
 
   render() {
-    const { imageURL, name } = this.state;
+    const { imageURL, name, email } = this.state;
     const { currentUser, transition, machineState } = this.props;
 
     return (
@@ -131,7 +137,7 @@ class Auth extends PureComponent {
           }
           onCancel={() => transition('CLOSE')}
           footer={[
-            <div className="flex jcb" key="AuthDialogueFooterButtons">
+            <div className="flex ais col" key="AuthDialogueFooterButtons">
               <Checkbox
                 checked={this.state.terms}
                 onChange={e => this.setState({ terms: e.target.checked })}
@@ -151,9 +157,19 @@ class Auth extends PureComponent {
                   .
                 </p>
               </Checkbox>
+              <Checkbox
+                checked={this.state.mailinglist}
+                onChange={e => this.setState({ mailinglist: e.target.checked })}
+              >
+                <p className="pl3 dib">
+                  I would like to join teh mailing list.
+                </p>
+              </Checkbox>
+
               <Button
                 key="submit"
                 type="primary"
+                className="w-100"
                 loading={machineState.value === 'loading'}
                 onClick={() => transition('SUBMIT', { state: this.state })}
               >
@@ -167,20 +183,30 @@ class Auth extends PureComponent {
               <div>
                 <Avatar src={imageURL} size={64} />
               </div>
-              <div className="truncate flex aic w-100">
+              <div className="truncate flex col aic w-100">
                 <p className="pl4 f2 b pa0 ma0 w-100 ">{name}</p>
+                <p className="pl4 f2 b pa0 ma0 w-100 ">{email}</p>
               </div>
             </div>
           )}
-          <Input value={currentUser} disabled size="large" />
+
+          <Input value={currentUser} disabled size="large" className="mv3" />
           <Input
             placeholder="Username"
             value={name}
             onChange={e => this.updateName(e.target.value)}
             size="large"
             className="mv3"
+            type="text"
           />
-
+          <Input
+            placeholder="Email"
+            value={email}
+            onChange={e => this.updateEmail(e.target.value)}
+            size="large"
+            type="email"
+            required
+          />
           <div className="pa3">
             <div className="flex wrap jcb">
               {images.map(url => (
@@ -202,6 +228,7 @@ class Auth extends PureComponent {
                       Please check that is your wallet id in the top field.
                     </li>
                     <li>Picked a username?</li>
+                    <li>Provided a valid email?</li>
                     <li>Selected an avatar?</li>
                     <li>Agreed to the terms and conditions?</li>
                   </ul>

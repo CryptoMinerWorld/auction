@@ -21,7 +21,7 @@ const select = store => ({
   userId: store.auth.user && store.auth.user.walletId,
   userName: store.auth.user && store.auth.user.name,
   existingUser: store.auth.existingUser,
-  newUser: store.auth.newUser
+  signInBox: store.auth.signInBox
 });
 
 const Navbar = ({
@@ -30,10 +30,10 @@ const Navbar = ({
   userName,
   handleShowSignInModal,
   existingUser,
-  newUser
+  signInBox
 }) => (
   <div className="shadow-1 z-9 bg-white w-100">
-    {newUser && <Auth />}
+    {signInBox && <Auth />}
     <nav className="db dt-l w-100 border-box pa3 ph4-l bg-white mw9 center">
       <div className="dn db-ns tc-m">
         <a
@@ -145,9 +145,9 @@ const Navbar = ({
   </div>
 );
 
-const actions = {
-  handleShowSignInModal: showSignInModal
-};
+const actions = dispatch => ({
+  handleShowSignInModal: () => dispatch({ type: 'SHOW_SIGN_IN_BOX' })
+});
 
 export default connect(
   select,
