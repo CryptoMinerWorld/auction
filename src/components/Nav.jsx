@@ -7,7 +7,7 @@ import Auth from '../features/auth';
 import { NavLink } from 'react-router-dom';
 import RippleButton from './RippleButton/RippleButton';
 import img from '../app/images/Profile-Image-Logo-60x60.png';
-import { showSignInModal } from '../features/auth/authActions';
+// import { showSignInModal } from '../features/auth/authActions';
 require('antd/lib/avatar/style/css');
 
 const BottomHighlight = styled.div`

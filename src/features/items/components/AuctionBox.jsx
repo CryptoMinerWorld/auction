@@ -8,7 +8,7 @@ import buyNow from '../../../app/images/pinkBuyNowButton.png';
 import ProgressMeter from './ProgressMeter';
 import { showSignInModal } from '../../auth/authActions';
 import { handleBuyNow } from '../itemActions';
-import { showConfirm } from '../../../components/Modal';
+// import { showConfirm } from '../../../components/Modal';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 // import Auth from '../../auth/index';
