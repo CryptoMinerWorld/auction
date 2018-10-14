@@ -19,7 +19,6 @@ import { createAuctionHelper, removeAuctionHelper } from './helpers';
 // import {getUserGemsOnce} from '../dashboard/dashboardActions'
 export const getAuctionDetails = tokenId => dispatch => {
   dispatch({ type: FETCH_DATA_BEGUN });
-
   return db
     .collection(`stones`)
     .where(`id`, `==`, Number(tokenId))
@@ -59,27 +58,29 @@ export const updateGemOwnership = (
     .collection(`stones`)
     .where(`id`, `==`, gemId)
     .get()
-    .then(coll => 
+    .then(coll =>
       // doc.id);
-    coll.docs.map(doc => 
-      db.doc(`stones/${doc.id}`)
-        .update({
-          userName: name,
-          userImage: imageURL,
-          owner: userIdToLowerCase,
-          auctionIsLive: false
-        })
-        .then(() => {
-          // const payload = {...doc.data(), userName: name,
-          //   userImage: imageURL,
-          //   owner: userIdToLowerCase,
-          //   auctionIsLive: false}
-          //   console.log('payload ownership', payload)
-          // dispatch({ type: OWNERSHIP_TRANSFERRED, payload });
-          history.push(`/profile/${userIdToLowerCase}`);
-          dispatch({ type: MODAL_GONE });
-        })
-        .catch(err => console.log('err', err)))
+      coll.docs.map(doc =>
+        db
+          .doc(`stones/${doc.id}`)
+          .update({
+            userName: name,
+            userImage: imageURL,
+            owner: userIdToLowerCase,
+            auctionIsLive: false
+          })
+          .then(() => {
+            // const payload = {...doc.data(), userName: name,
+            //   userImage: imageURL,
+            //   owner: userIdToLowerCase,
+            //   auctionIsLive: false}
+            //   console.log('payload ownership', payload)
+            // dispatch({ type: OWNERSHIP_TRANSFERRED, payload });
+            history.push(`/profile/${userIdToLowerCase}`);
+            dispatch({ type: MODAL_GONE });
+          })
+          .catch(err => console.log('err', err))
+      )
     );
 };
 
@@ -90,7 +91,7 @@ export const createAuction = (payload, turnLoaderOff, history) => (
   const currentAccount = getState().auth.currentUserId;
   const gemsContractInstance = getState().app.gemsContractInstance;
 
-  try {
+
     const { tokenId, duration, startPrice, endPrice } = payload;
 
     createAuctionHelper(
@@ -112,7 +113,7 @@ export const createAuction = (payload, turnLoaderOff, history) => (
             deadline,
             minPrice,
             maxPrice,
-            currentPrice:maxPrice
+            currentPrice: maxPrice
           });
 
           const completeGemInfo = {
@@ -121,7 +122,7 @@ export const createAuction = (payload, turnLoaderOff, history) => (
             deadline,
             minPrice,
             maxPrice,
-            currentPrice:maxPrice
+            currentPrice: maxPrice
           };
 
           return dispatch({
@@ -131,19 +132,18 @@ export const createAuction = (payload, turnLoaderOff, history) => (
         })
         .then(() => {
           // getUserGemsOnce(currentAccount)
-         
           turnLoaderOff();
           history.push(`/profile/${currentAccount}`);
         })
-        .catch(err => console.log('err', err));
-    });
-  } catch (error) {
-    console.log('error', error);
-  }
+        .catch(err => console.warn('err 1', err));
+    }).catch(err => {
+      turnLoaderOff();
+      console.warn('user cancel auction creation error', err)});
+  
 };
 
 // @notice removes a gem from an auction
-export const removeFromAuction = (tokenId, history) => async (
+export const removeFromAuction = (tokenId, history, turnLoaderOff) => async (
   dispatch,
   getState
 ) => {
@@ -162,12 +162,11 @@ export const removeFromAuction = (tokenId, history) => async (
         .get()
         .then(coll => {
           coll.docs.map(async doc => {
-            
             await db.doc(`stones/${doc.id}`).update({
               auctionIsLive: false
             });
             dispatch({
-              type: 'GEM_REMOVED_FROM_AUCTION', 
+              type: 'GEM_REMOVED_FROM_AUCTION',
               payload: doc.data().id
             });
             // getUserGemsOnce(currentUser)
@@ -175,7 +174,10 @@ export const removeFromAuction = (tokenId, history) => async (
           });
         })
     )
-    .catch(error => console.log('remove auction error ', error));
+    .catch(error => {
+      console.log('error removing auction', error);
+      turnLoaderOff();
+    });
 };
 
 // @notice lets users buy a gem in an active auction
@@ -189,7 +191,7 @@ export const handleBuyNow = (_tokenId, _from, history) => (
 
   dispatch({ type: MODAL_VISIBLE });
 
-  console.log('_tokenId, _from', _tokenId, _from)
+  console.log('_tokenId, _from', _tokenId, _from);
 
   return dutchAuctionContractInstance.methods
     .buy(gemContractAddress, _tokenId)
