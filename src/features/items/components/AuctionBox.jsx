@@ -58,6 +58,7 @@ const AuctionBox = ({
   level,
   grade,
   rate,
+  restingEnergyMinutes,
   deadline,
   name,
   tokenId,
@@ -67,7 +68,6 @@ const AuctionBox = ({
   handleShowSignInModal,
   accountExists,
   provider,
-  restingEnergyMinutes,
   history,
   newUser,
   handleShowSignInBox

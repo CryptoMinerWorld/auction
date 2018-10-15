@@ -8,6 +8,9 @@ import { ethToWei, daysToSeconds } from '../../mint/helpers';
 import { createAuction, removeFromAuction } from '../itemActions';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
+import GiftGems from './GiftGems';
+import Gembox from './Gembox';
+import ProgressMeter from './ProgressMeter';
 
 const TopHighLight = styled.div`
   background: linear-gradient(to right, #e36d2d, #b91a78);
@@ -53,7 +56,15 @@ class TradingBox extends PureComponent {
       handleRemoveGemFromAuction,
       tokenId,
       auctionIsLive,
-      history
+      history,
+      level,
+      grade,
+      rate,
+      restingEnergyMinutes,
+      name,
+      currentPrice,
+      minPrice,
+      maxPrice
     } = this.props;
     const { duration, startPrice, endPrice, formSubmitted } = this.state;
     return (
@@ -69,9 +80,23 @@ class TradingBox extends PureComponent {
         <TopHighLight style={tophighlight} />
         <div className="white pa3">
           <div className="flex col jcc ">
+            <h1
+              className="tc pb3 b white"
+              style={{ wordBreak: 'break-all' }}
+              data-testid="gemName"
+            >
+              {name}
+            </h1>
+            <div className="mt3" />
+            <Gembox
+              level={level}
+              grade={grade}
+              rate={rate}
+              restingEnergyMinutes={restingEnergyMinutes}
+            />
             {auctionIsLive ? (
               <div className="pa5 flex jcc col">
-                <div>
+                <div className="flex jcc">
                   <Button
                     type="danger"
                     className="ma3"
@@ -97,71 +122,83 @@ class TradingBox extends PureComponent {
                     done.
                   </p>
                 )}
+                <ProgressMeter
+                  currentPrice={currentPrice}
+                  minPrice={minPrice}
+                  maxPrice={maxPrice}
+                />
               </div>
             ) : (
               <div className="pa5 flex jcc col">
-                <Input
-                  type="number"
-                  placeholder="duration in days"
-                  className="db"
-                  value={duration}
-                  onChange={e =>
-                    this.handleChange(Number(e.target.value), 'duration')
-                  }
-                  data-testid="durationInputField"
-                  required
-                />
-                <Input
-                  type="number"
-                  placeholder="Start price in ether"
-                  className="db"
-                  value={startPrice}
-                  onChange={e =>
-                    this.handleChange(Number(e.target.value), 'startPrice')
-                  }
-                  data-testid="startPriceInputField"
-                  required
-                />
-                <Input
-                  type="number"
-                  placeholder="End price in ether"
-                  className="db"
-                  value={endPrice}
-                  onChange={e =>
-                    this.handleChange(Number(e.target.value), 'endPrice')
-                  }
-                  data-testid="endPriceInputField"
-                  required
-                />
                 <div>
-                  <Button
-                    type="submit"
-                    className="ma3"
-                    disabled={
-                      !(
-                        tokenId &&
-                        duration &&
-                        startPrice &&
-                        startPrice > endPrice &&
-                        startPrice !== endPrice
-                      )
+                  <Input
+                    type="number"
+                    placeholder="duration in days"
+                    className="db"
+                    value={duration}
+                    onChange={e =>
+                      this.handleChange(Number(e.target.value), 'duration')
                     }
-                    onClick={() => {
-                      const payload = {
-                        tokenId: Number(tokenId),
-                        duration: daysToSeconds(duration),
-                        startPrice: ethToWei(startPrice),
-                        endPrice: ethToWei(endPrice)
-                      };
-                      this.setState({ formSubmitted: true });
-                      handleCreateAuction(payload, this.turnLoaderOff, history);
-                    }}
-                    data-testid="createAuctionButton"
-                    loading={formSubmitted}
-                  >
-                    Create Auction
-                  </Button>
+                    data-testid="durationInputField"
+                    required
+                  />
+                  <Input
+                    type="number"
+                    placeholder="Start price in ether"
+                    className="db"
+                    value={startPrice}
+                    onChange={e =>
+                      this.handleChange(Number(e.target.value), 'startPrice')
+                    }
+                    data-testid="startPriceInputField"
+                    required
+                  />
+                  <Input
+                    type="number"
+                    placeholder="End price in ether"
+                    className="db"
+                    value={endPrice}
+                    onChange={e =>
+                      this.handleChange(Number(e.target.value), 'endPrice')
+                    }
+                    data-testid="endPriceInputField"
+                    required
+                  />
+                  <div className="flex jcc">
+                    <Button
+                      type="submit"
+                      className="ma3 "
+                      disabled={
+                        !(
+                          tokenId &&
+                          duration &&
+                          startPrice &&
+                          startPrice > endPrice &&
+                          startPrice !== endPrice
+                        )
+                      }
+                      onClick={() => {
+                        const payload = {
+                          tokenId: Number(tokenId),
+                          duration: daysToSeconds(duration),
+                          startPrice: ethToWei(startPrice),
+                          endPrice: ethToWei(endPrice)
+                        };
+                        this.setState({ formSubmitted: true });
+                        handleCreateAuction(
+                          payload,
+                          this.turnLoaderOff,
+                          history
+                        );
+                      }}
+                      data-testid="createAuctionButton"
+                      loading={formSubmitted}
+                    >
+                      Create Auction
+                    </Button>
+                  </div>
                 </div>
+                <GiftGems />
                 {formSubmitted && (
                   <p className="red pt3 measure">
                     Please do not nagivate away from this page while the

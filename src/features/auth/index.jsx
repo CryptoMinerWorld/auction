@@ -162,7 +162,8 @@ class Auth extends PureComponent {
                 onChange={e => this.setState({ mailinglist: e.target.checked })}
               >
                 <p className="pl3 dib">
-                  I would like to join teh mailing list.
+                  Join the mailing list. (Don't worry, we hate spam just like
+                  you do.)
                 </p>
               </Checkbox>
 
@@ -185,7 +186,6 @@ class Auth extends PureComponent {
               </div>
               <div className="truncate flex col aic w-100">
                 <p className="pl4 f2 b pa0 ma0 w-100 ">{name}</p>
-                <p className="pl4 f2 b pa0 ma0 w-100 ">{email}</p>
               </div>
             </div>
           )}
