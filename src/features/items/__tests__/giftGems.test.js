@@ -1,6 +1,6 @@
 import { testStateMachine } from 'react-automata';
-import GiftGems from '../components/GiftGems';
+import {TestGiftGems} from '../components/GiftGems';
 
-test.skip('GiftGems works', () => {
-  testStateMachine(GiftGems);
+test('GiftGems works', () => {
+  testStateMachine(TestGiftGems);
 });
