@@ -7,6 +7,8 @@ import gem3 from '../../../app/images/icons/gem3.png';
 import restingEnergy from '../../../app/images/icons/EnergySymbolDull.png';
 import formatDistance from 'date-fns/formatDistance';
 import subMinutes from 'date-fns/subMinutes';
+// var moment = require('moment');
+// var momentDurationFormatSetup = require('moment-duration-format');
 
 class Gembox extends PureComponent {
   static propTypes = {
@@ -34,9 +36,18 @@ class Gembox extends PureComponent {
     }[gradeValue]);
 
   restingEnergyConverter = restingEnergyMinutes => {
+    // momentDurationFormatSetup(moment);
+    // const differenceInWords = moment
+    //   .duration(restingEnergyMinutes, 'minutes')
+    //   .format('w [week], d [days], h [hrs], m [min]', {
+    //     trim: true
+    //   });
+    // https://momentjs.com/docs/#/durations/
     const now = Date.now();
     const nowMinusMinutes = subMinutes(now, restingEnergyMinutes);
-    const differenceInWords = formatDistance(nowMinusMinutes, now);
+    const differenceInWords = formatDistance(nowMinusMinutes, now, {
+      includeSeconds: true
+    });
     return differenceInWords;
   };
 

@@ -21,6 +21,8 @@ import { updateWalletId } from '../features/auth/authActions';
 import DutchAuction from './ABI/DutchAuction.json';
 import Gems from './ABI/GemERC721.json';
 import Presale from './ABI/Presale2.json';
+import { Subscribe } from 'unstated';
+import AppContainer from './containers/App';
 require('antd/lib/alert/style/css');
 require('antd/lib/modal/style/css');
 
@@ -68,7 +70,10 @@ class App extends Component {
     const {
       handleSendContractsToRedux,
       // handleUpdatePriceOnAllLiveAuctions,
-      handleUpdateWalletId
+      handleUpdateWalletId,
+      setWeb3,
+      setGemsContract,
+      setCurrentAccountId
     } = this.props;
     // @notice loading a custom font when app mounts
     const font = new FontFaceObserver('Muli', {
@@ -82,10 +87,13 @@ class App extends Component {
     // @notice loading web3 when component mounts
     const Web3 = await getWeb3;
     const { web3 } = Web3;
+    setWeb3(web3);
 
     const currentAccountId = await web3.eth
       .getAccounts()
       .then(accounts => accounts[0]);
+
+    setCurrentAccountId(currentAccountId);
 
     // this ensures that the wallet in metamask is always the wallet in the currentAccountId, however this is a problem because it means that you cant view someone eles profile page
     web3.currentProvider.publicConfigStore.on('update', ({ selectedAddress }) =>
@@ -131,6 +139,7 @@ class App extends Component {
           currentAccount,
           presaleContract
         ]) => {
+          setGemsContract(gemsContractInstance);
           handleSendContractsToRedux(
             dutchAuctionContractInstance,
             gemsContractInstance,
@@ -203,10 +212,23 @@ const actions = {
   handleUpdateWalletId: updateWalletId
 };
 
+const connectedApp = props => (
+  <Subscribe to={[AppContainer]}>
+    {app => (
+      <App
+        setWeb3={app.setWeb3}
+        setGemsContract={app.setGemsContract}
+        setCurrentAccountId={app.setCurrentAccountId}
+        {...props}
+      />
+    )}
+  </Subscribe>
+);
+
 export default connect(
   select,
   actions
-)(App);
+)(connectedApp);
 
 App.propTypes = {
   handleSendContractsToRedux: PropTypes.func.isRequired,
