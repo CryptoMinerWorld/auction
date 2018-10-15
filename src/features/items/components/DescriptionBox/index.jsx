@@ -114,7 +114,7 @@ class DescriptionBox extends PureComponent {
                       alt="seller logo"
                       className="br-100 h2 w-auto pl3-ns"
                     />
-                    <small className="pl3 white-60 dib">
+                    <small className="pl3 white-60 dib truncate mw5">
                       <span>Owned By {userName}</span>
                     </small>
                   </Link>

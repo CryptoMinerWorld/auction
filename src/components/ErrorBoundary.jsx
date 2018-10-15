@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 // import PropTypes from 'prop-types';
 import * as Sentry from '@sentry/browser';
 
@@ -21,11 +21,12 @@ class ErrorBoundary extends Component {
   render() {
     if (this.state.error) {
       //render fallback UI
-      return (
-        <button onClick={() => Sentry.showReportDialog()}>
-          Report feedback
-        </button>
-      );
+      return Sentry.showReportDialog();
+      // return (
+      //   <button onClick={() => Sentry.showReportDialog()}>
+      //     Report feedback
+      //   </button>
+      // );
     } else {
       //when there's not an error, render children untouched
       return this.props.children;

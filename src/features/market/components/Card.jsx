@@ -63,9 +63,16 @@ const Cards = ({ auction }) => (
           rate={auction.rate}
           market="true"
         />
-        <div className="flex jcc ph3 o-70 ">
-          <img src={auction.userImage} alt={auction.userName} className="h2" />
-          <p className="pl2">Owned by {auction.userName}</p>
+        <div className="flex aic o-70 mb2 w-100">
+          <img
+            src={auction.userImage}
+            alt={auction.userName}
+            className="h2 ma2"
+          />
+          <div className="db">
+            <p className="pl2 ma0">Owned by</p>
+            <p className="pl2 ma0 truncate mw5">{auction.userName}</p>
+          </div>
         </div>
       </div>
     </div>
