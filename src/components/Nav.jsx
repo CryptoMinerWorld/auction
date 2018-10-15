@@ -81,7 +81,6 @@ const Navbar = ({
             activeStyle={{
               borderBottom: `2px solid purple`
             }}
-            // onClick={() => !userId && handleShowSignInModal()}
           >
             My Workshop
           </NavLink>
@@ -89,10 +88,6 @@ const Navbar = ({
           <p
             className=" dim dark-gray f6 f5-l dib mr3 mr4-l pointer"
             title="Join"
-            activeStyle={{
-              borderBottom: `2px solid purple`
-            }}
-            // onClick={() => console.log('sign in')}
             onClick={() => handleShowSignInModal()}
           >
             Join

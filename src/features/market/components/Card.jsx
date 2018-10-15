@@ -69,9 +69,11 @@ const Cards = ({ auction }) => (
             alt={auction.userName}
             className="h2 ma2"
           />
-          <div className="db">
+          <div className="db w-100">
             <p className="pl2 ma0">Owned by</p>
-            <p className="pl2 ma0 truncate mw5">{auction.userName}</p>
+            <p className="pl2 ma0 truncate" style={{ maxWidth: '13rem' }}>
+              {auction.userName}
+            </p>
           </div>
         </div>
       </div>
