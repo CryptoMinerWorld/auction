@@ -275,11 +275,7 @@ class GiftGems extends Component {
 
             <State is={['idle', 'loading']}>
               <div className="w-100 w5-ns h3 center mt4">
-                <ColourButton
-                  htmlType="submit"
-                  // disabled={isSubmitting}
-                  className="b"
-                >
+                <ColourButton type="submit" className="b">
                   {machineState.value === 'loading' ||
                   machineState.value === 'transferring' ? (
                     <Icon type="loading" theme="outlined" />

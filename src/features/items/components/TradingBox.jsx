@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import React, { PureComponent } from 'react';
 import Input from 'antd/lib/input';
+import Icon from 'antd/lib/icon';
 // import Button from 'antd/lib/button';
 import { connect } from 'react-redux';
 import { ethToWei, daysToSeconds } from '../../mint/helpers';
@@ -126,10 +127,16 @@ class TradingBox extends PureComponent {
                         );
                       }}
                       data-testid="removeGemButton"
-                      loading={formSubmitted}
                       className="b"
                     >
-                      End Auction
+                      {formSubmitted ? (
+                        <span>
+                          <Icon type="loading" theme="outlined" /> Removing
+                          Auction...
+                        </span>
+                      ) : (
+                        '  End Auction'
+                      )}
                     </ColourButton>
                   </div>
                 </div>
@@ -210,9 +217,15 @@ class TradingBox extends PureComponent {
                         );
                       }}
                       data-testid="createAuctionButton"
-                      loading={formSubmitted}
                     >
-                      Create Auction
+                      {formSubmitted ? (
+                        <span>
+                          <Icon type="loading" theme="outlined" /> Creating
+                          Auction...
+                        </span>
+                      ) : (
+                        'Create Auction'
+                      )}
                     </ColourButton>
                   </div>
                 </div>
