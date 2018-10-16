@@ -1,17 +1,14 @@
 import React, { Component } from 'react';
 // import PropTypes from 'prop-types';
-// import { withStateMachine } from 'react-automata';
-import styled from 'styled-components';
+import { withStateMachine, State } from 'react-automata';
 import { Formik, Field, Form } from 'formik';
 import Input from 'antd/lib/input';
 import Button from 'antd/lib/button';
-import { Subscribe } from 'unstated';
-import AppContainer from '../../../app/containers/App';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { db } from '../../../app/utils/firebase';
-
+import { OxToLowerCase } from '../../../app/utils/helpers';
 import button from '../../../app/images/pinkBuyNowButton.png';
 
 const ColourButton = styled.button`
@@ -29,43 +26,46 @@ const ColourButton = styled.button`
   cursor: pointer;
 `;
 
-// export const stateMachine = {
-//   initial: 'idle',
-//   states: {
-//     idle: {
-//       on: {
-//         GIFT: 'loading'
-//       }
-//     },
-//     loading: {
-//       onEntry: 'checkReceiverDetails',
-//       on: {
-//         SUCCEED: 'confirm',
-//         ERROR: 'error'
-//       }
-//     },
-//     confirm: {
-//       on: {
-//         TRANSFER: 'transferring'
-//       }
-//     },
-//     transferring: {
-//       onEntry: 'transferOwnership',
-//       on: {
-//         SUCCEED: 'done',
-//         ERROR: 'error'
-//       }
-//     },
-//     done: {
-//       onEntry: 'redirectToMarket'
-//     },
-//     error: {
-//       on: {
-//         GIFT: 'loading'
-//       }
-//     }
-//   }
-// };
+export const stateMachine = {
+  initial: 'idle',
+  states: {
+    idle: {
+      on: {
+        GIFT: 'loading'
+      }
+    },
+    loading: {
+      onEntry: 'checkReceiverDetails',
+      on: {
+        SUCCESS: 'confirm',
+        ERROR: 'error'
+      }
+    },
+    confirm: {
+      on: {
+        TRANSFER: 'transferring',
+        CANCEL: 'idle'
+      }
+    },
+    transferring: {
+      onEntry: 'transferGem',
+      on: {
+        SUCCESS: 'done',
+        ERROR: 'error'
+      }
+    },
+    done: {
+      onEntry: 'redirectToMarket'
+    },
+    error: {
+      on: {
+        TRANSFER: 'transferring',
+        GIFT: 'loading',
+        CANCEL: 'idle'
+      }
+    }
+  }
+};
 
 class GiftGems extends Component {
   //   static propTypes = {
@@ -85,43 +85,34 @@ class GiftGems extends Component {
     }
   };
 
-  transferOwnershipOnDatabase = async (from, to, tokenId) => {
-    const toUserIdToLowerCase = to
-      .split('')
-      .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
-      .join('');
-
-    const fromUserIdToLowerCase = from
-      .split('')
-      .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
-      .join('');
-
-    db.doc(`users/${toUserIdToLowerCase}`)
+  transferOwnershipOnDatabase = async (to, tokenId) => {
+    db.doc(`users/${OxToLowerCase(to)}`)
       .get()
       .then(doc => [doc.data().name, doc.data().imageURL])
       .then(([name, image]) =>
         db.doc(`stones/${tokenId}`).update({
-          owner: toUserIdToLowerCase,
+          owner: OxToLowerCase(to),
           userName: name,
           userImage: image
         })
       )
-      .catch(err => console.warn(err, 'error on db when gifting gem'));
+      .catch(error => this.props.transition('ERROR', { error }));
   };
 
-  transferGem = values => {
+  transferGem = () => {
     const {
       gemsContract,
       currentAccountId,
       match,
-      history,
-      handleRemoveGemFromDashboard
+      walletId,
+      transition
     } = this.props;
-    const to = values.walletId;
+    const to = walletId;
     const from = currentAccountId;
     const tokenId = match.params.gemId;
 
     // validate here
+    // try using a guard
     console.warn(to, from, tokenId, gemsContract);
 
     gemsContract.methods
@@ -129,47 +120,104 @@ class GiftGems extends Component {
       .send()
       .then(async () => {
         await this.transferOwnershipOnDatabase(from, to, tokenId);
-        history.push(`/profile/${from}`);
-      });
+        transition('SUCCESS', { from });
+        // history.push(`/profile/${from}`);
+      })
+      .catch(error => transition('ERROR', { error }));
+  };
+
+  redirectToMarket = () =>
+    this.props.history.push(`/profile/${this.props.from}`);
+
+  checkReceiverDetails = () => {
+    const { walletId, transition } = this.props;
+    db.doc(`users/${OxToLowerCase(walletId)}`)
+      .get()
+      .then(
+        doc =>
+          doc.exists
+            ? transition('SUCCESS', {
+                name: doc.data().name,
+                image: doc.data().imageURL
+              })
+            : transition('ERROR', { error: 'No user exists' })
+      )
+      .catch(err => console.warn(err, 'error finding gift reciver on db'));
   };
 
   render() {
+    const { transition, machineState, match, error } = this.props;
+    console.log('machineState', machineState.value);
     return (
       <Formik
         validate={this.validateWalletId}
         initialValues={{
           walletId: ''
         }}
-        onSubmit={(values, actions) => this.transferGem(values)}
-        render={({ errors, touched, isSubmitting, isValidating, status }) => (
+        onSubmit={values => transition('GIFT', { walletId: values.walletId })}
+        render={({ errors, touched, isSubmitting }) => (
           <Form className="flex col jcc mt3">
-            <Field type="text" name="walletId">
-              {({ field }) => (
-                <Input
-                  type="text"
-                  {...field}
-                  placeholder="Send this gem to someone"
-                />
-              )}
-            </Field>
-            {errors.walletId &&
-              touched.walletId && <p className="orange">{errors.walletId}</p>}
+            <State
+              is={['idle', 'loading']}
+              render={visible =>
+                visible ? (
+                  <div>
+                    <Field type="text" name="walletId">
+                      {({ field }) => (
+                        <Input
+                          type="text"
+                          {...field}
+                          placeholder="Send this gem to someone"
+                        />
+                      )}
+                    </Field>
+                    {errors.walletId &&
+                      touched.walletId && (
+                        <p className="orange">{errors.walletId}</p>
+                      )}
+                  </div>
+                ) : null
+              }
+            />
 
-            {/* <div className="pa3 flex jcc"> */}
-            <div className="w-100 w5-ns h3 center mt4">
-              <ColourButton
-                htmlType="submit"
-                disabled={isSubmitting}
-                loading={isValidating || isSubmitting}
-                className="b"
-              >
-                <span role="img" aria-label="gift emoji">
-                  🎁
-                </span>
-                Gift
-              </ColourButton>
-            </div>
-            {status && status.msg && <div>{status.msg}</div>}
+            <State is={['error', 'confirm']}>
+              <div>
+                {`You sending gem id ${match.params.gemId} to ${
+                  this.props.name
+                }`}{' '}
+                <img
+                  src={this.props.image}
+                  alt={this.props.name}
+                  className="h3 w-auto"
+                />
+              </div>
+              Continue the transfer?
+              <Button onClick={() => transition('TRANSFER')}>Transfer</Button>
+              <Button onClick={() => transition('CANCEL')}>Cancel</Button>
+            </State>
+
+            <State is={['error']}>
+              We didn't find a user with that wallet address, would you like to
+              send it to that address anyway?{' '}
+              <Button onClick={() => transition('TRANSFER')}>Transfer</Button>
+              <Button onClick={() => transition('CANCEL')}>Cancel</Button>
+            </State>
+
+            <State is={['idle', 'loading']}>
+              <div className="pa3 flex jcc">
+                <Button
+                  htmlType="submit"
+                  disabled={isSubmitting}
+                  loading={machineState.value === 'loading'}
+                >
+                  <span role="img" aria-label="gift emoji">
+                    🎁
+                  </span>
+                  Gift
+                </Button>
+              </div>
+            </State>
+            {error && <div className="red">{error}</div>}
           </Form>
         )}
       />
@@ -177,30 +225,34 @@ class GiftGems extends Component {
   }
 }
 
-const connectedGiftGems = props => (
-  <Subscribe to={[AppContainer]}>
-    {app => (
-      <GiftGems
-        web3={app.state.web3}
-        gemsContract={app.state.gemsContract}
-        currentAccountId={app.state.currentAccountId}
-        {...props}
-      />
-    )}
-  </Subscribe>
-);
+// const connectedGiftGems = props => (
+//   <Subscribe to={[AppContainer]}>
+//     {app => (
+//       <GiftGems
+//         web3={app.state.web3}
+//         gemsContract={app.state.gemsContract}
+//         currentAccountId={app.state.currentAccountId}
+//         {...props}
+//       />
+//     )}
+//   </Subscribe>
+// );
 
-const actions = dispatch => ({
-  handleRemoveGemFromDashboard: tokenId =>
-    dispatch({ type: 'GEM_GIFTED', payload: Number(tokenId) })
+// const actions = dispatch => ({
+//   handleRemoveGemFromDashboard: tokenId =>
+//     dispatch({ type: 'GEM_GIFTED', payload: Number(tokenId) })
+// });
+
+const select = store => ({
+  web3: store.app.web3,
+  gemsContract: store.app.gemsContract,
+  currentAccountId: store.app.currentAccountId
 });
 
 export default compose(
-  connect(
-    null,
-    actions
-  ),
-  withRouter
-)(connectedGiftGems);
+  connect(select),
+  withRouter,
+  withStateMachine(stateMachine)
+)(GiftGems);
 
-// export default withStateMachine(stateMachine)(connectedGiftGems);
+export const TestGiftGems = withStateMachine(stateMachine)(GiftGems);

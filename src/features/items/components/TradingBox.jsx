@@ -8,6 +8,9 @@ import { ethToWei, daysToSeconds } from '../../mint/helpers';
 import { createAuction, removeFromAuction } from '../itemActions';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
+import GiftGems from './GiftGems';
+import Gembox from './Gembox';
+import ProgressMeter from './ProgressMeter';
 
 import GiftGems from './GiftGems';
 import Gembox from './Gembox';

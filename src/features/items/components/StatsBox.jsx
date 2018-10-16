@@ -92,9 +92,9 @@ StatsBox.propTypes = {
     PropTypes.string,
     PropTypes.number
   ]).isRequired,
-  level: PropTypes.number.isRequired,
-  grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  level: PropTypes.number,
+  grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   name: PropTypes.string.isRequired,
-  currentPrice: PropTypes.number.isRequired
+  currentPrice: PropTypes.number
 };
