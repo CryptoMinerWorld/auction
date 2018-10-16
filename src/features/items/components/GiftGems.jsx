@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 // import PropTypes from 'prop-types';
 // import { withStateMachine } from 'react-automata';
+import styled from 'styled-components';
 import { Formik, Field, Form } from 'formik';
 import Input from 'antd/lib/input';
 import Button from 'antd/lib/button';
@@ -10,6 +11,23 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { db } from '../../../app/utils/firebase';
+
+import button from '../../../app/images/pinkBuyNowButton.png';
+
+const ColourButton = styled.button`
+  background-image: url(${button});
+  background-position: center top;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  border: none;
+  color: white;
+  text-transform: uppercase;
+  cursor: pointer;
+`;
 
 // export const stateMachine = {
 //   initial: 'idle',
@@ -122,22 +140,7 @@ class GiftGems extends Component {
         initialValues={{
           walletId: ''
         }}
-        onSubmit={
-          (values, actions) => this.transferGem(values)
-
-          //   // MyImaginaryRestApiCall(user.id, values).then(
-          //   //   updatedUser => {
-          //   //     actions.setSubmitting(false);
-          //   //     updateUser(updatedUser);
-          //   //     onClose();
-          //   //   },
-          //   //   error => {
-          //   //     actions.setSubmitting(false);
-          //   //     actions.setErrors(transformMyRestApiErrorsToAnObject(error));
-          //   //     actions.setStatus({ msg: 'Set some arbitrary status or data' });
-          //   //   }
-          //   // );
-        }
+        onSubmit={(values, actions) => this.transferGem(values)}
         render={({ errors, touched, isSubmitting, isValidating, status }) => (
           <Form className="flex col jcc mt3">
             <Field type="text" name="walletId">
@@ -152,17 +155,19 @@ class GiftGems extends Component {
             {errors.walletId &&
               touched.walletId && <p className="orange">{errors.walletId}</p>}
 
-            <div className="pa3 flex jcc">
-              <Button
+            {/* <div className="pa3 flex jcc"> */}
+            <div className="w-100 w5-ns h3 center mt4">
+              <ColourButton
                 htmlType="submit"
                 disabled={isSubmitting}
                 loading={isValidating || isSubmitting}
+                className="b"
               >
                 <span role="img" aria-label="gift emoji">
                   🎁
                 </span>
                 Gift
-              </Button>
+              </ColourButton>
             </div>
             {status && status.msg && <div>{status.msg}</div>}
           </Form>

@@ -11,6 +11,22 @@ import { compose } from 'redux';
 import GiftGems from './GiftGems';
 import Gembox from './Gembox';
 import ProgressMeter from './ProgressMeter';
+import button from '../../../app/images/pinkBuyNowButton.png';
+
+const ColourButton = styled.button`
+  background-image: url(${button});
+  background-position: center top;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  border: none;
+  color: white;
+  text-transform: uppercase;
+  cursor: pointer;
+`;
 
 const TopHighLight = styled.div`
   background: linear-gradient(to right, #e36d2d, #b91a78);
@@ -97,23 +113,25 @@ class TradingBox extends PureComponent {
             {auctionIsLive ? (
               <div className="pa5 flex jcc col">
                 <div className="flex jcc">
-                  <Button
-                    type="danger"
-                    className="ma3"
-                    onClick={() => {
-                      this.setState({ formSubmitted: true });
+                  <div className="w-100 w5-ns h3 center mt4">
+                    <ColourButton
+                      type="danger"
+                      onClick={() => {
+                        this.setState({ formSubmitted: true });
 
-                      handleRemoveGemFromAuction(
-                        Number(tokenId),
-                        history,
-                        this.turnLoaderOff
-                      );
-                    }}
-                    data-testid="removeGemButton"
-                    loading={formSubmitted}
-                  >
-                    Remove Gem From Auction
-                  </Button>
+                        handleRemoveGemFromAuction(
+                          Number(tokenId),
+                          history,
+                          this.turnLoaderOff
+                        );
+                      }}
+                      data-testid="removeGemButton"
+                      loading={formSubmitted}
+                      className="b"
+                    >
+                      End Auction
+                    </ColourButton>
+                  </div>
                 </div>
                 {formSubmitted && (
                   <p className="red pt3 pl3 measure">
@@ -164,10 +182,10 @@ class TradingBox extends PureComponent {
                     data-testid="endPriceInputField"
                     required
                   />
-                  <div className="flex jcc">
-                    <Button
+                  <div className="w-100 w5-ns h3 center mt4">
+                    <ColourButton
                       type="submit"
-                      className="ma3 "
+                      className="b"
                       disabled={
                         !(
                           tokenId &&
@@ -195,7 +213,7 @@ class TradingBox extends PureComponent {
                       loading={formSubmitted}
                     >
                       Create Auction
-                    </Button>
+                    </ColourButton>
                   </div>
                 </div>
                 <GiftGems />

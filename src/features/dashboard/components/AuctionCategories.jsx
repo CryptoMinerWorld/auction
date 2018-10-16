@@ -105,34 +105,34 @@ const AuctionCategories = ({ gemCount, plots }) => (
   <div className="dn flex-l jca pa2 mb4 bg-dark-gray br2">
     <div className="flex aic w-auto">
       <img src={Gem} alt="" className="h3 w-auto" />
-      <p className="pl3 mt2 f5">{`${gemCount || 'NO'} GEMS`} </p>
+      <p className="pl3 mt2 f5">{`${gemCount || '0'} GEMS`} </p>
     </div>
 
     <div className="flex aic w-auto">
       <img src={Artifact} alt="" className="h3 w-auto" />
-      <p className="pl3 mt2 f5">NO ARTIFACTS</p>
+      <p className="pl3 mt2 f5">0 ARTIFACTS</p>
     </div>
 
     <div className="flex aic w-auto">
       <img src={Gold} alt="" className="h3 w-auto" />{' '}
-      <p className="pl3 mt2 f5">NO GOLD</p>
+      <p className="pl3 mt2 f5">0 GOLD</p>
     </div>
 
     <div className="flex aic w-auto">
       <img src={Silver} alt="" className="h3 w-auto" />{' '}
-      <p className="pl3 mt2 f5">NO SILVER</p>
+      <p className="pl3 mt2 f5">0 SILVER</p>
     </div>
 
     <div className="flex aic w-auto">
       <img src={Keys} alt="" className="h3 w-auto" />{' '}
-      <p className="pl3 mt2 f5">NO KEYS</p>
+      <p className="pl3 mt2 f5">0 KEYS</p>
     </div>
 
     <div className="flex aic w-auto">
       <img src={Land} alt="" className="h3 w-auto" />{' '}
       {/* <p className="pl3 mt2 f5">NO LAND</p> */}
       <p data-testid="plotsOfLand" className="pl3 mt2 f5">
-        {`${plots || 'NO'} ${plots === 1 ? 'PLOT' : 'PLOTS'}`}
+        {`${plots || '0'} ${plots === 1 ? 'PLOT' : 'PLOTS'}`}
       </p>
     </div>
   </div>
