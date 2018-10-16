@@ -20,7 +20,9 @@ export const calculateGemName = (providedGrade, providedTokenId) => {
           11: 'Topaz',
           12: 'Turquoise',
     }[providedGrade];
+
     return gemType && providedTokenId ? `${gemType} #${providedTokenId}` : 'Loading...';
+
   };
 
 
