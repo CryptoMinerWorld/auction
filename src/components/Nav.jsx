@@ -95,7 +95,7 @@ const Navbar = ({
             // onClick={() => console.log('sign in')}
             onClick={() => handleShowSignInModal()}
           >
-            Join
+            Workshop
           </p>
         )}
         <NavLink

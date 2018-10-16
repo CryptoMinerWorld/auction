@@ -134,7 +134,7 @@ test('plots component show plural grammer', async () => {
     getByTestId('plotsOfLand')
   );
 
-  expect(plots).toHaveTextContent('NO PLOTS');
+  expect(plots).toHaveTextContent('0 PLOTS');
   expect(getPlotCount).toHaveBeenCalled();
 });
 
