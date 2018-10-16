@@ -93,7 +93,6 @@ export const createAuction = (payload, turnLoaderOff, history) => (
   const currentAccount = getState().auth.currentUserId;
   const gemsContractInstance = getState().app.gemsContractInstance;
 
-
     const { tokenId, duration, startPrice, endPrice } = payload;
 
     createAuctionHelper(
