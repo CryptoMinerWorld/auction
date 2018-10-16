@@ -1,0 +1,56 @@
+:root {
+  --main-color: #c018ab;
+  --deep-purple: #5f1763;
+  --black: #141417;
+  --off-black: #24292f;
+  --dark-gray: #383f45;
+  --dark-orange: #47373a;
+  --dark-blue: #344054;
+  --dark-purple: #413e58;
+  --footer-black: #010e17;
+}
+
+.primary {
+  color: var(--main-color);
+}
+
+.b-primary {
+  border-color: var(--main-color);
+}
+
+.bg-base {
+  background-image: -webkit-gradient(linear, left top, right top, from(#c018ab), to(#7a2697));
+  background-image: linear-gradient(to right, #c018ab, #7a2697);
+}
+
+.bg-deep-purple {
+  background-color: var(--deep-purple);
+}
+
+.bg-black {
+  background-color: var(--black);
+}
+
+.bg-off-black {
+  background-color: var(--off-black);
+}
+
+.bg-dark-gray {
+  background-color: var(--dark-gray);
+}
+
+.bg-dark-orange {
+  background-color: var(--dark-orange);
+}
+
+.bg-dark-blue {
+  background-color: var(--dark-blue);
+}
+
+.bg-dark-purple {
+  background-color: var(--dark-purple);
+}
+
+.bg-footer-black {
+  background-color: var(--footer-black);
+}
