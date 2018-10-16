@@ -50,9 +50,9 @@ const Cards = ({ auction }) => (
       </div>
       <div className="tc">
         <small>
-          Lowest price on
+          Ends on{' '}
           {auction.deadline &&
-            format(new Date(auction.deadline * 1000), ' do LLL')}
+            format(new Date(auction.deadline * 1000), 'EEEE do of MMMM')}
         </small>
       </div>
 
@@ -63,17 +63,19 @@ const Cards = ({ auction }) => (
           rate={auction.rate}
           market="true"
         />
-        {/* <div className="flex aic o-70 mb2 w-100">
+        <div className="flex aic o-70 mb2 w-100">
           <img
             src={auction.userImage}
             alt={auction.userName}
             className="h2 ma2"
           />
-          <div className="db">
+          <div className="db w-100">
             <p className="pl2 ma0">Owned by</p>
-            <p className="pl2 ma0 truncate mw5">{auction.userName}</p>
+            <p className="pl2 ma0 truncate" style={{ maxWidth: '13rem' }}>
+              {auction.userName}
+            </p>
           </div>
-        </div> */}
+        </div>
       </div>
     </div>
   </Tilt>

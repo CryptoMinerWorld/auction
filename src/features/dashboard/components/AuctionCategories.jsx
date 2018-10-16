@@ -132,7 +132,7 @@ const AuctionCategories = ({ gemCount, plots }) => (
       <img src={Land} alt="" className="h3 w-auto" />{' '}
       {/* <p className="pl3 mt2 f5">NO LAND</p> */}
       <p data-testid="plotsOfLand" className="pl3 mt2 f5">
-        {`${plots || '0'} ${plots === 1 ? 'PLOT' : 'PLOTS'}`}
+        {`${plots || 'NO'} ${plots === 1 ? 'PLOT' : 'PLOTS'}`}
       </p>
     </div>
   </div>
