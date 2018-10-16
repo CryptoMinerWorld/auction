@@ -119,7 +119,6 @@ class TradingBox extends PureComponent {
                       type="danger"
                       onClick={() => {
                         this.setState({ formSubmitted: true });
-
                         handleRemoveGemFromAuction(
                           Number(tokenId),
                           history,
