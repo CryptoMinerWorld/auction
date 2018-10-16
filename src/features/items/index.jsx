@@ -169,43 +169,47 @@ class Auction extends PureComponent {
         <div className="bg-off-black ">
           <RockOverlay>
             <div className="relative mw9 center">
-              {details.gemImage && (
-                <AuctionImage sourceImage={details.gemImage} />
-              )}
+              {details &&
+                details.gemImage && (
+                  <AuctionImage sourceImage={details.gemImage} />
+                )}
               <div className="ma3 ma0-ns">
-                <ReactCSSTransitionGroup
-                  transitionName="example"
-                  transitionAppear
-                  transitionAppearTimeout={5000}
-                  transitionEnterTimeout={5000}
-                  transitionLeaveTimeout={5000}
-                >
-                  <DisplayBoxStateMachine
-                    currentPrice={currentPrice || details.currentPrice}
-                    minPrice={details.minPrice}
-                    maxPrice={details.maxPrice}
-                    deadline={details.deadline}
-                    handleBuyNow={buyNow}
-                    level={details.level}
-                    grade={details.gradeType}
-                    rate={details.rate}
-                    name={gemName}
-                    tokenId={details.id}
-                    redirectTo={redirectTo}
-                    showConfirm={showConfirm}
-                    provider={provider}
-                    currentAccount={currentAccount}
-                    story={details.story}
-                    owner={details.owner}
-                    userImage={details.userImage}
-                    auctionIsLive={details.auctionIsLive}
-                    gemId={details.gemId}
-                    restingEnergyMinutes={restingEnergyMinutes}
-                    lastSoldFor={
-                      details && details.lastSoldFor && details.lastSoldFor
-                    }
-                  />
-                </ReactCSSTransitionGroup>
+                {details && (
+                  <ReactCSSTransitionGroup
+                    transitionName="example"
+                    transitionAppear
+                    transitionAppearTimeout={5000}
+                    transitionEnterTimeout={5000}
+                    transitionLeaveTimeout={5000}
+                  >
+                    <DisplayBoxStateMachine
+                      currentPrice={currentPrice || details.currentPrice}
+                      minPrice={details.minPrice}
+                      maxPrice={details.maxPrice}
+                      deadline={details.deadline}
+                      handleBuyNow={buyNow}
+                      level={details.level}
+                      grade={details.gradeType}
+                      rate={details.rate}
+                      name={gemName}
+                      tokenId={details.id}
+                      redirectTo={redirectTo}
+                      showConfirm={showConfirm}
+                      provider={provider}
+                      currentAccount={currentAccount}
+                      story={details.story}
+                      owner={details.owner}
+                      userImage={details.userImage}
+                      auctionIsLive={details.auctionIsLive}
+                      gemId={details.gemId}
+                      restingEnergyMinutes={restingEnergyMinutes}
+                      lastSoldFor={
+                        details && details.lastSoldFor && details.lastSoldFor
+                      }
+                      sourceImage={details.gemImage}
+                    />
+                  </ReactCSSTransitionGroup>
+                )}
               </div>
             </div>
           </RockOverlay>
@@ -229,6 +233,7 @@ class Auction extends PureComponent {
                     shareUrl={socialShareUrl}
                   />
                 )}
+
               <div className="w-50-l measure-wide-l">
                 <OverlapOnDesktopView>
                   <FAQ />

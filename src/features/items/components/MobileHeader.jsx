@@ -14,10 +14,10 @@ const Triangle = styled.div`
 `;
 
 const select = store => ({
-  rate: store.auction.rate,
-  grade: store.auction.gradeType,
-  level: store.auction.level,
-  currentPrice: store.auction.currentPrice
+  rate: store.auction && store.auction.rate,
+  grade: store.auction && store.auction.gradeType,
+  level: store.auction && store.auction.level,
+  currentPrice: store.auction && store.auction.currentPrice
 });
 
 class MobileHeader extends PureComponent {

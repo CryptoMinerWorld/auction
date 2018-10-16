@@ -2,19 +2,15 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import React, { PureComponent } from 'react';
 import Input from 'antd/lib/input';
-import Button from 'antd/lib/button';
+// import Button from 'antd/lib/button';
 import { connect } from 'react-redux';
 import { ethToWei, daysToSeconds } from '../../mint/helpers';
 import { createAuction, removeFromAuction } from '../itemActions';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
-import GiftGems from './GiftGems';
 import Gembox from './Gembox';
 import ProgressMeter from './ProgressMeter';
-
 import GiftGems from './GiftGems';
-import Gembox from './Gembox';
-import ProgressMeter from './ProgressMeter';
 import button from '../../../app/images/pinkBuyNowButton.png';
 
 const ColourButton = styled.button`
@@ -84,7 +80,8 @@ class TradingBox extends PureComponent {
       name,
       currentPrice,
       minPrice,
-      maxPrice
+      maxPrice,
+      sourceImage
     } = this.props;
     const { duration, startPrice, endPrice, formSubmitted } = this.state;
     return (
@@ -219,7 +216,7 @@ class TradingBox extends PureComponent {
                     </ColourButton>
                   </div>
                 </div>
-                <GiftGems />
+                <GiftGems gemName={name} sourceImage={sourceImage} />
                 {formSubmitted && (
                   <p className="red pt3 measure">
                     Please do not nagivate away from this page while the
