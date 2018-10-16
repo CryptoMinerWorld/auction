@@ -1,0 +1,117 @@
+:root {
+  --main-color: #c018ab;
+  --deep-purple: #5f1763;
+  --black: #141417;
+  --off-black: #24292f;
+  --dark-gray: #383f45;
+  --dark-orange: #47373a;
+  --dark-blue: #344054;
+  --dark-purple: #413e58;
+  --footer-black: #010e17;
+  --dark-pink: #54214e;
+}
+
+.primary {
+  color: var(--main-color);
+}
+
+.b-primary {
+  border-color: var(--main-color);
+}
+
+.bg-base {
+  background-image: -webkit-gradient(linear, left top, right top, from(#c018ab), to(#7a2697));
+  background-image: linear-gradient(to right, #c018ab, #7a2697);
+}
+
+.bg-deep-purple {
+  background-color: var(--deep-purple);
+}
+
+.bg-black {
+  background-color: var(--black);
+}
+
+.bg-off-black {
+  background-color: var(--off-black);
+}
+
+.bg-dark-gray {
+  background-color: var(--dark-gray);
+}
+
+.bg-dark-orange {
+  background-color: var(--dark-orange);
+}
+
+.bg-dark-blue {
+  background-color: var(--dark-blue);
+}
+
+.bg-dark-pink {
+  background-color: var(--dark-pink);
+}
+
+.bg-dark-purple {
+  background-color: var(--dark-purple);
+}
+
+.bg-footer-black {
+  background-color: var(--footer-black);
+}
+
+.bg-dark-pink-50 {
+  background-color: rgba(255, 53, 198, 0.2);
+}
+
+.bg-dark-blue-50 {
+  background-color: rgba(123, 182, 244, 0.1);
+}
+
+.bg-dark-orange-50 {
+  background-color: rgba(71, 55, 58, 0.5);
+}
+
+.bg-dark-purple-50 {
+  background-color: rgba(148, 92, 190, 0.1);
+}
+
+.slider1 > .ant-slider-track-1 {
+  background-color: #e89e59 !important;
+}
+
+.slider1 > .ant-slider-handle-1 {
+  border-color: #e89e59 !important;
+}
+
+.slider1 > .ant-slider-handle-2 {
+  border-color: #e89e59 !important;
+}
+
+.slider2 > .ant-slider-track-1 {
+  background-color: #95c9fc !important;
+}
+
+.slider2 > .ant-slider-handle-1 {
+  border-color: #95c9fc !important;
+}
+
+.slider2 > .ant-slider-handle-2 {
+  border-color: #95c9fc !important;
+}
+
+.slider4 > .ant-slider-track-1 {
+  background-color: #945cbe !important;
+}
+
+.slider4 > .ant-slider-handle-1 {
+  border-color: #945cbe !important;
+}
+
+.slider4 > .ant-slider-handle-2 {
+  border-color: #945cbe !important;
+}
+
+.hover-time-purple:hover {
+  color: #c214a7;
+}

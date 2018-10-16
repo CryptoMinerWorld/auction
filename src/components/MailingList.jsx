@@ -1,21 +1,20 @@
-import React, { PureComponent } from "react";
-import styled from "styled-components";
-import MailchimpSubscribe from "react-mailchimp-subscribe";
-import gemKid from "../images/gemKid.png";
+import React, { PureComponent } from 'react';
+import styled from 'styled-components';
+import MailchimpSubscribe from 'react-mailchimp-subscribe';
+import gemKid from '../app/images/gemKid.png';
 
 const url =
-  "https://joshpitzalis.us14.list-manage.com/subscribe/post?u=2c6088d1532d8f6a70091ef05&amp;id=1d31a52e03";
+  'https://joshpitzalis.us14.list-manage.com/subscribe/post?u=2c6088d1532d8f6a70091ef05&amp;id=1d31a52e03';
 
 class CustomForm extends PureComponent {
   state = {
-    email: ""
+    email: ''
   };
 
   handleChange = event => this.setState({ email: event.target.value });
 
   handleSubmit = (subscribe, formData) => e => {
     e.preventDefault();
-
     subscribe({ EMAIL: formData });
   };
 
@@ -44,17 +43,17 @@ class CustomForm extends PureComponent {
               />
             </form>
             <div className="w-100 fl tl">
-              {status === "sending" && (
+              {status === 'sending' && (
                 <div className="primary">Sending...</div>
               )}
-              {status === "error" && (
+              {status === 'error' && (
                 <div
                   className="red"
                   // eslint-disable-next-line
                   dangerouslySetInnerHTML={{ __html: message }}
                 />
               )}
-              {status === "success" && (
+              {status === 'success' && (
                 <div className="primary">{`${message}`}</div>
               )}
             </div>
@@ -79,9 +78,9 @@ const MailingList = () => (
         className="bg-off-black mw8 center pa2 ba b--black-10 flex-ns aic"
         style={{
           WebkitClipPath:
-            "polygon(1% 2px, 2.78% 0%, 99% 0px, 99.51% 6%, 100% 15.98%, 99.71% 85.85%, 100.00% 98.11%, 98.12% 101.37%, 2.49% 100%, 0.6% 101.37%, -2px 84.1%, 1px 10.42%)",
+            'polygon(1% 2px, 2.78% 0%, 99% 0px, 99.51% 6%, 100% 15.98%, 99.71% 85.85%, 100.00% 98.11%, 98.12% 101.37%, 2.49% 100%, 0.6% 101.37%, -2px 84.1%, 1px 10.42%)',
           clipPath:
-            "polygon(1% 2px, 2.78% 0%, 99% 0px, 99.51% 6%, 100% 15.98%, 99.71% 85.85%, 100.00% 98.11%, 98.12% 101.37%, 2.49% 100%, 0.6% 101.37%, -2px 84.1%, 1px 10.42%)"
+            'polygon(1% 2px, 2.78% 0%, 99% 0px, 99.51% 6%, 100% 15.98%, 99.71% 85.85%, 100.00% 98.11%, 98.12% 101.37%, 2.49% 100%, 0.6% 101.37%, -2px 84.1%, 1px 10.42%)'
         }}
       >
         <img src={gemKid} alt="gem kid" className="dn dib-ns mh3 h4" />
