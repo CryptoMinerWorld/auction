@@ -140,8 +140,8 @@ class GiftGems extends Component {
   };
 
   redirectToMarket = () => {
-    const { history, handleRemoveGemFromDashboard } = this.props;
-    handleRemoveGemFromDashboard();
+    const { history, handleRemoveGemFromDashboard, match } = this.props;
+    handleRemoveGemFromDashboard(match.params.gemId);
     history.push(`/profile/${this.props.from}`);
   };
 

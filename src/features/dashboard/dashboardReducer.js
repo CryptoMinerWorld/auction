@@ -197,7 +197,7 @@ export default function dashboardReducer(
 
   if (action.type === 'GEM_GIFTED') {
     console.log('action.payload', action.payload)
-    return { ...state, userGems: state.userGems.filter(gem => gem.id !== action.payload), filter: state.filter.filter(gem => gem.id !== Number(action.payload ))};
+    return { ...state, userGems: state.userGems.filter(gem => gem.id !== action.payload), filter: state.filter.filter(gem => gem.id !== Number(action.payload))};
   }
 
   if (action.type === NEW_AUCTION_CREATED) {

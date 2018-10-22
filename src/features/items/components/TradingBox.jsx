@@ -131,8 +131,7 @@ class TradingBox extends PureComponent {
                     >
                       {formSubmitted ? (
                         <span>
-                          <Icon type="loading" theme="outlined" /> Removing
-                          Auction...
+                          <Icon type="loading" theme="outlined" /> Removing...
                         </span>
                       ) : (
                         '  End Auction'
@@ -220,8 +219,7 @@ class TradingBox extends PureComponent {
                     >
                       {formSubmitted ? (
                         <span>
-                          <Icon type="loading" theme="outlined" /> Creating
-                          Auction...
+                          <Icon type="loading" theme="outlined" /> Creating...
                         </span>
                       ) : (
                         'Create Auction'
