@@ -1,0 +1,75 @@
+{
+  "initial": "mapPage",
+  "states": {
+    "mapPage": {
+      "onEntry": ["getListOfCountries"],
+      "on": {
+        "BUY": "confirmModal"
+      }
+    },
+    "confirmModal": {
+      "on": {
+        "CONFIRM": "loading",
+        "CANCEL": "mapPage"
+      }
+    },
+    "loading": {
+      "onEntry": ["buyCountries"],
+      "on": {
+        "SUCCESS": "dashboardPage",
+        "ERROR": "error"
+      }
+    },
+    "error": {
+      "on": {
+        "CONFIRM": "loading",
+        "CANCEL": "mapPage"
+      }
+    },
+    "dashboardPage": {
+      "onEntry": ["getUserCountryDetails"],
+      "on": {
+        "SELL": "sellConfirm",
+        "WITHDRAW": "withdrawConfirm"
+      }
+    },
+    "sellConfirm": {
+      "on": {
+        "CONFIRM": "sellLoading",
+        "CANCEL": "dashboardPage"
+      }
+    },
+    "sellLoading": {
+      "onEntry": ["makeCountryBuyable"],
+      "on": {
+        "ERROR": "sellErrorModal",
+        "SUCCESS": "dashboardPage"
+      }
+    },
+    "sellErrorModal": {
+      "on": {
+        "CONFIRM": "sellLoading",
+        "CANCEL": "dashboardPage"
+      }
+    },
+    "withdrawConfirm": {
+      "on": {
+        "CONFIRM": "withDrawLoading",
+        "CANCEL": "dashboardPage"
+      }
+    },
+    "withDrawLoading": {
+      "onEntry": ["withdrawAmount"],
+      "on": {
+        "ERROR": "withdrawErrorModal",
+        "SUCCESS": "dashboardPage"
+      }
+    },
+    "withdrawErrorModal": {
+      "on": {
+        "CONFIRM": "withDrawLoading",
+        "CANCEL": "dashboardPage"
+      }
+    }
+  }
+}

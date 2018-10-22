@@ -1,16 +1,34 @@
 import React, { Component } from 'react';
 // import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import { withStateMachine, State } from 'react-automata';
 import { Formik, Field, Form } from 'formik';
 import Input from 'antd/lib/input';
+import Icon from 'antd/lib/icon';
 import Button from 'antd/lib/button';
-// import { Subscribe } from 'unstated';
-// import AppContainer from '../../../app/containers/App';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { db } from '../../../app/utils/firebase';
 import { OxToLowerCase } from '../../../app/utils/helpers';
+import button from '../../../app/images/pinkBuyNowButton.png';
+import { ReactComponent as RightArrow } from '../../../app/images/svg/arrow-right-circle.svg';
+
+const ColourButton = styled.button`
+  background-image: url(${button});
+  background-position: center top;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  border: none;
+  color: white;
+  text-transform: uppercase;
+  cursor: pointer;
+`;
+
 export const stateMachine = {
   initial: 'idle',
   states: {
@@ -28,7 +46,26 @@ export const stateMachine = {
     },
     confirm: {
       on: {
-        TRANSFER: 'transferring',
+        TRANSFER: [
+          {
+            target: 'transferring',
+            cond: ({ gemsContract, to, from, tokenId }) => {
+              if (!gemsContract || !to || !from || !tokenId) {
+                console.log(
+                  'one of the necessary fields was not present for a gift transfer'
+                );
+                return false;
+              }
+              if (to === from) {
+                console.log('gift to and from are the sam address');
+                return false;
+              }
+
+              return true;
+            }
+          },
+          { target: 'error' }
+        ],
         CANCEL: 'idle'
       }
     },
@@ -53,10 +90,6 @@ export const stateMachine = {
 };
 
 class GiftGems extends Component {
-  //   static propTypes = {
-  //     web3:
-  //   };
-
   validateWalletId = values => {
     let errors = {};
     if (values.walletId === '') {
@@ -68,20 +101,6 @@ class GiftGems extends Component {
       errors.walletId = 'Not a valid ethereum wallet address.';
       return errors;
     }
-  };
-
-  transferOwnershipOnDatabase = async (to, tokenId) => {
-    db.doc(`users/${OxToLowerCase(to)}`)
-      .get()
-      .then(doc => [doc.data().name, doc.data().imageURL])
-      .then(([name, image]) =>
-        db.doc(`stones/${tokenId}`).update({
-          owner: OxToLowerCase(to),
-          userName: name,
-          userImage: image
-        })
-      )
-      .catch(error => this.props.transition('ERROR', { error }));
   };
 
   transferGem = () => {
@@ -96,23 +115,35 @@ class GiftGems extends Component {
     const from = currentAccountId;
     const tokenId = match.params.gemId;
 
-    // validate here
-    // try using a guard
-    console.warn(to, from, tokenId, gemsContract);
-
     gemsContract.methods
       .safeTransferFrom(from, to, tokenId)
       .send()
       .then(async () => {
         await this.transferOwnershipOnDatabase(from, to, tokenId);
         transition('SUCCESS', { from });
-        // history.push(`/profile/${from}`);
       })
       .catch(error => transition('ERROR', { error }));
   };
 
-  redirectToMarket = () =>
-    this.props.history.push(`/profile/${this.props.from}`);
+  transferOwnershipOnDatabase = async (from, to, tokenId) => {
+    db.doc(`users/${OxToLowerCase(to)}`)
+      .get()
+      .then(doc => [doc.data().name, doc.data().imageURL])
+      .then(([name, image]) =>
+        db.doc(`stones/${tokenId}`).update({
+          owner: OxToLowerCase(to),
+          userName: name,
+          userImage: image
+        })
+      )
+      .catch(error => this.props.transition('ERROR', { error }));
+  };
+
+  redirectToMarket = () => {
+    const { history, handleRemoveGemFromDashboard, match } = this.props;
+    handleRemoveGemFromDashboard(match.params.gemId);
+    history.push(`/profile/${this.props.from}`);
+  };
 
   checkReceiverDetails = () => {
     const { walletId, transition } = this.props;
@@ -120,7 +151,7 @@ class GiftGems extends Component {
       .get()
       .then(
         doc =>
-          doc.exists
+          doc.exists === true
             ? transition('SUCCESS', {
                 name: doc.data().name,
                 image: doc.data().imageURL
@@ -131,8 +162,17 @@ class GiftGems extends Component {
   };
 
   render() {
-    const { transition, machineState, match, error } = this.props;
+    const {
+      transition,
+      machineState,
+      error,
+      name,
+      sourceImage,
+      gemName,
+      walletId
+    } = this.props;
     console.log('machineState', machineState.value);
+    console.error('error gifting gem', error && error);
     return (
       <Formik
         validate={this.validateWalletId}
@@ -140,13 +180,13 @@ class GiftGems extends Component {
           walletId: ''
         }}
         onSubmit={values => transition('GIFT', { walletId: values.walletId })}
-        render={({ errors, touched, isSubmitting }) => (
+        render={({ errors, touched }) => (
           <Form className="flex col jcc mt3">
             <State
               is={['idle', 'loading']}
               render={visible =>
                 visible ? (
-                  <div>
+                  <div className="mt5">
                     <Field type="text" name="walletId">
                       {({ field }) => (
                         <Input
@@ -165,44 +205,89 @@ class GiftGems extends Component {
               }
             />
 
-            <State is={['error', 'confirm']}>
+            <State is={['confirm', 'transferring']}>
               <div>
-                {`You sending gem id ${match.params.gemId} to ${
-                  this.props.name
-                }`}{' '}
-                <img
-                  src={this.props.image}
-                  alt={this.props.name}
-                  className="h3 w-auto"
-                />
+                <div className="flex jcb aic pa3 shadow-1 br3">
+                  <div className="flex aic col ">
+                    <img src={sourceImage} alt={name} className="h3 w-auto" />
+                    {`${gemName}`}{' '}
+                  </div>
+                  <RightArrow />
+                  <div className="flex aic col">
+                    <img
+                      src={this.props.image}
+                      alt={this.props.name}
+                      className="h3 w-auto"
+                    />
+                    {`${this.props.name}`}{' '}
+                  </div>
+                </div>
+                <p className="tc ttu mt3 b">Continue the transfer?</p>
+                <div className="flex jcb">
+                  <Button type="danger" onClick={() => transition('CANCEL')}>
+                    Cancel
+                  </Button>
+                  <Button
+                    type="primary"
+                    onClick={() =>
+                      transition('TRANSFER', {
+                        gemsContract: this.props.gemsContract,
+                        to: this.props.walletId,
+                        from: this.props.currentAccountId,
+                        tokenId: this.props.match.params.gemId
+                      })
+                    }
+                  >
+                    {machineState.value === 'transferring' ? (
+                      <span>
+                        <Icon type="loading" theme="outlined" /> Transferring...
+                      </span>
+                    ) : (
+                      'Transfer'
+                    )}
+                  </Button>
+                </div>
               </div>
-              Continue the transfer?
-              <Button onClick={() => transition('TRANSFER')}>Transfer</Button>
-              <Button onClick={() => transition('CANCEL')}>Cancel</Button>
             </State>
 
             <State is={['error']}>
-              We didn't find a user with that wallet address, would you like to
-              send it to that address anyway?{' '}
-              <Button onClick={() => transition('TRANSFER')}>Transfer</Button>
-              <Button onClick={() => transition('CANCEL')}>Cancel</Button>
-            </State>
-
-            <State is={['idle', 'loading']}>
-              <div className="pa3 flex jcc">
-                <Button
-                  htmlType="submit"
-                  disabled={isSubmitting}
-                  loading={machineState.value === 'loading'}
-                >
-                  <span role="img" aria-label="gift emoji">
-                    🎁
-                  </span>
-                  Gift
+              <Input disabled value={walletId} />
+              <p className="orange pt3">
+                We didn't find a Cryptominer World user with this wallet
+                address, would you like to send it to this wallet address
+                anyway?
+              </p>
+              <div className="flex jcb">
+                <Button type="danger" onClick={() => transition('CANCEL')}>
+                  Cancel
+                </Button>
+                <Button type="primary" onClick={() => transition('TRANSFER')}>
+                  {machineState.value === 'transferring' ? (
+                    <span>
+                      <Icon type="loading" theme="outlined" /> Transferring...
+                    </span>
+                  ) : (
+                    'Transfer'
+                  )}
                 </Button>
               </div>
             </State>
-            {error && <div className="red">{error}</div>}
+
+            <State is={['idle', 'loading']}>
+              <div className="w-100 w5-ns h3 center mt4">
+                <ColourButton type="submit" className="b">
+                  {machineState.value === 'loading' ||
+                  machineState.value === 'transferring' ? (
+                    <Icon type="loading" theme="outlined" />
+                  ) : (
+                    <span role="img" aria-label="gift emoji">
+                      🎁
+                    </span>
+                  )}{' '}
+                  Gift
+                </ColourButton>
+              </div>
+            </State>
           </Form>
         )}
       />
@@ -210,32 +295,22 @@ class GiftGems extends Component {
   }
 }
 
-// const connectedGiftGems = props => (
-//   <Subscribe to={[AppContainer]}>
-//     {app => (
-//       <GiftGems
-//         web3={app.state.web3}
-//         gemsContract={app.state.gemsContract}
-//         currentAccountId={app.state.currentAccountId}
-//         {...props}
-//       />
-//     )}
-//   </Subscribe>
-// );
-
-// const actions = dispatch => ({
-//   handleRemoveGemFromDashboard: tokenId =>
-//     dispatch({ type: 'GEM_GIFTED', payload: Number(tokenId) })
-// });
+const actions = dispatch => ({
+  handleRemoveGemFromDashboard: tokenId =>
+    dispatch({ type: 'GEM_GIFTED', payload: Number(tokenId) })
+});
 
 const select = store => ({
   web3: store.app.web3,
-  gemsContract: store.app.gemsContract,
-  currentAccountId: store.app.currentAccountId
+  gemsContract: store.app.gemsContractInstance,
+  currentAccountId: store.app.currentAccount
 });
 
 export default compose(
-  connect(select),
+  connect(
+    select,
+    actions
+  ),
   withRouter,
   withStateMachine(stateMachine)
 )(GiftGems);

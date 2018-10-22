@@ -178,12 +178,12 @@ class Dashboard extends Component {
 
   checkForMetaMask = () => {
     const { web3, transition } = this.props;
-    console.log('web3', web3);
+    // console.log('web3', web3);
     if (web3 === undefined) {
       transition('NO_WEB3');
     }
     if (web3) {
-      console.log('web3', web3);
+      // console.log('web3', web3);
       transition('WITH_METAMASK');
     }
   };

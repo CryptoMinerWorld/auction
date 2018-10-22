@@ -95,10 +95,14 @@ class App extends Component {
 
     setCurrentAccountId(currentAccountId);
 
-    // this ensures that the wallet in metamask is always the wallet in the currentAccountId, however this is a problem because it means that you cant view someone eles profile page
-    web3.currentProvider.publicConfigStore.on('update', ({ selectedAddress }) =>
-      handleUpdateWalletId(selectedAddress)
-    );
+    // // this ensures that the wallet in metamask is always the wallet in the currentAccountId, however this is a problem because it means that you cant view someone eles profile page
+    web3.currentProvider.publicConfigStore &&
+      web3.currentProvider.publicConfigStore.on(
+        'update',
+        ({ selectedAddress }) => handleUpdateWalletId(selectedAddress)
+      );
+
+    console.log('web3...', web3);
 
     // @notice instantiating auction contract
     const dutchContract = new web3.eth.Contract(

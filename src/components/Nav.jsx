@@ -87,10 +87,10 @@ const Navbar = ({
         ) : (
           <p
             className=" dim dark-gray f6 f5-l dib mr3 mr4-l pointer"
-            title="Join"
+            title="Workshop"
             onClick={() => handleShowSignInModal()}
           >
-            Join
+            Workshop
           </p>
         )}
         <NavLink

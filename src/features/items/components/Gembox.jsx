@@ -113,7 +113,7 @@ export const Gem = ({ quality, image, amount }) => (
       className={`ttu f5 mt2 o-50 black tc pt1 b ${quality === 'grade' &&
         'pr2'}`}
     >
-      {quality === 'rate' ? `+${amount.toFixed(2)}%` : amount}
+      {quality === 'rate' ? `+${amount && amount.toFixed(2)}%` : amount}
     </p>
   </Feature>
 );

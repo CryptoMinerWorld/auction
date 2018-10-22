@@ -2,19 +2,16 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import React, { PureComponent } from 'react';
 import Input from 'antd/lib/input';
-import Button from 'antd/lib/button';
+import Icon from 'antd/lib/icon';
+// import Button from 'antd/lib/button';
 import { connect } from 'react-redux';
 import { ethToWei, daysToSeconds } from '../../mint/helpers';
 import { createAuction, removeFromAuction } from '../itemActions';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
-import GiftGems from './GiftGems';
 import Gembox from './Gembox';
 import ProgressMeter from './ProgressMeter';
-
 import GiftGems from './GiftGems';
-import Gembox from './Gembox';
-import ProgressMeter from './ProgressMeter';
 import button from '../../../app/images/pinkBuyNowButton.png';
 
 const ColourButton = styled.button`
@@ -84,7 +81,8 @@ class TradingBox extends PureComponent {
       name,
       currentPrice,
       minPrice,
-      maxPrice
+      maxPrice,
+      sourceImage
     } = this.props;
     const { duration, startPrice, endPrice, formSubmitted } = this.state;
     return (
@@ -117,23 +115,29 @@ class TradingBox extends PureComponent {
             {auctionIsLive ? (
               <div className="pa5 flex jcc col">
                 <div className="flex jcc">
-                  <Button
-                    type="danger"
-                    className="ma3"
-                    onClick={() => {
-                      this.setState({ formSubmitted: true });
-
-                      handleRemoveGemFromAuction(
-                        Number(tokenId),
-                        history,
-                        this.turnLoaderOff
-                      );
-                    }}
-                    data-testid="removeGemButton"
-                    loading={formSubmitted}
-                  >
-                    Remove Gem From Auction
-                  </Button>
+                  <div className="w-100 w5-ns h3 center mt4">
+                    <ColourButton
+                      type="danger"
+                      onClick={() => {
+                        this.setState({ formSubmitted: true });
+                        handleRemoveGemFromAuction(
+                          Number(tokenId),
+                          history,
+                          this.turnLoaderOff
+                        );
+                      }}
+                      data-testid="removeGemButton"
+                      className="b"
+                    >
+                      {formSubmitted ? (
+                        <span>
+                          <Icon type="loading" theme="outlined" /> Removing...
+                        </span>
+                      ) : (
+                        '  End Auction'
+                      )}
+                    </ColourButton>
+                  </div>
                 </div>
                 {formSubmitted && (
                   <p className="red pt3 pl3 measure">
@@ -184,10 +188,10 @@ class TradingBox extends PureComponent {
                     data-testid="endPriceInputField"
                     required
                   />
-                  <div className="flex jcc">
-                    <Button
+                  <div className="w-100 w5-ns h3 center mt4">
+                    <ColourButton
                       type="submit"
-                      className="ma3 "
+                      className="b"
                       disabled={
                         !(
                           tokenId &&
@@ -212,13 +216,18 @@ class TradingBox extends PureComponent {
                         );
                       }}
                       data-testid="createAuctionButton"
-                      loading={formSubmitted}
                     >
-                      Create Auction
-                    </Button>
+                      {formSubmitted ? (
+                        <span>
+                          <Icon type="loading" theme="outlined" /> Creating...
+                        </span>
+                      ) : (
+                        'Create Auction'
+                      )}
+                    </ColourButton>
                   </div>
                 </div>
-                <GiftGems />
+                <GiftGems gemName={name} sourceImage={sourceImage} />
                 {formSubmitted && (
                   <p className="red pt3 measure">
                     Please do not nagivate away from this page while the
