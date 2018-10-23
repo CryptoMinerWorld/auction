@@ -57,7 +57,7 @@ export const stateMachine = {
                 return false;
               }
               if (to === from) {
-                console.log('gift to and from are the sam address');
+                console.log('gift to and from are the same address');
                 return false;
               }
 

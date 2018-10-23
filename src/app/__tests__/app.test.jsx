@@ -1,7 +1,7 @@
 describe('App tests', () => {
-  it.skip('Users can create an account', () => {
-    expect(true).toBeFalsy();
-  });
+  // it.skip('Users can create an account', () => {
+  //   expect(true).toBeFalsy();
+  // });
 
   it.skip('Create an account modal doesn;t appear if users has already created an account', () => {
     expect(true).toBeFalsy();
