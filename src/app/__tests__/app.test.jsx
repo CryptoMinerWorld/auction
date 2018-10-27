@@ -1,10 +1,13 @@
-describe('App tests', () => {
+
+
+describe.skip('App happy path tests', () => {
   // it.skip('Users can create an account', () => {
   //   expect(true).toBeFalsy();
   // });
 
   it.skip('Create an account modal doesn;t appear if users has already created an account', () => {
-    expect(true).toBeFalsy();
+
+    // expect(true).toBeFalsy();
   });
 
   it.skip('all existing gems load in when an users signs up', () => {

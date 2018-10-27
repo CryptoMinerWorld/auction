@@ -77,6 +77,7 @@ const Navbar = ({
             activeStyle={{
               borderBottom: '2px solid purple',
             }}
+            data-testid="myWorkshop"
           >
             My Workshop
           </NavLink>
@@ -88,6 +89,7 @@ const Navbar = ({
             onKeyPress={() => handleShowSignInModal()}
             role="button"
             tabIndex={0}
+            data-testid="signUp"
           >
             Workshop
           </div>

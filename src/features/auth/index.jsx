@@ -136,6 +136,7 @@ class Auth extends PureComponent {
       <div>
         <Modal
           title="Please Create Your Account"
+
           visible={machineState.value !== 'exit' && machineState.value !== 'authenticated'}
           onCancel={() => transition('CLOSE')}
           footer={[
@@ -197,6 +198,8 @@ class Auth extends PureComponent {
             size="large"
             className="mv3"
             type="text"
+            data-testid="name"
+
           />
           <Input
             placeholder="Email"
@@ -205,6 +208,7 @@ class Auth extends PureComponent {
             size="large"
             type="email"
             required
+            data-testid="email"
           />
           <div className="pa3">
             <div className="flex wrap jcb">
