@@ -1,19 +1,12 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withStateMachine, State } from 'react-automata';
 import { compose } from 'redux';
 import { orderMarketBy } from '../marketActions';
-import { ReactComponent as DownArrowCircle } from '../../../app/images/svg/chevrons-down.svg';
-import { ReactComponent as UpArrowCircle } from '../../../app/images/svg/chevrons-up.svg';
-
-import { ReactComponent as TrendingDown } from '../../../app/images/svg/chevrons-down.svg';
-import { ReactComponent as TrendingUp } from '../../../app/images/svg/chevrons-up.svg';
-
 import { ReactComponent as ChevronsDown } from '../../../app/images/svg/chevrons-down.svg';
 import { ReactComponent as ChevronsUp } from '../../../app/images/svg/chevrons-up.svg';
-
 import { ReactComponent as Dollar } from '../../../app/images/svg/dollar-sign.svg';
 import { ReactComponent as Clock } from '../../../app/images/svg/clock.svg';
 import { ReactComponent as Percent } from '../../../app/images/svg/percent.svg';
@@ -78,42 +71,72 @@ const Primary = styled.section`
 `;
 
 class SortBox extends PureComponent {
-  orderByPrice = () => this.props.handleOrderBy('currentPrice', 'asc');
+  static propTypes = {
+    transition: PropTypes.func.isRequired,
+    machineState: PropTypes.shape({}).isRequired,
+    handleOrderBy: PropTypes.func.isRequired,
+  }
 
-  orderByPriceDesc = () => this.props.handleOrderBy('currentPrice', 'desc');
+  orderByPrice = () => {
+    const { handleOrderBy } = this.props;
+    handleOrderBy('currentPrice', 'asc');
+  }
 
-  orderByTime = () => this.props.handleOrderBy('deadline', 'asc');
+  orderByPriceDesc = () => {
+    const { handleOrderBy } = this.props;
+    handleOrderBy('currentPrice', 'desc');
+  }
 
-  orderByTimeDesc = () => this.props.handleOrderBy('deadline', 'desc');
+  orderByTime = () => {
+    const { handleOrderBy } = this.props;
+    handleOrderBy('deadline', 'asc');
+  }
 
-  orderByRate = () => this.props.handleOrderBy('rate', 'asc');
+  orderByTimeDesc = () => {
+    const { handleOrderBy } = this.props;
+    handleOrderBy('deadline', 'desc');
+  }
 
-  orderByRateDesc = () => this.props.handleOrderBy('rate', 'desc');
+  orderByRate = () => {
+    const { handleOrderBy } = this.props;
+    handleOrderBy('rate', 'asc');
+  }
+
+  orderByRateDesc = () => {
+    const { handleOrderBy } = this.props;
+    handleOrderBy('rate', 'desc');
+  }
 
   render() {
     const { transition, machineState } = this.props;
     return (
       <Primary className="pv4 ">
-        <p
+        <div
           className={`flex aic jcs pointer mr5 white link hover-gold
   ${machineState.value === 'priceASC' || machineState.value === 'priceDESC' ? 'o-90' : 'o-30'}`}
           onClick={() => transition('TOGGLE_PRICE')}
+          onKeyPress={() => transition('TOGGLE_PRICE')}
+          role="button"
+          tabIndex={0}
         >
           <span className="dn dib-ns">BY PRICE</span>
           <Dollar className="dn-ns dib" />
 
           <State is="priceASC">
-            <UpArrowCircle className="ml2" onClick={() => transition('TOGGLE_PRICE')} />
+            <ChevronsUp className="ml2" onClick={() => transition('TOGGLE_PRICE')} />
           </State>
           <State is="priceDESC">
-            <DownArrowCircle className="ml2" onClick={() => transition('TOGGLE_PRICE')} />
+            <ChevronsDown className="ml2" onClick={() => transition('TOGGLE_PRICE')} />
           </State>
-        </p>
-        <p
+        </div>
+        <div
           className={`flex aic jcc pointer  mr5 white link hover-time-purple ${
             machineState.value === 'timeASC' || machineState.value === 'timeDESC' ? 'o-90' : 'o-30'
           }`}
           onClick={() => transition('TOGGLE_TIME')}
+          onKeyPress={() => transition('TOGGLE_TIME')}
+          role="button"
+          tabIndex={-1}
         >
           <span className="dn dib-ns">BY TIME</span>
           <Clock className="dn-ns dib" />
@@ -124,22 +147,25 @@ class SortBox extends PureComponent {
           <State is="timeDESC">
             <ChevronsDown className="ml2" onClick={() => transition('TOGGLE_TIME')} />
           </State>
-        </p>
-        <p
+        </div>
+        <div
           className={`flex aic jcc pointer mr5 white link hover-light-purple ${
             machineState.value === 'rateASC' || machineState.value === 'rateDESC' ? 'o-90' : 'o-30'
           }`}
           onClick={() => transition('TOGGLE_RATE')}
+          onKeyPress={() => transition('TOGGLE_RATE')}
+          role="button"
+          tabIndex={-2}
         >
           <span className="dn dib-ns">BY MINING RATE</span>
           <Percent className="dn-ns dib" />
           <State is="rateASC">
-            <TrendingUp className="ml2" onClick={() => transition('TOGGLE_RATE')} />
+            <ChevronsUp className="ml2" onClick={() => transition('TOGGLE_RATE')} />
           </State>
           <State is="rateDESC">
-            <TrendingDown className="ml2" onClick={() => transition('TOGGLE_RATE')} />
+            <ChevronsDown className="ml2" onClick={() => transition('TOGGLE_RATE')} />
           </State>
-        </p>
+        </div>
       </Primary>
     );
   }

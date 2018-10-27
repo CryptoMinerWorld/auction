@@ -40,34 +40,58 @@ const stateMachine = {
 class GemSortBox extends PureComponent {
   static propTypes = {
     fetchGems: PropTypes.func.isRequired,
+    handleRerenderSortBox: PropTypes.func.isRequired,
+    handleSortBoxReredendered: PropTypes.func.isRequired,
+    transition: PropTypes.func.isRequired,
+    machineState: PropTypes.shape({
+    }).isRequired,
   };
 
-  handleFetchAllGems = () => this.props.fetchGems('all');
-
-  handleFetchAllGemsInAuction = () => this.props.fetchGems('inAuction');
-
-  handleFetchAllGemsNOTInAuction = () => this.props.fetchGems('notInAuction');
-
-  hideOtherSortBox = () => this.props.handleRerenderSortBox();
-
-  componentWillTransition(event) {
-    this.props.handleRerenderSortBox();
-  }
-
-  componentDidTransition(prevMachineState, event) {
-    this.props.handleSortBoxReredendered();
-  }
 
   static OrderBy = ({
     state, transition, title, to, match,
   }) => (
-    <p
+    <div
       className={`pr4 tc pointer white link ${matchesState(state, match) ? 'o-90' : 'o-30'}`}
       onClick={() => transition(to)}
+      onKeyPress={() => transition(to)}
+      role="button"
+      tabIndex={0}
     >
       {title}
-    </p>
+    </div>
   );
+
+  handleFetchAllGemsNOTInAuction = () => {
+    const { fetchGems } = this.props;
+    fetchGems('notInAuction');
+  }
+
+  handleFetchAllGemsInAuction = () => {
+    const { fetchGems } = this.props;
+    fetchGems('inAuction');
+  }
+
+  handleFetchAllGems = () => {
+    const { fetchGems } = this.props;
+    return fetchGems('all');
+  }
+
+  hideOtherSortBox = () => {
+    const { handleRerenderSortBox } = this.props;
+    handleRerenderSortBox();
+  }
+
+  componentWillTransition() {
+    const { handleRerenderSortBox } = this.props;
+    handleRerenderSortBox();
+  }
+
+  componentDidTransition() {
+    const { handleSortBoxReredendered } = this.props;
+    handleSortBoxReredendered();
+  }
+
 
   render() {
     const { transition, machineState } = this.props;
@@ -104,6 +128,7 @@ const actions = {
   fetchGems: getGemsForDashboardFilter,
   handleRerenderSortBox: rerenderSortBox,
   handleSortBoxReredendered: sortBoxReredendered,
+
 };
 
 export default compose(

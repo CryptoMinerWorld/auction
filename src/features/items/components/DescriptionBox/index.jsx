@@ -23,6 +23,7 @@ class DescriptionBox extends PureComponent {
     userName: PropTypes.string.isRequired,
     userImage: PropTypes.string.isRequired,
     ownerId: PropTypes.string.isRequired,
+    shareUrl: PropTypes.string.isRequired,
   };
 
   state = {
@@ -213,6 +214,7 @@ FeatureBand.propTypes = {
   category: PropTypes.string.isRequired,
   amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   description: PropTypes.string.isRequired,
+
 };
 
 FeatureBand.defaultProps = {

@@ -30,7 +30,9 @@ export const marketReducer = (state = [], action) => {
   return state;
 };
 
-// @dev The reducer above was one of teh first reducers I created and I shaped it as an array by MediaStreamTrackEvent, which means I couldn't extend it. Henc eteh extra reducer below, shaped as an object
+// @dev The reducer above was one of the first reducers I created
+// and I shaped it as an array by MediaStreamTrackEvent, which means I couldn't extend it.
+// Hence the extra reducer below, shaped as an object
 const initialState = {
   loading: false,
   error: false,

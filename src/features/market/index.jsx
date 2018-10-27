@@ -5,14 +5,16 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { lifecycle, compose } from 'recompose';
 import Pagination from 'antd/lib/pagination';
-import { getAuctions, paginate, preLoadAuctionPage } from './marketActions';
+import {
+  getAuctions, paginate, preLoadAuctionPage, updatePriceOnAllLiveAuctions,
+} from './marketActions';
 import Cards from './components/Card';
 import SortBox from './components/SortBox';
 import LoadingCard from './components/LoadingCard';
 import gemKid from '../../app/images/gemKid.png';
 import Filters from './components/Filters';
 import GemFilters from './components/GemFilters';
-import { updatePriceOnAllLiveAuctions } from './marketActions';
+
 
 require('antd/lib/pagination/style/css');
 require('antd/lib/slider/style/css');
@@ -27,13 +29,6 @@ const Grid = styled.article`
   grid-column-gap: 20px;
 `;
 
-// const CardBox = styled.section`
-//   display: grid;
-//   width: 100%;
-//   grid-template-columns: 1fr 1fr 1fr;
-//   grid-column-gap: 20px;
-//   grid-row-gap: 20px;
-// `;
 
 const CardBox = styled.section`
   display: grid;
@@ -43,9 +38,6 @@ const CardBox = styled.section`
   grid-row-gap: 20px;
 `;
 
-// @media (min-width: 64em) {
-//   grid-template-columns: repeat(3, minMax(280px, 1fr));
-// }
 
 const Primary = styled.section`
   grid-column: 1/5;
@@ -63,11 +55,12 @@ const select = store => ({
   paginated: [...store.market.slice(store.marketActions.start, store.marketActions.end)],
   pageNumber: store.marketActions.page,
   dutchContract: store.app.dutchContractInstance,
-  gemContractAddress: store.app.gemsContractInstance && store.app.gemsContractInstance._address,
+  gemContractAddress: store.app.gemsContractInstance
+  // eslint-disable-next-line
+  && store.app.gemsContractInstance._address,
 });
 
 const Marketplace = ({
-  auctions,
   loading,
   paginated,
   handlePagination,
@@ -150,24 +143,15 @@ export default compose(
 )(Marketplace);
 
 Marketplace.propTypes = {
-  auctions: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number,
-      minPrice: PropTypes.number,
-      maxPrice: PropTypes.number,
-      price: PropTypes.number,
-      deadline: PropTypes.oneOfType([
-        PropTypes.shape({
-          seconds: PropTypes.number.isRequired,
-        }).isRequired,
-        PropTypes.number,
-      ]).isRequired,
-      image: PropTypes.string,
-      owner: PropTypes.string,
-      grade: PropTypes.number,
-      quality: PropTypes.number,
-      rate: PropTypes.number,
-    }),
-  ).isRequired,
+  paginated: PropTypes.arrayOf(PropTypes.object).isRequired,
+  handlePagination: PropTypes.func.isRequired,
+  pageNumber: PropTypes.number,
+  totalGems: PropTypes.number.isRequired,
+  handlePreLoadAuctionPage: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
+};
+
+Marketplace.defaultProps = {
+
+  pageNumber: 1,
 };

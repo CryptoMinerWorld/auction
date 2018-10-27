@@ -1,5 +1,4 @@
 import React from 'react';
-// import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Progress from 'antd/lib/progress';
 import format from 'date-fns/format';
@@ -36,19 +35,19 @@ const Cards = ({ auction }) => (
         <small className="basic">
           Ξ
           {' '}
-          <small>{weiToEth(auction.maxPrice)}</small>
+          <small>{auction && auction.maxPrice && weiToEth(auction.maxPrice)}</small>
         </small>
         <big className="db b f3 o-70">
           <span className="basic" style={{ color: '#FFB700' }}>
             Ξ
           </span>
           {' '}
-          <span style={{ color: '#FFB700' }}>{weiToEth(auction.currentPrice)}</span>
+          <span style={{ color: '#FFB700' }}>{auction && auction.currentPrice && weiToEth(auction.currentPrice)}</span>
         </big>
         <small className="basic">
           Ξ
           {' '}
-          <small>{weiToEth(auction.minPrice)}</small>
+          <small>{auction && auction.minPrice && weiToEth(auction.minPrice)}</small>
         </small>
       </div>
       <div className="tc">
@@ -64,19 +63,18 @@ const Cards = ({ auction }) => (
           level={auction.level}
           grade={auction.gradeType}
           rate={auction.rate}
-          market="true"
+          market
         />
-        {/* <div className="flex aic o-70 mb2 w-100">
+        <div className="flex aic o-70 mb2 w-100">
           <img
             src={auction.userImage}
             alt={auction.userName}
             className="h2 ma2"
           />
           <div className="db">
-            <p className="pl2 ma0">Owned by</p>
             <p className="pl2 ma0 truncate mw5">{auction.userName}</p>
           </div>
-        </div> */}
+        </div>
       </div>
     </div>
   </Tilt>
@@ -93,7 +91,7 @@ Cards.propTypes = {
         seconds: PropTypes.number.isRequired,
       }).isRequired,
       PropTypes.number,
-    ]).isRequired,
+    ]),
     image: PropTypes.string,
     owner: PropTypes.string,
     grade: PropTypes.number,

@@ -13,6 +13,7 @@ import { db } from '../../../app/utils/firebase';
 import { OxToLowerCase } from '../../../app/utils/helpers';
 import button from '../../../app/images/pinkBuyNowButton.png';
 import { ReactComponent as RightArrow } from '../../../app/images/svg/arrow-right-circle.svg';
+import { setError } from '../../../app/appActions';
 
 const ColourButton = styled.button`
   background-image: url(${button});
@@ -53,11 +54,9 @@ export const stateMachine = {
               gemsContract, to, from, tokenId,
             }) => {
               if (!gemsContract || !to || !from || !tokenId) {
-                console.log('one of the necessary fields was not present for a gift transfer');
                 return false;
               }
               if (to === from) {
-                console.log('gift to and from are the same address');
                 return false;
               }
 
@@ -91,16 +90,19 @@ export const stateMachine = {
 
 class GiftGems extends Component {
   validateWalletId = (values) => {
+    const { web3 } = this.props;
     const errors = {};
     if (values.walletId === '') {
       errors.walletId = 'Please enter an ethereum wallet address.';
       return errors;
     }
 
-    if (!this.props.web3.utils.isAddress(values.walletId)) {
+    if (!web3.utils.isAddress(values.walletId)) {
       errors.walletId = 'Not a valid ethereum wallet address.';
       return errors;
     }
+
+    return null;
   };
 
   transferGem = () => {
@@ -122,6 +124,7 @@ class GiftGems extends Component {
   };
 
   transferOwnershipOnDatabase = async (from, to, tokenId) => {
+    const { transition } = this.props;
     db.doc(`users/${OxToLowerCase(to)}`)
       .get()
       .then(doc => [doc.data().name, doc.data().imageURL])
@@ -130,13 +133,14 @@ class GiftGems extends Component {
         userName: name,
         userImage: image,
       }))
-      .catch(error => this.props.transition('ERROR', { error }));
+      .catch(error => transition('ERROR', { error }));
   };
 
   redirectToMarket = () => {
+    const { from } = this.props;
     const { history, handleRemoveGemFromDashboard, match } = this.props;
     handleRemoveGemFromDashboard(match.params.gemId);
-    history.push(`/profile/${this.props.from}`);
+    history.push(`/profile/${from}`);
   };
 
   checkReceiverDetails = () => {
@@ -151,15 +155,19 @@ class GiftGems extends Component {
           })
           : transition('ERROR', { error: 'No user exists' })),
       )
-      .catch(err => console.warn(err, 'error finding gift reciver on db'));
+      .catch(err => setError(err));
   };
 
   render() {
     const {
-      transition, machineState, error, name, sourceImage, gemName, walletId,
+      transition, machineState,
+      name, image, sourceImage,
+      gemName, walletId,
+      gemsContract,
+      currentAccountId,
+      match,
     } = this.props;
-    console.log('machineState', machineState.value);
-    console.error('error gifting gem', error && error);
+
     return (
       <Formik
         validate={this.validateWalletId}
@@ -195,8 +203,8 @@ class GiftGems extends Component {
                   </div>
                   <RightArrow />
                   <div className="flex aic col">
-                    <img src={this.props.image} alt={this.props.name} className="h3 w-auto" />
-                    {`${this.props.name}`}
+                    <img src={image} alt={name} className="h3 w-auto" />
+                    {`${name}`}
                     {' '}
                   </div>
                 </div>
@@ -208,12 +216,14 @@ class GiftGems extends Component {
                   <Button
                     type="primary"
                     onClick={() => transition('TRANSFER', {
-                      gemsContract: this.props.gemsContract,
-                      to: this.props.walletId,
-                      from: this.props.currentAccountId,
-                      tokenId: this.props.match.params.gemId,
+                      gemsContract,
+                      to: walletId,
+                      from: currentAccountId,
+                      tokenId: match.params.gemId,
                     })
                     }
+
+
                   >
                     {machineState.value === 'transferring' ? (
                       <span>
@@ -232,7 +242,7 @@ Transferring...
             <State is={['error']}>
               <Input disabled value={walletId} />
               <p className="orange pt3">
-                We didn't find a Cryptominer World user with this wallet address, would you like to
+                We did not find a Cryptominer World user with this wallet address, would you like to
                 send it to this wallet address anyway?
               </p>
               <div className="flex jcb">
@@ -277,6 +287,7 @@ Transferring...
 
 const actions = dispatch => ({
   handleRemoveGemFromDashboard: tokenId => dispatch({ type: 'GEM_GIFTED', payload: Number(tokenId) }),
+  setError,
 });
 
 const select = store => ({

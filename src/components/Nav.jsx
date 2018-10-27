@@ -81,13 +81,16 @@ const Navbar = ({
             My Workshop
           </NavLink>
         ) : (
-          <p
+          <div
             className=" dim dark-gray f6 f5-l dib mr3 mr4-l pointer"
             title="Workshop"
             onClick={() => handleShowSignInModal()}
+            onKeyPress={() => handleShowSignInModal()}
+            role="button"
+            tabIndex={0}
           >
             Workshop
-          </p>
+          </div>
         )}
         <NavLink
           exact
@@ -152,10 +155,13 @@ Navbar.propTypes = {
   userId: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
   userName: PropTypes.string,
   handleShowSignInModal: PropTypes.func.isRequired,
+  existingUser: PropTypes.bool,
+  signInBox: PropTypes.bool.isRequired,
 };
 
 Navbar.defaultProps = {
   userImage: false,
   userId: false,
   userName: null,
+  existingUser: false,
 };

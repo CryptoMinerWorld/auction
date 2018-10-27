@@ -20,6 +20,7 @@ import { calculateGemName } from './selectors';
 import StatsBox from './components/StatsBox';
 import { showConfirm } from '../../components/Modal';
 import MobileHeader from './components/MobileHeader';
+import { setError } from '../../app/appActions';
 
 const select = store => ({
   details: store.auction,
@@ -240,6 +241,7 @@ const actions = {
   handleGetRestingEnergy: getRestingEnergy,
   showConfirm,
   handleClearGemPage: clearGemPageOnExit,
+  handleSetError: setError,
 };
 
 export default compose(

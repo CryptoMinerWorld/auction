@@ -21,7 +21,7 @@ import {
 import { NO_USER_EXISTS } from '../auth/authConstants';
 import {
   NEW_AUCTION_CREATED,
-  // OWNERSHIP_TRANSFERRED
+
 } from '../items/itemConstants';
 
 export default function dashboardReducer(
@@ -36,8 +36,6 @@ export default function dashboardReducer(
   action,
 ) {
   if (action.type === USER_GEMS_RETRIEVED) {
-    // return { ...state, userGems: action.payload };
-    // console.log('action.payload.', action.payload)
     const paginated = action.payload.length > 15 ? action.payload.slice(0, 15) : action.payload;
 
     return { ...state, userGems: action.payload, filter: paginated };
@@ -57,9 +55,6 @@ export default function dashboardReducer(
   }
 
   if (action.type === ALL_USER_GEMS_UPLOADED) {
-    console.log('ALL_USER_GEMS_UPLOADED action.payload', action.payload);
-    console.log('state.userGems', state.userGems);
-
     // merge without duplicates
     const newGems = state.userGems.concat(action.payload).reduce((total, item) => {
       if (!total.find(current => item.id === current.id)) {
@@ -72,7 +67,7 @@ export default function dashboardReducer(
     // const newGems = unionBy(state.allUserGems, action.payload, 'id');
     const paginated = newGems.length > 15 ? newGems.slice(0, 15) : newGems;
 
-    console.log('newGems', newGems);
+
     return {
       ...state,
       allUserGems: newGems,

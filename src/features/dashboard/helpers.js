@@ -1,8 +1,11 @@
 import fromExponential from 'from-exponential';
 import { BigNumber } from 'bignumber.js';
 import { db, storage } from '../../app/utils/firebase';
+import { setError } from '../../app/appActions';
 
-export const isTokenForSale = (_contract, _tokenId) => _contract.methods.isTokenOnSale(_tokenId).call();
+export function isTokenForSale(_contract, _tokenId) {
+  return _contract.methods.isTokenOnSale(_tokenId).call();
+}
 
 export const getAuctionDetails = (_contract, _tokenId) => _contract.methods
   .items(_tokenId)
@@ -86,7 +89,9 @@ export const getGemQualities = (_contract, _tokenId) => _contract.methods
     return [color, level, gradeType, gradeValue];
   });
 
-export const getPrice = (_tokenId, _contract, gemContract) => _contract.methods.getCurrentPrice(gemContract, _tokenId).call();
+export function getPrice(_tokenId, _contract, gemContract) {
+  return _contract.methods.getCurrentPrice(gemContract, _tokenId).call();
+}
 
 export const nonExponential = count => fromExponential(Number(count) / 1000000000000000000);
 
@@ -116,10 +121,10 @@ export const getReferralPoints = (preSaleContract, userId) => preSaleContract.me
   .unusedReferralPoints(userId)
   .call()
   .then(referralPoints => referralPoints)
-  .catch(error => console.log('error getting refrral points', error));
+  .catch(error => setError(error));
 
 export const getPlotCount = (preSaleContract, userId) => preSaleContract.methods
   .geodeBalances(userId)
   .call()
   .then(referralPoints => referralPoints)
-  .catch(error => console.log('error getting refrral points', error));
+  .catch(error => setError(error));

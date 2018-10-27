@@ -10,6 +10,7 @@ import Gem from '../../../app/images/dashboard/gems.png';
 import Artifact from '../../../app/images/dashboard/Artifacts.png';
 import Keys from '../../../app/images/dashboard/Keys.png';
 import Land from '../../../app/images/dashboard/Land.png';
+import { setError } from '../../../app/appActions';
 
 const select = store => ({
   preSaleContract: store.app.presaleContractInstance,
@@ -40,10 +41,10 @@ class PlayerStats extends PureComponent {
     if (preSaleContract && match.params.userId !== 'false') {
       getReferralPoints(preSaleContract, match.params.userId)
         .then(referralPoints => this.setState({ referralPoints }))
-        .catch(err => console.log('err fetching user refrral points', err));
+        .catch(err => setError(err));
       getPlotCount(preSaleContract, match.params.userId)
         .then(plots => this.setState({ plots }))
-        .catch(err => console.log('err fetching plots of land', err));
+        .catch(err => setError(err));
     }
   }
 
@@ -54,10 +55,10 @@ class PlayerStats extends PureComponent {
     if (preSaleContract !== prevProps.preSaleContract && match.params.userId !== 'false') {
       getReferralPoints(preSaleContract, match.params.userId)
         .then(referralPoints => this.setState({ referralPoints }))
-        .catch(err => console.log('err fetching user refrral points', err));
+        .catch(err => setError(err));
       getPlotCount(preSaleContract, match.params.userId)
         .then(plots => this.setState({ plots }))
-        .catch(err => console.log('err fetching plots of land', err));
+        .catch(err => setError(err));
     }
   }
 
@@ -92,8 +93,10 @@ class PlayerStats extends PureComponent {
 
 export const TestPlayerStats = withRouter(PlayerStats);
 
+const actions = { setError };
+
 export default compose(
-  connect(select),
+  connect(select, actions),
   withRouter,
 )(PlayerStats);
 

@@ -2,7 +2,9 @@ import fromExponential from 'from-exponential';
 import { BigNumber } from 'bignumber.js';
 import { db, storage } from '../../app/utils/firebase';
 
-export const isTokenForSale = (_contract, _tokenId) => _contract.methods.isTokenOnSale(_tokenId).call();
+export function isTokenForSale(_contract, _tokenId) {
+  return _contract.methods.isTokenOnSale(_tokenId).call();
+}
 
 export const getAuctionDetails = (_contract, _tokenId) => _contract.methods
   .items(_tokenId)
@@ -89,7 +91,9 @@ export const getGemQualities = (_contract, _tokenId) => _contract.methods
     return [color, level, gradeType, gradeValue];
   });
 
-export const getPrice = (_tokenId, _contract, gemContract) => _contract.methods.getCurrentPrice(gemContract, Number(_tokenId)).call();
+export function getPrice(_tokenId, _contract, gemContract) {
+  return _contract.methods.getCurrentPrice(gemContract, Number(_tokenId)).call();
+}
 
 export const nonExponential = count => fromExponential(Number(count) / 1000000000000000000);
 
@@ -115,8 +119,9 @@ export const calculateGemName = (providedGrade, providedTokenId) => {
   return `${gemType} #${providedTokenId}`;
 };
 
-export const removeAuctionHelper = (dutchContract, tokenId, gemContract) => dutchContract.methods.remove(gemContract, tokenId);
-// dutchContract.methods.remove(tokenId)
+export function removeAuctionHelper(dutchContract, tokenId, gemContract) {
+  return dutchContract.methods.remove(gemContract, tokenId);
+}
 
 export const createAuctionHelper = async (
   _tokenId,

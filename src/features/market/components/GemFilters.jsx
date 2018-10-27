@@ -59,6 +59,7 @@ const Filters = ({ handleToggleGem, filterLoading, selection }) => (
                   toggleGem={handleToggleGem}
                   filterLoading={filterLoading}
                 />
+
                 <GemFilter
                   gemType="sapphire"
                   ifItsSelected={selection.sapphire}
@@ -116,9 +117,14 @@ const GemFilter = ({
 );
 
 GemFilter.propTypes = {
-  toggleTheGem: PropTypes.func.isRequired,
+  toggleTheGem: PropTypes.func,
   ifItsSelected: PropTypes.bool.isRequired,
   url: PropTypes.string.isRequired,
   gemType: PropTypes.string.isRequired,
   filterLoading: PropTypes.bool.isRequired,
+};
+
+GemFilter.defaultProps = {
+  toggleTheGem: null,
+
 };

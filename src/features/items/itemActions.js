@@ -1,6 +1,5 @@
 import {
   AUCTION_DETAILS_RECEIVED,
-  // OWNERSHIP_TRANSFERRED,
   NEW_AUCTION_CREATED,
   CLEAR_GEM_PAGE,
 } from './itemConstants';
@@ -14,9 +13,8 @@ import {
 } from '../../app/reduxConstants';
 import { db } from '../../app/utils/firebase';
 import { createAuctionHelper, removeAuctionHelper } from './helpers';
-// import { browserHistory } from 'react-router';
+import { setError } from '../../app/appActions';
 
-// import {getUserGemsOnce} from '../dashboard/dashboardActions'
 export const getAuctionDetails = tokenId => (dispatch) => {
   dispatch({ type: FETCH_DATA_BEGUN });
   return db
@@ -31,7 +29,7 @@ export const getAuctionDetails = tokenId => (dispatch) => {
         payload: gemDetails[0],
       });
     })
-    .catch(error => console.log('error getting Auction Details', error));
+    .catch(error => setError(error));
 };
 
 export const updateGemOwnership = (gemId, newOwner, history, priceInWei) => async (dispatch) => {
@@ -45,7 +43,7 @@ export const updateGemOwnership = (gemId, newOwner, history, priceInWei) => asyn
     .doc(`users/${userIdToLowerCase}`)
     .get()
     .then(doc => doc.data())
-    .catch(err => console.log('error fetching new gem owner details', err));
+    .catch(err => setError(err));
 
   const { name, imageURL } = newGemOwner;
 
@@ -64,21 +62,16 @@ export const updateGemOwnership = (gemId, newOwner, history, priceInWei) => asyn
         lastSoldFor: priceInWei,
       })
       .then(() => {
-        // const payload = {...doc.data(), userName: name,
-        //   userImage: imageURL,
-        //   owner: userIdToLowerCase,
-        //   auctionIsLive: false}
-        //   console.log('payload ownership', payload)
-        // dispatch({ type: OWNERSHIP_TRANSFERRED, payload });
         history.push(`/profile/${userIdToLowerCase}`);
         dispatch({ type: MODAL_GONE });
       })
-      .catch(err => console.log('err', err))));
+      .catch(err => setError(err))));
 };
 
 export const createAuction = (payload, turnLoaderOff, history) => (dispatch, getState) => {
-  const currentAccount = getState().auth.currentUserId;
-  const gemsContractInstance = getState().app.gemsContractInstance;
+  const { auth, app } = getState();
+  const currentAccount = auth.currentUserId;
+  const { gemsContractInstance } = app;
 
   const {
     tokenId, duration, startPrice, endPrice,
@@ -119,11 +112,11 @@ export const createAuction = (payload, turnLoaderOff, history) => (dispatch, get
           turnLoaderOff();
           history.push(`/profile/${currentAccount}`);
         })
-        .catch(err => console.warn('err 1', err));
+        .catch(err => setError(err));
     })
     .catch((err) => {
       turnLoaderOff();
-      console.warn('user cancel auction creation error', err);
+      setError(err);
     });
 };
 
@@ -134,6 +127,7 @@ export const removeFromAuction = (tokenId, history, turnLoaderOff) => async (
 ) => {
   const dutchContract = getState().app.dutchContractInstance;
   const currentUser = getState().auth.currentUserId;
+  // eslint-disable-next-line
   const gemContractAddress = getState().app.gemsContractInstance._address;
 
   removeAuctionHelper(dutchContract, tokenId, gemContractAddress)
@@ -158,7 +152,7 @@ export const removeFromAuction = (tokenId, history, turnLoaderOff) => async (
         });
       }))
     .catch((error) => {
-      console.log('error removing auction', error);
+      setError(error);
       turnLoaderOff();
     });
 };
@@ -167,11 +161,10 @@ export const removeFromAuction = (tokenId, history, turnLoaderOff) => async (
 export const handleBuyNow = (_tokenId, _from, history) => (dispatch, getState) => {
   const dutchAuctionContractInstance = getState().app.dutchContractInstance;
   const priceInWei = getState().auction.currentPrice;
+  // eslint-disable-next-line
   const gemContractAddress = getState().app.gemsContractInstance._address;
 
   dispatch({ type: MODAL_VISIBLE });
-
-  console.log('_tokenId, _from', _tokenId, _from);
 
   return dutchAuctionContractInstance.methods
     .buy(gemContractAddress, _tokenId)
@@ -204,13 +197,16 @@ export const getRestingEnergy = tokenId => (dispatch, getState) => {
         const ageSeconds = (Date.now() / 1000 || 0) - result;
         const ageMinutes = Math.floor(ageSeconds / 60);
         const restingEnergyMinutes = Math.floor(
+          // eslint-disable-next-line
           -7e-6 * Math.pow(ageMinutes, 2) + 0.5406 * ageMinutes,
         );
 
         return restingEnergyMinutes;
       })
-      .catch(err => console.log('resting energy action err', err))
+      .catch(err => setError(err))
   );
 };
 
-export const clearGemPageOnExit = gemId => dispatch => dispatch({ type: CLEAR_GEM_PAGE });
+export function clearGemPageOnExit() {
+  return dispatch => dispatch({ type: CLEAR_GEM_PAGE });
+}
