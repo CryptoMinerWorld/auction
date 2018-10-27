@@ -41,6 +41,36 @@
         { "fieldPath": "auctionIsLive", "mode": "ASCENDING" },
         { "fieldPath": "deadline", "mode": "DESCENDING" }
       ]
+    },
+
+    {
+      "collectionId": "stones",
+      "fields": [
+        { "fieldPath": "auctionIsLive", "mode": "ASCENDING" },
+        { "fieldPath": "deadline", "mode": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionId": "stones",
+      "fields": [
+        { "fieldPath": "owner", "mode": "ASCENDING" },
+        { "fieldPath": "rate", "mode": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionId": "stones",
+      "fields": [
+        { "fieldPath": "owner", "mode": "ASCENDING" },
+        { "fieldPath": "gradeType", "mode": "ASCENDING" }
+      ]
+    },
+
+    {
+      "collectionId": "stones",
+      "fields": [
+        { "fieldPath": "owner", "mode": "ASCENDING" },
+        { "fieldPath": "gradeType", "mode": "DESCENDING" }
+      ]
     }
   ]
 }

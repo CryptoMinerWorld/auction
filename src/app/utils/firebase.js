@@ -1,10 +1,7 @@
-
 import firebase from 'firebase/app';
 
-require('dotenv').config()
-require('firebase/firestore')
-require('firebase/storage')
-
+require('firebase/firestore');
+require('firebase/storage');
 
 const config = {
   apiKey: process.env.REACT_APP_FB_API,
@@ -12,27 +9,20 @@ const config = {
   databaseURL: process.env.REACT_APP_FB_DB_URL,
   projectId: process.env.REACT_APP_FB_PROJECT_ID,
   storageBucket: process.env.REACT_APP_FB_STORAGE,
-  messagingSenderId: process.env.REACT_APP_FB_MSG_SENDER_ID
+  messagingSenderId: process.env.REACT_APP_FB_MSG_SENDER_ID,
 };
-
-// const config = {
-//   apiKey: "AIzaSyBoyoAOL0NHEaAu36rxiNtRLCk2NmyAEXU",
-//   authDomain: "dev-cryptominerworld.firebaseapp.com",
-//     databaseURL: "https://dev-cryptominerworld.firebaseio.com",
-//     projectId: "dev-cryptominerworld",
-//     storageBucket: "dev-cryptominerworld.appspot.com",
-//     messagingSenderId: "525391164254"
-// };
-
-
 
 firebase.initializeApp(config);
 
 export const storage = firebase.storage();
 // eslint-disable-next-line
 export let db = firebase.firestore();
-const settings = {timestampsInSnapshots: true};
+const settings = { timestampsInSnapshots: true };
 db.settings(settings);
+
+// const firestore = new Firestore();
+//   const settings = {/* your settings... */ timestampsInSnapshots: true};
+//   firestore.settings(settings);
 
 // firebase
 //   .firestore()
@@ -47,4 +37,3 @@ db.settings(settings);
 //     console.error(err.code, err);
 //     return firebase.firestore();
 //   });
-

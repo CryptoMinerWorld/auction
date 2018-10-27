@@ -1,12 +1,23 @@
 export const calculateGemName = (providedGrade, providedTokenId) => {
-    const gemType = {
-      9: "Sapphire",
-      10: "Opal",
-      1: "Garnet",
-      2: "Amethyst"
-    }[providedGrade];
-    return `${gemType} #${providedTokenId}`;
-  };
+  const gemType = {
+    1: 'Garnet',
+    2: 'Amethyst',
 
+    3: 'Aquamarine',
+    4: 'Diamond',
+    5: 'Emerald',
+    6: 'Pearl',
 
-  export const temp = () => console.log('temp')
+    7: 'Ruby',
+    8: 'Peridot',
+
+    9: 'Sapphire',
+    10: 'Opal',
+
+    11: 'Topaz',
+    12: 'Turquoise',
+  }[providedGrade];
+  return gemType && providedTokenId ? `${gemType} #${providedTokenId}` : 'Loading...';
+};
+
+export const TEMP = (market, gemId) => market.find(gem => Number(gem.gemId) === Number(gemId));

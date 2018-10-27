@@ -1,0 +1,203 @@
+{
+  "initial": "mapPage",
+  "states": {
+    "mapPage": {
+      "onEntry": ["getListOfCountries"],
+      "on": {
+        "BUY": "confirmModal",
+        "SELECT": ".cart.multiple",
+        "DESELECT": [
+          {
+            "target": "mapPage.cart.single"
+          },
+          {
+            "target": "mapPage.cart.multiple"
+          }
+        ]
+      },
+      "states": {
+        "filter": {
+          "parallel": true,
+          "states": {
+            "sort": {
+              "parallel": true,
+              "states": {
+                "order": {
+                  "initial": "asc",
+                  "states": {
+                    "asc": {
+                      "on": {
+                        "toggle": "desc"
+                      }
+                    },
+                    "desc": {
+                      "on": {
+                        "toggle": "asc"
+                      }
+                    }
+                  }
+                },
+                "category": {
+                  "states": {
+                    "country": {
+                      "on": {
+                        "plots": "plots",
+                        "price": "price",
+                        "roi": "roi"
+                      }
+                    },
+                    "plots": {
+                      "on": {
+                        "country": "country",
+                        "price": "price",
+                        "roi": "roi"
+                      }
+                    },
+                    "price": {
+                      "on": {
+                        "country": "country",
+                        "plots": "plots",
+                        "roi": "roi"
+                      }
+                    },
+                    "roi": {
+                      "on": {
+                        "country": "country",
+                        "plots": "plots",
+                        "price": "price"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "filter": {
+              "states": {
+                "all": {
+                  "on": {
+                    "available": "available",
+                    "sold": "sold"
+                  }
+                },
+                "available": {
+                  "on": {
+                    "all": "all",
+                    "sold": "sold"
+                  }
+                },
+                "sold": {
+                  "on": {
+                    "all": "all",
+                    "available": "available"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "map": {
+          "initial": "single",
+          "states": {
+            "single": {
+              "on": {
+                "SELECT": "multiple"
+              }
+            },
+            "multiple": {
+              "on": {
+                "SELECT": "multiple",
+                "DESELECT": [
+                  {
+                    "target": "single"
+                  },
+                  {
+                    "target": "multiple"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "cart": {
+          "initial": "single",
+          "states": {
+            "single": {},
+            "multiple": {}
+          }
+        }
+      }
+    },
+    "confirmModal": {
+      "on": {
+        "CONFIRM": "loading",
+        "CANCEL": "mapPage"
+      }
+    },
+    "loading": {
+      "onEntry": ["buyCountries"],
+      "on": {
+        "SUCCESS": "dashboardPage",
+        "ERROR": "error"
+      }
+    },
+    "error": {
+      "on": {
+        "CONFIRM": "loading",
+        "CANCEL": "mapPage"
+      }
+    },
+    "dashboardPage": {
+      "onEntry": ["getUserCountryDetails"],
+      "on": {
+        "SELL": "sellConfirm",
+        "WITHDRAW": "withdrawConfirm"
+      },
+      "initial": "selected",
+      "states": {
+        "selected": {
+          "on": {
+            "SELECT": "selected"
+          }
+        }
+      }
+    },
+    "sellConfirm": {
+      "on": {
+        "CONFIRM": "sellLoading",
+        "CANCEL": "dashboardPage"
+      }
+    },
+    "sellLoading": {
+      "onEntry": ["makeCountryBuyable"],
+      "on": {
+        "ERROR": "sellErrorModal",
+        "SUCCESS": "dashboardPage"
+      }
+    },
+    "sellErrorModal": {
+      "on": {
+        "CONFIRM": "sellLoading",
+        "CANCEL": "dashboardPage"
+      }
+    },
+    "withdrawConfirm": {
+      "on": {
+        "CONFIRM": "withDrawLoading",
+        "CANCEL": "dashboardPage"
+      }
+    },
+    "withDrawLoading": {
+      "onEntry": ["withdrawAmount"],
+      "on": {
+        "ERROR": "withdrawErrorModal",
+        "SUCCESS": "dashboardPage"
+      }
+    },
+    "withdrawErrorModal": {
+      "on": {
+        "CONFIRM": "withDrawLoading",
+        "CANCEL": "dashboardPage"
+      }
+    }
+  }
+}

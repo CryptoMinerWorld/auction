@@ -1,9 +1,9 @@
-import React, { PureComponent } from "react";
-import PropTypes from "prop-types";
-import Progress from "antd/lib/progress";
-import { calculatePercentage, weiToEth } from "../../market/helpers";
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
+import Progress from 'antd/lib/progress';
+import { calculatePercentage, weiToEth } from '../../market/helpers';
 
-require("antd/lib/progress/style/css");
+require('antd/lib/progress/style/css');
 
 class ProgressMeter extends PureComponent {
   render() {
@@ -11,8 +11,10 @@ class ProgressMeter extends PureComponent {
     return (
       <div className="white ma0 pa3 tc ">
         <small className="white ttu ">current price</small>
-        <p className="basic" style={{ fontSize: "xx-large" }}>
-          Ξ <span data-testid="currentPrice">{weiToEth(currentPrice)}</span>
+        <p className="basic" style={{ fontSize: 'xx-large' }}>
+          Ξ
+          {' '}
+          <span data-testid="currentPrice">{weiToEth(currentPrice)}</span>
         </p>
 
         <Progress
@@ -24,10 +26,14 @@ class ProgressMeter extends PureComponent {
         />
         <div className="flex jcb">
           <small className="basic">
-            Ξ <span data-testid="minPrice">{weiToEth(maxPrice)}</span>
+            Ξ
+            {' '}
+            <span data-testid="minPrice">{weiToEth(maxPrice)}</span>
           </small>
           <small className="basic">
-            Ξ <span data-testid="maxPrice">{weiToEth(minPrice)}</span>
+            Ξ
+            {' '}
+            <span data-testid="maxPrice">{weiToEth(minPrice)}</span>
           </small>
         </div>
       </div>
@@ -38,7 +44,7 @@ class ProgressMeter extends PureComponent {
 export default ProgressMeter;
 
 ProgressMeter.propTypes = {
-  currentPrice: PropTypes.string.isRequired,
+  currentPrice: PropTypes.number.isRequired,
   minPrice: PropTypes.number.isRequired,
-  maxPrice: PropTypes.number.isRequired
+  maxPrice: PropTypes.number.isRequired,
 };

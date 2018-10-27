@@ -39,3 +39,19 @@
   -ms-transform: translateX(0%);
   transform: translateX(0%);
 }
+
+.slideinFromLeft-appear {
+  -webkit-transform: translateX(-120%);
+  -ms-transform: translateX(-120%);
+  transform: translateX(-120%);
+
+  -webkit-transition: 3s;
+
+  transition: 3s;
+}
+
+.slideinFromLeft-appear.slideinFromLeft-appear-active {
+  -webkit-transform: translateX(0%);
+  -ms-transform: translateX(0%);
+  transform: translateX(0%);
+}
