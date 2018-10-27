@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { db } from '../../app/utils/firebase';
 import styled from 'styled-components';
 import Pagination from 'antd/lib/pagination';
 import { withStateMachine } from 'react-automata';
@@ -8,12 +7,14 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter, Link } from 'react-router-dom';
 import { matchesState } from 'xstate';
+import notification from 'antd/lib/notification';
+import { db } from '../../app/utils/firebase';
 import {
   getUserGemsOnce,
   getUserDetails,
   filterUserGemsOnPageLoad,
   paginate,
-  addGemsToDashboard
+  addGemsToDashboard,
 } from './dashboardActions';
 import GemSortBox from './components/GemSortBox';
 import Cards from './components/GemCard';
@@ -24,8 +25,8 @@ import ReSync from './components/ResyncButton';
 import SortBox from './components/SortBox';
 import AuctionCategories from './components/AuctionCategories';
 import { getReferralPoints, getPlotCount } from './helpers';
-import { stateMachine } from './stateMachine';
-import notification from 'antd/lib/notification';
+import stateMachine from './stateMachine';
+
 require('antd/lib/notification/style/css');
 require('antd/lib/pagination/style/css');
 require('antd/lib/slider/style/css');
@@ -50,87 +51,53 @@ const Primary = styled.section`
 `;
 
 const select = store => ({
-  totalGems:
-    store.dashboard &&
-    store.dashboard.userGems &&
-    store.dashboard.userGems.length,
+  totalGems: store.dashboard && store.dashboard.userGems && store.dashboard.userGems.length,
   auctions: store.dashboard.filter,
-  paginated: store.dashboard &&
-    store.dashboard.filter && [
-      ...store.dashboard.filter.slice(
-        store.dashboard.start,
-        store.dashboard.end
-      )
-    ],
+  paginated: store.dashboard
+    && store.dashboard.filter && [
+    ...store.dashboard.filter.slice(store.dashboard.start, store.dashboard.end),
+  ],
   pageNumber: store.dashboard.page,
   loading: store.dashboard.gemsLoading,
   error: store.dashboard.gemsLoadingError,
   userName: store.dashboard.userDetails && store.dashboard.userDetails.name,
-  userImage:
-    store.dashboard.userDetails && store.dashboard.userDetails.imageURL,
+  userImage: store.dashboard.userDetails && store.dashboard.userDetails.imageURL,
   sortBox: store.dashboard.sortBox,
   currentUserId: store.auth.currentUserId,
-  web3: store.app.web3
+  web3: store.app.web3,
 });
 
 class Dashboard extends Component {
   static propTypes = {
-    auctions: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.number,
-        minPrice: PropTypes.number,
-        maxPrice: PropTypes.number,
-        price: PropTypes.number,
-        deadline: PropTypes.oneOfType([
-          PropTypes.shape({
-            seconds: PropTypes.number
-          }),
-          PropTypes.number
-        ]),
-        image: PropTypes.string,
-        owner: PropTypes.string,
-        gradeType: PropTypes.number,
-        quality: PropTypes.number,
-        rate: PropTypes.number
-      })
-    ),
     loading: PropTypes.bool.isRequired,
     error: PropTypes.bool.isRequired,
     userName: PropTypes.string,
     userImage: PropTypes.string,
-    handleAddGemsToDashboard: PropTypes.func.isRequired
+    handleAddGemsToDashboard: PropTypes.func.isRequired,
+    web3: PropTypes.shape({}),
+    transition: PropTypes.func.isRequired,
+    match: PropTypes.shape({}),
+    gems: PropTypes.shape([]),
+    history: PropTypes.shape({}),
+    sortBox: PropTypes.func.isRequired,
+    totalGems: PropTypes.number.isRequired,
+    paginated: PropTypes.bool.isRequired,
+    handlePagination: PropTypes.func.isRequired,
+    pageNumber: PropTypes.number.isRequired,
+    handlePreLoadAuctionPage: PropTypes.func.isRequired,
+    machineState: PropTypes.shape({}),
   };
 
   static defaultProps = {
-    auctions: [
-      {
-        id: 1,
-        minPrice: 0,
-        maxPrice: 1,
-        price: 0.5,
-        deadline: 1548390590016,
-        image:
-          'https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FAquamarine%20Face%20Emoji.png?alt=media&token=b759ae07-bb8c-4ec8-9399-d3844d5428ef',
-        owner: 'User',
-        gradeType: 1,
-        quality: 1,
-        rate: 1
-      }
-    ],
     userName: 'Loading...',
     userImage:
-      'https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FAquamarine%20Face%20Emoji.png?alt=media&token=b759ae07-bb8c-4ec8-9399-d3844d5428ef'
+      'https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FAquamarine%20Face%20Emoji.png?alt=media&token=b759ae07-bb8c-4ec8-9399-d3844d5428ef',
+    web3: {},
+    match: {},
+    gems: [],
+    history: {},
+    machineState: {},
   };
-
-  // componentDidMount() {
-  //   const { match } = this.props;
-
-  //   // // this.props.handleGetAuctions(this.props.currentUserId);
-  //   // this.props.handleGetAuctions(match.params.userId);
-  //   // // this.props.handleGetUserDetails(this.props.currentUserId);
-  //   // this.props.handleGetUserDetails(match.params.userId);
-  //   // this.props.handlePagination(1, 14);
-  // }
 
   componentDidUpdate(prevProps) {
     const { web3, transition, match } = this.props;
@@ -139,7 +106,6 @@ class Dashboard extends Component {
     }
 
     if (match.params.userId !== prevProps.match.params.userId) {
-      console.log('userId changed');
       transition('LOADING');
     }
   }
@@ -154,9 +120,7 @@ class Dashboard extends Component {
     const userDetails = db
       .doc(`users/${userIdToLowerCase}`)
       .get()
-      .then(doc => {
-        return doc.data();
-      });
+      .then(doc => doc.data());
 
     const userGems = db
       .collection('stones')
@@ -166,13 +130,11 @@ class Dashboard extends Component {
       .then(collection => collection.docs.map(doc => doc.data()));
 
     Promise.all([userDetails, userGems])
-      .then(([userDetails, userGems]) =>
-        transition('GOT_USER_GEMS', {
-          gems: userGems,
-          userName: userDetails.name,
-          userImage: userDetails.imageURL
-        })
-      )
+      .then(([userDeets, usersGems]) => transition('GOT_USER_GEMS', {
+        gems: usersGems,
+        userName: userDeets.name,
+        userImage: userDeets.imageURL,
+      }))
       .catch(error => transition('ERROR_FETCHING_GEMS', { error }));
   };
 
@@ -199,12 +161,11 @@ class Dashboard extends Component {
       message: 'Error',
       description: error,
       onClose: () => transition('RETURN_TO_MARKET'),
-      duration: null
+      duration: null,
     });
   };
 
   redirectToMarket = () => {
-    console.log('redirect');
     const { history } = this.props;
     history.push('/market');
   };
@@ -220,7 +181,7 @@ class Dashboard extends Component {
       handlePagination,
       pageNumber,
       handlePreLoadAuctionPage,
-      machineState
+      machineState,
     } = this.props;
 
     return (
@@ -235,11 +196,7 @@ class Dashboard extends Component {
 
         <div className="flex  aic mt3 wrap jcc jcb-ns">
           <div className=" flex aic">
-            <img
-              src={userImage}
-              className="h3 w-auto pr3 dib"
-              alt="gem auctions"
-            />
+            <img src={userImage} className="h3 w-auto pr3 dib" alt="gem auctions" />
             <h1 className="white" data-testid="header">
               {userName}
             </h1>
@@ -253,8 +210,7 @@ class Dashboard extends Component {
               {sortBox && <SortBox />}
             </div>
             <CardBox>
-              {loading &&
-                [1, 2, 3, 4, 5, 6].map(num => <LoadingCard key={num} />)}
+              {loading && [1, 2, 3, 4, 5, 6].map(num => <LoadingCard key={num} />)}
               {paginated && paginated.length > 0 ? (
                 paginated.map(auction => (
                   <Link
@@ -294,14 +250,14 @@ const actions = {
   handleFilterUserGemsOnPageLoad: filterUserGemsOnPageLoad,
   handlePagination: paginate,
   handlePreLoadAuctionPage: preLoadAuctionPage,
-  handleAddGemsToDashboard: addGemsToDashboard
+  handleAddGemsToDashboard: addGemsToDashboard,
 };
 
 export default compose(
   withRouter,
   connect(
     select,
-    actions
+    actions,
   ),
-  withStateMachine(stateMachine)
+  withStateMachine(stateMachine),
 )(Dashboard);

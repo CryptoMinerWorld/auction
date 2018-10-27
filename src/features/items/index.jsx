@@ -14,23 +14,16 @@ import DescriptionBox from './components/DescriptionBox/index';
 import FAQ from './components/FAQ';
 import MailingList from '../../components/MailingList';
 import './animations.css';
-import {
-  OverlapOnDesktopView,
-  RockOverlay,
-  TopHighlight
-} from './styledComponents';
-import { getAuctionDetails } from './itemActions';
+import { OverlapOnDesktopView, RockOverlay, TopHighlight } from './styledComponents';
+import { getAuctionDetails, getRestingEnergy, clearGemPageOnExit } from './itemActions';
 import { calculateGemName } from './selectors';
 import StatsBox from './components/StatsBox';
-import { getRestingEnergy } from './itemActions';
 import { showConfirm } from '../../components/Modal';
 import MobileHeader from './components/MobileHeader';
-import { clearGemPageOnExit } from './itemActions';
 
 const select = store => ({
   details: store.auction,
-  gemName:
-    store.auction && calculateGemName(store.auction.color, store.auction.id),
+  gemName: store.auction && calculateGemName(store.auction.color, store.auction.id),
   error: store.app.error,
   currentAccount: store.auth.currentUserId,
   releaseConfetti: store.app.releaseConfetti,
@@ -38,14 +31,14 @@ const select = store => ({
   gemContract: store.app.gemsContractInstance,
   web3: store.app.web3,
   dutchContract: store.app.dutchContractInstance,
-  gemContractAddress:
-    store.app.gemsContractInstance && store.app.gemsContractInstance._address
+  // eslint-disable-next-line
+  gemContractAddress: store.app.gemsContractInstance && store.app.gemsContractInstance._address,
 });
 
 class Auction extends PureComponent {
   state = {
     restingEnergyMinutes: '',
-    currentPrice: ''
+    currentPrice: '',
   };
 
   componentDidMount() {
@@ -53,66 +46,66 @@ class Auction extends PureComponent {
       match,
       handleGetAuctionDetails,
       dutchContract,
-      gemContractAddress
+      gemContractAddress,
+      handleSetError,
     } = this.props;
 
-    match &&
-      match.params &&
-      match.params.gemId &&
+    if (match && match.params && match.params.gemId) {
       handleGetAuctionDetails(match.params.gemId);
+    }
 
     this.Priceinterval = setInterval(() => {
-      dutchContract &&
-        gemContractAddress &&
+      if (dutchContract && gemContractAddress) {
         dutchContract.methods
           .getCurrentPrice(gemContractAddress, match.params.gemId)
           .call()
-          .then(currentPrice => {
+          .then((currentPrice) => {
             this.setState({ currentPrice: Number(currentPrice) });
           })
-          .catch(error => console.log('error getting current price', error));
+          .catch(error => handleSetError(error));
+      }
     }, 10000);
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const transform = result =>
-      this.props.web3.eth.getBlock(result, (err, result) => {
-        if (err) {
-          return err;
-        }
-        return result;
-      });
+  componentDidUpdate(prevProps) {
+    const { gemContract, match, handleSetError } = this.props;
+    const { restingEnergyMinutes } = this.state;
 
-    if (
-      this.props.gemContract &&
-      this.props.match.params.gemId &&
-      !this.state.restingEnergyMinutes
-    ) {
-      this.props.gemContract.methods
-        .getCreationTime(this.props.match.params.gemId)
+    const transform = result => prevProps.web3.eth.getBlock(result, (err, results) => {
+      if (err) {
+        return err;
+      }
+      return results;
+    });
+
+    if (gemContract && match.params.gemId && !restingEnergyMinutes) {
+      gemContract.methods
+        .getCreationTime(match.params.gemId)
         .call()
-        .then(async blockNumber => {
+        .then(async (blockNumber) => {
           const { timestamp } = await transform(blockNumber);
           const linearThreshold = 37193;
+          // eslint-disable-next-line
           const ageSeconds = ((Date.now() / 1000) | 0) - timestamp;
           const ageMinutes = Math.floor(ageSeconds / 60);
-          const restingEnergyMinutes = Math.floor(
+          const restedEnergyMinutes = Math.floor(
+            // eslint-disable-next-line
             -7e-6 * Math.pow(Math.min(ageMinutes, linearThreshold), 2) +
-              0.5406 * Math.min(ageMinutes, linearThreshold) +
-              0.0199 * Math.max(ageMinutes - linearThreshold, 0)
+              0.5406 * Math.min(ageMinutes, linearThreshold)
+              + 0.0199 * Math.max(ageMinutes - linearThreshold, 0),
           );
-          this.setState({ restingEnergyMinutes });
+          this.setState({ restingEnergyMinutes: restedEnergyMinutes });
         })
-        .catch(err => console.log('resting energy action err', err));
+        .catch(error => handleSetError(error));
     }
   }
 
   componentWillUnmount() {
-    const { match } = this.props;
-    match &&
-      match.params &&
-      match.params.gemId &&
-      this.props.handleClearGemPage(match.params.gemId);
+    const { match, handleClearGemPage } = this.props;
+    if (match && match.params && match.params.gemId) {
+      handleClearGemPage(match.params.gemId);
+    }
+
     clearInterval(this.Priceinterval);
   }
 
@@ -126,7 +119,8 @@ class Auction extends PureComponent {
       currentAccount,
       details,
       gemName,
-      error
+      error,
+      match,
     } = this.props;
 
     // this.Priceinterval =
@@ -144,9 +138,7 @@ class Auction extends PureComponent {
 
     const { restingEnergyMinutes, currentPrice } = this.state;
 
-    const socialShareUrl = `${process.env.REACT_APP_BASE_URL}${
-      this.props.match.url
-    }`;
+    const socialShareUrl = `${process.env.REACT_APP_BASE_URL}${match.url}`;
 
     return (
       <div>
@@ -159,7 +151,7 @@ class Auction extends PureComponent {
               left: 0,
               width: '100%',
               height: '100%',
-              zIndex: '999'
+              zIndex: '999',
             }}
           >
             <Confetti {...size} />
@@ -169,10 +161,7 @@ class Auction extends PureComponent {
         <div className="bg-off-black ">
           <RockOverlay>
             <div className="relative mw9 center">
-              {details &&
-                details.gemImage && (
-                  <AuctionImage sourceImage={details.gemImage} />
-                )}
+              {details && details.gemImage && <AuctionImage sourceImage={details.gemImage} />}
               <div className="ma3 ma0-ns">
                 {details && (
                   <ReactCSSTransitionGroup
@@ -203,9 +192,7 @@ class Auction extends PureComponent {
                       auctionIsLive={details.auctionIsLive}
                       gemId={details.gemId}
                       restingEnergyMinutes={restingEnergyMinutes}
-                      lastSoldFor={
-                        details && details.lastSoldFor && details.lastSoldFor
-                      }
+                      lastSoldFor={details && details.lastSoldFor && details.lastSoldFor}
                       sourceImage={details.gemImage}
                     />
                   </ReactCSSTransitionGroup>
@@ -216,8 +203,8 @@ class Auction extends PureComponent {
           <div className="bg-off-black">
             <TopHighlight />
             <div className="mw9 center relative-l">
-              {details &&
-                Object.keys(details).length > 0 && (
+              {details
+                && Object.keys(details).length > 0 && (
                   <DescriptionBox
                     level={details.level}
                     grade={details.gradeType}
@@ -232,7 +219,7 @@ class Auction extends PureComponent {
                     userImage={details.userImage}
                     shareUrl={socialShareUrl}
                   />
-                )}
+              )}
 
               <div className="w-50-l measure-wide-l">
                 <OverlapOnDesktopView>
@@ -252,19 +239,19 @@ const actions = {
   handleGetAuctionDetails: getAuctionDetails,
   handleGetRestingEnergy: getRestingEnergy,
   showConfirm,
-  handleClearGemPage: clearGemPageOnExit
+  handleClearGemPage: clearGemPageOnExit,
 };
 
 export default compose(
   sizeMe({
     monitorHeight: true,
-    monitorWidth: true
+    monitorWidth: true,
   }),
   withRouter,
   connect(
     select,
-    actions
-  )
+    actions,
+  ),
 )(Auction);
 
 Auction.propTypes = {
@@ -278,18 +265,18 @@ Auction.propTypes = {
     maxPrice: PropTypes.number,
     grade: PropTypes.number,
     rate: PropTypes.number,
-    tokenId: PropTypes.string
+    tokenId: PropTypes.string,
   }),
   size: PropTypes.shape({
     monitorHeight: PropTypes.bool,
-    monitorWidth: PropTypes.bool
+    monitorWidth: PropTypes.bool,
   }).isRequired,
   gemName: PropTypes.string.isRequired,
   showConfirm: PropTypes.func.isRequired,
   redirectTo: PropTypes.string,
-  story: PropTypes.string.isRequired,
-  provider: PropTypes.bool.isRequired,
-  currentAccount: PropTypes.string.isRequired
+  story: PropTypes.string,
+  provider: PropTypes.bool,
+  currentAccount: PropTypes.string.isRequired,
 };
 
 Auction.defaultProps = {
@@ -304,25 +291,23 @@ Auction.defaultProps = {
     maxPrice: 1,
     grade: 1,
     rate: 100,
-    tokenId: 1
+    tokenId: 1,
   }),
   provider: false,
-  story: 'Loading...'
+  story: 'Loading...',
 };
 
-const DisplayBoxStateMachine = props => {
+const DisplayBoxStateMachine = (props) => {
   const { owner, currentAccount, auctionIsLive } = props;
 
-  const currentAccountLowerCase =
-    currentAccount &&
-    currentAccount
+  const currentAccountLowerCase = currentAccount
+    && currentAccount
       .split('')
       .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
       .join('');
 
-  const ownerLowerCase =
-    owner &&
-    owner
+  const ownerLowerCase = owner
+    && owner
       .split('')
       .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
       .join('');
@@ -344,6 +329,6 @@ const DisplayBoxStateMachine = props => {
   return {
     owner: <TradingBox {...props} />,
     buyer: <AuctionBox {...props} />,
-    viewer: <StatsBox {...props} />
+    viewer: <StatsBox {...props} />,
   }[state];
 };

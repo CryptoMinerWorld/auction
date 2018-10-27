@@ -16,7 +16,7 @@ import {
   DASHBOARD_WAS_FILTERED,
   RERENDER_SORT_BOX,
   SORT_BOX_RERENDERED,
-  PAGINATE
+  PAGINATE,
 } from './dashboardConstants';
 import { db } from '../../app/utils/firebase';
 import store from '../../app/store';
@@ -24,7 +24,7 @@ import { getGemQualities, calcMiningRate } from '../items/helpers';
 import { getGemImage, getGemStory } from './helpers';
 
 // this gets all the gems from the database
-export const getUserGems = userId => dispatch => {
+export const getUserGems = userId => (dispatch) => {
   dispatch({ type: FETCH_USER_GEMS_BEGUN });
 
   const userIdToLowerCase = userId
@@ -37,7 +37,7 @@ export const getUserGems = userId => dispatch => {
       .where('owner', '==', userIdToLowerCase)
       .orderBy('gradeType', 'desc')
       .get()
-      .then(collection => {
+      .then((collection) => {
         const gems = collection.docs.map(doc => doc.data());
         dispatch({ type: FETCH_USER_GEMS_SUCCEEDED });
         dispatch({ type: USER_GEMS_RETRIEVED, payload: gems });
@@ -47,7 +47,7 @@ export const getUserGems = userId => dispatch => {
   }
 };
 
-export const getUserGemsOnce = userId => dispatch => {
+export const getUserGemsOnce = userId => (dispatch) => {
   dispatch({ type: 'FETCH_USER_GEMS_ONCE_BEGUN' });
   const userIdToLowerCase = userId
     .split('')
@@ -61,9 +61,9 @@ export const getUserGemsOnce = userId => dispatch => {
       .where('owner', '==', userIdToLowerCase)
       .orderBy('gradeType', 'desc')
       .get()
-      .then(collection => {
+      .then((collection) => {
         const gems = collection.docs.map(doc => doc.data());
-        
+
         // console.log('gems', gems)
         dispatch({ type: FETCH_USER_GEMS_SUCCEEDED });
         dispatch({ type: DASHBOARD_WAS_FILTERED, payload: gems });
@@ -73,13 +73,13 @@ export const getUserGemsOnce = userId => dispatch => {
   }
 };
 
-export const getUserDetails = userId => dispatch => {
+export const getUserDetails = userId => (dispatch) => {
   dispatch({ type: FETCH_USER_DETAILS_BEGUN });
 
   try {
     db.collection('users')
       .where('walletId', '==', userId)
-      .onSnapshot(collection => {
+      .onSnapshot((collection) => {
         const userDetails = collection.docs.map(doc => doc.data());
         dispatch({ type: FETCH_USER_DETAILS_SUCCEEDED });
         dispatch({ type: USER_DETAILS_RETRIEVED, payload: userDetails[0] });
@@ -90,23 +90,19 @@ export const getUserDetails = userId => dispatch => {
 };
 
 // this checks the smart contract to see what gems a user owns
-export const getAllUserGems = (userId, gemContract) => {
-  return gemContract.methods
-    .getCollection(userId)
-    .call({ from: userId }, (error, result) => {
-      if (!error) {
-        // store.dispatch({
-        //   type: ALL_USER_GEMS_RETRIEVED,
-        //   payload: result
-        // });
-        return result;
-      }
-      return error;
-    });
-};
+export const getAllUserGems = (userId, gemContract) => gemContract.methods.getCollection(userId).call({ from: userId }, (error, result) => {
+  if (!error) {
+    // store.dispatch({
+    //   type: ALL_USER_GEMS_RETRIEVED,
+    //   payload: result
+    // });
+    return result;
+  }
+  return error;
+});
 
 // this is called in authActions when you create a new User
-export const getDetailsForAllGemsAUserCurrentlyOwns = userId => {
+export const getDetailsForAllGemsAUserCurrentlyOwns = (userId) => {
   store.dispatch({ type: FETCH_USER_GEMS_BEGUN });
   const gemContract = store.getState().app.gemsContractInstance;
   const userName = store.getState().auth.user.name;
@@ -114,174 +110,145 @@ export const getDetailsForAllGemsAUserCurrentlyOwns = userId => {
 
   const listOfGemIds = [];
 
-  getAllUserGems(userId, gemContract).then(listOfGemIdsTheUserOwns =>
-    Promise.all(
-      listOfGemIdsTheUserOwns.map(gemId => {
-        listOfGemIds.push(gemId);
-        return getGemQualities(gemContract, gemId).then(
-          ([color, level, gradeType, gradeValue]) => ({
-            color,
-            level,
-            gradeType,
-            gradeValue
-          })
-        );
+  getAllUserGems(userId, gemContract).then(listOfGemIdsTheUserOwns => Promise.all(
+    listOfGemIdsTheUserOwns.map((gemId) => {
+      listOfGemIds.push(gemId);
+      return getGemQualities(gemContract, gemId).then(
+        ([color, level, gradeType, gradeValue]) => ({
+          color,
+          level,
+          gradeType,
+          gradeValue,
+        }),
+      );
+    }),
+  ).then((responses) => {
+    const gemImages = Promise.all(
+      responses.map(gem => getGemImage(gem.color, gem.gradeType, gem.level)),
+    );
+
+    const gemStories = Promise.all(responses.map(gem => getGemStory(gem.color, gem.level)));
+
+    Promise.all([gemImages, gemStories])
+      .then(async ([images, stories]) => {
+        const userIdToLowerCase = userId
+          .split('')
+          .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
+          .join('');
+
+        const completeGemDetails = listOfGemIds.map((gemId, index) => ({
+          id: Number(gemId),
+          ...responses[index],
+          rate: Number(calcMiningRate(responses[index].gradeType, responses[index].gradeValue)),
+          auctionIsLive: false,
+          owner: userIdToLowerCase,
+          gemImage: images[index],
+          story: stories[index],
+          userName,
+          userImage,
+        }));
+
+        if (completeGemDetails.length === 0) {
+          store.dispatch({ type: FETCH_USER_GEMS_SUCCEEDED });
+          store.dispatch({
+            type: USER_HAS_NO_GEMS_IN_WORKSHOP,
+          });
+        } else {
+          await completeGemDetails.forEach(gem => db
+            .collection('stones')
+            .doc(`${gem.id}`)
+            .set(gem));
+
+          store.dispatch({
+            type: ALL_USER_GEMS_UPLOADED,
+            payload: completeGemDetails,
+          });
+
+          store.dispatch({ type: FETCH_USER_GEMS_SUCCEEDED });
+        }
       })
-    ).then(responses => {
-      const gemImages = Promise.all(
-        responses.map(gem => getGemImage(gem.color, gem.gradeType, gem.level))
+      .catch(
+        error => console.log('error', error),
+        // store.dispatch({ type: FETCH_USER_GEMS_FAILED, payload: error })
       );
+  }));
+};
 
-      const gemStories = Promise.all(
-        responses.map(gem => getGemStory(gem.color, gem.level))
-      );
+export const getGemDetails = tokenId => dispatch => db
+  .collection('stones')
+  .where('id', '==', Number(tokenId))
+  .onSnapshot((coll) => {
+    const gemDetails = coll.docs.map(doc => doc.data());
+    dispatch({
+      type: AUCTION_DETAILS_RECEIVED,
+      payload: gemDetails[0],
+    });
+  });
 
-      Promise.all([gemImages, gemStories])
-        .then(async ([images, stories]) => {
+export const onlyGemsInAuction = () => ({
+  type: ONLY_WANT_TO_SEE_GEMS_IN_AUCTIONS,
+});
 
-          const userIdToLowerCase = userId
+export const allMyGems = () => ({
+  type: WANT_TO_SEE_ALL_GEMS,
+});
+
+// this is not an action its just a regular function, no dispatch
+export const updateGemDetails = (userId, gemContract, userName, userImage) => async () => {
+  // console.log('Gems for the following user being updated =>', userId);
+
+  const userIdToLowerCase = userId
     .split('')
     .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
     .join('');
 
-          const completeGemDetails = listOfGemIds.map((gemId, index) => ({
-            id: Number(gemId),
-            ...responses[index],
-            rate: Number(
-              calcMiningRate(
-                responses[index].gradeType,
-                responses[index].gradeValue
-              )
-            ),
-            auctionIsLive: false,
-            owner: userIdToLowerCase,
-            gemImage: images[index],
-            story: stories[index],
-            userName,
-            userImage
-          }));
-
-          if (completeGemDetails.length === 0) {
-            store.dispatch({ type: FETCH_USER_GEMS_SUCCEEDED });
-            store.dispatch({
-              type: USER_HAS_NO_GEMS_IN_WORKSHOP
-            });
-          } else {
-            await completeGemDetails.forEach(gem =>
-              db
-                .collection('stones')
-                .doc(`${gem.id}`)
-                .set(gem)
-            );
-
-            store.dispatch({
-              type: ALL_USER_GEMS_UPLOADED,
-              payload: completeGemDetails
-            });
-
-            store.dispatch({ type: FETCH_USER_GEMS_SUCCEEDED });
-          }
-        })
-        .catch(
-          error => console.log('error', error)
-          // store.dispatch({ type: FETCH_USER_GEMS_FAILED, payload: error })
-        );
-    })
-  );
-};
-
-export const getGemDetails = tokenId => dispatch =>
-  db
-    .collection(`stones`)
-    .where(`id`, `==`, Number(tokenId))
-    .onSnapshot(coll => {
-      const gemDetails = coll.docs.map(doc => doc.data());
-      dispatch({
-        type: AUCTION_DETAILS_RECEIVED,
-        payload: gemDetails[0]
-      });
-    });
-
-export const onlyGemsInAuction = () => ({
-  type: ONLY_WANT_TO_SEE_GEMS_IN_AUCTIONS
-});
-
-export const allMyGems = () => ({
-  type: WANT_TO_SEE_ALL_GEMS
-});
-
-// this is not an action its just a regular function, no dispatch
-export const updateGemDetails = (
-  userId,
-  gemContract,
-  userName,
-  userImage
-) => async () => {
-  // console.log('Gems for the following user being updated =>', userId);
-
-  const userIdToLowerCase = userId
-  .split('')
-  .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
-  .join('');
-
   try {
-    const idsOfGemsUserOwns = await gemContract.methods
-      .getCollection(userIdToLowerCase)
-      .call();
+    const idsOfGemsUserOwns = await gemContract.methods.getCollection(userIdToLowerCase).call();
 
     return Promise.all(
-      idsOfGemsUserOwns.map(gemId =>
-        getGemQualities(gemContract, gemId).then(
-          ([color, level, gradeType, gradeValue]) => ({
-            color,
-            level,
-            gradeType,
-            gradeValue,
-            gemId
-          })
-        )
-      )
-    ).then(smartContractDetails => {
+      idsOfGemsUserOwns.map(gemId => getGemQualities(gemContract, gemId).then(([color, level, gradeType, gradeValue]) => ({
+        color,
+        level,
+        gradeType,
+        gradeValue,
+        gemId,
+      }))),
+    ).then((smartContractDetails) => {
       const gemImages = Promise.all(
-        smartContractDetails.map(gem =>
-          getGemImage(gem.color, gem.gradeType, gem.level)
-        )
+        smartContractDetails.map(gem => getGemImage(gem.color, gem.gradeType, gem.level)),
       );
 
       const gemStories = Promise.all(
-        smartContractDetails.map(gem => getGemStory(gem.color, gem.level))
+        smartContractDetails.map(gem => getGemStory(gem.color, gem.level)),
       );
 
       return Promise.all([gemImages, gemStories]).then(([images, stories]) => {
-        const arrayofCompleteGemDetails = idsOfGemsUserOwns.map(
-          (gemId, index) => ({
-            id: Number(gemId),
-            ...smartContractDetails[index],
-            rate: Number(
-              calcMiningRate(
-                smartContractDetails[index].gradeType,
-                smartContractDetails[index].gradeValue
-              )
+        const arrayofCompleteGemDetails = idsOfGemsUserOwns.map((gemId, index) => ({
+          id: Number(gemId),
+          ...smartContractDetails[index],
+          rate: Number(
+            calcMiningRate(
+              smartContractDetails[index].gradeType,
+              smartContractDetails[index].gradeValue,
             ),
-            auctionIsLive: false,
-            owner: userIdToLowerCase,
-            gemImage: images[index],
-            story: stories[index] || 'No story for this gem yet.',
-            userName,
-            userImage
-          })
-        );
+          ),
+          auctionIsLive: false,
+          owner: userIdToLowerCase,
+          gemImage: images[index],
+          story: stories[index] || 'No story for this gem yet.',
+          userName,
+          userImage,
+        }));
 
         if (arrayofCompleteGemDetails.length === 0) {
           return Promise.reject('No Gems Available');
         }
 
         const updateOrCreate = arrayofCompleteGemDetails.map(
-          gem =>
-            db
-              .collection('stones')
-              .doc(`${gem.id}`)
-              .set(gem, { merge: true })
+          gem => db
+            .collection('stones')
+            .doc(`${gem.id}`)
+            .set(gem, { merge: true }),
 
           // db
           //   .collection('stones')
@@ -305,7 +272,7 @@ export const updateGemDetails = (
         return Promise.all(updateOrCreate).then(() => {
           store.dispatch({
             type: ALL_USER_GEMS_UPLOADED,
-            payload: arrayofCompleteGemDetails
+            payload: arrayofCompleteGemDetails,
           });
           return 'Gems Updated.';
         });
@@ -316,17 +283,17 @@ export const updateGemDetails = (
   }
 };
 
-export const filterUserGemsOnPageLoad = (key, direction) => (
-  dispatch,
-  getState
-) => {
+export const filterUserGemsOnPageLoad = (key, direction) => (dispatch, getState) => {
   const allUserGemItems = getState().dashboard.userGems;
 
   const newMarket = [...allUserGemItems].sort((a, b) => a.rate - b.rate);
   dispatch({ type: DASHBOARD_WAS_FILTERED, payload: newMarket });
 };
 
-export const orderDashboardBy = (key, direction) =>({ type: 'REORDER_DASHBOARD', payload: [key, direction]});
+export const orderDashboardBy = (key, direction) => ({
+  type: 'REORDER_DASHBOARD',
+  payload: [key, direction],
+});
 
 // async (
 //   dispatch,
@@ -340,11 +307,14 @@ export const orderDashboardBy = (key, direction) =>({ type: 'REORDER_DASHBOARD',
 //   dispatch({ type: PAGINATE, payload: [1, 14] });
 // };
 
-export const getGemsForDashboardFilter = selection => ({ type: 'FILTER_DASHBOARD', payload: selection});
+export const getGemsForDashboardFilter = selection => ({
+  type: 'FILTER_DASHBOARD',
+  payload: selection,
+});
 // export const getGemsForDashboardFilter = selection => (dispatch, getState) => {
 
 //   const allGems =  getState().dashboard.userGems;
-//   let newGemSelection 
+//   let newGemSelection
 
 //   if (selection === 'all') {
 //     newGemSelection = [...allGems];
@@ -362,12 +332,12 @@ export const getGemsForDashboardFilter = selection => ({ type: 'FILTER_DASHBOARD
 //   dispatch({ type: PAGINATE, payload: [1, 14] });
 // };
 
-export const rerenderSortBox = () => dispatch =>
-  dispatch({ type: RERENDER_SORT_BOX });
-export const sortBoxReredendered = () => dispatch =>
-  dispatch({ type: SORT_BOX_RERENDERED });
+export const rerenderSortBox = () => dispatch => dispatch({ type: RERENDER_SORT_BOX });
+export const sortBoxReredendered = () => dispatch => dispatch({ type: SORT_BOX_RERENDERED });
 
-export const paginate = (pageNumber, pagePerView) => dispatch =>
-  dispatch({ type: PAGINATE, payload: [pageNumber, pagePerView] });
+export const paginate = (pageNumber, pagePerView) => dispatch => dispatch({ type: PAGINATE, payload: [pageNumber, pagePerView] });
 
-  export const addGemsToDashboard = (gems) => ({ type: 'DASHBOARD_GEMS_READY', payload: gems });
+export const addGemsToDashboard = gems => ({
+  type: 'DASHBOARD_GEMS_READY',
+  payload: gems,
+});

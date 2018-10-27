@@ -21,7 +21,9 @@ admin.initializeApp();
 
 // PROD
 const web3 = new Web3(
-  new Web3.providers.HttpProvider('https://mainnet.infura.io/qWWCAOLoD65CmWAo4jLg '),
+  new Web3.providers.HttpProvider(
+    'https://mainnet.infura.io/qWWCAOLoD65CmWAo4jLg '
+  )
 );
 
 // Define the ABI of the contracts
@@ -39,91 +41,109 @@ const auctionContract = new web3.eth.Contract(dutchAuctionABI);
 auctionContract.options.address = AUCTION_CONTRACT;
 
 // this function is fired once every 24 hours and checks that all the active gems are in auction
-exports.updateGemDetails = functions.https.onRequest(() => admin
-  .firestore()
-  .collection('stones')
-  .get()
-  .then((coll) => {
-    const docs = coll.docs.map(doc => [doc.id, doc.data()]);
-    return docs;
-  })
-  .then(docs => Promise.all(
-    docs.map(doc => gemsContract.methods
-      .ownerOf(doc[1].id)
-      .call()
-      .then(address => [doc[0], address])),
-  ))
-  .then(addresses => addresses.forEach((address) => {
-    if (
-      web3.utils.toChecksumAddress(address[1])
-          === web3.utils.toChecksumAddress(AUCTION_CONTRACT)
-    ) {
-      admin
-        .firestore()
-        .collection('stones')
-        .doc(address[0])
-        .update({
-          auctionIsLive: true,
-        });
-    } else {
-      const userIdToLowerCase = address[1]
-        .split('')
-        .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
-        .join('');
-      admin
-        .firestore()
-        .collection('stones')
-        .doc(address[0])
-        .update({
-          owner: userIdToLowerCase,
-          auctionIsLive: false,
-        });
-    }
-  }))
-  .catch(err => console.log('err reconciling stones', err)));
+exports.updateGemDetails = functions.https.onRequest(() =>
+  admin
+    .firestore()
+    .collection('stones')
+    .get()
+    .then(coll => {
+      const docs = coll.docs.map(doc => [doc.id, doc.data()]);
+      return docs;
+    })
+    .then(docs =>
+      Promise.all(
+        docs.map(doc =>
+          gemsContract.methods
+            .ownerOf(doc[1].id)
+            .call()
+            .then(address => [doc[0], address])
+        )
+      )
+    )
+    .then(addresses =>
+      addresses.forEach(address => {
+        if (
+          web3.utils.toChecksumAddress(address[1]) ===
+          web3.utils.toChecksumAddress(AUCTION_CONTRACT)
+        ) {
+          admin
+            .firestore()
+            .collection('stones')
+            .doc(address[0])
+            .update({
+              auctionIsLive: true
+            });
+        } else {
+          const userIdToLowerCase = address[1]
+            .split('')
+            .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
+            .join('');
+          admin
+            .firestore()
+            .collection('stones')
+            .doc(address[0])
+            .update({
+              owner: userIdToLowerCase,
+              auctionIsLive: false
+            });
+        }
+      })
+    )
+    .catch(err => console.log('err reconciling stones', err))
+);
 
 // Fifteen minutes after the reconciliation function run this updater function will go through the
 // database and update all the live auction details with data from the blockchain.
-exports.updateLiveAuctionDetails = functions.https.onRequest(() => admin
-  .firestore()
-  .collection('stones')
-  .where('auctionIsLive', '==', true)
-  .get()
-  .then((coll) => {
-    const docs = coll.docs.map(doc => doc.id);
-    return docs;
-  })
-  .then((docIds) => {
-    const numberedDocIds = docIds.filter(id => !isNaN(Number(id)));
-    return Promise.all(
-      numberedDocIds.map(doc => auctionContract.methods
-        .items(GEM_CONTRACT, Number(doc))
-        .call()
-        .then((details) => {
-          const { t1, p0, p1 } = details;
-          return {
-            doc,
-            t1,
-            p0,
-            p1,
-          };
-        })
-        .catch(err => console.log('err getting auction details', err))),
-    );
-  })
-  .then((allDetails) => {
-    const cleanedDetails = allDetails.filter(item => item.t1 !== '0' || item.p0 !== '0');
-    console.log('cleanedDetails', cleanedDetails);
+exports.updateLiveAuctionDetails = functions.https.onRequest(() =>
+  admin
+    .firestore()
+    .collection('stones')
+    .where('auctionIsLive', '==', true)
+    .get()
+    .then(coll => {
+      const docs = coll.docs.map(doc => doc.id);
+      return docs;
+    })
+    .then(docIds => {
+      const numberedDocIds = docIds.filter(id => !isNaN(Number(id)));
+      return Promise.all(
+        numberedDocIds.map(doc =>
+          auctionContract.methods
+            .items(GEM_CONTRACT, Number(doc))
+            .call()
+            .then(details => {
+              const { t1, p0, p1 } = details;
+              return {
+                doc,
+                t1,
+                p0,
+                p1
+              };
+            })
+            .catch(err => console.log('err getting auction details', err))
+        )
+      );
+    })
+    .then(allDetails => {
+      const cleanedDetails = allDetails.filter(
+        item => item.t1 !== '0' || item.p0 !== '0'
+      );
+      console.log('cleanedDetails', cleanedDetails);
 
-    return allDetails.forEach(item => admin
-      .firestore()
-      .collection('stones')
-      .doc(item.doc)
-      .update({
-        deadline: Number(item.t1),
-        maxPrice: Number(item.p0),
-        minPrice: Number(item.p1),
-      })
-      .catch(err => console.log('err updating db with new auction details', err)));
-  })
-  .catch(err => console.log('err updating live auction cloud function', err)));
+      return allDetails.forEach(item =>
+        admin
+          .firestore()
+          .collection('stones')
+          .doc(item.doc)
+          .update({
+            deadline: Number(item.t1),
+            maxPrice: Number(item.p0),
+            minPrice: Number(item.p1)
+          })
+          .catch(err =>
+            console.log('err updating db with new auction details', err)
+          )
+      );
+    })
+    .catch(err => console.log('err updating live auction cloud function', err))
+);

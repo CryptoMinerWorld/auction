@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { lifecycle, compose } from 'recompose';
+import Pagination from 'antd/lib/pagination';
 import { getAuctions, paginate, preLoadAuctionPage } from './marketActions';
 import Cards from './components/Card';
 import SortBox from './components/SortBox';
@@ -11,8 +12,8 @@ import LoadingCard from './components/LoadingCard';
 import gemKid from '../../app/images/gemKid.png';
 import Filters from './components/Filters';
 import GemFilters from './components/GemFilters';
-import Pagination from 'antd/lib/pagination';
 import { updatePriceOnAllLiveAuctions } from './marketActions';
+
 require('antd/lib/pagination/style/css');
 require('antd/lib/slider/style/css');
 
@@ -51,16 +52,7 @@ const Primary = styled.section`
 `;
 
 const Card = styled.aside`
-  clip-path: polygon(
-    5% 0%,
-    95% 0%,
-    100% 5%,
-    100% 95%,
-    95% 100%,
-    5% 100%,
-    0% 95%,
-    0% 5%
-  );
+  clip-path: polygon(5% 0%, 95% 0%, 100% 5%, 100% 95%, 95% 100%, 5% 100%, 0% 95%, 0% 5%);
 `;
 
 const select = store => ({
@@ -68,13 +60,10 @@ const select = store => ({
   loading: store.marketActions.loading,
   error: store.marketActions.error,
   totalGems: store.market.length,
-  paginated: [
-    ...store.market.slice(store.marketActions.start, store.marketActions.end)
-  ],
+  paginated: [...store.market.slice(store.marketActions.start, store.marketActions.end)],
   pageNumber: store.marketActions.page,
   dutchContract: store.app.dutchContractInstance,
-  gemContractAddress:
-    store.app.gemsContractInstance && store.app.gemsContractInstance._address
+  gemContractAddress: store.app.gemsContractInstance && store.app.gemsContractInstance._address,
 });
 
 const Marketplace = ({
@@ -84,15 +73,11 @@ const Marketplace = ({
   handlePagination,
   pageNumber,
   totalGems,
-  handlePreLoadAuctionPage
+  handlePreLoadAuctionPage,
 }) => (
   <div className="bg-off-black white pa4 ">
     <div className="flex aic jcs ">
-      <img
-        src={gemKid}
-        className="h3 w-auto pr3 dn dib-ns"
-        alt="gem auctions"
-      />
+      <img src={gemKid} className="h3 w-auto pr3 dn dib-ns" alt="gem auctions" />
       <h1 className="white f1 b o-90" data-testid="header">
         Gem Auctions
       </h1>
@@ -144,13 +129,13 @@ const actions = {
   handleGetAuctions: getAuctions,
   handlePagination: paginate,
   handlePreLoadAuctionPage: preLoadAuctionPage,
-  handleUpdatePriceOnAllLiveAuctions: updatePriceOnAllLiveAuctions
+  handleUpdatePriceOnAllLiveAuctions: updatePriceOnAllLiveAuctions,
 };
 
 export default compose(
   connect(
     select,
-    actions
+    actions,
   ),
   lifecycle({
     componentDidMount() {
@@ -158,10 +143,10 @@ export default compose(
       this.props.handlePagination(1, 15);
       this.props.handleUpdatePriceOnAllLiveAuctions(
         this.props.dutchContract,
-        this.props.gemContractAddress
+        this.props.gemContractAddress,
       );
-    }
-  })
+    },
+  }),
 )(Marketplace);
 
 Marketplace.propTypes = {
@@ -173,16 +158,16 @@ Marketplace.propTypes = {
       price: PropTypes.number,
       deadline: PropTypes.oneOfType([
         PropTypes.shape({
-          seconds: PropTypes.number.isRequired
+          seconds: PropTypes.number.isRequired,
         }).isRequired,
-        PropTypes.number
+        PropTypes.number,
       ]).isRequired,
       image: PropTypes.string,
       owner: PropTypes.string,
       grade: PropTypes.number,
       quality: PropTypes.number,
-      rate: PropTypes.number
-    })
+      rate: PropTypes.number,
+    }),
   ).isRequired,
-  loading: PropTypes.bool.isRequired
+  loading: PropTypes.bool.isRequired,
 };

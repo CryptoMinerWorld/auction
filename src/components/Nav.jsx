@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import Avatar from 'antd/lib/avatar';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import Auth from '../features/auth';
 import { NavLink } from 'react-router-dom';
+import Auth from '../features/auth';
 import RippleButton from './RippleButton/RippleButton';
 import img from '../app/images/Profile-Image-Logo-60x60.png';
 // import { showSignInModal } from '../features/auth/authActions';
@@ -21,7 +21,7 @@ const select = store => ({
   userId: store.auth.user && store.auth.user.walletId,
   userName: store.auth.user && store.auth.user.name,
   existingUser: store.auth.existingUser,
-  signInBox: store.auth.signInBox
+  signInBox: store.auth.signInBox,
 });
 
 const Navbar = ({
@@ -30,7 +30,7 @@ const Navbar = ({
   userName,
   handleShowSignInModal,
   existingUser,
-  signInBox
+  signInBox,
 }) => (
   <div className="shadow-1 z-9 bg-white w-100">
     {signInBox && <Auth />}
@@ -59,11 +59,7 @@ const Navbar = ({
 
       <div className="db dtc-l v-mid w-75-l tr-l tc nowrap overflow-x-auto mt3-ns mt0-ns">
         <a href="https://cryptominerworld.com/" title="Home" className="fl">
-          <img
-            src={img}
-            className="dib h2 w-auto br-100 dn-ns mr3"
-            alt="CryptoMiner World"
-          />
+          <img src={img} className="dib h2 w-auto br-100 dn-ns mr3" alt="CryptoMiner World" />
         </a>
         <a
           className="link dim dark-gray f6 f5-l dn dib-ns mr3 mr4-l"
@@ -79,7 +75,7 @@ const Navbar = ({
             to={`/profile/${userId}`}
             title="Workshop"
             activeStyle={{
-              borderBottom: `2px solid purple`
+              borderBottom: '2px solid purple',
             }}
           >
             My Workshop
@@ -97,7 +93,7 @@ const Navbar = ({
           exact
           to="/market"
           activeStyle={{
-            borderBottom: `2px solid purple`
+            borderBottom: '2px solid purple',
           }}
           className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
         >
@@ -117,15 +113,15 @@ const Navbar = ({
         >
           FAQ
         </a>
-        {userImage &&
-          userName && (
+        {userImage
+          && userName && (
             <NavLink to={`/profile/${userId}`} className="dn dib-ns">
               <div className="dib">
                 <Avatar src={userImage} className="dib" />
                 <p className="dib">{userName}</p>
               </div>
             </NavLink>
-          )}
+        )}
         <div className="dn dib-ns">
           <RippleButton
             onClick={() => {}}
@@ -141,25 +137,25 @@ const Navbar = ({
 );
 
 const actions = dispatch => ({
-  handleShowSignInModal: () => dispatch({ type: 'SHOW_SIGN_IN_BOX' })
+  handleShowSignInModal: () => dispatch({ type: 'SHOW_SIGN_IN_BOX' }),
 });
 
 export default connect(
   select,
   actions,
   null,
-  { pure: false }
+  { pure: false },
 )(Navbar);
 
 Navbar.propTypes = {
   userImage: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
   userId: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
   userName: PropTypes.string,
-  handleShowSignInModal: PropTypes.func.isRequired
+  handleShowSignInModal: PropTypes.func.isRequired,
 };
 
 Navbar.defaultProps = {
   userImage: false,
   userId: false,
-  userName: null
+  userName: null,
 };

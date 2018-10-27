@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Waypoint from 'react-waypoint';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import Icon from 'antd/lib/icon';
 import gem1 from '../../../../app/images/icons/gem1.png';
 import gem2 from '../../../../app/images/icons/gem2.png';
 import gem3 from '../../../../app/images/icons/gem3.png';
@@ -10,8 +12,6 @@ import tinyDiamond from '../../../../app/images/tinyDiamond.png';
 import './animations.css';
 import logo from '../../../../app/images/Profile-Image-Logo-60x60.png';
 import { Gem } from '../Gembox';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import Icon from 'antd/lib/icon';
 
 class DescriptionBox extends PureComponent {
   static propTypes = {
@@ -22,21 +22,19 @@ class DescriptionBox extends PureComponent {
     story: PropTypes.string.isRequired,
     userName: PropTypes.string.isRequired,
     userImage: PropTypes.string.isRequired,
-    ownerId: PropTypes.string.isRequired
+    ownerId: PropTypes.string.isRequired,
   };
 
   state = {
     inView: true,
-    copied: false
+    copied: false,
   };
 
   componentDidMount() {
-    this.fireAnimationImmediatelyOnMobileOrMassiveScreens(
-      window.screen.availWidth
-    );
+    this.fireAnimationImmediatelyOnMobileOrMassiveScreens(window.screen.availWidth);
   }
 
-  fireAnimationImmediatelyOnMobileOrMassiveScreens = width => {
+  fireAnimationImmediatelyOnMobileOrMassiveScreens = (width) => {
     const massiveScreens = width >= 1920;
     const mobileScreens = width <= 780;
 
@@ -51,27 +49,18 @@ class DescriptionBox extends PureComponent {
     }
   };
 
-  gradeConverter = gradeValue =>
-    ({
-      1: 'D',
-      2: 'C',
-      3: 'B',
-      4: 'A',
-      5: 'AA',
-      6: 'AAA'
-    }[gradeValue]);
+  gradeConverter = gradeValue => ({
+    1: 'D',
+    2: 'C',
+    3: 'B',
+    4: 'A',
+    5: 'AA',
+    6: 'AAA',
+  }[gradeValue]);
 
   render() {
     const {
-      level,
-      grade,
-      rate,
-      name,
-      story,
-      userName,
-      userImage,
-      ownerId,
-      shareUrl
+      level, grade, rate, name, story, userName, userImage, ownerId, shareUrl,
     } = this.props;
     const { inView, copied } = this.state;
 
@@ -106,7 +95,7 @@ class DescriptionBox extends PureComponent {
                       WebkitClipPath:
                         'polygon(100.29% 25.12%, 100.43% 75.48%, 95.88% 103.1%, 4.19% 103.27%, 0px 71.79%, 0.03% 23.11%, 4.8% -4.64%, 95.81% -4.98%)',
                       clipPath:
-                        'polygon(100.29% 25.12%, 100.43% 75.48%, 95.88% 103.1%, 4.19% 103.27%, 0px 71.79%, 0.03% 23.11%, 4.8% -4.64%, 95.81% -4.98%)'
+                        'polygon(100.29% 25.12%, 100.43% 75.48%, 95.88% 103.1%, 4.19% 103.27%, 0px 71.79%, 0.03% 23.11%, 4.8% -4.64%, 95.81% -4.98%)',
                     }}
                   >
                     <img
@@ -115,13 +104,13 @@ class DescriptionBox extends PureComponent {
                       className="br-100 h2 w-auto pl3-ns"
                     />
                     <small className="pl3 white-60 dib truncate mw5">
-                      <span>Owned By {userName}</span>
+                      <span>
+                        Owned By
+                        {userName}
+                      </span>
                     </small>
                   </Link>
-                  <CopyToClipboard
-                    text={shareUrl}
-                    onCopy={() => this.setState({ copied: true })}
-                  >
+                  <CopyToClipboard text={shareUrl} onCopy={() => this.setState({ copied: true })}>
                     <Icon
                       type="link"
                       style={{ fontSize: '24px' }}
@@ -195,11 +184,7 @@ class DescriptionBox extends PureComponent {
 export default DescriptionBox;
 
 export const FeatureBand = ({
-  bgColour,
-  gem,
-  category,
-  amount,
-  description
+  bgColour, gem, category, amount, description,
 }) => (
   <div className="relative">
     <div
@@ -208,7 +193,7 @@ export const FeatureBand = ({
         clipPath:
           window.screen.availWidth >= 1920
             ? 'polygon(0 84%, 1% 96%, 5% 100%, 97% 100%, 99% 97%, 100% 90%, 100% 14%, 99% 4%, 96% 0, 5% 0%, 1% 2%, 0 12%)'
-            : 'polygon(0 84%, 1% 96%, 5% 100%, 97% 100%, 100% 100%, 100% 90%, 100% 14%, 100% 0, 96% 0, 5% 0%, 1% 2%, 0 12%)'
+            : 'polygon(0 84%, 1% 96%, 5% 100%, 97% 100%, 100% 100%, 100% 90%, 100% 14%, 100% 0, 96% 0, 5% 0%, 1% 2%, 0 12%)',
       }}
     >
       <div className="w-20 tc">
@@ -227,9 +212,9 @@ FeatureBand.propTypes = {
   gem: PropTypes.string.isRequired,
   category: PropTypes.string.isRequired,
   amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  description: PropTypes.string.isRequired
+  description: PropTypes.string.isRequired,
 };
 
 FeatureBand.defaultProps = {
-  clip: null
+  clip: null,
 };

@@ -11,30 +11,29 @@ export const statechart = {
   states: {
     start: {
       on: {
-        SYNC: 'loading'
-      }
+        SYNC: 'loading',
+      },
     },
     loading: {
       onEntry: 'updateGemDetails',
       on: {
         SUCCESS: 'start',
-        FAILURE: 'error'
-      }
+        FAILURE: 'error',
+      },
     },
     error: {
       on: {
-        SYNC: 'loading'
-      }
-    }
-  }
+        SYNC: 'loading',
+      },
+    },
+  },
 };
 
 const select = store => ({
   userId: store.auth.currentUserId,
   gemContract: store.app.gemsContractInstance,
   userName: store.auth.user && store.auth.user.name && store.auth.user.name,
-  userImage:
-    store.auth.user && store.auth.user.imageURL && store.auth.user.imageURL
+  userImage: store.auth.user && store.auth.user.imageURL && store.auth.user.imageURL,
 });
 
 class ReSync extends PureComponent {
@@ -47,13 +46,11 @@ class ReSync extends PureComponent {
       userId,
       gemContract,
       userName,
-      userImage
+      userImage,
     } = this.props;
     handleUpdateGemDetails(userId, gemContract, userName, userImage)
       .then(result => transition('SUCCESS', { success: result }))
-      .catch(error =>
-        transition('FAILURE', { error: error.message_ || error })
-      );
+      .catch(error => transition('FAILURE', { error: error.message_ || error }));
   };
 
   render() {
@@ -65,21 +62,19 @@ class ReSync extends PureComponent {
       userName,
       userImage,
       success,
-      error
+      error,
     } = this.props;
 
     return (
       <div className="flex aic">
         <div className="flex aic">
-          {machineState.value === 'error' &&
-            error && <p className="red pr4 ma0">{error}</p>}
-          {machineState.value === 'start' &&
-            success && <p className="green pr4 ma0">{success}</p>}
+          {machineState.value === 'error' && error && <p className="red pr4 ma0">{error}</p>}
+          {machineState.value === 'start' && success && <p className="green pr4 ma0">{success}</p>}
         </div>
-        {userId &&
-          gemContract &&
-          userName &&
-          userImage && (
+        {userId
+          && gemContract
+          && userName
+          && userImage && (
             <Button
               onClick={() => transition('SYNC')}
               loading={machineState.value === 'loading'}
@@ -87,22 +82,22 @@ class ReSync extends PureComponent {
             >
               Refresh Gems
             </Button>
-          )}
+        )}
       </div>
     );
   }
 }
 
 const actions = {
-  handleUpdateGemDetails: updateGemDetails
+  handleUpdateGemDetails: updateGemDetails,
 };
 
 export default compose(
   connect(
     select,
-    actions
+    actions,
   ),
-  withStateMachine(statechart)
+  withStateMachine(statechart),
 )(ReSync);
 
 export const TestReSync = withStateMachine(statechart)(ReSync);

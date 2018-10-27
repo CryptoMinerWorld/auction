@@ -2,10 +2,10 @@ import React from 'react';
 // import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Progress from 'antd/lib/progress';
+import Tilt from 'react-tilt';
 import { calculatePercentage } from '../../market/helpers';
 import MiniGemBox from '../../../components/MiniGemBox';
 import { calculateGemName } from '../helpers';
-import Tilt from 'react-tilt';
 
 require('antd/lib/progress/style/css');
 
@@ -17,7 +17,7 @@ const Cards = ({ auction }) => (
         WebkitClipPath:
           'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)',
         clipPath:
-          'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)'
+          'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)',
       }}
     >
       <figure className="ma0 pa0">
@@ -41,9 +41,7 @@ const Cards = ({ auction }) => (
       </small>
     </div> */}
       <div className="tc">
-        <big className="db b f3">
-          {calculateGemName(auction.color, auction.id)}
-        </big>
+        <big className="db b f3">{calculateGemName(auction.color, auction.id)}</big>
         {/* <small>
         Auction ends on{" "}
         {auction.deadline &&
@@ -52,11 +50,7 @@ const Cards = ({ auction }) => (
       </div>
 
       <div className="flex pa3 pb0 w-100 jcc">
-        <MiniGemBox
-          level={auction.level}
-          grade={auction.gradeType}
-          rate={auction.rate}
-        />
+        <MiniGemBox level={auction.level} grade={auction.gradeType} rate={auction.rate} />
       </div>
     </div>
   </Tilt>
@@ -72,8 +66,8 @@ Cards.propTypes = {
     owner: PropTypes.string,
     grade: PropTypes.number,
     quality: PropTypes.number,
-    rate: PropTypes.number
-  }).isRequired
+    rate: PropTypes.number,
+  }).isRequired,
 };
 
 export default Cards;

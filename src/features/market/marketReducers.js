@@ -8,7 +8,7 @@ import {
   MARKETPLACE_FILTER_FAILED,
   CHANGE_FILTER_GEM_VALUES,
   CHANGE_FILTER_VALUES,
-  PAGINATE_MARKET
+  PAGINATE_MARKET,
 } from './marketConstants';
 import { NEW_AUCTION_CREATED } from '../items/itemConstants';
 
@@ -40,20 +40,20 @@ const initialState = {
     amethyst: true,
     garnet: true,
     sapphire: true,
-    opal: true
+    opal: true,
   },
   level: {
     min: 0,
-    max: 5
+    max: 5,
   },
   gradeType: {
     min: 1,
-    max: 6
+    max: 6,
   },
   currentPrice: {
     min: 0,
-    max: 10000000000000000000
-  }
+    max: 10000000000000000000,
+  },
 };
 
 export const marketActionsReducer = (state = initialState, action) => {
@@ -96,7 +96,12 @@ export const marketActionsReducer = (state = initialState, action) => {
   if (action.type === PAGINATE_MARKET) {
     const start = action.payload[0] * action.payload[1] - action.payload[1];
     const end = action.payload[0] * action.payload[1];
-    return { ...state, start, end, page: action.payload[0] };
+    return {
+      ...state,
+      start,
+      end,
+      page: action.payload[0],
+    };
   }
 
   return state;

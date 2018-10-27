@@ -1,6 +1,5 @@
-import styled from "styled-components";
-import rockBackground from "../../app/images/rockBackground.png";
-
+import styled from 'styled-components';
+import rockBackground from '../../app/images/rockBackground.png';
 
 export const OverlapOnDesktopView = styled.div`
   @media (min-width: 64em) {

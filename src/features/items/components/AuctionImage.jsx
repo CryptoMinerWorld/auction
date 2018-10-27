@@ -14,7 +14,7 @@ const AuctionImage = ({ sourceImage }) => (
         {/* <Image className="bg-center tc center" sourceImage={sourceImage} /> */}
         {sourceImage && (
           <img
-            style={{ backgroundposition: `center` }}
+            style={{ backgroundposition: 'center' }}
             src={sourceImage}
             alt="gem for sale"
             className="w-auto-ns h-100-ns w-100 h-auto"
@@ -26,7 +26,7 @@ const AuctionImage = ({ sourceImage }) => (
 );
 
 AuctionImage.propTypes = {
-  sourceImage: PropTypes.string.isRequired
+  sourceImage: PropTypes.string.isRequired,
 };
 
 export default AuctionImage;

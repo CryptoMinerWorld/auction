@@ -1,10 +1,10 @@
-import React from "react";
-import styled from "styled-components";
-import rockBackground from "../../app/images/rockBackground.png";
-import Mint from "./Mint";
+import React from 'react';
+import styled from 'styled-components';
+import rockBackground from '../../app/images/rockBackground.png';
+import Mint from './Mint';
 
-require("antd/lib/button/style/css");
-require("antd/lib/input/style/css");
+require('antd/lib/button/style/css');
+require('antd/lib/input/style/css');
 
 const RockOverlay = styled.div`
   background-image: url(${rockBackground});

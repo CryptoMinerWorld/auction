@@ -15,14 +15,15 @@ import {
   DASHBOARD_WAS_FILTERED,
   RERENDER_SORT_BOX,
   SORT_BOX_RERENDERED,
-  PAGINATE
+  PAGINATE,
 } from './dashboardConstants';
 
 import { NO_USER_EXISTS } from '../auth/authConstants';
 import {
-  NEW_AUCTION_CREATED
+  NEW_AUCTION_CREATED,
   // OWNERSHIP_TRANSFERRED
 } from '../items/itemConstants';
+
 export default function dashboardReducer(
   state = {
     gemsLoading: true,
@@ -30,15 +31,14 @@ export default function dashboardReducer(
     userGems: [],
     filter: [],
     sortBox: true,
-    paginate: []
+    paginate: [],
   },
-  action
+  action,
 ) {
   if (action.type === USER_GEMS_RETRIEVED) {
     // return { ...state, userGems: action.payload };
     // console.log('action.payload.', action.payload)
-    const paginated =
-      action.payload.length > 15 ? action.payload.slice(0, 15) : action.payload;
+    const paginated = action.payload.length > 15 ? action.payload.slice(0, 15) : action.payload;
 
     return { ...state, userGems: action.payload, filter: paginated };
   }
@@ -48,12 +48,11 @@ export default function dashboardReducer(
   }
 
   if (action.type === ALL_USER_GEMS_RETRIEVED) {
-    const paginated =
-      action.payload.length > 15 ? action.payload.slice(0, 15) : action.payload;
+    const paginated = action.payload.length > 15 ? action.payload.slice(0, 15) : action.payload;
     return {
       ...state,
       allUserGems: action.payload,
-      filter: paginated
+      filter: paginated,
     };
   }
 
@@ -62,15 +61,13 @@ export default function dashboardReducer(
     console.log('state.userGems', state.userGems);
 
     // merge without duplicates
-    const newGems = state.userGems
-      .concat(action.payload)
-      .reduce((total, item) => {
-        if (!total.find(current => item.id === current.id)) {
-          total.push(item);
-        }
+    const newGems = state.userGems.concat(action.payload).reduce((total, item) => {
+      if (!total.find(current => item.id === current.id)) {
+        total.push(item);
+      }
 
-        return total;
-      }, []);
+      return total;
+    }, []);
 
     // const newGems = unionBy(state.allUserGems, action.payload, 'id');
     const paginated = newGems.length > 15 ? newGems.slice(0, 15) : newGems;
@@ -80,7 +77,7 @@ export default function dashboardReducer(
       ...state,
       allUserGems: newGems,
       userGems: newGems,
-      filter: paginated
+      filter: paginated,
     };
   }
 
@@ -97,7 +94,12 @@ export default function dashboardReducer(
   }
 
   if (action.type === 'DASHBOARD_GEMS_READY') {
-    return { ...state, filter: action.payload, userGems: action.payload, gemsLoading: false };
+    return {
+      ...state,
+      filter: action.payload,
+      userGems: action.payload,
+      gemsLoading: false,
+    };
   }
 
   if (action.type === 'REORDER_DASHBOARD') {
@@ -105,11 +107,17 @@ export default function dashboardReducer(
     const direction = action.payload[1];
     const currentDashboardItems = state.filter;
     const newMarket = [...currentDashboardItems].sort(
-      (a, b) => (direction === 'desc' ? a[key] - b[key] : b[key] - a[key])
+      (a, b) => (direction === 'desc' ? a[key] - b[key] : b[key] - a[key]),
     );
 
     // returns ordered data and resets pagination to first page]
-    return { ...state, filter: newMarket, start: 0, end: 15, page: 1 };
+    return {
+      ...state,
+      filter: newMarket,
+      start: 0,
+      end: 15,
+      page: 1,
+    };
   }
 
   if (action.type === 'FILTER_DASHBOARD') {
@@ -129,14 +137,19 @@ export default function dashboardReducer(
     }
 
     // returns ordered data and resets pagination to first page]
-    return { ...state, filter: newGemSelection, start: 0, end: 15, page: 1 };
+    return {
+      ...state,
+      filter: newGemSelection,
+      start: 0,
+      end: 15,
+      page: 1,
+    };
   }
-
 
   if (action.type === ONLY_WANT_TO_SEE_GEMS_IN_AUCTIONS) {
     return {
       ...state,
-      filter: state.userGems.filter(gem => gem.auctionIsLive)
+      filter: state.userGems.filter(gem => gem.auctionIsLive),
     };
   }
 
@@ -187,39 +200,40 @@ export default function dashboardReducer(
   if (action.type === PAGINATE) {
     const start = action.payload[0] * action.payload[1] - action.payload[1];
     const end = action.payload[0] * action.payload[1];
-    return { ...state, start, end, page: action.payload[0] };
+    return {
+      ...state,
+      start,
+      end,
+      page: action.payload[0],
+    };
   }
 
-  // if (action.type === OWNERSHIP_TRANSFERRED) {
-  //   console.log('action.payload', action.payload);
-  //   return { ...state, userGems: [...state.userGems, action.payload], filter: [...state.filter, action.payload]};
-  // }
 
   if (action.type === 'GEM_GIFTED') {
-    console.log('action.payload', action.payload)
-    return { ...state, userGems: state.userGems.filter(gem => gem.id !== action.payload), filter: state.filter.filter(gem => gem.id !== Number(action.payload))};
+    return {
+      ...state,
+      userGems: state.userGems.filter(gem => gem.id !== action.payload),
+      filter: state.filter.filter(gem => gem.id !== Number(action.payload)),
+    };
   }
 
   if (action.type === NEW_AUCTION_CREATED) {
-    console.log('action.payload', action.payload);
-    const newFilter = state.userGems.map(gem => {
+    const newFilter = state.userGems.map((gem) => {
       if (gem.id === action.payload.id) {
         return { ...gem, auctionIsLive: true };
-      } else {
-        return gem;
       }
+      return gem;
     });
 
     return { ...state, userGems: newFilter };
   }
 
   if (action.type === 'GEM_REMOVED_FROM_AUCTION') {
-    const newFilter = state.userGems.map(gem => {
+    const newFilter = state.userGems.map((gem) => {
       if (gem.id === action.payload) {
         return { ...gem, auctionIsLive: false };
-      } else {
-        return gem;
       }
+      return gem;
     });
 
     return { ...state, userGems: newFilter };

@@ -1,12 +1,12 @@
-import React from "react";
-import PropTypes from "prop-types";
-import Select from "antd/lib/select";
-import Input from "antd/lib/input";
-import Icon from "antd/lib/icon";
+import React from 'react';
+import PropTypes from 'prop-types';
+import Select from 'antd/lib/select';
+import Input from 'antd/lib/input';
+import Icon from 'antd/lib/icon';
 
-require("antd/lib/input/style/css");
-require("antd/lib/icon/style/css");
-require("antd/lib/select/style/css");
+require('antd/lib/input/style/css');
+require('antd/lib/icon/style/css');
+require('antd/lib/select/style/css');
 
 const MintForm = ({
   randomGradeValue,
@@ -18,12 +18,12 @@ const MintForm = ({
   gradeValue,
   handleChange,
   handleSubmit,
-  handleGradeValueChange
+  handleGradeValueChange,
 }) => (
   <form
     id="mint_form"
     className="bg-white br3"
-    onSubmit={e => {
+    onSubmit={(e) => {
       e.preventDefault();
       handleSubmit(contractAddress, color, level, gradeType, gradeValue);
     }}
@@ -57,7 +57,7 @@ const MintForm = ({
             id="helper_color"
             defaultValue="Sapphire (September)"
             style={{ width: 120 }}
-            onChange={handleChange("color")}
+            onChange={handleChange('color')}
           >
             <Select.Option value="9">Sapphire (September)</Select.Option>
             <Select.Option value="10">Opal (October)</Select.Option>
@@ -76,7 +76,7 @@ const MintForm = ({
             id="helper_level"
             defaultValue="1"
             style={{ width: 120 }}
-            onChange={handleChange("level")}
+            onChange={handleChange('level')}
           >
             <Select.Option value="1">1</Select.Option>
             <Select.Option value="2">2</Select.Option>
@@ -95,7 +95,7 @@ const MintForm = ({
             id="helper_grade_type"
             defaultValue="D"
             style={{ width: 120 }}
-            onChange={handleChange("gradeType")}
+            onChange={handleChange('gradeType')}
           >
             <Select.Option value="1">D</Select.Option>
             <Select.Option value="2">C</Select.Option>
@@ -140,5 +140,5 @@ MintForm.propTypes = {
   handleNetworkChange: PropTypes.func.isRequired,
   randomGradeValue: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
-  handleGradeValueChange: PropTypes.func.isRequired
+  handleGradeValueChange: PropTypes.func.isRequired,
 };

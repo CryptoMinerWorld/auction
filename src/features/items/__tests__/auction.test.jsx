@@ -1,18 +1,15 @@
 import React from 'react';
 import {
-  render,
-  fireEvent,
-  waitForElement,
-  cleanup
+  render, fireEvent, waitForElement, cleanup,
 } from 'react-testing-library';
 import 'jest-dom/extend-expect';
-import Auction from '../index';
-import { calculateGemName } from '../helpers';
-import { calcMiningRate } from '../helpers';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
+import { calcMiningRate } from '../helpers';
+import { calculateGemName } from '../helpers';
+import Auction from '../index';
 import App from '../../../app/App';
 import rootReducer from '../../../app/rootReducer.js';
 
@@ -54,17 +51,14 @@ someDate.setDate(someDate.getDate() + numberOfDaysToAdd);
 
 function renderWithRouter(
   ui,
-  {
-    route = '/',
-    history = createMemoryHistory({ initialEntries: [route] })
-  } = {}
+  { route = '/', history = createMemoryHistory({ initialEntries: [route] }) } = {},
 ) {
   return {
     ...render(<Router history={history}>{ui}</Router>),
     // adding `history` to the returned utilities to allow us
     // to reference it in our tests (just try to avoid using
     // this to test implementation details).
-    history
+    history,
   };
 }
 
@@ -104,7 +98,7 @@ describe('Auction page tests', () => {
     //   color: 10
     // },
 
-    gemName: 'calculateGemName(10, 12345)'
+    gemName: 'calculateGemName(10, 12345)',
   };
 
   test.skip('the gem page route loads a gem', async () => {
@@ -114,8 +108,8 @@ describe('Auction page tests', () => {
         <App {...props} />
       </Provider>,
       {
-        route: '/gem/12345'
-      }
+        route: '/gem/12345',
+      },
     );
 
     const GemPageTitle = await waitForElement(() => getByTestId('gemName'));
@@ -126,9 +120,7 @@ describe('Auction page tests', () => {
 
   test.skip('Auction Page renders the correct resting energy minutes', async () => {
     const { debug, getByTestId } = render(<Auction {...props} />);
-    const RestingEnergySymbol = await waitForElement(() =>
-      getByTestId('restingEnergy')
-    );
+    const RestingEnergySymbol = await waitForElement(() => getByTestId('restingEnergy'));
 
     expect(props.fetchRestingEnergyValue).toHaveBeenCalledTimes(1);
   });
@@ -142,18 +134,13 @@ describe('Auction page tests', () => {
     // Arrange
     const { getByTestId } = render(<Auction {...props} />);
 
-    const buyNowButton = await waitForElement(() =>
-      getByTestId('buyNowButton')
-    );
+    const buyNowButton = await waitForElement(() => getByTestId('buyNowButton'));
     // Act
     fireEvent.click(buyNowButton);
 
     // Assert
     expect(props.buyNow).toHaveBeenCalledTimes(1);
-    expect(props.buyNow).toHaveBeenCalledWith(
-      props.gemId,
-      props.currentAccount
-    );
+    expect(props.buyNow).toHaveBeenCalledWith(props.gemId, props.currentAccount);
   });
 
   test.skip('If no metamask show modal, otherwise let people buy directly', async () => {
@@ -162,17 +149,11 @@ describe('Auction page tests', () => {
     const metaMask = props.web3;
     expect(metaMask).toBeFalsy();
     // Act
-    const buyNowButton = await waitForElement(() =>
-      getByTestId('buyNowButton')
-    );
+    const buyNowButton = await waitForElement(() => getByTestId('buyNowButton'));
     fireEvent.click(buyNowButton);
 
     expect(props.showConfirm).toHaveBeenCalledTimes(1);
-    expect(props.showConfirm).toHaveBeenCalledWith(
-      props.buyNow,
-      props.gemId,
-      props.currentAccount
-    );
+    expect(props.showConfirm).toHaveBeenCalledWith(props.buyNow, props.gemId, props.currentAccount);
   });
 
   test.skip('Countdown timer shows correct time', async () => {
@@ -202,9 +183,7 @@ describe('Auction page tests', () => {
 
     const minPriceBit = await waitForElement(() => getByTestId('minPrice'));
     const maxPriceBit = await waitForElement(() => getByTestId('maxPrice'));
-    const currentPriceBit = await waitForElement(() =>
-      getByTestId('currentPrice')
-    );
+    const currentPriceBit = await waitForElement(() => getByTestId('currentPrice'));
 
     expect(minPriceBit).toHaveTextContent(props.minPrice);
     expect(maxPriceBit).toHaveTextContent(props.maxPrice);
@@ -214,17 +193,13 @@ describe('Auction page tests', () => {
   test.skip('Current price shows the correct price', async () => {
     const { getByTestId } = render(<Auction {...props} />);
 
-    const currentPriceBit = await waitForElement(() =>
-      getByTestId('currentPrice')
-    );
+    const currentPriceBit = await waitForElement(() => getByTestId('currentPrice'));
 
     expect(currentPriceBit).toHaveTextContent(props.currentPrice);
   });
 
   test.skip('Check if the auction is still active, show bought or over', async () => {
-    const { queryByText } = render(
-      <Auction {...props} isTokenOnSale={false} />
-    );
+    const { queryByText } = render(<Auction {...props} isTokenOnSale={false} />);
     const Button = queryByText('submit');
     expect(Button).toBeInTheDocument();
   });

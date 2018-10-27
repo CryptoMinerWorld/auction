@@ -40,7 +40,7 @@ describe.skip('auntentication module tests', () => {
   // @dev this is all the test data, easy to configure in one place
   const props = {
     account: jest.fn(),
-    handleRemoveGemFromAuction: jest.fn()
+    handleRemoveGemFromAuction: jest.fn(),
   };
 
   test.skip('Auth module recieves account id from metamask', async () => {
@@ -50,8 +50,8 @@ describe.skip('auntentication module tests', () => {
         <Auth {...props} />
       </Provider>,
       {
-        route: '/market'
-      }
+        route: '/market',
+      },
     );
     expect(false).toBeFalsy();
   });
@@ -63,8 +63,8 @@ describe.skip('auntentication module tests', () => {
         <Auth {...props} />
       </Provider>,
       {
-        route: '/market'
-      }
+        route: '/market',
+      },
     );
     expect(false).toBeFalsy();
   });
@@ -80,8 +80,8 @@ describe.skip('auntentication module tests', () => {
         <Auth {...props} />
       </Provider>,
       {
-        route: '/market'
-      }
+        route: '/market',
+      },
     );
     expect(true).toBeFalsy();
   });

@@ -4,7 +4,127 @@
     "mapPage": {
       "onEntry": ["getListOfCountries"],
       "on": {
-        "BUY": "confirmModal"
+        "BUY": "confirmModal",
+        "SELECT": ".cart.multiple",
+        "DESELECT": [
+          {
+            "target": "mapPage.cart.single"
+          },
+          {
+            "target": "mapPage.cart.multiple"
+          }
+        ]
+      },
+      "states": {
+        "filter": {
+          "parallel": true,
+          "states": {
+            "sort": {
+              "parallel": true,
+              "states": {
+                "order": {
+                  "initial": "asc",
+                  "states": {
+                    "asc": {
+                      "on": {
+                        "toggle": "desc"
+                      }
+                    },
+                    "desc": {
+                      "on": {
+                        "toggle": "asc"
+                      }
+                    }
+                  }
+                },
+                "category": {
+                  "states": {
+                    "country": {
+                      "on": {
+                        "plots": "plots",
+                        "price": "price",
+                        "roi": "roi"
+                      }
+                    },
+                    "plots": {
+                      "on": {
+                        "country": "country",
+                        "price": "price",
+                        "roi": "roi"
+                      }
+                    },
+                    "price": {
+                      "on": {
+                        "country": "country",
+                        "plots": "plots",
+                        "roi": "roi"
+                      }
+                    },
+                    "roi": {
+                      "on": {
+                        "country": "country",
+                        "plots": "plots",
+                        "price": "price"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "filter": {
+              "states": {
+                "all": {
+                  "on": {
+                    "available": "available",
+                    "sold": "sold"
+                  }
+                },
+                "available": {
+                  "on": {
+                    "all": "all",
+                    "sold": "sold"
+                  }
+                },
+                "sold": {
+                  "on": {
+                    "all": "all",
+                    "available": "available"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "map": {
+          "initial": "single",
+          "states": {
+            "single": {
+              "on": {
+                "SELECT": "multiple"
+              }
+            },
+            "multiple": {
+              "on": {
+                "SELECT": "multiple",
+                "DESELECT": [
+                  {
+                    "target": "single"
+                  },
+                  {
+                    "target": "multiple"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "cart": {
+          "initial": "single",
+          "states": {
+            "single": {},
+            "multiple": {}
+          }
+        }
       }
     },
     "confirmModal": {
@@ -31,6 +151,14 @@
       "on": {
         "SELL": "sellConfirm",
         "WITHDRAW": "withdrawConfirm"
+      },
+      "initial": "selected",
+      "states": {
+        "selected": {
+          "on": {
+            "SELECT": "selected"
+          }
+        }
       }
     },
     "sellConfirm": {

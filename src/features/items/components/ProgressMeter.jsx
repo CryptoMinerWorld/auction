@@ -12,7 +12,9 @@ class ProgressMeter extends PureComponent {
       <div className="white ma0 pa3 tc ">
         <small className="white ttu ">current price</small>
         <p className="basic" style={{ fontSize: 'xx-large' }}>
-          Ξ <span data-testid="currentPrice">{weiToEth(currentPrice)}</span>
+          Ξ
+          {' '}
+          <span data-testid="currentPrice">{weiToEth(currentPrice)}</span>
         </p>
 
         <Progress
@@ -24,10 +26,14 @@ class ProgressMeter extends PureComponent {
         />
         <div className="flex jcb">
           <small className="basic">
-            Ξ <span data-testid="minPrice">{weiToEth(maxPrice)}</span>
+            Ξ
+            {' '}
+            <span data-testid="minPrice">{weiToEth(maxPrice)}</span>
           </small>
           <small className="basic">
-            Ξ <span data-testid="maxPrice">{weiToEth(minPrice)}</span>
+            Ξ
+            {' '}
+            <span data-testid="maxPrice">{weiToEth(minPrice)}</span>
           </small>
         </div>
       </div>
@@ -40,5 +46,5 @@ export default ProgressMeter;
 ProgressMeter.propTypes = {
   currentPrice: PropTypes.number.isRequired,
   minPrice: PropTypes.number.isRequired,
-  maxPrice: PropTypes.number.isRequired
+  maxPrice: PropTypes.number.isRequired,
 };

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 class FAQ extends PureComponent {
   state = {
-    focusedDetail: 0
+    focusedDetail: 0,
   };
 
   handleChange = index => () => this.setState({ focusedDetail: index });
@@ -46,16 +46,17 @@ class FAQ extends PureComponent {
   }
 }
 
-const Question = ({ focusedDetail, handleChange, question, answer, index }) => (
+const Question = ({
+  focusedDetail, handleChange, question, answer, index,
+}) => (
   <details open={focusedDetail === index} onFocus={handleChange(index)}>
     <summary className="underlined blue pointer">{question}</summary>
     <p>{answer}</p>
     {index === 4 && (
       <p>
-        For more information on how to install MetaMask{' '}
-        <a href="https://cryptominerworld.com/game_info/#GameInfoMetaMask">
-          Click here{' '}
-        </a>
+        For more information on how to install MetaMask
+        {' '}
+        <a href="https://cryptominerworld.com/game_info/#GameInfoMetaMask">Click here </a>
       </p>
     )}
   </details>
@@ -66,7 +67,7 @@ Question.propTypes = {
   handleChange: PropTypes.func.isRequired,
   question: PropTypes.string.isRequired,
   answer: PropTypes.string.isRequired,
-  index: PropTypes.number.isRequired
+  index: PropTypes.number.isRequired,
 };
 
 export default FAQ;

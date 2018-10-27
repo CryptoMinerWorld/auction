@@ -3,9 +3,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Progress from 'antd/lib/progress';
 import format from 'date-fns/format';
+import Tilt from 'react-tilt';
 import { calculatePercentage, weiToEth } from '../helpers';
 import MiniGemBox from '../../../components/MiniGemBox';
-import Tilt from 'react-tilt';
 
 require('antd/lib/progress/style/css');
 
@@ -17,7 +17,7 @@ const Cards = ({ auction }) => (
         WebkitClipPath:
           'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)',
         clipPath:
-          'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)'
+          'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)',
       }}
     >
       <figure className="ma0 pa0">
@@ -34,25 +34,28 @@ const Cards = ({ auction }) => (
       />
       <div className="flex jcb ph3">
         <small className="basic">
-          Ξ <small>{weiToEth(auction.maxPrice)}</small>
+          Ξ
+          {' '}
+          <small>{weiToEth(auction.maxPrice)}</small>
         </small>
         <big className="db b f3 o-70">
           <span className="basic" style={{ color: '#FFB700' }}>
             Ξ
-          </span>{' '}
-          <span style={{ color: '#FFB700' }}>
-            {weiToEth(auction.currentPrice)}
           </span>
+          {' '}
+          <span style={{ color: '#FFB700' }}>{weiToEth(auction.currentPrice)}</span>
         </big>
         <small className="basic">
-          Ξ <small>{weiToEth(auction.minPrice)}</small>
+          Ξ
+          {' '}
+          <small>{weiToEth(auction.minPrice)}</small>
         </small>
       </div>
       <div className="tc">
         <small>
-          Ends on{' '}
-          {auction.deadline &&
-            format(new Date(auction.deadline * 1000), 'EEEE do of MMMM')}
+          Ends on
+          {' '}
+          {auction.deadline && format(new Date(auction.deadline * 1000), 'EEEE do of MMMM')}
         </small>
       </div>
 
@@ -87,16 +90,16 @@ Cards.propTypes = {
     price: PropTypes.number,
     deadline: PropTypes.oneOfType([
       PropTypes.shape({
-        seconds: PropTypes.number.isRequired
+        seconds: PropTypes.number.isRequired,
       }).isRequired,
-      PropTypes.number
+      PropTypes.number,
     ]).isRequired,
     image: PropTypes.string,
     owner: PropTypes.string,
     grade: PropTypes.number,
     quality: PropTypes.number,
-    rate: PropTypes.number
-  }).isRequired
+    rate: PropTypes.number,
+  }).isRequired,
 };
 
 export default Cards;

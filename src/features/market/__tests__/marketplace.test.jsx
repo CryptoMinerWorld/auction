@@ -70,17 +70,14 @@ afterEach(cleanup);
 // that relies on the router being in context
 function renderWithRouter(
   ui,
-  {
-    route = '/',
-    history = createMemoryHistory({ initialEntries: [route] })
-  } = {}
+  { route = '/', history = createMemoryHistory({ initialEntries: [route] }) } = {},
 ) {
   return {
     ...render(<Router history={history}>{ui}</Router>),
     // adding `history` to the returned utilities to allow us
     // to reference it in our tests (just try to avoid using
     // this to test implementation details).
-    history
+    history,
   };
 }
 
@@ -94,15 +91,15 @@ describe.skip('Marketplace page tests', () => {
         maxPrice: 4,
         price: 2.3,
         deadline: {
-          seconds: 1537255385592
+          seconds: 1537255385592,
         },
         image: amethyst,
         owner: 'Crypto beasts',
         grade: 1,
         quality: 2,
-        rate: 3
-      }
-    ]
+        rate: 3,
+      },
+    ],
   };
 
   test.skip('the marketplace route loads the marketplace', async () => {
@@ -112,8 +109,8 @@ describe.skip('Marketplace page tests', () => {
         <App />
       </Provider>,
       {
-        route: '/'
-      }
+        route: '/',
+      },
     );
 
     expect(getByTestId('header').textContent).toBe('gem auctions');
@@ -126,8 +123,8 @@ describe.skip('Marketplace page tests', () => {
         <App />
       </Provider>,
       {
-        route: '/secretauctionpage'
-      }
+        route: '/secretauctionpage',
+      },
     );
 
     // mock a auction going through
@@ -159,7 +156,7 @@ describe.skip('Marketplace page tests', () => {
 
   test.skip('a non-exitent link shows a 404 page', async () => {
     const { container } = renderWithRouter(<App />, {
-      route: '/'
+      route: '/',
     });
 
     expect(false).toBeTruthy();
