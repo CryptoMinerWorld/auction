@@ -102,6 +102,7 @@
   ],
   "devDependencies": {
     "@storybook/addon-backgrounds": "^3.4.11",
+    "@storybook/addon-knobs": "^3.4.11",
     "@storybook/react": "^4.0.0-alpha.24",
     "babel-plugin-import": "^1.9.1",
     "babel-plugin-styled-components": "^1.8.0",
@@ -120,7 +121,8 @@
     "jest-dom": "^2.1.0",
     "react-test-renderer": "^16.5.2",
     "react-testing-library": "^5.1.0",
-    "scrypt": "^6.0.3"
+    "scrypt": "^6.0.3",
+    "storybook-addon-jsx": "^5.4.0"
   },
   "jest": {
     "collectCoverageFrom": [

@@ -49,7 +49,7 @@ const Navbar = ({
           />
         </a>
 
-        <Tx auth />
+        <Tx />
       </div>
 
 
