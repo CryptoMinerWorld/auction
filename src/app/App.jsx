@@ -37,6 +37,7 @@ Sentry.init({
   dsn: 'https://7fc52f2bd8de42f9bf46596f996086e8@sentry.io/1299588',
 
   environment: process.env.NODE_ENV,
+
 });
 
 const dutchAuctionABI = DutchAuction.abi;

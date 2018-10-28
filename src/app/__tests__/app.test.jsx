@@ -1,9 +1,9 @@
 
 
 describe.skip('App happy path tests', () => {
-  // it.skip('Users can create an account', () => {
-  //   expect(true).toBeFalsy();
-  // });
+  it.skip('check taht sign up fails with wrong types of sign up data', () => {
+    expect(true).toBeFalsy();
+  });
 
   it.skip('Create an account modal doesn;t appear if users has already created an account', () => {
 

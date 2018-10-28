@@ -1,11 +1,9 @@
 import { db } from '../../app/utils/firebase';
 
-const firebaseCall = auctionId => db
+export const updateDBwithNewPrice = auctionId => db
   .collection('stones')
   .where('id', '==', auctionId)
-  .get();
-
-export const updateDBwithNewPrice = (auctionId, dbCall = firebaseCall()) => dbCall(auctionId)
+  .get()
   .then((coll) => {
     const gemId = coll.docs.map(doc => doc.id);
     return gemId[0];

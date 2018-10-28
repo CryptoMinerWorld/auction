@@ -152,6 +152,5 @@ Marketplace.propTypes = {
 };
 
 Marketplace.defaultProps = {
-
   pageNumber: 1,
 };

@@ -123,7 +123,13 @@ const Navbar = ({
             <NavLink to={`/profile/${userId}`} className="dn dib-ns">
               <div className="dib">
                 <Avatar src={userImage} className="dib" />
-                <p className="dib">{userName}</p>
+                <p
+                  className="dib"
+                  data-testid="avatarUsername"
+                >
+                  {userName}
+
+                </p>
               </div>
             </NavLink>
         )}
