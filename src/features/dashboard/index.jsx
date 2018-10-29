@@ -193,7 +193,6 @@ class Dashboard extends Component {
         <Transition
           from={{ transform: 'translate3d(0,-200px,0)' }}
           enter={{ transform: 'translate3d(0,0px,0)' }}
-
           config={config.molasses}
         >
           {props => (
@@ -264,7 +263,7 @@ class Dashboard extends Component {
             </Grid>
           </TabPane>
           <TabPane tab="Countries" key="2">
-            Content of Tab Pane 2
+            Details about countries you have bought go here.
           </TabPane>
         </Tabs>
       </div>
