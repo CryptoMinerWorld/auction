@@ -144,31 +144,33 @@ class App extends Component {
     return (
       <BrowserRouter>
         <ErrorBoundary>
-          <ScrollToTop>
-            <main className={font}>
-              {error && error !== false && this.errorNotification(error)}
-              <Modal
-                visible={visible}
-                title="Please Confirm Your Transaction In Metamask to Proceed"
-                iconType="loading"
-                zIndex={1000}
-                footer={false}
-                maskClosable={false}
-                closable={false}
-              >
-                <p>
+          <React.StrictMode>
+            <ScrollToTop>
+              <main className={font}>
+                {error && error !== false && this.errorNotification(error)}
+                <Modal
+                  visible={visible}
+                  title="Please Confirm Your Transaction In Metamask to Proceed"
+                  iconType="loading"
+                  zIndex={1000}
+                  footer={false}
+                  maskClosable={false}
+                  closable={false}
+                >
+                  <p>
                   Once you pay for the Gem using Metamask, you will be redirected to your workshop.
-                </p>
-                <strong>This may take a few moments.</strong>
-              </Modal>
-              <StickyHeader>
-                <Navbar />
-              </StickyHeader>
-              <Routes />
+                  </p>
+                  <strong>This may take a few moments.</strong>
+                </Modal>
+                <StickyHeader>
+                  <Navbar />
+                </StickyHeader>
+                <Routes />
 
-              <Footer />
-            </main>
-          </ScrollToTop>
+                <Footer />
+              </main>
+            </ScrollToTop>
+          </React.StrictMode>
         </ErrorBoundary>
       </BrowserRouter>
     );

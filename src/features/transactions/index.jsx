@@ -10,6 +10,7 @@ const statechart = {
     signedOut: {
       on: {
         LOGGEDIN: 'signedin',
+        TXSTARTED: 'signedin.pending',
       },
     },
     signedin: {
@@ -60,6 +61,7 @@ class Transaction extends PureComponent {
     tx: PropTypes.bool,
     confirmations: PropTypes.number,
     txid: PropTypes.string,
+    error: PropTypes.string,
   };
 
   static defaultProps = {
@@ -68,10 +70,15 @@ class Transaction extends PureComponent {
     txid: '',
     auth: false,
     tx: false,
+    error: '',
   };
 
   componentDidMount() {
     const { auth, transition, tx } = this.props;
+
+    if (auth && tx) {
+      transition('TXSTARTED');
+    }
 
     if (auth) {
       transition('LOGGEDIN');
@@ -80,14 +87,16 @@ class Transaction extends PureComponent {
     if (!auth) {
       transition('LOGGEDOUT');
     }
-
-    if (auth && tx) {
-      transition('TXSTARTED');
-    }
   }
 
   componentDidUpdate(prevProps) {
     const { auth, transition, tx } = this.props;
+
+    if (tx !== prevProps.tx) {
+      if (auth && tx) {
+        transition('TXSTARTED');
+      }
+    }
 
     if (auth !== prevProps.auth) {
       if (auth) {
@@ -98,12 +107,6 @@ class Transaction extends PureComponent {
         transition('LOGGEDOUT');
       }
     }
-
-    if (tx !== prevProps.tx) {
-      if (auth && tx) {
-        transition('TXSTARTED');
-      }
-    }
   }
 
   render() {
@@ -112,9 +115,10 @@ class Transaction extends PureComponent {
     } = this.props;
     const loading = <Icon type="loading" style={{ fontSize: 24 }} spin />;
     return (
-      <div>
+      <div className="flex aic">
         <State is="signedin.pending">
           <Spin indicator={loading} />
+          <Icon type="loading" style={{ fontSize: 24 }} spin />
           <p>
             Transaction
             {receipt}
@@ -127,6 +131,8 @@ processing...
           <Spin indicator={loading} />
           <p>
             Transaction
+            {' '}
+
             {receipt}
             {' '}
 processing...

@@ -1,9 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`transaction bar transactions module works: signedOut 1`] = `<div />`;
+exports[`transaction bar transactions module works: signedOut 1`] = `
+<div
+  className="flex aic"
+/>
+`;
 
 exports[`transaction bar transactions module works: signedin.confirmed 1`] = `
-<div>
+<div
+  className="flex aic"
+>
   <div
     className="ant-spin ant-spin-spinning"
   >
@@ -32,6 +38,7 @@ exports[`transaction bar transactions module works: signedin.confirmed 1`] = `
   </div>
   <p>
     Transaction
+     
     
      
     processing...
@@ -43,19 +50,28 @@ exports[`transaction bar transactions module works: signedin.confirmed 1`] = `
 `;
 
 exports[`transaction bar transactions module works: signedin.error 1`] = `
-<div>
+<div
+  className="flex aic"
+>
   <p
     className="red"
   >
     Transaction Failed:
+    
   </p>
 </div>
 `;
 
-exports[`transaction bar transactions module works: signedin.idle 1`] = `<div />`;
+exports[`transaction bar transactions module works: signedin.idle 1`] = `
+<div
+  className="flex aic"
+/>
+`;
 
 exports[`transaction bar transactions module works: signedin.pending 1`] = `
-<div>
+<div
+  className="flex aic"
+>
   <div
     className="ant-spin ant-spin-spinning"
   >
@@ -82,6 +98,28 @@ exports[`transaction bar transactions module works: signedin.pending 1`] = `
       </svg>
     </i>
   </div>
+  <i
+    className="anticon anticon-loading"
+    style={
+      Object {
+        "fontSize": 24,
+      }
+    }
+  >
+    <svg
+      aria-hidden="true"
+      className="anticon-spin"
+      data-icon="loading"
+      fill="currentColor"
+      height="1em"
+      viewBox="0 0 1024 1024"
+      width="1em"
+    >
+      <path
+        d="M988 548c-19.9 0-36-16.1-36-36 0-59.4-11.6-117-34.6-171.3a440.45 440.45 0 0 0-94.3-139.9 437.71 437.71 0 0 0-139.9-94.3C629 83.6 571.4 72 512 72c-19.9 0-36-16.1-36-36s16.1-36 36-36c69.1 0 136.2 13.5 199.3 40.3C772.3 66 827 103 874 150c47 47 83.9 101.8 109.7 162.7 26.7 63.1 40.2 130.2 40.2 199.3.1 19.9-16 36-35.9 36z"
+      />
+    </svg>
+  </i>
   <p>
     Transaction
     
@@ -92,7 +130,9 @@ exports[`transaction bar transactions module works: signedin.pending 1`] = `
 `;
 
 exports[`transaction bar transactions module works: signedin.resolved 1`] = `
-<div>
+<div
+  className="flex aic"
+>
   <p
     className="green"
   >
