@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
-import Icon from 'antd/lib/icon';
+import { Spring } from 'react-spring';
 import Gold from '../../../app/images/dashboard/Gold.png';
 import Silver from '../../../app/images/dashboard/Silver.png';
 import Gem from '../../../app/images/dashboard/gems.png';
@@ -68,24 +68,24 @@ class PlayerStats extends PureComponent {
     return (
       <div className="dn db-l">
         <AuctionCategories gemCount={gemCount} plots={plots} />
-        {referralPoints === '' ? (
-          <p
-            data-testid="loadingReferralPoints"
-            className="tr
-    "
-          >
-            Loading Referral Points...
-          </p>
-        ) : (
-          <p
-            data-testid="referralPoints"
-            className="tr
-        "
-          >
-            {`${referralPoints} REFERAL ${referralPoints === 1 ? 'POINT' : 'POINTS'} AVAILABLE `}
-            <Icon type="link" />
-          </p>
-        )}
+
+        <Spring from={{ opacity: 0 }} to={{ opacity: 1 }} config={{ delay: 4000 }}>
+          {props => (
+            <div style={props}>
+              {referralPoints === '' ? (
+                <p data-testid="loadingReferralPoints" className="tr o-50">
+                  Loading Referral Points...
+                </p>
+              ) : (
+                <small data-testid="referralPoints" className="tr fr o-50">
+                  {`${referralPoints} REFERAL ${
+                    referralPoints === 1 ? 'POINT' : 'POINTS'
+                  } AVAILABLE `}
+                </small>
+              )}
+            </div>
+          )}
+        </Spring>
       </div>
     );
   }
@@ -96,12 +96,15 @@ export const TestPlayerStats = withRouter(PlayerStats);
 const actions = { setError };
 
 export default compose(
-  connect(select, actions),
+  connect(
+    select,
+    actions,
+  ),
   withRouter,
 )(PlayerStats);
 
 const AuctionCategories = ({ gemCount, plots }) => (
-  <div className="dn flex-l jca pa2 mb4 bg-dark-gray br2">
+  <div className="dn flex-l jca pa2 mb4 bg-dark-gray br2 pt4 pb3 shadow-1 br--bottom">
     <div className="flex aic w-auto">
       <img src={Gem} alt="" className="h3 w-auto" />
       <p className="pl3 mt2 f5">

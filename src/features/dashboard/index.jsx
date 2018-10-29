@@ -8,6 +8,8 @@ import { compose } from 'redux';
 import { withRouter, Link } from 'react-router-dom';
 import { matchesState } from 'xstate';
 import notification from 'antd/lib/notification';
+import Tabs from 'antd/lib/tabs';
+import { Transition, config } from 'react-spring';
 import { db } from '../../app/utils/firebase';
 import {
   getUserGemsOnce,
@@ -27,6 +29,8 @@ import AuctionCategories from './components/AuctionCategories';
 import { getReferralPoints, getPlotCount } from './helpers';
 import stateMachine from './stateMachine';
 
+const { TabPane } = Tabs;
+require('antd/lib/tabs/style/css');
 require('antd/lib/notification/style/css');
 require('antd/lib/pagination/style/css');
 require('antd/lib/slider/style/css');
@@ -185,14 +189,25 @@ class Dashboard extends Component {
     } = this.props;
 
     return (
-      <div className="bg-off-black white pa4">
-        {matchesState('withMetamask', machineState.value) && (
-          <AuctionCategories
-            gemCount={totalGems}
-            getReferralPoints={getReferralPoints}
-            getPlotCount={getPlotCount}
-          />
-        )}
+      <div className="bg-off-black white ph4">
+        <Transition
+          from={{ transform: 'translate3d(0,-200px,0)' }}
+          enter={{ transform: 'translate3d(0,0px,0)' }}
+
+          config={config.molasses}
+        >
+          {props => (
+            <div style={props}>
+              {matchesState('withMetamask', machineState.value) && (
+                <AuctionCategories
+                  gemCount={totalGems}
+                  getReferralPoints={getReferralPoints}
+                  getPlotCount={getPlotCount}
+                />
+              )}
+            </div>
+          )}
+        </Transition>
 
         <div className="flex  aic mt3 wrap jcc jcb-ns">
           <div className=" flex aic">
@@ -201,44 +216,57 @@ class Dashboard extends Component {
               {userName}
             </h1>
           </div>
-          <ReSync />
         </div>
-        <Grid>
-          <Primary>
-            <div className="flex jcb aic">
-              <GemSortBox />
-              {sortBox && <SortBox />}
-            </div>
-            <CardBox>
-              {loading && [1, 2, 3, 4, 5, 6].map(num => <LoadingCard key={num} />)}
-              {paginated && paginated.length > 0 ? (
-                paginated.map(auction => (
-                  <Link
-                    to={`/gem/${auction.id}`}
-                    key={auction.id}
-                    onClick={() => handlePreLoadAuctionPage(auction)}
-                  >
-                    <Cards auction={auction} />
-                  </Link>
-                ))
-              ) : (
-                <NoCard />
-              )}
-            </CardBox>
-            <div className="white w-100 tc pv4">
-              <Pagination
-                current={pageNumber}
-                pageSize={15}
-                total={totalGems}
-                hideOnSinglePage
-                onChange={(page, pageSize) => {
-                  window.scrollTo(0, 0);
-                  handlePagination(page, pageSize);
-                }}
-              />
-            </div>
-          </Primary>
-        </Grid>
+
+        <Tabs
+          defaultActiveKey="1"
+          size="large"
+          animated
+          className="bg-off-black white "
+          tabBarExtraContent={<ReSync />}
+        >
+          <TabPane tab="Gems" key="1">
+            <Grid>
+              <Primary>
+                <div className="flex jcb aic">
+                  <GemSortBox />
+                  {sortBox && <SortBox />}
+                </div>
+                <CardBox>
+                  {loading && [1, 2, 3, 4, 5, 6].map(num => <LoadingCard key={num} />)}
+                  {paginated && paginated.length > 0 ? (
+                    paginated.map(auction => (
+                      <Link
+                        to={`/gem/${auction.id}`}
+                        key={auction.id}
+                        onClick={() => handlePreLoadAuctionPage(auction)}
+                      >
+                        <Cards auction={auction} />
+                      </Link>
+                    ))
+                  ) : (
+                    <NoCard />
+                  )}
+                </CardBox>
+                <div className="white w-100 tc pv4">
+                  <Pagination
+                    current={pageNumber}
+                    pageSize={15}
+                    total={totalGems}
+                    hideOnSinglePage
+                    onChange={(page, pageSize) => {
+                      window.scrollTo(0, 0);
+                      handlePagination(page, pageSize);
+                    }}
+                  />
+                </div>
+              </Primary>
+            </Grid>
+          </TabPane>
+          <TabPane tab="Countries" key="2">
+            Content of Tab Pane 2
+          </TabPane>
+        </Tabs>
       </div>
     );
   }

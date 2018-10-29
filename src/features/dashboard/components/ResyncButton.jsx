@@ -4,6 +4,7 @@ import Button from 'antd/lib/button';
 import { withStateMachine } from 'react-automata';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import Icon from 'antd/lib/icon';
 import { updateGemDetails } from '../dashboardActions';
 
 export const statechart = {
@@ -94,7 +95,8 @@ class ReSync extends PureComponent {
               loading={machineState.value === 'loading'}
               ghost
             >
-              Refresh Gems
+              <Icon type="sync" />
+              Refresh
             </Button>
         )}
       </div>

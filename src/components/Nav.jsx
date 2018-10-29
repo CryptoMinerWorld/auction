@@ -36,7 +36,7 @@ const Navbar = ({
   <div className="shadow-1 z-9 bg-white w-100">
     {signInBox && <Auth />}
     <nav className="flex wrap jcb aic w-100 border-box pa3 ph4-l bg-white mw9 center">
-      <div className="flex aic w-100 w-25-ns jcb">
+      <div className="flex aic w-100 w-third-ns jcb">
         <a
           className=" mid-gray link dim mb2 mb0-l dib"
           href="https://cryptominerworld.com/"
@@ -53,7 +53,7 @@ const Navbar = ({
       </div>
 
 
-      <div className="w-100 w-50-ns tc tr-ns nowrap overflow-x-auto">
+      <div className="w-100 w-two-thirds-ns tc tr-ns nowrap overflow-x-auto">
         {/* <a href="https://cryptominerworld.com/" title="Home" className="fl">
           <img src={img} className="dib h2 w-auto br-100 dn-ns mr3" alt="CryptoMiner World" />
         </a> */}
@@ -98,7 +98,17 @@ const Navbar = ({
           }}
           className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
         >
-          Market
+          Gem Market
+        </NavLink>
+        <NavLink
+          exact
+          to="/map"
+          activeStyle={{
+            borderBottom: '2px solid purple',
+          }}
+          className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
+        >
+          Map
         </NavLink>
         <a
           className="link dim dark-gray f6 f5-l dn dib-ns mr3 mr4-l"

@@ -1,125 +1,19 @@
 import React from 'react';
-import { Query } from 'react-apollo';
-import gql from 'graphql-tag';
-import {
-  ComposableMap, ZoomableGroup, Geographies, Geography,
-} from 'react-simple-maps';
-import chroma from 'chroma-js';
-import geoData from '../../app/maps/world-50m-with-population.json';
 
-const wrapperStyles = {
-  width: '100%',
-  maxWidth: 980,
-  margin: '0 auto',
-};
+import Map from './components/Map';
+import Cart from './components/Cart';
+import Filter from './components/Filter';
 
-const colorScale = chroma
-  .scale(['#FF6E40', 'FFD740', '#00B8D4'])
-  .mode('lch')
-  .colors(24);
-
-const subregions = [
-  'Southern Asia',
-  'Polynesia',
-  'Micronesia',
-  'Southern Africa',
-  'Central Asia',
-  'Melanesia',
-  'Western Europe',
-  'Central America',
-  'Seven seas (open ocean)',
-  'Northern Africa',
-  'Caribbean',
-  'South-Eastern Asia',
-  'Eastern Africa',
-  'Australia and New Zealand',
-  'Eastern Europe',
-  'Western Africa',
-  'Southern Europe',
-  'Eastern Asia',
-  'South America',
-  'Middle Africa',
-  'Antarctica',
-  'Northern Europe',
-  'Northern America',
-  'Western Asia',
-];
-
-const Map = () => (
+const CountryAuction = () => (
   <div>
-    <div style={wrapperStyles}>
-      <ComposableMap
-        projectionConfig={{
-          scale: 205,
-          rotation: [-11, 0, 0],
-        }}
-        width={980}
-        height={551}
-        style={{
-          width: '100%',
-          height: 'auto',
-        }}
-      >
-        <ZoomableGroup center={[0, 20]}>
-          <Geographies geography={geoData}>
-            {(geographies, projection) => geographies.map((geography, i) => (
-              <Geography
-                  // eslint-disable-next-line
-                  key={i}
-                geography={geography}
-                projection={projection}
-                style={{
-                  default: {
-                    fill: colorScale[subregions.indexOf(geography.properties.subregion)],
-                    stroke: '#607D8B',
-                    strokeWidth: 0.75,
-                    outline: 'none',
-                  },
-                  hover: {
-                    fill: chroma(
-                      colorScale[subregions.indexOf(geography.properties.subregion)],
-                    ).darken(0.5),
-                    stroke: '#607D8B',
-                    strokeWidth: 0.75,
-                    outline: 'none',
-                  },
-                  pressed: {
-                    fill: chroma(
-                      colorScale[subregions.indexOf(geography.properties.subregion)],
-                    ).brighten(0.5),
-                    stroke: '#607D8B',
-                    strokeWidth: 0.75,
-                    outline: 'none',
-                  },
-                }}
-              />
-            ))
-            }
-          </Geographies>
-        </ZoomableGroup>
-      </ComposableMap>
+    <div>
+      <Filter />
+      <Map />
     </div>
-    <Query
-      query={gql`
-        {
-          user(id: "0xd9b74f73d933fde459766f74400971b29b90c9d2") {
-            name
-          }
-        }
-      `}
-    >
-      {({ loading, error, data }) => {
-        if (loading) return <p>Loading...</p>;
-        if (error) return <p>Error :(</p>;
 
-        return (
-          <div>
-            <p>{`${data.user.name}`}</p>
-          </div>
-        );
-      }}
-    </Query>
+    <Cart />
+
   </div>
 );
 
-export default Map;
+export default CountryAuction;
