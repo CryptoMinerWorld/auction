@@ -4,6 +4,7 @@ import CreateAuction from '../features/mint';
 import Items from '../features/items';
 import Marketplace from '../features/market';
 import Dashboard from '../features/dashboard/index';
+import Map from '../features/countries/index';
 
 const Routes = props => (
   <Fragment>
@@ -13,6 +14,8 @@ const Routes = props => (
     <Route path="/auction/:auctionid" render={() => <Items {...props} />} />
     <Route path="/profile/:userId" render={() => <Dashboard {...props} />} />
     <Route path="/gem/:gemId" render={() => <Items {...props} />} />
+    <Route path="/map" render={() => <Map {...props} />} />
+
   </Fragment>
 );
 

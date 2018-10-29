@@ -7,6 +7,7 @@ import {
   USER_EXISTS,
   NEW_USER,
   NO_USER_EXISTS,
+  WEB3_AVAILABLE,
 } from './authConstants';
 import {
   getUserGems,

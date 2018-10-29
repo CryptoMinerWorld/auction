@@ -28,7 +28,7 @@ require('antd/lib/modal/style/css');
 const testMode = process.env.NODE_ENV === 'development';
 
 ReactGA.initialize(process.env.REACT_APP_ANALYTICS, {
-  testMode
+  testMode,
 });
 
 ReactGA.pageview(window.location.pathname + window.location.search);
@@ -37,7 +37,6 @@ Sentry.init({
   dsn: 'https://7fc52f2bd8de42f9bf46596f996086e8@sentry.io/1299588',
 
   environment: process.env.NODE_ENV,
-
 });
 
 const dutchAuctionABI = DutchAuction.abi;
@@ -53,26 +52,22 @@ const StickyHeader = styled.div`
 
 const select = store => ({
   visible: store.app.modalVisible,
-  error: store.app.error
+  error: store.app.error,
 });
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      font: ''
+      font: '',
     };
   }
 
   async componentDidMount() {
-    const {
-      handleSendContractsToRedux,
-      handleUpdateWalletId,
-      handleSetError,
-    } = this.props;
+    const { handleSendContractsToRedux, handleUpdateWalletId, handleSetError } = this.props;
     // @notice loading a custom font when app mounts
     const font = new FontFaceObserver('Muli', {
-      weight: 400
+      weight: 400,
     });
     font
       .load()
@@ -83,17 +78,12 @@ class App extends Component {
     const Web3 = await getWeb3;
     const { web3 } = Web3;
 
-    const currentAccountId = await web3.eth
-      .getAccounts()
-      .then(accounts => accounts[0]);
+    const currentAccountId = await web3.eth.getAccounts().then(accounts => accounts[0]);
 
     // this ensures that the wallet in metamask is always the wallet in the currentAccountId
     // however this is a problem because it means that you cant view someone elses profile page
     if (web3.currentProvider.publicConfigStore) {
-      web3.currentProvider.publicConfigStore.on(
-        'update',
-        ({ selectedAddress }) => handleUpdateWalletId(selectedAddress)
-      );
+      web3.currentProvider.publicConfigStore.on('update', ({ selectedAddress }) => handleUpdateWalletId(selectedAddress));
     }
 
     // @notice instantiating auction contract
@@ -101,45 +91,30 @@ class App extends Component {
       dutchAuctionABI,
       process.env.REACT_APP_DUTCH_AUCTION,
       {
-        from: currentAccountId
-      }
+        from: currentAccountId,
+      },
     );
 
-    const presaleContract = new web3.eth.Contract(
-      presaleABI,
-      process.env.REACT_APP_PRESALE2,
-      {
-        from: currentAccountId
-      }
-    );
+    const presaleContract = new web3.eth.Contract(presaleABI, process.env.REACT_APP_PRESALE2, {
+      from: currentAccountId,
+    });
 
     // @notice instantiating gem contract
-    const gemsContract = new web3.eth.Contract(
-      gemsABI,
-      process.env.REACT_APP_GEM_ERC721,
-      {
-        from: currentAccountId
-      }
-    );
+    const gemsContract = new web3.eth.Contract(gemsABI, process.env.REACT_APP_GEM_ERC721, {
+      from: currentAccountId,
+    });
 
     Promise.all([dutchContract, gemsContract, currentAccountId, presaleContract])
-      .then(([dutchAuctionContractInstance, gemsContractInstance, currentAccount, presale]) => {
-        handleSendContractsToRedux(
-          dutchAuctionContractInstance,
-          gemsContractInstance,
-          currentAccount,
-          presale
-        ]) => {
-          setGemsContract(gemsContractInstance);
-          handleSendContractsToRedux(
-            dutchAuctionContractInstance,
-            gemsContractInstance,
-            web3,
-            presale,
-            currentAccount
-          );
-        }
-      )
+      .then(([
+        dutchAuctionContractInstance, gemsContractInstance,
+        currentAccount,
+        presale]) => handleSendContractsToRedux(
+        dutchAuctionContractInstance,
+        gemsContractInstance,
+        web3,
+        presale,
+        currentAccount,
+      ))
       .catch(error => handleSetError(error));
   }
 
@@ -179,7 +154,8 @@ class App extends Component {
                   closable={false}
                 >
                   <p>
-                  Once you pay for the Gem using Metamask, you will be redirected to your workshop.
+                    Once you pay for the Gem using Metamask, you will be redirected to your
+                    workshop.
                   </p>
                   <strong>This may take a few moments.</strong>
                 </Modal>
@@ -202,12 +178,12 @@ const actions = {
   handleSendContractsToRedux: sendContractsToRedux,
   handleClearError: clearError,
   handleSetError: setError,
-  handleUpdateWalletId: updateWalletId
+  handleUpdateWalletId: updateWalletId,
 };
 
 export default connect(
   select,
-  actions
+  actions,
 )(App);
 
 App.propTypes = {

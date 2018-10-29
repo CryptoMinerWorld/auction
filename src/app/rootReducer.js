@@ -70,5 +70,4 @@ export default combineReducers({
   auction,
   auth,
   dashboard,
-  app: appReducer,
 });

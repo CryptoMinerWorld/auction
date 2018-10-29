@@ -1,6 +1,5 @@
 import {
   USER_GEMS_RETRIEVED,
-
   ALL_USER_GEMS_UPLOADED,
   USER_HAS_NO_GEMS_IN_WORKSHOP,
   AUCTION_DETAILS_RECEIVED,
@@ -33,19 +32,16 @@ export const getUserGems = userId => (dispatch) => {
     .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
     .join('');
 
-  try {
-    db.collection('stones')
-      .where('owner', '==', userIdToLowerCase)
-      .orderBy('gradeType', 'desc')
-      .get()
-      .then((collection) => {
-        const gems = collection.docs.map(doc => doc.data());
-        dispatch({ type: FETCH_USER_GEMS_SUCCEEDED });
-        dispatch({ type: USER_GEMS_RETRIEVED, payload: gems });
-      });
-  // } catch (err) {
-  //   dispatch({ type: FETCH_USER_GEMS_FAILED, payload: err });
-  // }
+  return db.collection('stones')
+    .where('owner', '==', userIdToLowerCase)
+    .orderBy('gradeType', 'desc')
+    .get()
+    .then((collection) => {
+      const gems = collection.docs.map(doc => doc.data());
+      dispatch({ type: FETCH_USER_GEMS_SUCCEEDED });
+      dispatch({ type: USER_GEMS_RETRIEVED, payload: gems });
+    })
+    .catch(error => setError(error));
 };
 
 export const getUserGemsOnce = userId => (dispatch) => {
