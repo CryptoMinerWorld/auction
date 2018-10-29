@@ -19,13 +19,14 @@ class ErrorBoundary extends Component {
 
   render() {
     const { error } = this.state;
-    const children = this.props;
+    // const children = this.props;
     if (error) {
       // render error reporting UI
       return Sentry.showReportDialog();
     }
     // when there's not an error, render children untouched
-    return children;
+    // eslint-disable-next-line
+    return this.props.children;
   }
 }
 

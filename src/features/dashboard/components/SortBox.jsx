@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
-// import styled from 'styled-components';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withStateMachine, State } from 'react-automata';
 import { compose } from 'redux';
@@ -43,24 +42,46 @@ export const stateMachine = {
 };
 
 class SortBox extends PureComponent {
-  orderByTime = () => this.props.handleOrderBy('level', 'asc');
+  static propTypes = {
+    handleOrderBy: PropTypes.func.isRequired,
+    transition: PropTypes.func.isRequired,
+    machineState: PropTypes.shape({
+    }).isRequired,
+  }
 
-  orderByTimeDesc = () => this.props.handleOrderBy('level', 'desc');
+  orderByTime = () => {
+    const { handleOrderBy } = this.props;
+    handleOrderBy('level', 'asc');
+  }
 
-  orderByPrice = () => this.props.handleOrderBy('gradeType', 'asc');
+  orderByTimeDesc = () => {
+    const { handleOrderBy } = this.props;
+    handleOrderBy('level', 'desc');
+  }
 
-  orderByPriceDesc = () => this.props.handleOrderBy('gradeType', 'desc');
+  orderByPrice = () => {
+    const { handleOrderBy } = this.props;
+    handleOrderBy('gradeType', 'asc');
+  }
+
+  orderByPriceDesc = () => {
+    const { handleOrderBy } = this.props;
+    handleOrderBy('gradeType', 'desc');
+  }
 
   render() {
     const { transition, machineState } = this.props;
 
     return (
       <div className="flex-ns dn jce aic w-100 pv4">
-        <p
+        <div
           className={`flex aic jcc pointer  mr4 white link  ${
             machineState.value === 'timeASC' || machineState.value === 'timeDESC' ? 'o-90' : 'o-30'
           }`}
           onClick={() => transition('TOGGLE_TIME')}
+          onKeyPress={() => transition('TOGGLE_TIME')}
+          role="button"
+          tabIndex={0}
         >
           BY LEVEL
           <State is="timeDESC">
@@ -69,12 +90,15 @@ class SortBox extends PureComponent {
           <State is="timeASC">
             <DownArrowCircle className="ml2" onClick={() => transition('TOGGLE_TIME')} />
           </State>
-        </p>
+        </div>
 
-        <p
+        <div
           className={`flex aic jcc pointer  white link
   ${machineState.value === 'priceASC' || machineState.value === 'priceDESC' ? 'o-90' : 'o-30'}`}
           onClick={() => transition('TOGGLE_PRICE')}
+          onKeyPress={() => transition('TOGGLE_PRICE')}
+          role="button"
+          tabIndex={0}
         >
           BY GRADE
           <State is="priceDESC">
@@ -83,7 +107,7 @@ class SortBox extends PureComponent {
           <State is="priceASC">
             <DownArrowCircle className="ml2" onClick={() => transition('TOGGLE_PRICE')} />
           </State>
-        </p>
+        </div>
       </div>
     );
   }

@@ -13,6 +13,7 @@ import {
   getDetailsForAllGemsAUserCurrentlyOwns,
   getUserDetails,
 } from '../dashboard/dashboardActions';
+import { setError } from '../../app/appActions';
 
 export const checkIfUserExists = userId => (dispatch) => {
   const userIdToLowerCase = userId
@@ -28,7 +29,7 @@ export const checkIfUserExists = userId => (dispatch) => {
         ? dispatch({ type: USER_EXISTS, payload: doc.data() })
         : dispatch({ type: NO_USER_EXISTS, payload: userId })),
     )
-    .catch(error => console.error('error', error));
+    .catch(error => setError(error));
 };
 
 export const updateWalletId = walletId => (dispatch, getState) => {
@@ -65,7 +66,7 @@ export const createNewUser = payload => (dispatch) => {
       dispatch({ type: USER_EXISTS, payload });
       getDetailsForAllGemsAUserCurrentlyOwns(userIdToLowerCase);
     })
-    .catch(error => console.error('error', error));
+    .catch(error => setError(error));
 };
 
 export const showSignInModal = () => dispatch => dispatch({ type: NEW_USER });

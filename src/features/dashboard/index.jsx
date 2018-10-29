@@ -197,7 +197,7 @@ class Dashboard extends Component {
         <div className="flex  aic mt3 wrap jcc jcb-ns">
           <div className=" flex aic">
             <img src={userImage} className="h3 w-auto pr3 dib" alt="gem auctions" />
-            <h1 className="white" data-testid="header">
+            <h1 className="white" data-testid="userName">
               {userName}
             </h1>
           </div>

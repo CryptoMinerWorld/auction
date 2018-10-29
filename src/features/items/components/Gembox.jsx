@@ -7,8 +7,6 @@ import gem1 from '../../../app/images/icons/gem1.png';
 import gem2 from '../../../app/images/icons/gem2.png';
 import gem3 from '../../../app/images/icons/gem3.png';
 import restingEnergy from '../../../app/images/icons/EnergySymbolDull.png';
-// var moment = require('moment');
-// var momentDurationFormatSetup = require('moment-duration-format');
 
 class Gembox extends PureComponent {
   static propTypes = {
@@ -16,6 +14,8 @@ class Gembox extends PureComponent {
     grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     styling: PropTypes.string,
+    mobileHeader: PropTypes.bool.isRequired,
+    restingEnergyMinutes: PropTypes.number,
   };
 
   static defaultProps = {
@@ -23,6 +23,7 @@ class Gembox extends PureComponent {
     level: 2,
     grade: 2,
     rate: 2,
+    restingEnergyMinutes: null,
   };
 
   gradeConverter = gradeValue => ({
@@ -35,13 +36,6 @@ class Gembox extends PureComponent {
   }[gradeValue]);
 
   restingEnergyConverter = (restingEnergyMinutes) => {
-    // momentDurationFormatSetup(moment);
-    // const differenceInWords = moment
-    //   .duration(restingEnergyMinutes, 'minutes')
-    //   .format('w [week], d [days], h [hrs], m [min]', {
-    //     trim: true
-    //   });
-    // https://momentjs.com/docs/#/durations/
     const now = Date.now();
     const nowMinusMinutes = subMinutes(now, restingEnergyMinutes);
     const differenceInWords = formatDistance(nowMinusMinutes, now, {
@@ -108,6 +102,7 @@ Gem.propTypes = {
   quality: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   image: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+
 };
 
 Gem.defaultProps = {

@@ -14,6 +14,7 @@ import {
 import { AUCTION_DETAILS_RECEIVED } from '../items/itemConstants';
 import { db } from '../../app/utils/firebase';
 import { updateDBwithNewPrice } from './helpers';
+import { setError } from '../../app/appActions';
 
 export const getAuctions = () => (dispatch) => {
   dispatch({ type: FETCH_NEW_AUCTIONS_BEGUN });
@@ -56,7 +57,7 @@ export const updatePriceOnAllLiveAuctions = (
         })));
     });
   } catch (err) {
-    console.log('error on updatePriceOnAllLiveAuctions', err);
+    setError(err);
   }
 };
 

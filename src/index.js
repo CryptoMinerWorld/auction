@@ -10,7 +10,6 @@ import { getCurrentUser } from './features/auth/authActions';
 store.dispatch(getCurrentUser());
 store.dispatch(getAuctions());
 
+
 // eslint-disable-next-line
-const Bundle = () => (<Provider store={store}><App /></Provider>);
-// eslint-disable-next-line
-ReactDOM.render(<Bundle />, document.getElementById('root'));
+ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));

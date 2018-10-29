@@ -60,6 +60,7 @@ Gem.propTypes = {
   quality: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   image: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+
 };
 
 Gem.defaultProps = {
@@ -81,6 +82,7 @@ Nugget.propTypes = {
   quality: PropTypes.string.isRequired,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   gem: PropTypes.string.isRequired,
+  market: PropTypes.bool.isRequired,
 };
 
 Nugget.defaultProps = {

@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import Button from 'antd/lib/button';
 import { withStateMachine } from 'react-automata';
 import { connect } from 'react-redux';
@@ -37,7 +37,18 @@ const select = store => ({
 });
 
 class ReSync extends PureComponent {
-  static propTypes = {};
+  static propTypes = {
+    transition: PropTypes.func.isRequired,
+    machineState: PropTypes.shape({
+
+    }).isRequired,
+    userId: PropTypes.string.isRequired,
+    gemContract: PropTypes.string.isRequired,
+    userName: PropTypes.string.isRequired,
+    userImage: PropTypes.string.isRequired,
+    success: PropTypes.bool.isRequired,
+    error: PropTypes.string.isRequired,
+  };
 
   updateGemDetails = async () => {
     const {
@@ -50,7 +61,10 @@ class ReSync extends PureComponent {
     } = this.props;
     handleUpdateGemDetails(userId, gemContract, userName, userImage)
       .then(result => transition('SUCCESS', { success: result }))
-      .catch(error => transition('FAILURE', { error: error.message_ || error }));
+      .catch(error => transition('FAILURE', {
+        // eslint-disable-next-line
+        error: error.message_ || error 
+      }));
   };
 
   render() {

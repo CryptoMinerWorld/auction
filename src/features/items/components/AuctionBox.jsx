@@ -54,7 +54,7 @@ const select = store => ({
 
 const AuctionBox = ({
   currentPrice,
-  handleBuyNow,
+
   level,
   grade,
   rate,
@@ -65,11 +65,9 @@ const AuctionBox = ({
   minPrice,
   maxPrice,
   currentAccount,
-  handleShowSignInModal,
   accountExists,
   provider,
   history,
-  newUser,
   handleShowSignInBox,
 }) => (
   <OverlapOnDesktopView
@@ -129,21 +127,25 @@ export default compose(
 
 AuctionBox.propTypes = {
   currentPrice: PropTypes.number.isRequired,
-  handleBuyNow: PropTypes.func.isRequired,
   level: PropTypes.number.isRequired,
   grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   deadline: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   name: PropTypes.string.isRequired,
-  handleShowSignInModal: PropTypes.func.isRequired,
   tokenId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   maxPrice: PropTypes.number.isRequired,
   minPrice: PropTypes.number.isRequired,
   provider: PropTypes.bool.isRequired,
   currentAccount: PropTypes.string.isRequired,
-  accountExists: PropTypes.bool.isRequired,
+  accountExists: PropTypes.bool,
+  restingEnergyMinutes: PropTypes.number,
+  history: PropTypes.shape({
+
+  }).isRequired,
+  handleShowSignInBox: PropTypes.bool.isRequired,
 };
 
 AuctionBox.defaultProps = {
   accountExists: false,
+  restingEnergyMinutes: null,
 };

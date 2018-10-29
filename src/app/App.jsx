@@ -36,7 +36,8 @@ ReactGA.pageview(window.location.pathname + window.location.search);
 Sentry.init({
   dsn: 'https://7fc52f2bd8de42f9bf46596f996086e8@sentry.io/1299588',
 
-  environment: process.env.NODE_ENV
+  environment: process.env.NODE_ENV,
+
 });
 
 const dutchAuctionABI = DutchAuction.abi;
@@ -67,8 +68,7 @@ class App extends Component {
     const {
       handleSendContractsToRedux,
       handleUpdateWalletId,
-      setGemsContract,
-      handleSetError
+      handleSetError,
     } = this.props;
     // @notice loading a custom font when app mounts
     const font = new FontFaceObserver('Muli', {
@@ -122,14 +122,9 @@ class App extends Component {
       }
     );
 
-    Promise.all([
-      dutchContract,
-      gemsContract,
-      currentAccountId,
-      presaleContract
-    ])
-      .then(
-        ([
+    Promise.all([dutchContract, gemsContract, currentAccountId, presaleContract])
+      .then(([dutchAuctionContractInstance, gemsContractInstance, currentAccount, presale]) => {
+        handleSendContractsToRedux(
           dutchAuctionContractInstance,
           gemsContractInstance,
           currentAccount,
@@ -148,18 +143,18 @@ class App extends Component {
       .catch(error => handleSetError(error));
   }
 
-  componentWillUnmount() {
-    // @notice clear price update interval when you leav ethe app to stop any memory leaks
-    clearInterval(this.priceInterval);
-    // clearInterval(this.updatePriceOnAllLiveAuctions);
-  }
+  // componentWillUnmount() {
+  //   // @notice clear price update interval when you leav ethe app to stop any memory leaks
+  //   clearInterval(this.priceInterval);
+  //   // clearInterval(this.updatePriceOnAllLiveAuctions);
+  // }
 
-  errorNotification = ({ description }) => {
+  errorNotification = (error) => {
     const { handleClearError } = this.props;
     notification.error({
       message: 'Error',
-      description,
-      onClose: handleClearError()
+      description: `${error}`,
+      onClose: handleClearError(),
     });
   };
 
@@ -170,32 +165,33 @@ class App extends Component {
     return (
       <BrowserRouter>
         <ErrorBoundary>
-          <ScrollToTop>
-            <main className={font}>
-              {error && this.errorNotification(error.message || error)}
-              <Modal
-                visible={visible}
-                title="Please Confirm Your Transaction In Metamask to Proceed"
-                iconType="loading"
-                zIndex={1000}
-                footer={false}
-                maskClosable={false}
-                closable={false}
-              >
-                <p>
-                  Once you pay for the Gem using Metamask, you will be
-                  redirected to your workshop.
-                </p>
-                <strong>This may take a few moments.</strong>
-              </Modal>
-              <StickyHeader>
-                <Navbar />
-              </StickyHeader>
-              <Routes />
+          <React.StrictMode>
+            <ScrollToTop>
+              <main className={font}>
+                {error && error !== false && this.errorNotification(error)}
+                <Modal
+                  visible={visible}
+                  title="Please Confirm Your Transaction In Metamask to Proceed"
+                  iconType="loading"
+                  zIndex={1000}
+                  footer={false}
+                  maskClosable={false}
+                  closable={false}
+                >
+                  <p>
+                  Once you pay for the Gem using Metamask, you will be redirected to your workshop.
+                  </p>
+                  <strong>This may take a few moments.</strong>
+                </Modal>
+                <StickyHeader>
+                  <Navbar />
+                </StickyHeader>
+                <Routes />
 
-              <Footer />
-            </main>
-          </ScrollToTop>
+                <Footer />
+              </main>
+            </ScrollToTop>
+          </React.StrictMode>
         </ErrorBoundary>
       </BrowserRouter>
     );
@@ -220,9 +216,9 @@ App.propTypes = {
   handleSendContractsToRedux: PropTypes.func.isRequired,
   handleUpdateWalletId: PropTypes.func.isRequired,
   visible: PropTypes.bool.isRequired,
-  error: PropTypes.string
+  error: PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.object]),
 };
 
 App.defaultProps = {
-  error: ''
+  error: false,
 };

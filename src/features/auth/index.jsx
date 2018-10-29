@@ -32,6 +32,8 @@ const images = [
   'https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FTopaz%20Face%20Emoji.png?alt=media&token=5369bf8c-64ec-4a42-9169-6ca09ad2d126',
   'https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FTurquoise%20Face%20Emoji.png?alt=media&token=a7a8d52c-d99f-4b1b-bdd2-fca2bbee2556',
 ];
+
+
 const select = store => ({
   currentUser: store.auth.currentUserId,
   web3: store.auth.web3,
@@ -140,7 +142,11 @@ class Auth extends PureComponent {
           onCancel={() => transition('CLOSE')}
           footer={[
             <div className="flex ais col" key="AuthDialogueFooterButtons">
-              <Checkbox checked={terms} onChange={e => this.setState({ terms: e.target.checked })}>
+              <Checkbox
+                checked={terms}
+                onChange={e => this.setState({ terms: e.target.checked })}
+                data-testid="terms"
+              >
                 <p className="pl3 dib">
                   {' '}
                   I agree to the
@@ -158,6 +164,7 @@ class Auth extends PureComponent {
                 </p>
               </Checkbox>
               <Checkbox
+                data-testid="mailingList"
                 checked={mailinglist}
                 onChange={e => this.setState({ mailinglist: e.target.checked })}
               >
@@ -172,6 +179,7 @@ class Auth extends PureComponent {
                 className="w-100"
                 loading={machineState.value === 'loading'}
                 onClick={() => transition('SUBMIT', { state: this.state })}
+                data-testid="submitSignup"
               >
                 Submit
               </Button>
@@ -197,6 +205,7 @@ class Auth extends PureComponent {
             size="large"
             className="mv3"
             type="text"
+            data-testid="name"
           />
           <Input
             placeholder="Email"
@@ -205,6 +214,7 @@ class Auth extends PureComponent {
             size="large"
             type="email"
             required
+            data-testid="email"
           />
           <div className="pa3">
             <div className="flex wrap jcb">
@@ -215,6 +225,7 @@ class Auth extends PureComponent {
                   onClick={() => this.updateImage(url)}
                   size={64}
                   className="mv2 pointer grow"
+                  data-testid="avatars"
                 />
               ))}
             </div>

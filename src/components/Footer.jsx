@@ -34,7 +34,11 @@ const FooterLink = ({ link, title, hover }) => (
 FooterLink.propTypes = {
   title: PropTypes.string.isRequired,
   link: PropTypes.string.isRequired,
-  hover: PropTypes.string.isRequired,
+  hover: PropTypes.string,
+};
+
+FooterLink.defaultProps = {
+  hover: null,
 };
 
 const Footer = () => (

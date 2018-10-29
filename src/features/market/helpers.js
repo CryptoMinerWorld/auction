@@ -1,18 +1,14 @@
 import { db } from '../../app/utils/firebase';
 
-
-const firebaseCall = auctionId => db
+export const updateDBwithNewPrice = auctionId => db
   .collection('stones')
   .where('id', '==', auctionId)
-  .get();
-
-export const updateDBwithNewPrice = (auctionId, dbCall = firebaseCall()) => dbCall(auctionId)
-    .then((coll) => {
-      const gemId = coll.docs.map(doc => doc.id);
-      return gemId[0];
-    })
-    .catch(err => err);
-
+  .get()
+  .then((coll) => {
+    const gemId = coll.docs.map(doc => doc.id);
+    return gemId[0];
+  })
+  .catch(err => err);
 
 export const calculatePercentage = (max, current) => ((max - current) / max) * 100;
 
