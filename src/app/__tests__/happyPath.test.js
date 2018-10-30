@@ -8,9 +8,10 @@ const user = {
   name: faker.name.firstName(),
   email: faker.internet.email(),
 };
+
 describe.skip('App happy path tests', () => {
   it(
-    'app lets you sign up ',
+    'app lets you sign up',
     async () => {
       const browser = await dappeteer.launch(puppeteer);
       const metamask = await dappeteer.getMetamask(browser);
@@ -51,36 +52,37 @@ describe.skip('App happy path tests', () => {
 
       await marketplace.waitFor(1000);
 
-
-      const text = await marketplace.evaluate(() => document.querySelector('[data-testid="avatarUsername"]').textContent, 5000);
-
-      console.log('text, user.name', text, user.name);
+      const text = await marketplace.evaluate(
+        () => document.querySelector('[data-testid="avatarUsername"]').textContent,
+        5000,
+      );
 
       expect(text).toBe(user.name);
-      // marketplace.$eval('[data-testid="avatarUsername"]', (el) => {
-      //   console.log('el.innerHTML', el.innerHTML, user.name);
-      //   expect(user.name).toBe(el.innerHTML);
-      // });
-      // page.$eval(selector, element => element.innerHTML);
-
-      // await metamask.confirmTransaction();
-
-      // // wait for tx to start
-      // await marketplace.bringToFront();
-      // await marketplace.waitForSelector('.TxStatusText');
-
-      // // wait for tx to be mined
-      // await marketplace.waitFor(
-      //   () => document.querySelector('.TxStatusText') == null,
-      //   {
-      //     timeout: 180000,
-      //   },
-      // );
 
       // close browser
       await browser.close();
-    // setTimeout(() => { browser.close(); }, 3000);
+      // setTimeout(() => { browser.close(); }, 3000);
     },
-    23000,
+    20000,
   );
 });
+
+// marketplace.$eval('[data-testid="avatarUsername"]', (el) => {
+//   console.log('el.innerHTML', el.innerHTML, user.name);
+//   expect(user.name).toBe(el.innerHTML);
+// });
+// page.$eval(selector, element => element.innerHTML);
+
+// await metamask.confirmTransaction();
+
+// // wait for tx to start
+// await marketplace.bringToFront();
+// await marketplace.waitForSelector('.TxStatusText');
+
+// // wait for tx to be mined
+// await marketplace.waitFor(
+//   () => document.querySelector('.TxStatusText') == null,
+//   {
+//     timeout: 180000,
+//   },
+// );
