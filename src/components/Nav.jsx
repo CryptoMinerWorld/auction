@@ -108,7 +108,7 @@ const Navbar = ({
           }}
           className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
         >
-          Map
+          Country Market
         </NavLink>
         <a
           className="link dim dark-gray f6 f5-l dn dib-ns mr3 mr4-l"

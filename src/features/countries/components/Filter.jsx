@@ -89,7 +89,7 @@ class Filter extends React.Component {
         render: (text) => {
           const { searchText } = this.state;
           return searchText ? (
-            <span>
+            <span data-testid="filterComponent">
               {text.split(new RegExp(`(?<=${searchText})|(?=${searchText})`, 'i')).map(
                 (fragment, i) => (fragment.toLowerCase() === searchText.toLowerCase() ? (
                   <span

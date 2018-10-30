@@ -4,7 +4,12 @@ import {
   ComposableMap, ZoomableGroup, Geographies, Geography,
 } from 'react-simple-maps';
 import chroma from 'chroma-js';
+// import {
+//   Tooltip,
+//   actions,
+// } from 'redux-tooltip';
 import geoData from '../../../app/maps/world-50m-with-population.json';
+
 
 const wrapperStyles = {
   width: '100%',
@@ -45,7 +50,7 @@ const subregions = [
 ];
 
 const Map = () => (
-  <div style={wrapperStyles}>
+  <div style={wrapperStyles} data-testid="mapComponent">
     <ComposableMap
       projectionConfig={{
         scale: 205,
@@ -65,6 +70,7 @@ const Map = () => (
                 // eslint-disable-next-line
                 key={i}
               geography={geography}
+              onClick={() => console.log('pog', geography.properties.name)}
               projection={projection}
               style={{
                 default: {

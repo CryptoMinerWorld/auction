@@ -139,7 +139,7 @@ class Selection extends React.Component {
 }
 
 const Cart = () => (
-  <div>
+  <div data-testid="cartComponent">
     <article className="pa3 pt4 tr bg-dark-gray white" data-name="slab-stat">
       <dl className="dib mr5">
         <dd className="f6 f5-ns b ml0">Closed Issues</dd>
