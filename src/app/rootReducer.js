@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
+import { reducer as tooltip } from 'redux-tooltip';
 import { marketActionsReducer, marketReducer } from '../features/market/marketReducers';
-
 import auction from '../features/items/itemReducer';
 import auth from '../features/auth/authReducer';
 import dashboard from '../features/dashboard/dashboardReducer';
@@ -70,4 +70,5 @@ export default combineReducers({
   auction,
   auth,
   dashboard,
+  tooltip,
 });
