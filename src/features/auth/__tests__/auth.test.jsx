@@ -9,6 +9,7 @@ import { renderWithRouter } from '../../../app/testSetup';
 afterEach(cleanup);
 
 // var firebasemock = require('firebase-mock');
+jest.mock('firebase');
 
 // var mockfirestore = new firebasemock.MockFirestore();
 // var mockstorage = new firebasemock.MockStorage();

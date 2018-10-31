@@ -1,6 +1,8 @@
 import { testStateMachine } from 'react-automata';
 import { TestGiftGems } from '../components/GiftGems';
 
+jest.mock('firebase');
+
 const fixtures = {
   initialData: {
     gemsContract: '0x',

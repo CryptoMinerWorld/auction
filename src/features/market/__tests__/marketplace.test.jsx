@@ -12,6 +12,8 @@ import App from '../../../app/App';
 
 // var firebasemock = require('firebase-mock');
 jest.mock('react-ga');
+jest.mock('firebase');
+
 // var mockfirestore = new firebasemock.MockFirestore();
 // var mockstorage = new firebasemock.MockStorage();
 // var mocksdk = new firebasemock.MockFirebaseSdk(

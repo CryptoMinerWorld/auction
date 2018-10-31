@@ -45,75 +45,86 @@ const subregions = [
   'Western Asia',
 ];
 
-const Map = ({ data }) => {
-  console.log('data', data);
-  return (
-    <div style={wrapperStyles} data-testid="mapComponent">
-      <ComposableMap
-        projectionConfig={{
-          scale: 205,
-          rotation: [-11, 0, 0],
-        }}
-        width={980}
-        height={551}
-        style={{
-          width: '100%',
-          height: 'auto',
-        }}
-      >
-        <ZoomableGroup center={[0, 20]}>
-          <Geographies
-            geography={data}
-            disableOptimization
-          >
-            {(geographies, projection) => geographies.map((geography, i) => (
-              <Geography
-                  // eslint-disable-next-line
-                  key={i}
-                geography={geography}
-                  // onMouseMove={handleMove}
-                  // onMouseLeave={handleLeave}
-                onClick={() => console.log(geography.properties.name, geography.properties.price)}
-                projection={projection}
-                style={{
-                  default: {
-                    fill: colorScale[subregions.indexOf(geography.properties.subregion)],
-                    stroke: '#607D8B',
-                    strokeWidth: 0.75,
-                    outline: 'none',
-                  },
-                  hover: {
-                    fill: chroma(
-                      colorScale[subregions.indexOf(geography.properties.subregion)],
-                    ).darken(0.5),
-                    stroke: '#607D8B',
-                    strokeWidth: 0.75,
-                    outline: 'none',
-                  },
-                  pressed: {
-                    fill: chroma(
-                      colorScale[subregions.indexOf(geography.properties.subregion)],
-                    ).brighten(0.5),
-                    stroke: '#607D8B',
-                    strokeWidth: 0.75,
-                    outline: 'none',
-                  },
-                }}
-              />
-            ))
-            }
-          </Geographies>
-        </ZoomableGroup>
-      </ComposableMap>
-    </div>
-  );
-};
+const Map = ({ data, setSelection, addToCart }) => (
+  <div style={wrapperStyles} data-testid="mapComponent">
+    <ComposableMap
+      projectionConfig={{
+        scale: 205,
+        rotation: [-11, 0, 0],
+      }}
+      width={980}
+      height={551}
+      style={{
+        width: '100%',
+        height: 'auto',
+      }}
+    >
+      <ZoomableGroup center={[0, 20]}>
+        <Geographies geography={data} disableOptimization>
+          {(geographies, projection) => geographies.map((geography, i) => (
+            <Geography
+                // eslint-disable-next-line
+                key={i}
+              geography={geography}
+              onMouseEnter={() => setSelection({
+                name: geography.properties.name,
+                plots: geography.properties.plots,
+                price: geography.properties.price,
+                roi: geography.properties.roi,
+              })
+                }
+              onMouseLeave={() => console.log('left')}
+              onClick={() => addToCart({
+                key: '1',
+                country: geography.properties.name,
+                price: 32,
+                plots: 44,
+                roi: 45,
+                return: 54,
+              })
+                }
+              projection={projection}
+              data-testid={geography.properties.name}
+              style={{
+                default: {
+                  fill: colorScale[subregions.indexOf(geography.properties.subregion)],
+                  stroke: '#607D8B',
+                  strokeWidth: 0.75,
+                  outline: 'none',
+                },
+                hover: {
+                  fill: chroma(
+                    colorScale[subregions.indexOf(geography.properties.subregion)],
+                  ).darken(0.5),
+                  stroke: '#607D8B',
+                  strokeWidth: 0.75,
+                  outline: 'none',
+                },
+                pressed: {
+                  fill: chroma(
+                    colorScale[subregions.indexOf(geography.properties.subregion)],
+                  ).brighten(0.5),
+                  stroke: '#607D8B',
+                  strokeWidth: 0.75,
+                  outline: 'none',
+                },
+              }}
+            />
+          ))
+          }
+        </Geographies>
+      </ZoomableGroup>
+    </ComposableMap>
+  </div>
+);
 
 Map.propTypes = {
   // handleMove: PropTypes.func.isRequired,
   // handleLeave: PropTypes.func.isRequired,
   // handleSelect: PropTypes.func.isRequired,
   data: PropTypes.shape({}).isRequired,
+  setSelection: PropTypes.func.isRequired,
+  addToCart: PropTypes.func.isRequired,
 };
 // const { show, hide } = actions;
 

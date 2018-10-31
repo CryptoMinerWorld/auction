@@ -11,6 +11,7 @@ import GemSortBox from '../components/GemSortBox';
 
 jest.mock('react-ga');
 afterEach(cleanup);
+jest.mock('firebase');
 
 test('when I sort my dashboard it rearranges my gems', async () => {
   const store = createStore(rootReducer);

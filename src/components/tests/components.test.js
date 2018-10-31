@@ -15,6 +15,7 @@ import Navbar from '../Nav';
 import ProgressMeter from '../../features/items/components/ProgressMeter';
 
 // var firebasemock = require('firebase-mock');
+jest.mock('firebase');
 
 // var mockfirestore = new firebasemock.MockFirestore();
 // var mockstorage = new firebasemock.MockStorage();

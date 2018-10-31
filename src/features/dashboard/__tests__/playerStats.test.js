@@ -10,6 +10,7 @@ import { renderWithRouter } from '../../../app/testSetup';
 
 jest.mock('react-ga');
 afterEach(cleanup);
+jest.mock('firebase');
 
 test('referral points function shows loading text', async () => {
   const getPoints = jest.fn();

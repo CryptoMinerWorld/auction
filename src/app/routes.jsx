@@ -6,6 +6,9 @@ import Marketplace from '../features/market';
 import Dashboard from '../features/dashboard/index';
 import Map from '../features/countries/index';
 
+
+const handleBuyNow = selection => console.log('country buy selection', selection);
+
 const Routes = props => (
   <Fragment>
     <Route exact path="/" component={Marketplace} />
@@ -14,7 +17,7 @@ const Routes = props => (
     <Route path="/auction/:auctionid" render={() => <Items {...props} />} />
     <Route path="/profile/:userId" render={() => <Dashboard {...props} />} />
     <Route path="/gem/:gemId" render={() => <Items {...props} />} />
-    <Route path="/map" render={() => <Map {...props} />} />
+    <Route path="/map" render={() => <Map {...props} handleBuyNow={handleBuyNow} />} />
 
   </Fragment>
 );
