@@ -1,13 +1,13 @@
 {
   "main.css": "/static/css/main.13fd7d93.chunk.css",
-  "main.js": "/static/js/main.fe3cc2d2.chunk.js",
-  "main.js.map": "/static/js/main.fe3cc2d2.chunk.js.map",
+  "main.js": "/static/js/main.7fd91a0c.chunk.js",
+  "main.js.map": "/static/js/main.7fd91a0c.chunk.js.map",
   "static/css/1.416367a7.chunk.css": "/static/css/1.416367a7.chunk.css",
-  "static/js/1.afda3650.chunk.js": "/static/js/1.afda3650.chunk.js",
-  "static/js/1.afda3650.chunk.js.map": "/static/js/1.afda3650.chunk.js.map",
+  "static/js/1.9e9c6bf9.chunk.js": "/static/js/1.9e9c6bf9.chunk.js",
+  "static/js/1.9e9c6bf9.chunk.js.map": "/static/js/1.9e9c6bf9.chunk.js.map",
   "runtime~main.js": "/static/js/runtime~main.229c360f.js",
   "runtime~main.js.map": "/static/js/runtime~main.229c360f.js.map",
-  "static/media/root.css": "/static/media/muli-v11-latin-900.3f016a1f.woff",
+  "static/media/root.css": "/static/media/muli-v11-latin-regular.45e555f9.woff2",
   "static/media/rockBackground.png": "/static/media/rockBackground.ca7bfdfb.png",
   "static/media/gem2.png": "/static/media/gem2.29284ecf.png",
   "static/media/gem3.png": "/static/media/gem3.e7abf63d.png",
@@ -36,6 +36,6 @@
   "static/css/main.13fd7d93.chunk.css.map": "/static/css/main.13fd7d93.chunk.css.map",
   "static/css/1.416367a7.chunk.css.map": "/static/css/1.416367a7.chunk.css.map",
   "index.html": "/index.html",
-  "precache-manifest.8bc7d5cc472d11c1c8cc8c7eda608320.js": "/precache-manifest.8bc7d5cc472d11c1c8cc8c7eda608320.js",
+  "precache-manifest.3a0a05c84e2fb7774c6f1bf7e9dc402b.js": "/precache-manifest.3a0a05c84e2fb7774c6f1bf7e9dc402b.js",
   "service-worker.js": "/service-worker.js"
 }
