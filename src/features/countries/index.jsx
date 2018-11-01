@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Cart from './components/Cart';
-import Filter from './components/Filter';
+// import Filter from './components/Filter';
 import { rtdb } from '../../app/utils/firebase';
 import Map from './components/Map';
 import geoData from '../../app/maps/world-50m-with-population.json';
@@ -40,10 +40,11 @@ const CountryAuction = ({ handleBuyNow }) => {
   return (
     <div data-testid="mapPage">
       <div className="flex">
-        <div className="w-third pa3">
+        {/* <div className="w-third pa3">
           <Filter />
         </div>
-        <div className="w-two-thirds pa3">
+        <div className="w-two-thirds pa3"> */}
+        <div className="w-100 pa3">
           {countryData ? (
             <Map
               data={{

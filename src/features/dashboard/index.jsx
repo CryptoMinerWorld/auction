@@ -28,6 +28,7 @@ import SortBox from './components/SortBox';
 import AuctionCategories from './components/AuctionCategories';
 import { getReferralPoints, getPlotCount } from './helpers';
 import stateMachine from './stateMachine';
+import CountryDashboard from '../countries/components/Dashboard';
 
 const { TabPane } = Tabs;
 require('antd/lib/tabs/style/css');
@@ -263,7 +264,7 @@ class Dashboard extends Component {
             </Grid>
           </TabPane>
           <TabPane tab="Countries" key="2">
-            Details about countries you have bought go here.
+            <CountryDashboard />
           </TabPane>
         </Tabs>
       </div>
