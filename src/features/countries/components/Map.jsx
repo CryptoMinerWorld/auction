@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 // import { Tooltip, actions } from 'redux-tooltip';
 // import { connect } from 'react-redux';
 
+
 const wrapperStyles = {
   width: '100%',
   maxWidth: 980,
@@ -73,7 +74,7 @@ const Map = ({ data, setSelection, addToCart }) => (
                 roi: geography.properties.roi,
               })
                 }
-              onMouseLeave={() => console.log('left')}
+              // onMouseLeave={() => console.log('left')}
               onClick={() => addToCart({
                 key: '1',
                 country: geography.properties.name,

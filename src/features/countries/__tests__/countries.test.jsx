@@ -72,7 +72,7 @@ export const tempx = [];
 
 export const testCountries = [
   {
-    country: 'Brazil',
+    name: 'Brazil',
     key: '1',
     plots: 44,
     price: 32,
@@ -85,7 +85,7 @@ export const testCountries = [
     keys: 6,
   },
   {
-    country: 'India',
+    name: 'India',
     key: '1',
     plots: 44,
     price: 32,
@@ -210,9 +210,7 @@ describe('Country dashboard', () => {
   });
 
   test('shows no Countries if no Countries', async () => {
-    const { getByTestId, queryByTestId } = render(
-      <CountryDashboard web3 account />,
-    );
+    const { getByTestId, queryByTestId } = render(<CountryDashboard web3 account />);
     expect(getByTestId('noCountries')).toBeInTheDocument();
     expect(queryByTestId('noAccount')).toBeNull();
     expect(queryByTestId('countriesExist')).toBeNull();
@@ -235,6 +233,15 @@ describe('Country dashboard', () => {
     const { getByTestId } = render(<CountryDashboard web3 account countries={testCountries} />);
     await waitForElement(() => getByTestId('countriesExist'));
     // expect(getByTestId('countriesExist')).toBeInTheDocument();
+  });
+
+  test('a card is rendered for each country I own', async () => {
+    const { getByTestId, queryAllByTestId } = render(
+      <CountryDashboard web3 account countries={testCountries} />,
+    );
+    await waitForElement(() => getByTestId('countriesExist'));
+    const CardCount = queryAllByTestId('countryCard');
+    expect(CardCount.length).toBe(2);
   });
 });
 

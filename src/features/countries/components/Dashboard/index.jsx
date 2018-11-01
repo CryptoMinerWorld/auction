@@ -50,10 +50,75 @@ class CountryDashboard extends PureComponent {
     transition: PropTypes.func.isRequired,
   };
 
+  // static defaultProps = {
+  //   web3: false,
+  //   countries: [],
+  //   account: false,
+  // };
+
   static defaultProps = {
-    web3: false,
-    countries: [],
-    account: false,
+    web3: true,
+    countries: [
+      {
+        name: 'Brazil',
+        key: '3',
+        plots: 44,
+        price: 32,
+        return: 54,
+        roi: 45,
+        gems: 5,
+        artifacts: 2,
+        gold: 67,
+        silver: 98,
+        keys: 6,
+      },
+      {
+        name: 'India',
+        key: '1',
+        plots: 44,
+        price: 32,
+        return: 54,
+        roi: 45,
+      },
+      {
+        name: 'Portugal',
+        key: '2',
+        plots: 44,
+        price: 32,
+        return: 54,
+        roi: 45,
+      },
+      {
+        name: 'Brazil',
+        key: '3',
+        plots: 44,
+        price: 32,
+        return: 54,
+        roi: 45,
+        gems: 5,
+        artifacts: 2,
+        gold: 67,
+        silver: 98,
+        keys: 6,
+      },
+      {
+        name: 'India',
+        key: '1',
+        plots: 44,
+        price: 32,
+        return: 54,
+        roi: 45,
+      },
+      {
+        name: 'Portugal',
+        key: '2',
+        plots: 44,
+        price: 32,
+        return: 54,
+        roi: 45,
+      },
+    ],
+    account: true,
   };
 
   componentDidMount() {
@@ -75,6 +140,7 @@ class CountryDashboard extends PureComponent {
   }
 
   render() {
+    const { countries } = this.props;
     return (
       <div>
         <State is="noCountries">
@@ -90,7 +156,7 @@ class CountryDashboard extends PureComponent {
           <p data-testid="noAccount">No Account</p>
         </State>
         <State is="countries">
-          <Countries />
+          <Countries countries={countries} />
         </State>
       </div>
     );
