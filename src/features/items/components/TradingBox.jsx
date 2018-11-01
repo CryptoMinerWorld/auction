@@ -60,7 +60,7 @@ class TradingBox extends PureComponent {
     level: PropTypes.number.isRequired,
     grade: PropTypes.number.isRequired,
     rate: PropTypes.number.isRequired,
-    restingEnergyMinutes: PropTypes.number.isRequired,
+    restingEnergyMinutes: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     currentPrice: PropTypes.number.isRequired,
     minPrice: PropTypes.number.isRequired,

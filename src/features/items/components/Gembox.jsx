@@ -14,8 +14,8 @@ class Gembox extends PureComponent {
     grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     styling: PropTypes.string,
-    mobileHeader: PropTypes.bool.isRequired,
-    restingEnergyMinutes: PropTypes.number,
+    mobileHeader: PropTypes.bool,
+    restingEnergyMinutes: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   };
 
   static defaultProps = {
@@ -24,6 +24,7 @@ class Gembox extends PureComponent {
     grade: 2,
     rate: 2,
     restingEnergyMinutes: null,
+    mobileHeader: false,
   };
 
   gradeConverter = gradeValue => ({

@@ -18,7 +18,6 @@ import { setError } from '../../app/appActions';
 
 export const getAuctions = () => (dispatch) => {
   dispatch({ type: FETCH_NEW_AUCTIONS_BEGUN });
-
   try {
     db.collection('stones')
       .where('auctionIsLive', '==', true)

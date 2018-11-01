@@ -138,11 +138,11 @@ AuctionBox.propTypes = {
   provider: PropTypes.bool.isRequired,
   currentAccount: PropTypes.string.isRequired,
   accountExists: PropTypes.bool,
-  restingEnergyMinutes: PropTypes.number,
+  restingEnergyMinutes: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   history: PropTypes.shape({
 
   }).isRequired,
-  handleShowSignInBox: PropTypes.bool.isRequired,
+  handleShowSignInBox: PropTypes.func.isRequired,
 };
 
 AuctionBox.defaultProps = {

@@ -87,7 +87,8 @@
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
     "coverage": "jest --env=jsdom --coverage",
-    "storybook": "start-storybook -p 9001 -c .storybook"
+    "storybook": "start-storybook -p 9001 -c .storybook",
+    "quality": "codeclimate analyze ."
   },
   "babel": {
     "presets": [

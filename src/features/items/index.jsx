@@ -48,7 +48,7 @@ class Auction extends PureComponent {
       handleGetAuctionDetails,
       dutchContract,
       gemContractAddress,
-      handleSetError,
+
     } = this.props;
 
     if (match && match.params && match.params.gemId) {
@@ -63,13 +63,13 @@ class Auction extends PureComponent {
           .then((currentPrice) => {
             this.setState({ currentPrice: Number(currentPrice) });
           })
-          .catch(error => handleSetError(error));
+          .catch(error => console.warn(error));
       }
     }, 10000);
   }
 
   componentDidUpdate(prevProps) {
-    const { gemContract, match, handleSetError } = this.props;
+    const { gemContract, match } = this.props;
     const { restingEnergyMinutes } = this.state;
 
     const transform = result => prevProps.web3.eth.getBlock(result, (err, results) => {
@@ -95,9 +95,9 @@ class Auction extends PureComponent {
               0.5406 * Math.min(ageMinutes, linearThreshold)
               + 0.0199 * Math.max(ageMinutes - linearThreshold, 0),
           );
-          this.setState({ restingEnergyMinutes: restedEnergyMinutes });
+          return this.setState({ restingEnergyMinutes: restedEnergyMinutes });
         })
-        .catch(error => handleSetError(error));
+        .catch(error => console.warn(error));
     }
   }
 
@@ -123,19 +123,6 @@ class Auction extends PureComponent {
       error,
       match,
     } = this.props;
-
-    // this.Priceinterval =
-    //   dutchContract &&
-    //   gemContractAddress &&
-    //   setInterval(() => {
-    //     dutchContract.methods
-    //       .getCurrentPrice(gemContractAddress, match.params.gemId)
-    //       .call()
-    //       .then(currentPrice =>
-    //         this.setState({ currentPrice: Number(currentPrice) })
-    //       );
-    //     // .catch(error => console.log('error', error));
-    //   }, 10000);
 
     const { restingEnergyMinutes, currentPrice } = this.state;
 
