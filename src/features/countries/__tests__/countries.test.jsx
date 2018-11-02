@@ -245,7 +245,15 @@ describe('Country dashboard', () => {
   });
 });
 
-describe.skip('Country map buy now button', () => {
+describe('Country map buy now button', () => {
+  test('buying single countries adds teh country to my dashboard', () => {
+    expect(true).toBeFalsy();
+  });
+
+  test('buying multiple countries works teh same as buying one country', () => {
+    expect(true).toBeFalsy();
+  });
+
   test('buy without metamask asks me to install metamask', () => {
     expect(true).toBeFalsy();
   });
@@ -273,15 +281,15 @@ describe.skip('Country Map filter', () => {
   });
 });
 
+
+test.skip('available countries are styled differently from ones that are not for sale', () => {});
+
 test.skip('shows someone elses countries if viewiung someone elses profile', () => {});
 
 test.skip('accessing country dashboard without an account/metamask redirect me to sign up modal', () => {
   expect(true).toBeFalsy();
 });
 
-test.skip('buying multiple countries works teh same as buying one country', () => {
-  expect(true).toBeFalsy();
-});
 
 test.skip('when I hover on a country it shows me a pointer cursor', () => {
   expect(true).toBeFalsy();

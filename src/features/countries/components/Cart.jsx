@@ -1,9 +1,10 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
-import { Query } from 'react-apollo';
+import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import Table from 'antd/lib/table';
 import PropTypes from 'prop-types';
+import { BUY_NOW_MUTATION } from '../mutations';
 
 require('antd/lib/table/style/css');
 
@@ -30,9 +31,30 @@ const Cart = ({ picked, removeFromCart, handleBuyNow }) => (
               return <p>{data.user.name}</p>;
             }}
           </Query>
-          <button type="button" data-testid="buyNow" onClick={() => handleBuyNow(picked)}>
-            buy now
-          </button>
+          <Mutation
+            mutation={BUY_NOW_MUTATION}
+            variables={{
+              id: 'dlQkxRkaEvJkazkXY3qZ',
+              newOwnerId: 'as45',
+              price: 56,
+              timeOfPurchase: 1541129757489,
+            }}
+          >
+            {buyNow => (
+              <button
+                type="button"
+                data-testid="buyNow"
+                onClick={async () => {
+                  const res = await buyNow();
+                  console.log('res', res);
+                  handleBuyNow(picked);
+                }}
+              >
+                buy now
+              </button>
+            )}
+          </Mutation>
+
           <p>timer</p>
         </div>
       </div>
