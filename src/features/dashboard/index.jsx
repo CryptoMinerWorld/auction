@@ -219,7 +219,8 @@ class Dashboard extends Component {
         </div>
 
         <Tabs
-          defaultActiveKey="1"
+          defaultActiveKey="2"
+
           size="large"
           animated
           className="bg-off-black white "
@@ -265,6 +266,10 @@ class Dashboard extends Component {
           </TabPane>
           <TabPane tab="Countries" key="2">
             <CountryDashboard />
+
+            {/* web3: false,
+    countries: [],
+    account: false, */}
           </TabPane>
         </Tabs>
       </div>

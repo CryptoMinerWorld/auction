@@ -11,7 +11,7 @@ require('antd/lib/card/style/css');
 
 class Countries extends PureComponent {
   static propTypes = {
-    countries: PropTypes.arrayOf({}),
+    countries: PropTypes.arrayOf(PropTypes.shape({})),
   };
 
   static defaultProps = {
@@ -53,7 +53,7 @@ const CountryBar = ({ countries }) => (
     {countries
       && countries.map(country => (
         <Card
-          key={country.key}
+          key={`${country.name}${Math.random()}`}
           style={{ width: 300 }}
           className="ma4 dib"
           cover={(
@@ -76,9 +76,13 @@ const CountryBar = ({ countries }) => (
 );
 
 CountryDetails.propTypes = {
-  country: PropTypes.shape({}).isRequired,
+  country: PropTypes.shape({}),
+};
+
+CountryDetails.defaultProps = {
+  country: { name: 'Portugal' },
 };
 
 CountryBar.propTypes = {
-  countries: PropTypes.arrayOf({}).isRequired,
+  countries: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };

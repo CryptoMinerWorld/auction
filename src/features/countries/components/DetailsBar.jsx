@@ -26,8 +26,8 @@ export default DetailsBar;
 DetailsBar.propTypes = {
   details: PropTypes.shape({
     name: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired,
-    plots: PropTypes.number.isRequired,
-    roi: PropTypes.number.isRequired,
+    price: PropTypes.number,
+    plots: PropTypes.number,
+    roi: PropTypes.number,
   }).isRequired,
 };

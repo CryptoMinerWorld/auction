@@ -76,7 +76,7 @@ const Map = ({ data, setSelection, addToCart }) => (
                 }
               // onMouseLeave={() => console.log('left')}
               onClick={() => addToCart({
-                key: '1',
+                key: geography.properties.name,
                 country: geography.properties.name,
                 price: 32,
                 plots: 44,

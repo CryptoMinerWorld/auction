@@ -20,13 +20,14 @@ class PlayerStats extends PureComponent {
   static propTypes = {
     gemCount: PropTypes.number.isRequired,
     getReferralPoints: PropTypes.func.isRequired,
-    preSaleContract: PropTypes.func.isRequired,
+    preSaleContract: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
     match: PropTypes.shape({}),
     getPlotCount: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
     match: {},
+    preSaleContract: false,
   };
 
   state = {
@@ -149,5 +150,5 @@ const AuctionCategories = ({ gemCount, plots }) => (
 
 AuctionCategories.propTypes = {
   gemCount: PropTypes.number.isRequired,
-  plots: PropTypes.number.isRequired,
+  plots: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 };

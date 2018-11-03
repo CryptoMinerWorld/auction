@@ -6,6 +6,7 @@ import FontFaceObserver from 'fontfaceobserver';
 import * as Sentry from '@sentry/browser';
 import { connect } from 'react-redux';
 import ReactGA from 'react-ga';
+import { ApolloConsumer } from 'react-apollo';
 import notification from 'antd/lib/notification';
 import Modal from 'antd/lib/modal';
 import ErrorBoundary from '../components/ErrorBoundary';
@@ -64,7 +65,9 @@ class App extends Component {
   }
 
   async componentDidMount() {
-    const { handleSendContractsToRedux, handleUpdateWalletId, handleSetError } = this.props;
+    const {
+      handleSendContractsToRedux, handleUpdateWalletId, handleSetError, client,
+    } = this.props;
     // @notice loading a custom font when app mounts
     const font = new FontFaceObserver('Muli', {
       weight: 400,
@@ -105,14 +108,16 @@ class App extends Component {
     });
 
     Promise.all([dutchContract, gemsContract, currentAccountId, presaleContract])
-      .then(([dutchAuctionContractInstance,
-        gemsContractInstance, currentAccount, presale]) => handleSendContractsToRedux(
-        dutchAuctionContractInstance,
-        gemsContractInstance,
-        web3,
-        presale,
-        currentAccount,
-      ))
+      .then(([dutchAuctionContractInstance, gemsContractInstance, currentAccount, presale]) => {
+        client.writeData({ data: { userId: currentAccount } });
+        handleSendContractsToRedux(
+          dutchAuctionContractInstance,
+          gemsContractInstance,
+          web3,
+          presale,
+          currentAccount,
+        );
+      })
       .catch(error => handleSetError(error));
   }
 
@@ -178,10 +183,14 @@ const actions = {
   handleUpdateWalletId: updateWalletId,
 };
 
+const EnhancedApp = props => (
+  <ApolloConsumer>{client => <App {...props} client={client} />}</ApolloConsumer>
+);
+
 export default connect(
   select,
   actions,
-)(App);
+)(EnhancedApp);
 
 App.propTypes = {
   handleClearError: PropTypes.func.isRequired,

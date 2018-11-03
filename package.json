@@ -65,6 +65,7 @@
     "react-mailchimp-subscribe": "^2.0.2",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
+    "react-router-prop-types": "^1.0.4",
     "react-simple-maps": "^0.12.1",
     "react-sizeme": "^2.5.2",
     "react-spring": "^5.9.2",

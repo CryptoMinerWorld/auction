@@ -11,6 +11,19 @@ import { getCurrentUser } from './features/auth/authActions';
 
 const client = new ApolloClient({
   uri: process.env.NODE_ENV === 'development' ? 'http://localhost:4000' : 'https://dev-cryptominerworld.appspot.com/',
+
+  clientState: {
+    defaults: {
+      userId: null,
+    },
+    resolvers: {},
+    typeDefs: `
+    type Query {
+      userId: String
+    }
+    `,
+  },
+
 });
 
 

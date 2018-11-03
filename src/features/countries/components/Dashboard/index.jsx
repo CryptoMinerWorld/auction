@@ -46,80 +46,80 @@ class CountryDashboard extends PureComponent {
   static propTypes = {
     web3: PropTypes.oneOfType([PropTypes.shape({}), PropTypes.bool]),
     countries: PropTypes.arrayOf(PropTypes.shape({})),
-    account: PropTypes.oneOfType([PropTypes.shape({}), PropTypes.string]),
+    account: PropTypes.oneOfType([PropTypes.shape({}), PropTypes.bool]),
     transition: PropTypes.func.isRequired,
   };
 
-  // static defaultProps = {
-  //   web3: false,
-  //   countries: [],
-  //   account: false,
-  // };
-
   static defaultProps = {
-    web3: true,
-    countries: [
-      {
-        name: 'Brazil',
-        key: '3',
-        plots: 44,
-        price: 32,
-        return: 54,
-        roi: 45,
-        gems: 5,
-        artifacts: 2,
-        gold: 67,
-        silver: 98,
-        keys: 6,
-      },
-      {
-        name: 'India',
-        key: '1',
-        plots: 44,
-        price: 32,
-        return: 54,
-        roi: 45,
-      },
-      {
-        name: 'Portugal',
-        key: '2',
-        plots: 44,
-        price: 32,
-        return: 54,
-        roi: 45,
-      },
-      {
-        name: 'Brazil',
-        key: '3',
-        plots: 44,
-        price: 32,
-        return: 54,
-        roi: 45,
-        gems: 5,
-        artifacts: 2,
-        gold: 67,
-        silver: 98,
-        keys: 6,
-      },
-      {
-        name: 'India',
-        key: '1',
-        plots: 44,
-        price: 32,
-        return: 54,
-        roi: 45,
-      },
-      {
-        name: 'Portugal',
-        key: '2',
-        plots: 44,
-        price: 32,
-        return: 54,
-        roi: 45,
-      },
-    ],
-    account: true,
+    web3: false,
+    countries: [],
+    account: false,
   };
+
+  // static defaultProps = {
+  //   web3: true,
+  //   countries: [
+  //     {
+  //       name: 'Brazil',
+  //       key: '3',
+  //       plots: 44,
+  //       price: 32,
+  //       return: 54,
+  //       roi: 45,
+  //       gems: 5,
+  //       artifacts: 2,
+  //       gold: 67,
+  //       silver: 98,
+  //       keys: 6,
+  //     },
+  //     {
+  //       name: 'India',
+  //       key: '1',
+  //       plots: 44,
+  //       price: 32,
+  //       return: 54,
+  //       roi: 45,
+  //     },
+  //     {
+  //       name: 'Portugal',
+  //       key: '2',
+  //       plots: 44,
+  //       price: 32,
+  //       return: 54,
+  //       roi: 45,
+  //     },
+  //     {
+  //       name: 'Brazil',
+  //       key: '13',
+  //       plots: 44,
+  //       price: 32,
+  //       return: 54,
+  //       roi: 45,
+  //       gems: 5,
+  //       artifacts: 2,
+  //       gold: 67,
+  //       silver: 98,
+  //       keys: 6,
+  //     },
+  //     {
+  //       name: 'India',
+  //       key: '1',
+  //       plots: 44,
+  //       price: 32,
+  //       return: 54,
+  //       roi: 45,
+  //     },
+  //     {
+  //       name: 'Portugal',
+  //       key: '2',
+  //       plots: 44,
+  //       price: 32,
+  //       return: 54,
+  //       roi: 45,
+  //     },
+  //   ],
+  //   account: true,
+  // };
 
   componentDidMount() {
     const {
@@ -144,15 +144,12 @@ class CountryDashboard extends PureComponent {
     return (
       <div>
         <State is="noCountries">
-          {' '}
           <NoCountries />
         </State>
         <State is="noMetamask">
-          {' '}
           <p data-testid="noMetamask">No Metamask</p>
         </State>
         <State is="noAccount">
-          {' '}
           <p data-testid="noAccount">No Account</p>
         </State>
         <State is="countries">

@@ -2,24 +2,29 @@ import React from 'react';
 // import PropTypes from 'prop-types';
 import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
+// import { Mutation } from 'react-apollo';
 import Table from 'antd/lib/table';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
+import ReactRouterPropTypes from 'react-router-prop-types';
 import { BUY_NOW_MUTATION } from '../mutations';
 
 require('antd/lib/table/style/css');
 
-const Cart = ({ picked, removeFromCart, handleBuyNow }) => (
+const Cart = ({
+  picked, removeFromCart, handleBuyNow, history,
+}) => (
   <div data-testid="cartComponent">
     <div className="flex">
       <div className="w-third">
         <div className="flex col aic jcc">
           <p>current price</p>
 
-          <Query
+          {/* <Query
             query={gql`
               {
                 user(id: "0xd9b74f73d933fde459766f74400971b29b90c9d2") {
-                  name
+                  id
                 }
               }
             `}
@@ -30,7 +35,23 @@ const Cart = ({ picked, removeFromCart, handleBuyNow }) => (
 
               return <p>{data.user.name}</p>;
             }}
+          </Query> */}
+
+          <Query
+            query={gql`
+              {
+                userId @client
+              }
+            `}
+          >
+            {({ loading, error, data }) => {
+              if (loading) return <p data-testid="cartLoading">Loading...</p>;
+              if (error) return <p data-testid="cartLoading">Error :(</p>;
+              console.log('data', data);
+              return <p>{data.userId}</p>;
+            }}
           </Query>
+
           <Mutation
             mutation={BUY_NOW_MUTATION}
             variables={{
@@ -45,9 +66,8 @@ const Cart = ({ picked, removeFromCart, handleBuyNow }) => (
                 type="button"
                 data-testid="buyNow"
                 onClick={async () => {
-                  const res = await buyNow();
-                  console.log('res', res);
-                  handleBuyNow(picked);
+                  await buyNow();
+                  handleBuyNow(picked, history, '0xd9b74f73d933fde459766f74400971b29b90c9d2');
                 }}
               >
                 buy now
@@ -107,10 +127,15 @@ const Cart = ({ picked, removeFromCart, handleBuyNow }) => (
   </div>
 );
 
-export default Cart;
+export default withRouter(Cart);
 
 Cart.propTypes = {
   removeFromCart: PropTypes.func.isRequired,
-  picked: PropTypes.shape([]).isRequired,
+  picked: PropTypes.arrayOf(PropTypes.shape({})),
   handleBuyNow: PropTypes.func.isRequired,
+  history: ReactRouterPropTypes.history.isRequired,
+};
+
+Cart.defaultProps = {
+  picked: [{}],
 };
