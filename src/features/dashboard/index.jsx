@@ -10,6 +10,7 @@ import { matchesState } from 'xstate';
 import notification from 'antd/lib/notification';
 import Tabs from 'antd/lib/tabs';
 import { Transition, config } from 'react-spring';
+import { graphql } from 'react-apollo';
 import { db } from '../../app/utils/firebase';
 import {
   getUserGemsOnce,
@@ -29,6 +30,7 @@ import AuctionCategories from './components/AuctionCategories';
 import { getReferralPoints, getPlotCount } from './helpers';
 import stateMachine from './stateMachine';
 import CountryDashboard from '../countries/components/Dashboard';
+import { USER_COUNTRIES } from '../countries/queries';
 
 const { TabPane } = Tabs;
 require('antd/lib/tabs/style/css');
@@ -91,6 +93,10 @@ class Dashboard extends Component {
     pageNumber: PropTypes.number.isRequired,
     handlePreLoadAuctionPage: PropTypes.func.isRequired,
     machineState: PropTypes.shape({}),
+    loadingQL: PropTypes.shape({}).isRequired,
+    errorQL: PropTypes.shape({}).isRequired,
+    data: PropTypes.shape({}).isRequired,
+
   };
 
   static defaultProps = {
@@ -106,6 +112,7 @@ class Dashboard extends Component {
 
   componentDidUpdate(prevProps) {
     const { web3, transition, match } = this.props;
+
     if (web3 !== prevProps.web3) {
       transition('WITH_METAMASK');
     }
@@ -187,10 +194,11 @@ class Dashboard extends Component {
       pageNumber,
       handlePreLoadAuctionPage,
       machineState,
+      data,
     } = this.props;
 
     return (
-      <div className="bg-off-black white ph4">
+      <div className="bg-off-black white ph4" data-testid="profile-page">
         <Transition
           from={{ transform: 'translate3d(0,-200px,0)' }}
           enter={{ transform: 'translate3d(0,0px,0)' }}
@@ -220,7 +228,6 @@ class Dashboard extends Component {
 
         <Tabs
           defaultActiveKey="2"
-
           size="large"
           animated
           className="bg-off-black white "
@@ -265,7 +272,7 @@ class Dashboard extends Component {
             </Grid>
           </TabPane>
           <TabPane tab="Countries" key="2">
-            <CountryDashboard />
+            <CountryDashboard countries={data && data.user && data.user.countries} />
 
             {/* web3: false,
     countries: [],
@@ -286,6 +293,14 @@ const actions = {
   handleAddGemsToDashboard: addGemsToDashboard,
 };
 
+// const EnhancedDashboard = props => (
+//   <Query query={USER_COUNTRIES}>
+//     {({ loading, error, data }) => (
+//       <Dashboard {...props} data={data} loadingQL={loading} errorQL={error} />
+//     )}
+//   </Query>
+// );
+
 export default compose(
   withRouter,
   connect(
@@ -293,4 +308,18 @@ export default compose(
     actions,
   ),
   withStateMachine(stateMachine),
+  graphql(USER_COUNTRIES, {
+    options:
+      // props
+      () => ({
+        variables: {
+          id: '0xd9b74f73d933fde459766f74400971b29b90c9d2',
+          // props.userId &&
+          // props.userId
+          //   .split('')
+          //   .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
+          //   .join(''),
+        },
+      }),
+  }),
 )(Dashboard);

@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { State, withStateMachine } from 'react-automata';
 import NoCountries from './NoCountries';
@@ -42,18 +42,18 @@ const statechart = {
   },
 };
 
-class CountryDashboard extends PureComponent {
+class CountryDashboard extends Component {
   static propTypes = {
-    web3: PropTypes.oneOfType([PropTypes.shape({}), PropTypes.bool]),
+    // web3: PropTypes.oneOfType([PropTypes.shape({}), PropTypes.bool]),
     countries: PropTypes.arrayOf(PropTypes.shape({})),
-    account: PropTypes.oneOfType([PropTypes.shape({}), PropTypes.bool]),
+    // account: PropTypes.oneOfType([PropTypes.shape({}), PropTypes.bool]),
     transition: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
-    web3: false,
+    // web3: false,
     countries: [],
-    account: false,
+    // account: false,
   };
 
   // static defaultProps = {
@@ -123,35 +123,59 @@ class CountryDashboard extends PureComponent {
 
   componentDidMount() {
     const {
-      transition, web3, account, countries,
+      transition,
+      // web3, account,
+      countries,
     } = this.props;
 
-    if (!web3) {
-      transition('NO_METAMASK');
-    } else if (!account) {
-      transition('NO_ACCOUNT');
-    } else if (!countries || countries.length === 0) {
+    // if (!web3) {
+    //   transition('NO_METAMASK');
+    // } else if (!account) {
+    //   transition('NO_ACCOUNT');
+    // } else if (!countries || countries.length === 0) {
+    //   transition('NO_COUNTRIES');
+    // } else if (countries && countries.length > 0) {
+    //   transition('COUNTRIES');
+    // } else {
+    //   transition('NO_METAMASK');
+    // }
+
+    if (!countries || countries.length === 0) {
       transition('NO_COUNTRIES');
-    } else if (countries && countries.length > 0) {
-      transition('COUNTRIES');
     } else {
-      transition('NO_METAMASK');
+      transition('COUNTRIES');
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const { countries, transition } = this.props;
+
+    if (prevProps.countries !== countries) {
+      console.log('countries...', countries);
+
+      if (!countries || countries.length === 0) {
+        transition('NO_COUNTRIES');
+      } else {
+        transition('COUNTRIES');
+      }
     }
   }
 
   render() {
     const { countries } = this.props;
+    console.log('countries', countries);
+
     return (
       <div>
         <State is="noCountries">
           <NoCountries />
         </State>
-        <State is="noMetamask">
+        {/* <State is="noMetamask">
           <p data-testid="noMetamask">No Metamask</p>
         </State>
         <State is="noAccount">
           <p data-testid="noAccount">No Account</p>
-        </State>
+        </State> */}
         <State is="countries">
           <Countries countries={countries} />
         </State>

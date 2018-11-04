@@ -141,37 +141,35 @@ class App extends Component {
     const { visible, error } = this.props;
 
     return (
-      <BrowserRouter>
-        <ErrorBoundary>
-          {/* <React.StrictMode> */}
-          <ScrollToTop>
-            <main className={font}>
-              {error && error !== false && this.errorNotification(error)}
-              <Modal
-                visible={visible}
-                title="Please Confirm Your Transaction In Metamask to Proceed"
-                iconType="loading"
-                zIndex={1000}
-                footer={false}
-                maskClosable={false}
-                closable={false}
-              >
-                <p>
-                  Once you pay for the Gem using Metamask, you will be redirected to your workshop.
-                </p>
-                <strong>This may take a few moments.</strong>
-              </Modal>
-              <StickyHeader>
-                <Navbar />
-              </StickyHeader>
-              <Routes />
+      <>
+        {/* <React.StrictMode> */}
+        <ScrollToTop>
+          <main className={font}>
+            {error && error !== false && this.errorNotification(error)}
+            <Modal
+              visible={visible}
+              title="Please Confirm Your Transaction In Metamask to Proceed"
+              iconType="loading"
+              zIndex={1000}
+              footer={false}
+              maskClosable={false}
+              closable={false}
+            >
+              <p>
+                Once you pay for the Gem using Metamask, you will be redirected to your workshop.
+              </p>
+              <strong>This may take a few moments.</strong>
+            </Modal>
+            <StickyHeader>
+              <Navbar />
+            </StickyHeader>
+            <Routes />
 
-              <Footer />
-            </main>
-          </ScrollToTop>
-          {/* </React.StrictMode> */}
-        </ErrorBoundary>
-      </BrowserRouter>
+            <Footer />
+          </main>
+        </ScrollToTop>
+        {/* </React.StrictMode> */}
+      </>
     );
   }
 }
@@ -184,13 +182,26 @@ const actions = {
 };
 
 const EnhancedApp = props => (
-  <ApolloConsumer>{client => <App {...props} client={client} />}</ApolloConsumer>
+  <ApolloConsumer>
+    {client => (
+      <BrowserRouter>
+        <ErrorBoundary>
+          <App {...props} client={client} />
+        </ErrorBoundary>
+      </BrowserRouter>
+    )}
+  </ApolloConsumer>
 );
 
 export default connect(
   select,
   actions,
 )(EnhancedApp);
+
+export const TestApp = connect(
+  select,
+  actions,
+)(App);
 
 App.propTypes = {
   handleClearError: PropTypes.func.isRequired,

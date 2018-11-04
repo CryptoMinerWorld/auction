@@ -38,6 +38,8 @@ const CountryAuction = ({ handleBuyNow }) => {
   const removeFromCart = selected => setCart(cart
     .filter(item => item.country !== selected.country));
 
+  console.log('picked', cart);
+
   return (
     <div data-testid="mapPage">
       <div className="flex">
@@ -64,7 +66,6 @@ const CountryAuction = ({ handleBuyNow }) => {
       <DetailsBar details={selection} />
       <Cart picked={cart} removeFromCart={removeFromCart} handleBuyNow={handleBuyNow} />
     </div>
-
   );
 };
 

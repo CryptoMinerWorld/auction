@@ -47,7 +47,7 @@ const Cart = ({
             {({ loading, error, data }) => {
               if (loading) return <p data-testid="cartLoading">Loading...</p>;
               if (error) return <p data-testid="cartLoading">Error :(</p>;
-              console.log('data', data);
+
               return <p>{data.userId}</p>;
             }}
           </Query>
@@ -55,8 +55,8 @@ const Cart = ({
           <Mutation
             mutation={BUY_NOW_MUTATION}
             variables={{
-              id: 'dlQkxRkaEvJkazkXY3qZ',
-              newOwnerId: 'as45',
+              id: picked[0].country,
+              newOwnerId: '0xd9b74f73d933fde459766f74400971b29b90c9d2',
               price: 56,
               timeOfPurchase: 1541129757489,
             }}

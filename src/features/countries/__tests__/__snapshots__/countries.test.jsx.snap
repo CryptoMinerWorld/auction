@@ -2205,6 +2205,11 @@ exports[`Country Map map matches snapshot 1`] = `
           <p>
             current price
           </p>
+          <p
+            data-testid="cartLoading"
+          >
+            Loading...
+          </p>
           <button
             data-testid="buyNow"
             type="button"

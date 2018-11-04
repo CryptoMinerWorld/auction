@@ -68,7 +68,7 @@ const Marketplace = ({
   totalGems,
   handlePreLoadAuctionPage,
 }) => (
-  <div className="bg-off-black white pa4 ">
+  <div className="bg-off-black white pa4 " data-testid="market-page">
     <div className="flex aic jcs ">
       <img src={gemKid} className="h3 w-auto pr3 dn dib-ns" alt="gem auctions" />
       <h1 className="white f1 b o-90" data-testid="header">
