@@ -133,7 +133,8 @@
     "jest-dom": "^2.1.0",
     "react-test-renderer": "^16.5.2",
     "react-testing-library": "^5.1.0",
-    "storybook-addon-jsx": "^5.4.0"
+    "storybook-addon-jsx": "^5.4.0",
+    "truffle-privatekey-provider": "^0.1.0"
   },
   "jest": {
     "collectCoverageFrom": [
