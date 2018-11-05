@@ -1,7 +1,7 @@
 import { testStateMachine } from 'react-automata';
-import { TestGiftGems } from '../components/GiftGems';
+// import { TestGiftGems } from '../components/GiftGems';
 
-jest.mock('firebase');
+// jest.mock('firebase');
 
 const fixtures = {
   initialData: {

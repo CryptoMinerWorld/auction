@@ -5,14 +5,14 @@ import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import App from '../../../app/App';
+// import App from '../../../app/App';
 // import Marketplace from '../ListAuctions';
 // import amethyst from '../../../images/amethystImage.png';
 // import rootReducer from '../../../reducers/index';
 
 // var firebasemock = require('firebase-mock');
 jest.mock('react-ga');
-jest.mock('firebase');
+// jest.mock('firebase');
 
 // var mockfirestore = new firebasemock.MockFirestore();
 // var mockstorage = new firebasemock.MockStorage();

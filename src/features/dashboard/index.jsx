@@ -96,7 +96,6 @@ class Dashboard extends Component {
     loadingQL: PropTypes.shape({}).isRequired,
     errorQL: PropTypes.shape({}).isRequired,
     data: PropTypes.shape({}).isRequired,
-
   };
 
   static defaultProps = {
@@ -309,17 +308,16 @@ export default compose(
   ),
   withStateMachine(stateMachine),
   graphql(USER_COUNTRIES, {
-    options:
-      // props
-      () => ({
-        variables: {
-          id: '0xd9b74f73d933fde459766f74400971b29b90c9d2',
-          // props.userId &&
-          // props.userId
-          //   .split('')
-          //   .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
-          //   .join(''),
-        },
-      }),
+    options: props => ({
+      variables: {
+        id:
+          // '0xd9b74f73d933fde459766f74400971b29b90c9d2',
+          props.match.params.userId
+            .split('')
+            .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
+            .join(''),
+      },
+      pollInterval: 500,
+    }),
   }),
 )(Dashboard);

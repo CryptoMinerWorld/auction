@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import CountryDetails from './CountryDetails';
 import CountryBar from './CountryBar';
+import { handleGiftFormSubmit } from '../../helpers';
 
 require('antd/lib/avatar/style/css');
 require('antd/lib/icon/style/css');
@@ -30,7 +31,7 @@ class Countries extends PureComponent {
     const { countries } = this.props;
     return (
       <div data-testid="countriesExist">
-        <CountryDetails country={country} />
+        <CountryDetails country={country} handleGiftFormSubmit={handleGiftFormSubmit} />
         <CountryBar countries={countries} />
       </div>
     );

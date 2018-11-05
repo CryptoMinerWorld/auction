@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { State, withStateMachine } from 'react-automata';
 import NoCountries from './NoCountries';
-import Countries from './CountryDisplay';
+import CountryDisplay from './CountryDisplay';
 
 const statechart = {
   initial: 'noMetamask',
@@ -151,8 +151,6 @@ class CountryDashboard extends Component {
     const { countries, transition } = this.props;
 
     if (prevProps.countries !== countries) {
-      console.log('countries...', countries);
-
       if (!countries || countries.length === 0) {
         transition('NO_COUNTRIES');
       } else {
@@ -163,7 +161,6 @@ class CountryDashboard extends Component {
 
   render() {
     const { countries } = this.props;
-    console.log('countries', countries);
 
     return (
       <div>
@@ -177,7 +174,7 @@ class CountryDashboard extends Component {
           <p data-testid="noAccount">No Account</p>
         </State> */}
         <State is="countries">
-          <Countries countries={countries} />
+          <CountryDisplay countries={countries} />
         </State>
       </div>
     );

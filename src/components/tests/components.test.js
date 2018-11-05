@@ -1,21 +1,21 @@
 import React from 'react';
 import { render } from 'react-testing-library';
-import DescriptionBox, { FeatureBand } from '../../features/items/components/DescriptionBox';
-import Ripple from '../RippleButton/Ripple';
-import RippleButton from '../RippleButton/RippleButton';
-import AuctionBox from '../../features/items/components/AuctionBox';
-import AuctionImage from '../../features/items/components/AuctionImage';
-import CountdownTimer from '../../features/items/components/CountdownTimer';
-import Question from '../../features/items/components/FAQ';
-import Footer from '../Footer';
-import Gembox, { Gem } from '../../features/items/components/Gembox';
-import MobileHeader from '../../features/items/components/MobileHeader';
+// import DescriptionBox, { FeatureBand } from '../../features/items/components/DescriptionBox';
+// import Ripple from '../RippleButton/Ripple';
+// import RippleButton from '../RippleButton/RippleButton';
+// import AuctionBox from '../../features/items/components/AuctionBox';
+// import AuctionImage from '../../features/items/components/AuctionImage';
+// import CountdownTimer from '../../features/items/components/CountdownTimer';
+// import Question from '../../features/items/components/FAQ';
+// import Footer from '../Footer';
+// import Gembox, { Gem } from '../../features/items/components/Gembox';
+// import MobileHeader from '../../features/items/components/MobileHeader';
 import MailingList from '../MailingList';
-import Navbar from '../Nav';
+// import Navbar from '../Nav';
 import ProgressMeter from '../../features/items/components/ProgressMeter';
 
 // var firebasemock = require('firebase-mock');
-jest.mock('firebase');
+// jest.mock('firebase');
 
 // var mockfirestore = new firebasemock.MockFirestore();
 // var mockstorage = new firebasemock.MockStorage();
