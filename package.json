@@ -97,7 +97,8 @@
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
     "coverage": "jest --env=jsdom --coverage",
-    "storybook": "start-storybook -p 9001 -c .storybook"
+    "storybook": "start-storybook -p 9001 -c .storybook",
+    "dev": "npx cypress open"
   },
   "babel": {
     "presets": [
@@ -133,6 +134,7 @@
     "jest-dom": "^2.1.0",
     "react-test-renderer": "^16.5.2",
     "react-testing-library": "^5.1.0",
+    "riteway": "^3.0.1",
     "storybook-addon-jsx": "^5.4.0",
     "truffle-privatekey-provider": "^0.1.0"
   },

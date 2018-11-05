@@ -86,6 +86,7 @@ const Navbar = ({
             role="button"
             tabIndex={0}
             data-testid="signUp"
+
           >
             Workshop
           </div>

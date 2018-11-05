@@ -22,7 +22,7 @@ describe('Country Map', () => {
     });
   });
 
-  context.only('With Metamask', () => {
+  context('With Metamask', () => {
     it.only('App lets you sign up', () => {
       cy.on('window:before:load', (win) => {
         const provider = new PrivateKeyProvider(
@@ -52,9 +52,40 @@ describe('Country Map', () => {
         .should('be.checked');
 
       cy.getByTestId('submitSignup').click();
-      // cy.getByTestId('terms').should('not.exist');
+      cy.queryByTestId('terms', { timeout: 300 }).should('not.exist');
 
       cy.getByText('Joshxxx');
+    });
+  });
+
+  context.only('Gifting feature', () => {
+    it.only('lets you gift a nation to another user', () => {
+      cy.on('window:before:load', (win) => {
+        const provider = new PrivateKeyProvider(
+          'EC1902E25723C988078A4036A52D21461AA98620D09A7171E1A20AD2BB53F3EC',
+          'https://rinkeby.infura.io/',
+        );
+        win.web3 = new Web3(provider);
+      });
+
+
+      cy.visit('http://localhost:3000/');
+      cy.wait(1000);
+      cy.getByText('Joshxxx');
+
+      // navigate to country workshop
+      cy.getByTestId('myWorkshop').click();
+      cy.getByTestId('countriesExist');
+
+      cy.getByTestId('countryDetails');
+
+      cy.getByTestId('countryGiftInput')
+        .type('0xD9b74f73d933Fde459766f74400971B29B90c9d2')
+        .should('have.value', '0xD9b74f73d933Fde459766f74400971B29B90c9d2');
+
+      // cy.getByTestId('countryGiftInput')
+      // login in with other user
+      // check theu own teh country
     });
   });
 });

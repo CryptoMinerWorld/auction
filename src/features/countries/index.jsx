@@ -38,7 +38,6 @@ const CountryAuction = ({ handleBuyNow }) => {
   const removeFromCart = selected => setCart(cart
     .filter(item => item.country !== selected.country));
 
-  console.log('picked', cart);
 
   return (
     <div data-testid="mapPage">
