@@ -32,7 +32,7 @@ const ColourButton = styled.button`
 const TopHighLight = styled.div`
   background: linear-gradient(to right, #e36d2d, #b91a78);
   height: 4px;
-`;
+`
 
 const tophighlight = {
   background: 'linear-gradient(to right, #e36d2d, #b91a78)',
