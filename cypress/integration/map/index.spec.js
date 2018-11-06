@@ -9,6 +9,7 @@ describe('Country Map', () => {
           Cypress.env('USER_A'),
           'https://rinkeby.infura.io/',
         );
+          // eslint-disable-next-line
         win.web3 = new Web3(provider);
       });
 
@@ -42,6 +43,7 @@ describe('Country Map', () => {
           Cypress.env('USER_A'),
           'https://rinkeby.infura.io/',
         );
+          // eslint-disable-next-line
         win.web3 = new Web3(provider);
       });
       cy.wait(2000);
@@ -56,9 +58,11 @@ describe('Country Map', () => {
   });
 
   context('Gifting feature', () => {
-    // now you just delete userId data from any other country but brazil, manually before test is run
+    // now you just delete userId data from any other country but brazil,
+    // manually before test is run
 
-    // you could eithe make this test better by just measuring how many countries each user has and detecting a chnage
+    // you could eithe make this test better by just measuring
+    // how many countries each user has and detecting a chnage
 
     // of you could od so oemthing where you switch teh user on each test?
     // a boolean or flag that swaps the users round each time its run
@@ -76,6 +80,7 @@ describe('Country Map', () => {
           Cypress.env('USER_A'),
           'https://rinkeby.infura.io/',
         );
+        // eslint-disable-next-line
         win.web3 = new Web3(provider);
       });
 
@@ -99,6 +104,7 @@ describe('Country Map', () => {
           Cypress.env('USER_B'),
           'https://rinkeby.infura.io/',
         );
+          // eslint-disable-next-line
         win.web3 = new Web3(provider);
       });
 
@@ -110,10 +116,26 @@ describe('Country Map', () => {
   });
 
 
-  context('No Metamask', () => {
-    it('loads a users countries', () => {
+  context.only('No Metamask', () => {
+    it.skip('loads a users countries', () => {
       cy.visit('http://localhost:3000/profile/0x11A4770C7990B4c9adD7b6787E1c5F39387f8EAd');
       cy.getByText('Brazil');
+    });
+
+    it.skip('filter sorts each field', () => {
+
+    });
+
+    it.skip('filter filters serach results', () => {
+
+    });
+
+    it.only('filters adds a country to yoru cart', () => {
+      cy.visit('http://localhost:3000/map');
+
+      cy.getByText('Greenland').click();
+
+      cy.get('.w-two-thirds > .ant-table-wrapper > .ant-spin-nested-loading > .ant-spin-container > .ant-table > .ant-table-content > .ant-table-body > table > .ant-table-tbody > .ant-table-row > :nth-child(1)');
     });
   });
 });

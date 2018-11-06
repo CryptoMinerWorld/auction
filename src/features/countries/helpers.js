@@ -1,3 +1,6 @@
+import { db } from '../../app/utils/firebase';
+
+
 export const handleGiftFormSubmit = async (show, giftCountryMutation) => {
   show(true);
   await giftCountryMutation();
@@ -5,8 +8,12 @@ export const handleGiftFormSubmit = async (show, giftCountryMutation) => {
 };
 
 
-export const temp = e => (show, country) => {
-  e.preventDefault();
-  show(true);
-  console.log('country', country);
-};
+export const fetchCountryList = () => db
+  .collection('countries')
+  .get()
+  .then((coll) => {
+    const docs = coll.docs.map(doc => doc.data());
+
+    return docs;
+  })
+  .catch(err => console.error('error fetching country list for filter on map page', err));

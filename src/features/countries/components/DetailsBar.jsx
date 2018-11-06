@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 const DetailsBar = ({ details }) => (
   <article className="pa3 pt4 tr bg-dark-gray white" data-name="slab-stat">
     <dl className="dib mr5">
-      <dd className="f6 f5-ns b ml0" data-testid="countryDetails">{details.name}</dd>
+      <dd className="f6 f5-ns b ml0" data-testid="countryDetails">{details.country}</dd>
     </dl>
     <dl className="dib mr5">
       <dd className="f6 f5-ns b ml0">Price</dd>

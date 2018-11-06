@@ -3,38 +3,15 @@ import Table from 'antd/lib/table';
 import Input from 'antd/lib/input';
 import Button from 'antd/lib/button';
 import Icon from 'antd/lib/icon';
+import PropTypes from 'prop-types';
+import { Query } from 'react-apollo';
+import { ALL_COUNTRIES } from '../queries';
 
 require('antd/lib/table/style/css');
 require('antd/lib/input/style/css');
 require('antd/lib/button/style/css');
 require('antd/lib/icon/style/css');
 
-const data = [
-  {
-    key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-  },
-  {
-    key: '2',
-    name: 'Joe Black',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-  },
-  {
-    key: '3',
-    name: 'Jim Green',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-  },
-  {
-    key: '4',
-    name: 'Jim Red',
-    age: 32,
-    address: 'London No. 2 Lake Park',
-  },
-];
 
 class Filter extends React.Component {
   state = {
@@ -51,12 +28,21 @@ class Filter extends React.Component {
     this.setState({ searchText: '' });
   };
 
+  handleSelection = (country) => {
+    const { addToCart } = this.props;
+    addToCart(country);
+  }
+
+
   render() {
+    const { setSelection } = this.props;
+
     const columns = [
       {
         title: 'Name',
-        dataIndex: 'name',
+        dataIndex: 'country',
         key: 'name',
+        sorter: (a, b) => a.country - b.country,
         filterDropdown: ({
           setSelectedKeys, selectedKeys, confirm, clearFilters,
         }) => (
@@ -76,7 +62,7 @@ class Filter extends React.Component {
           </div>
         ),
         filterIcon: filtered => (
-          <Icon type="smile-o" style={{ color: filtered ? '#108ee9' : '#aaa' }} />
+          <Icon type="search" style={{ color: filtered ? '#108ee9' : '#aaa' }} />
         ),
         onFilter: (value, record) => record.name.toLowerCase().includes(value.toLowerCase()),
         onFilterDropdownVisibleChange: (visible) => {
@@ -86,10 +72,22 @@ class Filter extends React.Component {
             });
           }
         },
-        render: (text) => {
+        render: (text, record) => {
           const { searchText } = this.state;
           return searchText ? (
-            <span data-testid="filterComponent">
+            <span
+              role="button"
+              tabIndex={0}
+              data-testid="filterComponent"
+              onClick={() => this.handleSelection(record)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  this.handleSelection(record);
+                }
+              }}
+              onMouseOver={() => setSelection(record)}
+              onFocus={() => setSelection(record)}
+            >
               {text.split(new RegExp(`(?<=${searchText})|(?=${searchText})`, 'i')).map(
                 (fragment, i) => (fragment.toLowerCase() === searchText.toLowerCase() ? (
                   <span
@@ -105,34 +103,74 @@ class Filter extends React.Component {
               )}
             </span>
           ) : (
-            text
+            <span
+              role="button"
+              tabIndex={0}
+              onClick={() => this.handleSelection(record)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  this.handleSelection(record);
+                }
+              }}
+              onMouseOver={() => setSelection(record)}
+              onFocus={() => setSelection(record)}
+            >
+              {text}
+
+            </span>
+
+
           );
         },
       },
       {
-        title: 'Age',
-        dataIndex: 'age',
-        key: 'age',
+        title: 'Plots',
+        dataIndex: 'plots',
+        key: 'plots',
+        sorter: (a, b) => a.plots - b.plots,
       },
       {
-        title: 'Address',
-        dataIndex: 'address',
-        key: 'address',
-        filters: [
-          {
-            text: 'London',
-            value: 'London',
-          },
-          {
-            text: 'New York',
-            value: 'New York',
-          },
-        ],
-        onFilter: (value, record) => record.address.indexOf(value) === 0,
+        title: 'Price',
+        dataIndex: 'price',
+        key: 'price',
+        sorter: (a, b) => a.price - b.price,
+      },
+      {
+        title: 'ROI',
+        dataIndex: 'roi',
+        key: 'roi',
+        sorter: (a, b) => a.roi - b.roi,
       },
     ];
-    return <Table columns={columns} dataSource={data} />;
+
+
+    return (
+
+      <Query
+        query={ALL_COUNTRIES}
+      >
+        {({ loading, error, data }) => {
+          const countries = data && data.countries && data.countries.map(country => ({
+            country: country.name,
+            plots: country.totalPlots,
+            price: country.lastPrice,
+            roi: 56,
+            key: country.id,
+          }));
+
+          if (loading) return <p data-testid="cartLoading">Loading...</p>;
+          if (error) return <p data-testid="cartLoading">Error :(</p>;
+          return <Table columns={columns} dataSource={countries} />;
+        }
+
+  }
+      </Query>);
   }
 }
 
 export default Filter;
+
+Filter.propTypes = {
+  addToCart: PropTypes.func.isRequired,
+  setSelection: PropTypes.func.isRequired,
+};

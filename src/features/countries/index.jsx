@@ -9,14 +9,14 @@ import DetailsBar from './components/DetailsBar';
 
 const CountryAuction = ({ handleBuyNow }) => {
   const [countryData, setCountryData] = useState(null);
-
   useEffect(
     () => rtdb.ref('/worldMap').on('value', snap => snap && setCountryData(snap.val())),
     [],
   );
 
+
   const [selection, setSelection] = useState({
-    name: 'UK',
+    country: 'UK',
     plots: 50,
     price: 10,
     roi: 5,
@@ -39,11 +39,15 @@ const CountryAuction = ({ handleBuyNow }) => {
     .filter(item => item.country !== selected.country));
 
 
+  console.log('selection', selection);
   return (
     <div data-testid="mapPage">
       <div className="flex">
         <div className="w-third pa3">
-          <Filter />
+          <Filter
+            addToCart={addToCart}
+            setSelection={setSelection}
+          />
         </div>
         <div className="w-two-thirds pa3">
           <div className="w-100 pa3">

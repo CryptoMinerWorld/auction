@@ -17,3 +17,15 @@ export const USER_COUNTRIES = gql`
     }
   }
 `;
+
+
+export const ALL_COUNTRIES = gql`
+  query ALL_COUNTRIES {
+      countries {
+        name,
+        totalPlots,
+        lastPrice,
+        id
+      }
+  }
+`;
