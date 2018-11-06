@@ -48,7 +48,6 @@ class Auction extends PureComponent {
       handleGetAuctionDetails,
       dutchContract,
       gemContractAddress,
-
     } = this.props;
 
     if (match && match.params && match.params.gemId) {
@@ -56,6 +55,7 @@ class Auction extends PureComponent {
     }
 
     this.Priceinterval = setInterval(() => {
+      console.log('dutchContract && gemContractAddress', dutchContract, gemContractAddress);
       if (dutchContract && gemContractAddress) {
         dutchContract.methods
           .getCurrentPrice(gemContractAddress, match.params.gemId)
@@ -127,6 +127,8 @@ class Auction extends PureComponent {
     const { restingEnergyMinutes, currentPrice } = this.state;
 
     const socialShareUrl = `${process.env.REACT_APP_BASE_URL}${match.url}`;
+
+    console.log('currentPrice', currentPrice);
 
     return (
       <div>

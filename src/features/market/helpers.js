@@ -10,7 +10,8 @@ export const updateDBwithNewPrice = auctionId => db
   })
   .catch(err => err);
 
-export const calculatePercentage = (max, current) => ((max - current) / max) * 100;
+export const calculatePercentage = (max, min, current) => (
+  (max - current - min) / max) * 100 || 100;
 
 export const weiToEth = wei => Number((wei / 1000000000000000000).toFixed(3));
 

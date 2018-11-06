@@ -12,7 +12,7 @@ import {
 //   },
 // }));
 
-test('calculatePercentage calculate a peercentage', () => {
+test.only('calculatePercentage calculate a peercentage', () => {
   expect(calculatePercentage(100, 49)).toBe(51);
 });
 

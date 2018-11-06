@@ -54,7 +54,6 @@ const select = store => ({
 
 const AuctionBox = ({
   currentPrice,
-
   level,
   grade,
   rate,
