@@ -21,6 +21,8 @@ import { updateWalletId } from '../features/auth/authActions';
 import DutchAuction from './ABI/DutchAuction.json';
 import Gems from './ABI/GemERC721.json';
 import Presale from './ABI/Presale2.json';
+import Country from './ABI/CountryERC721.json';
+import CountrySale from './ABI/CountrySale.json';
 
 require('antd/lib/notification/style/css');
 require('antd/lib/modal/style/css');
@@ -43,6 +45,8 @@ Sentry.init({
 const dutchAuctionABI = DutchAuction.abi;
 const gemsABI = Gems.abi;
 const presaleABI = Presale.abi;
+const countryABI = Country.abi;
+const countrySaleABI = CountrySale.abi;
 
 const StickyHeader = styled.div`
   position: -webkit-sticky; /* Safari */
@@ -66,7 +70,8 @@ class App extends Component {
 
   async componentDidMount() {
     const {
-      handleSendContractsToRedux, handleUpdateWalletId, handleSetError, client,
+      handleSendContractsToRedux,
+      handleUpdateWalletId, handleSetError, client,
     } = this.props;
     // @notice loading a custom font when app mounts
     const font = new FontFaceObserver('Muli', {
@@ -107,25 +112,60 @@ class App extends Component {
       from: currentAccountId,
     });
 
-    Promise.all([dutchContract, gemsContract, currentAccountId, presaleContract])
-      .then(([dutchAuctionContractInstance, gemsContractInstance, currentAccount, presale]) => {
-        client.writeData({ data: { userId: currentAccount } });
-        handleSendContractsToRedux(
+    const theCountrySaleContract = new web3.eth.Contract(
+      countrySaleABI,
+      process.env.REACT_APP_COUNTRY_SALE,
+      {
+        from: currentAccountId,
+      },
+    );
+
+    const theCountryContract = new web3.eth.Contract(
+      countryABI,
+      process.env.REACT_APP_COUNTRY_ERC721,
+      {
+        from: currentAccountId,
+      },
+    );
+
+
+    Promise.all([
+      dutchContract,
+      gemsContract,
+      currentAccountId,
+      presaleContract,
+      theCountryContract,
+      theCountrySaleContract,
+    ])
+      .then(
+        ([
           dutchAuctionContractInstance,
           gemsContractInstance,
-          web3,
-          presale,
           currentAccount,
-        );
-      })
-      .catch(error => handleSetError(error));
+          presale,
+          countryContract,
+          countrySaleContract,
+        ]) => {
+          client.writeData({
+            data: {
+              userId: currentAccount,
+            },
+          });
+          handleSendContractsToRedux(
+            dutchAuctionContractInstance,
+            gemsContractInstance,
+            web3,
+            presale,
+            currentAccount,
+            countryContract,
+            countrySaleContract,
+          );
+        },
+      )
+      .catch((error) => {
+        handleSetError(error);
+      });
   }
-
-  // componentWillUnmount() {
-  //   // @notice clear price update interval when you leav ethe app to stop any memory leaks
-  //   clearInterval(this.priceInterval);
-  //   // clearInterval(this.updatePriceOnAllLiveAuctions);
-  // }
 
   errorNotification = (error) => {
     const { handleClearError } = this.props;

@@ -17,7 +17,10 @@ import {
   MODAL_VISIBLE,
   RELEASE_CONFETTI,
   MODAL_GONE,
-  SET_ERROR, CLEAR_ERROR,
+  SET_ERROR,
+  CLEAR_ERROR,
+  COUNTRY_CONTRACT_ADDED,
+  COUNTRY_SALE_ADDED,
 } from './reduxConstants';
 
 const initialState = {
@@ -35,6 +38,8 @@ const appReducer = (state = initialState, action) => ({
   [FETCH_DATA_FAILED]: { ...state, error: action.payload, loading: false },
   [FETCH_DATA_SUCCEEDED]: { ...state, loading: false },
   [CURRENT_ACCOUNT_ADDED]: { ...state, currentAccount: action.payload },
+  [COUNTRY_CONTRACT_ADDED]: { ...state, countryContractInstance: action.payload },
+  [COUNTRY_SALE_ADDED]: { ...state, countrySaleInstance: action.payload },
   [PRESALE_CONTRACT_ADDED]: {
     ...state,
     presaleContractInstance: action.payload,
@@ -60,7 +65,6 @@ const appReducer = (state = initialState, action) => ({
     ...state,
     error: '',
   },
-
 }[action.type] || state);
 
 export default combineReducers({

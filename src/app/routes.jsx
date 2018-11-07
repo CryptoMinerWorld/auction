@@ -6,7 +6,6 @@ import Marketplace from '../features/market';
 import Dashboard from '../features/dashboard/index';
 import Map from '../features/countries/index';
 
-const handleBuyNow = (selection, history, userId) => history.push(`/profile/${userId}`);
 
 const Routes = props => (
   <Fragment>
@@ -16,7 +15,7 @@ const Routes = props => (
     <Route path="/auction/:auctionid" render={() => <Items {...props} />} />
     <Route path="/profile/:userId" render={() => <Dashboard {...props} />} />
     <Route path="/gem/:gemId" render={() => <Items {...props} />} />
-    <Route path="/map" render={() => <Map {...props} handleBuyNow={handleBuyNow} />} />
+    <Route path="/map" render={() => <Map {...props} />} />
   </Fragment>
 );
 
