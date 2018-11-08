@@ -56,36 +56,68 @@ const Cart = ({
                     console.log('countrySale', countrySale);
                     console.log('data.userId ', data.userId);
                     console.log('history', history);
-                    // console.log('picked', picked);
+                    console.log('picked', picked);
                     console.log('country id', picked[0].id, typeof picked[0].id);
                     console.log('country price', picked[0].price, ethToWei(picked[0].price));
                     console.log('country map index', picked[0].mapIndex);
 
+                    const countries = picked.map(country => country.id);
+                    console.log('countries', countries);
 
-                    const currentPrice = await countrySale.methods.getPrice(picked[0].id).call();
+                    // const currentPrice = await countrySale.methods.getPrice(picked[0].id).call();
 
+                    // const totalPrice = await countries.reduce(async (total, countryId) => {
+                    //   const price = await countrySale.methods.getPrice(countryId).call();
+                    //   return total + price;
+                    // }, Promise.resolve());
+
+                    // async function printFiles() {
+                    //   const files = await getFilePaths();
+
+                    const allPrices = await Promise.all(
+                      countries.map(countryId => countrySale.methods.getPrice(countryId).call()),
+                    );
+
+                    console.log('allPrices', allPrices);
+
+                    const totalPrice = allPrices
+                      .map(value => Number(value))
+                      .reduce((total, price) => total + price);
+
+                    console.log('totalPrice', totalPrice);
 
                     // blockchain
-                    await countrySale.methods.buy(picked[0].id)
-                      .send(
-                        {
-                          value: currentPrice,
-                        },
+                    await countrySale.methods.bulkBuy(countries).send(
+                      {
+                        value: totalPrice,
+                      },
 
-                        async (err, txHash) => {
-                          if (err) {
-                            console.log('error buying a single country', err);
-                            return;
-                          }
-                          console.log('txHash received', txHash);
+                      async (err, txHash) => {
+                        if (err) {
+                          console.log('error buying a single country', err);
+                          return;
+                        }
+                        console.log('txHash received', txHash);
 
-                          await buyNow();
-                          await markSold(picked[0].mapIndex);
-                          console.log('db updated');
-                          setLoading(false);
-                          history.push(`/profile/${data.userId}`);
-                        },
-                      );
+                        // for each country
+                        await picked.forEach(async (country) => {
+                          await buyNow({
+                            variables: {
+                              id: country.country,
+                              newOwnerId: data.userId,
+                              price: 56,
+                              gift: false,
+                              timeOfPurchase: 1541129757489,
+                            },
+                          });
+                          await markSold(country.mapIndex);
+                        });
+
+                        console.log('db updated');
+                        setLoading(false);
+                        history.push(`/profile/${data.userId}`);
+                      },
+                    );
 
                     // .then(async (receipt) => {
                     //   console.log('recipt received', receipt);
@@ -190,16 +222,7 @@ const EnhancedCart = props => (
       // console.log('props.picked[0].country', props.picked[0].country);
       // console.log('data.userId', data.userId);
 
-      <Mutation
-        mutation={BUY_NOW_MUTATION}
-        variables={{
-          id: props.picked && props.picked[0].country,
-          newOwnerId: data.userId,
-          price: 56,
-          gift: false,
-          timeOfPurchase: 1541129757489,
-        }}
-      >
+      <Mutation mutation={BUY_NOW_MUTATION}>
         {buyNow => <Cart {...props} loading={loading} data={data} error={error} buyNow={buyNow} />}
       </Mutation>
     )}
