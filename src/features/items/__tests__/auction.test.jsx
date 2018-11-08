@@ -1,20 +1,20 @@
 import React from 'react';
-// import {
-//   render, fireEvent, waitForElement, cleanup,
-// } from 'react-testing-library';
-// import 'jest-dom/extend-expect';
-// import { Router } from 'react-router-dom';
-// import { createMemoryHistory } from 'history';
-// import { Provider } from 'react-redux';
-// import { createStore } from 'redux';
-// import { calcMiningRate } from '../helpers';
-// import { calculateGemName } from '../helpers';
-// import Auction from '../index';
-// import App from '../../../app/App';
-// import rootReducer from '../../../app/rootReducer.js';
+import {
+  render, fireEvent, waitForElement, cleanup,
+} from 'react-testing-library';
+import 'jest-dom/extend-expect';
+import { Router } from 'react-router-dom';
+import { createMemoryHistory } from 'history';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+import { calcMiningRate } from '../helpers';
+import { calculateGemName } from '../helpers';
+import Auction from '../index';
+import App from '../../../app/App';
+import rootReducer from '../../../app/rootReducer.js';
 
 // var firebasemock = require('firebase-mock');
-// jest.mock('firebase');
+jest.mock('firebase');
 
 // var mockfirestore = new firebasemock.MockFirestore();
 // var mockstorage = new firebasemock.MockStorage();
@@ -63,7 +63,7 @@ function renderWithRouter(
   };
 }
 
-describe.skip('Auction page tests', () => {
+describe('Auction page tests', () => {
   // @dev this is all the test data, easy to configure in one place
   const props = {
     // currentPrice: '1.323',

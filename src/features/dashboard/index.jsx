@@ -310,12 +310,7 @@ export default compose(
   graphql(USER_COUNTRIES, {
     options: props => ({
       variables: {
-        id:
-          // '0xd9b74f73d933fde459766f74400971b29b90c9d2',
-          props.match.params.userId
-            .split('')
-            .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
-            .join(''),
+        id: props.match.params.userId,
       },
       pollInterval: 500,
     }),

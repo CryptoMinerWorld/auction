@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import CountryDetails from './CountryDetails';
+// import CountryDetails from './CountryDetails';
 import CountryBar from './CountryBar';
-import { handleGiftFormSubmit } from '../../helpers';
+// import { handleGiftFormSubmit } from '../../helpers';
 
 require('antd/lib/avatar/style/css');
 require('antd/lib/icon/style/css');
@@ -17,21 +17,21 @@ class Countries extends PureComponent {
     countries: null,
   };
 
-  state = {
-    country: null,
-  };
+  // state = {
+  //   country: null,
+  // };
 
-  componentDidMount() {
-    const { countries } = this.props;
-    this.setState({ country: countries[0] });
-  }
+  // componentDidMount() {
+  //   const { countries } = this.props;
+  //   this.setState({ country: countries[0] });
+  // }
 
   render() {
-    const { country } = this.state;
+    // const { country } = this.state;
     const { countries } = this.props;
     return (
       <div data-testid="countriesExist">
-        <CountryDetails country={country} handleGiftFormSubmit={handleGiftFormSubmit} />
+        {/* <CountryDetails country={country} handleGiftFormSubmit={handleGiftFormSubmit} /> */}
         <CountryBar countries={countries} />
       </div>
     );

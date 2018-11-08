@@ -1,12 +1,10 @@
 import { db } from '../../app/utils/firebase';
 
-
 export const handleGiftFormSubmit = async (show, giftCountryMutation) => {
   show(true);
   await giftCountryMutation();
   // send transaction to firebase
 };
-
 
 export const fetchCountryList = () => db
   .collection('countries')
@@ -17,3 +15,5 @@ export const fetchCountryList = () => db
     return docs;
   })
   .catch(err => console.error('error fetching country list for filter on map page', err));
+
+export const ethToWei = eth => Number(eth * 1000000000000000000);

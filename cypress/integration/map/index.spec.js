@@ -37,7 +37,26 @@ describe('Country Map', () => {
       cy.getByText('Joshxxx');
     });
 
-    it('lets you buy a country', () => {
+    it.only('lets you buy a country', () => {
+      cy.on('window:before:load', (win) => {
+        const provider = new PrivateKeyProvider(
+          Cypress.env('USER_A'),
+          'https://rinkeby.infura.io/',
+        );
+          // eslint-disable-next-line
+        win.web3 = new Web3(provider);
+      });
+      cy.wait(2000);
+      cy.visit('http://localhost:3000/profile/0xd9b74f73d933fde459766f74400971b29b90c9d2');
+      cy.queryByText('Brazil').should('not.exist');
+      cy.visit('http://localhost:3000/map');
+      cy.getByText('Joshxxx');
+      cy.getByTestId('buyNow').click();
+      cy.url().should('contain', 'profile');
+      cy.getByText('Brazil');
+    });
+
+    it('lets you buy multiple countries', () => {
       cy.on('window:before:load', (win) => {
         const provider = new PrivateKeyProvider(
           Cypress.env('USER_A'),
@@ -116,8 +135,8 @@ describe('Country Map', () => {
   });
 
 
-  context.only('No Metamask', () => {
-    it.skip('loads a users countries', () => {
+  context('No Metamask', () => {
+    it('loads a users countries', () => {
       cy.visit('http://localhost:3000/profile/0x11A4770C7990B4c9adD7b6787E1c5F39387f8EAd');
       cy.getByText('Brazil');
     });
@@ -130,7 +149,7 @@ describe('Country Map', () => {
 
     });
 
-    it.only('filters adds a country to yoru cart', () => {
+    it('filters adds a country to your cart', () => {
       cy.visit('http://localhost:3000/map');
 
       cy.getByText('Greenland').click();

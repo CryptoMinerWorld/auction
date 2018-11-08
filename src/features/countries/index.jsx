@@ -14,17 +14,20 @@ const CountryAuction = () => {
     [],
   );
 
+  const markSold = countryId => rtdb.ref(`/worldMap/objects/units/geometries/${countryId}/properties`).update({ sold: true });
 
   const [selection, setSelection] = useState({
-    country: 'UK',
+    name: 'UK',
     plots: 50,
     price: 10,
     roi: 5,
+    countryId: 23,
   });
+
 
   const [cart, setCart] = useState([
     {
-      key: '1',
+      key: 45,
       country: 'Brazil',
       price: 32,
       plots: 44,
@@ -35,17 +38,15 @@ const CountryAuction = () => {
 
   const addToCart = item => setCart([...cart, item]);
 
-  const removeFromCart = selected => setCart(cart
-    .filter(item => item.country !== selected.country));
+  const removeFromCart = selected => setCart(
+    cart.filter(item => item.country !== selected.country),
+  );
 
   return (
     <div data-testid="mapPage">
       <div className="flex">
         <div className="w-third pa3">
-          <Filter
-            addToCart={addToCart}
-            setSelection={setSelection}
-          />
+          <Filter addToCart={addToCart} setSelection={setSelection} />
         </div>
         <div className="w-two-thirds pa3">
           <div className="w-100 pa3">
@@ -65,7 +66,7 @@ const CountryAuction = () => {
         </div>
       </div>
       <DetailsBar details={selection} />
-      <Cart picked={cart} removeFromCart={removeFromCart} />
+      <Cart picked={cart} removeFromCart={removeFromCart} markSold={markSold} />
     </div>
   );
 };
@@ -73,5 +74,5 @@ const CountryAuction = () => {
 export default CountryAuction;
 
 // CountryAuction.propTypes = {
-//   // handleBuyNow: PropTypes.func.isRequired,
+//   markSold: PropTypes.func.isRequired,
 // };

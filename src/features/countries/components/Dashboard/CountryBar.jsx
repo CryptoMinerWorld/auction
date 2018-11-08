@@ -19,7 +19,9 @@ const CountryBar = ({ countries }) => (
                 src="http://bestabstractwallpapers.com/wp-content/uploads/2017/12/Blank-India-map-images-with-transparent-background.png"
               />
   )}
-            actions={[<Icon type="dollar" theme="outlined" />, <Icon type="gift" theme="outlined" />]}
+            actions={[<Icon type="dollar" theme="outlined" />,
+            // , <Icon type="gift" theme="outlined" />
+            ]}
           >
             <Card.Meta
               avatar={<Avatar src={flags} />}

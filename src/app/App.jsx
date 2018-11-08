@@ -70,8 +70,7 @@ class App extends Component {
 
   async componentDidMount() {
     const {
-      handleSendContractsToRedux,
-      handleUpdateWalletId, handleSetError, client,
+      handleSendContractsToRedux, handleUpdateWalletId, handleSetError, client,
     } = this.props;
     // @notice loading a custom font when app mounts
     const font = new FontFaceObserver('Muli', {
@@ -128,7 +127,6 @@ class App extends Component {
       },
     );
 
-
     Promise.all([
       dutchContract,
       gemsContract,
@@ -177,9 +175,8 @@ class App extends Component {
   };
 
   render() {
-    const { font } = this.state;
     const { visible, error } = this.props;
-
+    const { font } = this.state;
     return (
       <>
         {/* <React.StrictMode> */}

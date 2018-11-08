@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 // import PropTypes from 'prop-types';
 import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
@@ -9,19 +9,32 @@ import { withRouter } from 'react-router-dom';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
+import Button from 'antd/lib/button';
 import { BUY_NOW_MUTATION } from '../mutations';
+import { ethToWei } from '../helpers';
 
 require('antd/lib/table/style/css');
 
 const Cart = ({
-  picked, removeFromCart, history, loading, error, data, buyNow, countrySale,
+  picked,
+  removeFromCart,
+  history,
+  loading,
+  error,
+  data,
+  buyNow,
+  countrySale,
+  markSold,
 }) => {
+  const [txloading, setLoading] = useState(false);
+
   if (loading) {
     return <p data-testid="cartLoading">Loading...</p>;
   }
   if (error) {
     return <p data-testid="cartLoading">Error :(</p>;
   }
+
   return (
     <div data-testid="cartComponent">
       <div className="flex">
@@ -32,40 +45,84 @@ const Cart = ({
             <div>
               <p>{data.userId}</p>
 
-              <button
+              <Button
                 type="button"
                 data-testid="buyNow"
+                loading={txloading}
                 onClick={async () => {
                   try {
-                    console.log('userId', data.userId);
+                    setLoading(true);
+
                     console.log('countrySale', countrySale);
+                    console.log('data.userId ', data.userId);
+                    console.log('history', history);
+                    // console.log('picked', picked);
+                    console.log('country id', picked[0].id, typeof picked[0].id);
+                    console.log('country price', picked[0].price, ethToWei(picked[0].price));
+                    console.log('country map index', picked[0].mapIndex);
+
+
+                    const currentPrice = await countrySale.methods.getPrice(picked[0].id).call();
 
 
                     // blockchain
-                    await countrySale.methods
-                      .buy(7)
-                      .send({
-                        value: 5381333333000000000,
-                      })
-                      .on('receipt', (receipt) => {
-                        // receipt example
-                        console.log(receipt);
-                      })
-                      .on('error', console.error);
+                    await countrySale.methods.buy(picked[0].id)
+                      .send(
+                        {
+                          value: currentPrice,
+                        },
+
+                        async (err, txHash) => {
+                          if (err) {
+                            console.log('error buying a single country', err);
+                            return;
+                          }
+                          console.log('txHash received', txHash);
+
+                          await buyNow();
+                          await markSold(picked[0].mapIndex);
+                          console.log('db updated');
+                          setLoading(false);
+                          history.push(`/profile/${data.userId}`);
+                        },
+                      );
+
+                    // .then(async (receipt) => {
+                    //   console.log('recipt received', receipt);
+                    //   await buyNow();
+                    //   console.log('db updated');
+                    //   await markSold(picked[0].mapIndex);
+                    //   console.log('marked sold');
+                    //   setLoading(false);
+                    //   history.push(`/profile/${data.userId}`);
+                    // })
+                    // .catch(err => console.log('error buying a singel country', err));
+
+                    // .on('transactionHash', (hash) => {
+                    //   console.log('hash', hash);
+                    // })
+                    // .on('confirmation', (confirmationNumber, receipt) => {
+                    //   console.log('confirmationNumber, receipt', confirmationNumber, receipt);
+                    // })
+                    // .on('receipt', (receipt) => {
+                    //   // db write
+                    //   console.log('recipt received', receipt);
+                    // })
+                    // .on('error', console.error);
+
                     // db
-                    await buyNow();
 
                     //  handleBuyNow(picked, history, '0xd9b74f73d933fde459766f74400971b29b90c9d2');
 
                     // const handleBuyNow = (selection, history, userId) =>
-                    history.push(`/profile/${data.userId}`);
                   } catch (err) {
                     console.log('error buying a country', err);
+                    setLoading(false);
                   }
                 }}
               >
                 buy now
-              </button>
+              </Button>
             </div>
             );
             <p>timer</p>
@@ -130,6 +187,9 @@ const EnhancedCart = props => (
     `}
   >
     {({ loading, data, error }) => (
+      // console.log('props.picked[0].country', props.picked[0].country);
+      // console.log('data.userId', data.userId);
+
       <Mutation
         mutation={BUY_NOW_MUTATION}
         variables={{
@@ -156,6 +216,7 @@ export default compose(
 )(EnhancedCart);
 
 Cart.propTypes = {
+  markSold: PropTypes.func.isRequired,
   removeFromCart: PropTypes.func.isRequired,
   picked: PropTypes.arrayOf(PropTypes.shape({})),
   countrySale: PropTypes.shape({}),
