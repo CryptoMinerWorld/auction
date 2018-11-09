@@ -31,7 +31,7 @@
   border-radius: 6px;
   background: #fff;
   -webkit-box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
-          box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
 }
 
 .custom-filter-dropdown input {
@@ -45,4 +45,18 @@
 
 .highlight {
   color: #f50;
+}
+
+dt {
+  width: 300px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+dd {
+  width: 100px;
+  overflow: hidden;
+}
+
+dt:after {
+  content: ' ..................................................................................';
 }
