@@ -17,7 +17,7 @@ const CountryAuction = () => {
   const markSold = countryId => rtdb.ref(`/worldMap/objects/units/geometries/${countryId}/properties`).update({ sold: true });
 
   const [selection, setSelection] = useState({
-    name: 'UK',
+    country: 'UK',
     plots: 50,
     price: 10,
     roi: 5,
@@ -26,14 +26,6 @@ const CountryAuction = () => {
 
 
   const [cart, setCart] = useState([
-    {
-      key: 45,
-      country: 'Brazil',
-      price: 32,
-      plots: 44,
-      roi: 45,
-      return: 54,
-    },
   ]);
 
   const addToCart = item => setCart([...cart, item]);

@@ -25,7 +25,9 @@ export const ALL_COUNTRIES = gql`
         name,
         totalPlots,
         lastPrice,
-        id
+        id,
+        countryId,
+        mapIndex
       }
   }
 `;

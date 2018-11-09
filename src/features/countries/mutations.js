@@ -7,6 +7,7 @@ export const BUY_NOW_MUTATION = gql`
     $price: Int!
     $gift: Boolean!
     $timeOfPurchase: Float!
+    $totalPlots: Int!
   ) {
     buyCountry(
       id: $id
@@ -14,6 +15,7 @@ export const BUY_NOW_MUTATION = gql`
       price: $price
       gift: $gift
       timeOfPurchase: $timeOfPurchase
+      totalPlots: $totalPlots
     ) {
       name
     }

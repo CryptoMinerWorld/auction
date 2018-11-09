@@ -40,10 +40,10 @@ const Cart = ({
       <div className="flex">
         <div className="w-third">
           <div className="flex col aic jcc">
-            <p>current price</p>
-            return (
-            <div>
-              <p>{data.userId}</p>
+            {/* <p>current price</p> */}
+
+            <div className="mt4">
+              {/* <p>{data.userId}</p> */}
 
               <Button
                 type="button"
@@ -100,6 +100,7 @@ const Cart = ({
                         console.log('txHash received', txHash);
 
                         // for each country
+                        // this will probably be more efficient as a batched transaction https://firebase.google.com/docs/firestore/manage-data/transactions
                         await picked.forEach(async (country) => {
                           await buyNow({
                             variables: {
@@ -108,6 +109,7 @@ const Cart = ({
                               price: 56,
                               gift: false,
                               timeOfPurchase: 1541129757489,
+                              totalPlots: 32,
                             },
                           });
                           await markSold(country.mapIndex);
@@ -156,8 +158,8 @@ const Cart = ({
                 buy now
               </Button>
             </div>
-            );
-            <p>timer</p>
+
+            {/* <p>timer</p> */}
           </div>
         </div>
         <div className="w-two-thirds">

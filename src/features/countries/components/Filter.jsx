@@ -156,6 +156,9 @@ class Filter extends React.Component {
             price: country.lastPrice,
             roi: 56,
             key: country.id,
+            id: country.countryId,
+            mapIndex: country.mapIndex,
+            countryId: country.countryId,
           }));
 
           if (loading) return <p data-testid="cartLoading">Loading...</p>;
