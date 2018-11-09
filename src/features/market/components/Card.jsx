@@ -25,7 +25,7 @@ const Cards = ({ auction }) => (
       </figure>
       <Progress
         strokeLinecap="square"
-        percent={calculatePercentage(auction.maxPrice, auction.currentPrice)}
+        percent={calculatePercentage(auction.minPrice, auction.maxPrice, auction.currentPrice)}
         status="active"
         showInfo={false}
         strokeColor="#c214a7"
