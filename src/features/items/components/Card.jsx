@@ -28,27 +28,28 @@ const Cards = ({ auction }) => (
     />
     <div className="flex jcb ph3">
       <small className="basic">
-        Ξ
-        {' '}
-        <small>{weiToEth(auction.maxPrice)}</small>
+        Ξ 
+{' '}
+<small>{weiToEth(auction.maxPrice)}</small>
       </small>
       <small className="basic">
-        Ξ
-        {' '}
-        <small>{weiToEth(auction.minPrice)}</small>
+        Ξ 
+{' '}
+<small>{weiToEth(auction.minPrice)}</small>
       </small>
     </div>
     <div className="tc">
       <big className="db b f3">
         {' '}
-        <span className="basic">Ξ</span>
-        {' '}
-        {weiToEth(auction.currentPrice)}
+        <span className="basic">Ξ</span> 
+{' '}
+{weiToEth(auction.currentPrice)}
       </big>
       <small>
         Auction ends on
-        {' '}
-        {auction.deadline && format(new Date(auction.deadline * 1000), 'EEEE do of MMMM')}
+{" "}
+        {auction.deadline
+          && format(new Date(auction.deadline * 1000), 'EEEE do of MMMM')}
       </small>
     </div>
     <hr />
@@ -56,9 +57,10 @@ const Cards = ({ auction }) => (
       <img src={auction.userImage} alt={auction.userName} className="h3" />
       <div className="pl3 ma0 pa0 w-100">
         <p>
-          by
-          {auction.userName}
-        </p>
+by
+{' '}
+{auction.userName}
+</p>
 
         <MiniGemBox level={auction.level} grade={auction.gradeType} rate={auction.rate} />
       </div>
