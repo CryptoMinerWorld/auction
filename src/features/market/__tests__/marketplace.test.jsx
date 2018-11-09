@@ -6,6 +6,9 @@ import { createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import App from '../../../app/App';
+
+import { calculatePercentage } from '../helpers'
+import cases from 'jest-in-case';
 // import Marketplace from '../ListAuctions';
 // import amethyst from '../../../images/amethystImage.png';
 // import rootReducer from '../../../reducers/index';
@@ -83,6 +86,22 @@ function renderWithRouter(
     history
   };
 }
+
+
+cases('calculatePercentage for price progress bar', opts => {
+  expect(calculatePercentage(opts.min, opts.max, opts.current)).toBe(opts.total);
+}, [
+  { name: '0% @0', min: 0, max: 1000, current: 1000, total:0  },
+  { name: '25% @0', min: 0, max: 1000, current: 750, total:25 },
+  { name: '50% @0', min: 0, max: 1000, current: 500, total:50 },
+  { name: '75% @0', min: 0, max: 1000, current: 250, total:75 },
+  { name: '100% @0', min: 0, max: 1000, current: 0, total:100 },
+  { name: '0%', min: 500, max: 1000, current: 1000, total:0 },
+  { name: '25%', min: 500, max: 1000, current: 875, total:25 },
+  { name: '50% ', min: 500, max: 1000, current: 750, total:50 },
+  { name: '75% ', min: 500, max: 1000, current: 625, total:75 },
+  { name: '100%', min: 500, max: 1000, current: 500, total:100 },
+]);
 
 describe.skip('Marketplace page tests', () => {
   // @dev this is all the test data, easy to configure in one place
