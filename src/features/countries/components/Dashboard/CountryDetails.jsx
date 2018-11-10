@@ -56,27 +56,28 @@ import PropTypes from 'prop-types';
 
 const CountryDetails = ({
   name,
-  durationOwned,
+  lastBought,
   description,
   totalPlots,
   plotsBought,
   plotsMined,
-  plotsForAuction,
+  plotsAvailable,
   image,
   lastPrice,
   roi,
+  handleResell,
 }) => (
-  <div className="ba flex">
+  <div className="flex mv5">
     <div className="w-50">
-      <button>
+      <button type="button" className="black">
         <small>Show Stats for all countries</small>
       </button>
-      <h1>{name}</h1>
+      <h1 className="white f1">{name}</h1>
       <small>
         Owned for
-        {durationOwned}
+        {lastBought}
       </small>
-      <p>{description}</p>
+      <p className="measure-wide">{description}</p>
       <dl className="">
         <th>DETAILS</th>
         <tr className="flex">
@@ -94,14 +95,18 @@ const CountryDetails = ({
 
         <tr className="flex">
           <dt>Plots for Auction</dt>
-          <dd>{plotsForAuction}</dd>
+          <dd>{plotsAvailable}</dd>
         </tr>
       </dl>
-      <button>SELL</button>
+      <button type="button" className="black" onClick={() => handleResell}>
+        SELL
+      </button>
     </div>
     <div className="w-50">
-      <img src={image} alt={name} />
-      <div>
+      <div className="flex x mv5">
+        <img src={image} alt={name} className="h-auto w-100" />
+      </div>
+      <div className="flex jca">
         <dl className="dib mr5">
           <dd className="f6 f5-ns b ml0">Price Paid</dd>
           <dd className="f3 f2-ns b ml0">{lastPrice}</dd>
@@ -123,13 +128,14 @@ export default CountryDetails;
 
 CountryDetails.propTypes = {
   name: PropTypes.string.isRequired,
-  durationOwned: PropTypes.number.isRequired,
+  lastBought: PropTypes.number.isRequired,
   description: PropTypes.string.isRequired,
   totalPlots: PropTypes.number.isRequired,
   plotsBought: PropTypes.number.isRequired,
   plotsMined: PropTypes.number.isRequired,
-  plotsForAuction: PropTypes.number.isRequired,
+  plotsAvailable: PropTypes.number.isRequired,
   image: PropTypes.string.isRequired,
   lastPrice: PropTypes.number.isRequired,
   roi: PropTypes.number.isRequired,
+  handleResell: PropTypes.func.isRequired,
 };

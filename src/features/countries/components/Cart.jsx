@@ -110,6 +110,17 @@ const Cart = ({
                               gift: false,
                               timeOfPurchase: 1541129757489,
                               totalPlots: 32,
+
+                              // name,
+                              // lastBought,
+                              // description,
+                              // totalPlots,
+                              // plotsBought,
+                              // plotsMined,
+                              // plotsAvailable,
+                              // image,
+                              // lastPrice,
+                              // roi,
                             },
                           });
                           await markSold(country.mapIndex);

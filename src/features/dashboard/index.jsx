@@ -272,10 +272,6 @@ class Dashboard extends Component {
           </TabPane>
           <TabPane tab="Countries" key="2">
             <CountryDashboard countries={data && data.user && data.user.countries} />
-
-            {/* web3: false,
-    countries: [],
-    account: false, */}
           </TabPane>
         </Tabs>
       </div>

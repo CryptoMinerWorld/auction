@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import CountryDetails from './CountryDetails';
 import { CountryBar } from './CountryBar';
-import { handleGiftFormSubmit } from '../../helpers';
+import { handleResell } from '../../helpers';
 
 require('antd/lib/avatar/style/css');
 require('antd/lib/icon/style/css');
@@ -31,7 +31,21 @@ class Countries extends PureComponent {
     const { countries } = this.props;
     return (
       <div data-testid="countriesExist">
-        {country && <CountryDetails country={country} handleGiftFormSubmit={handleGiftFormSubmit} />}
+        {country && (
+          <CountryDetails
+            name={country.name}
+            lastBought={country.lastBought}
+            description={country.description}
+            totalPlots={country.totalPlots}
+            plotsBought={country.plotsBought}
+            plotsMined={country.plotsMined}
+            plotsAvailable={country.plotsAvailable}
+            image={country.image}
+            lastPrice={country.lastPrice}
+            roi={country.roi}
+            handleResell={handleResell}
+          />
+        )}
         <CountryBar countries={countries} />
       </div>
     );

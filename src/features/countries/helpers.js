@@ -6,6 +6,14 @@ export const handleGiftFormSubmit = async (show, giftCountryMutation) => {
   // send transaction to firebase
 };
 
+export const handleResell = async (show, sellMutation, approveMethod) => {
+  show(true);
+  await approveMethod();
+  await sellMutation();
+  show(false);
+  // send transaction to firebase
+};
+
 // export const fetchCountryList = () => db
 //   .collection('countries')
 //   .get()

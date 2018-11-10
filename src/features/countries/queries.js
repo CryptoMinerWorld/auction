@@ -13,21 +13,29 @@ export const USER_COUNTRIES = gql`
     user(id: $id) {
       countries {
         name
+        lastBought
+        description
+        totalPlots
+        plotsBought
+        plotsMined
+        plotsAvailable
+        image
+        lastPrice
+        roi
       }
     }
   }
 `;
 
-
 export const ALL_COUNTRIES = gql`
   query ALL_COUNTRIES {
-      countries {
-        name,
-        totalPlots,
-        lastPrice,
-        id,
-        countryId,
-        mapIndex
-      }
+    countries {
+      name
+      totalPlots
+      lastPrice
+      id
+      countryId
+      mapIndex
+    }
   }
 `;

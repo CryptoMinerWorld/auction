@@ -34,7 +34,7 @@ export const CountryBar = ({ countries }) => (
       && countries.map(country => (
         <CountryCard
           name={country.name}
-          image="http://bestabstractwallpapers.com/wp-content/uploads/2017/12/Blank-India-map-images-with-transparent-background.png"
+          image={country.image || 'http://bestabstractwallpapers.com/wp-content/uploads/2017/12/Blank-India-map-images-with-transparent-background.png'}
           flags={flags}
         />
       ))}
