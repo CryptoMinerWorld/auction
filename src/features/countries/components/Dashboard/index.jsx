@@ -48,6 +48,7 @@ class CountryDashboard extends Component {
     countries: PropTypes.arrayOf(PropTypes.shape({})),
     // account: PropTypes.oneOfType([PropTypes.shape({}), PropTypes.bool]),
     transition: PropTypes.func.isRequired,
+    userId: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -160,7 +161,7 @@ class CountryDashboard extends Component {
   }
 
   render() {
-    const { countries } = this.props;
+    const { countries, userId } = this.props;
 
     return (
       <div>
@@ -174,7 +175,7 @@ class CountryDashboard extends Component {
           <p data-testid="noAccount">No Account</p>
         </State> */}
         <State is="countries">
-          <CountryDisplay countries={countries} />
+          <CountryDisplay countries={countries} userId={userId} />
         </State>
       </div>
     );

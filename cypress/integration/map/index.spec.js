@@ -38,8 +38,9 @@ describe('Country Map', () => {
       cy.getByText('Joshxxx');
     });
 
-    it.only('lets you buy a country', () => {
-      const country = 'Belize';
+    it('lets you buy a country', () => {
+      const country = 'Bahamas';
+
       cy.on('window:before:load', (win) => {
         const provider = new PrivateKeyProvider(
           Cypress.env('USER_A'),
@@ -48,16 +49,17 @@ describe('Country Map', () => {
           // eslint-disable-next-line
         win.web3 = new Web3(provider);
       });
-      cy.wait(2000);
-      cy.visit('http://localhost:3000/profile/0xD9b74f73d933Fde459766f74400971B29B90c9d2');
-      // establish other countries do exist
-      cy.queryByText(country).should('not.exist');
+
+      // cy.visit('http://localhost:3000/profile/0xD9b74f73d933Fde459766f74400971B29B90c9d2');
+      // // establish other countries do exist
+      // cy.queryByText(country).should('not.exist');
       cy.visit('http://localhost:3000/map');
-      cy.wait(12000);
+      cy.wait(2000);
       cy.getByText('Joshxxx');
-      cy.getByTestId(country).click();
-      // remove brazil by default
+      cy.getByTestId(country).click({ force: true });
+      cy.wait(4000);
       cy.getByTestId('buyNow').click();
+      cy.wait(12000);
       cy.url().should('contain', 'profile');
       cy.getByText(country);
     });
@@ -81,6 +83,7 @@ describe('Country Map', () => {
       cy.getByText('Brazil');
     });
   });
+
 
   context.skip('Gifting feature', () => {
     // now you just delete userId data from any other country but brazil,

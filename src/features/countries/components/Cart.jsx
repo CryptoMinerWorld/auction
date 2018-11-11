@@ -11,7 +11,7 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import Button from 'antd/lib/button';
 import { BUY_NOW_MUTATION } from '../mutations';
-import { ethToWei } from '../helpers';
+// import { ethToWei } from '../helpers';
 
 require('antd/lib/table/style/css');
 
@@ -58,7 +58,7 @@ const Cart = ({
                     console.log('history', history);
                     console.log('picked', picked);
                     console.log('country id', picked[0].id, typeof picked[0].id);
-                    console.log('country price', picked[0].price, ethToWei(picked[0].price));
+                    // console.log('country price', picked[0].price, ethToWei(picked[0].price));
                     console.log('country map index', picked[0].mapIndex);
 
                     const countries = picked.map(country => country.id);

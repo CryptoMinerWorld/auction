@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
+// import Button from 'antd/lib/button';
+
 // import { Mutation } from 'react-apollo';
 // import { GIFT_COUNTRY_MUTATION } from '../../mutations';
 
@@ -55,6 +57,7 @@ import PropTypes from 'prop-types';
 // };
 
 const CountryDetails = ({
+  countryId,
   name,
   lastBought,
   description,
@@ -66,63 +69,95 @@ const CountryDetails = ({
   lastPrice,
   roi,
   handleResell,
-}) => (
-  <div className="flex mv5">
-    <div className="w-50">
-      <button type="button" className="black">
-        <small>Show Stats for all countries</small>
-      </button>
-      <h1 className="white f1">{name}</h1>
-      <small>
-        Owned for
-        {lastBought}
-      </small>
-      <p className="measure-wide">{description}</p>
-      <dl className="">
-        <th>DETAILS</th>
-        <tr className="flex">
-          <dt>Total Plots</dt>
-          <dd>{totalPlots}</dd>
-        </tr>
-        <tr className="flex">
-          <dt>Plots Bought</dt>
-          <dd>{plotsBought}</dd>
-        </tr>
-        <tr className="flex">
-          <dt>Plots Mined</dt>
-          <dd>{plotsMined}</dd>
-        </tr>
+  sellMethod,
+  userId,
+  countryContractId,
+}) => {
+  const priceInput = useRef();
+  // eslint-disable-next-line
+  let [price, setPrice] = useState('');
+  // eslint-disable-next-line
+  let [loading, setLoading] = useState(false);
+  return (
+    <div className="flex mv5">
+      <div className="w-50">
+        <button type="button" className="black">
+          <small>Show Stats for all countries</small>
+        </button>
+        <h1 className="white f1">{name}</h1>
+        <small>
+          Owned for
+          {lastBought}
+        </small>
+        <p className="measure-wide">{description}</p>
+        <dl className="">
+          <th>DETAILS</th>
+          <tr className="flex">
+            <dt>Total Plots</dt>
+            <dd>{totalPlots}</dd>
+          </tr>
+          <tr className="flex">
+            <dt>Plots Bought</dt>
+            <dd>{plotsBought}</dd>
+          </tr>
+          <tr className="flex">
+            <dt>Plots Mined</dt>
+            <dd>{plotsMined}</dd>
+          </tr>
 
-        <tr className="flex">
-          <dt>Plots for Auction</dt>
-          <dd>{plotsAvailable}</dd>
-        </tr>
-      </dl>
-      <button type="button" className="black" onClick={() => handleResell}>
-        SELL
-      </button>
-    </div>
-    <div className="w-50">
-      <div className="flex x mv5">
-        <img src={image} alt={name} className="h-auto w-100" />
+          <tr className="flex">
+            <dt>Plots for Auction</dt>
+            <dd>{plotsAvailable}</dd>
+          </tr>
+        </dl>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleResell(price, setLoading, sellMethod, userId, countryContractId, countryId);
+          }}
+        >
+          <label htmlFor="countryPrice">
+            Country Price
+            <input
+              aria-labelledby="countryPrice"
+              className="black"
+              id="countryPrice"
+              ref={priceInput}
+              value={price}
+              type="number"
+              onChange={e => setPrice(e.target.value, setLoading)}
+              data-testId="countrySellPriceInput"
+              onClick={() => priceInput.current.focus()}
+            />
+          </label>
+          <button type="submit" className="black" data-testid="countrySellButton">
+            SELL
+          </button>
+          {loading && <p data-testid="countrySellButtonLoading">Loading...</p>}
+        </form>
       </div>
-      <div className="flex jca">
-        <dl className="dib mr5">
-          <dd className="f6 f5-ns b ml0">Price Paid</dd>
-          <dd className="f3 f2-ns b ml0">{lastPrice}</dd>
-        </dl>
-        <dl className="dib mr5">
-          <dd className="f6 f5-ns b ml0">Plots Remaining</dd>
-          <dd className="f3 f2-ns b ml0">{totalPlots - plotsBought}</dd>
-        </dl>
-        <dl className="dib mr5">
-          <dd className="f6 f5-ns b ml0">Return on Investment</dd>
-          <dd className="f3 f2-ns b ml0">{roi}</dd>
-        </dl>
+      <div className="w-50">
+        <div className="flex x mv5">
+          <img src={image} alt={name} className="h-auto w-100" />
+        </div>
+        <div className="flex jca">
+          <dl className="dib mr5">
+            <dd className="f6 f5-ns b ml0">Price Paid</dd>
+            <dd className="f3 f2-ns b ml0">{lastPrice}</dd>
+          </dl>
+          <dl className="dib mr5">
+            <dd className="f6 f5-ns b ml0">Plots Remaining</dd>
+            <dd className="f3 f2-ns b ml0">{totalPlots - plotsBought}</dd>
+          </dl>
+          <dl className="dib mr5">
+            <dd className="f6 f5-ns b ml0">Return on Investment</dd>
+            <dd className="f3 f2-ns b ml0">{roi}</dd>
+          </dl>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default CountryDetails;
 
@@ -138,4 +173,8 @@ CountryDetails.propTypes = {
   lastPrice: PropTypes.number.isRequired,
   roi: PropTypes.number.isRequired,
   handleResell: PropTypes.func.isRequired,
+  sellMethod: PropTypes.func.isRequired,
+  userId: PropTypes.string.isRequired,
+  countryContractId: PropTypes.string.isRequired,
+  countryId: PropTypes.number.isRequired,
 };

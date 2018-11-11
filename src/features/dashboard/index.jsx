@@ -194,6 +194,7 @@ class Dashboard extends Component {
       handlePreLoadAuctionPage,
       machineState,
       data,
+      match,
     } = this.props;
 
     return (
@@ -271,7 +272,10 @@ class Dashboard extends Component {
             </Grid>
           </TabPane>
           <TabPane tab="Countries" key="2">
-            <CountryDashboard countries={data && data.user && data.user.countries} />
+            <CountryDashboard
+              countries={data && data.user && data.user.countries}
+              userId={match.params.userId}
+            />
           </TabPane>
         </Tabs>
       </div>

@@ -19,6 +19,7 @@ import { renderWithRouter } from '../../../app/testSetup';
 import CountryDetails from '../components/Dashboard/CountryDetails';
 import Filter from '../components/Filter';
 
+
 jest.mock('firebase');
 jest.mock('react-ga');
 
@@ -45,12 +46,10 @@ const mockQuery = [
   },
 ];
 
-
 const mockAllCountries = [
   {
     request: {
       query: ALL_COUNTRIES,
-
     },
     result: {
       data: {
@@ -175,7 +174,7 @@ describe('Country Map', () => {
     expect(getByTestId('mapPage')).toMatchSnapshot();
   });
 
-  test.skip('when I hover on a country its details appear in the detail bar', () => {
+  test('when I hover on a country its details appear in the detail bar', () => {
     const { getByTestId } = renderWithRouter(
       <MockedProvider mocks={mockQuery}>
         <CountryPage handleBuyNow={handleBuyNow} />
@@ -337,7 +336,7 @@ describe('Country map buy now button', () => {
   });
 });
 
-describe('Country gift feature', () => {
+describe.skip('Country gift feature', () => {
   test('when someone clicks on the gift button it fires the gift function', () => {
     const handleGiftFormSubmit = jest.fn();
     const { getByTestId } = render(
@@ -374,6 +373,7 @@ describe('Country Map filter', () => {
     expect(true).toBeFalsy();
   });
 });
+
 
 test.skip('available countries are styled differently from ones that are not for sale', () => {});
 

@@ -22,6 +22,7 @@ export const USER_COUNTRIES = gql`
         image
         lastPrice
         roi
+        countryId
       }
     }
   }
