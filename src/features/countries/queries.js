@@ -23,6 +23,7 @@ export const USER_COUNTRIES = gql`
         lastPrice
         roi
         countryId
+        onSale
       }
     }
   }

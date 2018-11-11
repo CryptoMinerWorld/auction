@@ -1,5 +1,5 @@
-// import { db } from '../../app/utils/firebase';
 import { BigNumber } from 'bignumber.js';
+import { rtdb } from '../../app/utils/firebase';
 import { ethToWei, daysToSeconds } from '../mint/helpers';
 
 export const handleGiftFormSubmit = async (show, giftCountryMutation) => {
@@ -7,6 +7,8 @@ export const handleGiftFormSubmit = async (show, giftCountryMutation) => {
   await giftCountryMutation();
   // send transaction to firebase
 };
+
+export const updateMap = (countryId, sold) => rtdb.ref(`/worldMap/objects/units/geometries/${countryId}/properties`).update({ sold });
 
 const toBytes = (uint256) => {
   let s = uint256.toString(16);
@@ -24,17 +26,20 @@ const toBytes = (uint256) => {
 export const handleResell = (
   priceInEth,
   setLoading,
-  CountryERC721Method,
+  CountryERC721Methods,
   userId,
-  countryContractId,
+  countrySaleContractId,
   countryId,
+  sellMutation,
+  updateCountryMap,
 ) => {
   setLoading(true);
+
   // parameters for data variable
   const tokenId = new BigNumber(countryId);
   const t0 = Math.round(new Date().getTime() / 1000) || 0;
   const t1 = t0 + daysToSeconds(365);
-  const p0 = ethToWei(priceInEth);
+  const p0 = ethToWei(priceInEth) + 1000000000;
   const p1 = ethToWei(priceInEth);
   const two = new BigNumber(2);
 
@@ -49,21 +54,15 @@ export const handleResell = (
       .plus(p1),
   );
 
-  // userId:: string 0xD9b74f73d933Fde459766f74400971B29B90c9d2;
-  // countryContractId:: string 0x3dc3cd66827e4a6a6f047ed66a0624b3cfa2ad39;
-  // countryId:: number 180;
-  // data:: string 0x000000b45be7c7935dc8fb1300000de0b6b3a764000000000de0b6b3a7640000;
-
-  try {
-    CountryERC721Method.safeTransferFrom(userId, countryContractId, countryId, data)
-      .send()
-      .then(() => {
-        // send transaction to firebase
-        // await sellMutation();
-        // show(false);
-        console.log('done...', userId, countryContractId, countryId);
-      });
-  } catch (err) {
-    console.log('err', err);
-  }
+  return CountryERC721Methods.safeTransferFrom(userId, countrySaleContractId, countryId, data)
+    .send()
+    .then(() => Promise.all(sellMutation(), updateCountryMap(countryId, false)))
+    .then(() => {
+      console.log('done...', userId, countrySaleContractId, countryId);
+      setLoading(false);
+    })
+    .catch((error) => {
+      console.log('error', error);
+      setLoading(false);
+    });
 };

@@ -29,11 +29,23 @@ export const GIFT_COUNTRY_MUTATION = gql`
     $gift: Boolean!
     $timeOfGifting: Float!
   ) {
-    giftCountry(
-      id: $id, 
-      newOwnerId: $newOwnerId, 
-      gift: $gift, 
-      timeOfGifting: $timeOfGifting) {
+    giftCountry(id: $id, newOwnerId: $newOwnerId, gift: $gift, timeOfGifting: $timeOfGifting) {
+      name
+    }
+  }
+`;
+
+export const RESELL_COUNTRY_MUTATION = gql`
+  mutation RESELL_COUNTRY_MUTATION($id: String!, $newOwnerId: String!, $newPrice: Float!) {
+    sellCountry(id: $id, newOwnerId: $newOwnerId, newPrice: $newPrice) {
+      name
+    }
+  }
+`;
+
+export const REMOVE_COUNTRY_FROM_AUCTION_MUTATION = gql`
+  mutation REMOVE_COUNTRY_FROM_AUCTION_MUTATION($id: String!, $newOwnerId: String!) {
+    removeCountryFromAuction(id: $id, newOwnerId: $newOwnerId) {
       name
     }
   }

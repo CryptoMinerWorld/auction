@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CountryDetails from './CountryDetails';
@@ -9,11 +9,12 @@ require('antd/lib/avatar/style/css');
 require('antd/lib/icon/style/css');
 require('antd/lib/card/style/css');
 
-class Countries extends PureComponent {
+class Countries extends Component {
   static propTypes = {
     countries: PropTypes.arrayOf(PropTypes.shape({})),
-    CountryERC721: PropTypes.func.isRequired,
     userId: PropTypes.string.isRequired,
+    DutchContract: PropTypes.shape({}).isRequired,
+    CountryERC721: PropTypes.shape({}).isRequired,
   };
 
   static defaultProps = {
@@ -21,39 +22,43 @@ class Countries extends PureComponent {
   };
 
   state = {
-    country: null,
+    index: 0,
   };
 
-  componentDidMount() {
-    const { countries } = this.props;
-    this.setState({ country: countries[0] });
-  }
+  selectCountry = (index) => {
+    this.setState({ index });
+  };
 
   render() {
-    const { country } = this.state;
-    const { countries, CountryERC721, userId } = this.props;
+    const { index } = this.state;
+    const {
+      countries, CountryERC721, DutchContract, userId,
+    } = this.props;
+
+    console.log('countries', countries);
     return (
       <div data-testid="countriesExist">
-        {country && (
-          <CountryDetails
-            name={country.name}
-            lastBought={country.lastBought}
-            description={country.description}
-            totalPlots={country.totalPlots}
-            plotsBought={country.plotsBought}
-            plotsMined={country.plotsMined}
-            plotsAvailable={country.plotsAvailable}
-            image={country.image}
-            lastPrice={country.lastPrice}
-            roi={country.roi}
-            handleResell={handleResell}
-            sellMethod={CountryERC721 && CountryERC721.methods}
-            countryContractId={process.env.REACT_APP_COUNTRY_ERC721}
-            userId={userId}
-            countryId={country.countryId}
-          />
-        )}
-        <CountryBar countries={countries} />
+        <CountryDetails
+          name={countries[index].name}
+          lastBought={countries[index].lastBought}
+          description={countries[index].description}
+          totalPlots={countries[index].totalPlots}
+          plotsBought={countries[index].plotsBought}
+          plotsMined={countries[index].plotsMined}
+          plotsAvailable={countries[index].plotsAvailable}
+          image={countries[index].image}
+          lastPrice={countries[index].lastPrice}
+          roi={countries[index].roi}
+          handleResell={handleResell}
+          sellMethod={CountryERC721 && CountryERC721.methods}
+          countrySaleContractId={process.env.REACT_APP_DUTCH_AUCTION}
+          userId={userId}
+          countryId={countries[index].countryId}
+          onSale={countries[index].onSale}
+          erc721CountryContract={process.env.REACT_APP_COUNTRY_ERC721}
+          dutchContractMethods={DutchContract && DutchContract.methods}
+        />
+        <CountryBar countries={countries} selectCountry={this.selectCountry} />
       </div>
     );
   }
@@ -61,6 +66,7 @@ class Countries extends PureComponent {
 
 const selection = store => ({
   CountryERC721: store.app.countryContractInstance,
+  DutchContract: store.app.dutchContractInstance,
 });
 
 export default connect(selection)(Countries);

@@ -1,14 +1,72 @@
 {
-  "contractName": "CountrySale",
+  "contractName": "CountryERC721",
   "abi": [
     {
       "constant": true,
-      "inputs": [],
-      "name": "ROLE_COUPON_MANAGER",
+      "inputs": [
+        {
+          "name": "_interfaceId",
+          "type": "bytes4"
+        }
+      ],
+      "name": "supportsInterface",
       "outputs": [
         {
           "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "name",
+      "outputs": [
+        {
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "countries",
+      "outputs": [
+        {
+          "name": "id",
+          "type": "uint8"
+        },
+        {
+          "name": "plots",
+          "type": "uint16"
+        },
+        {
+          "name": "tax",
+          "type": "uint16"
+        },
+        {
+          "name": "taxModified",
           "type": "uint32"
+        },
+        {
+          "name": "index",
+          "type": "uint8"
+        },
+        {
+          "name": "owner",
+          "type": "address"
         }
       ],
       "payable": false,
@@ -36,6 +94,34 @@
     {
       "constant": true,
       "inputs": [],
+      "name": "TOTAL_SUPPLY_MAX",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "InterfaceId_ERC165",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bytes4"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
       "name": "features",
       "outputs": [
         {
@@ -50,7 +136,21 @@
     {
       "constant": true,
       "inputs": [],
-      "name": "SALE_VERSION",
+      "name": "decimals",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "TOKEN_VERSION",
       "outputs": [
         {
           "name": "",
@@ -63,8 +163,92 @@
     },
     {
       "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "address"
+        },
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "approvedOperators",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "address"
+        },
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "collections",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "countryData",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint16"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
       "inputs": [],
-      "name": "beneficiary",
+      "name": "ROLE_TAX_MANAGER",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint32"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "approvals",
       "outputs": [
         {
           "name": "",
@@ -77,12 +261,31 @@
     },
     {
       "constant": true,
-      "inputs": [],
-      "name": "TOKEN_VERSION_REQUIRED",
+      "inputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "allTokens",
       "outputs": [
         {
           "name": "",
-          "type": "uint32"
+          "type": "uint8"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "MAX_TAX_INV",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint8"
         }
       ],
       "payable": false,
@@ -145,6 +348,48 @@
       "type": "function"
     },
     {
+      "constant": true,
+      "inputs": [],
+      "name": "ROLE_TOKEN_CREATOR",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint32"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "FEATURE_TRANSFERS_ON_BEHALF",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint32"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "symbol",
+      "outputs": [
+        {
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "constant": false,
       "inputs": [
         {
@@ -160,17 +405,12 @@
     },
     {
       "constant": true,
-      "inputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "priceData",
+      "inputs": [],
+      "name": "tokenMap",
       "outputs": [
         {
           "name": "",
-          "type": "uint64"
+          "type": "uint192"
         }
       ],
       "payable": false,
@@ -180,11 +420,25 @@
     {
       "constant": true,
       "inputs": [],
-      "name": "countryContract",
+      "name": "FEATURE_TRANSFERS",
       "outputs": [
         {
           "name": "",
-          "type": "address"
+          "type": "uint32"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "DEFAULT_TAX_RATE",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint16"
         }
       ],
       "payable": false,
@@ -206,18 +460,38 @@
       "type": "function"
     },
     {
+      "constant": true,
+      "inputs": [],
+      "name": "FEATURE_ALLOW_TAX_UPDATE",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint32"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "maxTaxChangeFreq",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint32"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [
         {
-          "name": "tokenAddress",
-          "type": "address"
-        },
-        {
-          "name": "_beneficiary",
-          "type": "address"
-        },
-        {
-          "name": "_priceData",
-          "type": "uint64[]"
+          "name": "_countryData",
+          "type": "uint16[]"
         }
       ],
       "payable": false,
@@ -241,19 +515,9 @@
           "indexed": true,
           "name": "_tokenId",
           "type": "uint8"
-        },
-        {
-          "indexed": false,
-          "name": "plots",
-          "type": "uint16"
-        },
-        {
-          "indexed": false,
-          "name": "price",
-          "type": "uint64"
         }
       ],
-      "name": "PurchaseComplete",
+      "name": "Minted",
       "type": "event"
     },
     {
@@ -261,7 +525,7 @@
       "inputs": [
         {
           "indexed": true,
-          "name": "_by",
+          "name": "_from",
           "type": "address"
         },
         {
@@ -270,88 +534,88 @@
           "type": "address"
         },
         {
-          "indexed": false,
-          "name": "ids",
-          "type": "uint8[]"
-        },
-        {
-          "indexed": false,
-          "name": "totalPlots",
-          "type": "uint32"
-        },
-        {
-          "indexed": false,
-          "name": "totalPrice",
-          "type": "uint128"
-        }
-      ],
-      "name": "BulkPurchaseComplete",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
           "indexed": true,
-          "name": "_by",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "name": "key",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
           "name": "_tokenId",
-          "type": "uint8"
-        }
-      ],
-      "name": "CouponAdded",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "name": "_by",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "name": "key",
-          "type": "uint256"
-        }
-      ],
-      "name": "CouponRemoved",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "name": "_by",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "name": "key",
           "type": "uint256"
         },
         {
           "indexed": false,
+          "name": "_value",
+          "type": "uint256"
+        }
+      ],
+      "name": "Transfer",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "_owner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "_approved",
+          "type": "address"
+        },
+        {
+          "indexed": true,
           "name": "_tokenId",
-          "type": "uint8"
+          "type": "uint256"
+        }
+      ],
+      "name": "Approval",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "_owner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "_operator",
+          "type": "address"
         },
         {
           "indexed": false,
-          "name": "plots",
+          "name": "_value",
+          "type": "bool"
+        }
+      ],
+      "name": "ApprovalForAll",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "_owner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "_tokenId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "tax",
+          "type": "uint16"
+        },
+        {
+          "indexed": false,
+          "name": "oldTax",
           "type": "uint16"
         }
       ],
-      "name": "CouponConsumed",
+      "name": "TaxRateUpdated",
       "type": "event"
     },
     {
@@ -399,67 +663,50 @@
       "type": "event"
     },
     {
-      "constant": false,
-      "inputs": [
+      "constant": true,
+      "inputs": [],
+      "name": "getNumberOfCountries",
+      "outputs": [
         {
-          "name": "_tokenId",
+          "name": "",
           "type": "uint8"
         }
       ],
-      "name": "buy",
-      "outputs": [],
-      "payable": true,
-      "stateMutability": "payable",
+      "payable": false,
+      "stateMutability": "view",
       "type": "function"
     },
     {
-      "constant": false,
+      "constant": true,
+      "inputs": [],
+      "name": "getTotalNumberOfPlots",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint32"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
       "inputs": [
         {
-          "name": "_tokenId",
-          "type": "uint8"
-        },
-        {
-          "name": "_to",
+          "name": "owner",
           "type": "address"
         }
       ],
-      "name": "buyTo",
-      "outputs": [],
-      "payable": true,
-      "stateMutability": "payable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
+      "name": "getNumberOfPlotsByCountryOwner",
+      "outputs": [
         {
-          "name": "ids",
-          "type": "uint8[]"
+          "name": "",
+          "type": "uint32"
         }
       ],
-      "name": "bulkBuy",
-      "outputs": [],
-      "payable": true,
-      "stateMutability": "payable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "_to",
-          "type": "address"
-        },
-        {
-          "name": "ids",
-          "type": "uint8[]"
-        }
-      ],
-      "name": "bulkBuyTo",
-      "outputs": [],
-      "payable": true,
-      "stateMutability": "payable",
+      "payable": false,
+      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -467,14 +714,94 @@
       "inputs": [
         {
           "name": "_tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getPacked",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint32"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "getCollection",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint8[]"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "getPackedCollection",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint40[]"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getNumberOfPlots",
+      "outputs": [
+        {
+          "name": "",
           "type": "uint16"
         }
       ],
-      "name": "getPrice",
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getTax",
       "outputs": [
         {
           "name": "",
-          "type": "uint64"
+          "type": "uint8"
+        },
+        {
+          "name": "",
+          "type": "uint8"
         }
       ],
       "payable": false,
@@ -485,11 +812,30 @@
       "constant": true,
       "inputs": [
         {
-          "name": "code",
-          "type": "string"
+          "name": "_tokenId",
+          "type": "uint256"
         }
       ],
-      "name": "isCouponValid",
+      "name": "getTaxPacked",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint16"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getTaxPercent",
       "outputs": [
         {
           "name": "",
@@ -501,32 +847,45 @@
       "type": "function"
     },
     {
-      "constant": false,
+      "constant": true,
       "inputs": [
         {
-          "name": "code",
-          "type": "string"
-        }
-      ],
-      "name": "useCoupon",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "key",
+          "name": "_tokenId",
           "type": "uint256"
         },
         {
+          "name": "_value",
+          "type": "uint256"
+        }
+      ],
+      "name": "calculateTaxValueFor",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
           "name": "_tokenId",
+          "type": "uint256"
+        },
+        {
+          "name": "nominator",
+          "type": "uint8"
+        },
+        {
+          "name": "denominator",
           "type": "uint8"
         }
       ],
-      "name": "addCoupon",
+      "name": "updateTaxRate",
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
@@ -536,17 +895,347 @@
       "constant": false,
       "inputs": [
         {
-          "name": "key",
-          "type": "uint256"
+          "name": "_maxTaxChangeFreq",
+          "type": "uint32"
         }
       ],
-      "name": "removeCoupon",
+      "name": "updateMaxTaxChangeFreq",
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "tokenId",
+          "type": "uint8"
+        }
+      ],
+      "name": "mint",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "totalSupply",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_index",
+          "type": "uint256"
+        }
+      ],
+      "name": "tokenByIndex",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_owner",
+          "type": "address"
+        },
+        {
+          "name": "_index",
+          "type": "uint256"
+        }
+      ],
+      "name": "tokenOfOwnerByIndex",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_owner",
+          "type": "address"
+        }
+      ],
+      "name": "balanceOf",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "exists",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "ownerOf",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "_tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "transfer",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_from",
+          "type": "address"
+        },
+        {
+          "name": "_to",
+          "type": "address"
+        },
+        {
+          "name": "_tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "transferFrom",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_from",
+          "type": "address"
+        },
+        {
+          "name": "_to",
+          "type": "address"
+        },
+        {
+          "name": "_tokenId",
+          "type": "uint256"
+        },
+        {
+          "name": "_data",
+          "type": "bytes"
+        }
+      ],
+      "name": "safeTransferFrom",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_from",
+          "type": "address"
+        },
+        {
+          "name": "_to",
+          "type": "address"
+        },
+        {
+          "name": "_tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "safeTransferFrom",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_approved",
+          "type": "address"
+        },
+        {
+          "name": "_tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "approve",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "revokeApproval",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "approved",
+          "type": "bool"
+        }
+      ],
+      "name": "setApprovalForAll",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getApproved",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_owner",
+          "type": "address"
+        },
+        {
+          "name": "_operator",
+          "type": "address"
+        }
+      ],
+      "name": "isApprovedForAll",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "tokenURI",
+      "outputs": [
+        {
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
       "type": "function"
     }
   ],
   "schemaVersion": "2.0.0",
-  "updatedAt": "2018-11-07T12:14:44.212Z"
+  "updatedAt": "2018-11-07T12:14:44.203Z"
 }
