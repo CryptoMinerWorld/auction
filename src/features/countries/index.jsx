@@ -58,6 +58,8 @@ const CountryAuction = () => {
     setCoordinates([0, 20]);
   };
 
+  console.log('cart', cart);
+
   return (
     <div data-testid="mapPage">
       <div className="flex">

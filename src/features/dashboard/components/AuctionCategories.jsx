@@ -35,19 +35,19 @@ class PlayerStats extends PureComponent {
     plots: '',
   };
 
-  componentDidMount() {
-    const {
-      getReferralPoints, preSaleContract, match, getPlotCount,
-    } = this.props;
-    if (preSaleContract && match.params.userId !== 'false') {
-      getReferralPoints(preSaleContract, match.params.userId)
-        .then(referralPoints => this.setState({ referralPoints }))
-        .catch(err => setError(err));
-      getPlotCount(preSaleContract, match.params.userId)
-        .then(plots => this.setState({ plots }))
-        .catch(err => setError(err));
-    }
-  }
+  // componentDidMount() {
+  //   const {
+  //     getReferralPoints, preSaleContract, match, getPlotCount,
+  //   } = this.props;
+  //   if (preSaleContract && match.params.userId !== 'false') {
+  //     getReferralPoints(preSaleContract, match.params.userId)
+  //       .then(referralPoints => this.setState({ referralPoints }))
+  //       .catch(err => setError(err));
+  //     getPlotCount(preSaleContract, match.params.userId)
+  //       .then(plots => this.setState({ plots }))
+  //       .catch(err => setError(err));
+  //   }
+  // }
 
   componentDidUpdate(prevProps) {
     const {

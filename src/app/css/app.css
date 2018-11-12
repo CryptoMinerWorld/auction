@@ -60,3 +60,32 @@ dd {
 dt:after {
   content: ' ..................................................................................';
 }
+
+.card-container > .ant-tabs-card > .ant-tabs-content {
+  height: auto;
+  margin-top: -16px;
+}
+
+.card-container > .ant-tabs-card > .ant-tabs-content > .ant-tabs-tabpane {
+  background: var(--dark-gray);
+  padding: 16px;
+
+  background-image: url(../images/gembackground.png);
+  background-repeat: repeat;
+  background-size: 600px;
+  /* width: 100%; */
+}
+
+.card-container > .ant-tabs-card > .ant-tabs-bar {
+  border-color: var(--dark-gray);
+}
+
+.card-container > .ant-tabs-card > .ant-tabs-bar .ant-tabs-tab {
+  border-color: transparent;
+  background: transparent;
+}
+
+.card-container > .ant-tabs-card > .ant-tabs-bar .ant-tabs-tab-active {
+  border-color: var(--dark-gray);
+  background: var(--dark-gray);
+}
