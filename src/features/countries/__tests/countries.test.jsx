@@ -407,6 +407,11 @@ test.skip('You shoud only be able to add a country once', () => {
   expect(true).toBeFalsy();
 });
 
+
+test('clicking on a country in teh filter zooms in on that country', () => {
+  expect(true).toBeFalsy();
+});
+
 // tab structure on workshop
 // profile country details update in realtime?
 // gifting a country

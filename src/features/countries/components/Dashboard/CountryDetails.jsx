@@ -31,7 +31,7 @@ const CountryDetails = ({
   // eslint-disable-next-line
   let [loading, setLoading] = useState(false);
 
-  console.log('onSale', onSale);
+
   return (
     <div className="flex mv5">
       <div className="w-50">

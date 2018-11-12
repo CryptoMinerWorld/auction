@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
-  ComposableMap, ZoomableGroup, Geographies, Geography,
+  ComposableMap,
+  ZoomableGroup,
+  Geographies,
+  Geography,
+  // Markers,
+  // Marker,
 } from 'react-simple-maps';
 import chroma from 'chroma-js';
 import PropTypes from 'prop-types';
 // import { Tooltip, actions } from 'redux-tooltip';
 // import { connect } from 'react-redux';
+import { Motion, spring } from 'react-motion';
 
 const wrapperStyles = {
   width: '100%',
@@ -45,99 +51,127 @@ const subregions = [
   'Western Asia',
 ];
 
-const Map = ({ data, setSelection, addToCart }) => {
-  const [zoom, setZoom] = useState(1);
-  const handleZoomIn = () => () => setZoom(zoom * 2);
-  const handleZoomOut = () => () => setZoom(zoom / 2);
-
-  return (
-    <div style={wrapperStyles} data-testid="mapComponent">
-      <button type="button" onClick={handleZoomIn()}>
+const Map = ({
+  data,
+  setSelection,
+  addToCart,
+  // handleCityClick,
+  zoom,
+  handleReset,
+  coordinates,
+}) => (
+  <div style={wrapperStyles} data-testid="mapComponent">
+    {/* <button type="button" onClick={handleZoomIn()}>
         Zoom in
       </button>
       <button type="button" onClick={handleZoomOut()}>
         Zoom out
-      </button>
-
-      <hr />
-      <ComposableMap
-        projectionConfig={{
-          scale: 205,
-          rotation: [-11, 0, 0],
-        }}
-        width={980}
-        height={551}
-        style={{
-          width: '100%',
-          height: 'auto',
-        }}
-      >
-        <ZoomableGroup center={[0, 20]} zoom={zoom}>
-          <Geographies geography={data} disableOptimization>
-            {(geographies, projection) => geographies.map((geography, i) => (
-              <Geography
-                  // eslint-disable-next-line
-                  key={i}
-                geography={geography}
-                onMouseEnter={() => setSelection({
-                  name: geography.properties.name,
-                  plots: geography.properties.totalPlots,
-                  price: geography.properties.price,
-                  roi: geography.properties.roi,
-                  id: geography.properties.countryId,
-
-                })
-                  }
-                onMouseLeave={() => setSelection({})}
-                onClick={() => addToCart({
-                  id: geography.properties.countryId,
-                  country: geography.properties.name,
-                  price: geography.properties.price,
-                  plots: geography.properties.totalPlots,
-                  roi: geography.properties.roi,
-                  return: 54,
-                  sold: geography.properties.sold,
-                  mapIndex: geography.properties.mapIndex,
-                })
-                  }
-                projection={projection}
-                data-testid={geography.properties.name}
-                style={{
-                  default: {
-                    fill: `${
-                      geography.properties.sold === true ? colorScale[1] : colorScale[13]
-                    }`,
-                    // fill: 'black',
-                    stroke: '#607D8B',
-                    strokeWidth: 0.75,
-                    outline: 'none',
-                  },
-                  hover: {
-                    fill: chroma(
-                      colorScale[subregions.indexOf(geography.properties.subregion)],
-                    ).darken(0.5),
-                    stroke: '#607D8B',
-                    strokeWidth: 0.75,
-                    outline: 'none',
-                  },
-                  pressed: {
-                    fill: chroma(
-                      colorScale[subregions.indexOf(geography.properties.subregion)],
-                    ).brighten(0.5),
-                    stroke: '#607D8B',
-                    strokeWidth: 0.75,
-                    outline: 'none',
-                  },
-                }}
-              />
-            ))
-            }
-          </Geographies>
-        </ZoomableGroup>
-      </ComposableMap>
-    </div>
-  );
-};
+      </button> */}
+    <button type="button" onClick={handleReset()}>
+      Reset
+    </button>
+    <hr />
+    <Motion
+      defaultStyle={{
+        zoom: 1,
+        x: 0,
+        y: 20,
+      }}
+      style={{
+        zoom: spring(zoom, { stiffness: 210, damping: 20 }),
+        x: spring(coordinates[0], { stiffness: 210, damping: 20 }),
+        y: spring(coordinates[1], { stiffness: 210, damping: 20 }),
+      }}
+    >
+      {/* eslint-disable-next-line */
+      ({ zoom, x, y }) => (
+        <ComposableMap
+          projectionConfig={{
+            scale: 205,
+            rotation: [-11, 0, 0],
+          }}
+          width={980}
+          height={551}
+          style={{
+            width: '100%',
+            height: 'auto',
+          }}
+        >
+          <ZoomableGroup center={[x, y]} zoom={zoom}>
+            <Geographies
+              geography={data}
+              // disableOptimization
+            >
+              {(geographies, projection) => geographies.map(geography => (
+                <Geography
+                  key={geography.properties.name}
+                  geography={geography}
+                  onMouseEnter={() => setSelection({
+                    name: geography.properties.name,
+                    plots: geography.properties.totalPlots,
+                    price: geography.properties.price,
+                    roi: geography.properties.roi,
+                    id: geography.properties.countryId,
+                  })
+                    }
+                  onMouseLeave={() => setSelection({})}
+                  onClick={() => addToCart({
+                    id: geography.properties.countryId,
+                    country: geography.properties.name,
+                    price: geography.properties.price,
+                    plots: geography.properties.totalPlots,
+                    roi: geography.properties.roi,
+                    return: 54,
+                    sold: geography.properties.sold,
+                    mapIndex: geography.properties.mapIndex,
+                  })
+                    }
+                  projection={projection}
+                  data-testid={geography.properties.name}
+                  style={{
+                    default: {
+                      fill: `${
+                        geography.properties.sold === true ? colorScale[1] : colorScale[13]
+                      }`,
+                      // fill: 'black',
+                      stroke: 'white',
+                      strokeWidth: 0.75,
+                      outline: 'none',
+                    },
+                    hover: {
+                      fill: chroma(
+                        colorScale[subregions.indexOf(geography.properties.subregion)],
+                      ).darken(0.5),
+                      stroke: 'white',
+                      strokeWidth: 0.75,
+                      outline: 'none',
+                    },
+                    pressed: {
+                      fill: chroma(
+                        colorScale[subregions.indexOf(geography.properties.subregion)],
+                      ).brighten(0.5),
+                      stroke: 'white',
+                      strokeWidth: 0.75,
+                      outline: 'none',
+                    },
+                  }}
+                />
+              ))
+              }
+            </Geographies>
+            {/* <Markers>
+              {cities.map(city => (
+                <Marker key={city.name} marker={city} onClick={handleCityClick()}>
+                  <circle cx={0} cy={0} r={6} fill="#FF5722" stroke="#DF3702" />
+                </Marker>
+              ))}
+            </Markers> */}
+          </ZoomableGroup>
+        </ComposableMap>
+      )}
+    </Motion>
+  </div>
+);
 
 Map.propTypes = {
   // handleMove: PropTypes.func.isRequired,
@@ -146,6 +180,10 @@ Map.propTypes = {
   data: PropTypes.shape({}).isRequired,
   setSelection: PropTypes.func.isRequired,
   addToCart: PropTypes.func.isRequired,
+  // handleCityClick: PropTypes.func.isRequired,
+  zoom: PropTypes.number.isRequired,
+  handleReset: PropTypes.func.isRequired,
+  coordinates: PropTypes.arrayOf(PropTypes.number).isRequired,
 };
 // const { show, hide } = actions;
 
