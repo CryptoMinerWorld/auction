@@ -48,10 +48,7 @@ export const CountryBar = ({ countries, selectCountry }) => (
           name={country.name}
           index={index}
           selectCountry={selectCountry}
-          image={
-            country.image
-            || 'http://bestabstractwallpapers.com/wp-content/uploads/2017/12/Blank-India-map-images-with-transparent-background.png'
-          }
+          image="https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/flags%2FFlag_map_of_Andorra.svg?alt=media&token=ba5c8487-4d45-4a87-ac7e-9ad93a01130b"
           flags={flags}
         />
       ))}

@@ -150,6 +150,8 @@ class App extends Component {
             },
           });
           handleSendContractsToRedux(
+
+
             dutchAuctionContractInstance,
             gemsContractInstance,
             web3,

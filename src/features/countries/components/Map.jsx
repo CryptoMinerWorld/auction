@@ -98,10 +98,7 @@ const Map = ({
           }}
         >
           <ZoomableGroup center={[x, y]} zoom={zoom}>
-            <Geographies
-              geography={data}
-              disableOptimization
-            >
+            <Geographies geography={data} disableOptimization>
               {(geographies, projection) => geographies.map(geography => (
                 <Geography
                   key={geography.properties.name}

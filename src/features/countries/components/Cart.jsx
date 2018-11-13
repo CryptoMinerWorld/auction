@@ -55,13 +55,11 @@ const Cart = ({
 
                     console.log('countrySale', countrySale);
                     console.log('data.userId ', data.userId);
-                    console.log('history', history);
-                    console.log('picked', picked);
-                    console.log('country id', picked[0].id, typeof picked[0].id);
-                    // console.log('country price', picked[0].price, ethToWei(picked[0].price));
+
                     console.log('country map index', picked[0].mapIndex);
 
                     const countries = picked.map(country => country.id);
+
                     console.log('countries', countries);
 
                     // const currentPrice = await countrySale.methods.getPrice(picked[0].id).call();
