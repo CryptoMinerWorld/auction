@@ -239,7 +239,7 @@ class Dashboard extends Component {
     const { plots, referralPoints } = this.state;
 
     return (
-      <div className="bg-off-black white ph4 card-container" data-testid="profile-page">
+      <div className="bg-off-black white card-container" data-testid="profile-page">
         <div className="flex  aic  wrap jcc jcb-ns pv4">
           <div className=" flex aic ">
             <img src={userImage} className="h3 w-auto pr3 dib" alt="gem auctions" />

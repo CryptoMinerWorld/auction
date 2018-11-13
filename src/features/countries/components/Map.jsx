@@ -111,14 +111,14 @@ const Map = ({
                     id: geography.properties.countryId,
                   })
                     }
-                  onMouseLeave={() => setSelection({})}
+                    // onMouseLeave={() => setSelection({})}
                   onClick={() => addToCart({
                     id: geography.properties.countryId,
-                    country: geography.properties.name,
+                    countryId: geography.properties.countryId,
+                    name: geography.properties.name,
                     price: geography.properties.price,
                     plots: geography.properties.totalPlots,
                     roi: geography.properties.roi,
-                    return: 54,
                     sold: geography.properties.sold,
                     mapIndex: geography.properties.mapIndex,
                   })

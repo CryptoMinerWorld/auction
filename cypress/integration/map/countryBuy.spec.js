@@ -1,16 +1,15 @@
 import Web3 from 'web3';
 import PrivateKeyProvider from 'truffle-privatekey-provider';
 
-
 describe('Country Map', () => {
   context('With Metamask', () => {
-    it('App lets you sign up', () => {
+    it.skip('App lets you sign up', () => {
       cy.on('window:before:load', (win) => {
         const provider = new PrivateKeyProvider(
           Cypress.env('USER_A'),
           'https://rinkeby.infura.io/',
         );
-          // eslint-disable-next-line
+        // eslint-disable-next-line
         win.web3 = new Web3(provider);
       });
 
@@ -38,52 +37,122 @@ describe('Country Map', () => {
       cy.getByText('Joshxxx');
     });
 
+    // assert that the countries dont exist in the dashboard before each test
+
     it('lets you buy a country', () => {
-      const country = 'Bahamas';
+      const country = 'Micronesia';
 
       cy.on('window:before:load', (win) => {
         const provider = new PrivateKeyProvider(
           Cypress.env('USER_A'),
           'https://rinkeby.infura.io/',
         );
-          // eslint-disable-next-line
+        // eslint-disable-next-line
         win.web3 = new Web3(provider);
       });
 
       // cy.visit('http://localhost:3000/profile/0xD9b74f73d933Fde459766f74400971B29B90c9d2');
       // // establish other countries do exist
       // cy.queryByText(country).should('not.exist');
+
       cy.visit('http://localhost:3000/map');
-      cy.wait(2000);
       cy.getByText('Joshxxx');
+      cy.wait(5000);
       cy.getByTestId(country).click({ force: true });
-      cy.wait(4000);
       cy.getByTestId('buyNow').click();
-      cy.wait(12000);
+      cy.wait(5000);
       cy.url().should('contain', 'profile');
+      cy.wait(5000);
       cy.getByText(country);
     });
 
     it('lets you buy multiple countries', () => {
+      const country1 = 'Luxembourg';
+      const country2 = 'Comoros';
+
       cy.on('window:before:load', (win) => {
         const provider = new PrivateKeyProvider(
           Cypress.env('USER_A'),
           'https://rinkeby.infura.io/',
         );
-          // eslint-disable-next-line
+        // eslint-disable-next-line
         win.web3 = new Web3(provider);
       });
-      cy.wait(2000);
-      cy.visit('http://localhost:3000/profile/0xd9b74f73d933fde459766f74400971b29b90c9d2');
-      cy.queryByText('Brazil').should('not.exist');
+      // cy.wait(2000);
+      // cy.visit('http://localhost:3000/profile/0xd9b74f73d933fde459766f74400971b29b90c9d2');
+      // cy.queryByText('Brazil').should('not.exist');
+
       cy.visit('http://localhost:3000/map');
       cy.getByText('Joshxxx');
+      cy.wait(5000);
+      cy.getByTestId(country1).click({ force: true });
+      cy.getByTestId(country2).click({ force: true });
       cy.getByTestId('buyNow').click();
+      cy.wait(5000);
       cy.url().should('contain', 'profile');
-      cy.getByText('Brazil');
+      cy.wait(5000);
+      cy.getByText(country1);
+      cy.getByText(country2);
+    });
+
+    it.skip('buys from the filter', () => {
+      const country1 = 'Luxembourg';
+      const country2 = 'Comoros';
+
+      cy.on('window:before:load', (win) => {
+        const provider = new PrivateKeyProvider(
+          Cypress.env('USER_A'),
+          'https://rinkeby.infura.io/',
+        );
+        // eslint-disable-next-line
+        win.web3 = new Web3(provider);
+      });
+      // cy.wait(2000);
+      // cy.visit('http://localhost:3000/profile/0xd9b74f73d933fde459766f74400971b29b90c9d2');
+      // cy.queryByText('Brazil').should('not.exist');
+
+      cy.visit('http://localhost:3000/map');
+      cy.getByText('Joshxxx');
+      cy.wait(5000);
+      cy.getByTestId(country1).click({ force: true });
+      cy.getByTestId(country2).click({ force: true });
+      cy.getByTestId('buyNow').click();
+      cy.wait(5000);
+      cy.url().should('contain', 'profile');
+      cy.wait(5000);
+      cy.getByText(country1);
+      cy.getByText(country2);
+    });
+
+    it.skip('buys multiple from the filter', () => {
+      const country1 = 'Luxembourg';
+      const country2 = 'Comoros';
+
+      cy.on('window:before:load', (win) => {
+        const provider = new PrivateKeyProvider(
+          Cypress.env('USER_A'),
+          'https://rinkeby.infura.io/',
+        );
+        // eslint-disable-next-line
+        win.web3 = new Web3(provider);
+      });
+      // cy.wait(2000);
+      // cy.visit('http://localhost:3000/profile/0xd9b74f73d933fde459766f74400971b29b90c9d2');
+      // cy.queryByText('Brazil').should('not.exist');
+
+      cy.visit('http://localhost:3000/map');
+      cy.getByText('Joshxxx');
+      cy.wait(5000);
+      cy.getByTestId(country1).click({ force: true });
+      cy.getByTestId(country2).click({ force: true });
+      cy.getByTestId('buyNow').click();
+      cy.wait(5000);
+      cy.url().should('contain', 'profile');
+      cy.wait(5000);
+      cy.getByText(country1);
+      cy.getByText(country2);
     });
   });
-
 
   context.skip('Gifting feature', () => {
     // now you just delete userId data from any other country but brazil,
@@ -132,7 +201,7 @@ describe('Country Map', () => {
           Cypress.env('USER_B'),
           'https://rinkeby.infura.io/',
         );
-          // eslint-disable-next-line
+        // eslint-disable-next-line
         win.web3 = new Web3(provider);
       });
 
@@ -143,27 +212,24 @@ describe('Country Map', () => {
     // establish USER A no longer owns the country
   });
 
-
-  context('No Metamask', () => {
+  context.skip('No Metamask', () => {
     it('loads a users countries', () => {
       cy.visit('http://localhost:3000/profile/0x11A4770C7990B4c9adD7b6787E1c5F39387f8EAd');
       cy.getByText('Brazil');
     });
 
-    it.skip('filter sorts each field', () => {
+    it.skip('filter sorts each field', () => {});
 
-    });
-
-    it.skip('filter filters serach results', () => {
-
-    });
+    it.skip('filter filters serach results', () => {});
 
     it('filters adds a country to your cart', () => {
       cy.visit('http://localhost:3000/map');
 
       cy.getByText('Greenland').click();
 
-      cy.get('.w-two-thirds > .ant-table-wrapper > .ant-spin-nested-loading > .ant-spin-container > .ant-table > .ant-table-content > .ant-table-body > table > .ant-table-tbody > .ant-table-row > :nth-child(1)');
+      cy.get(
+        '.w-two-thirds > .ant-table-wrapper > .ant-spin-nested-loading > .ant-spin-container > .ant-table > .ant-table-content > .ant-table-body > table > .ant-table-tbody > .ant-table-row > :nth-child(1)',
+      );
     });
   });
 });

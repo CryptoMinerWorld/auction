@@ -16,7 +16,14 @@ import { BUY_NOW_MUTATION } from '../mutations';
 require('antd/lib/table/style/css');
 
 const Cart = ({
-  picked, removeFromCart, history, loading, error, data, buyNow, markSold,
+  picked,
+  removeFromCart,
+  history,
+  loading,
+  error,
+  data,
+  buyNow,
+  markSold,
   countrySale,
 }) => {
   const [txloading, setLoading] = useState(false);
@@ -45,26 +52,13 @@ const Cart = ({
                 onClick={async () => {
                   try {
                     setLoading(true);
-                    console.log('countrySale', countrySale);
-                    console.log('data.userId ', data.userId);
-                    console.log('country map index', picked[0].mapIndex);
-                    const countries = picked.map(country => country.countryId);
-                    console.log('countries', countries);
-                    // const currentPrice = await countrySale.methods.getPrice(picked[0].id).call();
-                    // const totalPrice = await countries.reduce(async (total, countryId) => {
-                    //   const price = await countrySale.methods.getPrice(countryId).call();
-                    //   return total + price;
-                    // }, Promise.resolve());
-                    // async function printFiles() {
-                    //   const files = await getFilePaths();
+                    const countries = picked.map(country => country.id);
                     const allPrices = await Promise.all(
                       countries.map(countryId => countrySale.methods.getPrice(countryId).call()),
                     );
-                    console.log('allPrices', allPrices);
                     const totalPrice = allPrices
                       .map(value => Number(value))
                       .reduce((total, price) => total + price);
-                    console.log('totalPrice', totalPrice);
                     // blockchain
                     await countrySale.methods.bulkBuy(countries).send(
                       {
@@ -106,30 +100,6 @@ const Cart = ({
                         history.push(`/profile/${data.userId}`);
                       },
                     );
-                    // .then(async (receipt) => {
-                    //   console.log('recipt received', receipt);
-                    //   await buyNow();
-                    //   console.log('db updated');
-                    //   await markSold(picked[0].mapIndex);
-                    //   console.log('marked sold');
-                    //   setLoading(false);
-                    //   history.push(`/profile/${data.userId}`);
-                    // })
-                    // .catch(err => console.log('error buying a singel country', err));
-                    // .on('transactionHash', (hash) => {
-                    //   console.log('hash', hash);
-                    // })
-                    // .on('confirmation', (confirmationNumber, receipt) => {
-                    //   console.log('confirmationNumber, receipt', confirmationNumber, receipt);
-                    // })
-                    // .on('receipt', (receipt) => {
-                    //   // db write
-                    //   console.log('recipt received', receipt);
-                    // })
-                    // .on('error', console.error);
-                    // db
-                    //  handleBuyNow(picked, history, '0xd9b74f73d933fde459766f74400971b29b90c9d2');
-                    // const handleBuyNow = (selection, history, userId) =>
                   } catch (err) {
                     console.log('error buying a country', err);
                     setLoading(false);

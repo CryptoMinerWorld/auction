@@ -69,11 +69,6 @@ dt:after {
 .card-container > .ant-tabs-card > .ant-tabs-content > .ant-tabs-tabpane {
   background: var(--dark-gray);
   padding: 16px;
-
-  background-image: url(../images/gembackground.png);
-  background-repeat: repeat;
-  background-size: 600px;
-  /* width: 100%; */
 }
 
 .card-container > .ant-tabs-card > .ant-tabs-bar {
