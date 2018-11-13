@@ -4,11 +4,24 @@ import Input from 'antd/lib/input';
 import Button from 'antd/lib/button';
 import Icon from 'antd/lib/icon';
 import PropTypes from 'prop-types';
+import { Query } from 'react-apollo';
+import { MAP_COUNTRY_DATA } from '../queries';
 
 require('antd/lib/table/style/css');
 require('antd/lib/input/style/css');
 require('antd/lib/button/style/css');
 require('antd/lib/icon/style/css');
+
+const BuyNowButton = ({ record, handleCityClick }) => (
+  <button type="button" onClick={() => handleCityClick(record)}>
+    Add To card
+  </button>
+);
+
+BuyNowButton.propTypes = {
+  record: PropTypes.shape({}).isRequired,
+  handleCityClick: PropTypes.func.isRequired,
+};
 
 class Filter extends React.Component {
   state = {
@@ -33,13 +46,12 @@ class Filter extends React.Component {
   render() {
     const { handleCityClick, cities } = this.props;
 
-    console.log('cities...', cities);
-
     const columns = [
       {
         title: 'Name',
         dataIndex: 'name',
-        // key: 'name',
+        key: 'name',
+
         sorter: (a, b) => a.name - b.name,
         filterDropdown: ({
           setSelectedKeys, selectedKeys, confirm, clearFilters,
@@ -83,8 +95,8 @@ class Filter extends React.Component {
                   this.handleSelection(record);
                 }
               }}
-              onMouseOver={() => handleCityClick(record)}
-              onFocus={() => handleCityClick(record)}
+              // onMouseOver={() => handleCityClick(record)}
+              // onFocus={() => handleCityClick(record)}
             >
               {text.split(new RegExp(`(?<=${searchText})|(?=${searchText})`, 'i')).map(
                 (fragment, i) => (fragment.toLowerCase() === searchText.toLowerCase() ? (
@@ -99,6 +111,7 @@ class Filter extends React.Component {
                   fragment
                 )),
               )}
+              {!record.sold && <BuyNowButton record={record} handleCityClick={handleCityClick} />}
             </span>
           ) : (
             <span
@@ -110,10 +123,11 @@ class Filter extends React.Component {
                   this.handleSelection(record);
                 }
               }}
-              onMouseOver={() => handleCityClick(record)}
-              onFocus={() => handleCityClick(record)}
+              // onMouseOver={() => handleCityClick(record)}
+              // onFocus={() => handleCityClick(record)}
             >
               {text}
+              {!record.sold && <BuyNowButton record={record} handleCityClick={handleCityClick} />}
             </span>
           );
         },
@@ -145,18 +159,31 @@ class Filter extends React.Component {
         onRow={record => ({
           onClick: () => handleCityClick(record),
         })}
-
-        rowKey={record => record.id}
       />
     );
   }
 }
 
-export default Filter;
+const EnhancedFilter = props => (
+  <Query
+    query={MAP_COUNTRY_DATA}
+    pollInterval={500}
+  >
+    {({
+      data,
+      // , error, loading
+    }) => (
+      // console.log('props.picked[0].country', props.picked[0].country);
+      // console.log('data.userId', data.userId);
+      <Filter cities={data && data.mapCountries} {...props} />
+    )}
+  </Query>
+);
+
+export default EnhancedFilter;
 
 Filter.propTypes = {
   addToCart: PropTypes.func.isRequired,
-  // setSelection: PropTypes.func.isRequired,
   cities: PropTypes.shape({}).isRequired,
   handleCityClick: PropTypes.func.isRequired,
 };

@@ -15,7 +15,6 @@ query MAP_COUNTRY_DATA {
     mapIndex
     imageURL
     sold
-    buyable
   }
 }
 `;

@@ -176,8 +176,8 @@ const Cart = ({
             columns={[
               {
                 title: 'Country',
-                dataIndex: 'country',
-                key: 'country',
+                dataIndex: 'name',
+                key: 'name',
               },
               {
                 title: 'Plots',
@@ -198,6 +198,7 @@ const Cart = ({
                 title: 'Return',
                 dataIndex: 'return',
                 key: 'return',
+
               },
               {
                 title: 'Remove',

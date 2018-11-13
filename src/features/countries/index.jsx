@@ -1,23 +1,22 @@
 import React, {
   useState,
-  // useEffect
+  useEffect,
 } from 'react';
-import PropTypes from 'prop-types';
-import { Query } from 'react-apollo';
+// import PropTypes from 'prop-types';
 import Cart from './components/Cart';
 import Filter from './components/Filter';
 import { rtdb } from '../../app/utils/firebase';
 import Map from './components/Map';
 import geoData from '../../app/maps/world-50m-with-population.json';
 import DetailsBar from './components/DetailsBar';
-import { MAP_COUNTRY_DATA } from './queries';
 
-const CountryAuction = ({ countryFilterData }) => {
-  const [countryData] = useState(null);
-  // useEffect(
-  //   () => rtdb.ref('/worldMap').on('value', snap => snap && setCountryData(snap.val())),
-  //   [],
-  // );
+const CountryAuction = () => {
+  const [countryData, setCountryData] = useState(null);
+
+  useEffect(
+    () => rtdb.ref('/worldMap').on('value', snap => snap && setCountryData(snap.val())),
+    [],
+  );
 
   const markSold = countryId => rtdb.ref(`/worldMap/objects/units/geometries/${countryId}/properties`).update({ sold: true });
 
@@ -53,7 +52,7 @@ const CountryAuction = ({ countryFilterData }) => {
     setCoordinates([0, 20]);
   };
 
-  console.log('countryFilterData', countryFilterData);
+  console.log('cart', cart);
 
   return (
     <div data-testid="mapPage">
@@ -63,7 +62,6 @@ const CountryAuction = ({ countryFilterData }) => {
             addToCart={addToCart}
             setSelection={setSelection}
             handleCityClick={handleCityClick}
-            cities={countryFilterData.mapCountries}
           />
         </div>
         <div className="w-two-thirds pa3">
@@ -100,21 +98,9 @@ const CountryAuction = ({ countryFilterData }) => {
   );
 };
 
-const EnhancedCountryAuction = props => (
-  <Query query={MAP_COUNTRY_DATA}>
-    {({
-      data,
-      // , error, loading
-    }) => (
-      // console.log('props.picked[0].country', props.picked[0].country);
-      // console.log('data.userId', data.userId);
-      <CountryAuction countryFilterData={data && data} {...props} />
-    )}
-  </Query>
-);
 
-export default EnhancedCountryAuction;
+export default CountryAuction;
 
-CountryAuction.propTypes = {
-  countryFilterData: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-};
+// CountryAuction.propTypes = {
+//   countryFilterData: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+// };
