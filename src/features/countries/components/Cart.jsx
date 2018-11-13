@@ -16,15 +16,8 @@ import { BUY_NOW_MUTATION } from '../mutations';
 require('antd/lib/table/style/css');
 
 const Cart = ({
-  picked,
-  removeFromCart,
-  history,
-  loading,
-  error,
-  data,
-  buyNow,
+  picked, removeFromCart, history, loading, error, data, buyNow, markSold,
   countrySale,
-  markSold,
 }) => {
   const [txloading, setLoading] = useState(false);
 
@@ -52,63 +45,48 @@ const Cart = ({
                 onClick={async () => {
                   try {
                     setLoading(true);
-
                     console.log('countrySale', countrySale);
                     console.log('data.userId ', data.userId);
-
                     console.log('country map index', picked[0].mapIndex);
-
-                    const countries = picked.map(country => country.id);
-
+                    const countries = picked.map(country => country.countryId);
                     console.log('countries', countries);
-
                     // const currentPrice = await countrySale.methods.getPrice(picked[0].id).call();
-
                     // const totalPrice = await countries.reduce(async (total, countryId) => {
                     //   const price = await countrySale.methods.getPrice(countryId).call();
                     //   return total + price;
                     // }, Promise.resolve());
-
                     // async function printFiles() {
                     //   const files = await getFilePaths();
-
                     const allPrices = await Promise.all(
                       countries.map(countryId => countrySale.methods.getPrice(countryId).call()),
                     );
-
                     console.log('allPrices', allPrices);
-
                     const totalPrice = allPrices
                       .map(value => Number(value))
                       .reduce((total, price) => total + price);
-
                     console.log('totalPrice', totalPrice);
-
                     // blockchain
                     await countrySale.methods.bulkBuy(countries).send(
                       {
                         value: totalPrice,
                       },
-
                       async (err, txHash) => {
                         if (err) {
                           console.log('error buying a single country', err);
                           return;
                         }
                         console.log('txHash received', txHash);
-
                         // for each country
                         // this will probably be more efficient as a batched transaction https://firebase.google.com/docs/firestore/manage-data/transactions
                         await picked.forEach(async (country) => {
                           await buyNow({
                             variables: {
-                              id: country.country,
+                              id: country.name,
                               newOwnerId: data.userId,
                               price: 56,
                               gift: false,
                               timeOfPurchase: 1541129757489,
                               totalPlots: 32,
-
                               // name,
                               // lastBought,
                               // description,
@@ -123,13 +101,11 @@ const Cart = ({
                           });
                           await markSold(country.mapIndex);
                         });
-
                         console.log('db updated');
                         setLoading(false);
                         history.push(`/profile/${data.userId}`);
                       },
                     );
-
                     // .then(async (receipt) => {
                     //   console.log('recipt received', receipt);
                     //   await buyNow();
@@ -140,7 +116,6 @@ const Cart = ({
                     //   history.push(`/profile/${data.userId}`);
                     // })
                     // .catch(err => console.log('error buying a singel country', err));
-
                     // .on('transactionHash', (hash) => {
                     //   console.log('hash', hash);
                     // })
@@ -152,11 +127,8 @@ const Cart = ({
                     //   console.log('recipt received', receipt);
                     // })
                     // .on('error', console.error);
-
                     // db
-
                     //  handleBuyNow(picked, history, '0xd9b74f73d933fde459766f74400971b29b90c9d2');
-
                     // const handleBuyNow = (selection, history, userId) =>
                   } catch (err) {
                     console.log('error buying a country', err);
@@ -198,7 +170,6 @@ const Cart = ({
                 title: 'Return',
                 dataIndex: 'return',
                 key: 'return',
-
               },
               {
                 title: 'Remove',

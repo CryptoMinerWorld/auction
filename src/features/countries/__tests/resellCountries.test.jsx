@@ -56,4 +56,6 @@ describe('Country Resell Feature', () => {
   test.skip('error test this component', () => {});
   test.skip('remove a resold country from auction', () => {});
   test.skip('buy a resold country', () => {});
+
+  test.skip('removing a country only remove that country', () => {});
 });

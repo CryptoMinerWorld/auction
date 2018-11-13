@@ -111,7 +111,11 @@ class Filter extends React.Component {
                   fragment
                 )),
               )}
-              {!record.sold && <BuyNowButton record={record} handleCityClick={handleCityClick} />}
+              {!record.sold
+                && record.countryId
+                && record.mapIndex && (
+                  <BuyNowButton record={record} handleCityClick={handleCityClick} />
+              )}
             </span>
           ) : (
             <span
@@ -165,10 +169,7 @@ class Filter extends React.Component {
 }
 
 const EnhancedFilter = props => (
-  <Query
-    query={MAP_COUNTRY_DATA}
-    pollInterval={500}
-  >
+  <Query query={MAP_COUNTRY_DATA} pollInterval={500}>
     {({
       data,
       // , error, loading

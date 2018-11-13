@@ -149,9 +149,11 @@ class App extends Component {
               userId: currentAccount,
             },
           });
+
+          console.log('countrySaleContract...1', countrySaleContract);
+
+
           handleSendContractsToRedux(
-
-
             dutchAuctionContractInstance,
             gemsContractInstance,
             web3,
