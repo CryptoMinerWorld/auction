@@ -33,11 +33,13 @@ class Filter extends React.Component {
   render() {
     const { handleCityClick, cities } = this.props;
 
+    console.log('cities...', cities);
+
     const columns = [
       {
         title: 'Name',
         dataIndex: 'name',
-        key: 'name',
+        // key: 'name',
         sorter: (a, b) => a.name - b.name,
         filterDropdown: ({
           setSelectedKeys, selectedKeys, confirm, clearFilters,
@@ -141,11 +143,10 @@ class Filter extends React.Component {
         columns={columns}
         dataSource={cities}
         onRow={record => ({
-          onClick: () => {
-            handleCityClick(record);
-            console.log('record', record);
-          },
+          onClick: () => handleCityClick(record),
         })}
+
+        rowKey={record => record.id}
       />
     );
   }

@@ -1,19 +1,23 @@
-import React, { useState, useEffect } from 'react';
-// import PropTypes from 'prop-types';
+import React, {
+  useState,
+  // useEffect
+} from 'react';
+import PropTypes from 'prop-types';
+import { Query } from 'react-apollo';
 import Cart from './components/Cart';
 import Filter from './components/Filter';
 import { rtdb } from '../../app/utils/firebase';
 import Map from './components/Map';
 import geoData from '../../app/maps/world-50m-with-population.json';
 import DetailsBar from './components/DetailsBar';
-import cities from './citiesData';
+import { MAP_COUNTRY_DATA } from './queries';
 
-const CountryAuction = () => {
-  const [countryData, setCountryData] = useState(null);
-  useEffect(
-    () => rtdb.ref('/worldMap').on('value', snap => snap && setCountryData(snap.val())),
-    [],
-  );
+const CountryAuction = ({ countryFilterData }) => {
+  const [countryData] = useState(null);
+  // useEffect(
+  //   () => rtdb.ref('/worldMap').on('value', snap => snap && setCountryData(snap.val())),
+  //   [],
+  // );
 
   const markSold = countryId => rtdb.ref(`/worldMap/objects/units/geometries/${countryId}/properties`).update({ sold: true });
 
@@ -41,7 +45,7 @@ const CountryAuction = () => {
 
   const handleCityClick = (city) => {
     setZoom(2);
-    setCoordinates(city.coordinates);
+    setCoordinates([city.east, city.north]);
   };
 
   const handleReset = () => () => {
@@ -49,7 +53,7 @@ const CountryAuction = () => {
     setCoordinates([0, 20]);
   };
 
-  console.log('cart', cart);
+  console.log('countryFilterData', countryFilterData);
 
   return (
     <div data-testid="mapPage">
@@ -59,7 +63,7 @@ const CountryAuction = () => {
             addToCart={addToCart}
             setSelection={setSelection}
             handleCityClick={handleCityClick}
-            cities={cities}
+            cities={countryFilterData.mapCountries}
           />
         </div>
         <div className="w-two-thirds pa3">
@@ -96,8 +100,21 @@ const CountryAuction = () => {
   );
 };
 
-export default CountryAuction;
+const EnhancedCountryAuction = props => (
+  <Query query={MAP_COUNTRY_DATA}>
+    {({
+      data,
+      // , error, loading
+    }) => (
+      // console.log('props.picked[0].country', props.picked[0].country);
+      // console.log('data.userId', data.userId);
+      <CountryAuction countryFilterData={data && data} {...props} />
+    )}
+  </Query>
+);
 
-// CountryAuction.propTypes = {
-//   markSold: PropTypes.func.isRequired,
-// };
+export default EnhancedCountryAuction;
+
+CountryAuction.propTypes = {
+  countryFilterData: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+};
