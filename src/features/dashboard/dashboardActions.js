@@ -32,7 +32,8 @@ export const getUserGems = userId => (dispatch) => {
     .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
     .join('');
 
-  return db.collection('stones')
+  return db
+    .collection('stones')
     .where('owner', '==', userIdToLowerCase)
     .orderBy('gradeType', 'desc')
     .get()
@@ -50,7 +51,6 @@ export const getUserGemsOnce = userId => (dispatch) => {
     .split('')
     .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
     .join('');
-
 
   try {
     db.collection('stones')
@@ -84,14 +84,13 @@ export const getUserDetails = userId => (dispatch) => {
 };
 
 // this checks the smart contract to see what gems a user owns
-export const getAllUserGems = (userId, gemContract) => gemContract.methods
-  .getCollection(userId)
-  .call({ from: userId }, (error, result) => {
-    if (!error) {
-      return result;
-    }
-    return error;
-  });
+// eslint-disable-next-line
+export const getAllUserGems = (userId, gemContract) => gemContract.methods.getCollection(userId).call({ from: userId }, (error, result) => {
+  if (!error) {
+    return result;
+  }
+  return error;
+});
 
 // this is called in authActions when you create a new User
 export const getDetailsForAllGemsAUserCurrentlyOwns = (userId) => {
@@ -159,9 +158,7 @@ export const getDetailsForAllGemsAUserCurrentlyOwns = (userId) => {
           store.dispatch({ type: FETCH_USER_GEMS_SUCCEEDED });
         }
       })
-      .catch(
-        error => setError(error),
-      );
+      .catch(error => setError(error));
   }));
 };
 
@@ -195,15 +192,14 @@ export const updateGemDetails = (userId, gemContract, userName, userImage) => as
     const idsOfGemsUserOwns = await gemContract.methods.getCollection(userIdToLowerCase).call();
 
     return Promise.all(
-      idsOfGemsUserOwns
-        .map(gemId => getGemQualities(gemContract, gemId)
-          .then(([color, level, gradeType, gradeValue]) => ({
-            color,
-            level,
-            gradeType,
-            gradeValue,
-            gemId,
-          }))),
+      // eslint-disable-next-line
+      idsOfGemsUserOwns.map(gemId => getGemQualities(gemContract, gemId).then(([color, level, gradeType, gradeValue]) => ({
+        color,
+        level,
+        gradeType,
+        gradeValue,
+        gemId,
+      }))),
     ).then((smartContractDetails) => {
       const gemImages = Promise.all(
         smartContractDetails.map(gem => getGemImage(gem.color, gem.gradeType, gem.level)),
@@ -236,13 +232,10 @@ export const updateGemDetails = (userId, gemContract, userName, userImage) => as
           return Promise.reject('No Gems Available');
         }
 
-        const updateOrCreate = arrayofCompleteGemDetails.map(
-          gem => db
-            .collection('stones')
-            .doc(`${gem.id}`)
-            .set(gem, { merge: true }),
-
-        );
+        const updateOrCreate = arrayofCompleteGemDetails.map(gem => db
+          .collection('stones')
+          .doc(`${gem.id}`)
+          .set(gem, { merge: true }));
         // check if document exists, update it if it does and create one if it doesn't
         return Promise.all(updateOrCreate).then(() => {
           store.dispatch({
@@ -274,7 +267,6 @@ export const getGemsForDashboardFilter = selection => ({
   type: 'FILTER_DASHBOARD',
   payload: selection,
 });
-
 
 export const rerenderSortBox = () => dispatch => dispatch({ type: RERENDER_SORT_BOX });
 export const sortBoxReredendered = () => dispatch => dispatch({ type: SORT_BOX_RERENDERED });

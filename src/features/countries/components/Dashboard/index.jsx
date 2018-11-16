@@ -164,7 +164,7 @@ class CountryDashboard extends Component {
     const { countries, userId } = this.props;
 
     return (
-      <div>
+      <div className="pa0">
         <State is="noCountries">
           <NoCountries />
         </State>

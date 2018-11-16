@@ -1,15 +1,18 @@
-import React, { useState, useRef } from 'react';
+import React, {
+  useState,
+  // useRef
+} from 'react';
 import PropTypes from 'prop-types';
 // import Button from 'antd/lib/button';
-import { Mutation } from 'react-apollo';
-import { updateMap } from '../../helpers';
-import { RESELL_COUNTRY_MUTATION, REMOVE_COUNTRY_FROM_AUCTION_MUTATION } from '../../mutations';
+// import { Mutation } from 'react-apollo';
+// import { updateMap } from '../../helpers';
+// import { RESELL_COUNTRY_MUTATION, REMOVE_COUNTRY_FROM_AUCTION_MUTATION } from '../../mutations';
 
 const CountryDetails = ({
-  countryId,
+  // countryId,
   name,
   lastBought,
-  description,
+  // description,
   totalPlots,
   plotsBought,
   plotsMined,
@@ -17,34 +20,50 @@ const CountryDetails = ({
   image,
   lastPrice,
   roi,
-  handleResell,
-  sellMethod,
-  userId,
-  countrySaleContractId,
-  onSale,
-  erc721CountryContract,
-  dutchContractMethods,
+  // handleResell,
+  // sellMethod,
+  // userId,
+  // countrySaleContractId,
+  // onSale,
+  // erc721CountryContract,
+  // dutchContractMethods,
 }) => {
-  const priceInput = useRef();
+  // const priceInput = useRef();
   // eslint-disable-next-line
-  let [price, setPrice] = useState('');
+  // let [price, setPrice] = useState('');
   // eslint-disable-next-line
   let [loading, setLoading] = useState(false);
 
-
   return (
-    <div className="flex mv5">
-      <div className="w-50">
-        <button type="button" className="black">
+    <div className="flex mv5 mw8 center pa3 row-ns flex-column-reverse">
+      <div className="w-50-ns w-100">
+        {/* <button type="button" className="black">
           <small>Show Stats for all countries</small>
-        </button>
+        </button> */}
         <h1 className="white f1">{name}</h1>
         <small>
           Owned for
           {lastBought}
         </small>
-        <p className="measure-wide">{description}</p>
-        <dl className="">
+
+        {/* <p className="measure-wide">{description}</p> */}
+
+        <div className="flex aic">
+          <dl className="dib mr5">
+            <dd className="f6 f5-ns b ml0">Price Paid</dd>
+            <dd className="f3 f2-ns b ml0">{lastPrice}</dd>
+          </dl>
+          <dl className="dib mr5">
+            <dd className="f6 f5-ns b ml0">Plots Remaining</dd>
+            <dd className="f3 f2-ns b ml0">{totalPlots - plotsBought}</dd>
+          </dl>
+          <dl className="dib mr5">
+            <dd className="f6 f5-ns b ml0">Return on Investment</dd>
+            <dd className="f3 f2-ns b ml0">{roi || '0%'}</dd>
+          </dl>
+        </div>
+
+        <dl className="w-100">
           <th>DETAILS</th>
           <tr className="flex">
             <dt>Total Plots</dt>
@@ -65,7 +84,7 @@ const CountryDetails = ({
           </tr>
         </dl>
 
-        {onSale ? (
+        {/* {onSale ? (
           <Mutation
             mutation={REMOVE_COUNTRY_FROM_AUCTION_MUTATION}
             variables={{
@@ -137,25 +156,11 @@ const CountryDetails = ({
               </form>
             )}
           </Mutation>
-        )}
+        )} */}
       </div>
-      <div className="w-50">
+      <div className="w-50-ns w-100">
         <div className="flex x mv5">
           <img src={image} alt={name} className="h-auto w-100" />
-        </div>
-        <div className="flex jca">
-          <dl className="dib mr5">
-            <dd className="f6 f5-ns b ml0">Price Paid</dd>
-            <dd className="f3 f2-ns b ml0">{lastPrice}</dd>
-          </dl>
-          <dl className="dib mr5">
-            <dd className="f6 f5-ns b ml0">Plots Remaining</dd>
-            <dd className="f3 f2-ns b ml0">{totalPlots - plotsBought}</dd>
-          </dl>
-          <dl className="dib mr5">
-            <dd className="f6 f5-ns b ml0">Return on Investment</dd>
-            <dd className="f3 f2-ns b ml0">{roi}</dd>
-          </dl>
         </div>
       </div>
     </div>
@@ -167,7 +172,7 @@ export default CountryDetails;
 CountryDetails.propTypes = {
   name: PropTypes.string.isRequired,
   lastBought: PropTypes.number.isRequired,
-  description: PropTypes.string.isRequired,
+  // description: PropTypes.string.isRequired,
   totalPlots: PropTypes.number.isRequired,
   plotsBought: PropTypes.number.isRequired,
   plotsMined: PropTypes.number.isRequired,
@@ -175,13 +180,13 @@ CountryDetails.propTypes = {
   image: PropTypes.string.isRequired,
   lastPrice: PropTypes.number.isRequired,
   roi: PropTypes.number.isRequired,
-  handleResell: PropTypes.func.isRequired,
-  sellMethod: PropTypes.func.isRequired,
-  userId: PropTypes.string.isRequired,
-  countrySaleContractId: PropTypes.string.isRequired,
-  countryId: PropTypes.number.isRequired,
-  onSale: PropTypes.bool.isRequired,
-  erc721CountryContract: PropTypes.string.isRequired,
+  // handleResell: PropTypes.func.isRequired,
+  // sellMethod: PropTypes.func.isRequired,
+  // userId: PropTypes.string.isRequired,
+  // countrySaleContractId: PropTypes.string.isRequired,
+  // countryId: PropTypes.number.isRequired,
+  // onSale: PropTypes.bool.isRequired,
+  // erc721CountryContract: PropTypes.string.isRequired,
   dutchContractMethods: PropTypes.shape({}).isRequired,
 };
 

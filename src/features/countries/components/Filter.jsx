@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import Table from 'antd/lib/table';
 import Input from 'antd/lib/input';
 import Button from 'antd/lib/button';
@@ -13,7 +13,7 @@ require('antd/lib/button/style/css');
 require('antd/lib/icon/style/css');
 
 const BuyNowButton = ({ record, handleCityClick }) => (
-  <button type="button" onClick={() => handleCityClick(record)}>
+  <button type="button" onClick={() => handleCityClick(record)} className="black ml3">
     Add To card
   </button>
 );
@@ -23,7 +23,7 @@ BuyNowButton.propTypes = {
   handleCityClick: PropTypes.func.isRequired,
 };
 
-class Filter extends React.Component {
+class Filter extends Component {
   state = {
     searchText: '',
   };
@@ -44,15 +44,18 @@ class Filter extends React.Component {
   };
 
   render() {
-    const { handleCityClick, cities } = this.props;
+    const { handleCityClick, cities, loading } = this.props;
+
+    // eslint-disable-next-line
+    // console.log('cities', cities);
 
     const columns = [
       {
         title: 'Name',
         dataIndex: 'name',
         key: 'name',
-
         sorter: (a, b) => a.name - b.name,
+        // filterDropdownVisible: true,
         filterDropdown: ({
           setSelectedKeys, selectedKeys, confirm, clearFilters,
         }) => (
@@ -62,6 +65,7 @@ class Filter extends React.Component {
               ref={ele => (this.searchInput = ele)}
               placeholder="Search name"
               value={selectedKeys[0]}
+              className="db w-100"
               onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
               onPressEnter={this.handleSearch(selectedKeys, confirm)}
             />
@@ -140,12 +144,14 @@ class Filter extends React.Component {
         title: 'Plots',
         dataIndex: 'plots',
         key: 'plots',
+
         sorter: (a, b) => a.plots - b.plots,
       },
       {
         title: 'Price',
         dataIndex: 'price',
         key: 'price',
+        render: text => <p>{text && text.toFixed(3)}</p>,
         sorter: (a, b) => a.price - b.price,
       },
       {
@@ -153,30 +159,48 @@ class Filter extends React.Component {
         dataIndex: 'roi',
         key: 'roi',
         sorter: (a, b) => a.roi - b.roi,
+        render: text => (
+          <p>
+            {text}
+            {' '}
+%
+          </p>
+        ),
       },
     ];
 
     return (
-      <Table
-        columns={columns}
-        dataSource={cities}
-        onRow={record => ({
-          onClick: () => handleCityClick(record),
-        })}
-      />
+      <div
+        data-testid="filterComponent"
+        className="o-80 ph4 pv3 "
+        style={{ backgroundColor: '#2A2C36' }}
+      >
+        <Table
+          rowClassName="white pointer"
+          columns={columns}
+          dataSource={cities}
+          onRow={record => ({
+            onClick: () => handleCityClick(record),
+          })}
+          rowKey={record => record.countryId}
+          loading={loading}
+          pagination={{ pageSize: 5 }}
+        />
+      </div>
     );
   }
 }
 
 const EnhancedFilter = props => (
-  <Query query={MAP_COUNTRY_DATA} pollInterval={500}>
+  <Query query={MAP_COUNTRY_DATA} pollInterval>
     {({
       data,
-      // , error, loading
+      // , error,
+      loading,
     }) => (
       // console.log('props.picked[0].country', props.picked[0].country);
       // console.log('data.userId', data.userId);
-      <Filter cities={data && data.mapCountries} {...props} />
+      <Filter cities={data ? data.mapCountries : props.countryData} {...props} loading={loading} />
     )}
   </Query>
 );
@@ -185,6 +209,11 @@ export default EnhancedFilter;
 
 Filter.propTypes = {
   addToCart: PropTypes.func.isRequired,
-  cities: PropTypes.shape({}).isRequired,
+  cities: PropTypes.arrayOf(PropTypes.shape({})),
   handleCityClick: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
+};
+
+Filter.defaultProps = {
+  cities: [],
 };

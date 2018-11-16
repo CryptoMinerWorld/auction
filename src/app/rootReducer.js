@@ -60,10 +60,12 @@ const appReducer = (state = initialState, action) => ({
   [SET_ERROR]: {
     ...state,
     error: action.payload,
+    errorTitle: action.meta,
   },
   [CLEAR_ERROR]: {
     ...state,
     error: '',
+    errorTitle: '',
   },
 }[action.type] || state);
 

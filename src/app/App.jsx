@@ -150,8 +150,6 @@ class App extends Component {
             },
           });
 
-          console.log('countrySaleContract...1', countrySaleContract);
-
 
           handleSendContractsToRedux(
             dutchAuctionContractInstance,
@@ -169,24 +167,24 @@ class App extends Component {
       });
   }
 
-  errorNotification = (error) => {
+  errorNotification = (error, title) => {
     const { handleClearError } = this.props;
     notification.error({
-      message: 'Error',
+      message: `${title}` || 'Error',
       description: `${error}`,
       onClose: handleClearError(),
     });
   };
 
   render() {
-    const { visible, error } = this.props;
+    const { visible, error, errorTitle } = this.props;
     const { font } = this.state;
     return (
       <>
         {/* <React.StrictMode> */}
         <ScrollToTop>
           <main className={font}>
-            {error && error !== false && this.errorNotification(error)}
+            {error && error !== false && this.errorNotification(error, errorTitle)}
             <Modal
               visible={visible}
               title="Please Confirm Your Transaction In Metamask to Proceed"
@@ -251,8 +249,10 @@ App.propTypes = {
   handleUpdateWalletId: PropTypes.func.isRequired,
   visible: PropTypes.bool.isRequired,
   error: PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.object]),
+  errorTitle: PropTypes.string,
 };
 
 App.defaultProps = {
   error: false,
+  errorTitle: '',
 };

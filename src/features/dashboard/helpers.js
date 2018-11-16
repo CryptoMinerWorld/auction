@@ -1,6 +1,10 @@
 import fromExponential from 'from-exponential';
 import { BigNumber } from 'bignumber.js';
-import { db, storage } from '../../app/utils/firebase';
+import {
+  db,
+  storage,
+  // rtdb
+} from '../../app/utils/firebase';
 import { setError } from '../../app/appActions';
 
 export function isTokenForSale(_contract, _tokenId) {
@@ -128,3 +132,43 @@ export const getPlotCount = (preSaleContract, userId) => preSaleContract.methods
   .call()
   .then(referralPoints => referralPoints)
   .catch(error => setError(error));
+
+export const markSold = countryId => console.log('countryId', countryId);
+
+// eslint-disable-next-line
+// export const markSold = countryId => rtdb.ref(`/worldMap/objects/units/geometries/${countryId}/properties`).update({ sold: true });
+
+export const validateCoupon = (couponCode) => {
+  const characters = couponCode.split('');
+
+  const last3Characters = couponCode.substr(couponCode.length - 3);
+
+  if (isNaN(last3Characters)) {
+    return false;
+  }
+
+  if (Number(last3Characters) > 190 || Number(last3Characters) < 170) {
+    return false;
+  }
+
+  if (characters.length !== 20) {
+    return false;
+  }
+
+  if (!characters.includes('_')) {
+    return false;
+  }
+
+  if (characters[16] !== '_') {
+    return false;
+  }
+
+
+  for (let i = 0; i < 15; i += 1) {
+    // eslint-disable-next-line
+    if (!isNaN(characters[i])) {
+      return false;
+    }
+    return true;
+  }
+};

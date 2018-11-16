@@ -114,7 +114,8 @@ class Countries extends Component {
     } = this.props;
 
     return (
-      <div data-testid="countriesExist" id="top">
+      <div data-testid="countriesExist" id="top" className="pa0 ">
+
         <Transition
           items={countries[index]}
           from={{ transform: 'translate3d(0,-40px,0)' }}
@@ -148,6 +149,9 @@ class Countries extends Component {
         </Transition>
 
         <CountryBar countries={countries} selectCountry={this.selectCountry} />
+        <div className="tc center mv5">
+          <button type="button" className="black">Show Stats for all countries together</button>
+        </div>
       </div>
     );
   }

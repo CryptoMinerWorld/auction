@@ -40,6 +40,7 @@ import Artifact from '../../app/images/dashboard/Artifacts.png';
 import Keys from '../../app/images/dashboard/Keys.png';
 import Land from '../../app/images/dashboard/Land.png';
 import Plot from '../../app/images/dashboard/Plot.png';
+import { EnhancedCoupon } from './components/Coupon';
 
 const { TabPane } = Tabs;
 
@@ -83,6 +84,7 @@ const select = store => ({
   currentUserId: store.auth.currentUserId,
   web3: store.app.web3,
   preSaleContract: store.app.presaleContractInstance,
+  CountrySale: store.app.countrySaleInstance,
 });
 
 class Dashboard extends Component {
@@ -108,6 +110,7 @@ class Dashboard extends Component {
     errorQL: PropTypes.shape({}).isRequired,
     data: PropTypes.shape({}).isRequired,
     preSaleContract: PropTypes.func.isRequired,
+    CountrySale: PropTypes.shape({}).isRequired,
   };
 
   static defaultProps = {
@@ -221,6 +224,50 @@ class Dashboard extends Component {
     history.push('/market');
   };
 
+  redeemCoupon = (value, CountrySaleMethods, buyNow, markSold) =>
+  // eslint-disable-next-line
+  CountrySaleMethods.useCoupon(value)
+      .send()
+      .then((receipt) => {
+        console.log('receipt.events', receipt.events);
+        // closeModal
+        // transfer Country to userId
+        // receipt.events
+        // should...
+        // emit an event
+        // eslint-disable-next-line
+        // emit CouponConsumed(msg.sender, key, _tokenId, countryContract.getNumberOfPlots(_tokenId));
+        let userId;
+        let tokenId;
+
+        buyNow({
+          variables: {
+            tokenId,
+            newOwnerId: userId,
+            timeOfPurchase: Date.now(),
+          },
+        })
+          .then(async () => {
+            await markSold();
+            return true;
+            // eslint-disable-next-line
+            // const markSold = countryId => rtdb.ref(`/worldMap/objects/units/geometries/${countryId}/properties`).update({ sold: true });
+
+          // loading false
+          // close modal
+          })
+          .catch((err) => {
+          // setloading false
+          // log error
+            console.error(err);
+          });
+      })
+      .catch((err) => {
+      // setloading false
+      // log error
+        console.error(err);
+      });
+
   render() {
     const {
       loading,
@@ -234,7 +281,10 @@ class Dashboard extends Component {
       handlePreLoadAuctionPage,
       data,
       match,
+      CountrySale,
     } = this.props;
+
+    console.log('CountrySale...', CountrySale);
 
     const { plots, referralPoints } = this.state;
 
@@ -285,6 +335,12 @@ class Dashboard extends Component {
                   </div>
                 )}
               </Spring>
+              <EnhancedCoupon
+                handleRedemption={this.redeemCoupon}
+                CountrySaleMethods={CountrySale && CountrySale.methods}
+              >
+                Redeem Coupon
+              </EnhancedCoupon>
               <ReSync />
             </div>
 )}
@@ -404,14 +460,6 @@ const actions = {
   handleAddGemsToDashboard: addGemsToDashboard,
 };
 
-// const EnhancedDashboard = props => (
-//   <Query query={USER_COUNTRIES}>
-//     {({ loading, error, data }) => (
-//       <Dashboard {...props} data={data} loadingQL={loading} errorQL={error} />
-//     )}
-//   </Query>
-// );
-
 export default compose(
   withRouter,
   connect(
@@ -424,7 +472,7 @@ export default compose(
       variables: {
         id: props.match.params.userId,
       },
-      pollInterval: 500,
+      // pollInterval: 500,
     }),
   }),
 )(Dashboard);

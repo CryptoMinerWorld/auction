@@ -29,5 +29,10 @@ export const sendContractsToRedux = (
   dispatch({ type: COUNTRY_SALE_ADDED, payload: countrySaleContract });
 };
 
-export const setError = payload => ({ type: SET_ERROR, payload });
+export const setError = (payload, title) => ({
+  type: SET_ERROR,
+  payload,
+  error: true,
+  meta: title,
+});
 export const clearError = () => ({ type: CLEAR_ERROR });

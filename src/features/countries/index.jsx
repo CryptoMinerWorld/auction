@@ -1,27 +1,36 @@
 import React, {
   useState,
-  useEffect,
+  // useEffect
 } from 'react';
 // import PropTypes from 'prop-types';
 import Cart from './components/Cart';
 import Filter from './components/Filter';
-import { rtdb } from '../../app/utils/firebase';
+// import { rtdb } from '../../app/utils/firebase';
 import Map from './components/Map';
 import geoData from '../../app/maps/world-50m-with-population.json';
 import DetailsBar from './components/DetailsBar';
+import MapPageDetails from './components/MapPageDetails';
+import countryDatum from './components/countryData';
 
 const CountryAuction = () => {
-  const [countryData, setCountryData] = useState(null);
+  const [
+    countryData,
+    // ,setCountryData
+  ] = useState(countryDatum);
 
-  useEffect(
-    () => rtdb.ref('/worldMap').on('value', snap => snap && setCountryData(snap.val())),
-    [],
-  );
+  // useEffect(
+  //   () => rtdb.ref('/worldMap').on('value', snap => snap && setCountryData(snap.val())),
+  //   [],
+  // );
 
-  const markSold = countryId => rtdb.ref(`/worldMap/objects/units/geometries/${countryId}/properties`).update({ sold: true });
+  // eslint-disable-next-line
+  // const markSold = countryId => rtdb.ref(`/worldMap/objects/units/geometries/${countryId}/properties`).update({ sold: true });
+
+  // eslint-disable-next-line
+  const markSold = countryId => console.log('countryId sold', countryId);
 
   const [selection, setSelection] = useState({
-    country: 'UK',
+    name: 'United Kingdom',
     plots: 50,
     price: 10,
     roi: 5,
@@ -52,19 +61,20 @@ const CountryAuction = () => {
     setCoordinates([0, 20]);
   };
 
-  console.log('cart', cart);
-
   return (
-    <div data-testid="mapPage">
-      <div className="flex">
-        <div className="w-third pa3">
+    <div data-testid="mapPage" className="bg-off-black white">
+      <div className="flex w-100 col row-ns mw9 center bb b--red bw1">
+        <div className="w-40-ns w-100 db dib-ns pa3">
           <Filter
             addToCart={addToCart}
             setSelection={setSelection}
             handleCityClick={handleCityClick}
+            countryData={
+              countryData && countryData.objects.units.geometries.map(country => country.properties)
+            }
           />
         </div>
-        <div className="w-two-thirds pa3">
+        <div className="w-60-ns w-100">
           <div className="w-100 pa3">
             {countryData ? (
               <Map
@@ -93,11 +103,16 @@ const CountryAuction = () => {
         </div>
       </div>
       <DetailsBar details={selection} />
-      <Cart picked={cart} removeFromCart={removeFromCart} markSold={markSold} />
+      <Cart
+        picked={cart}
+        removeFromCart={removeFromCart}
+        markSold={markSold}
+        price={selection && selection.price}
+      />
+      <MapPageDetails />
     </div>
   );
 };
-
 
 export default CountryAuction;
 

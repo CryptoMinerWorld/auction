@@ -4,7 +4,7 @@ import 'jest-dom/extend-expect';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 
-import { renderWithRouter } from '../../../app/testSetup';
+// import { renderWithRouter } from '../../../app/testSetup';
 // import Auth from '../index.jsx';
 // @dev this automatically unmounts and cleanup DOM after the test is finished.
 afterEach(cleanup);

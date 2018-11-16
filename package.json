@@ -22,7 +22,6 @@
     "chalk": "2.4.1",
     "chroma-js": "^1.4.0",
     "css-loader": "1.0.0",
-    "dappeteer": "^0.2.1",
     "date-fns": "^2.0.0-alpha.16",
     "dotenv-expand": "4.2.0",
     "eslint-config-react-app": "^3.0.4",
@@ -31,7 +30,7 @@
     "eslint-plugin-flowtype": "2.50.1",
     "eslint-plugin-react-hooks": "0.0.0",
     "file-loader": "2.0.0",
-    "firebase": "^5.5.7",
+    "firebase": "^5.5.8",
     "fontfaceobserver": "^2.0.13",
     "formik": "^1.3.1",
     "from-exponential": "^1.0.0",
@@ -53,7 +52,6 @@
     "postcss-preset-env": "6.0.6",
     "postcss-safe-parser": "4.0.1",
     "prop-types": "^15.6.2",
-    "puppeteer": "^1.9.0",
     "react": "^16.7.0-alpha.0",
     "react-addons-css-transition-group": "^15.6.2",
     "react-apollo": "^2.2.4",
@@ -91,7 +89,7 @@
     "webpack-dev-server": "3.1.9",
     "webpack-manifest-plugin": "2.0.4",
     "workbox-webpack-plugin": "3.6.2",
-    "xstate": "^3.3.3"
+    "xstate": "^4.1.1"
   },
   "scripts": {
     "analyze": "source-map-explorer build/static/js/main.*",
@@ -142,7 +140,6 @@
     "jest-in-case": "^1.0.2",
     "react-test-renderer": "^16.5.2",
     "react-testing-library": "^5.1.0",
-    "riteway": "^3.0.1",
     "storybook-addon-jsx": "^5.4.0",
     "truffle-privatekey-provider": "^0.1.0"
   },

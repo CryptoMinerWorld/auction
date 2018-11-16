@@ -35,8 +35,7 @@
 }
 
 .custom-filter-dropdown input {
-  width: 130px;
-  margin-right: 8px;
+  width: 100%;
 }
 
 .custom-filter-dropdown button {
@@ -68,7 +67,7 @@ dt:after {
 
 .card-container > .ant-tabs-card > .ant-tabs-content > .ant-tabs-tabpane {
   background: var(--dark-gray);
-  padding: 16px;
+  /* padding: 16px; */
 }
 
 .card-container > .ant-tabs-card > .ant-tabs-bar {

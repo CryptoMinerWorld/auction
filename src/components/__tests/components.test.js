@@ -10,9 +10,9 @@ import { render } from 'react-testing-library';
 // import Footer from '../Footer';
 // import Gembox, { Gem } from '../../features/items/components/Gembox';
 // import MobileHeader from '../../features/items/components/MobileHeader';
-import MailingList from '../MailingList';
+// import MailingList from '../MailingList';
 // import Navbar from '../Nav';
-import ProgressMeter from '../../features/items/components/ProgressMeter';
+// import ProgressMeter from '../../features/items/components/ProgressMeter';
 
 // var firebasemock = require('firebase-mock');
 // jest.mock('firebase');

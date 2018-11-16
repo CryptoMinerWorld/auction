@@ -23,7 +23,7 @@ export const CountryCard = ({
   >
     <Card.Meta
       avatar={<Avatar src={miniflags} />}
-        // style={onSale && { backgroundColor: 'red' }}
+      // style={onSale && { backgroundColor: 'red' }}
       title={name}
       data-testid="countryCard"
       description="This is the description"
@@ -40,7 +40,7 @@ CountryCard.propTypes = {
 };
 
 export const CountryBar = ({ countries, selectCountry }) => (
-  <div className=" overflow-auto bg-dark-gray" style={{ whiteSpace: 'nowrap' }}>
+  <div className="overflow-auto bg-off-black mv5 pa0" style={{ whiteSpace: 'nowrap' }}>
     {countries
       && countries.map((country, index) => (
         <CountryCard

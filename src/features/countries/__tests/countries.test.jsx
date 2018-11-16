@@ -7,18 +7,18 @@ import { MockedProvider } from 'react-apollo/test-utils';
 import gql from 'graphql-tag';
 // import { Router } from 'react-router-dom';
 // import { createMemoryHistory } from 'history';
-// import { Provider } from 'react-redux';
-// import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
 // import { TestApp } from '../../../app/App';
+import MapPage from '../components/Map';
 import CountryPage from '../index';
 import CountryDashboard from '../components/Dashboard/index';
 import { BUY_NOW_MUTATION } from '../mutations';
 import { ALL_COUNTRIES } from '../queries';
 import { renderWithRouter } from '../../../app/testSetup';
-// import rootReducer from '../../../app/rootReducer';
+import rootReducer from '../../../app/rootReducer';
 import CountryDetails from '../components/Dashboard/CountryDetails';
 import Filter from '../components/Filter';
-
 
 jest.mock('firebase');
 jest.mock('react-ga');
@@ -72,7 +72,7 @@ const mockMutation = [
   {
     request: {
       query: BUY_NOW_MUTATION,
-      variables: { id: '123', countries: ['Brazil', 'India'] },
+      variables: { id: '0xd9b74f73d933fde459766f74400971b29b90c9d2', countries: ['India'] },
     },
     result: {
       data: {
@@ -118,8 +118,6 @@ const mockLocalStateQuery = [
   },
 ];
 
-export const tempx = [];
-
 export const testCountries = [
   {
     name: 'Brazil',
@@ -148,10 +146,16 @@ const handleBuyNow = jest.fn();
 
 describe.skip('Country Map', () => {
   test('map page renders', () => {
+    const store = createStore(rootReducer);
+
     const { getByTestId } = renderWithRouter(
-      <MockedProvider mocks={mockQuery}>
-        <CountryPage handleBuyNow={handleBuyNow} />
-      </MockedProvider>,
+      <Provider store={store}>
+        <MockedProvider mocks={mockQuery}>
+          <MockedProvider mocks={mockMutation}>
+            <CountryPage handleBuyNow={handleBuyNow} />
+          </MockedProvider>
+        </MockedProvider>
+      </Provider>,
       {
         route: '/map',
       },
@@ -159,14 +163,17 @@ describe.skip('Country Map', () => {
     expect(getByTestId('mapPage')).toBeInTheDocument();
     expect(getByTestId('mapComponent')).toBeInTheDocument();
     expect(getByTestId('cartComponent')).toBeInTheDocument();
-    // expect(getByText('John Brown')).toBeInTheDocument();
+    expect(getByTestId('filterComponent')).toBeInTheDocument();
   });
 
-  test('map matches snapshot', () => {
+  test.skip('map matches snapshot', () => {
+    const store = createStore(rootReducer);
     const { getByTestId } = renderWithRouter(
-      <MockedProvider mocks={mockQuery}>
-        <CountryPage handleBuyNow={handleBuyNow} />
-      </MockedProvider>,
+      <Provider store={store}>
+        <MockedProvider mocks={mockQuery}>
+          <CountryPage handleBuyNow={handleBuyNow} />
+        </MockedProvider>
+      </Provider>,
       {
         route: '/map',
       },
@@ -175,10 +182,13 @@ describe.skip('Country Map', () => {
   });
 
   test('when I hover on a country its details appear in the detail bar', () => {
+    const store = createStore(rootReducer);
     const { getByTestId } = renderWithRouter(
-      <MockedProvider mocks={mockQuery}>
-        <CountryPage handleBuyNow={handleBuyNow} />
-      </MockedProvider>,
+      <Provider store={store}>
+        <MockedProvider mocks={mockQuery}>
+          <CountryPage handleBuyNow={handleBuyNow} />
+        </MockedProvider>
+      </Provider>,
       {
         route: '/map',
       },
@@ -188,10 +198,14 @@ describe.skip('Country Map', () => {
   });
 
   test('when I select a countrty it gets added to the cart', () => {
+    const store = createStore(rootReducer);
+
     const { getByText, getByTestId } = renderWithRouter(
-      <MockedProvider mocks={mockQuery}>
-        <CountryPage handleBuyNow={handleBuyNow} />
-      </MockedProvider>,
+      <Provider store={store}>
+        <MockedProvider mocks={mockQuery}>
+          <CountryPage handleBuyNow={handleBuyNow} />
+        </MockedProvider>
+      </Provider>,
       {
         route: '/map',
       },
@@ -272,7 +286,7 @@ describe.skip('Country dashboard', () => {
     expect(queryByTestId('noMetamask')).toBeNull();
   });
 
-  test.skip('shows no Countries if no Countries', async () => {
+  test('shows no Countries if no Countries', async () => {
     const { getByTestId, queryByTestId } = render(<CountryDashboard web3 account />);
     expect(getByTestId('noCountries')).toBeInTheDocument();
     expect(queryByTestId('noAccount')).toBeNull();
@@ -280,7 +294,7 @@ describe.skip('Country dashboard', () => {
     expect(queryByTestId('noMetamask')).toBeNull();
   });
 
-  test.skip('shows Countries if you own Countries', async () => {
+  test('shows Countries if you own Countries', async () => {
     const { getByTestId, queryByTestId } = render(
       <CountryDashboard web3={!false} account={!false} countries={[{ a: 1 }, { a: 2 }]} />,
     );
@@ -292,13 +306,13 @@ describe.skip('Country dashboard', () => {
     expect(queryByTestId('noMetamask')).toBeNull();
   });
 
-  test.skip('once I have bought a country it appears in my profile', async () => {
+  test('once I have bought a country it appears in my profile', async () => {
     const { getByTestId } = render(<CountryDashboard web3 account countries={testCountries} />);
     await waitForElement(() => getByTestId('countriesExist'));
     // expect(getByTestId('countriesExist')).toBeInTheDocument();
   });
 
-  test.skip('a card is rendered for each country I own', async () => {
+  test('a card is rendered for each country I own', async () => {
     const { getByTestId, queryAllByTestId } = render(
       <MockedProvider mocks={mockMutation}>
         <CountryDashboard web3 account countries={testCountries} />
@@ -310,28 +324,28 @@ describe.skip('Country dashboard', () => {
   });
 });
 
-describe('Country map buy now button', () => {
-  test.skip('buying a  country should change ownership on the database', () => {
+describe.skip('Country map buy now button', () => {
+  test('buying a  country should change ownership on the database', () => {
     expect(true).toBeFalsy();
   });
 
-  test.skip('error catch tests', () => {
+  test('error catch tests', () => {
     expect(true).toBeFalsy();
   });
 
-  test.skip('buying multiple countries works teh same as buying one country', () => {
+  test('buying multiple countries works teh same as buying one country', () => {
     expect(true).toBeFalsy();
   });
 
-  test.skip('buy without metamask asks me to install metamask', () => {
+  test('buy without metamask asks me to install metamask', () => {
     expect(true).toBeFalsy();
   });
 
-  test.skip('buy without account asks me to sign up', () => {
+  test('buy without account asks me to sign up', () => {
     expect(true).toBeFalsy();
   });
 
-  test.skip('buy confirms your account, price and shopping cart', () => {
+  test('buy confirms your account, price and shopping cart', () => {
     expect(true).toBeFalsy();
   });
 });
@@ -349,89 +363,158 @@ describe.skip('Country gift feature', () => {
   });
 });
 
-describe('Country Map filter', () => {
-  test.skip('filter shows all countries by default', async () => {
-    const { getByText, debug } = render(
+describe.skip('Country Map filter', () => {
+  test('filter shows all countries by default', async () => {
+    const { getByText } = render(
       <MockedProvider mocks={mockAllCountries}>
         <Filter />
       </MockedProvider>,
     );
-    debug();
+
     await waitForElement(() => getByText('Brazil'));
     expect(getByText('Brazil')).toBeInTheDocument();
   });
 
-  test.skip('when I click on a country it adds that country to my cart', () => {
+  test('when I click on a country it adds that country to my cart', () => {
     expect(true).toBeFalsy();
   });
 
-  test.skip('when I hover on a country it highlight the country on teh map', () => {
+  test('when I hover on a country it highlight the country on teh map', () => {
     expect(true).toBeFalsy();
   });
 
-  test.skip('sort order', () => {
+  test('sort order', () => {
     expect(true).toBeFalsy();
   });
 });
 
+describe.skip('Other', () => {
+  test('available countries are styled differently from ones that are not for sale', () => {});
 
-test.skip('available countries are styled differently from ones that are not for sale', () => {});
+  test('shows someone elses countries if viewiung someone elses profile', () => {});
 
-test.skip('shows someone elses countries if viewiung someone elses profile', () => {});
+  test('accessing country dashboard without an account/metamask redirect me to sign up modal', () => {
+    expect(true).toBeFalsy();
+  });
 
-test.skip('accessing country dashboard without an account/metamask redirect me to sign up modal', () => {
-  expect(true).toBeFalsy();
+  test('when I hover on a country it shows me a pointer cursor', () => {
+    expect(true).toBeFalsy();
+  });
+
+  test('info bar aggregates price when a country is not selected ', () => {
+    expect(true).toBeFalsy();
+  });
+
+  test('cancelling the metamsk prompt also cancels the buy now modal ', () => {
+    expect(true).toBeFalsy();
+  });
+
+  test('when I hover on a countrty its details appear in a tool tip', () => {
+    expect(true).toBeFalsy();
+  });
+
+  test('map details update in realtime', () => {
+    expect(true).toBeFalsy();
+  });
+
+  test('You shoud only be able to add a country once', () => {
+    expect(true).toBeFalsy();
+  });
+
+  test('clicking on a country in the filter zooms in on that country', () => {
+    expect(true).toBeFalsy();
+  });
+
+  test('clicking on a country in the filter higlight that country on teh map', () => {
+    expect(true).toBeFalsy();
+  });
+
+  test('clicking on teh buy now adds teh country to teh cart', () => {
+    expect(true).toBeFalsy();
+  });
+
+  test('add from filter and map both return teh correct shape of data', () => {
+    expect(true).toBeFalsy();
+  });
+
+  test.skip('buy is fired with all the right variables', async () => {
+    const store = createStore(rootReducer);
+    const { getByTestId } = renderWithRouter(
+      <Provider store={store}>
+        <MockedProvider mocks={mockQuery}>
+          <MockedProvider mocks={mockLocalStateQuery}>
+            <MockedProvider mocks={mockMutation}>
+              <CountryPage handleBuyNow={handleBuyNow} />
+            </MockedProvider>
+          </MockedProvider>
+        </MockedProvider>
+      </Provider>,
+      {
+        route: '/map',
+      },
+    );
+    fireEvent.click(getByTestId('India'));
+
+    getByTestId('cartLoading');
+
+    await waitForElement(() => getByTestId('buyNow'));
+
+    // fireEvent.click(getByTestId('buyNow'));
+    // expect(handleBuyNow).toBeCalled();
+    // expect(handleBuyNow).toBeCalledWith([
+    //   {
+    //     country: 'India',
+    //     key: 'India',
+    //     plots: 44,
+    //     price: 32,
+    //     return: 54,
+    //     roi: 45,
+    //   },
+    // ]);
+  });
+
+  // tab structure on workshop
+  // profile country details update in realtime?
+  // gifting a country
+  // handling transactions
+
+  // aria compliant components (axe/heydon)
+
+  test('each continent on the map is a different color', () => {
+    const data = [{}];
+    const setSelection = jest.fn();
+    const addToCart = jest.fn();
+    const zoom = 1;
+    const coordinates = [1, 1];
+    const handleCityClick = jest.fn();
+    const handleReset = jest.fn();
+
+    const store = createStore(rootReducer);
+    const { getByTestId, debug } = render(
+      <Provider store={store}>
+        <MockedProvider mocks={mockQuery}>
+          <MockedProvider mocks={mockMutation}>
+            <MapPage
+              data={data}
+              setSelection={setSelection}
+              addToCart={addToCart}
+              zoom={zoom}
+              coordinates={coordinates}
+              handleCityClick={handleCityClick}
+              handleReset={handleReset}
+            />
+          </MockedProvider>
+        </MockedProvider>
+      </Provider>,
+    );
+    debug(getByTestId('India'));
+  });
+
+  test('selecting a countryinfiletr results in ihghlight onmap', () => {
+    expect(true).toBeFalsy();
+  });
+
+  test('add from filter and map both return teh correct shape of data', () => {
+    expect(true).toBeFalsy();
+  });
 });
-
-test.skip('when I hover on a country it shows me a pointer cursor', () => {
-  expect(true).toBeFalsy();
-});
-
-test.skip('info bar aggregates price when a country is not selected ', () => {
-  expect(true).toBeFalsy();
-});
-
-test.skip('cancelling the metamsk prompt also cancels the buy now modal ', () => {
-  expect(true).toBeFalsy();
-});
-
-test.skip('when I hover on a countrty its details appear in a tool tip', () => {
-  expect(true).toBeFalsy();
-});
-
-test.skip('map details update in realtime', () => {
-  expect(true).toBeFalsy();
-});
-
-test.skip('You shoud only be able to add a country once', () => {
-  expect(true).toBeFalsy();
-});
-
-
-test.skip('clicking on a country in the filter zooms in on that country', () => {
-  expect(true).toBeFalsy();
-});
-
-test.skip('clicking on a country in the filter higlight that country on teh map', () => {
-  expect(true).toBeFalsy();
-});
-
-test.skip('clicking on teh buy now adds teh country to teh cart', () => {
-  expect(true).toBeFalsy();
-});
-
-test.skip('add from filter and map both return teh correct shape of data', () => {
-  expect(true).toBeFalsy();
-});
-
-test.skip('buy is fired with all teh right variables', () => {
-  expect(true).toBeFalsy();
-});
-
-
-// tab structure on workshop
-// profile country details update in realtime?
-// gifting a country
-// handling transactions
-
-// aria compliant components (axe/heydon)
