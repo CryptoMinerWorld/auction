@@ -143,6 +143,7 @@ export const validateCoupon = (couponCode) => {
 
   const last3Characters = couponCode.substr(couponCode.length - 3);
 
+  // eslint-disable-next-line
   if (isNaN(last3Characters)) {
     return false;
   }
@@ -169,6 +170,7 @@ export const validateCoupon = (couponCode) => {
     if (!isNaN(characters[i])) {
       return false;
     }
-    return true;
   }
+
+  return true;
 };

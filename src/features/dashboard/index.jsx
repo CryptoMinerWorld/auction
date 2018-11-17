@@ -87,6 +87,68 @@ const select = store => ({
   CountrySale: store.app.countrySaleInstance,
 });
 
+
+const testCountries = [
+  {
+    name: 'Brazil',
+    key: '3',
+    plots: 44,
+    price: 32,
+    return: 54,
+    roi: 45,
+    gems: 5,
+    artifacts: 2,
+    gold: 67,
+    silver: 98,
+    keys: 6,
+  },
+  {
+    name: 'India',
+    key: '1',
+    plots: 44,
+    price: 32,
+    return: 54,
+    roi: 45,
+  },
+  {
+    name: 'Portugal',
+    key: '2',
+    plots: 44,
+    price: 32,
+    return: 54,
+    roi: 45,
+  },
+  {
+    name: 'Brazil',
+    key: '13',
+    plots: 44,
+    price: 32,
+    return: 54,
+    roi: 45,
+    gems: 5,
+    artifacts: 2,
+    gold: 67,
+    silver: 98,
+    keys: 6,
+  },
+  {
+    name: 'India',
+    key: '1',
+    plots: 44,
+    price: 32,
+    return: 54,
+    roi: 45,
+  },
+  {
+    name: 'Portugal',
+    key: '2',
+    plots: 44,
+    price: 32,
+    return: 54,
+    roi: 45,
+  },
+];
+
 class Dashboard extends Component {
   static propTypes = {
     loading: PropTypes.bool.isRequired,
@@ -284,8 +346,6 @@ class Dashboard extends Component {
       CountrySale,
     } = this.props;
 
-    console.log('CountrySale...', CountrySale);
-
     const { plots, referralPoints } = this.state;
 
     return (
@@ -406,7 +466,8 @@ Gems
             key="2"
           >
             <CountryDashboard
-              countries={data && data.user && data.user.countries}
+              // countries={data && data.user && data.user.countries}
+              countries={testCountries}
               userId={match.params.userId}
             />
           </TabPane>

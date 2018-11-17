@@ -15,7 +15,8 @@ export const Coupon = ({
   const [error, setError] = useState(false);
   const [loading, setloading] = useState(false);
 
-  const handleOk = async () => {
+  // eslint-disable-next-line
+  const handleOk = () => {
     setloading(true);
     if (!value) {
       setError('The coupon field cannot be empty. Please enter a valid coupon code.');
@@ -24,7 +25,7 @@ export const Coupon = ({
       setError('Sorry, this is not a valid coupon code.');
       setloading(false);
     } else {
-      await CountrySaleMethods.isCouponValid(value)
+      return CountrySaleMethods.isCouponValid(value)
         .call()
         .then((result) => {
           if (result === '0') {
@@ -47,7 +48,6 @@ export const Coupon = ({
     setValue('');
     showModal(false);
   };
-
 
   return (
     <div className="mh3">

@@ -13,9 +13,9 @@ require('antd/lib/button/style/css');
 require('antd/lib/icon/style/css');
 
 const BuyNowButton = ({ record, handleCityClick }) => (
-  <button type="button" onClick={() => handleCityClick(record)} className="black ml3">
+  <Button type="dashed" icon="plus" ghost onClick={() => handleCityClick(record)} className="hover-blue white ml3 ">
     Add To card
-  </button>
+  </Button>
 );
 
 BuyNowButton.propTypes = {
@@ -44,7 +44,9 @@ class Filter extends Component {
   };
 
   render() {
-    const { handleCityClick, cities, loading } = this.props;
+    const {
+      handleCityClick, cities, loading, setHoverCountry,
+    } = this.props;
 
     // eslint-disable-next-line
     // console.log('cities', cities);
@@ -99,8 +101,9 @@ class Filter extends Component {
                   this.handleSelection(record);
                 }
               }}
-              // onMouseOver={() => handleCityClick(record)}
-              // onFocus={() => handleCityClick(record)}
+
+              // onMouseEnter={() => setHoverCountry(record.countryId)}
+              // onMouseLeave={() => setHoverCountry()}
             >
               {text.split(new RegExp(`(?<=${searchText})|(?=${searchText})`, 'i')).map(
                 (fragment, i) => (fragment.toLowerCase() === searchText.toLowerCase() ? (
@@ -131,8 +134,6 @@ class Filter extends Component {
                   this.handleSelection(record);
                 }
               }}
-              // onMouseOver={() => handleCityClick(record)}
-              // onFocus={() => handleCityClick(record)}
             >
               {text}
               {!record.sold && <BuyNowButton record={record} handleCityClick={handleCityClick} />}
@@ -172,15 +173,18 @@ class Filter extends Component {
     return (
       <div
         data-testid="filterComponent"
-        className="o-80 ph4 pv3 "
+        className="o-80 ph4 pv3"
         style={{ backgroundColor: '#2A2C36' }}
       >
         <Table
-          rowClassName="white pointer"
+          rowClassName="pointer bg-animate  grow hover-black white"
           columns={columns}
           dataSource={cities}
+
           onRow={record => ({
             onClick: () => handleCityClick(record),
+            onMouseEnter: () => setHoverCountry(record.countryId),
+            onMouseLeave: () => setHoverCountry(),
           })}
           rowKey={record => record.countryId}
           loading={loading}
@@ -191,8 +195,9 @@ class Filter extends Component {
   }
 }
 
+// pollInterval
 const EnhancedFilter = props => (
-  <Query query={MAP_COUNTRY_DATA} pollInterval>
+  <Query query={MAP_COUNTRY_DATA}>
     {({
       data,
       // , error,
@@ -212,6 +217,7 @@ Filter.propTypes = {
   cities: PropTypes.arrayOf(PropTypes.shape({})),
   handleCityClick: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
+  setHoverCountry: PropTypes.func.isRequired,
 };
 
 Filter.defaultProps = {

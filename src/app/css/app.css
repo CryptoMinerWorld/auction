@@ -83,3 +83,8 @@ dt:after {
   border-color: var(--dark-gray);
   background: var(--dark-gray);
 }
+
+.ant-table-pagination {
+  text-align: center;
+  width: 100%
+}

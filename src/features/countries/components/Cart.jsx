@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-// import PropTypes from 'prop-types';
 import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
-// import { Mutation } from 'react-apollo';
 import Table from 'antd/lib/table';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
@@ -11,8 +9,8 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import Button from 'antd/lib/button';
 import { BUY_NOW_MUTATION } from '../mutations';
-// import { ethToWei } from '../helpers';
 import { setError } from '../../../app/appActions';
+import BuyNow from './BuyNow';
 
 require('antd/lib/table/style/css');
 
@@ -30,95 +28,27 @@ const Cart = ({
   const [txloading, setLoading] = useState(false);
 
   return (
-    <div className="flex row-ns flex-column-reverse mw9 center">
-      <div className="w-third-ns w-100 flex col aic jcc pa4">
-        <div className="flex col aic jcc f2">
-          <p>Current Price</p>
-          <span className="f2">
-            <span className="basic ">Ξ</span>
-            {price}
-          </span>
-
-          <div className=" flex row aic jcc">
-            <Button
-              type="button"
-              data-testid="buyNow"
-              loading={txloading}
-              onClick={async () => {
-                // console.log('click...');
-                try {
-                  setLoading(true);
-                  const countries = picked.map(country => country.countryId);
-                  const allPrices = await Promise.all(
-                    countries.map(countryId => countrySale.methods.getPrice(countryId).call()),
-                  );
-                  const totalPrice = allPrices
-                    .map(value => Number(value))
-                    .reduce((total, pricex) => total + pricex);
-                  // console.log('totalPrice', totalPrice);
-                  // console.log('countrySale', countrySale);
-                  // console.log('userId', data.userId);
-                  // console.log('countries', countries);
-                  // blockchain
-                  await countrySale.methods.bulkBuy(countries).send(
-                    {
-                      value: totalPrice,
-                    },
-                    async (err) => {
-                      if (err) {
-                        // console.log('error buying a single country', err);
-                        handleSetError(err, 'Error buying a country');
-                        return;
-                      }
-                      // console.log('txHash received', txHash);
-                      // for each country
-                      // this will probably be more efficient as a batched transaction https://firebase.google.com/docs/firestore/manage-data/transactions
-                      await picked.forEach(async (country) => {
-                        await buyNow({
-                          variables: {
-                            id: country.name,
-                            newOwnerId: data.userId,
-                            price: 56,
-                            gift: false,
-                            timeOfPurchase: 1541129757489,
-                            totalPlots: 32,
-                            // name,
-                            // lastBought,
-                            // description,
-                            // totalPlots,
-                            // plotsBought,
-                            // plotsMined,
-                            // plotsAvailable,
-                            // image,
-                            // lastPrice,
-                            // roi,
-                          },
-                        });
-                        await markSold(country.mapIndex);
-                      });
-                      // console.log('db updated');
-                      setLoading(false);
-                      history.push(`/profile/${data.userId}`);
-                    },
-                  );
-                } catch (err) {
-                  handleSetError(err, 'Error buying a country');
-
-                  setLoading(false);
-                }
-              }}
-            >
-              buy now
-            </Button>
-          </div>
-
-          {/* <p>timer</p> */}
-        </div>
+    <div className="flex row-ns flex-column-reverse mw9 center pv4">
+      <div className="w-third-ns w-100 flex col aic jcc">
+        <BuyNow
+          data={data}
+          price={price}
+          txloading={txloading}
+          picked={picked}
+          countrySale={countrySale}
+          handleSetError={handleSetError}
+          buyNow={buyNow}
+          markSold={markSold}
+          history={history}
+          setLoading={setLoading}
+        />
       </div>
-      <div className="w-two-thirds-ns w-100">
+      <div className="w-two-thirds-ns w-100 o-80 ph4 pv3 ">
         <Table
+          rowClassName="pointer bg-animate  grow hover-black white"
           className="o-80 ph4 pv3 "
-          rowClassName="white pointer"
+          locale={{ emptyText: 'Please click on a country on the map to add it to your cart' }}
+          pagination={false}
           columns={[
             {
               title: 'Country',
@@ -149,13 +79,15 @@ const Cart = ({
               title: 'Remove',
               key: 'action',
               render: x => (
-                <button
-                  type="button"
+                <Button
+                  type="danger"
+                  ghost
                   onClick={() => removeFromCart(x)}
                   data-testid={`remove-${x.country}`}
+                  icon="close"
                 >
                   Remove
-                </button>
+                </Button>
               ),
             },
           ]}
@@ -217,10 +149,11 @@ Cart.propTypes = {
   data: PropTypes.shape({}).isRequired,
   buyNow: PropTypes.func.isRequired,
   handleSetError: PropTypes.func.isRequired,
-  price: PropTypes.number.isRequired,
+  price: PropTypes.number,
 };
 
 Cart.defaultProps = {
   picked: [{}],
   countrySale: {},
+  price: 0,
 };

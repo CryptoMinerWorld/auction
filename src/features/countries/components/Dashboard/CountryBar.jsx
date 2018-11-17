@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Card from 'antd/lib/card';
 import Icon from 'antd/lib/icon';
 import Avatar from 'antd/lib/avatar';
+import { Link } from 'react-router-dom';
 import flags from '../../../../app/images/flags/in.png';
 
 export const CountryCard = ({
@@ -13,22 +14,24 @@ export const CountryCard = ({
   selectCountry,
   // onSale,
 }) => (
-  <Card
-    onClick={() => selectCountry(index)}
-    key={`${name}${Math.random()}`}
-    style={{ width: 300 }}
-    className="ma4 dib"
-    cover={<img alt={name} src={image} />}
-    actions={[<Icon type="dollar" theme="outlined" />]}
-  >
-    <Card.Meta
-      avatar={<Avatar src={miniflags} />}
-      // style={onSale && { backgroundColor: 'red' }}
-      title={name}
-      data-testid="countryCard"
-      description="This is the description"
-    />
-  </Card>
+  <Link to={`#${name}`}>
+    <Card
+      onClick={() => selectCountry(index)}
+      key={`${name}${Math.random()}`}
+      style={{ width: 300 }}
+      className="ma4 dib"
+      cover={<img alt={name} src={image} />}
+      actions={[<Icon type="dollar" theme="outlined" />]}
+    >
+      <Card.Meta
+        avatar={<Avatar src={miniflags} />}
+        // style={onSale && { backgroundColor: 'red' }}
+        title={name}
+        data-testid="countryCard"
+        description="This is the description"
+      />
+    </Card>
+  </Link>
 );
 CountryCard.propTypes = {
   name: PropTypes.string.isRequired,

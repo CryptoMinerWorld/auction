@@ -101,6 +101,19 @@ class Countries extends Component {
     selected: false,
   };
 
+  componentDidMount() {
+    // if there is a country name hash in the url open the workshop page on that country
+    const { countries } = this.props;
+    const country = window.location.hash.substring(1);
+
+    if (countries && country) {
+      console.log('c', countries, country);
+      const index = countries.findIndex(nation => nation.name === country);
+      this.setState({ index, selected: true });
+    }
+  }
+
+
   selectCountry = (index) => {
     smoothScroll.scrollTo('top');
     this.setState({ index, selected: true });
@@ -123,7 +136,7 @@ class Countries extends Component {
           leave={{ transform: 'translate3d(0,-40px,0)' }}
         >
           {item => selected
-            && item && (
+            && item && countries && (
               <CountryDetails
                 name={countries[index].name}
                 lastBought={countries[index].lastBought}
