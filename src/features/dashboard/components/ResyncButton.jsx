@@ -40,15 +40,21 @@ const select = store => ({
 class ReSync extends PureComponent {
   static propTypes = {
     transition: PropTypes.func.isRequired,
-    machineState: PropTypes.shape({
-
-    }).isRequired,
+    machineState: PropTypes.shape({}).isRequired,
     userId: PropTypes.string.isRequired,
-    gemContract: PropTypes.string.isRequired,
-    userName: PropTypes.string.isRequired,
-    userImage: PropTypes.string.isRequired,
-    success: PropTypes.bool.isRequired,
-    error: PropTypes.string.isRequired,
+    gemContract: PropTypes.shape({}),
+    userName: PropTypes.string,
+    userImage: PropTypes.string,
+    success: PropTypes.bool,
+    error: PropTypes.string,
+  };
+
+  static defaultProps = {
+    error: '',
+    success: false,
+    userImage: '',
+    userName: '',
+    gemContract: {},
   };
 
   updateGemDetails = async () => {
@@ -64,7 +70,7 @@ class ReSync extends PureComponent {
       .then(result => transition('SUCCESS', { success: result }))
       .catch(error => transition('FAILURE', {
         // eslint-disable-next-line
-        error: error.message_ || error 
+          error: error.message_ || error,
       }));
   };
 

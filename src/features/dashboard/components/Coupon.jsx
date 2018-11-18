@@ -8,7 +8,7 @@ import { BUY_NOW_MUTATION } from '../../countries/mutations';
 import { markSold, validateCoupon } from '../helpers';
 
 export const Coupon = ({
-  handleRedemption, CountrySaleMethods, buyNow, markedSold,
+  handleRedemption, CountrySaleMethods, buyNow, markedSold, web3,
 }) => {
   const [visible, showModal] = useState(false);
   const [value, setValue] = useState('');
@@ -19,25 +19,30 @@ export const Coupon = ({
   const handleOk = () => {
     setloading(true);
     if (!value) {
+      console.log('no input value');
       setError('The coupon field cannot be empty. Please enter a valid coupon code.');
       setloading(false);
     } else if (!validateCoupon(value)) {
+      console.log('not valid coupon');
       setError('Sorry, this is not a valid coupon code.');
       setloading(false);
     } else {
-      return CountrySaleMethods.isCouponValid(value)
+      console.log('valid input and coupon format');
+      return CountrySaleMethods.methods.isCouponValid(value)
         .call()
         .then((result) => {
           if (result === '0') {
+            console.log('just not a valid coupon');
             throw new Error();
           }
-          return handleRedemption(value, CountrySaleMethods, buyNow, markedSold);
+          return handleRedemption(value, CountrySaleMethods, buyNow, markedSold, web3);
         })
         .then(() => {
           setloading(false);
           showModal(false);
         })
-        .catch(() => {
+        .catch((err) => {
+          console.log('err', err);
           setError('Sorry, this is not a valid coupon code.');
           setloading(false);
         });
@@ -51,7 +56,13 @@ export const Coupon = ({
 
   return (
     <div className="mh3">
-      <Button data-testid="countryCoupon" type="button" ghost onClick={() => showModal(true)}>
+      <Button
+        data-testid="countryCoupon"
+        type="button"
+        ghost
+        onClick={() => showModal(true)}
+        loading={!CountrySaleMethods || CountrySaleMethods.methods === {} || !buyNow || !markedSold}
+      >
         Redeem Coupon
       </Button>
       <Modal
@@ -89,7 +100,12 @@ export const EnhancedCoupon = props => (
 
 Coupon.propTypes = {
   handleRedemption: PropTypes.func.isRequired,
-  CountrySaleMethods: PropTypes.shape({}).isRequired,
+  CountrySaleMethods: PropTypes.shape({}),
   buyNow: PropTypes.func.isRequired,
   markedSold: PropTypes.func.isRequired,
+  web3: PropTypes.func.isRequired,
+};
+
+Coupon.defaultProps = {
+  CountrySaleMethods: {},
 };

@@ -14,8 +14,8 @@ const CountryAuction = () => {
 
   useEffect(() => {
     const realTimeMapData = rtdb
-      .ref('worldMap')
-      .once('value', snap => snap && setCountryData(snap.val()));
+      .ref('/worldMap')
+      .on('value', snap => snap && setCountryData(snap.val()));
 
     return () => {
       rtdb.ref('/worldMap').off('value', realTimeMapData);

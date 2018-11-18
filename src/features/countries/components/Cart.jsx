@@ -47,7 +47,7 @@ const Cart = ({
         <Table
           rowClassName="pointer bg-animate  grow hover-black white"
           className="o-80 ph4 pv3 "
-          locale={{ emptyText: 'Please click on a country on the map to add it to your cart' }}
+          locale={{ emptyText: 'Select a country on the map to add it to your cart' }}
           pagination={false}
           columns={[
             {

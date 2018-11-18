@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+// import { connect } from 'react-redux';
 import { Transition } from 'react-spring';
+import Button from 'antd/lib/button';
 import CountryDetails from './CountryDetails';
 import { CountryBar } from './CountryBar';
 import { handleResell } from '../../helpers';
@@ -18,7 +19,7 @@ const smoothScroll = {
 
   scrollTo(id, callback) {
     const settings = {
-      duration: 2000,
+      duration: 1000,
       easing: {
         outQuint(x, t, b, c, d) {
           // eslint-disable-next-line
@@ -88,8 +89,8 @@ class Countries extends Component {
   static propTypes = {
     countries: PropTypes.arrayOf(PropTypes.shape({})),
     userId: PropTypes.string.isRequired,
-    DutchContract: PropTypes.shape({}).isRequired,
-    CountryERC721: PropTypes.shape({}).isRequired,
+    // DutchContract: PropTypes.shape({}).isRequired,
+    // CountryERC721: PropTypes.shape({}).isRequired,
   };
 
   static defaultProps = {
@@ -107,12 +108,10 @@ class Countries extends Component {
     const country = window.location.hash.substring(1);
 
     if (countries && country) {
-      console.log('c', countries, country);
       const index = countries.findIndex(nation => nation.name === country);
       this.setState({ index, selected: true });
     }
   }
-
 
   selectCountry = (index) => {
     smoothScroll.scrollTo('top');
@@ -123,12 +122,13 @@ class Countries extends Component {
   render() {
     const { index, selected } = this.state;
     const {
-      countries, CountryERC721, DutchContract, userId,
+      countries,
+      // CountryERC721, DutchContract,
+      userId,
     } = this.props;
 
     return (
       <div data-testid="countriesExist" id="top" className="pa0 ">
-
         <Transition
           items={countries[index]}
           from={{ transform: 'translate3d(0,-40px,0)' }}
@@ -136,7 +136,8 @@ class Countries extends Component {
           leave={{ transform: 'translate3d(0,-40px,0)' }}
         >
           {item => selected
-            && item && countries && (
+            && item
+            && countries && (
               <CountryDetails
                 name={countries[index].name}
                 lastBought={countries[index].lastBought}
@@ -149,13 +150,13 @@ class Countries extends Component {
                 lastPrice={countries[index].lastPrice}
                 roi={countries[index].roi}
                 handleResell={handleResell}
-                sellMethod={CountryERC721 && CountryERC721.methods}
-                countrySaleContractId={process.env.REACT_APP_DUTCH_AUCTION}
+                // sellMethod={CountryERC721 && CountryERC721.methods}
+                // countrySaleContractId={process.env.REACT_APP_DUTCH_AUCTION}
                 userId={userId}
                 countryId={countries[index].countryId}
                 onSale={countries[index].onSale}
-                erc721CountryContract={process.env.REACT_APP_COUNTRY_ERC721}
-                dutchContractMethods={DutchContract && DutchContract.methods}
+                // erc721CountryContract={process.env.REACT_APP_COUNTRY_ERC721}
+                // dutchContractMethods={DutchContract && DutchContract.methods}
               />
           )
           }
@@ -163,16 +164,24 @@ class Countries extends Component {
 
         <CountryBar countries={countries} selectCountry={this.selectCountry} />
         <div className="tc center mv5">
-          <button type="button" className="black">Show Stats for all countries together</button>
+          <Button
+            type="dashed"
+            icon="plus"
+            ghost
+            onClick={() => {}}
+            className="hover-blue white ml3 w-75 mv3 ttu center"
+          >
+            Show Stats for all
+          </Button>
         </div>
       </div>
     );
   }
 }
 
-const selection = store => ({
-  CountryERC721: store.app.countryContractInstance,
-  DutchContract: store.app.dutchContractInstance,
-});
+// const selection = store => ({
+//   CountryERC721: store.app.countryContractInstance,
+//   DutchContract: store.app.dutchContractInstance,
+// });
 
-export default connect(selection)(Countries);
+export default Countries;

@@ -1,8 +1,8 @@
 import Web3 from 'web3';
 import PrivateKeyProvider from 'truffle-privatekey-provider';
 
-describe.only('Country Map', () => {
-  context.only('Reselling a country', () => {
+describe('Country Map', () => {
+  context('Reselling a country', () => {
     const country = 'Andorra';
     it('lets you sell a country you own', () => {
       cy.on('window:before:load', (win) => {

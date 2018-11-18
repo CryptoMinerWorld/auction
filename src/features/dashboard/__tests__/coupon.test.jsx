@@ -24,6 +24,7 @@ const renderCouponComponent = () => {
   };
   const buyNow = jest.fn();
   const markSold = jest.fn();
+  const web3 = jest.fn();
 
   const {
     getByTestId, queryByTestId, getByText, getByRole, getByPlaceholderText,
@@ -33,6 +34,7 @@ const renderCouponComponent = () => {
       handleRedemption={handleRedemption}
       markedSold={markSold}
       CountrySaleMethods={CountrySaleMethods}
+      web3={web3}
     />,
   );
 
@@ -42,7 +44,7 @@ const renderCouponComponent = () => {
     getByText,
     getByRole,
     getByPlaceholderText,
-
+    web3,
     handleRedemption,
     CountrySaleMethods,
     buyNow,
@@ -82,6 +84,7 @@ describe('Country Coupon System', () => {
       CountrySaleMethods,
       buyNow,
       markSold,
+      web3,
     } = renderCouponComponent();
     expect(queryByTestId('countryCouponModal')).not.toBeInTheDocument();
     expect(getByTestId('countryCoupon')).toBeInTheDocument();
@@ -92,7 +95,7 @@ describe('Country Coupon System', () => {
     fireEvent.click(getByText('OK'));
     await wait(() => expect(handleRedemption).toBeCalled());
 
-    expect(handleRedemption).toBeCalledWith('NVBKJUIANBVHXFVA_190', CountrySaleMethods, buyNow, markSold);
+    expect(handleRedemption).toBeCalledWith('NVBKJUIANBVHXFVA_190', CountrySaleMethods, buyNow, markSold, web3);
   });
 
   test('if no code is entered an error message is shown', () => {
@@ -167,7 +170,15 @@ describe('Country Coupon System', () => {
     await wait(() => expect(handleRedemption).not.toBeCalled());
   });
 
-  test.skip('disable buy button if contract is not present', () => {});
+  test.skip('disable buy button if contract is not present', () => {
+
+
+  });
+
+  test.skip('loading redeem coupon button if contract is not present', () => {
+
+
+  });
 });
 
 cases(

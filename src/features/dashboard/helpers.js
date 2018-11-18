@@ -121,11 +121,14 @@ export const calculateGemName = (providedGrade, providedTokenId) => {
   return `${gemType} #${providedTokenId}`;
 };
 
-export const getReferralPoints = (preSaleContract, userId) => preSaleContract.methods
-  .unusedReferralPoints(userId)
-  .call()
-  .then(referralPoints => referralPoints)
-  .catch(error => setError(error));
+export const getReferralPoints = (preSaleContract, userId) =>
+  // eslint-disable-next-line
+  preSaleContract.methods &&
+  preSaleContract.methods
+    .unusedReferralPoints(userId)
+    .call()
+    .then(referralPoints => referralPoints)
+    .catch(error => setError(error));
 
 export const getPlotCount = (preSaleContract, userId) => preSaleContract.methods
   .geodeBalances(userId)
@@ -133,10 +136,10 @@ export const getPlotCount = (preSaleContract, userId) => preSaleContract.methods
   .then(referralPoints => referralPoints)
   .catch(error => setError(error));
 
-export const markSold = countryId => console.log('countryId', countryId);
+// export const markSold = countryId => console.log('countryId', countryId);
 
 // eslint-disable-next-line
-// export const markSold = countryId => rtdb.ref(`/worldMap/objects/units/geometries/${countryId}/properties`).update({ sold: true });
+export const markSold = mapIndex => rtdb.ref(`/worldMap/objects/units/geometries/${mapIndex}/properties`).update({ sold: true });
 
 export const validateCoupon = (couponCode) => {
   const characters = couponCode.split('');
@@ -164,7 +167,6 @@ export const validateCoupon = (couponCode) => {
     return false;
   }
 
-
   for (let i = 0; i < 15; i += 1) {
     // eslint-disable-next-line
     if (!isNaN(characters[i])) {
@@ -174,3 +176,7 @@ export const validateCoupon = (couponCode) => {
 
   return true;
 };
+
+export const getCountryNameFromCountryId = (id) => {};
+
+export const getMapIndexFromCountryId = (id) => {};

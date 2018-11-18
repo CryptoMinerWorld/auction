@@ -29,7 +29,12 @@ import { preLoadAuctionPage } from '../market/marketActions';
 import ReSync from './components/ResyncButton';
 import SortBox from './components/SortBox';
 // import AuctionCategories from './components/AuctionCategories';
-import { getReferralPoints, getPlotCount } from './helpers';
+import {
+  getReferralPoints,
+  getPlotCount,
+  getCountryNameFromCountryId,
+  getMapIndexFromCountryId,
+} from './helpers';
 import stateMachine from './stateMachine';
 import CountryDashboard from '../countries/components/Dashboard';
 import { USER_COUNTRIES } from '../countries/queries';
@@ -71,7 +76,7 @@ const Primary = styled.section`
 const select = store => ({
   totalGems: store.dashboard && store.dashboard.userGems && store.dashboard.userGems.length,
   auctions: store.dashboard.filter,
-  paginated: store.dashboard
+  paginatedRedux: store.dashboard
     && store.dashboard.filter && [
     ...store.dashboard.filter.slice(store.dashboard.start, store.dashboard.end),
   ],
@@ -87,68 +92,6 @@ const select = store => ({
   CountrySale: store.app.countrySaleInstance,
 });
 
-
-const testCountries = [
-  {
-    name: 'Brazil',
-    key: '3',
-    plots: 44,
-    price: 32,
-    return: 54,
-    roi: 45,
-    gems: 5,
-    artifacts: 2,
-    gold: 67,
-    silver: 98,
-    keys: 6,
-  },
-  {
-    name: 'India',
-    key: '1',
-    plots: 44,
-    price: 32,
-    return: 54,
-    roi: 45,
-  },
-  {
-    name: 'Portugal',
-    key: '2',
-    plots: 44,
-    price: 32,
-    return: 54,
-    roi: 45,
-  },
-  {
-    name: 'Brazil',
-    key: '13',
-    plots: 44,
-    price: 32,
-    return: 54,
-    roi: 45,
-    gems: 5,
-    artifacts: 2,
-    gold: 67,
-    silver: 98,
-    keys: 6,
-  },
-  {
-    name: 'India',
-    key: '1',
-    plots: 44,
-    price: 32,
-    return: 54,
-    roi: 45,
-  },
-  {
-    name: 'Portugal',
-    key: '2',
-    plots: 44,
-    price: 32,
-    return: 54,
-    roi: 45,
-  },
-];
-
 class Dashboard extends Component {
   static propTypes = {
     loading: PropTypes.bool.isRequired,
@@ -159,20 +102,20 @@ class Dashboard extends Component {
     web3: PropTypes.shape({}),
     transition: PropTypes.func.isRequired,
     match: PropTypes.shape({}),
-    gems: PropTypes.shape([]),
+    gems: PropTypes.shape({}),
     history: PropTypes.shape({}),
-    sortBox: PropTypes.func.isRequired,
+    sortBox: PropTypes.bool.isRequired,
     totalGems: PropTypes.number.isRequired,
-    paginated: PropTypes.bool.isRequired,
+    paginatedRedux: PropTypes.arrayOf(PropTypes.shape({})),
     handlePagination: PropTypes.func.isRequired,
-    pageNumber: PropTypes.number.isRequired,
+    pageNumber: PropTypes.number,
     handlePreLoadAuctionPage: PropTypes.func.isRequired,
     machineState: PropTypes.shape({}),
-    loadingQL: PropTypes.shape({}).isRequired,
-    errorQL: PropTypes.shape({}).isRequired,
+    // loadingQL: PropTypes.shape({}).isRequired,
+    // errorQL: PropTypes.shape({}).isRequired,
     data: PropTypes.shape({}).isRequired,
-    preSaleContract: PropTypes.func.isRequired,
-    CountrySale: PropTypes.shape({}).isRequired,
+    preSaleContract: PropTypes.shape({}),
+    CountrySale: PropTypes.shape({}),
   };
 
   static defaultProps = {
@@ -181,9 +124,13 @@ class Dashboard extends Component {
       'https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FAquamarine%20Face%20Emoji.png?alt=media&token=b759ae07-bb8c-4ec8-9399-d3844d5428ef',
     web3: {},
     match: {},
-    gems: [],
+    gems: {},
     history: {},
     machineState: {},
+    pageNumber: 1,
+    preSaleContract: {},
+    CountrySale: {},
+    paginatedRedux: [{}],
   };
 
   state = {
@@ -193,7 +140,7 @@ class Dashboard extends Component {
 
   componentDidMount() {
     const { preSaleContract, match } = this.props;
-    if (preSaleContract && match.params.userId !== 'false') {
+    if (preSaleContract && preSaleContract.methods && match.params.userId !== 'false') {
       getReferralPoints(preSaleContract, match.params.userId)
         .then(referralPoints => this.setState({ referralPoints }))
         .catch(err => setError(err));
@@ -286,49 +233,80 @@ class Dashboard extends Component {
     history.push('/market');
   };
 
-  redeemCoupon = (value, CountrySaleMethods, buyNow, markSold) =>
-  // eslint-disable-next-line
-  CountrySaleMethods.useCoupon(value)
-      .send()
-      .then((receipt) => {
-        console.log('receipt.events', receipt.events);
-        // closeModal
-        // transfer Country to userId
-        // receipt.events
-        // should...
-        // emit an event
-        // eslint-disable-next-line
-        // emit CouponConsumed(msg.sender, key, _tokenId, countryContract.getNumberOfPlots(_tokenId));
-        let userId;
-        let tokenId;
+  redeemCoupon = async (value, CountrySaleMethods, buyNow, markSold, web3) => {
+    // eslint-disable-next-line
+    // const transactionHash = await CountrySaleMethods.useCoupon(value).sendTransaction(
+    //   {},
+    //   (err, txHash) => {
+    //     if (err) {
+    //       // setloading false
+    //       // log error
+    //       console.error(err, 'txHash');
+    //       return err;
+    //     }
+    //     return txHash;
+    //   },
+    // );
+    console.log('web3', web3);
 
-        buyNow({
-          variables: {
-            tokenId,
-            newOwnerId: userId,
-            timeOfPurchase: Date.now(),
-          },
-        })
-          .then(async () => {
-            await markSold();
-            return true;
-            // eslint-disable-next-line
-            // const markSold = countryId => rtdb.ref(`/worldMap/objects/units/geometries/${countryId}/properties`).update({ sold: true });
+    try {
+      CountrySaleMethods.methods
+        .useCoupon(value)
+        .send({ from: '0xD9b74f73d933Fde459766f74400971B29B90c9d2' })
+        .on('transactionHash', hash => console.log('hash', hash))
+        .on('confirmation', (confirmationNumber, receipt) => console.log('confirmationNumber, receipt', confirmationNumber, receipt))
+        .on('error', console.error);
 
-          // loading false
-          // close modal
+      CountrySaleMethods.events
+        .CouponConsumed()
+        .on('data', (event) => {
+          // which one is the tx receipt
+          const {
+            transactionHash, blockHash, signature, blockNumber,
+          } = event;
+
+          console.log(
+            'transactionHash, blockHash, signature, blockNumber',
+            transactionHash,
+            blockHash,
+            signature,
+            blockNumber,
+          );
+          const [newOwnerId, indexedKey, countryId, totalPlots] = event.returnValues;
+
+          buyNow({
+            variables: {
+              tokenId: getCountryNameFromCountryId(countryId),
+              newOwnerId,
+              timeOfPurchase: Date.now(),
+              price: 0,
+              totalPlots,
+            },
           })
-          .catch((err) => {
-          // setloading false
-          // log error
-            console.error(err);
-          });
-      })
-      .catch((err) => {
+            .then(async () => {
+              await markSold(getMapIndexFromCountryId(countryId));
+              return true;
+              // eslint-disable-next-line
+              // const markSold = countryId =>
+              rtdb
+                .ref(`/worldMap/objects/units/geometries/${countryId}/properties`)
+                .update({ sold: true });
+              // loading false
+              // close modal
+            })
+            .catch((err) => {
+              // setloading false
+              // log error
+              console.error(err);
+            });
+        })
+        .on('error', console.error);
+    } catch (err) {
       // setloading false
-      // log error
-        console.error(err);
-      });
+      //     // log error
+      console.error(err);
+    }
+  };
 
   render() {
     const {
@@ -337,13 +315,14 @@ class Dashboard extends Component {
       userImage,
       sortBox,
       totalGems,
-      paginated,
+      paginatedRedux,
       handlePagination,
       pageNumber,
       handlePreLoadAuctionPage,
       data,
       match,
       CountrySale,
+      web3,
     } = this.props;
 
     const { plots, referralPoints } = this.state;
@@ -351,13 +330,13 @@ class Dashboard extends Component {
     return (
       <div className="bg-off-black white card-container" data-testid="profile-page">
         <div className="flex  aic  wrap jcc jcb-ns pv4">
-          <div className=" flex aic ">
+          <div className=" flex aic pt3 pt0-ns">
             <img src={userImage} className="h3 w-auto pr3 dib" alt="gem auctions" />
             <h1 className="white" data-testid="userName">
               {userName}
             </h1>
           </div>
-          <div className="flex col tc">
+          <div className="flex-ns dn col tc">
             <div className="flex">
               <div className="flex col tc">
                 <img src={Gold} alt="Gold" className="h3 w-auto ph3" />
@@ -372,12 +351,12 @@ class Dashboard extends Component {
         </div>
 
         <Tabs
-          defaultActiveKey="2"
-          size="large"
+          defaultActiveKey="1"
+          // size="large"
           animated
           className="bg-off-black white "
           tabBarExtraContent={(
-            <div className="flex">
+            <div className="flex-ns dn">
               <Spring from={{ opacity: 0 }} to={{ opacity: 1 }} config={{ delay: 4000 }}>
                 {props => (
                   <div style={props} className="pr4">
@@ -397,7 +376,8 @@ class Dashboard extends Component {
               </Spring>
               <EnhancedCoupon
                 handleRedemption={this.redeemCoupon}
-                CountrySaleMethods={CountrySale && CountrySale.methods}
+                CountrySaleMethods={CountrySale}
+                web3={web3}
               >
                 Redeem Coupon
               </EnhancedCoupon>
@@ -417,7 +397,7 @@ Gems
 )}
             key="1"
           >
-            <Grid>
+            <Grid className="ph3">
               <Primary>
                 <div className="flex jcb aic">
                   <GemSortBox />
@@ -425,8 +405,8 @@ Gems
                 </div>
                 <CardBox>
                   {loading && [1, 2, 3, 4, 5, 6].map(num => <LoadingCard key={num} />)}
-                  {paginated && paginated.length > 0 ? (
-                    paginated.map(auction => (
+                  {paginatedRedux && paginatedRedux.length > 0 ? (
+                    paginatedRedux.map(auction => (
                       <Link
                         to={`/gem/${auction.id}`}
                         key={auction.id}
@@ -456,18 +436,24 @@ Gems
           </TabPane>
           <TabPane
             tab={(
-              <span className="h-100 flex aic">
+              <span
+                className={`h-100 flex aic ${!(
+                  data
+                  && data.user
+                  && data.user.countries.length >= 0
+                ) && 'white o-50'}`}
+              >
                 <img src={Land} alt="" className="h2 w-auto pr2" />
                 {// eslint-disable-next-line
                 (data && data.user && data.user.countries.length) || 0}{' '}
                 Countries
               </span>
 )}
+            // disabled={!(data && data.user && data.user.countries.length >= 0)}
             key="2"
           >
             <CountryDashboard
-              // countries={data && data.user && data.user.countries}
-              countries={testCountries}
+              countries={data && data.user && data.user.countries}
               userId={match.params.userId}
             />
           </TabPane>

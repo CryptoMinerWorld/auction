@@ -12,7 +12,7 @@ require('antd/lib/progress/style/css');
 const Cards = ({ auction }) => (
   <Tilt className="Tilt" options={{ max: 20, scale: 1 }}>
     <div
-      className="bg-dark-gray shadow-3 white"
+      className="bg-off-black shadow-3 white"
       style={{
         WebkitClipPath:
           'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)',
