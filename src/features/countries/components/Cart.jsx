@@ -107,7 +107,9 @@ const EnhancedCart = props => (
         }
       `}
     >
-      {({ loading, data, error }) => {
+      {({
+        loading, data, error,
+      }) => {
         if (loading) {
           return <p data-testid="cartLoading">Loading...</p>;
         }

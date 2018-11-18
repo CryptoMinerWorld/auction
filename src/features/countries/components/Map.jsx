@@ -55,14 +55,11 @@ const Map = ({
     if (properties.sold === true) {
       return colorScale[continents.indexOf(properties.continent)];
     }
-
     return chroma(colorScale[continents.indexOf(properties.continent)]).alpha(0.125);
   };
 
   return (
     <div style={wrapperStyles} data-testid="mapComponent">
-
-
       {zoom !== 1 && (
         <Button
           type="dashed"
@@ -122,7 +119,8 @@ const Map = ({
                       price: 0,
                       roi: 0,
                       countryId: '',
-                    })}
+                    })
+                      }
                     onClick={() => addToCart({
                       id: geography.properties.countryId,
                       countryId: geography.properties.countryId,
@@ -171,8 +169,6 @@ const Map = ({
           </ComposableMap>
         )}
       </Motion>
-
-
     </div>
   );
 };

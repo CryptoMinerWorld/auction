@@ -15,6 +15,8 @@ import cases from 'jest-in-case';
 import { Coupon } from '../components/Coupon';
 import { validateCoupon } from '../helpers';
 
+import { getCountryNameFromCountryId, getMapIndexFromCountryId } from '../helpers';
+
 afterEach(cleanup);
 
 const renderCouponComponent = () => {
@@ -95,7 +97,13 @@ describe('Country Coupon System', () => {
     fireEvent.click(getByText('OK'));
     await wait(() => expect(handleRedemption).toBeCalled());
 
-    expect(handleRedemption).toBeCalledWith('NVBKJUIANBVHXFVA_190', CountrySaleMethods, buyNow, markSold, web3);
+    expect(handleRedemption).toBeCalledWith(
+      'NVBKJUIANBVHXFVA_190',
+      CountrySaleMethods,
+      buyNow,
+      markSold,
+      web3,
+    );
   });
 
   test('if no code is entered an error message is shown', () => {
@@ -170,16 +178,11 @@ describe('Country Coupon System', () => {
     await wait(() => expect(handleRedemption).not.toBeCalled());
   });
 
-  test.skip('disable buy button if contract is not present', () => {
+  test.skip('disable buy button if contract is not present', () => {});
 
-
-  });
-
-  test.skip('loading redeem coupon button if contract is not present', () => {
-
-
-  });
+  test.skip('loading redeem coupon button if contract is not present', () => {});
 });
+
 
 cases(
   'coupon is rejected if it is not the correct format',
@@ -207,13 +210,11 @@ cases(
       coupon: '2VLKJUIANBVHXFVA_190',
       result: false,
     },
-
     {
       name: 'does not include a _',
       coupon: 'MVLKJUIANBVHXFVAR190',
       result: false,
     },
-
     {
       name: 'includes a _ at the 16th position',
       coupon: 'MVLKJUIANBVHXFVA_190',
@@ -243,3 +244,15 @@ cases(
     },
   ],
 );
+
+cases('getCountryNameFromCountryId returns correct mapIndex',
+  (id) => {
+    expect(getCountryNameFromCountryId(id)).toBe('Afghanistan');
+  },
+  [42]);
+
+
+cases('getMapIndexFromCountryId returns correct country name',
+  (id) => {
+    expect(getMapIndexFromCountryId(id)).toBe(1);
+  }, [42]);

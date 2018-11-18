@@ -8,7 +8,7 @@ import { BUY_NOW_MUTATION } from '../../countries/mutations';
 import { markSold, validateCoupon } from '../helpers';
 
 export const Coupon = ({
-  handleRedemption, CountrySaleMethods, buyNow, markedSold, web3,
+  handleRedemption, CountrySaleMethods, buyNow, markedSold,
 }) => {
   const [visible, showModal] = useState(false);
   const [value, setValue] = useState('');
@@ -35,7 +35,7 @@ export const Coupon = ({
             console.log('just not a valid coupon');
             throw new Error();
           }
-          return handleRedemption(value, CountrySaleMethods, buyNow, markedSold, web3);
+          return handleRedemption(value, CountrySaleMethods, buyNow, markedSold);
         })
         .then(() => {
           setloading(false);
@@ -103,7 +103,6 @@ Coupon.propTypes = {
   CountrySaleMethods: PropTypes.shape({}),
   buyNow: PropTypes.func.isRequired,
   markedSold: PropTypes.func.isRequired,
-  web3: PropTypes.func.isRequired,
 };
 
 Coupon.defaultProps = {

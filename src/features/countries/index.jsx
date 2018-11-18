@@ -11,14 +11,11 @@ import MapPageDetails from './components/MapPageDetails';
 
 const CountryAuction = () => {
   const [countryData, setCountryData] = useState();
-
   useEffect(() => {
-    const realTimeMapData = rtdb
-      .ref('/worldMap')
-      .on('value', snap => snap && setCountryData(snap.val()));
+    rtdb.ref('/worldMap').on('value', snap => snap && setCountryData(snap.val()));
 
     return () => {
-      rtdb.ref('/worldMap').off('value', realTimeMapData);
+      rtdb.ref('/worldMap').off();
       console.log('unmounting...');
     };
   }, []);
@@ -40,11 +37,15 @@ const CountryAuction = () => {
 
   const [cart, setCart] = useState([]);
 
-  const addToCart = item => setCart([...cart, item]);
+  const addToCart = (item) => {
+    if (!cart.includes(item)) {
+      setCart([...cart, item]);
+    }
+  };
 
   const removeFromCart = selected =>
     // eslint-disable-next-line
-    setCart(cart.filter(item => item.country !== selected.country));
+    setCart(cart.filter(item => item.countryId !== selected.countryId));
 
   const [zoom, setZoom] = useState(1);
   const [coordinates, setCoordinates] = useState([0, 20]);
@@ -58,6 +59,7 @@ const CountryAuction = () => {
     setZoom(1);
     setCoordinates([0, 20]);
   };
+
 
   return (
     <div data-testid="mapPage" className="bg-off-black white">

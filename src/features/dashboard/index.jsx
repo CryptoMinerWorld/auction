@@ -136,10 +136,11 @@ class Dashboard extends Component {
   state = {
     referralPoints: 0,
     plots: 0,
+    tab: 1,
   };
 
   componentDidMount() {
-    const { preSaleContract, match } = this.props;
+    const { preSaleContract, match, data } = this.props;
     if (preSaleContract && preSaleContract.methods && match.params.userId !== 'false') {
       getReferralPoints(preSaleContract, match.params.userId)
         .then(referralPoints => this.setState({ referralPoints }))
@@ -147,6 +148,11 @@ class Dashboard extends Component {
       getPlotCount(preSaleContract, match.params.userId)
         .then(plots => this.setState({ plots }))
         .catch(err => setError(err));
+    }
+    data.refetch();
+    const country = window.location.hash;
+    if (country) {
+      this.setState({ tab: 2 });
     }
   }
 
@@ -233,79 +239,64 @@ class Dashboard extends Component {
     history.push('/market');
   };
 
-  redeemCoupon = async (value, CountrySaleMethods, buyNow, markSold, web3) => {
-    // eslint-disable-next-line
-    // const transactionHash = await CountrySaleMethods.useCoupon(value).sendTransaction(
-    //   {},
-    //   (err, txHash) => {
-    //     if (err) {
-    //       // setloading false
-    //       // log error
-    //       console.error(err, 'txHash');
-    //       return err;
-    //     }
-    //     return txHash;
-    //   },
-    // );
-    console.log('web3', web3);
+  redeemCoupon = async (value, CountrySaleMethods, buyNow, markSold) => {
+    CountrySaleMethods.methods
+      .useCoupon(value)
+      .send()
+      .on('transactionHash', hash => console.log('hash', hash));
 
-    try {
-      CountrySaleMethods.methods
-        .useCoupon(value)
-        .send({ from: '0xD9b74f73d933Fde459766f74400971B29B90c9d2' })
-        .on('transactionHash', hash => console.log('hash', hash))
-        .on('confirmation', (confirmationNumber, receipt) => console.log('confirmationNumber, receipt', confirmationNumber, receipt))
-        .on('error', console.error);
+    await CountrySaleMethods.events
+      .CouponConsumed()
+      .on('data', (event) => {
+        // which one is the tx receipt
+        const {
+          transactionHash, blockHash, signature, blockNumber, returnValues,
+        } = event;
 
-      CountrySaleMethods.events
-        .CouponConsumed()
-        .on('data', (event) => {
-          // which one is the tx receipt
-          const {
-            transactionHash, blockHash, signature, blockNumber,
-          } = event;
+        console.log(
+          'transactionHash, blockHash, signature, blockNumber',
+          transactionHash,
+          blockHash,
+          signature,
+          blockNumber,
+        );
 
-          console.log(
-            'transactionHash, blockHash, signature, blockNumber',
-            transactionHash,
-            blockHash,
-            signature,
-            blockNumber,
-          );
-          const [newOwnerId, indexedKey, countryId, totalPlots] = event.returnValues;
+        console.log('event.rturnValues', returnValues);
 
-          buyNow({
-            variables: {
-              tokenId: getCountryNameFromCountryId(countryId),
-              newOwnerId,
-              timeOfPurchase: Date.now(),
-              price: 0,
-              totalPlots,
-            },
-          })
-            .then(async () => {
-              await markSold(getMapIndexFromCountryId(countryId));
-              return true;
-              // eslint-disable-next-line
-              // const markSold = countryId =>
-              rtdb
-                .ref(`/worldMap/objects/units/geometries/${countryId}/properties`)
-                .update({ sold: true });
-              // loading false
-              // close modal
-            })
-            .catch((err) => {
-              // setloading false
-              // log error
-              console.error(err);
-            });
+        const { plots, _by, _tokenId } = returnValues;
+
+        const newOwnerId = _by;
+        const countryId = Number(_tokenId);
+        const totalPlots = plots;
+
+        console.log(
+          'getCountryNameFromCountryId(countryId)',
+          getCountryNameFromCountryId(countryId),
+        );
+
+        buyNow({
+          variables: {
+            id: getCountryNameFromCountryId(countryId),
+            newOwnerId,
+            price: 0,
+            timeOfPurchase: Date.now(),
+            totalPlots,
+          },
         })
-        .on('error', console.error);
-    } catch (err) {
-      // setloading false
-      //     // log error
-      console.error(err);
-    }
+          .then(async () => {
+            await markSold(getMapIndexFromCountryId(countryId));
+            return true;
+
+            // loading false
+            // close modal
+          })
+          .catch((err) => {
+            // setloading false
+            // log error
+            console.error(err);
+          });
+      })
+      .on('error', console.error);
   };
 
   render() {
@@ -322,10 +313,9 @@ class Dashboard extends Component {
       data,
       match,
       CountrySale,
-      web3,
     } = this.props;
 
-    const { plots, referralPoints } = this.state;
+    const { plots, referralPoints, tab } = this.state;
 
     return (
       <div className="bg-off-black white card-container" data-testid="profile-page">
@@ -351,7 +341,7 @@ class Dashboard extends Component {
         </div>
 
         <Tabs
-          defaultActiveKey="1"
+          defaultActiveKey={tab}
           // size="large"
           animated
           className="bg-off-black white "
@@ -374,11 +364,7 @@ class Dashboard extends Component {
                   </div>
                 )}
               </Spring>
-              <EnhancedCoupon
-                handleRedemption={this.redeemCoupon}
-                CountrySaleMethods={CountrySale}
-                web3={web3}
-              >
+              <EnhancedCoupon handleRedemption={this.redeemCoupon} CountrySaleMethods={CountrySale}>
                 Redeem Coupon
               </EnhancedCoupon>
               <ReSync />

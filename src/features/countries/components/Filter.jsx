@@ -56,7 +56,7 @@ class Filter extends Component {
         title: 'Name',
         dataIndex: 'name',
         key: 'name',
-        sorter: (a, b) => a.name - b.name,
+
         // filterDropdownVisible: true,
         filterDropdown: ({
           setSelectedKeys, selectedKeys, confirm, clearFilters,

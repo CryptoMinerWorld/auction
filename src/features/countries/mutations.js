@@ -4,8 +4,8 @@ export const BUY_NOW_MUTATION = gql`
   mutation BUY_NOW_MUTATION(
     $id: String!
     $newOwnerId: String!
-    $price: Int!
-    $gift: Boolean!
+    $price: Float!
+
     $timeOfPurchase: Float!
     $totalPlots: Int!
   ) {
@@ -13,7 +13,6 @@ export const BUY_NOW_MUTATION = gql`
       id: $id
       newOwnerId: $newOwnerId
       price: $price
-      gift: $gift
       timeOfPurchase: $timeOfPurchase
       totalPlots: $totalPlots
     ) {
