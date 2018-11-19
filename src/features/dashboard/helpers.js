@@ -4,7 +4,7 @@ import { BigNumber } from 'bignumber.js';
 import {
   db,
   storage,
-  // rtdb
+  rtdb,
 } from '../../app/utils/firebase';
 import { setError } from '../../app/appActions';
 
@@ -124,8 +124,9 @@ export const calculateGemName = (providedGrade, providedTokenId) => {
 
 export const getReferralPoints = (preSaleContract, userId) =>
   // eslint-disable-next-line
-  preSaleContract.methods &&
+  preSaleContract &&
   preSaleContract.methods
+  && preSaleContract.methods
     .unusedReferralPoints(userId)
     .call()
     .then(referralPoints => referralPoints)
@@ -152,7 +153,7 @@ export const validateCoupon = (couponCode) => {
     return false;
   }
 
-  if (Number(last3Characters) > 190 || Number(last3Characters) < 170) {
+  if (Number(last3Characters) > 190 || Number(last3Characters) < 150) {
     return false;
   }
 

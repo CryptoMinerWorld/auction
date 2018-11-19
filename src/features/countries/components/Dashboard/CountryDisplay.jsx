@@ -5,7 +5,7 @@ import { Transition } from 'react-spring';
 import Button from 'antd/lib/button';
 import CountryDetails from './CountryDetails';
 import { CountryBar } from './CountryBar';
-import { handleResell } from '../../helpers';
+// import { handleResell } from '../../helpers';
 
 require('antd/lib/avatar/style/css');
 require('antd/lib/icon/style/css');
@@ -98,7 +98,7 @@ class Countries extends Component {
   };
 
   state = {
-    index: 0,
+    index: null,
     selected: false,
   };
 
@@ -107,9 +107,16 @@ class Countries extends Component {
     const { countries } = this.props;
     const country = window.location.hash.substring(1);
 
+    const turnEmptySpaceIntoPercent20 = string => string.trim().replace(/\s+/g, '%20');
+
     if (countries && country) {
-      const index = countries.findIndex(nation => nation.name === country);
-      this.setState({ index, selected: true });
+      // eslint-disable-next-line
+      const index = countries.findIndex(
+        nation => turnEmptySpaceIntoPercent20(nation.name) === turnEmptySpaceIntoPercent20(country),
+      );
+      if (index >= 0) {
+        this.setState({ index, selected: true });
+      }
     }
   }
 
@@ -121,43 +128,29 @@ class Countries extends Component {
 
   render() {
     const { index, selected } = this.state;
-    const {
-      countries,
-      // CountryERC721, DutchContract,
-      userId,
-    } = this.props;
+    const { countries, userId } = this.props;
 
     return (
-      <div data-testid="countriesExist" id="top" className="pa0 ">
+      <div data-testid="countriesExist" id="top" className="pa0">
         <Transition
           items={countries[index]}
           from={{ transform: 'translate3d(0,-40px,0)' }}
           enter={{ transform: 'translate3d(0,0px,0)' }}
           leave={{ transform: 'translate3d(0,-40px,0)' }}
         >
-          {item => selected
-            && item
-            && countries && (
-              <CountryDetails
-                name={countries[index].name}
-                lastBought={countries[index].lastBought}
-                description={countries[index].description}
-                totalPlots={countries[index].totalPlots}
-                plotsBought={countries[index].plotsBought}
-                plotsMined={countries[index].plotsMined}
-                plotsAvailable={countries[index].plotsAvailable}
-                image={countries[index].image}
-                lastPrice={countries[index].lastPrice}
-                roi={countries[index].roi}
-                handleResell={handleResell}
-                // sellMethod={CountryERC721 && CountryERC721.methods}
-                // countrySaleContractId={process.env.REACT_APP_DUTCH_AUCTION}
-                userId={userId}
-                countryId={countries[index].countryId}
-                onSale={countries[index].onSale}
-                // erc721CountryContract={process.env.REACT_APP_COUNTRY_ERC721}
-                // dutchContractMethods={DutchContract && DutchContract.methods}
-              />
+          {() => selected && (
+          <CountryDetails
+            name={countries[index].name}
+            lastBought={countries[index].lastBought}
+            totalPlots={countries[index].totalPlots}
+            plotsBought={countries[index].plotsBought}
+            plotsMined={countries[index].plotsMined}
+            plotsAvailable={countries[index].plotsAvailable}
+            image={countries[index].image}
+            lastPrice={countries[index].lastPrice}
+            roi={countries[index].roi}
+            userId={userId}
+          />
           )
           }
         </Transition>

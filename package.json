@@ -37,6 +37,7 @@
     "fs-extra": "7.0.0",
     "graphql": "^14.0.2",
     "graphql-tag": "^2.10.0",
+    "history-prop-types": "^2.5.2",
     "html-webpack-plugin": "4.0.0-alpha.2",
     "identity-obj-proxy": "3.0.0",
     "jest": "23.6.0",
@@ -89,7 +90,7 @@
     "webpack-dev-server": "3.1.9",
     "webpack-manifest-plugin": "2.0.4",
     "workbox-webpack-plugin": "3.6.2",
-    "xstate": "^4.1.1"
+    "xstate": "^3.3.3"
   },
   "scripts": {
     "analyze": "source-map-explorer build/static/js/main.*",

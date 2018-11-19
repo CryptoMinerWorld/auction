@@ -5,7 +5,7 @@ import Pagination from 'antd/lib/pagination';
 import { withStateMachine } from 'react-automata';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter, Link, Redirect } from 'react-router-dom';
 // import { matchesState } from 'xstate';
 import notification from 'antd/lib/notification';
 import Tabs from 'antd/lib/tabs';
@@ -90,6 +90,7 @@ const select = store => ({
   web3: store.app.web3,
   preSaleContract: store.app.presaleContractInstance,
   CountrySale: store.app.countrySaleInstance,
+  currentAccount: store.app.currentAccount,
 });
 
 class Dashboard extends Component {
@@ -111,10 +112,8 @@ class Dashboard extends Component {
     pageNumber: PropTypes.number,
     handlePreLoadAuctionPage: PropTypes.func.isRequired,
     machineState: PropTypes.shape({}),
-    // loadingQL: PropTypes.shape({}).isRequired,
-    // errorQL: PropTypes.shape({}).isRequired,
     data: PropTypes.shape({}).isRequired,
-    preSaleContract: PropTypes.shape({}),
+    preSaleContract: PropTypes.shape({}).isRequired,
     CountrySale: PropTypes.shape({}),
   };
 
@@ -128,7 +127,6 @@ class Dashboard extends Component {
     history: {},
     machineState: {},
     pageNumber: 1,
-    preSaleContract: {},
     CountrySale: {},
     paginatedRedux: [{}],
   };
@@ -137,9 +135,12 @@ class Dashboard extends Component {
     referralPoints: 0,
     plots: 0,
     tab: 1,
+    redirectPath: '',
+    alreadyRedirected: false,
   };
 
   componentDidMount() {
+    this.setState({ redirectPath: '' });
     const { preSaleContract, match, data } = this.props;
     if (preSaleContract && preSaleContract.methods && match.params.userId !== 'false') {
       getReferralPoints(preSaleContract, match.params.userId)
@@ -149,9 +150,11 @@ class Dashboard extends Component {
         .then(plots => this.setState({ plots }))
         .catch(err => setError(err));
     }
+
     data.refetch();
-    const country = window.location.hash;
-    if (country) {
+    const country = window.location.hash.length;
+
+    if (country > 0) {
       this.setState({ tab: 2 });
     }
   }
@@ -207,9 +210,13 @@ class Dashboard extends Component {
       .catch(error => transition('ERROR_FETCHING_GEMS', { error }));
   };
 
+  populateDashboard = () => {
+    const { handleAddGemsToDashboard, gems } = this.props;
+    handleAddGemsToDashboard(gems);
+  };
+
   checkForMetaMask = () => {
     const { web3, transition } = this.props;
-    // console.log('web3', web3);
     if (web3 === undefined) {
       transition('NO_WEB3');
     }
@@ -217,11 +224,6 @@ class Dashboard extends Component {
       // console.log('web3', web3);
       transition('WITH_METAMASK');
     }
-  };
-
-  populateDashboard = () => {
-    const { handleAddGemsToDashboard, gems } = this.props;
-    handleAddGemsToDashboard(gems);
   };
 
   showError = () => {
@@ -239,7 +241,17 @@ class Dashboard extends Component {
     history.push('/market');
   };
 
-  redeemCoupon = async (value, CountrySaleMethods, buyNow, markSold) => {
+  redeemCoupon = async (
+    value,
+    CountrySaleMethods,
+    buyNow,
+    markSold,
+    setloading,
+    showModal,
+    redirect,
+  ) => {
+    const { data } = this.props;
+
     CountrySaleMethods.methods
       .useCoupon(value)
       .send()
@@ -267,7 +279,7 @@ class Dashboard extends Component {
 
         const newOwnerId = _by;
         const countryId = Number(_tokenId);
-        const totalPlots = plots;
+        const totalPlots = Number(plots);
 
         console.log(
           'getCountryNameFromCountryId(countryId)',
@@ -285,19 +297,23 @@ class Dashboard extends Component {
         })
           .then(async () => {
             await markSold(getMapIndexFromCountryId(countryId));
-            return true;
-
-            // loading false
-            // close modal
+            return getCountryNameFromCountryId(countryId);
+          })
+          .then(async (countryName) => {
+            console.log('countryName', countryName);
+            setloading(false);
+            showModal(false);
+            await data.refetch();
+            redirect(`/profile/${newOwnerId}#${countryName}`);
           })
           .catch((err) => {
-            // setloading false
-            // log error
-            console.error(err);
+            console.log('err buying country with coupon', err);
           });
       })
       .on('error', console.error);
   };
+
+  redirect = redirectPath => this.setState({ redirectPath });
 
   render() {
     const {
@@ -315,7 +331,14 @@ class Dashboard extends Component {
       CountrySale,
     } = this.props;
 
-    const { plots, referralPoints, tab } = this.state;
+    const {
+      plots, referralPoints, tab, redirectPath, alreadyRedirected,
+    } = this.state;
+
+    if (redirectPath && !alreadyRedirected) {
+      this.setState({ alreadyRedirected: true });
+      return <Redirect to={`${redirectPath}`} />;
+    }
 
     return (
       <div className="bg-off-black white card-container" data-testid="profile-page">
@@ -341,8 +364,7 @@ class Dashboard extends Component {
         </div>
 
         <Tabs
-          defaultActiveKey={tab}
-          // size="large"
+          activeKey={`${tab}`}
           animated
           className="bg-off-black white "
           tabBarExtraContent={(
@@ -364,7 +386,12 @@ class Dashboard extends Component {
                   </div>
                 )}
               </Spring>
-              <EnhancedCoupon handleRedemption={this.redeemCoupon} CountrySaleMethods={CountrySale}>
+              <EnhancedCoupon
+                handleRedemption={this.redeemCoupon}
+                CountrySaleMethods={CountrySale}
+                redirect={this.redirect}
+                userId={data && data.userId}
+              >
                 Redeem Coupon
               </EnhancedCoupon>
               <ReSync />
@@ -374,7 +401,13 @@ class Dashboard extends Component {
         >
           <TabPane
             tab={(
-              <span className="h-100 flex aic">
+              <span
+                tabIndex={-1}
+                role="button"
+                onKeyPress={() => this.setState({ tab: 1 })}
+                className="h-100 flex aic"
+                onClick={() => this.setState({ tab: 1 })}
+              >
                 <img src={Gem} alt="Gems" className="h2 w-auto pr2" />
                 {totalGems || 0}
                 {' '}
@@ -423,6 +456,10 @@ Gems
           <TabPane
             tab={(
               <span
+                tabIndex={-2}
+                onKeyPress={() => this.setState({ tab: 2 })}
+                role="button"
+                onClick={() => this.setState({ tab: 2 })}
                 className={`h-100 flex aic ${!(
                   data
                   && data.user
@@ -499,13 +536,12 @@ export default compose(
     select,
     actions,
   ),
-  withStateMachine(stateMachine),
   graphql(USER_COUNTRIES, {
     options: props => ({
       variables: {
-        id: props.match.params.userId,
+        id: props.currentAccount,
       },
-      // pollInterval: 500,
     }),
   }),
+  withStateMachine(stateMachine),
 )(Dashboard);

@@ -42,7 +42,7 @@ class ReSync extends PureComponent {
     transition: PropTypes.func.isRequired,
     machineState: PropTypes.shape({}).isRequired,
     userId: PropTypes.string.isRequired,
-    gemContract: PropTypes.shape({}),
+    gemContract: PropTypes.shape({}).isRequired,
     userName: PropTypes.string,
     userImage: PropTypes.string,
     success: PropTypes.bool,
@@ -54,7 +54,7 @@ class ReSync extends PureComponent {
     success: false,
     userImage: '',
     userName: '',
-    gemContract: {},
+
   };
 
   updateGemDetails = async () => {
@@ -66,6 +66,7 @@ class ReSync extends PureComponent {
       userName,
       userImage,
     } = this.props;
+
     handleUpdateGemDetails(userId, gemContract, userName, userImage)
       .then(result => transition('SUCCESS', { success: result }))
       .catch(error => transition('FAILURE', {

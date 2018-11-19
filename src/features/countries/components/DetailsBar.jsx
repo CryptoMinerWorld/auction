@@ -2,9 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Progress from 'antd/lib/progress';
 
-const DetailsBar = ({ details, cart }) => {
-  console.log('cart', cart);
-  return (
+const DetailsBar = ({ details }) => (
   <>
     <Progress
       strokeLinecap="square"
@@ -46,8 +44,7 @@ const DetailsBar = ({ details, cart }) => {
       </div>
     </article>
   </>
-  );
-};
+);
 export default DetailsBar;
 
 DetailsBar.propTypes = {
@@ -57,13 +54,13 @@ DetailsBar.propTypes = {
     plots: PropTypes.number,
     roi: PropTypes.number,
   }).isRequired,
-  cart: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string,
-      plots: PropTypes.number,
-      price: PropTypes.number,
-      roi: PropTypes.number,
-      countryId: PropTypes.number,
-    }),
-  ),
+  // cart: PropTypes.arrayOf(
+  //   PropTypes.shape({
+  //     name: PropTypes.string,
+  //     plots: PropTypes.number,
+  //     price: PropTypes.number,
+  //     roi: PropTypes.number,
+  //     countryId: PropTypes.number,
+  //   }),
+  // ),
 };

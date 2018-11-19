@@ -69,7 +69,6 @@ export const getUserGemsOnce = userId => (dispatch) => {
 
 export const getUserDetails = userId => (dispatch) => {
   dispatch({ type: FETCH_USER_DETAILS_BEGUN });
-
   try {
     db.collection('users')
       .where('walletId', '==', userId)
@@ -183,6 +182,9 @@ export const allMyGems = () => ({
 
 // this is not an action its just a regular function, no dispatch
 export const updateGemDetails = (userId, gemContract, userName, userImage) => async () => {
+  console.log('userId, gemContract, userName, userImage', userId, gemContract, userName, userImage);
+
+
   const userIdToLowerCase = userId
     .split('')
     .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
@@ -190,6 +192,7 @@ export const updateGemDetails = (userId, gemContract, userName, userImage) => as
 
   try {
     const idsOfGemsUserOwns = await gemContract.methods.getCollection(userIdToLowerCase).call();
+
 
     return Promise.all(
       // eslint-disable-next-line
@@ -232,6 +235,8 @@ export const updateGemDetails = (userId, gemContract, userName, userImage) => as
           return Promise.reject('No Gems Available');
         }
 
+        console.log('arrayofCompleteGemDetails', arrayofCompleteGemDetails);
+
         const updateOrCreate = arrayofCompleteGemDetails.map(gem => db
           .collection('stones')
           .doc(`${gem.id}`)
@@ -247,6 +252,7 @@ export const updateGemDetails = (userId, gemContract, userName, userImage) => as
       });
     });
   } catch (err) {
+    console.log('err resyncing gems', err);
     return err;
   }
 };
