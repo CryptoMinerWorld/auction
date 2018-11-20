@@ -1,5 +1,11 @@
 build/
 notes.md
+
+# cypress
+cypress/screenshots
+cypress/videos
+cypress.json
+
 # Logs
 logs
 *.log

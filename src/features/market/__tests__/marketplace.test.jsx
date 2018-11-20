@@ -6,12 +6,15 @@ import { createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import App from '../../../app/App';
+
 // import Marketplace from '../ListAuctions';
 // import amethyst from '../../../images/amethystImage.png';
 // import rootReducer from '../../../reducers/index';
 
 // var firebasemock = require('firebase-mock');
 jest.mock('react-ga');
+// jest.mock('firebase');
+
 // var mockfirestore = new firebasemock.MockFirestore();
 // var mockstorage = new firebasemock.MockStorage();
 // var mocksdk = new firebasemock.MockFirebaseSdk(
@@ -80,6 +83,7 @@ function renderWithRouter(
     history,
   };
 }
+
 
 describe.skip('Marketplace page tests', () => {
   // @dev this is all the test data, easy to configure in one place

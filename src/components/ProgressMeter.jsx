@@ -1,10 +1,9 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Progress } from 'antd';
+import { calculatePercentage } from '../features/market/helpers';
 
 class ProgressMeter extends PureComponent {
-  calculatePercentage = (max, current) => ((max - current) / max) * 100;
-
   render() {
     const { currentPrice, minPrice, maxPrice } = this.props;
 
@@ -16,9 +15,8 @@ class ProgressMeter extends PureComponent {
           {' '}
           <span data-testid="currentPrice">{currentPrice}</span>
         </p>
-
         <Progress
-          percent={this.calculatePercentage(minPrice, currentPrice)}
+          percent={calculatePercentage(minPrice, maxPrice, currentPrice)}
           showInfo={false}
           className="ba br-pill pb1 ph2 mb1  b--white-40"
           strokeColor="#c018ab"

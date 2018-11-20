@@ -1,8 +1,4 @@
-import {
-  AUCTION_DETAILS_RECEIVED,
-  NEW_AUCTION_CREATED,
-  CLEAR_GEM_PAGE,
-} from './itemConstants';
+import { AUCTION_DETAILS_RECEIVED, NEW_AUCTION_CREATED, CLEAR_GEM_PAGE } from './itemConstants';
 import {
   FETCH_DATA_BEGUN,
   FETCH_DATA_SUCCEEDED,
@@ -14,6 +10,13 @@ import {
 import { db } from '../../app/utils/firebase';
 import { createAuctionHelper, removeAuctionHelper } from './helpers';
 import { setError } from '../../app/appActions';
+import {
+  startTx,
+  completedTx,
+  ErrorTx,
+  // confirmationCountTx,
+} from '../transactions/txActions';
+import store from '../../app/store';
 
 export const getAuctionDetails = tokenId => (dispatch) => {
   dispatch({ type: FETCH_DATA_BEGUN });
@@ -79,12 +82,14 @@ export const createAuction = (payload, turnLoaderOff, history) => (dispatch, get
 
   createAuctionHelper(tokenId, duration, startPrice, endPrice, gemsContractInstance, currentAccount)
     .then(({ deadline, minPrice, maxPrice }) => {
+      console.log('deadline, minPrice, maxPrice ', deadline, minPrice, maxPrice);
       db.collection('stones')
         .where('id', '==', tokenId)
         .get()
         .then(async (coll) => {
+          console.log('coll', coll);
           const document = await coll.docs.map(doc => doc)[0];
-
+          console.log('document', document);
           await db.doc(`stones/${document.id}`).update({
             auctionIsLive: true,
             deadline,
@@ -112,7 +117,10 @@ export const createAuction = (payload, turnLoaderOff, history) => (dispatch, get
           turnLoaderOff();
           history.push(`/profile/${currentAccount}`);
         })
-        .catch(err => setError(err));
+        .catch((err) => {
+          console.log('err putting gem in auction', err);
+          setError(err);
+        });
     })
     .catch((err) => {
       turnLoaderOff();
@@ -134,27 +142,56 @@ export const removeFromAuction = (tokenId, history, turnLoaderOff) => async (
     .send({
       from: currentUser,
     })
-    .then(() => db
-      .collection('stones')
-      .where('id', '==', Number(tokenId))
-      .get()
-      .then((coll) => {
-        coll.docs.map(async (doc) => {
-          await db.doc(`stones/${doc.id}`).update({
-            auctionIsLive: false,
+    .on('transactionHash', (hash) => {
+      store.dispatch(startTx(hash));
+    })
+    .on('receipt', (receipt) => {
+      store.dispatch(completedTx(receipt));
+      db.collection('stones')
+        .where('id', '==', Number(tokenId))
+        .get()
+        .then((coll) => {
+          coll.docs.map(async (doc) => {
+            await db.doc(`stones/${doc.id}`).update({
+              auctionIsLive: false,
+            });
+            dispatch({
+              type: 'GEM_REMOVED_FROM_AUCTION',
+              payload: doc.data().id,
+            });
+            // getUserGemsOnce(currentUser)
+            history.push(`/profile/${currentUser}`);
           });
-          dispatch({
-            type: 'GEM_REMOVED_FROM_AUCTION',
-            payload: doc.data().id,
-          });
-          // getUserGemsOnce(currentUser)
-          history.push(`/profile/${currentUser}`);
         });
-      }))
-    .catch((error) => {
-      setError(error);
+    })
+    .on('error', (error) => {
+      store.dispatch(ErrorTx(error));
+      console.error(error, 'error removing gem from auction');
+      setError(error, 'Error removing gem from auction');
       turnLoaderOff();
     });
+
+  // .then(() => db
+  //   .collection('stones')
+  //   .where('id', '==', Number(tokenId))
+  //   .get()
+  //   .then((coll) => {
+  //     coll.docs.map(async (doc) => {
+  //       await db.doc(`stones/${doc.id}`).update({
+  //         auctionIsLive: false,
+  //       });
+  //       dispatch({
+  //         type: 'GEM_REMOVED_FROM_AUCTION',
+  //         payload: doc.data().id,
+  //       });
+  //       // getUserGemsOnce(currentUser)
+  //       history.push(`/profile/${currentUser}`);
+  //     });
+  //   }))
+  // .catch((error) => {
+  //   setError(error);
+  //   turnLoaderOff();
+  // });
 };
 
 // @notice lets users buy a gem in an active auction

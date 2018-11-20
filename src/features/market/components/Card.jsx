@@ -25,7 +25,7 @@ const Cards = ({ auction }) => (
       </figure>
       <Progress
         strokeLinecap="square"
-        percent={calculatePercentage(auction.maxPrice, auction.minPrice, auction.currentPrice)}
+        percent={calculatePercentage(auction.minPrice, auction.maxPrice, auction.currentPrice)}
         status="active"
         showInfo={false}
         strokeColor="#c214a7"
@@ -35,26 +35,25 @@ const Cards = ({ auction }) => (
         <small className="basic">
           Ξ
           {' '}
-          <small>{auction && auction.maxPrice && weiToEth(auction.maxPrice)}</small>
+          <small>{weiToEth(auction.maxPrice)}</small>
         </small>
         <big className="db b f3 o-70">
           <span className="basic" style={{ color: '#FFB700' }}>
             Ξ
           </span>
           {' '}
-          <span style={{ color: '#FFB700' }}>{auction && auction.currentPrice && weiToEth(auction.currentPrice)}</span>
+          <span style={{ color: '#FFB700' }}>{weiToEth(auction.currentPrice)}</span>
         </big>
         <small className="basic">
           Ξ
           {' '}
-          <small>{auction && auction.minPrice && weiToEth(auction.minPrice)}</small>
+          <small>{weiToEth(auction.minPrice)}</small>
         </small>
       </div>
       <div className="tc">
         <small>
-          Ends on
-          {' '}
-          {auction.deadline && format(new Date(auction.deadline * 1000), 'EEEE do of MMMM')}
+          Lowest price on
+          {auction.deadline && format(new Date(auction.deadline * 1000), ' do LLL')}
         </small>
       </div>
 
@@ -91,7 +90,7 @@ Cards.propTypes = {
         seconds: PropTypes.number.isRequired,
       }).isRequired,
       PropTypes.number,
-    ]),
+    ]).isRequired,
     image: PropTypes.string,
     owner: PropTypes.string,
     grade: PropTypes.number,

@@ -5,10 +5,15 @@ import Pagination from 'antd/lib/pagination';
 import { withStateMachine } from 'react-automata';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { withRouter, Link } from 'react-router-dom';
-import { matchesState } from 'xstate';
+import { withRouter, Link, Redirect } from 'react-router-dom';
+// import { matchesState } from 'xstate';
 import notification from 'antd/lib/notification';
+import Tabs from 'antd/lib/tabs';
+// import { Transition, config } from 'react-spring';
+import { Spring } from 'react-spring';
+import { graphql } from 'react-apollo';
 import { db } from '../../app/utils/firebase';
+import { setError } from '../../app/appActions';
 import {
   getUserGemsOnce,
   getUserDetails,
@@ -23,10 +28,28 @@ import NoCard from './components/NoCard';
 import { preLoadAuctionPage } from '../market/marketActions';
 import ReSync from './components/ResyncButton';
 import SortBox from './components/SortBox';
-import AuctionCategories from './components/AuctionCategories';
-import { getReferralPoints, getPlotCount } from './helpers';
+// import AuctionCategories from './components/AuctionCategories';
+import {
+  getReferralPoints,
+  getPlotCount,
+  getCountryNameFromCountryId,
+  getMapIndexFromCountryId,
+} from './helpers';
 import stateMachine from './stateMachine';
+import CountryDashboard from '../countries/components/Dashboard';
+import { USER_COUNTRIES } from '../countries/queries';
+import Gold from '../../app/images/dashboard/Gold.png';
+import Silver from '../../app/images/dashboard/Silver.png';
+import Gem from '../../app/images/dashboard/gems.png';
+import Artifact from '../../app/images/dashboard/Artifacts.png';
+import Keys from '../../app/images/dashboard/Keys.png';
+import Land from '../../app/images/dashboard/Land.png';
+import Plot from '../../app/images/dashboard/Plot.png';
+import { EnhancedCoupon } from './components/Coupon';
 
+const { TabPane } = Tabs;
+
+require('antd/lib/tabs/style/css');
 require('antd/lib/notification/style/css');
 require('antd/lib/pagination/style/css');
 require('antd/lib/slider/style/css');
@@ -53,7 +76,7 @@ const Primary = styled.section`
 const select = store => ({
   totalGems: store.dashboard && store.dashboard.userGems && store.dashboard.userGems.length,
   auctions: store.dashboard.filter,
-  paginated: store.dashboard
+  paginatedRedux: store.dashboard
     && store.dashboard.filter && [
     ...store.dashboard.filter.slice(store.dashboard.start, store.dashboard.end),
   ],
@@ -65,6 +88,9 @@ const select = store => ({
   sortBox: store.dashboard.sortBox,
   currentUserId: store.auth.currentUserId,
   web3: store.app.web3,
+  preSaleContract: store.app.presaleContractInstance,
+  CountrySale: store.app.countrySaleInstance,
+  currentAccount: store.app.currentAccount,
 });
 
 class Dashboard extends Component {
@@ -77,15 +103,18 @@ class Dashboard extends Component {
     web3: PropTypes.shape({}),
     transition: PropTypes.func.isRequired,
     match: PropTypes.shape({}),
-    gems: PropTypes.shape([]),
+    gems: PropTypes.shape({}),
     history: PropTypes.shape({}),
-    sortBox: PropTypes.func.isRequired,
+    sortBox: PropTypes.bool.isRequired,
     totalGems: PropTypes.number.isRequired,
-    paginated: PropTypes.bool.isRequired,
+    paginatedRedux: PropTypes.arrayOf(PropTypes.shape({})),
     handlePagination: PropTypes.func.isRequired,
-    pageNumber: PropTypes.number.isRequired,
+    pageNumber: PropTypes.number,
     handlePreLoadAuctionPage: PropTypes.func.isRequired,
     machineState: PropTypes.shape({}),
+    data: PropTypes.shape({}).isRequired,
+    preSaleContract: PropTypes.shape({}).isRequired,
+    CountrySale: PropTypes.shape({}),
   };
 
   static defaultProps = {
@@ -94,19 +123,62 @@ class Dashboard extends Component {
       'https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FAquamarine%20Face%20Emoji.png?alt=media&token=b759ae07-bb8c-4ec8-9399-d3844d5428ef',
     web3: {},
     match: {},
-    gems: [],
+    gems: {},
     history: {},
     machineState: {},
+    pageNumber: 1,
+    CountrySale: {},
+    paginatedRedux: [{}],
   };
 
+  state = {
+    referralPoints: 0,
+    plots: 0,
+    tab: 1,
+    redirectPath: '',
+    alreadyRedirected: false,
+  };
+
+  componentDidMount() {
+    this.setState({ redirectPath: '' });
+    const { preSaleContract, match, data } = this.props;
+    if (preSaleContract && preSaleContract.methods && match.params.userId !== 'false') {
+      getReferralPoints(preSaleContract, match.params.userId)
+        .then(referralPoints => this.setState({ referralPoints }))
+        .catch(err => setError(err));
+      getPlotCount(preSaleContract, match.params.userId)
+        .then(plots => this.setState({ plots }))
+        .catch(err => setError(err));
+    }
+
+    data.refetch();
+    const country = window.location.hash.length;
+
+    if (country > 0) {
+      this.setState({ tab: 2 });
+    }
+  }
+
   componentDidUpdate(prevProps) {
-    const { web3, transition, match } = this.props;
+    const {
+      web3, transition, preSaleContract, match,
+    } = this.props;
+
     if (web3 !== prevProps.web3) {
       transition('WITH_METAMASK');
     }
 
     if (match.params.userId !== prevProps.match.params.userId) {
       transition('LOADING');
+    }
+
+    if (preSaleContract !== prevProps.preSaleContract && match.params.userId !== 'false') {
+      getReferralPoints(preSaleContract, match.params.userId)
+        .then(referralPoints => this.setState({ referralPoints }))
+        .catch(err => setError(err));
+      getPlotCount(preSaleContract, match.params.userId)
+        .then(plots => this.setState({ plots }))
+        .catch(err => setError(err));
     }
   }
 
@@ -138,9 +210,13 @@ class Dashboard extends Component {
       .catch(error => transition('ERROR_FETCHING_GEMS', { error }));
   };
 
+  populateDashboard = () => {
+    const { handleAddGemsToDashboard, gems } = this.props;
+    handleAddGemsToDashboard(gems);
+  };
+
   checkForMetaMask = () => {
     const { web3, transition } = this.props;
-    // console.log('web3', web3);
     if (web3 === undefined) {
       transition('NO_WEB3');
     }
@@ -148,11 +224,6 @@ class Dashboard extends Component {
       // console.log('web3', web3);
       transition('WITH_METAMASK');
     }
-  };
-
-  populateDashboard = () => {
-    const { handleAddGemsToDashboard, gems } = this.props;
-    handleAddGemsToDashboard(gems);
   };
 
   showError = () => {
@@ -170,6 +241,80 @@ class Dashboard extends Component {
     history.push('/market');
   };
 
+  redeemCoupon = async (
+    value,
+    CountrySaleMethods,
+    buyNow,
+    markSold,
+    setloading,
+    showModal,
+    redirect,
+  ) => {
+    const { data } = this.props;
+
+    CountrySaleMethods.methods
+      .useCoupon(value)
+      .send()
+      .on('transactionHash', hash => console.log('hash', hash));
+
+    await CountrySaleMethods.events
+      .CouponConsumed()
+      .on('data', (event) => {
+        // which one is the tx receipt
+        const {
+          transactionHash, blockHash, signature, blockNumber, returnValues,
+        } = event;
+
+        console.log(
+          'transactionHash, blockHash, signature, blockNumber',
+          transactionHash,
+          blockHash,
+          signature,
+          blockNumber,
+        );
+
+        console.log('event.rturnValues', returnValues);
+
+        const { plots, _by, _tokenId } = returnValues;
+
+        const newOwnerId = _by;
+        const countryId = Number(_tokenId);
+        const totalPlots = Number(plots);
+
+        console.log(
+          'getCountryNameFromCountryId(countryId)',
+          getCountryNameFromCountryId(countryId),
+        );
+
+        buyNow({
+          variables: {
+            id: getCountryNameFromCountryId(countryId),
+            newOwnerId,
+            price: 0,
+            timeOfPurchase: Date.now(),
+            totalPlots,
+          },
+        })
+          .then(async () => {
+            await markSold(getMapIndexFromCountryId(countryId));
+            return getCountryNameFromCountryId(countryId);
+          })
+          .then(async (countryName) => {
+            console.log('countryName', countryName);
+            setloading(false);
+            showModal(false);
+            await data.refetch();
+            redirect(`/profile/${newOwnerId}#${countryName}`);
+          })
+          .catch((err) => {
+            console.log('err buying country with coupon', err);
+          });
+      })
+      .on('error', console.error);
+  };
+
+  redirect = redirectPath => this.setState({ redirectPath });
+
   render() {
     const {
       loading,
@@ -177,68 +322,200 @@ class Dashboard extends Component {
       userImage,
       sortBox,
       totalGems,
-      paginated,
+      paginatedRedux,
       handlePagination,
       pageNumber,
       handlePreLoadAuctionPage,
-      machineState,
+      data,
+      match,
+      CountrySale,
     } = this.props;
 
-    return (
-      <div className="bg-off-black white pa4">
-        {matchesState('withMetamask', machineState.value) && (
-          <AuctionCategories
-            gemCount={totalGems}
-            getReferralPoints={getReferralPoints}
-            getPlotCount={getPlotCount}
-          />
-        )}
+    const {
+      plots, referralPoints, tab, redirectPath, alreadyRedirected,
+    } = this.state;
 
-        <div className="flex  aic mt3 wrap jcc jcb-ns">
-          <div className=" flex aic">
+    if (redirectPath && !alreadyRedirected) {
+      this.setState({ alreadyRedirected: true });
+      return <Redirect to={`${redirectPath}`} />;
+    }
+
+    return (
+      <div className="bg-off-black white card-container" data-testid="profile-page">
+        <div className="flex  aic  wrap jcc jcb-ns pv4">
+          <div className=" flex aic pt3 pt0-ns">
             <img src={userImage} className="h3 w-auto pr3 dib" alt="gem auctions" />
             <h1 className="white" data-testid="userName">
               {userName}
             </h1>
           </div>
-          <ReSync />
+          <div className="flex-ns dn col tc">
+            <div className="flex">
+              <div className="flex col tc">
+                <img src={Gold} alt="Gold" className="h3 w-auto ph3" />
+                Gold
+              </div>
+              <div className="flex col tc">
+                <img src={Silver} alt="Silver" className="h3 w-auto ph3" />
+                Silver
+              </div>
+            </div>
+          </div>
         </div>
-        <Grid>
-          <Primary>
-            <div className="flex jcb aic">
-              <GemSortBox />
-              {sortBox && <SortBox />}
+
+        <Tabs
+          activeKey={`${tab}`}
+          animated
+          className="bg-off-black white "
+          tabBarExtraContent={(
+            <div className="flex-ns dn">
+              <Spring from={{ opacity: 0 }} to={{ opacity: 1 }} config={{ delay: 4000 }}>
+                {props => (
+                  <div style={props} className="pr4">
+                    {referralPoints === '' ? (
+                      <p data-testid="loadingReferralPoints" className="tr o-50">
+                        Loading Referral Points...
+                      </p>
+                    ) : (
+                      <small data-testid="referralPoints" className="tr fr o-50">
+                        {`${referralPoints} REFERAL ${
+                          referralPoints === 1 ? 'POINT' : 'POINTS'
+                        } AVAILABLE `}
+                      </small>
+                    )}
+                  </div>
+                )}
+              </Spring>
+              <EnhancedCoupon
+                handleRedemption={this.redeemCoupon}
+                CountrySaleMethods={CountrySale}
+                redirect={this.redirect}
+                userId={data && data.userId}
+              >
+                Redeem Coupon
+              </EnhancedCoupon>
+              <ReSync />
             </div>
-            <CardBox>
-              {loading && [1, 2, 3, 4, 5, 6].map(num => <LoadingCard key={num} />)}
-              {paginated && paginated.length > 0 ? (
-                paginated.map(auction => (
-                  <Link
-                    to={`/gem/${auction.id}`}
-                    key={auction.id}
-                    onClick={() => handlePreLoadAuctionPage(auction)}
-                  >
-                    <Cards auction={auction} />
-                  </Link>
-                ))
-              ) : (
-                <NoCard />
-              )}
-            </CardBox>
-            <div className="white w-100 tc pv4">
-              <Pagination
-                current={pageNumber}
-                pageSize={15}
-                total={totalGems}
-                hideOnSinglePage
-                onChange={(page, pageSize) => {
-                  window.scrollTo(0, 0);
-                  handlePagination(page, pageSize);
-                }}
-              />
-            </div>
-          </Primary>
-        </Grid>
+)}
+          type="card"
+        >
+          <TabPane
+            tab={(
+              <span
+                tabIndex={-1}
+                role="button"
+                onKeyPress={() => this.setState({ tab: 1 })}
+                className="h-100 flex aic"
+                onClick={() => this.setState({ tab: 1 })}
+              >
+                <img src={Gem} alt="Gems" className="h2 w-auto pr2" />
+                {totalGems || 0}
+                {' '}
+Gems
+              </span>
+)}
+            key="1"
+          >
+            <Grid className="ph3">
+              <Primary>
+                <div className="flex jcb aic">
+                  <GemSortBox />
+                  {sortBox && <SortBox />}
+                </div>
+                <CardBox>
+                  {loading && [1, 2, 3, 4, 5, 6].map(num => <LoadingCard key={num} />)}
+                  {paginatedRedux && paginatedRedux.length > 0 ? (
+                    paginatedRedux.map(auction => (
+                      <Link
+                        to={`/gem/${auction.id}`}
+                        key={auction.id}
+                        onClick={() => handlePreLoadAuctionPage(auction)}
+                      >
+                        <Cards auction={auction} />
+                      </Link>
+                    ))
+                  ) : (
+                    <NoCard />
+                  )}
+                </CardBox>
+                <div className="white w-100 tc pv4">
+                  <Pagination
+                    current={pageNumber}
+                    pageSize={15}
+                    total={totalGems}
+                    hideOnSinglePage
+                    onChange={(page, pageSize) => {
+                      window.scrollTo(0, 0);
+                      handlePagination(page, pageSize);
+                    }}
+                  />
+                </div>
+              </Primary>
+            </Grid>
+          </TabPane>
+          <TabPane
+            tab={(
+              <span
+                tabIndex={-2}
+                onKeyPress={() => this.setState({ tab: 2 })}
+                role="button"
+                onClick={() => this.setState({ tab: 2 })}
+                className={`h-100 flex aic ${!(
+                  data
+                  && data.user
+                  && data.user.countries.length >= 0
+                ) && 'white o-50'}`}
+              >
+                <img src={Land} alt="" className="h2 w-auto pr2" />
+                {// eslint-disable-next-line
+                (data && data.user && data.user.countries.length) || 0}{' '}
+                Countries
+              </span>
+)}
+            // disabled={!(data && data.user && data.user.countries.length >= 0)}
+            key="2"
+          >
+            <CountryDashboard
+              countries={data && data.user && data.user.countries}
+              userId={match.params.userId}
+            />
+          </TabPane>
+
+          <TabPane
+            tab={(
+              <span className="h-100 flex aic white o-50">
+                <img src={Artifact} alt="" className="h2 w-auto pr2" />
+0 Artifacts
+              </span>
+)}
+            disabled
+            key="3"
+          />
+
+          <TabPane
+            tab={(
+              <span className="h-100 flex aic white o-50 ">
+                <img src={Plot} alt="" className="h2 w-auto pr2" />
+                {plots}
+                {' '}
+Plots
+              </span>
+)}
+            disabled
+            key="4"
+          />
+
+          <TabPane
+            tab={(
+              <span className="h-100 flex aic white o-50">
+                <img src={Keys} alt="" className="h2 w-auto pr2" />
+0 Keys
+              </span>
+)}
+            disabled
+            key="5"
+          />
+        </Tabs>
       </div>
     );
   }
@@ -259,5 +536,12 @@ export default compose(
     select,
     actions,
   ),
+  graphql(USER_COUNTRIES, {
+    options: props => ({
+      variables: {
+        id: props.currentAccount,
+      },
+    }),
+  }),
   withStateMachine(stateMachine),
 )(Dashboard);

@@ -1,9 +1,10 @@
 import { combineReducers } from 'redux';
+import { reducer as tooltip } from 'redux-tooltip';
 import { marketActionsReducer, marketReducer } from '../features/market/marketReducers';
-
 import auction from '../features/items/itemReducer';
 import auth from '../features/auth/authReducer';
 import dashboard from '../features/dashboard/dashboardReducer';
+import txReducer from '../features/transactions/txReducer';
 
 import {
   WEB3_ADDED,
@@ -17,7 +18,10 @@ import {
   MODAL_VISIBLE,
   RELEASE_CONFETTI,
   MODAL_GONE,
-  SET_ERROR, CLEAR_ERROR,
+  SET_ERROR,
+  CLEAR_ERROR,
+  COUNTRY_CONTRACT_ADDED,
+  COUNTRY_SALE_ADDED,
 } from './reduxConstants';
 
 const initialState = {
@@ -35,6 +39,8 @@ const appReducer = (state = initialState, action) => ({
   [FETCH_DATA_FAILED]: { ...state, error: action.payload, loading: false },
   [FETCH_DATA_SUCCEEDED]: { ...state, loading: false },
   [CURRENT_ACCOUNT_ADDED]: { ...state, currentAccount: action.payload },
+  [COUNTRY_CONTRACT_ADDED]: { ...state, countryContractInstance: action.payload },
+  [COUNTRY_SALE_ADDED]: { ...state, countrySaleInstance: action.payload },
   [PRESALE_CONTRACT_ADDED]: {
     ...state,
     presaleContractInstance: action.payload,
@@ -55,19 +61,22 @@ const appReducer = (state = initialState, action) => ({
   [SET_ERROR]: {
     ...state,
     error: action.payload,
+    errorTitle: action.meta,
   },
   [CLEAR_ERROR]: {
     ...state,
     error: '',
+    errorTitle: '',
   },
-
 }[action.type] || state);
 
 export default combineReducers({
+  app: appReducer,
   market: marketReducer,
   marketActions: marketActionsReducer,
   auction,
   auth,
   dashboard,
-  app: appReducer,
+  tooltip,
+  tx: txReducer,
 });

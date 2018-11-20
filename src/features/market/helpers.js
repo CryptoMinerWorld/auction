@@ -7,11 +7,11 @@ export const updateDBwithNewPrice = auctionId => db
   .then((coll) => {
     const gemId = coll.docs.map(doc => doc.id);
     return gemId[0];
-  })
-  .catch(err => err);
+  });
 
-export const calculatePercentage = (max, min, current) => (
-  (max - current - min) / max) * 100 || 100;
+export const calculatePercentage = (min, max, current) =>
+  // eslint-disable-next-line implicit-arrow-linebreak
+  100 - ((current - min) / (max - min)) * 100;
 
 export const weiToEth = wei => Number((wei / 1000000000000000000).toFixed(3));
 

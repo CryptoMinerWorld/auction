@@ -68,6 +68,7 @@ const AuctionBox = ({
   provider,
   history,
   handleShowSignInBox,
+  handleBuyGem,
 }) => (
   <OverlapOnDesktopView
     className="bg-dark-gray measure-l w-100 shadow-3"
@@ -91,7 +92,7 @@ const AuctionBox = ({
         <BuyNow
           onClick={() => {
             if (provider && accountExists) {
-              handleBuyNow(tokenId, currentAccount, history);
+              handleBuyGem(tokenId, currentAccount, history);
               // } else if (provider) {
               //   handleShowSignInModal();
             } else {
@@ -112,7 +113,7 @@ const AuctionBox = ({
 
 const actions = {
   handleShowSignInModal: showSignInModal,
-  handleBuyNow,
+  handleBuyGem: handleBuyNow,
   handleShowSignInBox: () => ({ type: 'SHOW_SIGN_IN_BOX' }),
 };
 
@@ -137,11 +138,10 @@ AuctionBox.propTypes = {
   provider: PropTypes.bool.isRequired,
   currentAccount: PropTypes.string.isRequired,
   accountExists: PropTypes.bool,
-  restingEnergyMinutes: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  history: PropTypes.shape({
-
-  }).isRequired,
-  handleShowSignInBox: PropTypes.func.isRequired,
+  restingEnergyMinutes: PropTypes.number,
+  history: PropTypes.shape({}).isRequired,
+  handleShowSignInBox: PropTypes.bool.isRequired,
+  handleBuyGem: PropTypes.func.isRequired,
 };
 
 AuctionBox.defaultProps = {

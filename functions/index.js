@@ -10,7 +10,9 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const Web3 = require('web3');
 
-admin.initializeApp();
+admin.initializeApp(functions.config().firebase);  
+admin.firestore().settings( { timestampsInSnapshots: true })
+
 
 // // DEV
 // const web3 = new Web3(

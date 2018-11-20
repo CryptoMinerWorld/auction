@@ -1,11 +1,19 @@
 // import { db } from '../../app/utils/firebase';
 
-
 // import store from '../../app/store';
-// import { RESOLVE_PENDING_TRANSACTIONS } from './txConstants';
+import {
+  TX_STARTED, TX_CONFIRMATIONS, TX_COMPLETED, TX_ERROR,
+} from './txConstants';
 
 import { setError } from '../../app/appActions';
 
+export const startTx = hash => ({ type: TX_STARTED, payload: hash });
+export const confirmationCountTx = confirmations => ({
+  type: TX_CONFIRMATIONS,
+  payload: confirmations,
+});
+export const completedTx = receipt => ({ type: TX_COMPLETED, payload: receipt });
+export const ErrorTx = error => ({ type: TX_ERROR, payload: error });
 
 export const resolveTXStatus = (pendingTransactions, dbWrite, dbDelete, queryBlockchain) => {
   try {
@@ -20,15 +28,14 @@ export const resolveTXStatus = (pendingTransactions, dbWrite, dbDelete, queryBlo
   }
 };
 
-
-export async function findPendingTransactions(userId, queryBlockchain, dbQuery, dbWrite, dbDelete, resolveTXStatus) {
-  const payload = await dbQuery(userId);
-  if (payload.length > 0) {
-    return resolveTXStatus(payload, queryBlockchain, dbWrite, dbDelete);
-  }
-  return null;
-}
-
+// eslint-disable-next-line
+// export async function findPendingTransactions(userId, queryBlockchain, dbQuery, dbWrite, dbDelete, resolveTXStatus) {
+//   const payload = await dbQuery(userId);
+//   if (payload.length > 0) {
+//     return resolveTXStatus(payload, queryBlockchain, dbWrite, dbDelete);
+//   }
+//   return null;
+// }
 
 // getWeb3
 //   .then(result => result.web3)

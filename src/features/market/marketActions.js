@@ -24,6 +24,7 @@ export const getAuctions = () => (dispatch) => {
       .get()
       .then((collection) => {
         const auctions = collection.docs.map(doc => doc.data());
+        // console.log('auctions', auctions)
         dispatch({ type: FETCH_NEW_AUCTIONS_SUCCEEDED });
         dispatch({ type: NEW_AUCTIONS_RECEIVED, payload: auctions });
       });
@@ -32,12 +33,11 @@ export const getAuctions = () => (dispatch) => {
   }
 };
 
-export const updatePriceOnAllLiveAuctions = (
-  dutchContract,
-  gemContractAddress,
-) => async (dispatch, getState) => {
+export const updatePriceOnAllLiveAuctions = (dutchContract, gemContractAddress) => async (
+  dispatch,
+  getState,
+) => {
   dispatch({ type: AUCTION_PRICE_UPDATES_BEGIN });
-
 
   const activeAuctions = getState().market;
 
@@ -103,9 +103,9 @@ export const filterMarketplaceResults = () => (dispatch, getState) => {
       const filteredFlatArray = flatArray.reduce((result, gem) => {
         if (
           (state.gems.amethyst && gem.color === 2)
-                    || (state.gems.garnet && gem.color === 1)
-                    || (state.gems.sapphire && gem.color === 9)
-                    || (state.gems.opal && gem.color === 10)
+          || (state.gems.garnet && gem.color === 1)
+          || (state.gems.sapphire && gem.color === 9)
+          || (state.gems.opal && gem.color === 10)
         ) {
           result.push(gem);
         }
@@ -115,7 +115,7 @@ export const filterMarketplaceResults = () => (dispatch, getState) => {
       // create a tally of how many times each item appears
       const tally = filteredFlatArray.reduce((results, gem) => {
         // eslint-disable-next-line
-                results[gem.id] = (results[gem.id] || 0) + 1;
+        results[gem.id] = (results[gem.id] || 0) + 1;
         return results;
       }, {});
 
@@ -157,7 +157,6 @@ export const orderMarketBy = (key, descending) => (dispatch, getState) => {
   dispatch({ type: MARKETPLACE_WAS_FILTERED, payload: newMarket });
   dispatch({ type: PAGINATE_MARKET, payload: [1, 15] });
 };
-
 
 export function paginate(pageNumber, pagePerView) {
   return dispatch => dispatch({ type: PAGINATE_MARKET, payload: [pageNumber, pagePerView] });

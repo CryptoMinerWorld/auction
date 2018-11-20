@@ -18,7 +18,7 @@ class ProgressMeter extends PureComponent {
         </p>
 
         <Progress
-          percent={calculatePercentage(maxPrice, minPrice, currentPrice)}
+          percent={calculatePercentage(minPrice, maxPrice, currentPrice)}
           showInfo={false}
           className="ba br-pill pb1 ph2 mb1  b--white-40"
           strokeColor="#c018ab"

@@ -55,7 +55,7 @@ class Auction extends PureComponent {
     }
 
     this.Priceinterval = setInterval(() => {
-      console.log('dutchContract && gemContractAddress', dutchContract, gemContractAddress);
+      // console.log('dutchContract && gemContractAddress', dutchContract, gemContractAddress);
       if (dutchContract && gemContractAddress) {
         dutchContract.methods
           .getCurrentPrice(gemContractAddress, match.params.gemId)

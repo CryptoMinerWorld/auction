@@ -1,5 +1,6 @@
 import firebase from 'firebase/app';
 
+require('firebase/database');
 require('firebase/firestore');
 require('firebase/storage');
 
@@ -15,6 +16,7 @@ const config = {
 firebase.initializeApp(config);
 
 export const storage = firebase.storage();
+export const rtdb = firebase.database();
 // eslint-disable-next-line
 export let db = firebase.firestore();
 const settings = { timestampsInSnapshots: true };

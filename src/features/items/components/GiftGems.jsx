@@ -109,6 +109,7 @@ class GiftGems extends Component {
     const {
       gemsContract, currentAccountId, match, walletId, transition,
     } = this.props;
+
     const to = walletId;
     const from = currentAccountId;
     const tokenId = match.params.gemId;
@@ -144,7 +145,10 @@ class GiftGems extends Component {
   };
 
   checkReceiverDetails = () => {
+    console.log('pog');
+
     const { walletId, transition } = this.props;
+
     db.doc(`users/${OxToLowerCase(walletId)}`)
       .get()
       .then(
@@ -160,14 +164,18 @@ class GiftGems extends Component {
 
   render() {
     const {
-      transition, machineState,
-      name, image, sourceImage,
-      gemName, walletId,
+      transition,
+      machineState,
+      name,
+      image,
+      sourceImage,
+      gemName,
+      walletId,
       gemsContract,
       currentAccountId,
       match,
     } = this.props;
-
+    // console.log(machineState);
     return (
       <Formik
         validate={this.validateWalletId}
@@ -222,8 +230,6 @@ class GiftGems extends Component {
                       tokenId: match.params.gemId,
                     })
                     }
-
-
                   >
                     {machineState.value === 'transferring' ? (
                       <span>

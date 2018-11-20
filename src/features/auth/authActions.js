@@ -4,10 +4,10 @@ import getWeb3 from '../../app/utils/getWeb3';
 import {
   CURRENT_USER_AVAILABLE,
   CURRENT_USER_NOT_AVAILABLE,
-  WEB3_AVAILABLE,
   USER_EXISTS,
   NEW_USER,
   NO_USER_EXISTS,
+  WEB3_AVAILABLE,
 } from './authConstants';
 import {
   getUserGems,

@@ -14,6 +14,7 @@ import App from '../../../app/App';
 import rootReducer from '../../../app/rootReducer.js';
 
 // var firebasemock = require('firebase-mock');
+jest.mock('firebase');
 
 // var mockfirestore = new firebasemock.MockFirestore();
 // var mockstorage = new firebasemock.MockStorage();
@@ -114,7 +115,7 @@ describe('Auction page tests', () => {
 
     const GemPageTitle = await waitForElement(() => getByTestId('gemName'));
 
-    // debug();
+
     expect(GemPageTitle.textContent).toBe('Amethyst #12345');
   });
 

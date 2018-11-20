@@ -124,11 +124,11 @@ export default function dashboardReducer(
     }
 
     if (action.payload === 'inAuction') {
-      newGemSelection = allGems.filter(gem => gem.auctionIsLive === true);
+      newGemSelection = allGems && allGems.filter(gem => gem.auctionIsLive === true);
     }
 
     if (action.payload === 'notInAuction') {
-      newGemSelection = allGems.filter(gem => gem.auctionIsLive === false);
+      newGemSelection = allGems && allGems.filter(gem => gem.auctionIsLive === false);
     }
 
     // returns ordered data and resets pagination to first page]

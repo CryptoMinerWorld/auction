@@ -1,6 +1,15 @@
 import fromExponential from 'from-exponential';
 import { BigNumber } from 'bignumber.js';
 import { db, storage } from '../../app/utils/firebase';
+import {
+  startTx,
+  completedTx,
+  ErrorTx,
+  // confirmationCountTx,
+} from '../transactions/txActions';
+import store from '../../app/store';
+// eslint-disable-next-line
+// import { setError } from '../../app/appActions';
 
 export function isTokenForSale(_contract, _tokenId) {
   return _contract.methods.isTokenOnSale(_tokenId).call();
@@ -166,16 +175,18 @@ export const createAuctionHelper = async (
   );
 
   // submit the auction
-  return _contract.methods
+  await _contract.methods
     .safeTransferFrom(_currentAccount, process.env.REACT_APP_DUTCH_AUCTION, token, data)
     .send()
-    .then(() => {
-      const auctionDetails = {
-        deadline: t1,
-        maxPrice: _startPriceInWei,
-        minPrice: _endPriceInWei,
-      };
+    .on('transactionHash', hash => store.dispatch(startTx(hash)))
+    .on('receipt', receipt => store.dispatch(completedTx(receipt)))
+    .on('error', error => store.dispatch(ErrorTx(error)));
 
-      return auctionDetails;
-    });
+  const auctionDetails = {
+    deadline: t1,
+    maxPrice: _startPriceInWei,
+    minPrice: _endPriceInWei,
+  };
+
+  return auctionDetails;
 };

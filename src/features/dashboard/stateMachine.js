@@ -1,4 +1,5 @@
 export default {
+
   initial: 'withoutMetamask',
   on: {
     LOADING: 'withoutMetamask.loading',

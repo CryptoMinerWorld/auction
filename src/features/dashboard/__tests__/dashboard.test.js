@@ -3,7 +3,7 @@ import { waitForElement, cleanup } from 'react-testing-library';
 import 'jest-dom/extend-expect';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import Dashboard from '../index';
+// import Dashboard from '../index';
 import rootReducer from '../../../app/rootReducer.js';
 import { renderWithRouter } from '../../../app/testSetup';
 import SortBox from '../components/SortBox';
@@ -11,8 +11,9 @@ import GemSortBox from '../components/GemSortBox';
 
 jest.mock('react-ga');
 afterEach(cleanup);
+// jest.mock('firebase');
 
-test('when I sort my dashboard it rearranges my gems', async () => {
+test.skip('when I sort my dashboard it rearranges my gems', async () => {
   const store = createStore(rootReducer);
 
   const { getByTestId, debug } = renderWithRouter(
