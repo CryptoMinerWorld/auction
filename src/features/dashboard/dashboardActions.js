@@ -182,9 +182,6 @@ export const allMyGems = () => ({
 
 // this is not an action its just a regular function, no dispatch
 export const updateGemDetails = (userId, gemContract, userName, userImage) => async () => {
-  console.log('userId, gemContract, userName, userImage', userId, gemContract, userName, userImage);
-
-
   const userIdToLowerCase = userId
     .split('')
     .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
@@ -235,7 +232,7 @@ export const updateGemDetails = (userId, gemContract, userName, userImage) => as
           return Promise.reject('No Gems Available');
         }
 
-        console.log('arrayofCompleteGemDetails', arrayofCompleteGemDetails);
+        // console.log('arrayofCompleteGemDetails', arrayofCompleteGemDetails);
 
         const updateOrCreate = arrayofCompleteGemDetails.map(gem => db
           .collection('stones')
