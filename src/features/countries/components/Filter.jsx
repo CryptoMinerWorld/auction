@@ -13,9 +13,13 @@ require('antd/lib/button/style/css');
 require('antd/lib/icon/style/css');
 
 const BuyNowButton = ({ record, handleCityClick }) => (
-  <Button type="dashed" icon="plus" ghost onClick={() => handleCityClick(record)} className="hover-blue white ml3 ">
-    Add To card
-  </Button>
+  <Button
+    type="dashed"
+    icon="shopping-cart"
+    ghost
+    onClick={() => handleCityClick(record)}
+    className="hover-black white ml3 "
+  />
 );
 
 BuyNowButton.propTypes = {
@@ -145,28 +149,22 @@ class Filter extends Component {
         title: 'Plots',
         dataIndex: 'plots',
         key: 'plots',
-
         sorter: (a, b) => a.plots - b.plots,
+        render: text => <p className="w3">{`${text}`}</p>,
       },
       {
         title: 'Price',
         dataIndex: 'price',
         key: 'price',
-        render: text => <p>{text && text.toFixed(3)}</p>,
+        render: text => <p className="w3">{`Ξ ${text && text.toFixed(2)}`}</p>,
         sorter: (a, b) => a.price - b.price,
       },
       {
-        title: 'ROI',
+        title: 'Earns',
         dataIndex: 'roi',
         key: 'roi',
         sorter: (a, b) => a.roi - b.roi,
-        render: text => (
-          <p>
-            {text}
-            {' '}
-%
-          </p>
-        ),
+        render: text => <p className="w3">{`Ξ ${text && text.toFixed(2)}`}</p>,
       },
     ];
 
@@ -177,10 +175,9 @@ class Filter extends Component {
         style={{ backgroundColor: '#2A2C36' }}
       >
         <Table
-          rowClassName="pointer bg-animate  grow hover-black white"
+          rowClassName="pointer hover-black white"
           columns={columns}
           dataSource={cities}
-
           onRow={record => ({
             onClick: () => handleCityClick(record),
             onMouseEnter: () => setHoverCountry(record.countryId),

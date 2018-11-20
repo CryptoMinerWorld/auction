@@ -1,6 +1,7 @@
 import React from 'react';
-import Button from 'antd/lib/button';
+// import Button from 'antd/lib/button';
 import PropTypes from 'prop-types';
+import ButtonCTA from '../../../components/ButtonCTA';
 
 const BuyNow = ({
   txloading,
@@ -49,11 +50,7 @@ const BuyNow = ({
       </div>
       <p>Current Price</p>
       <div className=" flex row aic jcc">
-        <Button
-          type="primary"
-          size="large"
-          data-testid="buyNow"
-          loading={txloading}
+        <ButtonCTA
           disabled={!countrySale || !markSold || picked.length <= 0 || !buyNow}
           onClick={async () => {
             try {
@@ -94,7 +91,6 @@ const BuyNow = ({
                   });
                   // console.log('db updated');
 
-
                   setLoading(false);
                   history.push(`/profile/${data.userId}#${picked[0].name}`);
                 },
@@ -105,9 +101,11 @@ const BuyNow = ({
               setLoading(false);
             }
           }}
-        >
-          buy now
-        </Button>
+          testId="buyNow"
+          loading={txloading}
+          loadingText="buying..."
+          text="buy now"
+        />
       </div>
     </div>
   </div>

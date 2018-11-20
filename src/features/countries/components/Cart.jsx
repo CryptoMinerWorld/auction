@@ -66,15 +66,22 @@ const Cart = ({
               key: 'price',
             },
             {
-              title: 'Min Roi',
+              title: 'Earns (Minimum)',
               dataIndex: 'roi',
               key: 'roi',
             },
             {
-              title: 'Return',
-              dataIndex: 'return',
-              key: 'return',
+              title: 'ROI (Minimum)',
+              key: 'minRoi',
+              render: country => (
+                <span>
+                  {Math.round((country.roi / country.price) * 100)}
+                  {' '}
+%
+                </span>
+              ),
             },
+
             {
               title: 'Remove',
               key: 'action',
@@ -107,9 +114,7 @@ const EnhancedCart = props => (
         }
       `}
     >
-      {({
-        loading, data, error,
-      }) => {
+      {({ loading, data, error }) => {
         if (loading) {
           return <p data-testid="cartLoading">Loading...</p>;
         }

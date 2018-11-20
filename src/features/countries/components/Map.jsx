@@ -21,9 +21,14 @@ const wrapperStyles = {
 };
 
 const colorScale = chroma
-  .scale(['#FF6E40', 'red', '#FFD740', 'green', '#00B8D4', 'blue'])
+  .scale(['#3d2a00', '#23292e', '#0b3400', '#290058', '#440300', '#4a1a00', '#23292e', '#00103d'])
   .mode('lch')
-  .colors(9);
+  .colors(8);
+
+const boughtColorScale = chroma
+  .scale(['#ffe107', '#23292e', '#78ff0e', '#8416ff', '#ff1d12', '#ff690d', '#23292e', '#0042fc'])
+  .mode('lch')
+  .colors(8);
 
 const Continents = [
   'Africa',
@@ -47,15 +52,15 @@ const Map = ({
 }) => {
   const decideColor = (properties, hover, continents) => {
     if (properties.countryId === hover) {
-      return chroma('#d70997').darken(0.5);
+      return chroma('#ff00cd');
     }
     if (properties.countryId === 200) {
       return '#23292e';
     }
     if (properties.sold === true) {
-      return colorScale[continents.indexOf(properties.continent)];
+      return boughtColorScale[continents.indexOf(properties.continent)];
     }
-    return chroma(colorScale[continents.indexOf(properties.continent)]).alpha(0.125);
+    return colorScale[continents.indexOf(properties.continent)];
   };
 
   return (
