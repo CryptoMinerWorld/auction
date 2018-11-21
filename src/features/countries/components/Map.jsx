@@ -21,9 +21,14 @@ const wrapperStyles = {
 };
 
 const colorScale = chroma
-  .scale(['#FF6E40', 'red', '#FFD740', 'green', '#00B8D4', 'blue'])
+  .scale(['#3d2a00', '#23292e', '#0b3400', '#290058', '#440300', '#4a1a00', '#23292e', '#00103d'])
   .mode('lch')
-  .colors(9);
+  .colors(8);
+
+const boughtColorScale = chroma
+  .scale(['#ffe107', '#23292e', '#78ff0e', '#8416ff', '#ff1d12', '#ff690d', '#23292e', '#0042fc'])
+  .mode('lch')
+  .colors(8);
 
 const Continents = [
   'Africa',
@@ -44,18 +49,22 @@ const Map = ({
   zoom,
   handleReset,
   coordinates,
+  cart,
 }) => {
-  const decideColor = (properties, hover, continents) => {
+  const decideColor = (properties, hover, continents, picked) => {
     if (properties.countryId === hover) {
-      return chroma('#d70997').darken(0.5);
+      return chroma('#ff00cd');
+    }
+    if (picked.some(country => country.countryId === properties.countryId)) {
+      return chroma('#bc0080');
     }
     if (properties.countryId === 200) {
       return '#23292e';
     }
     if (properties.sold === true) {
-      return colorScale[continents.indexOf(properties.continent)];
+      return boughtColorScale[continents.indexOf(properties.continent)];
     }
-    return chroma(colorScale[continents.indexOf(properties.continent)]).alpha(0.125);
+    return colorScale[continents.indexOf(properties.continent)];
   };
 
   return (
@@ -100,69 +109,71 @@ const Map = ({
           >
             <ZoomableGroup center={[x, y]} zoom={zoom}>
               <Geographies geography={data} disableOptimization>
-                {(geographies, projection) => geographies.map(geography => (
-                  // console.log('geography.properties.sold', geography.properties.sold);
-                  <Geography
-                    key={geography.properties.name}
-                    geography={geography}
-                    onMouseEnter={() => setSelection({
-                      name: geography.properties.name,
-                      plots: geography.properties.totalPlots,
-                      price: geography.properties.price,
-                      roi: geography.properties.roi,
-                      id: geography.properties.countryId,
-                    })
-                      }
-                    onMouseLeave={() => setSelection({
-                      name: 'Hover over a Country',
-                      plots: 0,
-                      price: 0,
-                      roi: 0,
-                      countryId: '',
-                    })
-                      }
-                    onClick={() => addToCart({
-                      id: geography.properties.countryId,
-                      countryId: geography.properties.countryId,
-                      name: geography.properties.name,
-                      price: geography.properties.price,
-                      plots: geography.properties.totalPlots,
-                      roi: geography.properties.roi,
-                      sold: geography.properties.sold,
-                      mapIndex: geography.properties.mapIndex,
-                    })
-                      }
-                    projection={projection}
-                    data-testid={geography.properties.name}
-                    style={{
-                      default: {
-                        // eslint-disable-next-line
-                          fill: decideColor(
-                          geography.properties,
-                          countryBeingHoveredOnInFilter,
-                          Continents,
-                        ),
-                        stroke: '#24292f',
-                        strokeWidth: 0.75,
-                        outline: 'none',
-                      },
-                      hover: {
-                        fill: chroma('#d70997').darken(0.5),
-                        stroke: '#d70997',
-                        strokeWidth: 0.75,
-                        outline: 'none',
-                      },
-                      pressed: {
-                        fill: chroma(
-                          colorScale[Continents.indexOf(geography.properties.continent)],
-                        ).brighten(0.5),
-                        stroke: '#24292f',
-                        strokeWidth: 0.75,
-                        outline: 'none',
-                      },
-                    }}
-                  />
-                ))
+                {(geographies, projection) => geographies.map(
+                  geography => geography.properties.countryId !== 200 && (
+                    <Geography
+                      key={geography.properties.name}
+                      geography={geography}
+                      onMouseEnter={() => setSelection({
+                        name: geography.properties.name,
+                        plots: geography.properties.totalPlots,
+                        price: geography.properties.price,
+                        roi: geography.properties.roi,
+                        id: geography.properties.countryId,
+                      })
+                          }
+                      onMouseLeave={() => setSelection({
+                        name: 'Hover over a Country',
+                        plots: 0,
+                        price: 0,
+                        roi: 0,
+                        countryId: '',
+                      })
+                          }
+                      onClick={() => addToCart({
+                        id: geography.properties.countryId,
+                        countryId: geography.properties.countryId,
+                        name: geography.properties.name,
+                        price: geography.properties.price,
+                        plots: geography.properties.totalPlots,
+                        roi: geography.properties.roi,
+                        sold: geography.properties.sold,
+                        mapIndex: geography.properties.mapIndex,
+                      })
+                          }
+                      projection={projection}
+                      data-testid={geography.properties.name}
+                      style={{
+                        default: {
+                          // eslint-disable-next-line
+                              fill: decideColor(
+                            geography.properties,
+                            countryBeingHoveredOnInFilter,
+                            Continents,
+                            cart,
+                          ),
+                          stroke: '#24292f',
+                          strokeWidth: 0.75,
+                          outline: 'none',
+                        },
+                        hover: {
+                          fill: chroma('#d70997').darken(0.5),
+                          stroke: '#d70997',
+                          strokeWidth: 0.75,
+                          outline: 'none',
+                        },
+                        pressed: {
+                          fill: chroma(
+                            colorScale[Continents.indexOf(geography.properties.continent)],
+                          ).brighten(0.5),
+                          stroke: '#24292f',
+                          strokeWidth: 0.75,
+                          outline: 'none',
+                        },
+                      }}
+                    />
+                  ),
+                )
                 }
               </Geographies>
             </ZoomableGroup>
@@ -181,6 +192,7 @@ Map.propTypes = {
   handleReset: PropTypes.func.isRequired,
   coordinates: PropTypes.arrayOf(PropTypes.number).isRequired,
   countryBeingHoveredOnInFilter: PropTypes.number.isRequired,
+  cart: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };
 
 export default Map;

@@ -25,6 +25,7 @@ const DetailsBar = ({ details }) => (
           <dl className="dib mr5-ns ">
             <dd className="f6 f5-ns b ml0 ">Price</dd>
             <dd className="f3 f2-ns b ml0" data-testid="priceDetails">
+              <span className="basic b pr2">Ξ</span>
               {details.price && details.price.toFixed(2)}
             </dd>
           </dl>
@@ -35,9 +36,10 @@ const DetailsBar = ({ details }) => (
             </dd>
           </dl>
           <dl className="dib mr5-ns">
-            <dd className="f6 f5-ns b ml0">ROI %</dd>
+            <dd className="f6 f5-ns b ml0">Earns</dd>
             <dd className="f3 f2-ns b ml0" data-testid="roiDetails">
-              {details.roi && details.roi.toFixed(3)}
+              <span className="basic b pr2">Ξ</span>
+              {details.roi && details.roi.toFixed(2)}
             </dd>
           </dl>
         </div>

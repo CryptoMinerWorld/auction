@@ -23,9 +23,6 @@ const CountryAuction = () => {
   // eslint-disable-next-line
   const markSold = countryId => rtdb.ref(`/worldMap/objects/units/geometries/${countryId}/properties`).update({ sold: true });
 
-  // eslint-disable-next-line
-  // const markSold = countryId => console.log('countryId sold', countryId);
-
   const [selection, setSelection] = useState({
     name: 'Hover on a Country',
     plots: 0,
@@ -38,7 +35,7 @@ const CountryAuction = () => {
   const [cart, setCart] = useState([]);
 
   const addToCart = (item) => {
-    if (!cart.includes(item)) {
+    if (!cart.some(country => country.name === item.name)) {
       setCart([...cart, item]);
     }
   };
@@ -59,7 +56,6 @@ const CountryAuction = () => {
     setZoom(1);
     setCoordinates([0, 20]);
   };
-
 
   return (
     <div data-testid="mapPage" className="bg-off-black white">
@@ -95,6 +91,7 @@ const CountryAuction = () => {
                 coordinates={coordinates}
                 handleReset={handleReset}
                 countryBeingHoveredOnInFilter={countryBeingHoveredOnInFilter}
+                cart={cart}
               />
             ) : (
               <Map
@@ -106,6 +103,7 @@ const CountryAuction = () => {
                 handleCityClick={handleCityClick}
                 handleReset={handleReset}
                 countryBeingHoveredOnInFilter={countryBeingHoveredOnInFilter}
+                cart={cart}
               />
             )}
           </div>
