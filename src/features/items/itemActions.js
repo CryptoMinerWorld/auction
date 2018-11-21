@@ -141,7 +141,7 @@ export const removeFromAuction = (tokenId, history, turnLoaderOff) => async (
         startTx({
           hash,
           currentUser,
-          method: 'removeAuctionHelper',
+          method: 'gem',
           tokenId,
         }),
       );

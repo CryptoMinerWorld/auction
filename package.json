@@ -47,6 +47,7 @@
     "moment": "^2.22.2",
     "moment-duration-format": "^2.2.2",
     "optimize-css-assets-webpack-plugin": "5.0.1",
+    "p-iteration": "^1.1.7",
     "pnp-webpack-plugin": "1.1.0",
     "postcss-flexbugs-fixes": "4.1.0",
     "postcss-loader": "3.0.0",
@@ -149,6 +150,14 @@
     "collectCoverageFrom": [
       "src/**/*.{js,jsx}"
     ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 5,
+        "functions": 5,
+        "lines": 5,
+        "statements": 5
+      }
+    },
     "resolver": "jest-pnp-resolver",
     "setupFiles": [
       "react-app-polyfill/jsdom"

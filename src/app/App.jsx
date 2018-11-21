@@ -25,6 +25,7 @@ import Gems from './ABI/GemERC721.json';
 import Presale from './ABI/Presale2.json';
 import Country from './ABI/CountryERC721.json';
 import CountrySale from './ABI/CountrySale.json';
+import { resolveAnyPendingTx } from '../features/transactions/helpers';
 
 require('antd/lib/notification/style/css');
 require('antd/lib/modal/style/css');
@@ -82,7 +83,6 @@ class App extends Component {
       .load()
       .then(() => this.setState({ font: 'muli' }))
       .catch(error => handleSetError(error));
-
 
     // @notice loading web3 when component mounts
     const Web3 = await getWeb3;
@@ -154,8 +154,14 @@ class App extends Component {
               userId: currentAccount,
             },
           });
-
-
+          resolveAnyPendingTx(
+            currentAccount,
+            gemsContractInstance,
+            dutchAuctionContractInstance,
+            process.env.REACT_APP_DUTCH_AUCTION,
+            process.env.REACT_APP_GEM_ERC721,
+            web3,
+          );
           handleSendContractsToRedux(
             dutchAuctionContractInstance,
             gemsContractInstance,

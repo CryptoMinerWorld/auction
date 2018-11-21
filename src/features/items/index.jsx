@@ -128,7 +128,7 @@ class Auction extends PureComponent {
 
     const socialShareUrl = `${process.env.REACT_APP_BASE_URL}${match.url}`;
 
-    console.log('currentPrice', currentPrice);
+    // console.log('currentPrice', currentPrice);
 
     return (
       <div>
