@@ -12,5 +12,10 @@ service cloud.firestore {
       allow read, create, update;
     
     }
+    match /pending/{tx} {
+      allow read, create, delete;
+    }
   }
 }
+
+

@@ -178,7 +178,14 @@ export const createAuctionHelper = async (
   await _contract.methods
     .safeTransferFrom(_currentAccount, process.env.REACT_APP_DUTCH_AUCTION, token, data)
     .send()
-    .on('transactionHash', hash => store.dispatch(startTx(hash)))
+    .on('transactionHash', hash => store.dispatch(
+      startTx({
+        hash,
+        currentUser: _currentAccount,
+        method: 'createAuction',
+        tokenId: token,
+      }),
+    ))
     .on('receipt', receipt => store.dispatch(completedTx(receipt)))
     .on('error', error => store.dispatch(ErrorTx(error)));
 

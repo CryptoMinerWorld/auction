@@ -1,5 +1,8 @@
 import React from 'react';
-import { render } from 'react-testing-library';
+import { render, fireEvent } from 'react-testing-library';
+import AvatarDropdown from '../AvatarDropdown';
+import { renderWithRouter } from '../../app/testSetup';
+import 'jest-dom/extend-expect';
 // import DescriptionBox, { FeatureBand } from '../../features/items/components/DescriptionBox';
 // import Ripple from '../RippleButton/Ripple';
 // import RippleButton from '../RippleButton/RippleButton';
@@ -14,35 +17,42 @@ import { render } from 'react-testing-library';
 // import Navbar from '../Nav';
 // import ProgressMeter from '../../features/items/components/ProgressMeter';
 
-// var firebasemock = require('firebase-mock');
-// jest.mock('firebase');
+jest.mock('react-ga');
 
-// var mockfirestore = new firebasemock.MockFirestore();
-// var mockstorage = new firebasemock.MockStorage();
-// var mocksdk = new firebasemock.MockFirebaseSdk(
-//   // use null if your code does not use RTDB
-//   null,
-//   // use null if your code does not use AUTHENTICATION
-//   null,
-//   // use null if your code does not use FIRESTORE
-//   () => {
-//     return mockfirestore;
-//   },
-//   // use null if your code does not use STORAGE
-//   () => {
-//     return mockstorage;
-//   },
-//   // use null if your code does not use MESSAGING
-//   null
-// );
+test('AvatarDropdown renders correctly', () => {
+  const props = {
+    to: 'string',
+    userImage: 'string',
+    userName: 'string',
+  };
 
-// jest.mock('react-ga');
+  const { container } = renderWithRouter(<AvatarDropdown {...props} />, {
+    route: '/',
+  });
+  expect(container).toMatchSnapshot();
+});
 
-// jest.mock('../../app/utils/firebase.js', () => {
-//   return mocksdk;
-// });
+test('AvatarDropdown open drop down menu on hover', () => {
+  const props = {
+    to: 'string',
+    userImage: 'string',
+    userName: 'string',
+  };
 
-// mocksdk.firestore().flush();
+  const { getByTestId, queryByTestId } = renderWithRouter(<AvatarDropdown {...props} />, {
+    route: '/',
+  });
+  expect(queryByTestId('menu')).not.toBeInTheDocument();
+  fireEvent.mouseEnter(getByTestId('avatar'));
+  expect(getByTestId('menu')).toBeInTheDocument();
+});
+
+test.skip('AvatarDropdown closes dropdown when you mouseLeave', () => {});
+test.skip('AvatarDropdown closes dropdown when you click', () => {});
+test.skip('AvatarDropdown checks for pending tx on mount', () => {});
+test.skip('AvatarDropdown unsubscribes on unmount', () => {});
+test.skip('AvatarDropdown unsubscribes is axe complinat', () => {});
+test.skip('AvatarDropdown unsubscribes handles errors component gracefully', () => {});
 
 describe.skip('Auction page tests', () => {
   it.skip('DescriptionBox renders correctly', () => {

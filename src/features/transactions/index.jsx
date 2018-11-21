@@ -4,66 +4,58 @@ import { connect } from 'react-redux';
 import Spin from 'antd/lib/spin';
 import Icon from 'antd/lib/icon';
 import { Machine } from 'xstate';
-import { interpret } from 'xstate/lib/interpreter'; // or use your own interpreter!
+import { interpret } from 'xstate/lib/interpreter';
+import { savePendingTxToFirestore } from './helpers';
 
-const txStatechart = Machine({
-  id: 'tx',
-  initial: 'signedOut',
-  states: {
-    signedOut: {
-      on: {
-        LOGGEDIN: 'signedin',
-        TXSTARTED: 'signedin.pending',
+const txStatechart = Machine(
+  {
+    id: 'tx',
+    initial: 'signedOut',
+    states: {
+      signedOut: {
+        on: {
+          LOGGEDIN: 'signedin',
+          TXSTARTED: 'signedin.pending',
+        },
       },
-    },
-    signedin: {
-      on: {
-        LOGGEDOUT: 'signedOut',
-      },
-      initial: 'idle',
-      states: {
-        idle: {
-          on: {
-            TXSTARTED: 'pending',
-          },
+      signedin: {
+        on: {
+          LOGGEDOUT: 'signedOut',
         },
-        pending: {
-          onEntry: ['handleTx', 'markItemPending'],
-          on: {
-            TXSUCCEEDED: 'resolved',
-            // TXCONFIRMED: 'confirmed',
-            TXERROR: 'error',
+        initial: 'idle',
+        states: {
+          idle: {
+            on: {
+              TXSTARTED: 'pending',
+            },
           },
-        },
-        // confirmed: {
-        //   on: {
-        //     TXCONFIRMED: 'confirmed',
-        //     TXSUCCEEDED: 'resolved',
-        //     TXERROR: 'error',
-        //   },
-        // },
-        resolved: {
-          after: {
-            // after 1 second, transition to yellow
-            3000: 'idle',
+          pending: {
+            onEntry: ['savePendingTxToFirestore'],
+            on: {
+              TXSUCCEEDED: 'resolved',
+              TXERROR: 'error',
+            },
           },
-          // on: {
-          //   CLOSE: 'idle',
-          // },
-        },
-        error: {
-          after: {
-            // after 1 second, transition to yellow
-            3000: 'idle',
+          resolved: {
+            after: {
+              3000: 'idle',
+            },
           },
-          // on: {
-          //   CLOSE: 'idle',
-          // },
+          error: {
+            after: {
+              3000: 'idle',
+            },
+          },
         },
       },
     },
   },
-});
+  {
+    actions: {
+      savePendingTxToFirestore,
+    },
+  },
+);
 
 class Transaction extends PureComponent {
   static propTypes = {
@@ -71,12 +63,16 @@ class Transaction extends PureComponent {
     hash: PropTypes.string,
     txReceipt: PropTypes.string,
     txError: PropTypes.string,
-    // txConfirmations: PropTypes.number,
+    txCurrentUser: PropTypes.string,
+    txMethod: PropTypes.string,
+    txTokenId: PropTypes.number,
   };
 
   static defaultProps = {
     txReceipt: '',
-    // txConfirmations: 0,
+    txCurrentUser: '',
+    txMethod: '',
+    txTokenId: null,
     auth: false,
     hash: '',
     txError: '',
@@ -89,12 +85,11 @@ class Transaction extends PureComponent {
   service = interpret(txStatechart).onTransition(current => this.setState({ current }));
 
   componentDidMount() {
-    const { auth, hash } = this.props;
-    this.service.start();
+    const { auth } = this.props;
     const { send } = this.service;
-    if (auth && hash) {
-      send('TXSTARTED');
-    } else if (auth) {
+    this.service.start();
+
+    if (auth) {
       send('LOGGEDIN');
     } else if (!auth) {
       send('LOGGEDOUT');
@@ -105,16 +100,18 @@ class Transaction extends PureComponent {
 
   componentDidUpdate(prevProps) {
     const {
-      auth,
-      hash,
-      txReceipt,
-      txError,
-      // txConfirmations,
+      auth, hash, txReceipt, txError, txCurrentUser, txMethod, txTokenId,
     } = this.props;
     const { send } = this.service;
     if (hash !== prevProps.hash) {
       if (auth && hash) {
-        send('TXSTARTED');
+        send({
+          type: 'TXSTARTED',
+          hash,
+          txCurrentUser,
+          txMethod,
+          txTokenId,
+        });
       }
     } else if (txReceipt !== prevProps.txReceipt) {
       if (auth && txReceipt) {
@@ -137,33 +134,15 @@ class Transaction extends PureComponent {
     }
   }
 
-
-  // else if (txConfirmations !== prevProps.txConfirmations) {
-  //   if (auth && txConfirmations) {
-  //     send('TXCONFIRMED');
-  //   }
-  // }
-
-
   componentWillUnmount() {
     this.service.stop();
   }
 
-  handleTx = () => console.log('handle TX');
-
-  markItemPending = () => console.log('markItemPending');
-
   render() {
-    const {
-      // txReceipt,
-      txError,
-      hash,
-      // txConfirmations,
-    } = this.props;
+    const { txError, hash } = this.props;
     const { current } = this.state;
-    // const { send } = this.service;
-
     const loading = <Icon type="loading" style={{ fontSize: 24 }} spin />;
+
     return (
       <div className="flex aic jcs">
         {current.matches('signedin.pending') && (
@@ -179,20 +158,6 @@ class Transaction extends PureComponent {
           </div>
         )}
 
-        {/* {current.matches('signedin.confirmed') && (
-          <>
-            <Spin indicator={loading} />
-            <div className="flex col orange">
-              <p>Transaction in process...</p>
-              <small>
-                {txConfirmations}
-                {' '}
-                {txConfirmations === 1 ? 'confirmation' : 'confirmations'}
-              </small>
-            </div>
-          </>
-        )} */}
-
         {current.matches('signedin.resolved') && (
           <div className="flex col green">
             <p> Transaction Complete.</p>
@@ -201,7 +166,7 @@ class Transaction extends PureComponent {
 
         {current.matches('signedin.error') && (
           <div className="flex col red">
-            <p> Transaction Failed.</p>
+            <p>Transaction Failed.</p>
             <small>{txError}</small>
           </div>
         )}
@@ -215,7 +180,9 @@ const select = store => ({
   txConfirmations: store.tx.txConfirmations,
   txReceipt: store.tx.txReceipt,
   txError: store.tx.txError,
+  txCurrentUser: store.tx.txCurrentUser,
+  txMethod: store.tx.txMethod,
+  txTokenId: store.tx.txTokenId,
 });
 
-// export default withStateMachine(statechart)(Transaction);
 export default connect(select)(Transaction);

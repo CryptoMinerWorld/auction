@@ -11,7 +11,13 @@ export default (state = {}, action) => {
   //   return action.payload;
   // }
   if (action.type === TX_STARTED) {
-    return { ...state, txHash: action.payload };
+    return {
+      ...state,
+      txHash: action.payload.hash,
+      txCurrentUser: action.payload.currentUser,
+      txMethod: action.payload.method,
+      txTokenId: action.payload.tokenId,
+    };
   }
   if (action.type === TX_CONFIRMATIONS) {
     return { ...state, txConfirmations: action.payload };

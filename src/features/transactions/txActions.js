@@ -7,7 +7,9 @@ import {
 
 import { setError } from '../../app/appActions';
 
-export const startTx = hash => ({ type: TX_STARTED, payload: hash });
+export const startTx = payload => ({ type: TX_STARTED, payload });
+
+
 export const confirmationCountTx = confirmations => ({
   type: TX_CONFIRMATIONS,
   payload: confirmations,

@@ -10,12 +10,7 @@ import {
 import { db } from '../../app/utils/firebase';
 import { createAuctionHelper, removeAuctionHelper } from './helpers';
 import { setError } from '../../app/appActions';
-import {
-  startTx,
-  completedTx,
-  ErrorTx,
-  // confirmationCountTx,
-} from '../transactions/txActions';
+import { startTx, completedTx, ErrorTx } from '../transactions/txActions';
 import store from '../../app/store';
 
 export const getAuctionDetails = tokenId => (dispatch) => {
@@ -36,7 +31,6 @@ export const getAuctionDetails = tokenId => (dispatch) => {
 };
 
 export const updateGemOwnership = (gemId, newOwner, history, priceInWei) => async (dispatch) => {
-  // get name and image
   const userIdToLowerCase = newOwner
     .split('')
     .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
@@ -82,14 +76,14 @@ export const createAuction = (payload, turnLoaderOff, history) => (dispatch, get
 
   createAuctionHelper(tokenId, duration, startPrice, endPrice, gemsContractInstance, currentAccount)
     .then(({ deadline, minPrice, maxPrice }) => {
-      console.log('deadline, minPrice, maxPrice ', deadline, minPrice, maxPrice);
+      // console.log('deadline, minPrice, maxPrice ', deadline, minPrice, maxPrice);
       db.collection('stones')
         .where('id', '==', tokenId)
         .get()
         .then(async (coll) => {
-          console.log('coll', coll);
+          // console.log('coll', coll);
           const document = await coll.docs.map(doc => doc)[0];
-          console.log('document', document);
+          // console.log('document', document);
           await db.doc(`stones/${document.id}`).update({
             auctionIsLive: true,
             deadline,
@@ -143,7 +137,14 @@ export const removeFromAuction = (tokenId, history, turnLoaderOff) => async (
       from: currentUser,
     })
     .on('transactionHash', (hash) => {
-      store.dispatch(startTx(hash));
+      store.dispatch(
+        startTx({
+          hash,
+          currentUser,
+          method: 'removeAuctionHelper',
+          tokenId,
+        }),
+      );
     })
     .on('receipt', (receipt) => {
       store.dispatch(completedTx(receipt));
@@ -170,28 +171,6 @@ export const removeFromAuction = (tokenId, history, turnLoaderOff) => async (
       setError(error, 'Error removing gem from auction');
       turnLoaderOff();
     });
-
-  // .then(() => db
-  //   .collection('stones')
-  //   .where('id', '==', Number(tokenId))
-  //   .get()
-  //   .then((coll) => {
-  //     coll.docs.map(async (doc) => {
-  //       await db.doc(`stones/${doc.id}`).update({
-  //         auctionIsLive: false,
-  //       });
-  //       dispatch({
-  //         type: 'GEM_REMOVED_FROM_AUCTION',
-  //         payload: doc.data().id,
-  //       });
-  //       // getUserGemsOnce(currentUser)
-  //       history.push(`/profile/${currentUser}`);
-  //     });
-  //   }))
-  // .catch((error) => {
-  //   setError(error);
-  //   turnLoaderOff();
-  // });
 };
 
 // @notice lets users buy a gem in an active auction
