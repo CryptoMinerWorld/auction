@@ -7,7 +7,7 @@ import Badge from 'antd/lib/badge';
 import Avatar from 'antd/lib/avatar';
 import { NavLink } from 'react-router-dom';
 import Icon from 'antd/lib/icon';
-import { fetchAnyPendingTransactions } from '../features/transactions/helpers';
+import { fetchAnyPendingTransactions } from '../helpers';
 
 require('antd/lib/dropdown/style/css');
 require('antd/lib/badge/style/css');
@@ -60,10 +60,7 @@ const AvatarDropdown = ({
   const [penidngTxs, setTxs] = useState([]);
   useEffect(() => {
     const unsubscribe = fetchAnyPendingTransactions(walletId, setTxs);
-    return () => {
-      unsubscribe();
-      console.log('unmounting...');
-    };
+    return () => unsubscribe();
   }, []);
 
   return (

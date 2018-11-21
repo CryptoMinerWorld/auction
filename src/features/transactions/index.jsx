@@ -3,65 +3,15 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Spin from 'antd/lib/spin';
 import Icon from 'antd/lib/icon';
-import { Machine } from 'xstate';
 import { interpret } from 'xstate/lib/interpreter';
-import { savePendingTxToFirestore } from './helpers';
 
-const txStatechart = Machine(
-  {
-    id: 'tx',
-    initial: 'signedOut',
-    states: {
-      signedOut: {
-        on: {
-          LOGGEDIN: 'signedin',
-          TXSTARTED: 'signedin.pending',
-        },
-      },
-      signedin: {
-        on: {
-          LOGGEDOUT: 'signedOut',
-        },
-        initial: 'idle',
-        states: {
-          idle: {
-            on: {
-              TXSTARTED: 'pending',
-            },
-          },
-          pending: {
-            onEntry: ['savePendingTxToFirestore'],
-            on: {
-              TXSUCCEEDED: 'resolved',
-              TXERROR: 'error',
-            },
-          },
-          resolved: {
-            after: {
-              3000: 'idle',
-            },
-          },
-          error: {
-            after: {
-              3000: 'idle',
-            },
-          },
-        },
-      },
-    },
-  },
-  {
-    actions: {
-      savePendingTxToFirestore,
-    },
-  },
-);
+import { txStatechart } from './machines/txMachine';
 
 class Transaction extends PureComponent {
   static propTypes = {
     auth: PropTypes.bool,
     hash: PropTypes.string,
-    txReceipt: PropTypes.string,
+    txReceipt: PropTypes.shape({}),
     txError: PropTypes.string,
     txCurrentUser: PropTypes.string,
     txMethod: PropTypes.string,
@@ -69,7 +19,7 @@ class Transaction extends PureComponent {
   };
 
   static defaultProps = {
-    txReceipt: '',
+    txReceipt: {},
     txCurrentUser: '',
     txMethod: '',
     txTokenId: null,
@@ -113,9 +63,12 @@ class Transaction extends PureComponent {
           txTokenId,
         });
       }
-    } else if (txReceipt !== prevProps.txReceipt) {
+    } else if (txReceipt.transactionHash !== prevProps.txReceipt.transactionHash) {
       if (auth && txReceipt) {
-        send('TXSUCCEEDED');
+        send({
+          type: 'TXSUCCEEDED',
+          txReceipt,
+        });
       }
     } else if (txError !== prevProps.txError) {
       if (auth && txError) {

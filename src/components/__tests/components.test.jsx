@@ -1,7 +1,6 @@
 import React from 'react';
-import { render, fireEvent } from 'react-testing-library';
-import AvatarDropdown from '../AvatarDropdown';
-import { renderWithRouter } from '../../app/testSetup';
+import { render } from 'react-testing-library';
+
 import 'jest-dom/extend-expect';
 // import DescriptionBox, { FeatureBand } from '../../features/items/components/DescriptionBox';
 // import Ripple from '../RippleButton/Ripple';
@@ -18,41 +17,6 @@ import 'jest-dom/extend-expect';
 // import ProgressMeter from '../../features/items/components/ProgressMeter';
 
 jest.mock('react-ga');
-
-test('AvatarDropdown renders correctly', () => {
-  const props = {
-    to: 'string',
-    userImage: 'string',
-    userName: 'string',
-  };
-
-  const { container } = renderWithRouter(<AvatarDropdown {...props} />, {
-    route: '/',
-  });
-  expect(container).toMatchSnapshot();
-});
-
-test('AvatarDropdown open drop down menu on hover', () => {
-  const props = {
-    to: 'string',
-    userImage: 'string',
-    userName: 'string',
-  };
-
-  const { getByTestId, queryByTestId } = renderWithRouter(<AvatarDropdown {...props} />, {
-    route: '/',
-  });
-  expect(queryByTestId('menu')).not.toBeInTheDocument();
-  fireEvent.mouseEnter(getByTestId('avatar'));
-  expect(getByTestId('menu')).toBeInTheDocument();
-});
-
-test.skip('AvatarDropdown closes dropdown when you mouseLeave', () => {});
-test.skip('AvatarDropdown closes dropdown when you click', () => {});
-test.skip('AvatarDropdown checks for pending tx on mount', () => {});
-test.skip('AvatarDropdown unsubscribes on unmount', () => {});
-test.skip('AvatarDropdown unsubscribes is axe complinat', () => {});
-test.skip('AvatarDropdown unsubscribes handles errors component gracefully', () => {});
 
 describe.skip('Auction page tests', () => {
   it.skip('DescriptionBox renders correctly', () => {

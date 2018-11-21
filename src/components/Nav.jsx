@@ -9,7 +9,7 @@ import RippleButton from './RippleButton/RippleButton';
 // @ts-ignore
 import img from '../app/images/Profile-Image-Logo-60x60.png';
 import Tx from '../features/transactions/index';
-import AvatarDropdown from './AvatarDropdown';
+import AvatarDropdown from '../features/transactions/components/AvatarDropdown';
 
 const BottomHighlight = styled.div`
   background: linear-gradient(to right, #bc197c, #fc01ca);

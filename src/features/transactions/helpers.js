@@ -12,9 +12,6 @@ export const savePendingTxToFirestore = (ctx, {
   })
   .catch(error => console.log(error, 'error setting pedning tx'));
 
-export const removePendingTxFromFirestore = () => {};
-export const resolvePendingTx = () => {};
-
 export const fetchAnyPendingTransactions = (walletId, setTxs) => db
   .collection('pending')
   .where('txCurrentUser', '==', walletId)
@@ -25,3 +22,20 @@ export const fetchAnyPendingTransactions = (walletId, setTxs) => db
     },
     error => console.log('error streaming pending tx data from firestore', error),
   );
+
+export const removePendingTxFromFirestore = (ctx, { txReceipt }) => db
+  .collection('pending')
+  .where('hash', '==', txReceipt.transactionHash)
+  .get()
+  .then(async (coll) => {
+    const pendingTxs = coll.docs.map(doc => doc.id);
+    console.log('pendingTxs', pendingTxs);
+    await db
+      .collection('pending')
+      .doc(pendingTxs[0])
+      .delete();
+  })
+  .catch(error => console.log(error, 'error setting pedning tx'));
+
+
+export const resolvePendingTx = () => {};
