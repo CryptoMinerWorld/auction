@@ -6,20 +6,42 @@ import Dropdown from 'antd/lib/dropdown';
 import Badge from 'antd/lib/badge';
 import Avatar from 'antd/lib/avatar';
 import { NavLink } from 'react-router-dom';
+import Icon from 'antd/lib/icon';
+import { fetchAnyPendingTransactions } from '../features/transactions/helpers';
 
 require('antd/lib/dropdown/style/css');
 require('antd/lib/badge/style/css');
 require('antd/lib/menu/style/css');
 require('antd/lib/avatar/style/css');
 
-const menu = (
-  <Menu>
-    <Menu.Item key="0">
-      <a href="http://www.alipay.com/">1st menu item</a>
-    </Menu.Item>
-    <Menu.Item key="1">
-      <a href="http://www.taobao.com/">2nd menu item</a>
-    </Menu.Item>
+/**
+ * @param {{
+ * hash: string,
+ * txCurrentUser:string,
+ * txMethod: string,
+ * txTokenId:string
+ * }[]} items
+ */
+const menu = items => (
+  <Menu data-testid="menu">
+    {items.map(({
+      hash, txCurrentUser, txMethod, txTokenId,
+    }) => (
+      <Menu.Item key={hash} className="flex aic">
+        <Icon type="loading" className="dib ma0 pa0" />
+        <p className="dib ma0 pa0 pl3">
+          {txTokenId}
+          {' '}
+          {` ${hash.substring(0, 4)}...${hash.substring(hash.length - 4)}`}
+          {' '}
+          {txMethod}
+          {' '}
+          {` ${txCurrentUser.substring(0, 4)}...${txCurrentUser.substring(
+            txCurrentUser.length - 4,
+          )}`}
+        </p>
+      </Menu.Item>
+    ))}
   </Menu>
 );
 
@@ -35,10 +57,11 @@ const AvatarDropdown = ({
   to, userImage, userName, walletId,
 }) => {
   const [visibility, setVisibility] = useState(false);
-
+  const [penidngTxs, setTxs] = useState([]);
   useEffect(() => {
-    console.log('walletId', walletId);
+    const unsubscribe = fetchAnyPendingTransactions(walletId, setTxs);
     return () => {
+      unsubscribe();
       console.log('unmounting...');
     };
   }, []);
@@ -50,14 +73,17 @@ const AvatarDropdown = ({
       onClick={() => setVisibility(false)}
       onMouseEnter={() => setVisibility(true)}
       onMouseLeave={() => setVisibility(false)}
+      data-testid="avatar"
     >
-      <Dropdown overlay={menu} visible={visibility}>
-        <Badge count={5}>
-          <Avatar src={userImage} className="dib" />
-          <p className="dib" data-testid="avatarUsername">
+      <Dropdown overlay={menu(penidngTxs)} visible={visibility}>
+        <>
+          <Badge count={penidngTxs.length}>
+            <Avatar src={userImage} className="dib" />
+          </Badge>
+          <p className="dib pl2" data-testid="avatarUsername">
             {userName}
           </p>
-        </Badge>
+        </>
       </Dropdown>
     </NavLink>
   );
