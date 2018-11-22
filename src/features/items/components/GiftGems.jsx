@@ -14,6 +14,8 @@ import { OxToLowerCase } from '../../../app/utils/helpers';
 import button from '../../../app/images/pinkBuyNowButton.png';
 import { ReactComponent as RightArrow } from '../../../app/images/svg/arrow-right-circle.svg';
 import { setError } from '../../../app/appActions';
+import { startTx, completedTx, ErrorTx } from '../../transactions/txActions';
+import reduxStore from '../../../app/store';
 
 const ColourButton = styled.button`
   background-image: url(${button});
@@ -53,6 +55,7 @@ export const stateMachine = {
             cond: ({
               gemsContract, to, from, tokenId,
             }) => {
+              console.log('gemsContract, to, from, tokenId,', gemsContract, to, from, tokenId);
               if (!gemsContract || !to || !from || !tokenId) {
                 return false;
               }
@@ -102,10 +105,12 @@ class GiftGems extends Component {
       return errors;
     }
 
-    return null;
+    return false;
   };
 
-  transferGem = () => {
+  transferGem = async () => {
+    console.log('transfering gift...');
+
     const {
       gemsContract, currentAccountId, match, walletId, transition,
     } = this.props;
@@ -117,11 +122,46 @@ class GiftGems extends Component {
     gemsContract.methods
       .safeTransferFrom(from, to, tokenId)
       .send()
-      .then(async () => {
-        await this.transferOwnershipOnDatabase(from, to, tokenId);
+      .on('transactionHash', hash => reduxStore.dispatch(
+        startTx({
+          hash,
+          currentUser: from,
+          method: 'gem',
+          tokenId,
+        }),
+      ));
+
+    await gemsContract.events
+      .Transfer()
+      .on('data', async (event) => {
+        const { returnValues } = event;
+        const { _from, _to, _tokenId } = returnValues;
+
+        await this.transferOwnershipOnDatabase(_from, _to, _tokenId);
+        reduxStore.dispatch(completedTx(event));
         transition('SUCCESS', { from });
       })
-      .catch(error => transition('ERROR', { error }));
+      .on('error', (error) => {
+        reduxStore.dispatch(ErrorTx(error));
+        transition('ERROR', { error });
+      });
+
+    // make sure this event  is supposed to fire on safe transfer
+    // https://github.com/CryptoMinerWorld/crypto-miner/blob/
+    // master/contracts/GemERC721.sol#L240
+
+    // gemsContract.methods
+    //   .safeTransferFrom(from, to, tokenId)
+    //   .send()
+    //   .then(async (receipt) => {
+    //     await this.transferOwnershipOnDatabase(from, to, tokenId);
+    //     store.dispatch(completedTx(receipt));
+    //     transition('SUCCESS', { from });
+    //   })
+    //   .catch((error) => {
+    //     store.dispatch(ErrorTx(error));
+    //     transition('ERROR', { error });
+    //   });
   };
 
   transferOwnershipOnDatabase = async (from, to, tokenId) => {
@@ -145,10 +185,7 @@ class GiftGems extends Component {
   };
 
   checkReceiverDetails = () => {
-    console.log('pog');
-
     const { walletId, transition } = this.props;
-
     db.doc(`users/${OxToLowerCase(walletId)}`)
       .get()
       .then(
@@ -187,17 +224,17 @@ class GiftGems extends Component {
           <Form className="flex col jcc mt3">
             <State
               is={['idle', 'loading']}
-              render={visible => (visible ? (
-                <div className="mt5">
-                  <Field type="text" name="walletId">
-                    {({ field }) => (
-                      <Input type="text" {...field} placeholder="Send this gem to someone" />
-                    )}
-                  </Field>
-                  {errors.walletId
+              render={visible => visible && (
+              <div className="mt5">
+                <Field type="text" name="walletId">
+                  {({ field }) => (
+                    <Input type="text" {...field} placeholder="Send this gem to someone" />
+                  )}
+                </Field>
+                {errors.walletId
                       && touched.walletId && <p className="orange">{errors.walletId}</p>}
-                </div>
-              ) : null)
+              </div>
+              )
               }
             />
 

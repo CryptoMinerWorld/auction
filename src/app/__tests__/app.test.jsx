@@ -1,3 +1,12 @@
+import { instantiateContracts } from '../appActions';
+
+it('test that instantiating contracts send the instances to redux', () => {
+  const web3 = jest.fn();
+  const handleSendContractsToRedux = jest.fn();
+  const handleSetError = jest.fn();
+  instantiateContracts(web3, handleSendContractsToRedux, handleSetError);
+  expect(handleSetError).toBeCalled();
+});
 
 
 describe.skip('App happy path tests', () => {

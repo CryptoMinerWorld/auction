@@ -1,5 +1,7 @@
 import React from 'react';
 import { render } from 'react-testing-library';
+
+import 'jest-dom/extend-expect';
 // import DescriptionBox, { FeatureBand } from '../../features/items/components/DescriptionBox';
 // import Ripple from '../RippleButton/Ripple';
 // import RippleButton from '../RippleButton/RippleButton';
@@ -14,35 +16,7 @@ import { render } from 'react-testing-library';
 // import Navbar from '../Nav';
 // import ProgressMeter from '../../features/items/components/ProgressMeter';
 
-// var firebasemock = require('firebase-mock');
-// jest.mock('firebase');
-
-// var mockfirestore = new firebasemock.MockFirestore();
-// var mockstorage = new firebasemock.MockStorage();
-// var mocksdk = new firebasemock.MockFirebaseSdk(
-//   // use null if your code does not use RTDB
-//   null,
-//   // use null if your code does not use AUTHENTICATION
-//   null,
-//   // use null if your code does not use FIRESTORE
-//   () => {
-//     return mockfirestore;
-//   },
-//   // use null if your code does not use STORAGE
-//   () => {
-//     return mockstorage;
-//   },
-//   // use null if your code does not use MESSAGING
-//   null
-// );
-
-// jest.mock('react-ga');
-
-// jest.mock('../../app/utils/firebase.js', () => {
-//   return mocksdk;
-// });
-
-// mocksdk.firestore().flush();
+jest.mock('react-ga');
 
 describe.skip('Auction page tests', () => {
   it.skip('DescriptionBox renders correctly', () => {

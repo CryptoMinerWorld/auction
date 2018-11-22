@@ -18,6 +18,7 @@ const getWeb3 = new Promise((resolve) => {
         resolve(results);
       } catch (error) {
         console.error('error in getWeb3.js', error);
+        // store.dispatch(setError(error));
       }
     } else if (window.web3) {
       // Legacy dapp browsers...

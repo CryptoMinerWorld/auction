@@ -1,181 +1,142 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { withStateMachine, State } from 'react-automata';
+import { connect } from 'react-redux';
 import Spin from 'antd/lib/spin';
 import Icon from 'antd/lib/icon';
+import { interpret } from 'xstate/lib/interpreter';
 
-const statechart = {
-  initial: 'signedOut',
-  states: {
-    signedOut: {
-      on: {
-        LOGGEDIN: 'signedin',
-        TXSTARTED: 'signedin.pending',
-      },
-    },
-    signedin: {
-      on: {
-        LOGGEDOUT: 'signedOut',
-      },
-      initial: 'idle',
-      states: {
-        idle: {
-          on: {
-            TXSTARTED: 'pending',
-          },
-        },
-        pending: {
-          onEntry: ['handleTx', 'markItemPending'],
-          on: {
-            TXCONFIRMED: 'confirmed',
-            TXERROR: 'error',
-          },
-        },
-        confirmed: {
-          on: {
-            TXSUCCEEDED: 'resolved',
-            TXERROR: 'error',
-          },
-        },
-        resolved: {
-          on: {
-            CLOSE: 'idle',
-          },
-        },
-        error: {
-          on: {
-            CLOSE: 'idle',
-
-          },
-        },
-      },
-    },
-  },
-};
+import { txStatechart } from './machines/txMachine';
 
 class Transaction extends PureComponent {
   static propTypes = {
-    transition: PropTypes.func.isRequired,
     auth: PropTypes.bool,
-    receipt: PropTypes.string,
-    tx: PropTypes.bool,
-    confirmations: PropTypes.number,
-    txid: PropTypes.string,
-    error: PropTypes.string,
+    hash: PropTypes.string,
+    txReceipt: PropTypes.shape({}),
+    txError: PropTypes.string,
+    txCurrentUser: PropTypes.string,
+    txMethod: PropTypes.string,
+    txTokenId: PropTypes.number,
   };
 
   static defaultProps = {
-    receipt: '',
-    confirmations: 0,
-    txid: '',
+    txReceipt: {},
+    txCurrentUser: '',
+    txMethod: '',
+    txTokenId: null,
     auth: false,
-    tx: false,
-    error: '',
+    hash: '',
+    txError: '',
   };
 
-  componentDidMount() {
-    const { auth, transition, tx } = this.props;
+  state = {
+    current: txStatechart.initialState,
+  };
 
-    if (auth && tx) {
-      transition('TXSTARTED');
-    }
+  service = interpret(txStatechart).onTransition(current => this.setState({ current }));
+
+  componentDidMount() {
+    const { auth } = this.props;
+    const { send } = this.service;
+    this.service.start();
 
     if (auth) {
-      transition('LOGGEDIN');
-    }
-
-    if (!auth) {
-      transition('LOGGEDOUT');
+      send('LOGGEDIN');
+    } else if (!auth) {
+      send('LOGGEDOUT');
+    } else {
+      console.log('txStatechart 1');
     }
   }
 
   componentDidUpdate(prevProps) {
-    const { auth, transition, tx } = this.props;
-
-    if (tx !== prevProps.tx) {
-      if (auth && tx) {
-        transition('TXSTARTED');
+    const {
+      auth, hash, txReceipt, txError, txCurrentUser, txMethod, txTokenId,
+    } = this.props;
+    const { send } = this.service;
+    if (hash !== prevProps.hash) {
+      if (auth && hash) {
+        send({
+          type: 'TXSTARTED',
+          hash,
+          txCurrentUser,
+          txMethod,
+          txTokenId,
+        });
       }
-    }
-
-    if (auth !== prevProps.auth) {
+    } else if (txReceipt.transactionHash !== prevProps.txReceipt.transactionHash) {
+      if (auth && txReceipt) {
+        send({
+          type: 'TXSUCCEEDED',
+          txReceipt,
+        });
+      }
+    } else if (txError !== prevProps.txError) {
+      if (auth && txError) {
+        send('TXERROR');
+      }
+    } else if (auth !== prevProps.auth) {
       if (auth) {
-        transition('LOGGEDIN');
+        send('LOGGEDIN');
+      } else if (!auth) {
+        send('LOGGEDOUT');
+      } else {
+        return false;
       }
-
-      if (!auth) {
-        transition('LOGGEDOUT');
-      }
+    } else {
+      return false;
     }
+    return false;
+  }
+
+  componentWillUnmount() {
+    this.service.stop();
   }
 
   render() {
-    const {
-      receipt, confirmations, txid, error,
-    } = this.props;
+    const { txError, hash } = this.props;
+    const { current } = this.state;
     const loading = <Icon type="loading" style={{ fontSize: 24 }} spin />;
+
     return (
-      <div className="flex aic">
-        <State is="signedin.pending">
-          <Spin indicator={loading} />
-          <Icon type="loading" style={{ fontSize: 24 }} spin />
-          <p>
-            Transaction
-            {receipt}
-            {' '}
-processing...
-          </p>
-        </State>
+      <div className="flex aic jcs">
+        {current.matches('signedin.pending') && (
+          <div className="flex row aic jcs">
+            <Spin indicator={loading} />
+            <div className="flex col orange jcc ais pl3">
+              <p className="ma0 pa0">Transaction in process...</p>
+              <small className="f6 ma0 pa0">
+                Tx Hash
+                {` ${hash.substring(0, 4)}...${hash.substring(hash.length - 4)}`}
+              </small>
+            </div>
+          </div>
+        )}
 
-        <State is="signedin.confirmed">
-          <Spin indicator={loading} />
-          <p>
-            Transaction
-            {' '}
+        {current.matches('signedin.resolved') && (
+          <div className="flex col green">
+            <p> Transaction Complete.</p>
+          </div>
+        )}
 
-            {receipt}
-            {' '}
-processing...
-            {confirmations}
-            {' '}
-            {confirmations === 1 ? 'confirmation' : 'confirmations'}
-          </p>
-        </State>
-
-        <State is="signedin.resolved">
-
-          <p className="green">
-            Transaction
-
-Complete. Transaction Number
-            {txid}
-
-          </p>
-        </State>
-        <State is="signedin.resolved">
-
-          <p className="green">
-            Transaction
-
-Complete. Transaction Number
-            {txid}
-
-          </p>
-        </State>
-
-        <State is="signedin.error">
-
-          <p className="red">
-            Transaction
-
-Failed:
-            {error}
-
-          </p>
-        </State>
+        {current.matches('signedin.error') && (
+          <div className="flex col red">
+            <p>Transaction Failed.</p>
+            <small>{txError}</small>
+          </div>
+        )}
       </div>
     );
   }
 }
 
-export default withStateMachine(statechart)(Transaction);
+const select = store => ({
+  hash: store.tx.txHash,
+  txConfirmations: store.tx.txConfirmations,
+  txReceipt: store.tx.txReceipt,
+  txError: store.tx.txError,
+  txCurrentUser: store.tx.txCurrentUser,
+  txMethod: store.tx.txMethod,
+  txTokenId: store.tx.txTokenId,
+});
+
+export default connect(select)(Transaction);

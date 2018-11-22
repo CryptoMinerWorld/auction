@@ -1,46 +1,219 @@
-{
-  /* <script type="text/javascript">
+// @ts-check
+import { db, rtdb } from '../../app/utils/firebase';
+import { getMapIndexFromCountryId } from '../dashboard/helpers';
 
-    // Loading Screen messages
+const { map } = require('p-iteration');
+/**
+ * @param {any} ctx
+ * @param {{
+ *  hash: string,
+ *  txCurrentUser: string,
+ *  txMethod: string,
+ *  txTokenId: string,
+ * }} event
+ */
+export const savePendingTxToFirestore = (ctx, {
+  hash, txCurrentUser, txMethod, txTokenId,
+}) => db
+  .collection('pending')
+  .add({
+    hash,
+    txCurrentUser,
+    txMethod,
+    txTokenId,
+  })
+  .catch(error => console.log(error, 'error setting pedning tx'));
 
-    var LoadTimerId = 0;	// Holds LoadTimer in case it needs to be stopped
-    var currentQuote = 0;	// The current index of the loading message
+/**
+ * @param {string} walletId
+ * @param {function} setTxs
+ */
+export const fetchAnyPendingTransactions = (walletId, setTxs) => db
+  .collection('pending')
+  .where('txCurrentUser', '==', walletId)
+  .onSnapshot(
+    (coll) => {
+      const pendingTxs = coll.docs.map(doc => doc.data());
+      setTxs(pendingTxs);
+    },
+    error => console.log('error streaming pending tx data from firestore', error),
+  );
 
-    // All the loading messages
-    var LoadQuotes = new Array("Still loading...", "Exaggerating regular expressions...", "Optimizing entertainment algorithms...", "Checking function return policy...", "Relaxing overloaded methods...", "Hello-ing world...", "Auto-saving Private Ryan...", "Updating fun files...", "Fulfilling awesomeness requirements...", "Obfuscating communication specifiers...", "Coloring whitespace...", "Deindividualizing unit tests...", "Entering the matrix...", "Confirming DRADIS communications...", "Installing anti-Skynet firewalls...", "Constructing additional pylons...", "Giving a mouse a cookie...", "Pressing a large red button...", "Adopting an adorable puppy...",  "Initiating launch sequence...", "Opening a mysterious package...", "Spleticulating rines...", "Transmogrifying headers...", "Cajoling the hamsters...", "Accelerating to race conditions...",  "Learning to play the vuvuzela...", "Pressurizing the tubes...", "Fording the river...", "Dreaming of electric sheep...", "Rereading GPL license...", "Achieving sentience...", "Memorizing Pi...", "Ignoring preprocessor directives...", "Paying postage on incoming messages...", "Taking a coffee break...", "Giving it the old college try...", "Generating next message...");
+export const removePendingTxFromFirestore = (ctx, { txReceipt }) => db
+  .collection('pending')
+  .where('hash', '==', txReceipt.transactionHash)
+  .get()
+  .then(async (coll) => {
+    const pendingTxs = coll.docs.map(doc => doc.id);
+    await db
+      .collection('pending')
+      .doc(pendingTxs[0])
+      .delete();
+  })
+  .catch(error => console.log(error, 'error setting pedning tx'));
 
-    // Ensures the input is a valid email address, then starts the loading process
-    function Submit_Valid(inputbox)
-    {
-        var address = document.getElementById(inputbox).value;
-        if (!(/[a-z0-9\._-]+@[a-z0-9\.-]+\.[a-z\.]+/i.test(document.getElementById(inputbox).value)))
-            {
-                alert("Please enter a valid email address.");
-                document.getElementById(inputbox).focus();
+/**
+ * @param {string} walletId
+ */
+export const resolveAnyPendingTx = async (
+  walletId,
+  gemsContract,
+  auctionContract,
+  AUCTION_CONTRACT_ADDRESS,
+  GEM_CONTRACT_ADDRESS,
+  web3,
+  countryContract,
+) => {
+  try {
+    const pendingTransactions = await db
+      .collection('pending')
+      .where('txCurrentUser', '==', walletId)
+      .get()
+      .then(coll => coll.docs.map(doc => doc.data()))
+      .catch(error => console.log('error streaming pending tx data from firestore', error));
+
+    // const test = pendingTransactions.slice(0, 2);
+    // console.log('test', test);
+
+    map(pendingTransactions, async (tx) => {
+      if (tx.txMethod === 'gem') {
+        return gemsContract.methods
+          .ownerOf(tx.txTokenId)
+          .call()
+          .then(async (address) => {
+            // console.log('address', address);
+            if (
+              // if the owner is a contract address
+              web3.utils.toChecksumAddress(address)
+              === web3.utils.toChecksumAddress(AUCTION_CONTRACT_ADDRESS)
+            ) {
+              // console.log('exhibit a appears to be in auction');
+              // update the db with fresh live auction details
+              return auctionContract.methods
+                .items(GEM_CONTRACT_ADDRESS, tx.txTokenId)
+                .call()
+                .then((details) => {
+                  // console.log('details', details);
+                  const { t1, p0, p1 } = details;
+                  return db
+                    .collection('stones')
+                    .doc(`${tx.txTokenId}`)
+                    .update({
+                      auctionIsLive: true,
+                      deadline: Number(t1),
+                      maxPrice: Number(p0),
+                      minPrice: Number(p1),
+                    })
+                    .then(() => db
+                      .collection('pending')
+                      .where('hash', '==', tx.hash)
+                      .get()
+                      .then(async (coll) => {
+                        const pendingTxs = coll.docs.map(doc => doc.id);
+                        await db
+                          .collection('pending')
+                          .doc(pendingTxs[0])
+                          .delete();
+                      }))
+                    .then(() => console.log('done'))
+                    .catch(err => console.log(
+                      'err reconciling liev auctions in tx reconciliation function on startup',
+                      err,
+                    ));
+                })
+                .catch(err => console.log('err getting auction details', err));
+            }
+
+            const userIdToLowerCase = address
+              .split('')
+              .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
+              .join('');
+
+            // console.log('exhibit a appears NOT to be in auction');
+            // console.log('userIdToLowerCase', userIdToLowerCase);
+            // or update the db with the gems ownerId (in lowercase)
+            return db
+              .collection('stones')
+              .doc(`${tx.txTokenId}`)
+              .update({
+                owner: userIdToLowerCase,
+                auctionIsLive: false,
+              })
+              .then(() => db
+                .collection('pending')
+                .where('hash', '==', tx.hash)
+                .get()
+                .then(async (coll) => {
+                  const pendingTxs = coll.docs.map(doc => doc.id);
+                  await db
+                    .collection('pending')
+                    .doc(pendingTxs[0])
+                    .delete();
+                }))
+              .then(() => console.log('done'))
+              .catch(err => console.log('err reconciling in tx reconciliation function on startup', err));
+          });
+      }
+      if (tx.txMethod === 'country') {
+        return countryContract.methods
+          .ownerOf(tx.txTokenId)
+          .call()
+          .then(async (address) => {
+            console.log('address...', address);
+            if (address) {
+              console.log('address...', tx.txTokenId);
+              // get country details from rtdb
+              const country = await rtdb
+                .ref(
+                  `/worldMap/objects/units/geometries/${getMapIndexFromCountryId(
+                    tx.txTokenId,
+                  )}/properties`,
+                )
+                .once('value')
+                .then(snap => snap.val());
+
+              db.collection('countries')
+                .doc(`${country.name}`)
+                .set({
+                  owner: address,
+                  onSale: false,
+                  lastPrice: country.price,
+                  lastBought: Date.now(),
+                  totalPlots: country.plots,
+                  plotsBought: 0,
+                  plotsMined: 0,
+                  plotsAvailable: country.plots,
+                  name: country.name,
+                })
+                .then(() => rtdb
+                  .ref(
+                    `/worldMap/objects/units/geometries/${getMapIndexFromCountryId(
+                      tx.txTokenId,
+                    )}/properties`,
+                  )
+                  .update({ sold: true }))
+                .then(() => db
+                  .collection('pending')
+                  .where('hash', '==', tx.hash)
+                  .get()
+                  .then(async (coll) => {
+                    const pendingTxs = coll.docs.map(doc => doc.id);
+                    await db
+                      .collection('pending')
+                      .doc(pendingTxs[0])
+                      .delete();
+                  }))
+                .then(() => console.log('done'))
+                .catch(err => console.log('err reconciling in tx reconciliation function on startup', err));
+            }
+
+            console.log('do nothing...');
             return false;
-            }
-        else	// input is valid, return true to submit
-            {
-            document.getElementById('loadingstatus').style.visibility = 'visible';		// Show loading messages
-            document.getElementById(inputbox).value = (document.getElementById(inputbox).value).toLowerCase(); // Convert address because uppercase domains cause errors
-            LoadTimerId = setInterval("LoadTimer()", 1000);		// Start LoadTimer, gets called every 2 seconds
-            return true;
-            }
-    }
-
-    // Show a new loading message
-    function LoadTimer()
-    {
-        var randNum = Math.floor(Math.random() * LoadQuotes.length);	// Get a random index for the array of messages
-
-        while (randNum == currentQuote)		// Make sure it's a different message (index)
-        {
-            randNum = Math.floor(Math.random() * LoadQuotes.length);
-        }
-        currentQuote = randNum;			// Set to the new index
-        document.getElementById('loadingmessage').innerHTML = LoadQuotes[randNum];		// Show the message
-    }
-
-
-</script> */
-}
+          });
+      }
+      return false;
+    });
+  } catch (err) {
+    console.log('err reconciling on mount', err);
+  }
+};

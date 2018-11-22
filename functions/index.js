@@ -10,9 +10,8 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const Web3 = require('web3');
 
-admin.initializeApp(functions.config().firebase);  
-admin.firestore().settings( { timestampsInSnapshots: true })
-
+admin.initializeApp(functions.config().firebase);
+admin.firestore().settings({ timestampsInSnapshots: true });
 
 // // DEV
 // const web3 = new Web3(
@@ -42,20 +41,29 @@ gemsContract.options.address = GEM_CONTRACT;
 const auctionContract = new web3.eth.Contract(dutchAuctionABI);
 auctionContract.options.address = AUCTION_CONTRACT;
 
-// this function is fired once every 24 hours and checks that all the active gems are in auction
+// this function is fired once every 4 hours and checks that all the active gems are in auction
 exports.updateGemDetails = functions.https.onRequest(() =>
+  // get all gems details from the database
+  // check who is the owner of each gem
+  // if the owner is a contract address
+  // then update the db to confim the auction is live
+  // otherwise update the db with the gems ownerId (in lowercase)
   admin
     .firestore()
     .collection('stones')
     .get()
     .then(coll => {
+      // get all gems details from the database
       const docs = coll.docs.map(doc => [doc.id, doc.data()]);
       return docs;
     })
     .then(docs =>
       Promise.all(
         docs.map(doc =>
+          // check who is the owner of each gem
+          // eslint-disable-next-line
           gemsContract.methods
+            // @ts-ignore
             .ownerOf(doc[1].id)
             .call()
             .then(address => [doc[0], address])
@@ -65,9 +73,11 @@ exports.updateGemDetails = functions.https.onRequest(() =>
     .then(addresses =>
       addresses.forEach(address => {
         if (
+          // if the owner is a contract address
           web3.utils.toChecksumAddress(address[1]) ===
           web3.utils.toChecksumAddress(AUCTION_CONTRACT)
         ) {
+          // update the db to confim the auction is live
           admin
             .firestore()
             .collection('stones')
@@ -80,6 +90,8 @@ exports.updateGemDetails = functions.https.onRequest(() =>
             .split('')
             .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
             .join('');
+
+          // or update the db with the gems ownerId (in lowercase)
           admin
             .firestore()
             .collection('stones')
@@ -95,21 +107,32 @@ exports.updateGemDetails = functions.https.onRequest(() =>
 );
 
 // Fifteen minutes after the reconciliation function run this updater function will go through the
-// database and update all the live auction details with data from the blockchain.
+// db and update all the live auction details with data from the blockchain.
 exports.updateLiveAuctionDetails = functions.https.onRequest(() =>
+  // get all auction that are marked live
+  // get the id for each gem in auction
+  // make sure all the gem ids are numbers
+  // get the details for each gem
+  // filter out any auction that have an expired deadline  or price of zero
+  // update the db with the deadline, max price and min price
   admin
     .firestore()
     .collection('stones')
     .where('auctionIsLive', '==', true)
     .get()
     .then(coll => {
+      // get the id for each gem in auction
       const docs = coll.docs.map(doc => doc.id);
       return docs;
     })
     .then(docIds => {
+      // make sure all the gem ids are numbers
       const numberedDocIds = docIds.filter(id => !isNaN(Number(id)));
       return Promise.all(
         numberedDocIds.map(doc =>
+          // get the details for each gem
+
+          // eslint-disable-next-line
           auctionContract.methods
             .items(GEM_CONTRACT, Number(doc))
             .call()
@@ -127,12 +150,14 @@ exports.updateLiveAuctionDetails = functions.https.onRequest(() =>
       );
     })
     .then(allDetails => {
+      // filter out any auction that have an expired deadline  or price of zero
       const cleanedDetails = allDetails.filter(
         item => item.t1 !== '0' || item.p0 !== '0'
       );
-      console.log('cleanedDetails', cleanedDetails);
 
+      // update the db with the deadline, max price and min price
       return allDetails.forEach(item =>
+        // eslint-disable-next-line
         admin
           .firestore()
           .collection('stones')

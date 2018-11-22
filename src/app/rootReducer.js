@@ -4,6 +4,7 @@ import { marketActionsReducer, marketReducer } from '../features/market/marketRe
 import auction from '../features/items/itemReducer';
 import auth from '../features/auth/authReducer';
 import dashboard from '../features/dashboard/dashboardReducer';
+import txReducer from '../features/transactions/txReducer';
 
 import {
   WEB3_ADDED,
@@ -77,4 +78,5 @@ export default combineReducers({
   auth,
   dashboard,
   tooltip,
+  tx: txReducer,
 });

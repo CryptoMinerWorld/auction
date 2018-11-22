@@ -16,13 +16,16 @@ import getWeb3 from './utils/getWeb3';
 import Routes from './routes';
 import './css/root.css';
 import ScrollToTop from '../components/ScrollToTop';
-import { sendContractsToRedux, clearError, setError } from './appActions';
+import {
+  sendContractsToRedux, clearError, setError, instantiateContracts,
+} from './appActions';
 import { updateWalletId } from '../features/auth/authActions';
 import DutchAuction from './ABI/DutchAuction.json';
 import Gems from './ABI/GemERC721.json';
 import Presale from './ABI/Presale2.json';
 import Country from './ABI/CountryERC721.json';
 import CountrySale from './ABI/CountrySale.json';
+import { resolveAnyPendingTx } from '../features/transactions/helpers';
 
 require('antd/lib/notification/style/css');
 require('antd/lib/modal/style/css');
@@ -38,7 +41,6 @@ ReactGA.pageview(window.location.pathname + window.location.search);
 
 Sentry.init({
   dsn: 'https://7fc52f2bd8de42f9bf46596f996086e8@sentry.io/1299588',
-
   environment: process.env.NODE_ENV,
 });
 
@@ -72,6 +74,7 @@ class App extends Component {
     const {
       handleSendContractsToRedux, handleUpdateWalletId, handleSetError, client,
     } = this.props;
+
     // @notice loading a custom font when app mounts
     const font = new FontFaceObserver('Muli', {
       weight: 400,
@@ -84,6 +87,8 @@ class App extends Component {
     // @notice loading web3 when component mounts
     const Web3 = await getWeb3;
     const { web3 } = Web3;
+
+    instantiateContracts(web3, handleSendContractsToRedux, handleSetError);
 
     const currentAccountId = await web3.eth.getAccounts().then(accounts => accounts[0]);
 
@@ -149,8 +154,15 @@ class App extends Component {
               userId: currentAccount,
             },
           });
-
-
+          resolveAnyPendingTx(
+            currentAccount,
+            gemsContractInstance,
+            dutchAuctionContractInstance,
+            process.env.REACT_APP_DUTCH_AUCTION,
+            process.env.REACT_APP_GEM_ERC721,
+            web3,
+            countryContract,
+          );
           handleSendContractsToRedux(
             dutchAuctionContractInstance,
             gemsContractInstance,

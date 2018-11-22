@@ -1,15 +1,15 @@
+// @ts-check
 import React from 'react';
 import styled from 'styled-components';
-import Avatar from 'antd/lib/avatar';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 import Auth from '../features/auth';
 import RippleButton from './RippleButton/RippleButton';
+// @ts-ignore
 import img from '../app/images/Profile-Image-Logo-60x60.png';
 import Tx from '../features/transactions/index';
-
-require('antd/lib/avatar/style/css');
+import AvatarDropdown from '../features/transactions/components/AvatarDropdown';
 
 const BottomHighlight = styled.div`
   background: linear-gradient(to right, #bc197c, #fc01ca);
@@ -48,10 +48,8 @@ const Navbar = ({
             alt="CryptoMiner World"
           />
         </a>
-
-        <Tx />
+        <Tx auth={existingUser} />
       </div>
-
 
       <div className="w-100 w-two-thirds-ns tc tr-ns nowrap overflow-x-auto">
         {/* <a href="https://cryptominerworld.com/" title="Home" className="fl">
@@ -86,7 +84,6 @@ const Navbar = ({
             role="button"
             tabIndex={0}
             data-testid="signUp"
-
           >
             Workshop
           </div>
@@ -127,19 +124,13 @@ const Navbar = ({
           FAQ
         </a>
         {userImage
-          && userName && (
-            <NavLink to={`/profile/${userId}`} className="dn dib-ns">
-              <div className="dib">
-                <Avatar src={userImage} className="dib" />
-                <p
-                  className="dib"
-                  data-testid="avatarUsername"
-                >
-                  {userName}
-
-                </p>
-              </div>
-            </NavLink>
+          && userName && userId && (
+            <AvatarDropdown
+              to={`/profile/${userId}`}
+              userImage={userImage}
+              userName={userName}
+              walletId={userId}
+            />
         )}
         <div className="dn dib-ns">
           <RippleButton
@@ -176,8 +167,8 @@ Navbar.propTypes = {
 };
 
 Navbar.defaultProps = {
-  userImage: false,
-  userId: false,
-  userName: null,
+  userImage: '',
+  userId: '',
+  userName: '',
   existingUser: false,
 };

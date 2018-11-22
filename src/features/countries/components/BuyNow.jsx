@@ -1,7 +1,8 @@
 import React from 'react';
-// import Button from 'antd/lib/button';
 import PropTypes from 'prop-types';
 import ButtonCTA from '../../../components/ButtonCTA';
+import reduxStore from '../../../app/store';
+import { startTx, completedTx, ErrorTx } from '../../transactions/txActions';
 
 const BuyNow = ({
   txloading,
@@ -53,53 +54,90 @@ const BuyNow = ({
         <ButtonCTA
           disabled={!countrySale || !markSold || picked.length <= 0 || !buyNow}
           onClick={async () => {
-            try {
-              setLoading(true);
-              const countries = picked.map(country => country.countryId);
-              const allPrices = await Promise.all(
-                countries.map(countryId => countrySale.methods.getPrice(countryId).call()),
-              );
-              const totalPrice = allPrices
-                .map(value => Number(value))
-                .reduce((total, pricex) => total + pricex);
+            setLoading(true);
+            const countries = picked.map(country => country.countryId);
+            const allPrices = await Promise.all(
+              countries.map(countryId => countrySale.methods.getPrice(countryId).call()),
+            );
+            const totalPrice = allPrices
+              .map(value => Number(value))
+              .reduce((total, pricex) => total + pricex);
 
-              // blockchain
-              await countrySale.methods.bulkBuy(countries).send(
-                {
-                  value: totalPrice,
-                },
-                async (err) => {
-                  if (err) {
-                    // console.log('error buying a single country', err);
-                    handleSetError(err, 'Error buying a country');
-                    return;
-                  }
-                  // console.log('txHash received', txHash);
-                  // for each country
-                  // this will probably be more efficient as a batched transaction https://firebase.google.com/docs/firestore/manage-data/transactions
-                  await picked.forEach(async (country) => {
-                    await buyNow({
-                      variables: {
-                        id: country.name,
-                        newOwnerId: data.userId,
-                        price: country.price || 0,
-                        timeOfPurchase: Date.now(),
-                        totalPlots: country.plots || 0,
-                      },
-                    });
-                    await markSold(country.mapIndex);
+            countrySale.methods
+              .bulkBuy(countries)
+              .send({
+                value: totalPrice,
+              })
+              .on('transactionHash', hash => reduxStore.dispatch(
+                startTx({
+                  hash,
+                  currentUser: data.userId,
+                  method: 'country',
+                  tokenId: countries[0],
+                }),
+              ));
+
+            await countrySale.events
+              .BulkPurchaseComplete()
+              .on('data', async (event) => {
+                // for each country
+                // this will probably be more efficient as a batched transaction https://firebase.google.com/docs/firestore/manage-data/transactions
+                await picked.forEach(async (country) => {
+                  await buyNow({
+                    variables: {
+                      id: country.name,
+                      newOwnerId: data.userId,
+                      price: country.price || 0,
+                      timeOfPurchase: Date.now(),
+                      totalPlots: country.plots || 0,
+                    },
                   });
-                  // console.log('db updated');
+                  await markSold(country.mapIndex);
+                });
 
-                  setLoading(false);
-                  history.push(`/profile/${data.userId}#${picked[0].name}`);
-                },
-              );
-            } catch (err) {
-              handleSetError(err, 'Error buying a country');
+                setLoading(false);
+                history.push(`/profile/${data.userId}#${picked[0].name}`);
+                reduxStore.dispatch(completedTx(event));
+              })
+              .on('error', (error) => {
+                reduxStore.dispatch(ErrorTx(error));
+                setLoading(false);
+                handleSetError(error, 'Error buying a country');
+              });
 
-              setLoading(false);
-            }
+            //   // blockchain
+            //   await countrySale.methods.bulkBuy(countries).send(
+            //     {
+            //       value: totalPrice,
+            //     },
+            //     async (err) => {
+            //       if (err) {
+
+            //         handleSetError(err, 'Error buying a country');
+            //         return;
+            //       }
+            //
+            //       await picked.forEach(async (country) => {
+            //         await buyNow({
+            //           variables: {
+            //             id: country.name,
+            //             newOwnerId: data.userId,
+            //             price: country.price || 0,
+            //             timeOfPurchase: Date.now(),
+            //             totalPlots: country.plots || 0,
+            //           },
+            //         });
+            //         await markSold(country.mapIndex);
+            //       });
+
+            //       setLoading(false);
+            //       history.push(`/profile/${data.userId}#${picked[0].name}`);
+            //     },
+            //   );
+            // } catch (err) {
+            //   handleSetError(err, 'Error buying a country');
+            //   setLoading(false);
+            // }
           }}
           testId="buyNow"
           loading={txloading}

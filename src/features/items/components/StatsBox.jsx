@@ -81,9 +81,16 @@ export default StatsBox;
 
 StatsBox.propTypes = {
   restingEnergyMinutes: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  level: PropTypes.number.isRequired,
-  grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  level: PropTypes.number,
+  grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   name: PropTypes.string.isRequired,
-  lastSoldFor: PropTypes.number.isRequired,
+  lastSoldFor: PropTypes.number,
+};
+
+StatsBox.defaultProps = {
+  lastSoldFor: 0,
+  level: 1,
+  grade: 1,
+  rate: 1,
 };

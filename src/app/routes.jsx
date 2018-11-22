@@ -12,7 +12,6 @@ const Routes = props => (
     <Route exact path="/" component={Marketplace} />
     <Route path="/market" component={Marketplace} />
     <Route path="/mint" render={() => <CreateAuction {...props} />} />
-    <Route path="/auction/:auctionid" render={() => <Items {...props} />} />
     <Route path="/profile/:userId" render={() => <Dashboard {...props} />} />
     <Route path="/gem/:gemId" render={() => <Items {...props} />} />
     <Route path="/map" render={() => <Map {...props} />} />

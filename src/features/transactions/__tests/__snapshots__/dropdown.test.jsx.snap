@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AvatarDropdown renders correctly 1`] = `
+<div>
+  <a
+    class="dn dib-ns"
+    data-testid="avatar"
+    href="/string"
+  >
+    <span
+      class="ant-badge"
+    >
+      <span
+        class="ant-avatar dib ant-avatar-circle ant-avatar-image"
+      >
+        <img
+          src="string"
+        />
+      </span>
+    </span>
+    <p
+      class="dib pl2"
+      data-testid="avatarUsername"
+    >
+      string
+    </p>
+  </a>
+</div>
+`;
