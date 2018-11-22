@@ -73,7 +73,7 @@ const BuyNow = ({
                   hash,
                   currentUser: data.userId,
                   method: 'country',
-                  tokenId: countries,
+                  tokenId: countries[0],
                 }),
               ));
 

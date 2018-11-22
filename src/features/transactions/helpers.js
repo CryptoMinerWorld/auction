@@ -61,6 +61,7 @@ export const resolveAnyPendingTx = async (
   AUCTION_CONTRACT_ADDRESS,
   GEM_CONTRACT_ADDRESS,
   web3,
+  countryContract,
 ) => {
   const pendingTransactions = await db
     .collection('pending')
@@ -69,31 +70,31 @@ export const resolveAnyPendingTx = async (
     .then(coll => coll.docs.map(doc => doc.data()))
     .catch(error => console.log('error streaming pending tx data from firestore', error));
 
-  console.log('pendingTransactions', pendingTransactions);
+  // console.log('pendingTransactions', pendingTransactions);
 
-  const test = pendingTransactions.slice(0, 2);
+  // const test = pendingTransactions.slice(0, 2);
 
-  console.log('test', test);
+  // console.log('test', test);
 
-  map(test, async (tx) => {
+  map(pendingTransactions, async (tx) => {
     if (tx.txMethod === 'gem') {
       return gemsContract.methods
         .ownerOf(tx.txTokenId)
         .call()
         .then(async (address) => {
-          console.log('address', address);
+          // console.log('address', address);
           if (
             // if the owner is a contract address
             web3.utils.toChecksumAddress(address)
             === web3.utils.toChecksumAddress(AUCTION_CONTRACT_ADDRESS)
           ) {
-            console.log('exhibit a appears to be in auction');
+            // console.log('exhibit a appears to be in auction');
             // update the db with fresh live auction details
             return auctionContract.methods
               .items(GEM_CONTRACT_ADDRESS, tx.txTokenId)
               .call()
               .then((details) => {
-                console.log('details', details);
+                // console.log('details', details);
                 const { t1, p0, p1 } = details;
                 return db
                   .collection('stones')
@@ -123,13 +124,14 @@ export const resolveAnyPendingTx = async (
               })
               .catch(err => console.log('err getting auction details', err));
           }
+
           const userIdToLowerCase = address
             .split('')
             .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
             .join('');
 
-          console.log('exhibit a appears NOT to be in auction');
-          console.log('userIdToLowerCase', userIdToLowerCase);
+          // console.log('exhibit a appears NOT to be in auction');
+          // console.log('userIdToLowerCase', userIdToLowerCase);
           // or update the db with the gems ownerId (in lowercase)
           return db
             .collection('stones')
@@ -153,9 +155,36 @@ export const resolveAnyPendingTx = async (
             .catch(err => console.log('err reconciling in tx reconciliation function on startup', err));
         });
     }
-    if (tx.txMmethod === 'country') {
-      console.log('same stuff but for a country');
-      return false;
+    if (tx.txMethod === 'country') {
+      return countryContract.methods
+        .ownerOf(tx.txTokenId)
+        .call()
+        .then(async (address) => {
+          const userIdToLowerCase = address
+            .split('')
+            .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
+            .join('');
+
+          db
+            .collection('countries')
+            .doc(`${tx.txTokenId}`)
+            .update({
+              owner: userIdToLowerCase,
+            })
+            .then(() => db
+              .collection('pending')
+              .where('hash', '==', tx.hash)
+              .get()
+              .then(async (coll) => {
+                const pendingTxs = coll.docs.map(doc => doc.id);
+                await db
+                  .collection('pending')
+                  .doc(pendingTxs[0])
+                  .delete();
+              }))
+            .then(() => console.log('done'))
+            .catch(err => console.log('err reconciling in tx reconciliation function on startup', err));
+        });
     }
     console.log('do nothing...');
     return false;

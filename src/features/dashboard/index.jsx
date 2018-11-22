@@ -260,7 +260,6 @@ class Dashboard extends Component {
       .on('transactionHash', hash => reduxStore.dispatch(
         startTx({
           hash,
-
           method: 'country',
         }),
       ));
