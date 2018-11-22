@@ -80,11 +80,12 @@ class Transaction extends PureComponent {
       } else if (!auth) {
         send('LOGGEDOUT');
       } else {
-        console.log('txStatechart 2');
+        return false;
       }
     } else {
-      console.log('txStatechart 3');
+      return false;
     }
+    return false;
   }
 
   componentWillUnmount() {

@@ -54,13 +54,11 @@ class TradingBox extends PureComponent {
     handleCreateAuction: PropTypes.func.isRequired,
     handleRemoveGemFromAuction: PropTypes.func.isRequired,
     auctionIsLive: PropTypes.bool.isRequired,
-    history: PropTypes.shape({
-
-    }).isRequired,
+    history: PropTypes.shape({}).isRequired,
     level: PropTypes.number.isRequired,
     grade: PropTypes.number.isRequired,
     rate: PropTypes.number.isRequired,
-    restingEnergyMinutes: PropTypes.string.isRequired,
+    restingEnergyMinutes: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     name: PropTypes.string.isRequired,
     currentPrice: PropTypes.number.isRequired,
     minPrice: PropTypes.number.isRequired,

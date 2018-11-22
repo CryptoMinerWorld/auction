@@ -55,6 +55,7 @@ export const stateMachine = {
             cond: ({
               gemsContract, to, from, tokenId,
             }) => {
+              console.log('gemsContract, to, from, tokenId,', gemsContract, to, from, tokenId);
               if (!gemsContract || !to || !from || !tokenId) {
                 return false;
               }
@@ -104,10 +105,12 @@ class GiftGems extends Component {
       return errors;
     }
 
-    return null;
+    return false;
   };
 
   transferGem = async () => {
+    console.log('transfering gift...');
+
     const {
       gemsContract, currentAccountId, match, walletId, transition,
     } = this.props;
@@ -132,7 +135,6 @@ class GiftGems extends Component {
       .Transfer()
       .on('data', async (event) => {
         const { returnValues } = event;
-
         const { _from, _to, _tokenId } = returnValues;
 
         await this.transferOwnershipOnDatabase(_from, _to, _tokenId);
@@ -184,7 +186,6 @@ class GiftGems extends Component {
 
   checkReceiverDetails = () => {
     const { walletId, transition } = this.props;
-
     db.doc(`users/${OxToLowerCase(walletId)}`)
       .get()
       .then(
@@ -223,17 +224,17 @@ class GiftGems extends Component {
           <Form className="flex col jcc mt3">
             <State
               is={['idle', 'loading']}
-              render={visible => (visible ? (
-                <div className="mt5">
-                  <Field type="text" name="walletId">
-                    {({ field }) => (
-                      <Input type="text" {...field} placeholder="Send this gem to someone" />
-                    )}
-                  </Field>
-                  {errors.walletId
+              render={visible => visible && (
+              <div className="mt5">
+                <Field type="text" name="walletId">
+                  {({ field }) => (
+                    <Input type="text" {...field} placeholder="Send this gem to someone" />
+                  )}
+                </Field>
+                {errors.walletId
                       && touched.walletId && <p className="orange">{errors.walletId}</p>}
-                </div>
-              ) : null)
+              </div>
+              )
               }
             />
 

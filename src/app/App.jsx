@@ -161,6 +161,7 @@ class App extends Component {
             process.env.REACT_APP_DUTCH_AUCTION,
             process.env.REACT_APP_GEM_ERC721,
             web3,
+            countryContract,
           );
           handleSendContractsToRedux(
             dutchAuctionContractInstance,

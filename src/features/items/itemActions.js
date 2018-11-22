@@ -2,10 +2,10 @@ import { AUCTION_DETAILS_RECEIVED, NEW_AUCTION_CREATED, CLEAR_GEM_PAGE } from '.
 import {
   FETCH_DATA_BEGUN,
   FETCH_DATA_SUCCEEDED,
-  FETCH_DATA_FAILED,
-  MODAL_VISIBLE,
+  // FETCH_DATA_FAILED,
+  // MODAL_VISIBLE,
   MODAL_GONE,
-  RELEASE_CONFETTI,
+  // RELEASE_CONFETTI,
 } from '../../app/reduxConstants';
 import { db } from '../../app/utils/firebase';
 import { createAuctionHelper, removeAuctionHelper } from './helpers';
@@ -179,8 +179,8 @@ export const handleBuyNow = (_tokenId, _from, history) => (dispatch, getState) =
   const priceInWei = getState().auction.currentPrice;
   // eslint-disable-next-line
   const gemContractAddress = getState().app.gemsContractInstance._address;
+  const currentUser = getState().app.currentAccount;
 
-  dispatch({ type: MODAL_VISIBLE });
 
   return dutchAuctionContractInstance.methods
     .buy(gemContractAddress, _tokenId)
@@ -188,11 +188,10 @@ export const handleBuyNow = (_tokenId, _from, history) => (dispatch, getState) =
       value: priceInWei,
     })
     .on('transactionHash', (hash) => {
-      dispatch({ type: RELEASE_CONFETTI });
       store.dispatch(
         startTx({
           hash,
-          currentUser: _from,
+          currentUser,
           method: 'gem',
           tokenId: _tokenId,
         }),
@@ -204,13 +203,13 @@ export const handleBuyNow = (_tokenId, _from, history) => (dispatch, getState) =
     })
     .on('error', (err) => {
       store.dispatch(ErrorTx(err));
-      dispatch({
-        type: MODAL_GONE,
-      });
-      dispatch({
-        type: FETCH_DATA_FAILED,
-        payload: JSON.stringify(err),
-      });
+      // dispatch({
+      //   type: MODAL_GONE,
+      // });
+      // dispatch({
+      //   type: FETCH_DATA_FAILED,
+      //   payload: JSON.stringify(err),
+      // });
     });
 };
 
