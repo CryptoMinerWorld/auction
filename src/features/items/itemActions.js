@@ -187,11 +187,23 @@ export const handleBuyNow = (_tokenId, _from, history) => (dispatch, getState) =
     .send({
       value: priceInWei,
     })
-    .on('transactionHash', () => {
+    .on('transactionHash', (hash) => {
       dispatch({ type: RELEASE_CONFETTI });
+      store.dispatch(
+        startTx({
+          hash,
+          currentUser: _from,
+          method: 'gem',
+          tokenId: _tokenId,
+        }),
+      );
     })
-    .on('receipt', () => dispatch(updateGemOwnership(_tokenId, _from, history, priceInWei)))
+    .on('receipt', (receipt) => {
+      store.dispatch(completedTx(receipt));
+      dispatch(updateGemOwnership(_tokenId, _from, history, priceInWei));
+    })
     .on('error', (err) => {
+      store.dispatch(ErrorTx(err));
       dispatch({
         type: MODAL_GONE,
       });

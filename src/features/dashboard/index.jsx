@@ -46,6 +46,8 @@ import Keys from '../../app/images/dashboard/Keys.png';
 import Land from '../../app/images/dashboard/Land.png';
 import Plot from '../../app/images/dashboard/Plot.png';
 import { EnhancedCoupon } from './components/Coupon';
+import { startTx, completedTx, ErrorTx } from '../transactions/txActions';
+import reduxStore from '../../app/store';
 
 const { TabPane } = Tabs;
 
@@ -255,36 +257,26 @@ class Dashboard extends Component {
     CountrySaleMethods.methods
       .useCoupon(value)
       .send()
-      .on('transactionHash', hash => console.log('hash', hash));
+      .on('transactionHash', hash => reduxStore.dispatch(
+        startTx({
+          hash,
+
+          method: 'country',
+        }),
+      ));
 
     await CountrySaleMethods.events
       .CouponConsumed()
       .on('data', (event) => {
-        // which one is the tx receipt
         const {
-          transactionHash, blockHash, signature, blockNumber, returnValues,
+          returnValues,
         } = event;
-
-        console.log(
-          'transactionHash, blockHash, signature, blockNumber',
-          transactionHash,
-          blockHash,
-          signature,
-          blockNumber,
-        );
-
-        console.log('event.rturnValues', returnValues);
 
         const { plots, _by, _tokenId } = returnValues;
 
         const newOwnerId = _by;
         const countryId = Number(_tokenId);
         const totalPlots = Number(plots);
-
-        console.log(
-          'getCountryNameFromCountryId(countryId)',
-          getCountryNameFromCountryId(countryId),
-        );
 
         buyNow({
           variables: {
@@ -300,17 +292,15 @@ class Dashboard extends Component {
             return getCountryNameFromCountryId(countryId);
           })
           .then(async (countryName) => {
-            console.log('countryName', countryName);
             setloading(false);
             showModal(false);
             await data.refetch();
+            reduxStore.dispatch(completedTx(event));
             redirect(`/profile/${newOwnerId}#${countryName}`);
           })
-          .catch((err) => {
-            console.log('err buying country with coupon', err);
-          });
+          .catch(err => reduxStore.dispatch(ErrorTx(err)));
       })
-      .on('error', console.error);
+      .on('error', error => reduxStore.dispatch(ErrorTx(error)));
   };
 
   redirect = redirectPath => this.setState({ redirectPath });
