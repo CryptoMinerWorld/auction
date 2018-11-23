@@ -41,7 +41,7 @@ const BuyNow = ({
       </dl>
     )}
 
-    <div className="flex col aic jcc">
+    <div className="tc">
       <div>
         <span className="basic">Ξ</span>
         <span className="f1 b pl2">
@@ -49,71 +49,70 @@ const BuyNow = ({
         </span>
       </div>
       <p>Current Price</p>
-      <div className=" flex row aic jcc">
-        <ButtonCTA
-          disabled={!countrySale || !markSold || picked.length <= 0 || !buyNow}
-          onClick={async () => {
-            setLoading(true);
-            const countries = picked.map(country => country.countryId);
-            const allPrices = await Promise.all(
-              countries.map(countryId => countrySale.methods.getPrice(countryId).call()),
-            );
-            const totalPrice = allPrices
-              .map(value => Number(value))
-              .reduce((total, pricex) => total + pricex);
 
-            countrySale.methods
-              .bulkBuy(countries)
-              .send({
-                value: totalPrice,
-              })
-              .on('transactionHash', hash => reduxStore.dispatch(
-                startTx({
-                  hash,
-                  currentUser: data.userId,
-                  method: 'country',
-                  tokenId: countries[0],
-                }),
-              ));
+      <ButtonCTA
+        disabled={!countrySale || !markSold || picked.length <= 0 || !buyNow}
+        onClick={async () => {
+          setLoading(true);
+          const countries = picked.map(country => country.countryId);
+          const allPrices = await Promise.all(
+            countries.map(countryId => countrySale.methods.getPrice(countryId).call()),
+          );
+          const totalPrice = allPrices
+            .map(value => Number(value))
+            .reduce((total, pricex) => total + pricex);
 
-            await countrySale.events
-              .BulkPurchaseComplete()
-              .on('data', async (event) => {
-                await picked.forEach(async (country) => {
-                  await buyNow({
-                    variables: {
-                      id: country.name,
-                      newOwnerId: data.userId,
-                      price: country.price || 0,
-                      timeOfPurchase: Date.now(),
-                      totalPlots: country.plots || 0,
-                      imageLinkLarge: country.imageLinkLarge,
-                      imageLinkMedium: country.imageLinkMedium,
-                      imageLinkSmall: country.imageLinkSmall,
-                      countryId: country.countryId,
-                      mapIndex: country.mapIndex,
-                      roi: country.roi,
-                    },
-                  });
-                  await markSold(country.mapIndex);
+          countrySale.methods
+            .bulkBuy(countries)
+            .send({
+              value: totalPrice,
+            })
+            .on('transactionHash', hash => reduxStore.dispatch(
+              startTx({
+                hash,
+                currentUser: data.userId,
+                method: 'country',
+                tokenId: countries[0],
+              }),
+            ));
+
+          await countrySale.events
+            .BulkPurchaseComplete()
+            .on('data', async (event) => {
+              await picked.forEach(async (country) => {
+                await buyNow({
+                  variables: {
+                    id: country.name,
+                    newOwnerId: data.userId,
+                    price: country.price || 0,
+                    timeOfPurchase: Date.now(),
+                    totalPlots: country.plots || 0,
+                    imageLinkLarge: country.imageLinkLarge,
+                    imageLinkMedium: country.imageLinkMedium,
+                    imageLinkSmall: country.imageLinkSmall,
+                    countryId: country.countryId,
+                    mapIndex: country.mapIndex,
+                    roi: country.roi,
+                  },
                 });
-
-                setLoading(false);
-                history.push(`/profile/${data.userId}#${picked[0].name}`);
-                reduxStore.dispatch(completedTx(event));
-              })
-              .on('error', (error) => {
-                reduxStore.dispatch(ErrorTx(error));
-                setLoading(false);
-                handleSetError(error, 'Error buying a country');
+                await markSold(country.mapIndex);
               });
-          }}
-          testId="buyNow"
-          loading={txloading}
-          loadingText="buying..."
-          text="buy now"
-        />
-      </div>
+
+              setLoading(false);
+              history.push(`/profile/${data.userId}#${picked[0].name}`);
+              reduxStore.dispatch(completedTx(event));
+            })
+            .on('error', (error) => {
+              reduxStore.dispatch(ErrorTx(error));
+              setLoading(false);
+              handleSetError(error, 'Error buying a country');
+            });
+        }}
+        testId="buyNow"
+        loading={txloading}
+        loadingText="buying..."
+        text="buy now"
+      />
     </div>
   </div>
 );

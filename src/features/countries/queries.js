@@ -19,14 +19,6 @@ export const MAP_COUNTRY_DATA = gql`
   }
 `;
 
-export const USERNAME_QUERY = gql`
-  {
-    user(id: "0xd9b74f73d933fde459766f74400971b29b90c9d2") {
-      name
-    }
-  }
-`;
-
 export const USER_COUNTRIES = gql`
   query USER_COUNTRIES($id: String!) {
     user(id: $id) {

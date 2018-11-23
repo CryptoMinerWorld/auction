@@ -92,6 +92,7 @@ const CountryAuction = () => {
                 handleReset={handleReset}
                 countryBeingHoveredOnInFilter={countryBeingHoveredOnInFilter}
                 cart={cart}
+                removeFromCart={removeFromCart}
               />
             ) : (
               <Map
@@ -102,6 +103,7 @@ const CountryAuction = () => {
                 coordinates={coordinates}
                 handleCityClick={handleCityClick}
                 handleReset={handleReset}
+                removeFromCart={removeFromCart}
                 countryBeingHoveredOnInFilter={countryBeingHoveredOnInFilter}
                 cart={cart}
               />

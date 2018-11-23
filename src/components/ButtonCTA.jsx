@@ -1,29 +1,29 @@
 import React from 'react';
-import styled from 'styled-components';
+// import styled from 'styled-components';
 import Icon from 'antd/lib/icon';
 import PropTypes from 'prop-types';
 import button from '../app/images/pinkBuyNowButton.png';
 
-const ColourButton = styled.button`
-  background-image: url(${button});
-  background-position: center top;
-  width: 100%;
-  height: 100%;
-  text-align: center;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-color: transparent;
-  border: none;
-  color: white;
-  text-transform: uppercase;
-  cursor: pointer;
-`;
 const ButtonCTA = ({
   disabled, onClick, testId, loading, loadingText, text,
 }) => (
-  <ColourButton
+  <button
     type="submit"
-    className="b ttu h3 w5 grow"
+    className="b ttu grow ma4 pa3"
+    style={{
+      minWidth: '16rem',
+      height: '4rem',
+      backgroundImage: `url(${button})`,
+      backgroundPosition: 'center top',
+      textAlign: 'center',
+      backgroundSize: 'contain',
+      backgroundRepeat: 'no-repeat',
+      backgroundColor: 'transparent',
+      border: 'none',
+      color: 'white',
+      textTransform: 'uppercase',
+      cursor: 'pointer',
+    }}
     disabled={disabled}
     onClick={onClick}
     data-testid={testId}
@@ -37,7 +37,7 @@ const ButtonCTA = ({
     ) : (
       text
     )}
-  </ColourButton>
+  </button>
 );
 
 export default ButtonCTA;

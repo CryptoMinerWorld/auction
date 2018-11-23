@@ -50,6 +50,7 @@ const Map = ({
   handleReset,
   coordinates,
   cart,
+  removeFromCart,
 }) => {
   const decideColor = (properties, hover, continents, picked) => {
     if (properties.countryId === hover) {
@@ -133,16 +134,21 @@ const Map = ({
                         id: geography.properties.countryId,
                       })
                           }
-                      onClick={() => addToCart({
-                        id: geography.properties.countryId,
-                        countryId: geography.properties.countryId,
-                        name: geography.properties.name,
-                        price: geography.properties.price,
-                        plots: geography.properties.plots,
-                        roi: geography.properties.roi,
-                        sold: geography.properties.sold,
-                        mapIndex: geography.properties.mapIndex,
-                      })
+                      onClick={() => (cart.some(
+                        country => country.countryId === geography.properties.countryId,
+                      )
+                        ? removeFromCart({ countryId: geography.properties.countryId })
+                        : geography.properties.sold === false
+                                && addToCart({
+                                  id: geography.properties.countryId,
+                                  countryId: geography.properties.countryId,
+                                  name: geography.properties.name,
+                                  price: geography.properties.price,
+                                  plots: geography.properties.plots,
+                                  roi: geography.properties.roi,
+                                  sold: geography.properties.sold,
+                                  mapIndex: geography.properties.mapIndex,
+                                }))
                           }
                       projection={projection}
                       data-testid={geography.properties.name}
@@ -196,6 +202,7 @@ Map.propTypes = {
   coordinates: PropTypes.arrayOf(PropTypes.number).isRequired,
   countryBeingHoveredOnInFilter: PropTypes.number.isRequired,
   cart: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  removeFromCart: PropTypes.func.isRequired,
 };
 
 export default Map;

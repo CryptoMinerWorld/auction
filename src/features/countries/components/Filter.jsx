@@ -100,15 +100,23 @@ class Filter extends Component {
           const { searchText } = this.state;
           return searchText ? (
             <span
-              role="button"
-              tabIndex={0}
+              // role="button"
+              // tabIndex={0}
               data-testid="filterComponent"
-              onClick={() => this.handleSelection(record)}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter') {
-                  this.handleSelection(record);
-                }
-              }}
+              // onClick={() => this.handleSelection(record)}
+              // onKeyPress={(e) => {
+              //   if (e.key === 'Enter') {
+              //     this.handleSelection(record);
+              //   }
+              // }}
+
+              // onClick={() => handleCityClick(record)}
+              // onKeyPress={(e) => {
+              //   if (e.key === 'Enter') {
+              //     handleCityClick(record);
+              //     // this.handleSelection(record);
+              //   }
+              // }}
 
               // onMouseEnter={() => setHoverCountry(record.countryId)}
               // onMouseLeave={() => setHoverCountry()}
@@ -129,22 +137,15 @@ class Filter extends Component {
               {!record.sold
                 && record.countryId
                 && record.mapIndex && (
-                  <BuyNowButton record={record} handleCityClick={handleCityClick} />
+                  <BuyNowButton record={record} handleCityClick={this.handleSelection} />
               )}
             </span>
           ) : (
-            <span
-              role="button"
-              tabIndex={0}
-              onClick={() => this.handleSelection(record)}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter') {
-                  this.handleSelection(record);
-                }
-              }}
-            >
+            <span>
               {text}
-              {!record.sold && <BuyNowButton record={record} handleCityClick={handleCityClick} />}
+              {!record.sold && (
+                <BuyNowButton record={record} handleCityClick={this.handleSelection} />
+              )}
             </span>
           );
         },

@@ -28,7 +28,7 @@ afterEach(cleanup);
 const mockQuery = [
   {
     request: {
-      // query: USERNAME_QUERY,
+     
       query: gql`
         {
           user(id: "0xd9b74f73d933fde459766f74400971b29b90c9d2") {
