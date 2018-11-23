@@ -1,22 +1,22 @@
 import gql from 'graphql-tag';
 
-
 export const MAP_COUNTRY_DATA = gql`
-query MAP_COUNTRY_DATA {
-  mapCountries {
-    id
-    name
-    countryId
-    plots
-    price
-    roi
-    north
-    east
-    mapIndex
-    imageURL
-    sold
+  query MAP_COUNTRY_DATA {
+    mapCountries {
+      name
+      countryId
+      plots
+      price
+      roi
+      north
+      east
+      mapIndex
+      imageLinkLarge
+      imageLinkMedium
+      imageLinkSmall
+      sold
+    }
   }
-}
 `;
 
 export const USERNAME_QUERY = gql`
@@ -33,15 +33,18 @@ export const USER_COUNTRIES = gql`
       countries {
         name
         lastBought
-        description
+        lastPrice
+        roi
         totalPlots
         plotsBought
         plotsMined
         plotsAvailable
-        image
-        lastPrice
+        imageLinkLarge
+        imageLinkMedium
+        imageLinkSmall
         roi
         countryId
+        mapIndex
         onSale
       }
     }

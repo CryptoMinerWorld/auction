@@ -1,18 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Card from 'antd/lib/card';
-// import Icon from 'antd/lib/icon';
-// import Avatar from 'antd/lib/avatar';
 import { Link } from 'react-router-dom';
-import flags from '../../../../app/images/flags/in.png';
 
 export const CountryCard = ({
   name,
   image,
-  // miniflags,
   index,
   selectCountry,
-  // onSale,
 }) => (
   <Link to={`#${name}`}>
     <Card
@@ -41,8 +36,7 @@ export const CountryBar = ({ countries, selectCountry }) => (
           key={country.name}
           index={index}
           selectCountry={selectCountry}
-          image="https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/flags%2FFlag_map_of_Andorra.svg?alt=media&token=ba5c8487-4d45-4a87-ac7e-9ad93a01130b"
-          flags={flags}
+          image={country.imageLinkMedium}
         />
       ))}
   </div>

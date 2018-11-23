@@ -77,11 +77,10 @@ const BuyNow = ({
                 }),
               ));
 
+
             await countrySale.events
               .BulkPurchaseComplete()
               .on('data', async (event) => {
-                // for each country
-                // this will probably be more efficient as a batched transaction https://firebase.google.com/docs/firestore/manage-data/transactions
                 await picked.forEach(async (country) => {
                   await buyNow({
                     variables: {
@@ -90,6 +89,12 @@ const BuyNow = ({
                       price: country.price || 0,
                       timeOfPurchase: Date.now(),
                       totalPlots: country.plots || 0,
+                      imageLinkLarge: country.imageLinkLarge,
+                      imageLinkMedium: country.imageLinkMedium,
+                      imageLinkSmall: country.imageLinkSmall,
+                      countryId: country.countryId,
+                      mapIndex: country.mapIndex,
+                      roi: country.roi,
                     },
                   });
                   await markSold(country.mapIndex);
@@ -104,40 +109,6 @@ const BuyNow = ({
                 setLoading(false);
                 handleSetError(error, 'Error buying a country');
               });
-
-            //   // blockchain
-            //   await countrySale.methods.bulkBuy(countries).send(
-            //     {
-            //       value: totalPrice,
-            //     },
-            //     async (err) => {
-            //       if (err) {
-
-            //         handleSetError(err, 'Error buying a country');
-            //         return;
-            //       }
-            //
-            //       await picked.forEach(async (country) => {
-            //         await buyNow({
-            //           variables: {
-            //             id: country.name,
-            //             newOwnerId: data.userId,
-            //             price: country.price || 0,
-            //             timeOfPurchase: Date.now(),
-            //             totalPlots: country.plots || 0,
-            //           },
-            //         });
-            //         await markSold(country.mapIndex);
-            //       });
-
-            //       setLoading(false);
-            //       history.push(`/profile/${data.userId}#${picked[0].name}`);
-            //     },
-            //   );
-            // } catch (err) {
-            //   handleSetError(err, 'Error buying a country');
-            //   setLoading(false);
-            // }
           }}
           testId="buyNow"
           loading={txloading}

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Spin from 'antd/lib/spin';
 import Icon from 'antd/lib/icon';
 import { interpret } from 'xstate/lib/interpreter';
-
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { txStatechart } from './machines/txMachine';
 
 class Transaction extends PureComponent {
@@ -100,16 +100,19 @@ class Transaction extends PureComponent {
     return (
       <div className="flex aic jcs">
         {current.matches('signedin.pending') && (
-          <div className="flex row aic jcs">
-            <Spin indicator={loading} />
-            <div className="flex col orange jcc ais pl3">
-              <p className="ma0 pa0">Transaction in process...</p>
-              <small className="f6 ma0 pa0">
-                Tx Hash
-                {` ${hash.substring(0, 4)}...${hash.substring(hash.length - 4)}`}
-              </small>
+          <CopyToClipboard text={hash}>
+            <div className="flex row aic jcs">
+              <Spin indicator={loading} />
+              <div className="flex col orange jcc ais pl3">
+                <p className="ma0 pa0">Transaction in process...</p>
+                <small className="f6 ma0 pa0">
+                  Tx Hash
+                  {` ${hash.substring(0, 4)}...${hash.substring(hash.length - 4)}`}
+                  <Icon type="link" className="pointer pl3 dib" />
+                </small>
+              </div>
             </div>
-          </div>
+          </CopyToClipboard>
         )}
 
         {current.matches('signedin.resolved') && (

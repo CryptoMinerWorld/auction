@@ -182,7 +182,7 @@ export const createAuctionHelper = async (
       startTx({
         hash,
         currentUser: _currentAccount,
-        method: 'createAuction',
+        method: 'gem',
         tokenId: token,
       }),
     ))

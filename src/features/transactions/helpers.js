@@ -72,16 +72,18 @@ export const resolveAnyPendingTx = async (
       .then(coll => coll.docs.map(doc => doc.data()))
       .catch(error => console.log('error streaming pending tx data from firestore', error));
 
+
     // const test = pendingTransactions.slice(0, 2);
     // console.log('test', test);
 
     map(pendingTransactions, async (tx) => {
       if (tx.txMethod === 'gem') {
+        console.log('is gem');
         return gemsContract.methods
           .ownerOf(tx.txTokenId)
           .call()
           .then(async (address) => {
-            // console.log('address', address);
+            console.log('address', address);
             if (
               // if the owner is a contract address
               web3.utils.toChecksumAddress(address)

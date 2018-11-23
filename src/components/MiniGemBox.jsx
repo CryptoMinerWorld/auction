@@ -14,9 +14,6 @@ class Gembox extends PureComponent {
 
   static defaultProps = {
     market: false,
-  };
-
-  static defaultProps = {
     level: 2,
     grade: 2,
     rate: 2,

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 // import { connect } from 'react-redux';
 import { Transition } from 'react-spring';
-import Button from 'antd/lib/button';
+// import Button from 'antd/lib/button';
 import CountryDetails from './CountryDetails';
 import { CountryBar } from './CountryBar';
 // import { handleResell } from '../../helpers';
@@ -88,7 +88,7 @@ const smoothScroll = {
 class Countries extends Component {
   static propTypes = {
     countries: PropTypes.arrayOf(PropTypes.shape({})),
-    userId: PropTypes.string.isRequired,
+    // userId: PropTypes.string.isRequired,
     // DutchContract: PropTypes.shape({}).isRequired,
     // CountryERC721: PropTypes.shape({}).isRequired,
   };
@@ -128,8 +128,8 @@ class Countries extends Component {
 
   render() {
     const { index, selected } = this.state;
-    const { countries, userId } = this.props;
-
+    const { countries } = this.props;
+    console.log('countries[index]', countries[index]);
     return (
       <div data-testid="countriesExist" id="top" className="pa0">
         <Transition
@@ -146,17 +146,16 @@ class Countries extends Component {
             plotsBought={countries[index].plotsBought}
             plotsMined={countries[index].plotsMined}
             plotsAvailable={countries[index].plotsAvailable}
-            image={countries[index].image}
+            image={countries[index].imageLinkLarge}
             lastPrice={countries[index].lastPrice}
             roi={countries[index].roi}
-            userId={userId}
           />
           )
           }
         </Transition>
 
         <CountryBar countries={countries} selectCountry={this.selectCountry} />
-        <div className="tc center mv5">
+        {/* <div className="tc center mv5">
           <Button
             type="dashed"
             icon="plus"
@@ -166,7 +165,7 @@ class Countries extends Component {
           >
             Show Stats for all
           </Button>
-        </div>
+        </div> */}
       </div>
     );
   }

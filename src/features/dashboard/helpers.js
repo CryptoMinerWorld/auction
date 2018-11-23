@@ -6,6 +6,7 @@ import {
   storage,
   rtdb,
 } from '../../app/utils/firebase';
+
 import { setError } from '../../app/appActions';
 
 export function isTokenForSale(_contract, _tokenId) {
@@ -143,9 +144,11 @@ export const getPlotCount = (preSaleContract, userId) => preSaleContract.methods
 // eslint-disable-next-line
 export const markSold = mapIndex => rtdb.ref(`/worldMap/objects/units/geometries/${mapIndex}/properties`).update({ sold: true });
 
+
+export const getCountryDetailsFromFirebase = mapIndex => rtdb.ref(`/worldMap/objects/units/geometries/${mapIndex}/properties`).once('value').then(snap => snap.val());
+
 export const validateCoupon = (couponCode) => {
   const characters = couponCode.split('');
-
   const last3Characters = couponCode.substr(couponCode.length - 3);
 
   // eslint-disable-next-line

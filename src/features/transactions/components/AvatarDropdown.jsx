@@ -5,8 +5,9 @@ import Menu from 'antd/lib/menu';
 import Dropdown from 'antd/lib/dropdown';
 import Badge from 'antd/lib/badge';
 import Avatar from 'antd/lib/avatar';
-import { NavLink } from 'react-router-dom';
+// import { NavLink } from 'react-router-dom';
 import Icon from 'antd/lib/icon';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { fetchAnyPendingTransactions } from '../helpers';
 
 require('antd/lib/dropdown/style/css');
@@ -24,23 +25,18 @@ require('antd/lib/avatar/style/css');
  */
 const menu = items => (
   <Menu data-testid="menu">
-    {items.map(({
-      hash, txCurrentUser, txMethod, txTokenId,
-    }) => (
-      <Menu.Item key={hash} className="flex aic">
-        <Icon type="loading" className="dib ma0 pa0" />
-        <p className="dib ma0 pa0 pl3">
-          {txTokenId}
-          {' '}
-          {` ${hash.substring(0, 4)}...${hash.substring(hash.length - 4)}`}
-          {' '}
-          {txMethod}
-          {' '}
-          {` ${txCurrentUser.substring(0, 4)}...${txCurrentUser.substring(
-            txCurrentUser.length - 4,
-          )}`}
-        </p>
-      </Menu.Item>
+    {items.map(({ hash, txTokenId }) => (
+      <CopyToClipboard text={hash} key={hash}>
+        <Menu.Item className="flex aic">
+          <Icon type="loading" className="dib ma0 pa0" />
+          <p className="dib ma0 pa0 pl3">
+            <span className="b">{txTokenId}</span>
+            {' '}
+            {` ${hash.substring(0, 4)}...${hash.substring(hash.length - 4)}`}
+          </p>
+          <Icon type="link" style={{ fontSize: '24px' }} className="pointer blue pl3" />
+        </Menu.Item>
+      </CopyToClipboard>
     ))}
   </Menu>
 );
@@ -53,9 +49,7 @@ const menu = items => (
  * walletId: string
  * }} AvatarDropdownProps
  */
-const AvatarDropdown = ({
-  to, userImage, userName, walletId,
-}) => {
+const AvatarDropdown = ({ userImage, userName, walletId }) => {
   const [visibility, setVisibility] = useState(false);
   const [penidngTxs, setTxs] = useState([]);
   useEffect(() => {
@@ -64,10 +58,10 @@ const AvatarDropdown = ({
   }, []);
 
   return (
-    <NavLink
-      to={to}
+    <div
+      // to={to}
       className="dn dib-ns"
-      onClick={() => setVisibility(false)}
+      // onClick={() => setVisibility(false)}
       onMouseEnter={() => setVisibility(true)}
       onMouseLeave={() => setVisibility(false)}
       data-testid="avatar"
@@ -82,14 +76,14 @@ const AvatarDropdown = ({
           </p>
         </>
       </Dropdown>
-    </NavLink>
+    </div>
   );
 };
 
 export default AvatarDropdown;
 
 AvatarDropdown.propTypes = {
-  to: PropTypes.string.isRequired,
+  // to: PropTypes.string.isRequired,
   userImage: PropTypes.string.isRequired,
   userName: PropTypes.string.isRequired,
   walletId: PropTypes.string.isRequired,

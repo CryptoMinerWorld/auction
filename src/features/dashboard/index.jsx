@@ -34,6 +34,7 @@ import {
   getPlotCount,
   getCountryNameFromCountryId,
   getMapIndexFromCountryId,
+  getCountryDetailsFromFirebase,
 } from './helpers';
 import stateMachine from './stateMachine';
 import CountryDashboard from '../countries/components/Dashboard';
@@ -48,6 +49,7 @@ import Plot from '../../app/images/dashboard/Plot.png';
 import { EnhancedCoupon } from './components/Coupon';
 import { startTx, completedTx, ErrorTx } from '../transactions/txActions';
 import reduxStore from '../../app/store';
+
 
 const { TabPane } = Tabs;
 
@@ -105,7 +107,8 @@ class Dashboard extends Component {
     web3: PropTypes.shape({}),
     transition: PropTypes.func.isRequired,
     match: PropTypes.shape({}),
-    gems: PropTypes.shape({}),
+    gems: PropTypes.shape({
+    }),
     history: PropTypes.shape({}),
     sortBox: PropTypes.bool.isRequired,
     totalGems: PropTypes.number.isRequired,
@@ -266,7 +269,7 @@ class Dashboard extends Component {
 
     await CountrySaleMethods.events
       .CouponConsumed()
-      .on('data', (event) => {
+      .on('data', async (event) => {
         const {
           returnValues,
         } = event;
@@ -277,6 +280,9 @@ class Dashboard extends Component {
         const countryId = Number(_tokenId);
         const totalPlots = Number(plots);
 
+        const countryMapIndex = getMapIndexFromCountryId(countryId);
+        const country = await getCountryDetailsFromFirebase(countryMapIndex);
+        console.log('A country', country);
         buyNow({
           variables: {
             id: getCountryNameFromCountryId(countryId),
@@ -284,9 +290,16 @@ class Dashboard extends Component {
             price: 0,
             timeOfPurchase: Date.now(),
             totalPlots,
+            imageLinkLarge: country.imageLinkLarge,
+            imageLinkMedium: country.imageLinkMedium,
+            imageLinkSmall: country.imageLinkSmall,
+            countryId: country.countryId,
+            mapIndex: country.mapIndex,
+            roi: country.roi,
           },
         })
           .then(async () => {
+            console.log('B country called with variables');
             await markSold(getMapIndexFromCountryId(countryId));
             return getCountryNameFromCountryId(countryId);
           })
