@@ -1,5 +1,91 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Particles from 'react-particles-js';
+
+const particleParameters = {
+  particles: {
+    number: {
+      value: 2,
+      density: {
+        enable: true,
+        value_area: 800,
+      },
+    },
+    line_linked: {
+      enable: false,
+    },
+    move: {
+      speed: 1,
+      out_mode: 'out',
+    },
+    shape: {
+      type: 'images',
+      images: [
+        {
+          src: '/tinyGems/Amethyst.png',
+          height: 5,
+          width: 5,
+        },
+        {
+          src: '/tinyGems/Diamond.png',
+          height: 5,
+          width: 5,
+        },
+        {
+          src: '/tinyGems/Emerald.png',
+          height: 5,
+          width: 5,
+        },
+        {
+          src: '/tinyGems/Garnet.png',
+          height: 5,
+          width: 5,
+        },
+        {
+          src: '/tinyGems/Pearl.png',
+          height: 5,
+          width: 5,
+        },
+        {
+          src: '/tinyGems/Peridot.png',
+          height: 5,
+          width: 5,
+        },
+        {
+          src: '/tinyGems/Ruby.png',
+          height: 5,
+          width: 5,
+        },
+        {
+          src: '/tinyGems/Sapphire.png',
+          height: 5,
+          width: 5,
+        },
+        {
+          src: '/tinyGems/Topaz.png',
+          height: 5,
+          width: 5,
+        },
+        {
+          src: '/tinyGems/Turquoise.png',
+          height: 5,
+          width: 5,
+        },
+      ],
+    },
+    size: {
+      value: 10,
+      random: false,
+      anim: {
+        enable: true,
+        speed: 4,
+        size_min: 10,
+        sync: false,
+      },
+    },
+  },
+  retina_detect: true,
+};
 
 const CountryDetails = ({
   name,
@@ -11,9 +97,16 @@ const CountryDetails = ({
   image,
   lastPrice,
   roi,
-}) => {
-  console.log('name', name);
-  return (
+}) => (
+  <>
+    <Particles
+      style={{
+        width: '100%',
+        position: 'absolute',
+        opacity: 0.75,
+      }}
+      params={particleParameters}
+    />
     <div className="flex mv5 mw8 center pa3 row-ns flex-column-reverse">
       <div className="w-50-ns w-100">
         <h1 className="white f1">{name}</h1>
@@ -21,7 +114,6 @@ const CountryDetails = ({
           Owned for
           {lastBought}
         </small>
-
         <div className="flex aic">
           <dl className="dib mr5">
             <dd className="f6 f5-ns b ml0">Price Paid</dd>
@@ -64,8 +156,8 @@ const CountryDetails = ({
         </div>
       </div>
     </div>
-  );
-};
+  </>
+);
 
 export default CountryDetails;
 

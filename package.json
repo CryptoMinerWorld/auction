@@ -66,6 +66,7 @@
     "react-ga": "^2.5.3",
     "react-mailchimp-subscribe": "^2.0.2",
     "react-motion": "^0.5.2",
+    "react-particles-js": "^2.4.0",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
     "react-router-prop-types": "^1.0.4",
@@ -100,7 +101,6 @@
     "test": "node scripts/test.js",
     "coverage": "jest --env=jsdom --coverage",
     "storybook": "start-storybook -p 9001 -c .storybook",
-    "quality": "codeclimate analyze .",
     "dev": "npx cypress open"
   },
   "babel": {

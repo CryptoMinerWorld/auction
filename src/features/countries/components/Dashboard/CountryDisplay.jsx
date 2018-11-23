@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-// import { connect } from 'react-redux';
 import { Transition } from 'react-spring';
-// import Button from 'antd/lib/button';
 import CountryDetails from './CountryDetails';
 import { CountryBar } from './CountryBar';
-// import { handleResell } from '../../helpers';
 
 require('antd/lib/avatar/style/css');
 require('antd/lib/icon/style/css');
@@ -123,13 +120,12 @@ class Countries extends Component {
   selectCountry = (index) => {
     smoothScroll.scrollTo('top');
     this.setState({ index, selected: true });
-    // window.scrollTo(0, 0);
   };
 
   render() {
     const { index, selected } = this.state;
     const { countries } = this.props;
-    console.log('countries[index]', countries[index]);
+
     return (
       <div data-testid="countriesExist" id="top" className="pa0">
         <Transition
