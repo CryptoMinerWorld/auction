@@ -15,10 +15,14 @@ require('antd/lib/icon/style/css');
 const BuyNowButton = ({ record, handleCityClick }) => (
   <Button
     type="dashed"
-    icon="shopping-cart"
+    icon="plus"
+    style={{
+      color: '#ff00cd',
+      borderColor: '#ff00cd',
+    }}
     ghost
     onClick={() => handleCityClick(record)}
-    className="hover-black white ml3 "
+    className="hover-black ml3 dim"
   />
 );
 

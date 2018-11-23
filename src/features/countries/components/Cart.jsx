@@ -87,12 +87,15 @@ const Cart = ({
               key: 'action',
               render: x => (
                 <Button
-                  type="danger"
                   ghost
                   onClick={() => removeFromCart(x)}
                   data-testid={`remove-${x.country}`}
-                  icon="close"
+                  icon="minus"
                   className="grow"
+                  style={{
+                    color: '#ff723f',
+                    borderColor: '#ff723f',
+                  }}
                 >
                   Remove
                 </Button>

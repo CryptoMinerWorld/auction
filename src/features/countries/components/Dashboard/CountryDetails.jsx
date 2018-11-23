@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Particles from 'react-particles-js';
+import { formatDistance } from 'date-fns';
 
 const particleParameters = {
   particles: {
@@ -109,24 +110,26 @@ const CountryDetails = ({
     />
     <div className="flex mv5 mw8 center pa3 row-ns flex-column-reverse">
       <div className="w-50-ns w-100">
-        <h1 className="white f1">{name}</h1>
-        <small>
+        <h1 className="white f1 b">{name}</h1>
+
+        <small className="pb3">
           Owned for
-          {lastBought}
+          {` ${formatDistance(new Date(lastBought), new Date())}`}
         </small>
-        <div className="flex aic">
-          <dl className="dib mr5">
+
+        <div className="flex aie jcb">
+          <div className="">
             <dd className="f6 f5-ns b ml0">Price Paid</dd>
-            <dd className="f3 f2-ns b ml0">{lastPrice}</dd>
-          </dl>
-          <dl className="dib mr5">
+            <dd className="f3 f2-ns b ml0 w-100">{lastPrice && lastPrice.toFixed(3)}</dd>
+          </div>
+          <div className="">
             <dd className="f6 f5-ns b ml0">Plots Remaining</dd>
-            <dd className="f3 f2-ns b ml0">{totalPlots - plotsBought}</dd>
-          </dl>
-          <dl className="dib mr5">
+            <dd className="f3 f2-ns b ml0 w-100">{totalPlots && totalPlots.toFixed(3)}</dd>
+          </div>
+          <div className="">
             <dd className="f6 f5-ns b ml0">Return on Investment</dd>
-            <dd className="f3 f2-ns b ml0">{roi || '0%'}</dd>
-          </dl>
+            <dd className="f3 f2-ns b ml0 w-100">{roi && roi.toFixed(3)}</dd>
+          </div>
         </div>
 
         <dl className="w-100">
@@ -136,7 +139,7 @@ const CountryDetails = ({
             <dd>{totalPlots}</dd>
           </span>
           <span className="flex">
-            <dt>Plots Bought</dt>
+            <dt>Plots Sold</dt>
             <dd>{plotsBought}</dd>
           </span>
           <span className="flex">
@@ -145,15 +148,13 @@ const CountryDetails = ({
           </span>
 
           <span className="flex">
-            <dt>Plots for Auction</dt>
+            <dt>Plots Available for Auction</dt>
             <dd>{plotsAvailable}</dd>
           </span>
         </dl>
       </div>
-      <div className="w-50-ns w-100">
-        <div className="flex x mv5">
-          <img src={image} alt={name} className="h-auto w-100" />
-        </div>
+      <div className="w-50-ns w-100 tc">
+        <img src={image} alt={name} className="mw-100 center grow" style={{ height: '500px' }} />
       </div>
     </div>
   </>

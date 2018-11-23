@@ -16,7 +16,7 @@ const DetailsBar = ({ details }) => (
       <div className="mw9 center flex jce w-100 aic row-ns col">
         <div className="tc">
           <dl className="dib mr5-ns">
-            <dd className="f6 f5-ns b ml0" data-testid="countryDetails">
+            <dd className="f6 f5-ns b ml0 w4 tc" data-testid="countryDetails">
               {details.name}
             </dd>
           </dl>
@@ -24,20 +24,20 @@ const DetailsBar = ({ details }) => (
         <div className="flex jcb tc">
           <dl className="dib mr5-ns ">
             <dd className="f6 f5-ns b ml0 ">Price</dd>
-            <dd className="f3 f2-ns b ml0" data-testid="priceDetails">
+            <dd className="f3 f2-ns b ml0 w4 tc" data-testid="priceDetails">
               <span className="basic b pr2">Ξ</span>
               {details.price && details.price.toFixed(2)}
             </dd>
           </dl>
           <dl className="dib mr5-ns">
             <dd className="f6 f5-ns b ml0">Plots</dd>
-            <dd className="f3 f2-ns b ml0 " data-testid="plotsDetails">
+            <dd className="f3 f2-ns b ml0 w4 tc" data-testid="plotsDetails">
               {details.plots}
             </dd>
           </dl>
           <dl className="dib mr5-ns">
             <dd className="f6 f5-ns b ml0">Earns</dd>
-            <dd className="f3 f2-ns b ml0" data-testid="roiDetails">
+            <dd className="f3 f2-ns b ml0  tc" style={{ width: '4em' }} data-testid="roiDetails">
               <span className="basic b pr2">Ξ</span>
               {details.roi && details.roi.toFixed(2)}
             </dd>

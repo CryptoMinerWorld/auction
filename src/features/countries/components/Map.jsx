@@ -21,7 +21,7 @@ const wrapperStyles = {
 };
 
 const colorScale = chroma
-  .scale(['#3d2a00', '#23292e', '#0b3400', '#290058', '#440300', '#4a1a00', '#23292e', '#00103d'])
+  .scale(['#644500', '#23292e', '#135c00', '#3d0085', '#6b0400', '#742900', '#23292e', '#00103d'])
   .mode('lch')
   .colors(8);
 
@@ -68,7 +68,18 @@ const Map = ({
   };
 
   return (
-    <div style={wrapperStyles} data-testid="mapComponent">
+    <div
+      style={wrapperStyles}
+      data-testid="mapComponent"
+      onMouseLeave={() => setSelection({
+        name: 'Hover over a Country',
+        plots: 0,
+        price: 0,
+        roi: 0,
+        countryId: '',
+      })
+      }
+    >
       {zoom !== 1 && (
         <Button
           type="dashed"
@@ -116,18 +127,10 @@ const Map = ({
                       geography={geography}
                       onMouseEnter={() => setSelection({
                         name: geography.properties.name,
-                        plots: geography.properties.totalPlots,
+                        plots: geography.properties.plots,
                         price: geography.properties.price,
                         roi: geography.properties.roi,
                         id: geography.properties.countryId,
-                      })
-                          }
-                      onMouseLeave={() => setSelection({
-                        name: 'Hover over a Country',
-                        plots: 0,
-                        price: 0,
-                        roi: 0,
-                        countryId: '',
                       })
                           }
                       onClick={() => addToCart({
@@ -135,7 +138,7 @@ const Map = ({
                         countryId: geography.properties.countryId,
                         name: geography.properties.name,
                         price: geography.properties.price,
-                        plots: geography.properties.totalPlots,
+                        plots: geography.properties.plots,
                         roi: geography.properties.roi,
                         sold: geography.properties.sold,
                         mapIndex: geography.properties.mapIndex,
@@ -157,8 +160,8 @@ const Map = ({
                           outline: 'none',
                         },
                         hover: {
-                          fill: chroma('#d70997').darken(0.5),
-                          stroke: '#d70997',
+                          fill: '#ff00cd',
+                          stroke: '#ff00cd',
                           strokeWidth: 0.75,
                           outline: 'none',
                         },

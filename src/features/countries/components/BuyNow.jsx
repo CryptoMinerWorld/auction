@@ -32,12 +32,11 @@ const BuyNow = ({
         </tr>
         <tr className="flex">
           <dt>Total Plots</dt>
-          <dd>no data yet</dd>
+          <dd>{picked && picked.reduce((total, amount) => total + amount.plots, 0).toFixed(3)}</dd>
         </tr>
-
         <tr className="flex">
           <dt>Total Return</dt>
-          <dd>no data yet</dd>
+          <dd>{picked && picked.reduce((total, amount) => total + amount.roi, 0).toFixed(3)}</dd>
         </tr>
       </dl>
     )}
@@ -76,7 +75,6 @@ const BuyNow = ({
                   tokenId: countries[0],
                 }),
               ));
-
 
             await countrySale.events
               .BulkPurchaseComplete()
