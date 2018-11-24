@@ -1,12 +1,16 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import formatDistance from 'date-fns/formatDistance';
-import subMinutes from 'date-fns/subMinutes';
+// import formatDistance from 'date-fns/formatDistance';
+// import subMinutes from 'date-fns/subMinutes';
+import moment from 'moment-timezone';
+import momentDurationFormatSetup from 'moment-duration-format';
 import gem1 from '../../../app/images/icons/gem1.png';
 import gem2 from '../../../app/images/icons/gem2.png';
 import gem3 from '../../../app/images/icons/gem3.png';
 import restingEnergy from '../../../app/images/icons/EnergySymbolDull.png';
+
+momentDurationFormatSetup(moment);
 
 class Gembox extends PureComponent {
   static propTypes = {
@@ -36,14 +40,14 @@ class Gembox extends PureComponent {
     6: 'AAA',
   }[gradeValue]);
 
-  restingEnergyConverter = (restingEnergyMinutes) => {
-    const now = Date.now();
-    const nowMinusMinutes = subMinutes(now, restingEnergyMinutes);
-    const differenceInWords = formatDistance(nowMinusMinutes, now, {
-      includeSeconds: true,
-    });
-    return differenceInWords;
-  };
+  // restingEnergyConverter = (restingEnergyMinutes) => {
+  //   const now = Date.now();
+  //   const nowMinusMinutes = subMinutes(now, restingEnergyMinutes);
+  //   const differenceInWords = formatDistance(nowMinusMinutes, now, {
+  //     includeSeconds: true,
+  //   });
+  //   return differenceInWords;
+  // };
 
   render() {
     const {
@@ -61,10 +65,18 @@ class Gembox extends PureComponent {
           && grade >= 4
           && restingEnergyMinutes && (
             <div className="w-100">
-              <div className="flex jcc aic">
-                <img src={restingEnergy} alt="Resting Energy" className="h3 " />
-                <p className="ttu f5 mt2 o-50 white tc pt1 b pr2" data-testid="restingEnergy">
+              <div className="flex jcc aic col">
+                <img src={restingEnergy} alt="Resting Energy" className="h3" />
+                {/* <p >
                   {this.restingEnergyConverter(restingEnergyMinutes)}
+                </p> */}
+                <p
+                  className="ttu f5 mt2 o-50 white tc pt1 b pr2 measure"
+                  data-testid="restingEnergy"
+                >
+                  {moment
+                    .duration(restingEnergyMinutes, 'minutes')
+                    .format('w [weeks], d [days], h [hours], m [minutes]')}
                 </p>
               </div>
             </div>

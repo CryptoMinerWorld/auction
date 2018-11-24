@@ -10,8 +10,11 @@ import { compose } from 'redux';
 import Checkbox from 'antd/lib/checkbox';
 import { withStateMachine } from 'react-automata';
 import { Spring } from 'react-spring';
+import Image from 'react-image-webp';
 import stateChart from './statechart';
 import { createNewUser, notInterestedInSigningUp } from './authActions';
+import downloadMetamask from '../../app/images/download-metamask.webp';
+import downloadMetamaskPNG from '../../app/images/download-metamask.png';
 
 require('antd/lib/button/style/css');
 require('antd/lib/modal/style/css');
@@ -32,7 +35,6 @@ const images = [
   'https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FTopaz%20Face%20Emoji.png?alt=media&token=5369bf8c-64ec-4a42-9169-6ca09ad2d126',
   'https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FTurquoise%20Face%20Emoji.png?alt=media&token=a7a8d52c-d99f-4b1b-bdd2-fca2bbee2556',
 ];
-
 
 const select = store => ({
   currentUser: store.auth.currentUserId,
@@ -137,52 +139,61 @@ class Auth extends PureComponent {
     return (
       <div>
         <Modal
-          title="Please Create Your Account"
+          title={
+            !currentUser || currentUser === 'Loading...'
+              ? 'You will need to sign into a wallet to play the game...'
+              : 'Please Create Your Account'
+          }
           visible={machineState.value !== 'exit' && machineState.value !== 'authenticated'}
           onCancel={() => transition('CLOSE')}
           footer={[
-            <div className="flex ais col" key="AuthDialogueFooterButtons">
-              <Checkbox
-                checked={terms}
-                onChange={e => this.setState({ terms: e.target.checked })}
-                data-testid="terms"
-              >
-                <p className="pl3 dib">
-                  {' '}
-                  I agree to the
-                  {' '}
-                  <a
-                    href="https://drive.google.com/file/d/1oFMszefIhXJz01QXrSbU7vA-f2M92S3G/view?usp=sharing"
-                    target="_blank"
-                    className="dib"
-                    rel="noopener noreferrer"
-                  >
+            <div key="AuthDialogueFooterButtons">
+              <div className="flex ">
+                <Checkbox
+                  checked={terms}
+                  onChange={e => this.setState({ terms: e.target.checked })}
+                  data-testid="terms"
+                  className="ml3"
+                >
+                  <p className="pl3 dib">
                     {' '}
-                    Terms & Conditions
-                  </a>
-                  .
-                </p>
-              </Checkbox>
-              <Checkbox
-                data-testid="mailingList"
-                checked={mailinglist}
-                onChange={e => this.setState({ mailinglist: e.target.checked })}
-              >
-                <p className="pl3 dib">
-                  Join the mailing list. (Don`t worry, we hate spam just like you do.)
-                </p>
-              </Checkbox>
-
-              <Button
-                key="submit"
-                type="primary"
-                className="w-100"
-                loading={machineState.value === 'loading'}
-                onClick={() => transition('SUBMIT', { state: this.state })}
-                data-testid="submitSignup"
-              >
-                Submit
-              </Button>
+                    I agree to the
+                    {' '}
+                    <a
+                      href="https://drive.google.com/file/d/1oFMszefIhXJz01QXrSbU7vA-f2M92S3G/view?usp=sharing"
+                      target="_blank"
+                      className="dib"
+                      rel="noopener noreferrer"
+                    >
+                      {' '}
+                      Terms & Conditions
+                    </a>
+                    .
+                  </p>
+                </Checkbox>
+              </div>
+              <div className="flex ">
+                <Checkbox
+                  data-testid="mailingList"
+                  checked={mailinglist}
+                  onChange={e => this.setState({ mailinglist: e.target.checked })}
+                  className="ml3"
+                >
+                  <p className="pl3 dib">Join the mailing list. (We hate spam just like you do.)</p>
+                </Checkbox>
+              </div>
+              <div>
+                <Button
+                  key="submit"
+                  type="primary"
+                  className="w-100"
+                  loading={machineState.value === 'loading'}
+                  onClick={() => transition('SUBMIT', { state: this.state })}
+                  data-testid="submitSignup"
+                >
+                  Submit
+                </Button>
+              </div>
             </div>,
           ]}
         >
@@ -197,7 +208,22 @@ class Auth extends PureComponent {
             </div>
           )}
 
-          <Input value={currentUser} disabled size="large" className="mv3" />
+          {!currentUser || currentUser === 'Loading...' ? (
+            <div className="tc">
+              <a href="https://metamask.io/">
+                <Image src={downloadMetamaskPNG} webp={downloadMetamask} alt="download metamask" />
+              </a>
+
+              <a
+                href="https://cryptominerworld.com/game_info/#GameInfoMetaMask"
+                className="link underline b dark-gray"
+              >
+                More info...
+              </a>
+            </div>
+          ) : (
+            <Input value={currentUser} disabled size="large" className="mv3" />
+          )}
           <Input
             placeholder="Username"
             value={name}
