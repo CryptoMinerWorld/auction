@@ -97,6 +97,7 @@ class TradingBox extends PureComponent {
     const {
       duration, startPrice, endPrice, formSubmitted,
     } = this.state;
+
     return (
       <OverlapOnDesktopView
         className="bg-dark-gray measure-l w-100 shadow-3"
@@ -120,6 +121,7 @@ class TradingBox extends PureComponent {
               rate={rate}
               restingEnergyMinutes={restingEnergyMinutes}
             />
+
             {auctionIsLive ? (
               <div className="pa5 flex jcc col">
                 <div className="flex jcc">

@@ -89,7 +89,7 @@ StatsBox.propTypes = {
 };
 
 StatsBox.defaultProps = {
-  lastSoldFor: 0,
+  lastSoldFor: false,
   level: 1,
   grade: 1,
   rate: 1,

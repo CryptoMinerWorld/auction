@@ -21,6 +21,7 @@ import StatsBox from './components/StatsBox';
 import { showConfirm } from '../../components/Modal';
 import MobileHeader from './components/MobileHeader';
 import { setError } from '../../app/appActions';
+import { fetchLatestRestingEnergy } from './helpers';
 
 const select = store => ({
   details: store.auction,
@@ -42,12 +43,9 @@ class Auction extends PureComponent {
     currentPrice: '',
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     const {
-      match,
-      handleGetAuctionDetails,
-      dutchContract,
-      gemContractAddress,
+      match, handleGetAuctionDetails, dutchContract, gemContractAddress,
     } = this.props;
 
     if (match && match.params && match.params.gemId) {
@@ -55,7 +53,6 @@ class Auction extends PureComponent {
     }
 
     this.Priceinterval = setInterval(() => {
-      // console.log('dutchContract && gemContractAddress', dutchContract, gemContractAddress);
       if (dutchContract && gemContractAddress) {
         dutchContract.methods
           .getCurrentPrice(gemContractAddress, match.params.gemId)
@@ -72,32 +69,12 @@ class Auction extends PureComponent {
     const { gemContract, match } = this.props;
     const { restingEnergyMinutes } = this.state;
 
-    const transform = result => prevProps.web3.eth.getBlock(result, (err, results) => {
-      if (err) {
-        return err;
-      }
-      return results;
-    });
-
     if (gemContract && match.params.gemId && !restingEnergyMinutes) {
-      gemContract.methods
-        .getCreationTime(match.params.gemId)
-        .call()
-        .then(async (blockNumber) => {
-          const { timestamp } = await transform(blockNumber);
-          const linearThreshold = 37193;
+      fetchLatestRestingEnergy(gemContract, match.params.gemId, prevProps.web3)
+        .then(latestRestingEnergyMinutes =>
           // eslint-disable-next-line
-          const ageSeconds = ((Date.now() / 1000) | 0) - timestamp;
-          const ageMinutes = Math.floor(ageSeconds / 60);
-          const restedEnergyMinutes = Math.floor(
-            // eslint-disable-next-line
-            -7e-6 * Math.pow(Math.min(ageMinutes, linearThreshold), 2) +
-              0.5406 * Math.min(ageMinutes, linearThreshold)
-              + 0.0199 * Math.max(ageMinutes - linearThreshold, 0),
-          );
-          return this.setState({ restingEnergyMinutes: restedEnergyMinutes });
-        })
-        .catch(error => console.warn(error));
+          this.setState({ restingEnergyMinutes: latestRestingEnergyMinutes }),)
+        .catch(err => console.log('error fetching resting energy', err));
     }
   }
 
@@ -125,11 +102,7 @@ class Auction extends PureComponent {
     } = this.props;
 
     const { restingEnergyMinutes, currentPrice } = this.state;
-
     const socialShareUrl = `${process.env.REACT_APP_BASE_URL}${match.url}`;
-
-    // console.log('currentPrice', currentPrice);
-
     return (
       <div>
         <MobileHeader />

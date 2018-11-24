@@ -58,7 +58,8 @@ class Gembox extends PureComponent {
           <Nugget quality="rate" value={rate} gem={gem3} />
         </div>
         {!mobileHeader
-          && grade >= 4 && (
+          && grade >= 4
+          && restingEnergyMinutes && (
             <div className="w-100">
               <div className="flex jcc aic">
                 <img src={restingEnergy} alt="Resting Energy" className="h3 " />
@@ -103,7 +104,6 @@ Gem.propTypes = {
   quality: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   image: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-
 };
 
 Gem.defaultProps = {

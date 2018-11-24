@@ -1,0 +1,11 @@
+plugins:
+  eslint:
+    enabled: true
+    channel: eslint-5
+exclude_patterns:
+  - /test/
+  - build/
+  - **/node_modules/
+  - cypress
+  - scripts
+  - **/*.json

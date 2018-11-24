@@ -197,3 +197,30 @@ export const createAuctionHelper = async (
 
   return auctionDetails;
 };
+
+
+const transform = (result, web3) => web3.eth.getBlock(result, (err, results) => {
+  if (err) {
+    return err;
+  }
+  return results;
+});
+
+export const fetchLatestRestingEnergy = (gemContract, gemId, web3) => gemContract.methods
+  .getCreationTime(gemId)
+  .call()
+  .then(async (blockNumber) => {
+    const { timestamp } = await transform(blockNumber, web3);
+    const linearThreshold = 37193;
+    // eslint-disable-next-line
+      const ageSeconds = ((Date.now() / 1000) | 0) - timestamp;
+    const ageMinutes = Math.floor(ageSeconds / 60);
+    const restedEnergyMinutes = Math.floor(
+      // eslint-disable-next-line
+            -7e-6 * Math.pow(Math.min(ageMinutes, linearThreshold), 2) +
+              0.5406 * Math.min(ageMinutes, linearThreshold)
+              + 0.0199 * Math.max(ageMinutes - linearThreshold, 0),
+    );
+    return restedEnergyMinutes;
+  })
+  .catch(error => error);
