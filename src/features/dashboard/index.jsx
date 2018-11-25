@@ -6,10 +6,8 @@ import { withStateMachine } from 'react-automata';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter, Link, Redirect } from 'react-router-dom';
-// import { matchesState } from 'xstate';
 import notification from 'antd/lib/notification';
 import Tabs from 'antd/lib/tabs';
-// import { Transition, config } from 'react-spring';
 import { Spring } from 'react-spring';
 import { graphql } from 'react-apollo';
 import { db } from '../../app/utils/firebase';
@@ -28,7 +26,6 @@ import NoCard from './components/NoCard';
 import { preLoadAuctionPage } from '../market/marketActions';
 import ReSync from './components/ResyncButton';
 import SortBox from './components/SortBox';
-// import AuctionCategories from './components/AuctionCategories';
 import {
   getReferralPoints,
   getPlotCount,
@@ -251,7 +248,7 @@ class Dashboard extends Component {
     markSold,
     setloading,
     showModal,
-    redirect,
+    // redirect,
   ) => {
     const { data } = this.props;
 
@@ -298,12 +295,13 @@ class Dashboard extends Component {
             await markSold(getMapIndexFromCountryId(countryId));
             return getCountryNameFromCountryId(countryId);
           })
-          .then(async (countryName) => {
+          .then(async () => {
+            // async (countryName) => {
             setloading(false);
             showModal(false);
             await data.refetch();
             reduxStore.dispatch(completedTx(event));
-            redirect(`/profile/${newOwnerId}#${countryName}`);
+            // redirect(`/profile/${newOwnerId}#${countryName}`);
           })
           .catch(err => reduxStore.dispatch(ErrorTx(err)));
       })
@@ -350,11 +348,11 @@ class Dashboard extends Component {
             <div className="flex">
               <div className="flex col tc">
                 <img src={Gold} alt="Gold" className="h3 w-auto ph3" />
-                Gold
+                No Gold
               </div>
               <div className="flex col tc">
                 <img src={Silver} alt="Silver" className="h3 w-auto ph3" />
-                Silver
+                No Silver
               </div>
             </div>
           </div>
@@ -391,7 +389,7 @@ class Dashboard extends Component {
               >
                 Redeem Coupon
               </EnhancedCoupon>
-              <ReSync />
+              {tab === 1 && <ReSync />}
             </div>
 )}
           type="card"
@@ -405,7 +403,7 @@ class Dashboard extends Component {
                 className="h-100 flex aic"
                 onClick={() => this.setState({ tab: 1 })}
               >
-                <img src={Gem} alt="Gems" className="h2 w-auto pr2" />
+                <img src={Gem} alt="Gems" className="h2 w-auto pr2 " />
                 {totalGems || 0}
                 {' '}
 Gems

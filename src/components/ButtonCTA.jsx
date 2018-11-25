@@ -2,27 +2,28 @@ import React from 'react';
 // import styled from 'styled-components';
 import Icon from 'antd/lib/icon';
 import PropTypes from 'prop-types';
-import button from '../app/images/pinkBuyNowButton.png';
+import buttonWEBP from '../app/images/CTAButton.webp';
 
 const ButtonCTA = ({
   disabled, onClick, testId, loading, loadingText, text,
 }) => (
   <button
     type="submit"
-    className="b ttu grow ma4 pa3"
+    className="b ttu grow pa5"
     style={{
-      minWidth: '16rem',
-      height: '4rem',
-      backgroundImage: `url(${button})`,
-      backgroundPosition: 'center top',
-      textAlign: 'center',
+      height: 'auto',
+      width: 'auto',
+      backgroundImage: `url(${buttonWEBP})`,
       backgroundSize: 'contain',
+      backgroundPosition: 'center',
+      textAlign: 'center',
       backgroundRepeat: 'no-repeat',
       backgroundColor: 'transparent',
       border: 'none',
       color: 'white',
       textTransform: 'uppercase',
       cursor: 'pointer',
+      outline: 'none',
     }}
     disabled={disabled}
     onClick={onClick}

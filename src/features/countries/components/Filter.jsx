@@ -126,8 +126,10 @@ class Filter extends Component {
             w3"
             >
               {text}
-              {!record.sold && (
-                <BuyNowButton record={record} handleCityClick={this.handleSelection} />
+              {!record.sold
+                && record.countryId < 171
+                && record.countryId > 190 && (
+                  <BuyNowButton record={record} handleCityClick={this.handleSelection} />
               )}
             </span>
           );

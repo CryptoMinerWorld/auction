@@ -19,15 +19,15 @@ export const Coupon = ({
   const handleOk = () => {
     setloading(true);
     if (!value) {
-      console.log('no input value');
+      // console.log('no input value');
       setError('The coupon field cannot be empty. Please enter a valid coupon code.');
       setloading(false);
     } else if (!validateCoupon(value)) {
-      console.log('not valid coupon');
+      // console.log('not valid coupon');
       setError('Sorry, this is not a valid coupon code.');
       setloading(false);
     } else {
-      console.log('valid input and coupon format');
+      // console.log('valid input and coupon format');
       CountrySaleMethods.methods
         .isCouponValid(value)
         .call()
@@ -47,7 +47,7 @@ export const Coupon = ({
           );
         })
         .catch((err) => {
-          console.log('err', err);
+          console.log('err reteiving a coupon', err);
           setError('Sorry, this is not a valid coupon code.');
           setloading(false);
         });

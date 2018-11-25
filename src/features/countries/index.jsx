@@ -31,7 +31,11 @@ const CountryAuction = () => {
   const [cart, setCart] = useState([]);
 
   const addToCart = (item) => {
-    if (!cart.some(country => country.name === item.name)) {
+    if (
+      item.countryId < 171
+      && item.countryId > 190
+      && !cart.some(country => country.name === item.name)
+    ) {
       setCart([...cart, item]);
     }
   };

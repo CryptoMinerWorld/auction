@@ -11,7 +11,7 @@ const BuyNow = ({
   handleSetError,
   buyNow,
   markSold,
-  history,
+  // history,
   setLoading,
   data,
 }) => (
@@ -100,7 +100,7 @@ const BuyNow = ({
               });
 
               setLoading(false);
-              history.push(`/profile/${data.userId}#${picked[0].name}`);
+              // history.push(`/profile/${data.userId}#${picked[0].name}`);
               reduxStore.dispatch(completedTx(event));
             })
             .on('error', (error) => {

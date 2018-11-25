@@ -55,7 +55,7 @@ export const stateMachine = {
             cond: ({
               gemsContract, to, from, tokenId,
             }) => {
-              console.log('gemsContract, to, from, tokenId,', gemsContract, to, from, tokenId);
+              // console.log('gemsContract, to, from, tokenId,', gemsContract, to, from, tokenId);
               if (!gemsContract || !to || !from || !tokenId) {
                 return false;
               }

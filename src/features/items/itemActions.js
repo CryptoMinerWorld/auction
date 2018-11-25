@@ -59,13 +59,17 @@ export const updateGemOwnership = (gemId, newOwner, history, priceInWei) => asyn
         lastSoldFor: priceInWei,
       })
       .then(() => {
-        history.push(`/profile/${userIdToLowerCase}`);
+        // history.push(`/profile/${userIdToLowerCase}`);
         dispatch({ type: MODAL_GONE });
       })
       .catch(err => setError(err))));
 };
 
-export const createAuction = (payload, turnLoaderOff, history) => (dispatch, getState) => {
+export const createAuction = (
+  payload,
+  turnLoaderOff,
+  // history
+) => (dispatch, getState) => {
   const { auth, app } = getState();
   const currentAccount = auth.currentUserId;
   const { gemsContractInstance } = app;
@@ -109,7 +113,7 @@ export const createAuction = (payload, turnLoaderOff, history) => (dispatch, get
         .then(() => {
           // getUserGemsOnce(currentAccount)
           turnLoaderOff();
-          history.push(`/profile/${currentAccount}`);
+          // history.push(`/profile/${currentAccount}`);
         })
         .catch((err) => {
           console.log('err putting gem in auction', err);
@@ -161,7 +165,7 @@ export const removeFromAuction = (tokenId, history, turnLoaderOff) => async (
               payload: doc.data().id,
             });
             // getUserGemsOnce(currentUser)
-            history.push(`/profile/${currentUser}`);
+            // history.push(`/profile/${currentUser}`);
           });
         });
     })
@@ -180,7 +184,6 @@ export const handleBuyNow = (_tokenId, _from, history) => (dispatch, getState) =
   // eslint-disable-next-line
   const gemContractAddress = getState().app.gemsContractInstance._address;
   const currentUser = getState().app.currentAccount;
-
 
   return dutchAuctionContractInstance.methods
     .buy(gemContractAddress, _tokenId)

@@ -6,6 +6,7 @@ export const CountryCard = ({
   name, image, index, selectCountry,
 }) => (
   <Link to={`#${name}`}>
+    {' '}
     <div
       onClick={() => selectCountry(index)}
       onKeyDown={() => selectCountry(index)}

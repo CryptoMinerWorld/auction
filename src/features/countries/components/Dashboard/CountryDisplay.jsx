@@ -8,86 +8,9 @@ require('antd/lib/avatar/style/css');
 require('antd/lib/icon/style/css');
 require('antd/lib/card/style/css');
 
-const smoothScroll = {
-  timer: null,
-  stop() {
-    clearTimeout(this.timer);
-  },
-
-  scrollTo(id, callback) {
-    const settings = {
-      duration: 1000,
-      easing: {
-        outQuint(x, t, b, c, d) {
-          // eslint-disable-next-line
-          return c * ((t = t / d - 1) * t * t * t * t + 1) + b;
-        },
-      },
-    };
-    let percentage;
-    let startTime;
-    const node = document.getElementById(id);
-    const nodeTop = node.offsetTop;
-    const nodeHeight = node.offsetHeight;
-    // eslint-disable-next-line
-    const body = document.body;
-    const html = document.documentElement;
-    const height = Math.max(
-      body.scrollHeight,
-      body.offsetHeight,
-      html.clientHeight,
-      html.scrollHeight,
-      html.offsetHeight,
-    );
-    const windowHeight = window.innerHeight;
-    const offset = window.pageYOffset;
-    const delta = nodeTop - offset;
-    const bottomScrollableY = height - windowHeight;
-    const targetY = bottomScrollableY < delta
-      ? bottomScrollableY - (height - nodeTop - nodeHeight + offset)
-      : delta;
-
-    // eslint-disable-next-line
-    startTime = Date.now();
-    percentage = 0;
-
-    if (this.timer) {
-      clearInterval(this.timer);
-    }
-
-    function step() {
-      let yScroll;
-      const elapsed = Date.now() - startTime;
-
-      if (elapsed > settings.duration) {
-        clearTimeout(this.timer);
-      }
-
-      percentage = elapsed / settings.duration;
-
-      if (percentage > 1) {
-        clearTimeout(this.timer);
-
-        if (callback) {
-          callback();
-        }
-      } else {
-        yScroll = settings.easing.outQuint(0, elapsed, offset, targetY, settings.duration);
-        window.scrollTo(0, yScroll);
-        this.timer = setTimeout(step, 10);
-      }
-    }
-
-    this.timer = setTimeout(step, 10);
-  },
-};
-
 class Countries extends Component {
   static propTypes = {
     countries: PropTypes.arrayOf(PropTypes.shape({})),
-    // userId: PropTypes.string.isRequired,
-    // DutchContract: PropTypes.shape({}).isRequired,
-    // CountryERC721: PropTypes.shape({}).isRequired,
   };
 
   static defaultProps = {
@@ -118,7 +41,6 @@ class Countries extends Component {
   }
 
   selectCountry = (index) => {
-    smoothScroll.scrollTo('top');
     this.setState({ index, selected: true });
   };
 

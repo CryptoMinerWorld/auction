@@ -16,6 +16,7 @@ const particleParameters = {
       enable: false,
     },
     move: {
+      enable: false,
       speed: 1,
       out_mode: 'out',
     },
@@ -104,11 +105,11 @@ const CountryDetails = ({
       style={{
         width: '100%',
         position: 'absolute',
-        opacity: 0.75,
+        opacity: 0.5,
       }}
       params={particleParameters}
     />
-    <div className="flex mv5 mw8 center pa3 row-ns flex-column-reverse">
+    <div className="flex mv5 mw8 center pa3 row-ns flex-column-reverse z-1 relative">
       <div className="w-50-ns w-100">
         <h1 className="white f1 b">{name}</h1>
 
