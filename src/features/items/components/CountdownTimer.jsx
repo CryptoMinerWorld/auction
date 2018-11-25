@@ -75,14 +75,14 @@ class CountdownTimer extends PureComponent {
                 {timeLeft > 0 ? this.calculateTimeLeftInMinutes(timeLeft) : 0}
               </time>
               <small className="ttu b">
-                {this.calculateTimeLeftInMinutes(timeLeft) === 1 ? 'minute' : 'minutes'}
+                {this.calculateTimeLeftInMinutes(timeLeft) === 1 ? 'min' : 'mins'}
               </small>
             </div>
             <div>
               <time className="f2 f1-l fw6 ma0 db" data-testid="secondsLeft">
                 {timeLeft > 0 ? this.calculateTimeLeftInSeconds(timeLeft) : 0}
               </time>
-              <small className="ttu b">{timeLeft === 1 ? 'second' : 'seconds'}</small>
+              <small className="ttu b">{timeLeft === 1 ? 'sec' : 'secs'}</small>
             </div>
           </div>
         )}

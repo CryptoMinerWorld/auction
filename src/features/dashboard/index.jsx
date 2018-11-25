@@ -50,7 +50,6 @@ import { EnhancedCoupon } from './components/Coupon';
 import { startTx, completedTx, ErrorTx } from '../transactions/txActions';
 import reduxStore from '../../app/store';
 
-
 const { TabPane } = Tabs;
 
 require('antd/lib/tabs/style/css');
@@ -107,8 +106,7 @@ class Dashboard extends Component {
     web3: PropTypes.shape({}),
     transition: PropTypes.func.isRequired,
     match: PropTypes.shape({}),
-    gems: PropTypes.shape({
-    }),
+    gems: PropTypes.shape({}),
     history: PropTypes.shape({}),
     sortBox: PropTypes.bool.isRequired,
     totalGems: PropTypes.number.isRequired,
@@ -270,9 +268,7 @@ class Dashboard extends Component {
     await CountrySaleMethods.events
       .CouponConsumed()
       .on('data', async (event) => {
-        const {
-          returnValues,
-        } = event;
+        const { returnValues } = event;
 
         const { plots, _by, _tokenId } = returnValues;
 
@@ -282,7 +278,7 @@ class Dashboard extends Component {
 
         const countryMapIndex = getMapIndexFromCountryId(countryId);
         const country = await getCountryDetailsFromFirebase(countryMapIndex);
-        console.log('A country', country);
+
         buyNow({
           variables: {
             id: getCountryNameFromCountryId(countryId),
@@ -299,7 +295,6 @@ class Dashboard extends Component {
           },
         })
           .then(async () => {
-            console.log('B country called with variables');
             await markSold(getMapIndexFromCountryId(countryId));
             return getCountryNameFromCountryId(countryId);
           })

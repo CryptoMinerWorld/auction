@@ -65,7 +65,6 @@ class Filter extends Component {
         dataIndex: 'name',
         key: 'name',
 
-        // filterDropdownVisible: true,
         filterDropdown: ({
           setSelectedKeys, selectedKeys, confirm, clearFilters,
         }) => (
@@ -96,31 +95,11 @@ class Filter extends Component {
             });
           }
         },
+
         render: (text, record) => {
           const { searchText } = this.state;
           return searchText ? (
-            <span
-              // role="button"
-              // tabIndex={0}
-              data-testid="filterComponent"
-              // onClick={() => this.handleSelection(record)}
-              // onKeyPress={(e) => {
-              //   if (e.key === 'Enter') {
-              //     this.handleSelection(record);
-              //   }
-              // }}
-
-              // onClick={() => handleCityClick(record)}
-              // onKeyPress={(e) => {
-              //   if (e.key === 'Enter') {
-              //     handleCityClick(record);
-              //     // this.handleSelection(record);
-              //   }
-              // }}
-
-              // onMouseEnter={() => setHoverCountry(record.countryId)}
-              // onMouseLeave={() => setHoverCountry()}
-            >
+            <span className="vert w3" data-testid="filterComponent">
               {text.split(new RegExp(`(?<=${searchText})|(?=${searchText})`, 'i')).map(
                 (fragment, i) => (fragment.toLowerCase() === searchText.toLowerCase() ? (
                   <span
@@ -141,7 +120,11 @@ class Filter extends Component {
               )}
             </span>
           ) : (
-            <span>
+            <span
+              className="
+            vert
+            w3"
+            >
               {text}
               {!record.sold && (
                 <BuyNowButton record={record} handleCityClick={this.handleSelection} />
@@ -155,13 +138,13 @@ class Filter extends Component {
         dataIndex: 'plots',
         key: 'plots',
         sorter: (a, b) => a.plots - b.plots,
-        render: text => <p className="w3">{`${text}`}</p>,
+        render: text => <p className="vert  ">{`${text}`}</p>,
       },
       {
         title: 'Price',
         dataIndex: 'price',
         key: 'price',
-        render: text => <p className="w3">{`Ξ ${text && text.toFixed(2)}`}</p>,
+        render: text => <p className="vert  ">{`Ξ ${text && text.toFixed(2)}`}</p>,
         sorter: (a, b) => a.price - b.price,
       },
       {
@@ -169,14 +152,21 @@ class Filter extends Component {
         dataIndex: 'roi',
         key: 'roi',
         sorter: (a, b) => a.roi - b.roi,
-        render: text => <p className="w3">{`Ξ ${text && text.toFixed(2)}`}</p>,
+        render: text => <p className="vert  ">{`Ξ ${text && text.toFixed(2)}`}</p>,
       },
     ];
+
+    // const columnx = columns.map(col => ({
+    //   ...col,
+    //   onHeaderCell: () => ({
+    //     width: '1rem',
+    //   }),
+    // }));
 
     return (
       <div
         data-testid="filterComponent"
-        className="o-80 ph4 pv3"
+        className="o-80 ph4-ns pv3-ns w-100"
         style={{ backgroundColor: '#2A2C36' }}
       >
         <Table
@@ -200,13 +190,7 @@ class Filter extends Component {
 // pollInterval
 const EnhancedFilter = props => (
   <Query query={MAP_COUNTRY_DATA}>
-    {({
-      data,
-      // , error,
-      loading,
-    }) => (
-      // console.log('props.picked[0].country', props.picked[0].country);
-      // console.log('data.userId', data.userId);
+    {({ data, loading }) => (
       <Filter cities={data ? data.mapCountries : props.countryData} {...props} loading={loading} />
     )}
   </Query>

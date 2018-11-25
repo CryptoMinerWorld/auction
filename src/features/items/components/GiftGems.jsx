@@ -19,7 +19,7 @@ import reduxStore from '../../../app/store';
 
 const ColourButton = styled.button`
   background-image: url(${button});
-  background-position: center top;
+  background-position: center;
   width: 100%;
   height: 100%;
   text-align: center;
@@ -109,8 +109,6 @@ class GiftGems extends Component {
   };
 
   transferGem = async () => {
-    console.log('transfering gift...');
-
     const {
       gemsContract, currentAccountId, match, walletId, transition,
     } = this.props;
@@ -145,23 +143,6 @@ class GiftGems extends Component {
         reduxStore.dispatch(ErrorTx(error));
         transition('ERROR', { error });
       });
-
-    // make sure this event  is supposed to fire on safe transfer
-    // https://github.com/CryptoMinerWorld/crypto-miner/blob/
-    // master/contracts/GemERC721.sol#L240
-
-    // gemsContract.methods
-    //   .safeTransferFrom(from, to, tokenId)
-    //   .send()
-    //   .then(async (receipt) => {
-    //     await this.transferOwnershipOnDatabase(from, to, tokenId);
-    //     store.dispatch(completedTx(receipt));
-    //     transition('SUCCESS', { from });
-    //   })
-    //   .catch((error) => {
-    //     store.dispatch(ErrorTx(error));
-    //     transition('ERROR', { error });
-    //   });
   };
 
   transferOwnershipOnDatabase = async (from, to, tokenId) => {

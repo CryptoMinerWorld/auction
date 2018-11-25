@@ -148,52 +148,49 @@ class Auth extends PureComponent {
           onCancel={() => transition('CLOSE')}
           footer={[
             <div key="AuthDialogueFooterButtons">
-              <div className="flex ">
-                <Checkbox
-                  checked={terms}
-                  onChange={e => this.setState({ terms: e.target.checked })}
-                  data-testid="terms"
-                  className="ml3"
-                >
-                  <p className="pl3 dib">
+              <Checkbox
+                checked={terms}
+                onChange={e => this.setState({ terms: e.target.checked })}
+                data-testid="terms"
+                className="ml2 flex jcs aic"
+              >
+                <p className="pl3 tl db word-nowrap w5 mt2">
+                  I agree to the
+                  {' '}
+                  <a
+                    href="https://drive.google.com/file/d/1oFMszefIhXJz01QXrSbU7vA-f2M92S3G/view?usp=sharing"
+                    target="_blank"
+                    className="link underline"
+                    rel="noopener noreferrer"
+                  >
                     {' '}
-                    I agree to the
-                    {' '}
-                    <a
-                      href="https://drive.google.com/file/d/1oFMszefIhXJz01QXrSbU7vA-f2M92S3G/view?usp=sharing"
-                      target="_blank"
-                      className="dib"
-                      rel="noopener noreferrer"
-                    >
-                      {' '}
-                      Terms & Conditions
-                    </a>
-                    .
-                  </p>
-                </Checkbox>
-              </div>
-              <div className="flex ">
-                <Checkbox
-                  data-testid="mailingList"
-                  checked={mailinglist}
-                  onChange={e => this.setState({ mailinglist: e.target.checked })}
-                  className="ml3"
-                >
-                  <p className="pl3 dib">Join the mailing list. (We hate spam just like you do.)</p>
-                </Checkbox>
-              </div>
-              <div>
-                <Button
-                  key="submit"
-                  type="primary"
-                  className="w-100"
-                  loading={machineState.value === 'loading'}
-                  onClick={() => transition('SUBMIT', { state: this.state })}
-                  data-testid="submitSignup"
-                >
-                  Submit
-                </Button>
-              </div>
+                    Terms & Conditions
+                  </a>
+                  .
+                </p>
+              </Checkbox>
+
+              <Checkbox
+                data-testid="mailingList"
+                checked={mailinglist}
+                onChange={e => this.setState({ mailinglist: e.target.checked })}
+                className="ml3 flex jcs aic"
+              >
+                <p className="pl3 tl w-100 mt2">
+                  Join the mailing list. (We hate spam just like you do.)
+                </p>
+              </Checkbox>
+
+              <Button
+                key="submit"
+                type="primary"
+                className="w-100"
+                loading={machineState.value === 'loading'}
+                onClick={() => transition('SUBMIT', { state: this.state })}
+                data-testid="submitSignup"
+              >
+                Submit
+              </Button>
             </div>,
           ]}
         >

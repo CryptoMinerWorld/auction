@@ -16,7 +16,7 @@ import button from '../../../app/images/pinkBuyNowButton.png';
 
 const ColourButton = styled.button`
   background-image: url(${button});
-  background-position: center top;
+  background-position: center;
   width: 100%;
   height: 100%;
   text-align: center;
@@ -147,12 +147,7 @@ Removing...
                     </ColourButton>
                   </div>
                 </div>
-                {formSubmitted && (
-                  <p className="red pt3 pl3 measure">
-                    Please do not nagivate away from this page while the transaction is processing.
-                    You will be redirected once it is done.
-                  </p>
-                )}
+
                 <ProgressMeter
                   currentPrice={currentPrice}
                   minPrice={minPrice}
@@ -222,7 +217,10 @@ Removing...
 Creating...
                         </span>
                       ) : (
-                        'Create Auction'
+                        <span>
+                          <span className="dn-ns">Create</span>
+                          <span className="dn db-ns">Create Auction</span>
+                        </span>
                       )}
                     </ColourButton>
                   </div>

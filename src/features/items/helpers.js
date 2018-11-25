@@ -5,11 +5,8 @@ import {
   startTx,
   completedTx,
   ErrorTx,
-  // confirmationCountTx,
 } from '../transactions/txActions';
 import store from '../../app/store';
-// eslint-disable-next-line
-// import { setError } from '../../app/appActions';
 
 export function isTokenForSale(_contract, _tokenId) {
   return _contract.methods.isTokenOnSale(_tokenId).call();

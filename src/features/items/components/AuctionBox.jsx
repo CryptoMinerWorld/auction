@@ -93,10 +93,7 @@ const AuctionBox = ({
           onClick={() => {
             if (provider && accountExists) {
               handleBuyGem(tokenId, currentAccount, history);
-              // } else if (provider) {
-              //   handleShowSignInModal();
             } else {
-              // showConfirm();
               handleShowSignInBox();
             }
           }}

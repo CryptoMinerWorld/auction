@@ -17,7 +17,7 @@ const BuyNow = ({
 }) => (
   <div>
     {picked.length > 0 && (
-      <dl className="mt4 left-2 relative">
+      <dl className="mt4 left-2 relative ">
         <tr className="flex">
           <dt>Total Countries</dt>
           <dd>{picked.length}</dd>
@@ -74,7 +74,8 @@ const BuyNow = ({
                 method: 'country',
                 tokenId: countries[0],
               }),
-            ));
+            ))
+            .on('error', () => setLoading(false));
 
           await countrySale.events
             .BulkPurchaseComplete()

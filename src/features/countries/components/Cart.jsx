@@ -8,10 +8,12 @@ import ReactRouterPropTypes from 'react-router-prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import Button from 'antd/lib/button';
+import Icon from 'antd/lib/icon';
 import { BUY_NOW_MUTATION } from '../mutations';
 import { setError } from '../../../app/appActions';
 import BuyNow from './BuyNow';
 
+require('antd/lib/icon/style/css');
 require('antd/lib/table/style/css');
 
 const Cart = ({
@@ -43,10 +45,10 @@ const Cart = ({
           setLoading={setLoading}
         />
       </div>
-      <div className="w-two-thirds-ns w-100 o-80 ph4 pv3 ">
+      <div className="w-two-thirds-ns w-100 o-80 ph4-ns pv3-ns ">
         <Table
           rowClassName="pointer bg-animate hover-black white"
-          className="o-80 ph4 pv3 "
+          className="o-80 ph4-ns pv3-ns "
           locale={{ emptyText: 'Select a country on the map to add it to your cart' }}
           pagination={false}
           columns={[
@@ -54,27 +56,31 @@ const Cart = ({
               title: 'Country',
               dataIndex: 'name',
               key: 'name',
+              render: text => <p className="vert ">{text}</p>,
             },
             {
               title: 'Plots',
               dataIndex: 'plots',
               key: 'plots',
+              render: text => <p className="vert  ">{text}</p>,
             },
             {
               title: 'Price',
               dataIndex: 'price',
               key: 'price',
+              render: text => <p className="vert ">{text && text.toFixed(3)}</p>,
             },
             {
-              title: 'Earns (Minimum)',
+              title: 'Earns',
               dataIndex: 'roi',
               key: 'roi',
+              render: text => <p className="vert  ">{text}</p>,
             },
             {
-              title: 'ROI (Minimum)',
+              title: 'ROI',
               key: 'minRoi',
               render: country => (
-                <span>
+                <span className="responsiveRow">
                   {Math.round((country.roi / country.price) * 100)}
                   {' '}
 %
@@ -90,14 +96,14 @@ const Cart = ({
                   ghost
                   onClick={() => removeFromCart(x)}
                   data-testid={`remove-${x.country}`}
-                  icon="minus"
-                  className="grow"
+                  className="bn ba-ns"
                   style={{
                     color: '#ff723f',
                     borderColor: '#ff723f',
                   }}
                 >
-                  Remove
+                  <Icon type="minus" className="dn dib-ns" />
+                  <span className="vert grow"> Remove</span>
                 </Button>
               ),
             },

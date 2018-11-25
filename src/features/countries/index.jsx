@@ -10,14 +10,10 @@ import MapPageDetails from './components/MapPageDetails';
 // import countryDatum from './components/countryData';
 
 const CountryAuction = () => {
-  const [countryData, setCountryData] = useState();
+  const [countryData, setCountryData] = useState([]);
   useEffect(() => {
     rtdb.ref('/worldMap').on('value', snap => snap && setCountryData(snap.val()));
-
-    return () => {
-      rtdb.ref('/worldMap').off();
-      console.log('unmounting...');
-    };
+    return () => rtdb.ref('/worldMap').off();
   }, []);
 
   // eslint-disable-next-line
@@ -30,7 +26,7 @@ const CountryAuction = () => {
     roi: 0,
     countryId: '',
   });
-  const [countryBeingHoveredOnInFilter, setHoverCountry] = useState();
+  const [countryBeingHoveredOnInFilter, setHoverCountry] = useState(null);
 
   const [cart, setCart] = useState([]);
 
@@ -67,12 +63,12 @@ const CountryAuction = () => {
             handleCityClick={handleCityClick}
             countryData={
               countryData
+              && countryData.objects
+              && countryData.objects.units
+              && countryData.objects.units.geometries
               && countryData.objects.units.geometries
                 .filter(country => country.properties.countryId !== 200)
                 .map(country => country.properties)
-              // : geoData.objects.units.geometries
-              //   .filter(country => country.properties.countryId !== 200)
-              //   .map(country => country.properties)
             }
             setHoverCountry={setHoverCountry}
           />
@@ -101,7 +97,6 @@ const CountryAuction = () => {
                 addToCart={addToCart}
                 zoom={zoom}
                 coordinates={coordinates}
-                handleCityClick={handleCityClick}
                 handleReset={handleReset}
                 removeFromCart={removeFromCart}
                 countryBeingHoveredOnInFilter={countryBeingHoveredOnInFilter}
@@ -112,7 +107,7 @@ const CountryAuction = () => {
         </div>
       </div>
 
-      <DetailsBar details={selection} cart={cart} />
+      <DetailsBar details={selection} />
       <Cart
         picked={cart}
         removeFromCart={removeFromCart}

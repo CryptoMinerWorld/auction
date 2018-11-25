@@ -1,5 +1,4 @@
 import React from 'react';
-// import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Progress from 'antd/lib/progress';
 import Tilt from 'react-tilt';
@@ -32,25 +31,11 @@ const Cards = ({ auction }) => (
         strokeColor="#ffc584"
         className="o-50"
       />
-      {/* <div className="flex jcb ph3">
-      <small className="basic">
-        Ξ <small>{weiToEth(auction.maxPrice)}</small>
-      </small>
-      <small className="basic">
-        Ξ <small>{weiToEth(auction.minPrice)}</small>
-      </small>
-    </div> */}
       <div className="tc">
         <big className="db b f3">{calculateGemName(auction.color, auction.id)}</big>
-        {/* <small>
-        Auction ends on{" "}
-        {auction.deadline &&
-          format(new Date(auction.deadline * 1000), "EEEE do of MMMM")}
-      </small> */}
       </div>
-
       <div className="flex pa3 pb0 w-100 jcc">
-        <MiniGemBox level={auction.level} grade={auction.gradeType} rate={auction.rate} />
+        <MiniGemBox level={auction.level} grade={auction.gradeType} rate={auction.rate} market />
       </div>
     </div>
   </Tilt>
