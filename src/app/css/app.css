@@ -75,13 +75,13 @@ dt:after {
 }
 
 .card-container > .ant-tabs-card > .ant-tabs-bar .ant-tabs-tab {
-  border-color: transparent;
-  background: transparent;
+  border-color: transparent !important;
+  background: transparent !important;
 }
 
 .card-container > .ant-tabs-card > .ant-tabs-bar .ant-tabs-tab-active {
-  border-color: var(--dark-gray);
-  background: var(--dark-gray);
+  border-color: var(--dark-gray) !important;
+  background: var(--dark-gray) !important;
 }
 
 .ant-table-pagination {
@@ -109,7 +109,7 @@ dt:after {
     -ms-flex-pack: center;
 
     justify-content: center;
-text-align: center;
+    text-align: center;
     height: 4rem;
     white-space: wrap;
     overflow: hidden;

@@ -364,18 +364,18 @@ class Dashboard extends Component {
         <Tabs
           activeKey={`${tab}`}
           animated
-          className="bg-off-black white "
+          className="bg-off-black white"
           tabBarExtraContent={(
             <div className="flex-ns dn">
               <Spring from={{ opacity: 0 }} to={{ opacity: 1 }} config={{ delay: 4000 }}>
                 {props => (
                   <div style={props} className="pr4">
                     {referralPoints === '' ? (
-                      <p data-testid="loadingReferralPoints" className="tr o-50">
+                      <p data-testid="loadingReferralPoints" className="tr o-50 white">
                         Loading Referral Points...
                       </p>
                     ) : (
-                      <small data-testid="referralPoints" className="tr fr o-50">
+                      <small data-testid="referralPoints" className="tr fr o-50 white">
                         {`${referralPoints} REFERAL ${
                           referralPoints === 1 ? 'POINT' : 'POINTS'
                         } AVAILABLE `}
@@ -406,7 +406,7 @@ class Dashboard extends Component {
                 className="h-100 flex aic"
                 onClick={() => this.setState({ tab: 1 })}
               >
-                <img src={Gem} alt="Gems" className="h2 w-auto pr2 " />
+                <img src={Gem} alt="Gems" className="h2 w-auto pr2" />
                 {totalGems || 0}
                 {' '}
 Gems

@@ -1,8 +1,7 @@
 import React from 'react';
-// import styled from 'styled-components';
 import Icon from 'antd/lib/icon';
 import PropTypes from 'prop-types';
-import buttonWEBP from '../app/images/CTAButton.webp';
+import buttonPNG from '../app/images/pinkBuyNowButton.png';
 
 const ButtonCTA = ({
   disabled, onClick, testId, loading, loadingText, text,
@@ -13,7 +12,7 @@ const ButtonCTA = ({
     style={{
       height: 'auto',
       width: 'auto',
-      backgroundImage: `url(${buttonWEBP})`,
+      backgroundImage: `url(${buttonPNG})`,
       backgroundSize: 'contain',
       backgroundPosition: 'center',
       textAlign: 'center',
