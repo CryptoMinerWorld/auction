@@ -33,7 +33,6 @@ const CountryAuction = () => {
   const [cart, setCart] = useState([]);
 
   const addToCart = (item) => {
-    console.log('item', item);
     checkIfCountryIsForSale(item && item.countryId);
     if (
       !cart.some(country => country.name === item.name)

@@ -187,12 +187,14 @@ Cart.propTypes = {
   handleSetError: PropTypes.func.isRequired,
   price: PropTypes.number,
   handleShowSignInBox: PropTypes.func.isRequired,
-  accountExists: PropTypes.bool.isRequired,
-  provider: PropTypes.bool.isRequired,
+  accountExists: PropTypes.bool,
+  provider: PropTypes.bool,
 };
 
 Cart.defaultProps = {
   picked: [{}],
   countrySale: {},
   price: 0,
+  provider: false,
+  accountExists: false,
 };

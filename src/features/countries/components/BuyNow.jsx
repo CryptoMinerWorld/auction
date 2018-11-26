@@ -67,9 +67,9 @@ const BuyNow = ({
             try {
               const countries = picked.map(country => country.countryId);
               const totalPrice = await countrySale.methods.getBulkPrice(countries).call();
-              console.log('totalPrice', totalPrice);
-              console.log('countries', countries);
-              countrySale.methods
+              // console.log('totalPrice', totalPrice);
+              // console.log('countries', countries);
+              await countrySale.methods
                 .bulkBuy(countries)
                 .send({
                   from: data.userId,
@@ -85,7 +85,7 @@ const BuyNow = ({
                 ))
                 .on('error', () => setLoading(false));
 
-              await countrySale.events
+              countrySale.events
                 .BulkPurchaseComplete()
                 .on('data', async (event) => {
                   console.log('data', event);
@@ -156,6 +156,11 @@ BuyNow.propTypes = {
   setLoading: PropTypes.func.isRequired,
   data: PropTypes.shape({}).isRequired,
   handleShowSignInBox: PropTypes.func.isRequired,
-  provider: PropTypes.bool.isRequired,
-  accountExists: PropTypes.bool.isRequired,
+  provider: PropTypes.bool,
+  accountExists: PropTypes.bool,
+};
+
+BuyNow.defaultProps = {
+  provider: false,
+  accountExists: false,
 };

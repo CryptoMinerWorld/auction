@@ -10,7 +10,7 @@ const DetailsBar = ({ details }) => (
       status="active"
       strokeColor="#be007d"
       showInfo={false}
-      className="top-1 relative w-100"
+      className="relative"
     />
     <article
       className="pa3 pt4 tr bg-dark-gray white shadow-1 w-100 flex jce"

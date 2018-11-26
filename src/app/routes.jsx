@@ -1,17 +1,35 @@
 import React, { Fragment } from 'react';
 import { Route } from 'react-router-dom';
+import Loadable from 'react-loadable';
+import Icon from 'antd/lib/icon';
 
-import CreateAuction from '../features/mint';
-import Items from '../features/items';
-import Dashboard from '../features/dashboard/index';
-import Map from '../features/countries/index';
-import Marketplace from '../features/market';
+const Loading = () => (
+  <div className="w-100 tc pa3">
+    <Icon type="loading" theme="outlined" />
+  </div>
+);
 
-// const CreateAuction = React.lazy(() => import('../features/mint'));
-// const Items = React.lazy(() => import('../features/items'));
-// const Dashboard = React.lazy(() => import('../features/dashboard/index'));
-// const Map = React.lazy(() => import('../features/countries/index'));
-// const Marketplace = React.lazy(() => import('../features/market'));
+const CreateAuction = Loadable({
+  loader: () => import('../features/mint'),
+  loading: Loading,
+});
+
+const Items = Loadable({
+  loader: () => import('../features/items'),
+  loading: Loading,
+});
+const Dashboard = Loadable({
+  loader: () => import('../features/dashboard/index'),
+  loading: Loading,
+});
+const Map = Loadable({
+  loader: () => import('../features/countries/index'),
+  loading: Loading,
+});
+const Marketplace = Loadable({
+  loader: () => import('../features/market'),
+  loading: Loading,
+});
 
 const Routes = props => (
   <Fragment>

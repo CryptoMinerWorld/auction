@@ -71,7 +71,6 @@ export const resolveAnyPendingTx = async (
     .then(coll => coll.docs.map(doc => doc.data()))
     .catch(error => console.log('error streaming pending tx data from firestore', error));
 
-
   map(pendingTransactions, async (tx) => {
     console.log('resolution function started');
     if (tx.txMethod === 'gem') {
@@ -82,9 +81,9 @@ export const resolveAnyPendingTx = async (
         .then(async (address) => {
           console.log('address', address);
           if (
-          // if the owner is a contract address
+            // if the owner is a contract address
             web3.utils.toChecksumAddress(address)
-              === web3.utils.toChecksumAddress(AUCTION_CONTRACT_ADDRESS)
+            === web3.utils.toChecksumAddress(AUCTION_CONTRACT_ADDRESS)
           ) {
             // console.log('exhibit a appears to be in auction');
             // update the db with fresh live auction details
@@ -194,6 +193,7 @@ export const resolveAnyPendingTx = async (
           db.collection('countries')
             .doc(`${country.name}`)
             .set({
+              id: country.name,
               owner: address,
               onSale: false,
               lastPrice: country.price,
@@ -203,6 +203,12 @@ export const resolveAnyPendingTx = async (
               plotsMined: 0,
               plotsAvailable: country.plots,
               name: country.name,
+              roi: country.roi,
+              countryId: country.countryId,
+              mapIndex: country.mapIndex,
+              imageLinkLarge: country.imageLinkLarge,
+              imageLinkMedium: country.imageLinkMedium,
+              imageLinkSmall: country.imageLinkSmall,
             })
             .then(() => rtdb
               .ref(

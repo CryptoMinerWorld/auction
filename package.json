@@ -66,6 +66,7 @@
     "react-dom": "^16.7.0-alpha.0",
     "react-ga": "^2.5.3",
     "react-image-webp": "^0.2.2",
+    "react-loadable": "^5.5.0",
     "react-mailchimp-subscribe": "^2.0.2",
     "react-motion": "^0.5.2",
     "react-particles-js": "^2.4.0",
