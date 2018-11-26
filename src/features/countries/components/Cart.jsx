@@ -63,7 +63,7 @@ const Cart = ({
               title: 'Country',
               dataIndex: 'name',
               key: 'name',
-              render: text => <p className="vert ">{text}</p>,
+              render: text => <p className="vert w3 truncate tl">{text}</p>,
             },
             {
               title: 'Plots',
@@ -87,7 +87,7 @@ const Cart = ({
               title: 'ROI',
               key: 'minRoi',
               render: country => (
-                <p className="vert">
+                <p className="vert dn dib-ns">
                   {Math.round((country.roi / country.price) * 100)}
                   {' '}
 %
@@ -103,14 +103,14 @@ const Cart = ({
                   ghost
                   onClick={() => removeFromCart(x)}
                   data-testid={`remove-${x.country}`}
-                  className="bn ba-ns"
+                  className="vert ba-ns bn"
                   style={{
                     color: '#ff723f',
                     borderColor: '#ff723f',
                   }}
                 >
-                  <Icon type="minus" className="dn dib-ns" />
-                  <span className="vert grow"> Remove</span>
+                  <Icon type="minus" />
+                  <span className="dn dib-ns"> Remove</span>
                 </Button>
               ),
             },
