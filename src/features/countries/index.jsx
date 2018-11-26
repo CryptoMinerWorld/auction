@@ -22,7 +22,7 @@ const CountryAuction = () => {
   const markSold = countryId => rtdb.ref(`/worldMap/objects/units/geometries/${countryId}/properties`).update({ sold: true });
 
   const [selection, setSelection] = useState({
-    name: 'Hover on a Country',
+    name: 'Select a Country',
     plots: 0,
     price: 0,
     roi: 0,
@@ -33,6 +33,7 @@ const CountryAuction = () => {
   const [cart, setCart] = useState([]);
 
   const addToCart = (item) => {
+    console.log('item', item);
     checkIfCountryIsForSale(item && item.countryId);
     if (
       !cart.some(country => country.name === item.name)
@@ -60,8 +61,8 @@ const CountryAuction = () => {
   };
 
   return (
-    <div data-testid="mapPage" className="bg-off-black white">
-      <div className="flex w-100 col row-ns mw9 center ">
+    <div data-testid="mapPage" className="bg-off-black white w-100">
+      <div className="flex w-100 col-reverse row-ns mw9 center">
         <div className="w-40-ns w-100 db dib-ns pa3">
           <Filter
             addToCart={addToCart}

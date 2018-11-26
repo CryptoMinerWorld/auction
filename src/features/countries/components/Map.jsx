@@ -73,7 +73,7 @@ const Map = ({
       style={wrapperStyles}
       data-testid="mapComponent"
       onMouseLeave={() => setSelection({
-        name: 'Hover over a Country',
+        name: 'Select a Country',
         plots: 0,
         price: 0,
         roi: 0,
@@ -148,6 +148,9 @@ const Map = ({
                                   roi: geography.properties.roi,
                                   sold: geography.properties.sold,
                                   mapIndex: geography.properties.mapIndex,
+                                  imageLinkLarge: geography.properties.imageLinkLarge,
+                                  imageLinkMedium: geography.properties.imageLinkMedium,
+                                  imageLinkSmall: geography.properties.imageLinkSmall,
                                 }))
                           }
                       projection={projection}

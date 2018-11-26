@@ -91,23 +91,29 @@ dt:after {
 
 @media screen and (max-width: 48em) {
   .vert {
-    -webkit-writing-mode: vertical-rl;
-    -ms-writing-mode: tb-rl;
-    writing-mode: vertical-rl;
-    text-orientation: sideways;
+    /* writing-mode: vertical-rl;
+    text-orientation: sideways; */
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
     -webkit-box-align: center;
-
     -ms-flex-align: center;
-
     align-items: center;
-    -ms-flex-pack: distribute;
-    justify-content: space-around;
 
-    height: 8rem;
+    -webkit-box-pack: center;
+
+    -ms-flex-pack: center;
+
+    justify-content: center;
+text-align: center;
+    height: 4rem;
+    white-space: wrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   thead[class*='ant-table-thead'] {

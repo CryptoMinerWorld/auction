@@ -3,7 +3,7 @@ import Globe from '../../../app/images/dashboard/Land.png';
 
 const MapPageDetails = () => (
   <article className="pa3 mw9 center">
-    <h1 className="tc white ttu">Info about buying/owning a country</h1>
+    <h1 className="tc white ttu">Info about buying a country</h1>
     <div className="flex row-ns col jcc">
       <p className="measure-wide">
         Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has

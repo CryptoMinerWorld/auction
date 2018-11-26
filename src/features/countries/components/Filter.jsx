@@ -181,7 +181,7 @@ class Filter extends Component {
           })}
           rowKey={record => record.countryId}
           loading={loading}
-          pagination={{ pageSize: 5 }}
+          pagination={{ pageSize: 4 }}
         />
       </div>
     );

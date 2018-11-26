@@ -102,6 +102,17 @@ const AuctionBox = ({
         >
           Buy Now
         </BuyNow>
+
+        {/* <ButtonCTA
+  disabled={} onClick={() => {
+    if (provider && accountExists) {
+      handleBuyGem(tokenId, currentAccount, history);
+    } else {
+      handleShowSignInBox();
+    }
+  }} testId="buyNowButton" loading={loading} loadingText='BUYING...' text='BUY'
+
+/> */}
       </div>
       <ProgressMeter currentPrice={currentPrice} minPrice={minPrice} maxPrice={maxPrice} />
     </div>

@@ -26,6 +26,9 @@ const Cart = ({
   countrySale,
   handleSetError,
   price,
+  handleShowSignInBox,
+  provider,
+  accountExists,
 }) => {
   const [txloading, setLoading] = useState(false);
 
@@ -43,11 +46,14 @@ const Cart = ({
           markSold={markSold}
           history={history}
           setLoading={setLoading}
+          handleShowSignInBox={handleShowSignInBox}
+          provider={provider}
+          accountExists={accountExists}
         />
       </div>
       <div className="w-two-thirds-ns w-100 o-80 ph4-ns pv3-ns ">
         <Table
-          rowClassName="pointer bg-animate hover-black white"
+          rowClassName="pointer bg-animate hover-black white w-100"
           className="o-80 ph4-ns pv3-ns "
           locale={{ emptyText: 'Select a country on the map to add it to your cart' }}
           pagination={false}
@@ -134,7 +140,16 @@ const EnhancedCart = props => (
         }
         return (
           <Mutation mutation={BUY_NOW_MUTATION}>
-            {buyNow => <Cart {...props} data={data} buyNow={buyNow} />}
+            {buyNow => (
+              <Cart
+                {...props}
+                data={data}
+                buyNow={buyNow}
+                handleShowSignInBox={props.handleShowSignInBox}
+                provider={props.provider}
+                accountExists={props.accountExists}
+              />
+            )}
           </Mutation>
         );
       }}
@@ -144,10 +159,13 @@ const EnhancedCart = props => (
 
 const selection = store => ({
   countrySale: store.app.countrySaleInstance,
+  accountExists: store.auth.existingUser,
+  provider: store.auth.web3 && !!store.auth.web3.currentProvider,
 });
 
 const actions = {
   handleSetError: setError,
+  handleShowSignInBox: () => ({ type: 'SHOW_SIGN_IN_BOX' }),
 };
 
 export default compose(
@@ -168,6 +186,9 @@ Cart.propTypes = {
   buyNow: PropTypes.func.isRequired,
   handleSetError: PropTypes.func.isRequired,
   price: PropTypes.number,
+  handleShowSignInBox: PropTypes.func.isRequired,
+  accountExists: PropTypes.bool.isRequired,
+  provider: PropTypes.bool.isRequired,
 };
 
 Cart.defaultProps = {
