@@ -127,8 +127,7 @@ class Filter extends Component {
             >
               {text}
               {!record.sold
-                && record.countryId < 171
-                && record.countryId > 190 && (
+                && (record.countryId < 171 || record.countryId > 190) && (
                   <BuyNowButton record={record} handleCityClick={this.handleSelection} />
               )}
             </span>

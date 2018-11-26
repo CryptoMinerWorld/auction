@@ -1,11 +1,17 @@
 import React, { Fragment } from 'react';
 import { Route } from 'react-router-dom';
+
 import CreateAuction from '../features/mint';
 import Items from '../features/items';
-import Marketplace from '../features/market';
 import Dashboard from '../features/dashboard/index';
 import Map from '../features/countries/index';
+import Marketplace from '../features/market';
 
+// const CreateAuction = React.lazy(() => import('../features/mint'));
+// const Items = React.lazy(() => import('../features/items'));
+// const Dashboard = React.lazy(() => import('../features/dashboard/index'));
+// const Map = React.lazy(() => import('../features/countries/index'));
+// const Marketplace = React.lazy(() => import('../features/market'));
 
 const Routes = props => (
   <Fragment>

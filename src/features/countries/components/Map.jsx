@@ -45,7 +45,7 @@ const Map = ({
   data,
   setSelection,
   addToCart,
-  countryBeingHoveredOnInFilter = 9999,
+  countryBeingHoveredOnInFilter,
   zoom,
   handleReset,
   coordinates,

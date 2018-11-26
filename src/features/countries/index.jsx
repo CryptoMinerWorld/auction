@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 // import PropTypes from 'prop-types';
+import Icon from 'antd/lib/icon';
 import Cart from './components/Cart';
 import Filter from './components/Filter';
 import { rtdb } from '../../app/utils/firebase';
@@ -8,6 +9,7 @@ import geoData from '../../app/maps/world-50m-with-population.json';
 import DetailsBar from './components/DetailsBar';
 import MapPageDetails from './components/MapPageDetails';
 // import countryDatum from './components/countryData';
+import { checkIfCountryIsForSale } from './helpers';
 
 const CountryAuction = () => {
   const [countryData, setCountryData] = useState([]);
@@ -26,15 +28,15 @@ const CountryAuction = () => {
     roi: 0,
     countryId: '',
   });
-  const [countryBeingHoveredOnInFilter, setHoverCountry] = useState(null);
 
+  const [countryBeingHoveredOnInFilter, setHoverCountry] = useState(9999);
   const [cart, setCart] = useState([]);
 
   const addToCart = (item) => {
+    checkIfCountryIsForSale(item && item.countryId);
     if (
-      item.countryId < 171
-      && item.countryId > 190
-      && !cart.some(country => country.name === item.name)
+      !cart.some(country => country.name === item.name)
+      && (item.countryId < 171 || item.countryId > 190)
     ) {
       setCart([...cart, item]);
     }
@@ -79,7 +81,7 @@ const CountryAuction = () => {
         </div>
         <div className="w-60-ns w-100">
           <div className="w-100 pa3">
-            {countryData ? (
+            {countryData && Object.keys(countryData).length > 0 ? (
               <Map
                 data={{
                   ...geoData,
@@ -95,17 +97,9 @@ const CountryAuction = () => {
                 removeFromCart={removeFromCart}
               />
             ) : (
-              <Map
-                data={geoData}
-                setSelection={setSelection}
-                addToCart={addToCart}
-                zoom={zoom}
-                coordinates={coordinates}
-                handleReset={handleReset}
-                removeFromCart={removeFromCart}
-                countryBeingHoveredOnInFilter={countryBeingHoveredOnInFilter}
-                cart={cart}
-              />
+              <div className="flex x h5 w-100">
+                <Icon type="loading" theme="outlined" />
+              </div>
             )}
           </div>
         </div>

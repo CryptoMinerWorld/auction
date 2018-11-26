@@ -64,158 +64,169 @@ export const resolveAnyPendingTx = async (
   web3,
   countryContract,
 ) => {
-  try {
-    const pendingTransactions = await db
-      .collection('pending')
-      .where('txCurrentUser', '==', walletId)
-      .get()
-      .then(coll => coll.docs.map(doc => doc.data()))
-      .catch(error => console.log('error streaming pending tx data from firestore', error));
+  const pendingTransactions = await db
+    .collection('pending')
+    .where('txCurrentUser', '==', walletId)
+    .get()
+    .then(coll => coll.docs.map(doc => doc.data()))
+    .catch(error => console.log('error streaming pending tx data from firestore', error));
 
 
-    // const test = pendingTransactions.slice(0, 2);
-    // console.log('test', test);
-
-    map(pendingTransactions, async (tx) => {
-      if (tx.txMethod === 'gem') {
-        console.log('is gem');
-        return gemsContract.methods
-          .ownerOf(tx.txTokenId)
-          .call()
-          .then(async (address) => {
-            console.log('address', address);
-            if (
-              // if the owner is a contract address
-              web3.utils.toChecksumAddress(address)
+  map(pendingTransactions, async (tx) => {
+    console.log('resolution function started');
+    if (tx.txMethod === 'gem') {
+      console.log('is gem');
+      await gemsContract.methods
+        .ownerOf(tx.txTokenId)
+        .call()
+        .then(async (address) => {
+          console.log('address', address);
+          if (
+          // if the owner is a contract address
+            web3.utils.toChecksumAddress(address)
               === web3.utils.toChecksumAddress(AUCTION_CONTRACT_ADDRESS)
-            ) {
-              // console.log('exhibit a appears to be in auction');
-              // update the db with fresh live auction details
-              return auctionContract.methods
-                .items(GEM_CONTRACT_ADDRESS, tx.txTokenId)
-                .call()
-                .then((details) => {
-                  // console.log('details', details);
-                  const { t1, p0, p1 } = details;
-                  return db
-                    .collection('stones')
-                    .doc(`${tx.txTokenId}`)
-                    .update({
-                      auctionIsLive: true,
-                      deadline: Number(t1),
-                      maxPrice: Number(p0),
-                      minPrice: Number(p1),
-                    })
-                    .then(() => db
-                      .collection('pending')
-                      .where('hash', '==', tx.hash)
-                      .get()
-                      .then(async (coll) => {
-                        const pendingTxs = coll.docs.map(doc => doc.id);
-                        await db
-                          .collection('pending')
-                          .doc(pendingTxs[0])
-                          .delete();
-                      }))
-                    .then(() => console.log('done'))
-                    .catch(err => console.log(
-                      'err reconciling liev auctions in tx reconciliation function on startup',
-                      err,
-                    ));
-                })
-                .catch(err => console.log('err getting auction details', err));
-            }
-
-            const userIdToLowerCase = address
-              .split('')
-              .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
-              .join('');
-
-            // console.log('exhibit a appears NOT to be in auction');
-            // console.log('userIdToLowerCase', userIdToLowerCase);
-            // or update the db with the gems ownerId (in lowercase)
-            return db
-              .collection('stones')
-              .doc(`${tx.txTokenId}`)
-              .update({
-                owner: userIdToLowerCase,
-                auctionIsLive: false,
-              })
-              .then(() => db
-                .collection('pending')
-                .where('hash', '==', tx.hash)
-                .get()
-                .then(async (coll) => {
-                  const pendingTxs = coll.docs.map(doc => doc.id);
-                  await db
+          ) {
+            // console.log('exhibit a appears to be in auction');
+            // update the db with fresh live auction details
+            return auctionContract.methods
+              .items(GEM_CONTRACT_ADDRESS, tx.txTokenId)
+              .call()
+              .then((details) => {
+                // console.log('details', details);
+                const { t1, p0, p1 } = details;
+                return db
+                  .collection('stones')
+                  .doc(`${tx.txTokenId}`)
+                  .update({
+                    auctionIsLive: true,
+                    deadline: Number(t1),
+                    maxPrice: Number(p0),
+                    minPrice: Number(p1),
+                  })
+                  .then(() => db
                     .collection('pending')
-                    .doc(pendingTxs[0])
-                    .delete();
-                }))
-              .then(() => console.log('done'))
-              .catch(err => console.log('err reconciling in tx reconciliation function on startup', err));
-          });
-      }
-      if (tx.txMethod === 'country') {
-        return countryContract.methods
-          .ownerOf(tx.txTokenId)
-          .call()
-          .then(async (address) => {
-            console.log('address...', address);
-            if (address) {
-              console.log('address...', tx.txTokenId);
-              // get country details from rtdb
-              const country = await rtdb
-                .ref(
-                  `/worldMap/objects/units/geometries/${getMapIndexFromCountryId(
-                    tx.txTokenId,
-                  )}/properties`,
-                )
-                .once('value')
-                .then(snap => snap.val());
+                    .where('hash', '==', tx.hash)
+                    .get()
+                    .then(async (coll) => {
+                      const pendingTxs = coll.docs.map(doc => doc.id);
+                      await db
+                        .collection('pending')
+                        .doc(pendingTxs[0])
+                        .delete();
+                    }))
+                  .then(() => console.log('done'))
+                  .catch(err => console.log(
+                    'err reconciling liev auctions in tx reconciliation function on startup',
+                    err,
+                  ));
+              })
+              .catch(err => console.log('err getting auction details', err));
+          }
 
-              db.collection('countries')
-                .doc(`${country.name}`)
-                .set({
-                  owner: address,
-                  onSale: false,
-                  lastPrice: country.price,
-                  lastBought: Date.now(),
-                  totalPlots: country.plots,
-                  plotsBought: 0,
-                  plotsMined: 0,
-                  plotsAvailable: country.plots,
-                  name: country.name,
-                })
-                .then(() => rtdb
-                  .ref(
-                    `/worldMap/objects/units/geometries/${getMapIndexFromCountryId(
-                      tx.txTokenId,
-                    )}/properties`,
-                  )
-                  .update({ sold: true }))
-                .then(() => db
+          const userIdToLowerCase = address
+            .split('')
+            .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
+            .join('');
+
+          // console.log('exhibit a appears NOT to be in auction');
+          // console.log('userIdToLowerCase', userIdToLowerCase);
+          // or update the db with the gems ownerId (in lowercase)
+          return db
+            .collection('stones')
+            .doc(`${tx.txTokenId}`)
+            .update({
+              owner: userIdToLowerCase,
+              auctionIsLive: false,
+            })
+            .then(() => db
+              .collection('pending')
+              .where('hash', '==', tx.hash)
+              .get()
+              .then(async (coll) => {
+                const pendingTxs = coll.docs.map(doc => doc.id);
+                await db
                   .collection('pending')
-                  .where('hash', '==', tx.hash)
-                  .get()
-                  .then(async (coll) => {
-                    const pendingTxs = coll.docs.map(doc => doc.id);
-                    await db
-                      .collection('pending')
-                      .doc(pendingTxs[0])
-                      .delete();
-                  }))
-                .then(() => console.log('done'))
-                .catch(err => console.log('err reconciling in tx reconciliation function on startup', err));
-            }
+                  .doc(pendingTxs[0])
+                  .delete();
+              }))
+            .then(() => console.log('done'))
+            .catch(err => console.log('err reconciling in tx reconciliation function on startup', err));
+        });
+    }
+    if (tx.txMethod === 'country') {
+      console.log('is country');
+      return countryContract.methods.ownerOf(tx.txTokenId).call({}, async (errors, address) => {
+        if (errors) {
+          console.log('no country owner', errors, address);
 
-            console.log('do nothing...');
-            return false;
-          });
-      }
-      return false;
-    });
-  } catch (err) {
-    console.log('err reconciling on mount', err);
-  }
+          await rtdb
+            .ref(
+              `/worldMap/objects/units/geometries/${getMapIndexFromCountryId(
+                tx.txTokenId,
+              )}/properties`,
+            )
+            .update({ sold: false })
+            .then(() => db
+              .collection('pending')
+              .where('hash', '==', tx.hash)
+              .get()
+              .then(async (coll) => {
+                const pendingTxs = coll.docs.map(doc => doc.id);
+                await db
+                  .collection('pending')
+                  .doc(pendingTxs[0])
+                  .delete();
+              }));
+        }
+
+        if (address) {
+          console.log('resolve address...', address, tx.txTokenId);
+          // get country details from rtdb
+          const country = await rtdb
+            .ref(
+              `/worldMap/objects/units/geometries/${getMapIndexFromCountryId(
+                tx.txTokenId,
+              )}/properties`,
+            )
+            .once('value')
+            .then(snap => snap.val());
+
+          db.collection('countries')
+            .doc(`${country.name}`)
+            .set({
+              owner: address,
+              onSale: false,
+              lastPrice: country.price,
+              lastBought: Date.now(),
+              totalPlots: country.plots,
+              plotsBought: 0,
+              plotsMined: 0,
+              plotsAvailable: country.plots,
+              name: country.name,
+            })
+            .then(() => rtdb
+              .ref(
+                `/worldMap/objects/units/geometries/${getMapIndexFromCountryId(
+                  tx.txTokenId,
+                )}/properties`,
+              )
+              .update({ sold: true }))
+            .then(() => db
+              .collection('pending')
+              .where('hash', '==', tx.hash)
+              .get()
+              .then(async (coll) => {
+                const pendingTxs = coll.docs.map(doc => doc.id);
+                await db
+                  .collection('pending')
+                  .doc(pendingTxs[0])
+                  .delete();
+              }))
+            .then(() => console.log('done'))
+            .catch(err => console.log('err reconciling in tx reconciliation function on startup', err));
+        }
+      });
+    }
+    return false;
+  });
 };

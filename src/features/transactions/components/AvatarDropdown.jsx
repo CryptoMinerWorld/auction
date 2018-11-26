@@ -7,7 +7,6 @@ import Badge from 'antd/lib/badge';
 import Avatar from 'antd/lib/avatar';
 // import { NavLink } from 'react-router-dom';
 import Icon from 'antd/lib/icon';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { fetchAnyPendingTransactions } from '../helpers';
 
 require('antd/lib/dropdown/style/css');
@@ -26,7 +25,12 @@ require('antd/lib/avatar/style/css');
 const menu = items => (
   <Menu data-testid="menu">
     {items.map(({ hash, txTokenId }) => (
-      <CopyToClipboard text={hash} key={hash}>
+      <a
+        href={`https://${process.env.REACT_APP_NETWORK}.etherscan.io/tx/${hash}`}
+        key={hash}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <Menu.Item className="flex aic">
           <Icon type="loading" className="dib ma0 pa0" />
           <p className="dib ma0 pa0 pl3">
@@ -36,7 +40,7 @@ const menu = items => (
           </p>
           <Icon type="link" style={{ fontSize: '24px' }} className="pointer blue pl3" />
         </Menu.Item>
-      </CopyToClipboard>
+      </a>
     ))}
   </Menu>
 );

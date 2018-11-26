@@ -51,6 +51,7 @@ const Cart = ({
           className="o-80 ph4-ns pv3-ns "
           locale={{ emptyText: 'Select a country on the map to add it to your cart' }}
           pagination={false}
+          rowKey={record => record.countryId}
           columns={[
             {
               title: 'Country',
@@ -74,17 +75,17 @@ const Cart = ({
               title: 'Earns',
               dataIndex: 'roi',
               key: 'roi',
-              render: text => <p className="vert  ">{text}</p>,
+              render: text => <p className="vert">{text}</p>,
             },
             {
               title: 'ROI',
               key: 'minRoi',
               render: country => (
-                <span className="responsiveRow">
+                <p className="vert">
                   {Math.round((country.roi / country.price) * 100)}
                   {' '}
 %
-                </span>
+                </p>
               ),
             },
 

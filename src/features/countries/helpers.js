@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import { rtdb } from '../../app/utils/firebase';
 import { ethToWei, daysToSeconds } from '../mint/helpers';
+import store from '../../app/store';
 
 export const handleGiftFormSubmit = async (show, giftCountryMutation) => {
   show(true);
@@ -58,7 +59,7 @@ export const handleResell = (
     .send()
     .then(() => Promise.all(sellMutation(), updateCountryMap(countryId, false)))
     .then(() => {
-      console.log('done...', userId, countrySaleContractId, countryId);
+      // console.log('done...', userId, countrySaleContractId, countryId);
       setLoading(false);
     })
     .catch((error) => {
@@ -66,3 +67,19 @@ export const handleResell = (
       setLoading(false);
     });
 };
+
+export const checkIfCountryIsForSale = countryId => store
+  && store.getState().app.countryContractInstance
+  && store
+    .getState()
+    .app.countryContractInstance.methods.ownerOf(countryId)
+    .call({}, (error, address) => {
+      if (address) {
+        console.log('countrt already sold', address, countryId);
+        return false;
+      }
+
+      console.log('country is for sale', countryId);
+
+      return true;
+    });

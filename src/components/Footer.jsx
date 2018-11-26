@@ -127,7 +127,7 @@ const Footer = () => (
         <div className="flex jcc pb5-ns">
           <div className="flex jcc">
             <p className="f7 black-70 dib pr3 mb3 white">Copyright © Cryptominer World 2018</p>
-            <p className="f7 black-70 dib pr3 mb3 white">Version 1.3.8</p>
+            <p className="f7 black-70 dib pr3 mb3 white">Version 1.3.11</p>
           </div>
         </div>
       </div>

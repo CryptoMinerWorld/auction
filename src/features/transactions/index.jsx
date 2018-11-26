@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import Spin from 'antd/lib/spin';
 import Icon from 'antd/lib/icon';
 import { interpret } from 'xstate/lib/interpreter';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { txStatechart } from './machines/txMachine';
 
 class Transaction extends PureComponent {
@@ -100,7 +99,11 @@ class Transaction extends PureComponent {
     return (
       <div className="flex aic jcs">
         {current.matches('signedin.pending') && (
-          <CopyToClipboard text={hash}>
+          <a
+            href={`https://${process.env.REACT_APP_NETWORK}.etherscan.io/tx/${hash}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <div className="flex row aic jcs">
               <Spin indicator={loading} />
               <div className="flex col orange jcc ais pl3">
@@ -112,7 +115,7 @@ class Transaction extends PureComponent {
                 </small>
               </div>
             </div>
-          </CopyToClipboard>
+          </a>
         )}
 
         {current.matches('signedin.resolved') && (

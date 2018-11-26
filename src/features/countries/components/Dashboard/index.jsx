@@ -44,37 +44,21 @@ const statechart = {
 
 class CountryDashboard extends Component {
   static propTypes = {
-    // web3: PropTypes.oneOfType([PropTypes.shape({}), PropTypes.bool]),
     countries: PropTypes.arrayOf(PropTypes.shape({})),
-    // account: PropTypes.oneOfType([PropTypes.shape({}), PropTypes.bool]),
     transition: PropTypes.func.isRequired,
     userId: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
-    // web3: false,
     countries: [],
-    // account: false,
   };
 
   componentDidMount() {
     const {
       transition,
-      // web3, account,
+
       countries,
     } = this.props;
-
-    // if (!web3) {
-    //   transition('NO_METAMASK');
-    // } else if (!account) {
-    //   transition('NO_ACCOUNT');
-    // } else if (!countries || countries.length === 0) {
-    //   transition('NO_COUNTRIES');
-    // } else if (countries && countries.length > 0) {
-    //   transition('COUNTRIES');
-    // } else {
-    //   transition('NO_METAMASK');
-    // }
 
     if (!countries || countries.length === 0) {
       transition('NO_COUNTRIES');
@@ -103,12 +87,7 @@ class CountryDashboard extends Component {
         <State is="noCountries">
           <NoCountries />
         </State>
-        {/* <State is="noMetamask">
-          <p data-testid="noMetamask">No Metamask</p>
-        </State>
-        <State is="noAccount">
-          <p data-testid="noAccount">No Account</p>
-        </State> */}
+
         <State is="countries">
           <CountryDisplay countries={countries} userId={userId} />
         </State>
