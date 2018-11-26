@@ -10,6 +10,7 @@ import notification from 'antd/lib/notification';
 import Tabs from 'antd/lib/tabs';
 import { Spring } from 'react-spring';
 import { graphql } from 'react-apollo';
+import Icon from 'antd/lib/icon';
 import { db } from '../../app/utils/firebase';
 import { setError } from '../../app/appActions';
 import {
@@ -335,6 +336,8 @@ class Dashboard extends Component {
       return <Redirect to={`${redirectPath}`} />;
     }
 
+    console.log('data.user.countries.length', data && data.user && data.user.countries.length);
+
     return (
       <div className="bg-off-black white card-container" data-testid="profile-page">
         <div className="flex  aic  wrap jcc jcb-ns pv4">
@@ -455,19 +458,29 @@ Gems
                 onKeyPress={() => this.setState({ tab: 2 })}
                 role="button"
                 onClick={() => this.setState({ tab: 2 })}
-                className={`h-100 flex aic ${!(
+                className={`h-100 flex aic white ${!(
                   data
                   && data.user
-                  && data.user.countries.length >= 0
-                ) && 'white o-50'}`}
+                  && data.user.countries.length > 0
+                ) && ' o-50'}`}
               >
                 <img src={Land} alt="" className="h2 w-auto pr2" />
                 {// eslint-disable-next-line
-                (data && data.user && data.user.countries.length) || 0}{' '}
+                data && data.user && data.user.countries.length === 0 ? (
+                  0
+                ) : data && data.user && data.user.countries.length > 0 ? (
+                  data.user.countries.length
+                ) : (
+                  <Icon type="loading" theme="outlined" />
+                )}
+                {' '}
                 Countries
               </span>
 )}
-            // disabled={!(data && data.user && data.user.countries.length >= 0)}
+            disabled={
+              !(data && data.user && data.user.countries.length >= 0)
+              || data.user.countries.length === 0
+            }
             key="2"
           >
             <CountryDashboard

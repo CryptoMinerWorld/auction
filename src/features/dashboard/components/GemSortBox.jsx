@@ -43,16 +43,16 @@ class GemSortBox extends PureComponent {
     handleRerenderSortBox: PropTypes.func.isRequired,
     handleSortBoxReredendered: PropTypes.func.isRequired,
     transition: PropTypes.func.isRequired,
-    machineState: PropTypes.shape({
-    }).isRequired,
+    machineState: PropTypes.shape({}).isRequired,
   };
-
 
   static OrderBy = ({
     state, transition, title, to, match,
   }) => (
     <div
-      className={`pr4 tc pointer white link ${matchesState(state, match) ? 'o-90' : 'o-30'}`}
+      className={`pr4 tc pointer  white link ${
+        matchesState(state, match) ? 'o-90 underline' : 'o-30'
+      }`}
       onClick={() => transition(to)}
       onKeyPress={() => transition(to)}
       role="button"
@@ -65,22 +65,22 @@ class GemSortBox extends PureComponent {
   handleFetchAllGemsNOTInAuction = () => {
     const { fetchGems } = this.props;
     fetchGems('notInAuction');
-  }
+  };
 
   handleFetchAllGemsInAuction = () => {
     const { fetchGems } = this.props;
     fetchGems('inAuction');
-  }
+  };
 
   handleFetchAllGems = () => {
     const { fetchGems } = this.props;
     return fetchGems('all');
-  }
+  };
 
   hideOtherSortBox = () => {
     const { handleRerenderSortBox } = this.props;
     handleRerenderSortBox();
-  }
+  };
 
   componentWillTransition() {
     const { handleRerenderSortBox } = this.props;
@@ -91,7 +91,6 @@ class GemSortBox extends PureComponent {
     const { handleSortBoxReredendered } = this.props;
     handleSortBoxReredendered();
   }
-
 
   render() {
     const { transition, machineState } = this.props;
@@ -128,7 +127,6 @@ const actions = {
   fetchGems: getGemsForDashboardFilter,
   handleRerenderSortBox: rerenderSortBox,
   handleSortBoxReredendered: sortBoxReredendered,
-
 };
 
 export default compose(

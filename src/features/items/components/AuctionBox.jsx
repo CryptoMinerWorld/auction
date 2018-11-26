@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
+import Icon from 'antd/lib/icon';
 import CountdownTimer from './CountdownTimer';
 import Gembox from './Gembox';
 import buyNow from '../../../app/images/pinkBuyNowButton.png';
@@ -69,41 +70,51 @@ const AuctionBox = ({
   history,
   handleShowSignInBox,
   handleBuyGem,
-}) => (
-  <OverlapOnDesktopView
-    className="bg-dark-gray measure-l w-100 shadow-3"
-    style={{
-      WebkitClipPath:
-        'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)',
-      clipPath:
-        'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)',
-    }}
-  >
-    <TopHighLight style={tophighlight} />
-    <div className="white pa3">
-      <h1 className="tc pb3 b white" style={{ wordBreak: 'break-all' }} data-testid="gemName">
-        {name}
-      </h1>
-      {deadline && <CountdownTimer deadline={deadline} />}
-      <div className="mt3" />
-      <Gembox level={level} grade={grade} rate={rate} restingEnergyMinutes={restingEnergyMinutes} />
+}) => {
+  const [loading, setLoading] = useState(false);
+  return (
+    <OverlapOnDesktopView
+      className="bg-dark-gray measure-l w-100 shadow-3"
+      style={{
+        WebkitClipPath:
+          'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)',
+        clipPath:
+          'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)',
+      }}
+    >
+      <TopHighLight style={tophighlight} />
+      <div className="white pa3">
+        <h1 className="tc pb3 b white" style={{ wordBreak: 'break-all' }} data-testid="gemName">
+          {name}
+        </h1>
+        {deadline && <CountdownTimer deadline={deadline} />}
+        <div className="mt3" />
+        <Gembox
+          level={level}
+          grade={grade}
+          rate={rate}
+          restingEnergyMinutes={restingEnergyMinutes}
+        />
 
-      <div className="w-100 w5-ns h3 center mt4">
-        <BuyNow
-          onClick={() => {
-            if (provider && accountExists) {
-              handleBuyGem(tokenId, currentAccount, history);
-            } else {
-              handleShowSignInBox();
-            }
-          }}
-          className="b"
-          data-testid="buyNowButton"
-        >
-          Buy Now
-        </BuyNow>
+        <div className="w-100 w5-ns h3 center mt4">
+          <BuyNow
+            onClick={() => {
+              if (provider && accountExists) {
+                setLoading(true);
+                handleBuyGem(tokenId, currentAccount, history, setLoading);
+              } else {
+                setLoading(false);
+                handleShowSignInBox();
+              }
+            }}
+            className="b"
+            data-testid="buyNowButton"
+          >
+            {loading && <Icon type="loading" theme="outlined" className="pr3" />}
+            Buy Now
+          </BuyNow>
 
-        {/* <ButtonCTA
+          {/* <ButtonCTA
   disabled={} onClick={() => {
     if (provider && accountExists) {
       handleBuyGem(tokenId, currentAccount, history);
@@ -113,11 +124,12 @@ const AuctionBox = ({
   }} testId="buyNowButton" loading={loading} loadingText='BUYING...' text='BUY'
 
 /> */}
+        </div>
+        <ProgressMeter currentPrice={currentPrice} minPrice={minPrice} maxPrice={maxPrice} />
       </div>
-      <ProgressMeter currentPrice={currentPrice} minPrice={minPrice} maxPrice={maxPrice} />
-    </div>
-  </OverlapOnDesktopView>
-);
+    </OverlapOnDesktopView>
+  );
+};
 
 const actions = {
   handleShowSignInModal: showSignInModal,

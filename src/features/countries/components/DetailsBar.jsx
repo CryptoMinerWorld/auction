@@ -12,8 +12,11 @@ const DetailsBar = ({ details }) => (
       showInfo={false}
       className="top-1 relative w-100"
     />
-    <article className="pa3 pt4 tr bg-dark-gray white shadow-1 w-100" data-name="slab-stat">
-      <div className="mw9 center flex jce w-100 aic row-ns col w-100">
+    <article
+      className="pa3 pt4 tr bg-dark-gray white shadow-1 w-100 flex jce"
+      data-name="slab-stat"
+    >
+      <div className="mw9 flex jce w-100 aic row-ns col w-100 w-50-ns">
         <div className="tc">
           <dl className="dib mr5-ns">
             <dd className="f6 f5-ns b ml0 w4 tc" data-testid="countryDetails">

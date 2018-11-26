@@ -178,7 +178,7 @@ export const removeFromAuction = (tokenId, history, turnLoaderOff) => async (
 };
 
 // @notice lets users buy a gem in an active auction
-export const handleBuyNow = (_tokenId, _from, history) => (dispatch, getState) => {
+export const handleBuyNow = (_tokenId, _from, history, setLoading) => (dispatch, getState) => {
   const dutchAuctionContractInstance = getState().app.dutchContractInstance;
   const priceInWei = getState().auction.currentPrice;
   // eslint-disable-next-line
@@ -203,8 +203,10 @@ export const handleBuyNow = (_tokenId, _from, history) => (dispatch, getState) =
     .on('receipt', (receipt) => {
       store.dispatch(completedTx(receipt));
       dispatch(updateGemOwnership(_tokenId, _from, history, priceInWei));
+      setLoading(false);
     })
     .on('error', (err) => {
+      setLoading(false);
       store.dispatch(ErrorTx(err));
       // dispatch({
       //   type: MODAL_GONE,
