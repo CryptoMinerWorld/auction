@@ -24,52 +24,23 @@ const particleParameters = {
       type: 'images',
       images: [
         {
-          src: '/tinyGems/Amethyst.png',
+          src: '/tinyGems/Age.png',
+          height: 5,
+          width: 5,
+        },
+
+        {
+          src: '/tinyGems/Energy.png',
           height: 5,
           width: 5,
         },
         {
-          src: '/tinyGems/Diamond.png',
+          src: '/tinyGems/Grade.png',
           height: 5,
           width: 5,
         },
         {
-          src: '/tinyGems/Emerald.png',
-          height: 5,
-          width: 5,
-        },
-        {
-          src: '/tinyGems/Garnet.png',
-          height: 5,
-          width: 5,
-        },
-        {
-          src: '/tinyGems/Pearl.png',
-          height: 5,
-          width: 5,
-        },
-        {
-          src: '/tinyGems/Peridot.png',
-          height: 5,
-          width: 5,
-        },
-        {
-          src: '/tinyGems/Ruby.png',
-          height: 5,
-          width: 5,
-        },
-        {
-          src: '/tinyGems/Sapphire.png',
-          height: 5,
-          width: 5,
-        },
-        {
-          src: '/tinyGems/Topaz.png',
-          height: 5,
-          width: 5,
-        },
-        {
-          src: '/tinyGems/Turquoise.png',
+          src: '/tinyGems/MRB.png',
           height: 5,
           width: 5,
         },
@@ -109,7 +80,7 @@ const CountryDetails = ({
       }}
       params={particleParameters}
     />
-    <div className="flex mv5 mw8 center pa3 row-ns flex-column-reverse z-1 relative">
+    <div className="flex mv5 mw8 center pa3 row-ns flex-column-reverse z-1 relative white">
       <div className="w-50-ns w-100">
         <h1 className="white f1 b">{name}</h1>
 
@@ -118,7 +89,7 @@ const CountryDetails = ({
           {` ${formatDistance(new Date(lastBought), new Date())}`}
         </small>
 
-        <div className="flex aie jcb">
+        <div className="flex aie jcb white">
           <div className="">
             <dd className="f6 f5-ns b ml0">Price Paid</dd>
             <dd className="f3 f2-ns b ml0 w-100">{lastPrice && lastPrice.toFixed(3)}</dd>
@@ -137,25 +108,25 @@ const CountryDetails = ({
           <h3 className="white">DETAILS</h3>
           <span className="flex">
             <dt>Total Plots</dt>
-            <dd>{totalPlots}</dd>
+            <dd className="pl2">{totalPlots}</dd>
           </span>
           <span className="flex">
             <dt>Plots Sold</dt>
-            <dd>{plotsBought}</dd>
+            <dd className="pl2">{plotsBought}</dd>
           </span>
           <span className="flex">
             <dt>Plots Mined</dt>
-            <dd>{plotsMined}</dd>
+            <dd className="pl2">{plotsMined}</dd>
           </span>
 
           <span className="flex">
             <dt>Plots Available for Auction</dt>
-            <dd>{plotsAvailable}</dd>
+            <dd className="pl2">{plotsAvailable}</dd>
           </span>
         </dl>
       </div>
-      <div className="w-50-ns w-100 tc">
-        <img src={image} alt={name} className="mw-100 center grow" style={{ height: '500px' }} />
+      <div className="w-50-ns w-100 tc flex aic ml3-ns">
+        <img src={image} alt={name} className="w-100 h-auto center grow" />
       </div>
     </div>
   </>

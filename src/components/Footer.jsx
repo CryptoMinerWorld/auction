@@ -116,7 +116,6 @@ const Footer = () => (
               title="Cryptominer World on Reddit"
               path={reddit}
             />
-
             <SocialIcons
               link="https://telegram.me/CryptoMinerWorld"
               title="Cryptominer World on Telegram"
@@ -127,7 +126,7 @@ const Footer = () => (
         <div className="flex jcc pb5-ns">
           <div className="flex jcc">
             <p className="f7 black-70 dib pr3 mb3 white">Copyright © Cryptominer World 2018</p>
-            <p className="f7 black-70 dib pr3 mb3 white">Version 1.3.14</p>
+            <p className="f7 black-70 dib pr3 mb3 white">Version 1.3.19</p>
           </div>
         </div>
       </div>

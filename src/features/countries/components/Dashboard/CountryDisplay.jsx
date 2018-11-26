@@ -49,7 +49,7 @@ class Countries extends Component {
     const { countries } = this.props;
 
     return (
-      <div data-testid="countriesExist" id="top" className="pa0">
+      <div data-testid="countriesExist" id="top" className="pa0 center">
         <Transition
           items={countries[index]}
           from={{ transform: 'translate3d(0,-40px,0)' }}

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { map } from 'p-iteration';
+// import { map } from 'p-iteration';
 import ButtonCTA from '../../../components/ButtonCTA';
 import reduxStore from '../../../app/store';
 import { startTx, completedTx, ErrorTx } from '../../transactions/txActions';
@@ -58,7 +58,6 @@ const BuyNow = ({
         </span>
       </div>
       <p>Current Price</p>
-
       <ButtonCTA
         disabled={!countrySale || !markSold || picked.length <= 0 || !buyNow}
         onClick={async () => {
@@ -69,7 +68,7 @@ const BuyNow = ({
               const totalPrice = await countrySale.methods.getBulkPrice(countries).call();
               // console.log('totalPrice', totalPrice);
               // console.log('countries', countries);
-              await countrySale.methods
+              countrySale.methods
                 .bulkBuy(countries)
                 .send({
                   from: data.userId,
@@ -80,7 +79,7 @@ const BuyNow = ({
                     hash,
                     currentUser: data.userId,
                     method: 'country',
-                    tokenId: countries[0],
+                    tokenId: countries,
                   }),
                 ))
                 .on('error', () => setLoading(false));
@@ -90,11 +89,15 @@ const BuyNow = ({
                 .on('data', async (event) => {
                   console.log('data', event);
                   console.log('picked', picked);
-                  await map(picked, async (country) => {
+
+                  picked.forEach(async (country) => {
                     await buyNow({
                       variables: {
                         id: country.name,
-                        newOwnerId: data.userId,
+                        newOwnerId: data.userId
+                          .split('')
+                          .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
+                          .join(''),
                         price: country.price || 0,
                         timeOfPurchase: Date.now(),
                         totalPlots: country.plots || 0,
@@ -105,19 +108,19 @@ const BuyNow = ({
                         mapIndex: country.mapIndex,
                         roi: country.roi,
                       },
-                    });
-                    console.log('a');
-                    await markSold(country.mapIndex);
-                    console.log('b');
-                  })
-                    .then(() => {
-                      setLoading(false);
-                      // history.push(`/profile/${data.userId}#${picked[0].name}`);
-                      console.log('event', event);
-
-                      reduxStore.dispatch(completedTx(event));
                     })
-                    .catch(err => console.log('error buying countries', err));
+                      .then((x) => {
+                        console.log('x bought', x);
+                        markSold(country.mapIndex);
+                      })
+                      .then(() => {
+                        console.log('country map updated');
+                        setLoading(false);
+                        console.log('event', event);
+                        reduxStore.dispatch(completedTx(event));
+                      })
+                      .catch(err => console.log('error buying countries', err));
+                  });
                 })
                 .on('error', (error) => {
                   console.log('error', error);

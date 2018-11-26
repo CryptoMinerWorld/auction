@@ -85,9 +85,7 @@ export const createAuction = (
         .where('id', '==', tokenId)
         .get()
         .then(async (coll) => {
-          // console.log('coll', coll);
           const document = await coll.docs.map(doc => doc)[0];
-          // console.log('document', document);
           await db.doc(`stones/${document.id}`).update({
             auctionIsLive: true,
             deadline,

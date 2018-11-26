@@ -2082,6 +2082,7 @@ export const getCountryNameFromCountryId = (id) => {
 };
 
 export const getMapIndexFromCountryId = (id) => {
+  console.log('id', id);
   const result = countries.find(country => country.countryId === id);
   return result.mapIndex;
 };

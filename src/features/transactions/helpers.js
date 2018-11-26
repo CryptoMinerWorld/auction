@@ -2,7 +2,7 @@
 import { db, rtdb } from '../../app/utils/firebase';
 import { getMapIndexFromCountryId } from '../dashboard/helpers';
 
-const { map } = require('p-iteration');
+// const { map } = require('p-iteration');
 /**
  * @param {any} ctx
  * @param {{
@@ -12,6 +12,7 @@ const { map } = require('p-iteration');
  *  txTokenId: string,
  * }} event
  */
+
 export const savePendingTxToFirestore = (ctx, {
   hash, txCurrentUser, txMethod, txTokenId,
 }) => db
@@ -71,7 +72,8 @@ export const resolveAnyPendingTx = async (
     .then(coll => coll.docs.map(doc => doc.data()))
     .catch(error => console.log('error streaming pending tx data from firestore', error));
 
-  map(pendingTransactions, async (tx) => {
+  // map(pendingTransactions, async (tx) => {
+  pendingTransactions.forEach(async (tx) => {
     console.log('resolution function started');
     if (tx.txMethod === 'gem') {
       console.log('is gem');
@@ -154,83 +156,92 @@ export const resolveAnyPendingTx = async (
     }
     if (tx.txMethod === 'country') {
       console.log('is country');
-      return countryContract.methods.ownerOf(tx.txTokenId).call({}, async (errors, address) => {
-        if (errors) {
-          console.log('no country owner', errors, address);
 
-          await rtdb
-            .ref(
-              `/worldMap/objects/units/geometries/${getMapIndexFromCountryId(
-                tx.txTokenId,
-              )}/properties`,
-            )
-            .update({ sold: false })
-            .then(() => db
-              .collection('pending')
-              .where('hash', '==', tx.hash)
-              .get()
-              .then(async (coll) => {
-                const pendingTxs = coll.docs.map(doc => doc.id);
-                await db
-                  .collection('pending')
-                  .doc(pendingTxs[0])
-                  .delete();
-              }));
-        }
+      tx.txTokenId.forEach(async (eachTokenId) => {
+        await countryContract.methods.ownerOf(eachTokenId).call({}, async (errors, address) => {
+          if (errors) {
+            console.log('no country owner', errors, address);
 
-        if (address) {
-          console.log('resolve address...', address, tx.txTokenId);
-          // get country details from rtdb
-          const country = await rtdb
-            .ref(
-              `/worldMap/objects/units/geometries/${getMapIndexFromCountryId(
-                tx.txTokenId,
-              )}/properties`,
-            )
-            .once('value')
-            .then(snap => snap.val());
-
-          db.collection('countries')
-            .doc(`${country.name}`)
-            .set({
-              id: country.name,
-              owner: address,
-              onSale: false,
-              lastPrice: country.price,
-              lastBought: Date.now(),
-              totalPlots: country.plots,
-              plotsBought: 0,
-              plotsMined: 0,
-              plotsAvailable: country.plots,
-              name: country.name,
-              roi: country.roi,
-              countryId: country.countryId,
-              mapIndex: country.mapIndex,
-              imageLinkLarge: country.imageLinkLarge,
-              imageLinkMedium: country.imageLinkMedium,
-              imageLinkSmall: country.imageLinkSmall,
-            })
-            .then(() => rtdb
+            await rtdb
               .ref(
                 `/worldMap/objects/units/geometries/${getMapIndexFromCountryId(
-                  tx.txTokenId,
+                  eachTokenId,
                 )}/properties`,
               )
-              .update({ sold: true }))
-            .then(() => db
-              .collection('pending')
-              .where('hash', '==', tx.hash)
-              .get()
-              .then(async (coll) => {
-                const pendingTxs = coll.docs.map(doc => doc.id);
-                await db
-                  .collection('pending')
-                  .doc(pendingTxs[0])
-                  .delete();
-              }))
-            .then(() => console.log('done'))
-            .catch(err => console.log('err reconciling in tx reconciliation function on startup', err));
-        }
+              .update({ sold: false })
+              .then(() => db
+                .collection('pending')
+                .where('hash', '==', tx.hash)
+                .get()
+                .then(async (coll) => {
+                  const pendingTxs = coll.docs.map(doc => doc.id);
+                  await db
+                    .collection('pending')
+                    .doc(pendingTxs[0])
+                    .delete();
+                }));
+          }
+
+          if (address) {
+            console.log('resolve address...', address, eachTokenId);
+
+            // tx.txTokenId.forEach(async (eachTokenId) => {
+            console.log('eachTokenId', eachTokenId);
+            // get country details from rtdb
+            const country = await rtdb
+              .ref(
+                `/worldMap/objects/units/geometries/${getMapIndexFromCountryId(
+                  eachTokenId,
+                )}/properties`,
+              )
+              .once('value')
+              .then(snap => snap.val());
+
+            await db.collection('countries')
+              .doc(`${country.name}`)
+              .set({
+                id: country.name,
+                owner: address
+                  .split('')
+                  .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
+                  .join(''),
+                onSale: false,
+                lastPrice: country.price,
+                lastBought: Date.now(),
+                totalPlots: country.plots,
+                plotsBought: 0,
+                plotsMined: 0,
+                plotsAvailable: country.plots,
+                name: country.name,
+                roi: country.roi,
+                countryId: country.countryId,
+                mapIndex: country.mapIndex,
+                imageLinkLarge: country.imageLinkLarge,
+                imageLinkMedium: country.imageLinkMedium,
+                imageLinkSmall: country.imageLinkSmall,
+              })
+              .then(() => rtdb
+                .ref(
+                  `/worldMap/objects/units/geometries/${getMapIndexFromCountryId(
+                    eachTokenId,
+                  )}/properties`,
+                )
+                .update({ sold: true }))
+              .then(() => db
+                .collection('pending')
+                .where('hash', '==', tx.hash)
+                .get()
+                .then(async (coll) => {
+                  const pendingTxs = coll.docs.map(doc => doc.id);
+                  await db
+                    .collection('pending')
+                    .doc(pendingTxs[0])
+                    .delete();
+                }))
+              .then(() => console.log('done', eachTokenId))
+              .catch(err => console.log('err reconciling in tx reconciliation function on startup', err));
+          }
+        });
       });
     }
     return false;

@@ -59,7 +59,6 @@ export const handleResell = (
     .send()
     .then(() => Promise.all(sellMutation(), updateCountryMap(countryId, false)))
     .then(() => {
-      // console.log('done...', userId, countrySaleContractId, countryId);
       setLoading(false);
     })
     .catch((error) => {
@@ -75,7 +74,7 @@ export const checkIfCountryIsForSale = countryId => store
     .app.countryContractInstance.methods.ownerOf(countryId)
     .call({}, (error, address) => {
       if (address) {
-        console.log('countrt already sold', address, countryId);
+        console.log('country already sold', countryId);
         return false;
       }
 

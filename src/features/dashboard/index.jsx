@@ -547,7 +547,10 @@ export default compose(
   graphql(USER_COUNTRIES, {
     options: props => ({
       variables: {
-        id: props.currentAccount,
+        id: props.match.params.userId
+          .split('')
+          .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
+          .join(''),
       },
     }),
   }),

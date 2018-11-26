@@ -77,11 +77,13 @@ dt:after {
 .card-container > .ant-tabs-card > .ant-tabs-bar .ant-tabs-tab {
   border-color: transparent !important;
   background: transparent !important;
+  color: white !important;
 }
 
 .card-container > .ant-tabs-card > .ant-tabs-bar .ant-tabs-tab-active {
   border-color: var(--dark-gray) !important;
   background: var(--dark-gray) !important;
+  color: white !important;
 }
 
 .ant-table-pagination {
