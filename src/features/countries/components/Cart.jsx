@@ -63,7 +63,7 @@ const Cart = ({
               title: 'Country',
               dataIndex: 'name',
               key: 'name',
-              render: text => <p className="vert w3 truncate tl">{text}</p>,
+              render: text => <p className="vert w3 w4-ns truncate-ns tl">{text}</p>,
             },
             {
               title: 'Plots',

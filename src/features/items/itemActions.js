@@ -59,7 +59,7 @@ export const updateGemOwnership = (gemId, newOwner, history, priceInWei) => asyn
         lastSoldFor: priceInWei,
       })
       .then(() => {
-        // history.push(`/profile/${userIdToLowerCase}`);
+        history.push(`/profile/${userIdToLowerCase}`);
         dispatch({ type: MODAL_GONE });
       })
       .catch(err => setError(err))));
@@ -68,7 +68,7 @@ export const updateGemOwnership = (gemId, newOwner, history, priceInWei) => asyn
 export const createAuction = (
   payload,
   turnLoaderOff,
-  // history
+  history,
 ) => (dispatch, getState) => {
   const { auth, app } = getState();
   const currentAccount = auth.currentUserId;
@@ -113,7 +113,7 @@ export const createAuction = (
         .then(() => {
           // getUserGemsOnce(currentAccount)
           turnLoaderOff();
-          // history.push(`/profile/${currentAccount}`);
+          history.push(`/profile/${currentAccount}`);
         })
         .catch((err) => {
           console.log('err putting gem in auction', err);
@@ -165,7 +165,7 @@ export const removeFromAuction = (tokenId, history, turnLoaderOff) => async (
               payload: doc.data().id,
             });
             // getUserGemsOnce(currentUser)
-            // history.push(`/profile/${currentUser}`);
+            history.push(`/profile/${currentUser}`);
           });
         });
     })
