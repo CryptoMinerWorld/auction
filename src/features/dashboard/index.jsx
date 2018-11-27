@@ -252,7 +252,6 @@ class Dashboard extends Component {
     // redirect,
   ) => {
     const { data } = this.props;
-
     CountrySaleMethods.methods
       .useCoupon(value)
       .send()
@@ -266,14 +265,15 @@ class Dashboard extends Component {
     await CountrySaleMethods.events
       .CouponConsumed()
       .on('data', async (event) => {
+        console.log('coupon completed event', event);
         const { returnValues } = event;
-
         const { plots, _by, _tokenId } = returnValues;
-
-        const newOwnerId = _by;
+        const newOwnerId = _by
+          .split('')
+          .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
+          .join('');
         const countryId = Number(_tokenId);
         const totalPlots = Number(plots);
-
         const countryMapIndex = getMapIndexFromCountryId(countryId);
         const country = await getCountryDetailsFromFirebase(countryMapIndex);
 
@@ -330,19 +330,15 @@ class Dashboard extends Component {
     const {
       plots, referralPoints, tab, redirectPath, alreadyRedirected,
     } = this.state;
-
     if (redirectPath && !alreadyRedirected) {
       this.setState({ alreadyRedirected: true });
       return <Redirect to={`${redirectPath}`} />;
     }
-
-    console.log('data.user.countries.length', data && data.user && data.user.countries.length);
-
     return (
       <div className="bg-off-black white card-container" data-testid="profile-page">
         <div className="flex  aic  wrap jcc jcb-ns pv4">
           <div className=" flex aic pt3 pt0-ns">
-            <img src={userImage} className="h3 w-auto pr3 dib" alt="gem auctions" />
+            <img src={userImage} className="h3 w-auto pr3 pl3-ns dib" alt="gem auctions" />
             <h1 className="white" data-testid="userName">
               {userName}
             </h1>

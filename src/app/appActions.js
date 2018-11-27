@@ -48,7 +48,6 @@ export const clearError = () => ({ type: CLEAR_ERROR });
 
 export const instantiateContracts = async (web3, handleSendContractsToRedux, handleSetError) => {
   const currentAccountId = await web3.eth.getAccounts().then(accounts => accounts[0]);
-
   // @notice instantiating auction contract
   const dutchContract = new web3.eth.Contract(
     dutchAuctionABI,

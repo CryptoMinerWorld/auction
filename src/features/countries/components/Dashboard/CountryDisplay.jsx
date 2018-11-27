@@ -73,25 +73,9 @@ class Countries extends Component {
         </Transition>
 
         <CountryBar countries={countries} selectCountry={this.selectCountry} />
-        {/* <div className="tc center mv5">
-          <Button
-            type="dashed"
-            icon="plus"
-            ghost
-            onClick={() => {}}
-            className="hover-blue white ml3 w-75 mv3 ttu center"
-          >
-            Show Stats for all
-          </Button>
-        </div> */}
       </div>
     );
   }
 }
-
-// const selection = store => ({
-//   CountryERC721: store.app.countryContractInstance,
-//   DutchContract: store.app.dutchContractInstance,
-// });
 
 export default Countries;

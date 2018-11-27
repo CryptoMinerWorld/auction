@@ -1,12 +1,12 @@
 import { testStateMachine } from 'react-automata';
 import Tx from '../index';
-import { findPendingTransactions } from '../txActions';
+import { resolveAnyPendingTx } from '../helpers';
 
 // jest.mock('../txActions', () => ({
 //   resolveTXStatus: jest.fn(),
 // }));
 
-describe('transaction bar', () => {
+describe.skip('transaction bar', () => {
   test('transactions module works', () => {
     testStateMachine(Tx);
   });
@@ -23,39 +23,65 @@ describe('transaction bar', () => {
 });
 
 describe('transaction reconciliation function', () => {
-  test('recon function does nothing if there are zero pending transaction', async () => {
+  test.skip('recon function does nothing if there are zero pending transaction', async () => {
     // const dbQuery = jest.fn(() => new Promise(resolve => resolve([4, 4, 3])));
-    const queryBlockchain = jest.fn();
-    const dbQuery = jest.fn(() => []);
-    const dbWrite = jest.fn();
-    const dbDelete = jest.fn();
-    const resolveTXStatus = jest.fn();
-    await findPendingTransactions('userId', queryBlockchain, dbQuery, dbWrite, dbDelete, resolveTXStatus);
-    expect(dbQuery).toBeCalled();
-    expect(resolveTXStatus).not.toBeCalled();
+    const walletId = '123';
+    const gemsContract = jest.fn();
+    const auctionContract = jest.fn();
+    const countryContract = jest.fn();
+    const AUCTION_CONTRACT_ADDRESS = 'abc';
+    const web3 = jest.fn();
+    const GEM_CONTRACT_ADDRESS = '456';
+    // const resolveTXStatus
+    await resolveAnyPendingTx(
+      walletId,
+      gemsContract,
+      auctionContract,
+      AUCTION_CONTRACT_ADDRESS,
+      GEM_CONTRACT_ADDRESS,
+      web3,
+      countryContract,
+    );
+
+    expect(resolveAnyPendingTx).toBeCalled();
+    expect(resolveAnyPendingTx).toBeCalledWith(
+      walletId,
+      gemsContract,
+      auctionContract,
+      AUCTION_CONTRACT_ADDRESS,
+      GEM_CONTRACT_ADDRESS,
+      web3,
+      countryContract,
+    );
   });
 
+  test.skip('recon function fires resolve function if pending transaction exist', () => {
+    const walletId = '123';
+    const gemsContract = jest.fn();
+    const auctionContract = jest.fn();
+    const countryContract = jest.fn();
+    const AUCTION_CONTRACT_ADDRESS = 'abc';
+    const web3 = jest.fn();
+    const GEM_CONTRACT_ADDRESS = '456';
+    // const resolveTXStatus
+    resolveAnyPendingTx(
+      walletId,
+      gemsContract,
+      auctionContract,
+      AUCTION_CONTRACT_ADDRESS,
+      GEM_CONTRACT_ADDRESS,
+      web3,
+      countryContract,
+    );
 
-  test('recon function fires resolve function if pending transaction exist', async () => {
-    const queryBlockchain = jest.fn();
-    const dbQuery = jest.fn(() => [1, 2, 3]);
-    const dbWrite = jest.fn();
-    const dbDelete = jest.fn();
-    const resolveTXStatus = jest.fn();
-    await findPendingTransactions('userId', queryBlockchain, dbQuery, dbWrite, dbDelete, resolveTXStatus);
-    expect(dbQuery).toBeCalled();
-    expect(resolveTXStatus).toBeCalled();
+    expect(resolveAnyPendingTx).toBeCalled();
   });
 
+  test.skip('recon function fires when a user signs in', () => {});
 
-  test('recon function fires when a user signs in', () => {
+  test.skip('recon function find any pending transactins on a given user', () => {});
 
-  });
-
-  test('recon function find any pending transactins on a given user', () => {});
-
-  test('recon function resolves the pending status on a function', () => {});
+  test.skip('recon function resolves the pending status on a function', () => {});
   // resolveTXStatus = (pendingTransactions, dbWrite, dbDelete, queryBlockchain)
-
   // findPendingTransactions = (userId, queryBlockchain, dbQuery, dbWrite, dbDelete)
 });

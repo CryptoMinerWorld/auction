@@ -5,34 +5,19 @@ import { Link } from 'react-router-dom';
 export const CountryCard = ({
   name, image, index, selectCountry,
 }) => (
-  <Link to={`#${name}`} className="h-100">
-    {' '}
+  <Link to={`#${name}`}>
     <div
       onClick={() => selectCountry(index)}
       onKeyDown={() => selectCountry(index)}
       role="button"
       tabIndex={index}
-      className="bg-dark-gary white w5 ma4 grow pointer h-100"
+      className="bg-dark-gary white w5 ma4 grow pointer"
     >
-      <div className="tc">
-        <p className="ttu white tc b o-50">{name}</p>
-      </div>
-      <div className="flex aic ">
-        <div className="flex">
-          <figure className="ma0 pa0 flex aic col jcc">
-            <img
-              src={image}
-              alt="gem"
-              className="ma0 pa3 pb0  w-100 h-auto"
-              style={{
-                maxWidth: '100%',
-                maxHeight: '100%',
-              }}
-            />
-            <figcaption hidden>{name}</figcaption>
-          </figure>
-        </div>
-      </div>
+      <p className="ttu white tc b o-50 pb3">{name}</p>
+      <figure className="ma0 pa0 flex aic col jcc h5 w-auto">
+        <img src={image} alt="gem" className="imageContain" />
+        <figcaption hidden>{name}</figcaption>
+      </figure>
     </div>
   </Link>
 );
@@ -45,7 +30,7 @@ CountryCard.propTypes = {
 
 export const CountryBar = ({ countries, selectCountry }) => (
   <div
-    className="overflow-auto bg-off-black mv5 pa0 shadow-2 flex z-1 relative"
+    className="overflow-auto bg-off-black mv5 pa0 shadow-2 flex h-100"
     style={{ whiteSpace: 'nowrap' }}
   >
     {countries

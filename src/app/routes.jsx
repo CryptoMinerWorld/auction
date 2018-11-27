@@ -1,13 +1,7 @@
 import React, { Fragment } from 'react';
 import { Route } from 'react-router-dom';
 import Loadable from 'react-loadable';
-import Icon from 'antd/lib/icon';
-
-const Loading = () => (
-  <div className="w-100 tc pa3">
-    <Icon type="loading" theme="outlined" />
-  </div>
-);
+import Loading from '../components/Loading';
 
 const CreateAuction = Loadable({
   loader: () => import('../features/mint'),

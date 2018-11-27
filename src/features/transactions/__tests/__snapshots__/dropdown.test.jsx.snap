@@ -2,10 +2,9 @@
 
 exports[`AvatarDropdown renders correctly 1`] = `
 <div>
-  <a
+  <div
     class="dn dib-ns"
     data-testid="avatar"
-    href="/string"
   >
     <span
       class="ant-badge"
@@ -24,6 +23,6 @@ exports[`AvatarDropdown renders correctly 1`] = `
     >
       string
     </p>
-  </a>
+  </div>
 </div>
 `;

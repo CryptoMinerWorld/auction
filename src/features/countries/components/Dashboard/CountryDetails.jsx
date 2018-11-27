@@ -1,64 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Particles from 'react-particles-js';
 import { formatDistance } from 'date-fns';
-
-const particleParameters = {
-  particles: {
-    number: {
-      value: 2,
-      density: {
-        enable: true,
-        value_area: 800,
-      },
-    },
-    line_linked: {
-      enable: false,
-    },
-    move: {
-      enable: false,
-      speed: 1,
-      out_mode: 'out',
-    },
-    shape: {
-      type: 'images',
-      images: [
-        {
-          src: '/tinyGems/Age.png',
-          height: 5,
-          width: 5,
-        },
-
-        {
-          src: '/tinyGems/Energy.png',
-          height: 5,
-          width: 5,
-        },
-        {
-          src: '/tinyGems/Grade.png',
-          height: 5,
-          width: 5,
-        },
-        {
-          src: '/tinyGems/MRB.png',
-          height: 5,
-          width: 5,
-        },
-      ],
-    },
-    size: {
-      value: 10,
-      random: false,
-      anim: {
-        enable: true,
-        speed: 4,
-        size_min: 10,
-        sync: false,
-      },
-    },
-  },
-  retina_detect: true,
-};
+import ImageLoader from 'react-loading-image';
+import Loading from '../../../../components/Loading';
 
 const CountryDetails = ({
   name,
@@ -72,15 +16,7 @@ const CountryDetails = ({
   roi,
 }) => (
   <>
-    <Particles
-      style={{
-        width: '100%',
-        position: 'absolute',
-        opacity: 0.5,
-      }}
-      params={particleParameters}
-    />
-    <div className="flex mv5 mw8 center pa3 row-ns flex-column-reverse z-1 relative white">
+    <div className="flex mv5 mw8 center pa3 row-ns flex-column-reverse  white">
       <div className="w-50-ns w-100">
         <h1 className="white f1 b">{name}</h1>
 
@@ -96,7 +32,7 @@ const CountryDetails = ({
           </div>
           <div className="">
             <dd className="f6 f5-ns b ml0">Plots Remaining</dd>
-            <dd className="f3 f2-ns b ml0 w-100">{totalPlots && totalPlots.toFixed(3)}</dd>
+            <dd className="f3 f2-ns b ml0 w-100">{totalPlots && totalPlots}</dd>
           </div>
           <div className="">
             <dd className="f6 f5-ns b ml0">Return on Investment</dd>
@@ -125,8 +61,13 @@ const CountryDetails = ({
           </span>
         </dl>
       </div>
-      <div className="w-50-ns w-100 tc flex aic ml3-ns">
-        <img src={image} alt={name} className="w-100 h-auto center grow" />
+      <div className="w-50-ns w-100 tc ml3-ns flex ais jcc ">
+        <ImageLoader
+          src={image}
+          className="grow w-auto h-75"
+          loading={() => <Loading />}
+          error={() => <div>Error</div>}
+        />
       </div>
     </div>
   </>

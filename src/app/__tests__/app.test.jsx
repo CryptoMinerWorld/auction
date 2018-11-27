@@ -1,13 +1,17 @@
 import { instantiateContracts } from '../appActions';
 
-it('test that instantiating contracts send the instances to redux', () => {
-  const web3 = jest.fn();
+it.skip('test that instantiating contracts send the instances to redux', async () => {
+  const web3 = jest.mock('../utils/getWeb3.js', () => ({
+    eth: {
+      getAccounts: jest.fn(() => [1, 2]),
+    },
+  }));
+  // web3.eth.getAccounts().then(accounts => accounts[0]);
   const handleSendContractsToRedux = jest.fn();
   const handleSetError = jest.fn();
-  instantiateContracts(web3, handleSendContractsToRedux, handleSetError);
-  expect(handleSetError).toBeCalled();
+  await instantiateContracts(web3, handleSendContractsToRedux, handleSetError);
+  expect(instantiateContracts).toBeCalledWith(web3, handleSendContractsToRedux, handleSetError);
 });
-
 
 describe.skip('App happy path tests', () => {
   it.skip('check taht sign up fails with wrong types of sign up data', () => {
@@ -15,7 +19,6 @@ describe.skip('App happy path tests', () => {
   });
 
   it.skip('Create an account modal doesn;t appear if users has already created an account', () => {
-
     // expect(true).toBeFalsy();
   });
 

@@ -28,29 +28,35 @@ export const Coupon = ({
       setloading(false);
     } else {
       // console.log('valid input and coupon format');
-      CountrySaleMethods.methods
-        .isCouponValid(value)
-        .call()
-        .then(async (result) => {
-          if (result === '0') {
-            console.log('just not a valid coupon');
-            throw new Error();
-          }
-          handleRedemption(
-            value,
-            CountrySaleMethods,
-            buyNow,
-            markedSold,
-            setloading,
-            showModal,
-            redirect,
-          );
-        })
-        .catch((err) => {
-          console.log('err reteiving a coupon', err);
-          setError('Sorry, this is not a valid coupon code.');
-          setloading(false);
-        });
+      return (
+        CountrySaleMethods
+        && CountrySaleMethods.methods
+        && CountrySaleMethods.methods
+          .isCouponValid(value)
+          .call()
+          .then(async (result) => {
+            if (result === '0') {
+              console.log('just not a valid coupon');
+              throw new Error();
+            }
+            console.log('coupon is valid');
+
+            handleRedemption(
+              value,
+              CountrySaleMethods,
+              buyNow,
+              markedSold,
+              setloading,
+              showModal,
+              redirect,
+            );
+          })
+          .catch((err) => {
+            console.log('err reteiving a coupon', err);
+            setError('Sorry, this is not a valid coupon code.');
+            setloading(false);
+          })
+      );
     }
   };
 
@@ -108,9 +114,10 @@ Coupon.propTypes = {
   CountrySaleMethods: PropTypes.shape({}),
   buyNow: PropTypes.func.isRequired,
   markedSold: PropTypes.func.isRequired,
-  redirect: PropTypes.func.isRequired,
+  redirect: PropTypes.func,
 };
 
 Coupon.defaultProps = {
   CountrySaleMethods: {},
+  redirect: () => {},
 };

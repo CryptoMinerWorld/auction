@@ -90,5 +90,9 @@ AvatarDropdown.propTypes = {
   // to: PropTypes.string.isRequired,
   userImage: PropTypes.string.isRequired,
   userName: PropTypes.string.isRequired,
-  walletId: PropTypes.string.isRequired,
+  walletId: PropTypes.string,
+};
+
+AvatarDropdown.defaultProps = {
+  walletId: '',
 };

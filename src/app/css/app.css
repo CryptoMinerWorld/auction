@@ -160,3 +160,8 @@ dt:after {
     flex-grow: 1;
   }
 }
+
+.imageContain {
+  -o-object-fit: 'contain';
+  object-fit: 'contain';
+}
