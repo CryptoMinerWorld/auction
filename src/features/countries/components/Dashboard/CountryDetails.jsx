@@ -16,7 +16,10 @@ const CountryDetails = ({
   roi,
 }) => (
   <>
-    <div className="flex mv5 mw8 center pa3 row-ns flex-column-reverse  white">
+    <div
+      className="flex mv5 mw8 center pa3 row-ns flex-column-reverse  white"
+      style={{ height: '40em' }}
+    >
       <div className="w-50-ns w-100">
         <h1 className="white f1 b">{name}</h1>
 
@@ -61,13 +64,18 @@ const CountryDetails = ({
           </span>
         </dl>
       </div>
-      <div className="w-50-ns w-100 tc ml3-ns flex ais jcc ">
-        <ImageLoader
-          src={image}
-          className="grow w-auto h-75"
-          loading={() => <Loading />}
-          error={() => <div>Error</div>}
-        />
+      <div className="w-50-ns w-100 ml3-ns h-100 flex aic jcc">
+        <div className="w-auto flex aic jcc">
+          <ImageLoader
+            src={image}
+            className="grow imageContain w-auto h-auto fitToMobile"
+            style={{
+              maxHeight: '40em',
+            }}
+            loading={() => <Loading />}
+            error={() => <div>Error</div>}
+          />
+        </div>
       </div>
     </div>
   </>

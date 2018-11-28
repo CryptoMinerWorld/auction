@@ -39,7 +39,7 @@ const Filters = ({ handleToggleGem, filterLoading, selection }) => (
                   gemType="amethyst"
                   ifItsSelected={selection.amethyst}
                   url="https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FAmethyst%20Face%20Emoji.png?alt=media&token=b38e3f31-7711-4e6a-a633-56edac59e6e6"
-                  toggleGem={handleToggleGem}
+                  toggleTheGem={handleToggleGem}
                   filterLoading={filterLoading}
                 />
 
@@ -47,7 +47,7 @@ const Filters = ({ handleToggleGem, filterLoading, selection }) => (
                   gemType="garnet"
                   ifItsSelected={selection.garnet}
                   url="https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FGarnet%20Face%20Emoji.png?alt=media&token=09e2d41f-437c-4796-a513-bb55ffeced55"
-                  toggleGem={handleToggleGem}
+                  toggleTheGem={handleToggleGem}
                   filterLoading={filterLoading}
                 />
               </div>
@@ -56,7 +56,7 @@ const Filters = ({ handleToggleGem, filterLoading, selection }) => (
                   gemType="opal"
                   ifItsSelected={selection.opal}
                   url="https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FOpal%20Face%20Emoji.png?alt=media&token=1a515351-bd5c-4ff3-9ef9-89ea94526aa0"
-                  toggleGem={handleToggleGem}
+                  toggleTheGem={handleToggleGem}
                   filterLoading={filterLoading}
                 />
 
@@ -64,7 +64,7 @@ const Filters = ({ handleToggleGem, filterLoading, selection }) => (
                   gemType="sapphire"
                   ifItsSelected={selection.sapphire}
                   url="https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FSapphire%20Face%20Emoji.png?alt=media&token=5a1214f5-968c-491f-9cfc-a4ef02230afc"
-                  toggleGem={handleToggleGem}
+                  toggleTheGem={handleToggleGem}
                   filterLoading={filterLoading}
                 />
               </div>
@@ -117,14 +117,13 @@ const GemFilter = ({
 );
 
 GemFilter.propTypes = {
-  toggleTheGem: PropTypes.func,
+  toggleTheGem: PropTypes.func.isRequired,
   ifItsSelected: PropTypes.bool.isRequired,
   url: PropTypes.string.isRequired,
   gemType: PropTypes.string.isRequired,
   filterLoading: PropTypes.bool.isRequired,
 };
 
-GemFilter.defaultProps = {
-  toggleTheGem: null,
-
-};
+// GemFilter.defaultProps = {
+//   toggleTheGem: null,
+// };

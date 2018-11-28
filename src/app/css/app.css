@@ -91,7 +91,18 @@ dt:after {
   width: 100%;
 }
 
+@media screen and (min-width: 48em) {
+  thead[class*='ant-table-thead'] tr th {
+    width: 4.5em;
+  }
+}
+
 @media screen and (max-width: 48em) {
+  .fitToMobile {
+    max-height: 10em !important;
+    width: auto !important;
+  }
+
   .vert {
     /* writing-mode: vertical-rl;
     text-orientation: sideways; */
@@ -105,11 +116,8 @@ dt:after {
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
-
     -webkit-box-pack: center;
-
     -ms-flex-pack: center;
-
     justify-content: center;
     text-align: center;
     height: 4rem;
@@ -137,7 +145,7 @@ dt:after {
     flex-grow: 1 !important;
   }
 
-  thead[class*='ant-table-thead'] th div {
+  #cart thead[class*='ant-table-thead'] th div {
     -webkit-writing-mode: vertical-rl;
     -ms-writing-mode: tb-rl;
     writing-mode: vertical-rl;

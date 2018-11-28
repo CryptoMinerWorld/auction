@@ -53,6 +53,7 @@ const Cart = ({
       </div>
       <div className="w-two-thirds-ns w-100 o-80 ph4-ns pv3-ns ">
         <Table
+          id="cart"
           rowClassName="pointer bg-animate hover-black white w-100"
           className="o-80 ph4-ns pv3-ns "
           locale={{ emptyText: 'Select a country on the map to add it to your cart' }}
@@ -72,13 +73,13 @@ const Cart = ({
               render: text => <p className="vert  ">{text}</p>,
             },
             {
-              title: 'Price',
+              title: 'Price Ξ',
               dataIndex: 'price',
               key: 'price',
               render: text => <p className="vert ">{text && text.toFixed(3)}</p>,
             },
             {
-              title: 'Earns',
+              title: 'Earns Ξ',
               dataIndex: 'roi',
               key: 'roi',
               render: text => <p className="vert">{text}</p>,

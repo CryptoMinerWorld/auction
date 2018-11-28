@@ -61,7 +61,7 @@ class StatsBox extends PureComponent {
             restingEnergyMinutes={restingEnergyMinutes}
           />
 
-          {lastSoldFor && (
+          {lastSoldFor ? (
             <div className="pa3 pt4 mt3 tc" style={gradientAndShape}>
               <small className="white ttu ">Last Sold For</small>
               <p className="basic" style={{ fontSize: 'xx-large' }}>
@@ -70,7 +70,7 @@ class StatsBox extends PureComponent {
                 <span data-testid="currentPrice">{weiToEth(lastSoldFor)}</span>
               </p>
             </div>
-          )}
+          ) : null}
         </div>
       </OverlapOnDesktopView>
     );

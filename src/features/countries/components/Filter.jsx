@@ -139,30 +139,23 @@ class Filter extends Component {
         dataIndex: 'plots',
         key: 'plots',
         sorter: (a, b) => a.plots - b.plots,
-        render: text => <p className="vert  ">{`${text}`}</p>,
+        render: text => <p className="vert ">{`${text}`}</p>,
       },
       {
-        title: 'Price',
+        title: 'Price Ξ',
         dataIndex: 'price',
         key: 'price',
-        render: text => <p className="vert  ">{`Ξ ${text && text.toFixed(2)}`}</p>,
+        render: text => <p className="vert  ">{`${text && text.toFixed(3)}`}</p>,
         sorter: (a, b) => a.price - b.price,
       },
       {
-        title: 'Earns',
+        title: 'Earns Ξ',
         dataIndex: 'roi',
         key: 'roi',
         sorter: (a, b) => a.roi - b.roi,
-        render: text => <p className="vert  ">{`Ξ ${text && text.toFixed(2)}`}</p>,
+        render: text => <p className="vert  ">{`${text && text.toFixed(2)}`}</p>,
       },
     ];
-
-    // const columnx = columns.map(col => ({
-    //   ...col,
-    //   onHeaderCell: () => ({
-    //     width: '1rem',
-    //   }),
-    // }));
 
     return (
       <div

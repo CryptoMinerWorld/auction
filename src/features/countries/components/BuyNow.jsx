@@ -25,25 +25,31 @@ const BuyNow = ({
       <dl className="mt4 left-2 relative-ns w-100">
         <div className="flex w-100">
           <dt>Total Countries</dt>
-          <dd className="dib">{picked.length}</dd>
+          <dd className="dib pl2">{picked.length}</dd>
         </div>
         <div className="flex w-100">
-          <dt>Total Price</dt>
-          <dd className="dib">
-            <span className="basic pl1">Ξ</span>
+          <dt>
+            Total Price
             {' '}
+            <span className="basic">Ξ</span>
+          </dt>
+          <dd className="dib pl2">
             {picked && picked.reduce((total, amount) => total + amount.price, 0).toFixed(3)}
           </dd>
         </div>
         <div className="flex">
           <dt>Total Plots</dt>
-          <dd className="dib">
+          <dd className="dib pl2">
             {picked && picked.reduce((total, amount) => total + amount.plots, 0).toFixed(3)}
           </dd>
         </div>
         <div className="flex">
-          <dt>Total Return</dt>
-          <dd className="dib">
+          <dt>
+            Total Earns
+            {' '}
+            <span className="basic ">Ξ</span>
+          </dt>
+          <dd className="dib pl2">
             {picked && picked.reduce((total, amount) => total + amount.roi, 0).toFixed(3)}
           </dd>
         </div>

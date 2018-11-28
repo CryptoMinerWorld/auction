@@ -15,7 +15,7 @@ export const CountryCard = ({
     >
       <p className="ttu white tc b o-50 pb3">{name}</p>
       <figure className="ma0 pa0 flex aic col jcc h5 w-auto">
-        <img src={image} alt="gem" className="imageContain" />
+        <img src={image} alt="gem" className="imageContain" style={{ maxHeight: '256px' }} />
         <figcaption hidden>{name}</figcaption>
       </figure>
     </div>
