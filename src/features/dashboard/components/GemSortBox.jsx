@@ -2,13 +2,13 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { withStateMachine } from 'react-automata';
+import { matchesState } from 'xstate';
 import {
   getGemsForDashboardFilter,
   rerenderSortBox,
-  sortBoxReredendered
+  sortBoxReredendered,
 } from '../dashboardActions';
-import { withStateMachine } from 'react-automata';
-import { matchesState } from 'xstate';
 
 const stateMachine = {
   initial: 'allGems',
@@ -17,59 +17,80 @@ const stateMachine = {
       onEntry: 'handleFetchAllGems',
       on: {
         INAUCTION: 'gemsInAuction',
-        NOTINAUCTION: 'gemsNotInAuction'
-      }
+        NOTINAUCTION: 'gemsNotInAuction',
+      },
     },
     gemsInAuction: {
       onEntry: 'handleFetchAllGemsInAuction',
       on: {
         ALL: 'allGems',
-        NOTINAUCTION: 'gemsNotInAuction'
-      }
+        NOTINAUCTION: 'gemsNotInAuction',
+      },
     },
     gemsNotInAuction: {
       onEntry: ['handleFetchAllGemsNOTInAuction', 'hideOtherSortBox'],
       on: {
         ALL: 'allGems',
-        INAUCTION: 'gemsInAuction'
-      }
-    }
-  }
+        INAUCTION: 'gemsInAuction',
+      },
+    },
+  },
 };
 
 class GemSortBox extends PureComponent {
   static propTypes = {
-    fetchGems: PropTypes.func.isRequired
+    fetchGems: PropTypes.func.isRequired,
+    handleRerenderSortBox: PropTypes.func.isRequired,
+    handleSortBoxReredendered: PropTypes.func.isRequired,
+    transition: PropTypes.func.isRequired,
+    machineState: PropTypes.shape({}).isRequired,
   };
 
-  handleFetchAllGems = () => this.props.fetchGems('all');
+  static OrderBy = ({
+    state, transition, title, to, match,
+  }) => (
+    <div
+      className={`pr4 tc pointer  white link ${
+        matchesState(state, match) ? 'o-90 underline' : 'o-30'
+      }`}
+      onClick={() => transition(to)}
+      onKeyPress={() => transition(to)}
+      role="button"
+      tabIndex={0}
+    >
+      {title}
+    </div>
+  );
 
-  handleFetchAllGemsInAuction = () => this.props.fetchGems('inAuction');
-
-  handleFetchAllGemsNOTInAuction = () => this.props.fetchGems('notInAuction');
-
-  hideOtherSortBox = () => this.props.handleRerenderSortBox();
-
-  componentWillTransition(event) {
-    this.props.handleRerenderSortBox();
-  }
-
-  componentDidTransition(prevMachineState, event) {
-    this.props.handleSortBoxReredendered();
-  }
-
-  static OrderBy = ({ state, transition, title, to, match }) => {
-    return (
-      <p
-        className={`pr4 tc pointer white link ${
-          matchesState(state, match) ? 'o-90' : 'o-30'
-        }`}
-        onClick={() => transition(to)}
-      >
-        {title}
-      </p>
-    );
+  handleFetchAllGemsNOTInAuction = () => {
+    const { fetchGems } = this.props;
+    fetchGems('notInAuction');
   };
+
+  handleFetchAllGemsInAuction = () => {
+    const { fetchGems } = this.props;
+    fetchGems('inAuction');
+  };
+
+  handleFetchAllGems = () => {
+    const { fetchGems } = this.props;
+    return fetchGems('all');
+  };
+
+  hideOtherSortBox = () => {
+    const { handleRerenderSortBox } = this.props;
+    handleRerenderSortBox();
+  };
+
+  componentWillTransition() {
+    const { handleRerenderSortBox } = this.props;
+    handleRerenderSortBox();
+  }
+
+  componentDidTransition() {
+    const { handleSortBoxReredendered } = this.props;
+    handleSortBoxReredendered();
+  }
 
   render() {
     const { transition, machineState } = this.props;
@@ -105,13 +126,13 @@ class GemSortBox extends PureComponent {
 const actions = {
   fetchGems: getGemsForDashboardFilter,
   handleRerenderSortBox: rerenderSortBox,
-  handleSortBoxReredendered: sortBoxReredendered
+  handleSortBoxReredendered: sortBoxReredendered,
 };
 
 export default compose(
   connect(
     null,
-    actions
+    actions,
   ),
-  withStateMachine(stateMachine)
+  withStateMachine(stateMachine),
 )(GemSortBox);

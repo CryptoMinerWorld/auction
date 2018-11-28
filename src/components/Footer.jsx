@@ -26,18 +26,19 @@ const RockOverlay = styled.div`
   width: 100%;
 `;
 const FooterLink = ({ link, title, hover }) => (
-  <a
-    href={link}
-    className={`f5 db fw6 pv3 black-70 link dim white ${hover}`}
-    title={title}
-  >
+  <a href={link} className={`f5 db fw6 pv3 black-70 link dim white ${hover}`} title={title}>
     {title}
   </a>
 );
 
 FooterLink.propTypes = {
   title: PropTypes.string.isRequired,
-  link: PropTypes.string.isRequired
+  link: PropTypes.string.isRequired,
+  hover: PropTypes.string,
+};
+
+FooterLink.defaultProps = {
+  hover: null,
 };
 
 const Footer = () => (
@@ -59,10 +60,7 @@ const Footer = () => (
               title="Game Info"
               hover="hover-gold"
             />
-            <FooterLink
-              link="https://cryptominerworld.com/workshop/"
-              title="Workshop"
-            />
+            <FooterLink link="https://cryptominerworld.com/workshop/" title="Workshop" />
 
             <FooterLink
               link="https://cryptominerworld.com/market/"
@@ -75,11 +73,7 @@ const Footer = () => (
               title="World"
               hover="hover-green"
             />
-            <FooterLink
-              link="https://cryptominerworld.com/faq/"
-              title="FAQ"
-              hover="hover-gold"
-            />
+            <FooterLink link="https://cryptominerworld.com/faq/" title="FAQ" hover="hover-gold" />
             <FooterLink
               link="http://www.sophophilia.com/press/sheet.php?p=cryptoMiner_world"
               title="Press Kit"
@@ -122,7 +116,6 @@ const Footer = () => (
               title="Cryptominer World on Reddit"
               path={reddit}
             />
-
             <SocialIcons
               link="https://telegram.me/CryptoMinerWorld"
               title="Cryptominer World on Telegram"
@@ -130,13 +123,10 @@ const Footer = () => (
             />
           </div>
         </div>
-
         <div className="flex jcc pb5-ns">
           <div className="flex jcc">
-            <p className="f7 black-70 dib pr3 mb3 white">
-              Copyright © Cryptominer World 2018
-            </p>
-            <p className="f7 black-70 dib pr3 mb3 white">Version 1.1.3</p>
+            <p className="f7 black-70 dib pr3 mb3 white">Copyright © Cryptominer World 2018</p>
+            <p className="f7 black-70 dib pr3 mb3 white">Version 1.3.23</p>
           </div>
         </div>
       </div>
@@ -162,11 +152,11 @@ const SocialIcons = ({ link, title, path }) => (
 SocialIcons.propTypes = {
   link: PropTypes.string,
   title: PropTypes.string,
-  path: PropTypes.string
+  path: PropTypes.string,
 };
 
 SocialIcons.defaultProps = {
   link: '',
   title: '',
-  path: ''
+  path: '',
 };

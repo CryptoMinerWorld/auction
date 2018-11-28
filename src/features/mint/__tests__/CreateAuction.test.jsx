@@ -12,8 +12,7 @@ describe('Auction page tests', () => {
   const props = {
     createAuction: jest.fn(),
     handleRemoveGemFromAuction: jest.fn(),
-    sourceImage:
-      'https://i.kym-cdn.com/photos/images/original/001/225/594/18a.gif'
+    sourceImage: 'https://i.kym-cdn.com/photos/images/original/001/225/594/18a.gif',
   };
 
   test.skip('Create a new auction', async () => {
@@ -26,13 +25,13 @@ describe('Auction page tests', () => {
 
     fireEvent.change(gemIdInputNode, { target: { value: 54321 } });
     fireEvent.change(durationInputNode, {
-      target: { value: daysToSeconds(20) }
+      target: { value: daysToSeconds(20) },
     });
     fireEvent.change(startPriceInputNode, {
-      target: { value: 4 }
+      target: { value: 4 },
     });
     fireEvent.change(endPriceInputNode, {
-      target: { value: 1 }
+      target: { value: 1 },
     });
     fireEvent.click(getByTestId('createAuctionButton'));
 
@@ -41,7 +40,7 @@ describe('Auction page tests', () => {
       54321,
       149299200000,
       4000000000000000000,
-      1000000000000000000
+      1000000000000000000,
     );
   });
 

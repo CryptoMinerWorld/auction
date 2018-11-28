@@ -1,23 +1,45 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import ApolloClient from 'apollo-boost';
+import { ApolloProvider } from 'react-apollo';
+import { InMemoryCache } from 'apollo-cache-inmemory';
 import App from './app/App';
 import store from './app/store';
 import { getAuctions } from './features/market/marketActions';
 import { getCurrentUser } from './features/auth/authActions';
-import { Provider as UnstatedProvider } from 'unstated';
+
+const client = new ApolloClient({
+  uri:
+    process.env.NODE_ENV === 'development'
+      ? 'http://localhost:4000'
+      : 'https://dev-cryptominerworld.appspot.com/',
+
+  clientState: {
+    defaults: {
+      userId: null,
+    },
+    resolvers: {},
+    typeDefs: `
+    type Query {
+      userId: String
+    }
+    `,
+  },
+
+  cache: new InMemoryCache({
+    // eslint-disable-next-line
+    dataIdFromObject: o => (o._id ? `${o.__typename}:${o._id}` : null),
+  }),
+});
 
 // @notice these are all the actions fired when the app starts up
 store.dispatch(getCurrentUser());
 store.dispatch(getAuctions());
 
-// eslint-disable-next-line
-const Bundle = () => (
-  <Provider store={store}>
-    <UnstatedProvider>
-      <App />
-    </UnstatedProvider>
-  </Provider>
-);
 
-ReactDOM.render(<Bundle />, document.getElementById('root'));
+ReactDOM.render(
+  // eslint-disable-next-line
+<Provider store={store}><ApolloProvider client={client}><App /></ApolloProvider></Provider>,
+document.getElementById('root'),
+);

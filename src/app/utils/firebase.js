@@ -1,9 +1,8 @@
-
 import firebase from 'firebase/app';
 
-require('firebase/firestore')
-require('firebase/storage')
-
+require('firebase/database');
+require('firebase/firestore');
+require('firebase/storage');
 
 const config = {
   apiKey: process.env.REACT_APP_FB_API,
@@ -11,17 +10,17 @@ const config = {
   databaseURL: process.env.REACT_APP_FB_DB_URL,
   projectId: process.env.REACT_APP_FB_PROJECT_ID,
   storageBucket: process.env.REACT_APP_FB_STORAGE,
-  messagingSenderId: process.env.REACT_APP_FB_MSG_SENDER_ID
+  messagingSenderId: process.env.REACT_APP_FB_MSG_SENDER_ID,
 };
 
 firebase.initializeApp(config);
 
 export const storage = firebase.storage();
+export const rtdb = firebase.database();
 // eslint-disable-next-line
 export let db = firebase.firestore();
-const settings = {timestampsInSnapshots: true};
+const settings = { timestampsInSnapshots: true };
 db.settings(settings);
-
 
 // const firestore = new Firestore();
 //   const settings = {/* your settings... */ timestampsInSnapshots: true};
@@ -40,4 +39,3 @@ db.settings(settings);
 //     console.error(err.code, err);
 //     return firebase.firestore();
 //   });
-

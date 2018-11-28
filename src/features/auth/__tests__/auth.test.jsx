@@ -1,38 +1,37 @@
 import React from 'react';
-import { render, fireEvent, cleanup } from 'react-testing-library';
+import { cleanup } from 'react-testing-library';
 import 'jest-dom/extend-expect';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import Auth from '../index.jsx';
-import { renderWithRouter } from '../../../app/testSetup';
+
+// import { renderWithRouter } from '../../../app/testSetup';
+// import Auth from '../index.jsx';
 // @dev this automatically unmounts and cleanup DOM after the test is finished.
 afterEach(cleanup);
+// const firebasemock = require('firebase-mock');
+// jest.mock('firebase');
 
-// var firebasemock = require('firebase-mock');
-
-// var mockfirestore = new firebasemock.MockFirestore();
-// var mockstorage = new firebasemock.MockStorage();
-// var mocksdk = new firebasemock.MockFirebaseSdk(
+// const mockfirestore = new firebasemock.MockFirestore();
+// const mockstorage = new firebasemock.MockStorage();
+// const mocksdk = new firebasemock.MockFirebaseSdk(
 //   // use null if your code does not use RTDB
 //   null,
 //   // use null if your code does not use AUTHENTICATION
 //   null,
 //   // use null if your code does not use FIRESTORE
-//   () => {
-//     return mockfirestore;
-//   },
+//   () => mockfirestore,
 //   // use null if your code does not use STORAGE
-//   () => {
-//     return mockstorage;
-//   },
+//   () => mockstorage,
 //   // use null if your code does not use MESSAGING
-//   null
+//   null,
 // );
 
 jest.mock('react-ga');
-// jest.mock('../../../app/utils/firebase.js', () => {
-//   return mocksdk;
-// });
+
+// jest.mock('../../../app/utils/firebase.js', () => mocksdk);
+
+// jest.mock('../../../app/utils/firebase.js');
+// jest.mock('firebase/app');
 
 // mocksdk.firestore().flush();
 
@@ -40,7 +39,7 @@ describe.skip('auntentication module tests', () => {
   // @dev this is all the test data, easy to configure in one place
   const props = {
     account: jest.fn(),
-    handleRemoveGemFromAuction: jest.fn()
+    handleRemoveGemFromAuction: jest.fn(),
   };
 
   test.skip('Auth module recieves account id from metamask', async () => {
@@ -50,8 +49,8 @@ describe.skip('auntentication module tests', () => {
         <Auth {...props} />
       </Provider>,
       {
-        route: '/market'
-      }
+        route: '/market',
+      },
     );
     expect(false).toBeFalsy();
   });
@@ -63,8 +62,8 @@ describe.skip('auntentication module tests', () => {
         <Auth {...props} />
       </Provider>,
       {
-        route: '/market'
-      }
+        route: '/market',
+      },
     );
     expect(false).toBeFalsy();
   });
@@ -80,8 +79,8 @@ describe.skip('auntentication module tests', () => {
         <Auth {...props} />
       </Provider>,
       {
-        route: '/market'
-      }
+        route: '/market',
+      },
     );
     expect(true).toBeFalsy();
   });

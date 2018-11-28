@@ -7,11 +7,14 @@ import Input from 'antd/lib/input';
 import Button from 'antd/lib/button';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
-import { createNewUser, notInterestedInSigningUp } from './authActions';
 import Checkbox from 'antd/lib/checkbox';
 import { withStateMachine } from 'react-automata';
-import { stateMachine } from './statechart';
 import { Spring } from 'react-spring';
+import Image from 'react-image-webp';
+import stateChart from './statechart';
+import { createNewUser, notInterestedInSigningUp } from './authActions';
+import downloadMetamask from '../../app/images/download-metamask.webp';
+import downloadMetamaskPNG from '../../app/images/download-metamask.png';
 
 require('antd/lib/button/style/css');
 require('antd/lib/modal/style/css');
@@ -30,11 +33,12 @@ const images = [
   'https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FRuby%20Face%20Emoji.png?alt=media&token=a8602159-0a25-4670-8593-8a35a4fde8e8',
   'https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FSapphire%20Face%20Emoji.png?alt=media&token=5a1214f5-968c-491f-9cfc-a4ef02230afc',
   'https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FTopaz%20Face%20Emoji.png?alt=media&token=5369bf8c-64ec-4a42-9169-6ca09ad2d126',
-  'https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FTurquoise%20Face%20Emoji.png?alt=media&token=a7a8d52c-d99f-4b1b-bdd2-fca2bbee2556'
+  'https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FTurquoise%20Face%20Emoji.png?alt=media&token=a7a8d52c-d99f-4b1b-bdd2-fca2bbee2556',
 ];
+
 const select = store => ({
   currentUser: store.auth.currentUserId,
-  web3: store.auth.web3
+  web3: store.auth.web3,
 });
 
 class Auth extends PureComponent {
@@ -43,31 +47,34 @@ class Auth extends PureComponent {
     web3: PropTypes.shape({
       currentProvider: PropTypes.shape({
         publicConfigStore: PropTypes.shape({
-          on: PropTypes.func
-        })
-      })
+          on: PropTypes.func,
+        }),
+      }),
     }),
-    handleCreateNewUser: PropTypes.func.isRequired
+    handleCreateNewUser: PropTypes.func.isRequired,
+    transition: PropTypes.func.isRequired,
+    handleNotInterestedInSigningUp: PropTypes.func.isRequired,
+    machineState: PropTypes.shape({}),
   };
 
   static defaultProps = {
     currentUser: false,
-    web3: {}
+    web3: {},
+    machineState: {},
   };
 
   state = {
     name: '',
     imageURL: '',
-    walletId: '',
     terms: false,
-    mailinglist: false
+    mailinglist: false,
   };
 
   static getDerivedStateFromProps(props, state) {
     // update local state based on currentid from metamask
     if (props.currentUser !== state.walletId) {
       return {
-        walletId: props.currentUser
+        walletId: props.currentUser,
       };
     }
     // Return null if the state hasn't changed
@@ -78,19 +85,17 @@ class Auth extends PureComponent {
     this.setState({
       name: '',
       imageURL: '',
-      walletId: '',
       email: '',
-      terms: false
+      terms: false,
     });
   }
 
-  updateName = value => {
-    const CapitalizedAndTrimmedValue =
-      value
-        .trim()
-        .charAt(0)
-        .toUpperCase() +
-      value
+  updateName = (value) => {
+    const CapitalizedAndTrimmedValue = value
+      .trim()
+      .charAt(0)
+      .toUpperCase()
+      + value
         .trim()
         .slice(1)
         .toLowerCase();
@@ -103,14 +108,16 @@ class Auth extends PureComponent {
   updateImage = url => this.setState({ imageURL: url });
 
   handleAuthentication = () => {
-    const { name, imageURL, email, mailinglist } = this.state;
+    const {
+      name, imageURL, email, mailinglist,
+    } = this.state;
     const { currentUser, handleCreateNewUser, transition } = this.props;
     const payload = {
       name,
       imageURL,
       email,
       mailinglist,
-      walletId: currentUser
+      walletId: currentUser,
     };
     handleCreateNewUser(payload)
       .then(() => transition('SUCCESS'))
@@ -124,31 +131,36 @@ class Auth extends PureComponent {
   };
 
   render() {
-    const { imageURL, name, email } = this.state;
+    const {
+      imageURL, name, email, terms, mailinglist,
+    } = this.state;
     const { currentUser, transition, machineState } = this.props;
 
     return (
       <div>
         <Modal
-          title="Please Create Your Account"
-          visible={
-            machineState.value !== 'exit' &&
-            machineState.value !== 'authenticated'
+          title={
+            !currentUser || currentUser === 'Loading...'
+              ? 'You will need to sign into a wallet to play the game...'
+              : 'Please Create Your Account'
           }
+          visible={machineState.value !== 'exit' && machineState.value !== 'authenticated'}
           onCancel={() => transition('CLOSE')}
           footer={[
-            <div className="flex ais col" key="AuthDialogueFooterButtons">
+            <div key="AuthDialogueFooterButtons">
               <Checkbox
-                checked={this.state.terms}
+                checked={terms}
                 onChange={e => this.setState({ terms: e.target.checked })}
+                data-testid="terms"
+                className="ml2 flex jcs aic"
               >
-                <p className="pl3 dib">
+                <p className="pl3 tl db word-nowrap w5 mt2">
+                  I agree to the
                   {' '}
-                  I agree to the{' '}
                   <a
                     href="https://drive.google.com/file/d/1oFMszefIhXJz01QXrSbU7vA-f2M92S3G/view?usp=sharing"
                     target="_blank"
-                    className="dib"
+                    className="link underline"
                     rel="noopener noreferrer"
                   >
                     {' '}
@@ -157,13 +169,15 @@ class Auth extends PureComponent {
                   .
                 </p>
               </Checkbox>
+
               <Checkbox
-                checked={this.state.mailinglist}
+                data-testid="mailingList"
+                checked={mailinglist}
                 onChange={e => this.setState({ mailinglist: e.target.checked })}
+                className="ml3 flex jcs aic"
               >
-                <p className="pl3 dib">
-                  Join the mailing list. (Don't worry, we hate spam just like
-                  you do.)
+                <p className="pl3 tl w-100 mt2">
+                  Join the mailing list. (We hate spam just like you do.)
                 </p>
               </Checkbox>
 
@@ -173,10 +187,11 @@ class Auth extends PureComponent {
                 className="w-100"
                 loading={machineState.value === 'loading'}
                 onClick={() => transition('SUBMIT', { state: this.state })}
+                data-testid="submitSignup"
               >
                 Submit
               </Button>
-            </div>
+            </div>,
           ]}
         >
           {name && (
@@ -190,7 +205,22 @@ class Auth extends PureComponent {
             </div>
           )}
 
-          <Input value={currentUser} disabled size="large" className="mv3" />
+          {!currentUser || currentUser === 'Loading...' ? (
+            <div className="tc">
+              <a href="https://metamask.io/">
+                <Image src={downloadMetamaskPNG} webp={downloadMetamask} alt="download metamask" />
+              </a>
+
+              <a
+                href="https://cryptominerworld.com/game_info/#GameInfoMetaMask"
+                className="link underline b dark-gray"
+              >
+                More info...
+              </a>
+            </div>
+          ) : (
+            <Input value={currentUser} disabled size="large" className="mv3" />
+          )}
           <Input
             placeholder="Username"
             value={name}
@@ -198,6 +228,7 @@ class Auth extends PureComponent {
             size="large"
             className="mv3"
             type="text"
+            data-testid="name"
           />
           <Input
             placeholder="Email"
@@ -206,6 +237,7 @@ class Auth extends PureComponent {
             size="large"
             type="email"
             required
+            data-testid="email"
           />
           <div className="pa3">
             <div className="flex wrap jcb">
@@ -216,6 +248,7 @@ class Auth extends PureComponent {
                   onClick={() => this.updateImage(url)}
                   size={64}
                   className="mv2 pointer grow"
+                  data-testid="avatars"
                 />
               ))}
             </div>
@@ -224,9 +257,7 @@ class Auth extends PureComponent {
               <Spring from={{ opacity: 0 }} to={{ opacity: 1 }} delay={200}>
                 {styles => (
                   <ul className="red b tl pt3 " style={styles}>
-                    <li>
-                      Please check that is your wallet id in the top field.
-                    </li>
+                    <li>Please check that is your wallet id in the top field.</li>
                     <li>Picked a username?</li>
                     <li>Provided a valid email?</li>
                     <li>Selected an avatar?</li>
@@ -246,14 +277,14 @@ class Auth extends PureComponent {
 
 const actions = {
   handleCreateNewUser: createNewUser,
-  handleNotInterestedInSigningUp: notInterestedInSigningUp
+  handleNotInterestedInSigningUp: notInterestedInSigningUp,
 };
 
 export default compose(
   connect(
     select,
-    actions
+    actions,
   ),
   withRouter,
-  withStateMachine(stateMachine)
+  withStateMachine(stateChart),
 )(Auth);

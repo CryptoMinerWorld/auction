@@ -7,14 +7,14 @@ import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import App from '../../../app/App';
 
-import { calculatePercentage } from '../helpers'
-import cases from 'jest-in-case';
 // import Marketplace from '../ListAuctions';
 // import amethyst from '../../../images/amethystImage.png';
 // import rootReducer from '../../../reducers/index';
 
 // var firebasemock = require('firebase-mock');
 jest.mock('react-ga');
+// jest.mock('firebase');
+
 // var mockfirestore = new firebasemock.MockFirestore();
 // var mockstorage = new firebasemock.MockStorage();
 // var mocksdk = new firebasemock.MockFirebaseSdk(
@@ -73,35 +73,17 @@ afterEach(cleanup);
 // that relies on the router being in context
 function renderWithRouter(
   ui,
-  {
-    route = '/',
-    history = createMemoryHistory({ initialEntries: [route] })
-  } = {}
+  { route = '/', history = createMemoryHistory({ initialEntries: [route] }) } = {},
 ) {
   return {
     ...render(<Router history={history}>{ui}</Router>),
     // adding `history` to the returned utilities to allow us
     // to reference it in our tests (just try to avoid using
     // this to test implementation details).
-    history
+    history,
   };
 }
 
-
-cases('calculatePercentage for price progress bar', opts => {
-  expect(calculatePercentage(opts.min, opts.max, opts.current)).toBe(opts.total);
-}, [
-  { name: '0% @0', min: 0, max: 1000, current: 1000, total:0  },
-  { name: '25% @0', min: 0, max: 1000, current: 750, total:25 },
-  { name: '50% @0', min: 0, max: 1000, current: 500, total:50 },
-  { name: '75% @0', min: 0, max: 1000, current: 250, total:75 },
-  { name: '100% @0', min: 0, max: 1000, current: 0, total:100 },
-  { name: '0%', min: 500, max: 1000, current: 1000, total:0 },
-  { name: '25%', min: 500, max: 1000, current: 875, total:25 },
-  { name: '50% ', min: 500, max: 1000, current: 750, total:50 },
-  { name: '75% ', min: 500, max: 1000, current: 625, total:75 },
-  { name: '100%', min: 500, max: 1000, current: 500, total:100 },
-]);
 
 describe.skip('Marketplace page tests', () => {
   // @dev this is all the test data, easy to configure in one place
@@ -113,15 +95,15 @@ describe.skip('Marketplace page tests', () => {
         maxPrice: 4,
         price: 2.3,
         deadline: {
-          seconds: 1537255385592
+          seconds: 1537255385592,
         },
         image: amethyst,
         owner: 'Crypto beasts',
         grade: 1,
         quality: 2,
-        rate: 3
-      }
-    ]
+        rate: 3,
+      },
+    ],
   };
 
   test.skip('the marketplace route loads the marketplace', async () => {
@@ -131,8 +113,8 @@ describe.skip('Marketplace page tests', () => {
         <App />
       </Provider>,
       {
-        route: '/'
-      }
+        route: '/',
+      },
     );
 
     expect(getByTestId('header').textContent).toBe('gem auctions');
@@ -145,8 +127,8 @@ describe.skip('Marketplace page tests', () => {
         <App />
       </Provider>,
       {
-        route: '/secretauctionpage'
-      }
+        route: '/secretauctionpage',
+      },
     );
 
     // mock a auction going through
@@ -178,7 +160,7 @@ describe.skip('Marketplace page tests', () => {
 
   test.skip('a non-exitent link shows a 404 page', async () => {
     const { container } = renderWithRouter(<App />, {
-      route: '/'
+      route: '/',
     });
 
     expect(false).toBeTruthy();

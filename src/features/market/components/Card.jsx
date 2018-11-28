@@ -1,5 +1,4 @@
 import React from 'react';
-// import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Progress from 'antd/lib/progress';
 import format from 'date-fns/format';
@@ -63,19 +62,18 @@ const Cards = ({ auction }) => (
           level={auction.level}
           grade={auction.gradeType}
           rate={auction.rate}
-          market="true"
+          market
         />
-        {/* <div className="flex aic o-70 mb2 w-100">
+        <div className="flex aic o-70 mb2 w-100">
           <img
             src={auction.userImage}
             alt={auction.userName}
             className="h2 ma2"
           />
           <div className="db">
-            <p className="pl2 ma0">Owned by</p>
             <p className="pl2 ma0 truncate mw5">{auction.userName}</p>
           </div>
-        </div> */}
+        </div>
       </div>
     </div>
   </Tilt>

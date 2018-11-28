@@ -1,5 +1,4 @@
 import { Component } from 'react';
-// import PropTypes from 'prop-types';
 import * as Sentry from '@sentry/browser';
 
 class ErrorBoundary extends Component {
@@ -10,8 +9,8 @@ class ErrorBoundary extends Component {
 
   componentDidCatch(error, errorInfo) {
     this.setState({ error });
-    Sentry.configureScope(scope => {
-      Object.keys(errorInfo).forEach(key => {
+    Sentry.configureScope((scope) => {
+      Object.keys(errorInfo).forEach((key) => {
         scope.setExtra(key, errorInfo[key]);
       });
     });
@@ -19,18 +18,15 @@ class ErrorBoundary extends Component {
   }
 
   render() {
-    if (this.state.error) {
-      //render fallback UI
+    const { error } = this.state;
+    // const children = this.props;
+    if (error) {
+      // render error reporting UI
       return Sentry.showReportDialog();
-      // return (
-      //   <button onClick={() => Sentry.showReportDialog()}>
-      //     Report feedback
-      //   </button>
-      // );
-    } else {
-      //when there's not an error, render children untouched
-      return this.props.children;
     }
+    // when there's not an error, render children untouched
+    // eslint-disable-next-line
+    return this.props.children;
   }
 }
 

@@ -1,4 +1,3 @@
-
 const Web3 = require('web3');
 
 const getWeb3 = new Promise((resolve) => {
@@ -19,6 +18,7 @@ const getWeb3 = new Promise((resolve) => {
         resolve(results);
       } catch (error) {
         console.error('error in getWeb3.js', error);
+        // store.dispatch(setError(error));
       }
     } else if (window.web3) {
       // Legacy dapp browsers...
@@ -31,7 +31,6 @@ const getWeb3 = new Promise((resolve) => {
     } else {
       // Non-dapp browsers...
       console.error('Non-Ethereum browser detected. You should consider trying MetaMask!');
-     
     }
   });
 });

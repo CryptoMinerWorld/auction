@@ -11,7 +11,7 @@ export const confirmInMetamask = () => {
     keyboard: false,
     iconType: 'loading',
     zIndex: 1000,
-    okText: false
+    okText: false,
   });
 };
 
@@ -22,7 +22,7 @@ export const showConfirm = () => {
       'Once you pay for the Gem using Metamask, you will be redirected to your workshop, and it may take a few minutes for your new Gem to appear.',
     maskClosable: true,
     keyboard: true,
-    onOk() {}
+    onOk() {},
   });
 };
 
@@ -35,6 +35,6 @@ export const showExpired = () => {
     keyboard: false,
     onOk() {
       window.location.href = `${process.env.REACT_APP_BASE_URL}/market`;
-    }
+    },
   });
 };

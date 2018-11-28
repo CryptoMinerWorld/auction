@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
+import Icon from 'antd/lib/icon';
 import CountdownTimer from './CountdownTimer';
 import Gembox from './Gembox';
 import buyNow from '../../../app/images/pinkBuyNowButton.png';
@@ -9,8 +12,6 @@ import ProgressMeter from './ProgressMeter';
 import { showSignInModal } from '../../auth/authActions';
 import { handleBuyNow } from '../itemActions';
 // import { showConfirm } from '../../../components/Modal';
-import { withRouter } from 'react-router-dom';
-import { compose } from 'redux';
 // import Auth from '../../auth/index';
 
 const TopHighLight = styled.div`
@@ -20,7 +21,7 @@ const TopHighLight = styled.div`
 
 const tophighlight = {
   background: 'linear-gradient(to right, #e36d2d, #b91a78)',
-  height: '4px'
+  height: '4px',
 };
 
 const BuyNow = styled.button`
@@ -49,12 +50,11 @@ const OverlapOnDesktopView = styled.div`
 
 const select = store => ({
   accountExists: store.auth.existingUser,
-  newUser: store.auth && store.auth.newUser ? store.auth.newUser : false
+  newUser: store.auth && store.auth.newUser ? store.auth.newUser : false,
 });
 
 const AuctionBox = ({
   currentPrice,
-  handleBuyNow,
   level,
   grade,
   rate,
@@ -65,13 +65,13 @@ const AuctionBox = ({
   minPrice,
   maxPrice,
   currentAccount,
-  handleShowSignInModal,
   accountExists,
   provider,
   history,
-  newUser,
-  handleShowSignInBox
+  handleShowSignInBox,
+  handleBuyGem,
 }) => {
+  const [loading, setLoading] = useState(false);
   return (
     <OverlapOnDesktopView
       className="bg-dark-gray measure-l w-100 shadow-3"
@@ -79,16 +79,12 @@ const AuctionBox = ({
         WebkitClipPath:
           'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)',
         clipPath:
-          'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)'
+          'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)',
       }}
     >
       <TopHighLight style={tophighlight} />
       <div className="white pa3">
-        <h1
-          className="tc pb3 b white"
-          style={{ wordBreak: 'break-all' }}
-          data-testid="gemName"
-        >
+        <h1 className="tc pb3 b white" style={{ wordBreak: 'break-all' }} data-testid="gemName">
           {name}
         </h1>
         {deadline && <CountdownTimer deadline={deadline} />}
@@ -104,25 +100,32 @@ const AuctionBox = ({
           <BuyNow
             onClick={() => {
               if (provider && accountExists) {
-                handleBuyNow(tokenId, currentAccount, history);
-                // } else if (provider) {
-                //   handleShowSignInModal();
+                setLoading(true);
+                handleBuyGem(tokenId, currentAccount, history, setLoading);
               } else {
-                // showConfirm();
+                setLoading(false);
                 handleShowSignInBox();
               }
             }}
             className="b"
             data-testid="buyNowButton"
           >
+            {loading && <Icon type="loading" theme="outlined" className="pr3" />}
             Buy Now
           </BuyNow>
+
+          {/* <ButtonCTA
+  disabled={} onClick={() => {
+    if (provider && accountExists) {
+      handleBuyGem(tokenId, currentAccount, history);
+    } else {
+      handleShowSignInBox();
+    }
+  }} testId="buyNowButton" loading={loading} loadingText='BUYING...' text='BUY'
+
+/> */}
         </div>
-        <ProgressMeter
-          currentPrice={currentPrice}
-          minPrice={minPrice}
-          maxPrice={maxPrice}
-        />
+        <ProgressMeter currentPrice={currentPrice} minPrice={minPrice} maxPrice={maxPrice} />
       </div>
     </OverlapOnDesktopView>
   );
@@ -130,36 +133,38 @@ const AuctionBox = ({
 
 const actions = {
   handleShowSignInModal: showSignInModal,
-  handleBuyNow,
-  handleShowSignInBox: () => ({ type: 'SHOW_SIGN_IN_BOX' })
+  handleBuyGem: handleBuyNow,
+  handleShowSignInBox: () => ({ type: 'SHOW_SIGN_IN_BOX' }),
 };
 
 export default compose(
   connect(
     select,
-    actions
+    actions,
   ),
-  withRouter
+  withRouter,
 )(AuctionBox);
 
 AuctionBox.propTypes = {
   currentPrice: PropTypes.number.isRequired,
-  handleBuyNow: PropTypes.func.isRequired,
   level: PropTypes.number.isRequired,
   grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  deadline: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-    .isRequired,
+  deadline: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   name: PropTypes.string.isRequired,
-  handleShowSignInModal: PropTypes.func.isRequired,
   tokenId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   maxPrice: PropTypes.number.isRequired,
   minPrice: PropTypes.number.isRequired,
   provider: PropTypes.bool.isRequired,
   currentAccount: PropTypes.string.isRequired,
-  accountExists: PropTypes.bool.isRequired
+  accountExists: PropTypes.bool,
+  restingEnergyMinutes: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  history: PropTypes.shape({}).isRequired,
+  handleShowSignInBox: PropTypes.func.isRequired,
+  handleBuyGem: PropTypes.func.isRequired,
 };
 
 AuctionBox.defaultProps = {
-  accountExists: false
+  accountExists: false,
+  restingEnergyMinutes: null,
 };

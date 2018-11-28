@@ -11,7 +11,7 @@ const TopHighLight = styled.div`
 
 const tophighlight = {
   background: 'linear-gradient(to right, #e36d2d, #b91a78)',
-  height: '4px'
+  height: '4px',
 };
 
 const OverlapOnDesktopView = styled.div`
@@ -28,18 +28,13 @@ const gradientAndShape = {
   WebkitClipPath:
     'polygon(4.46% -0.15%, 96.33% 0px, 100.22% 11.24%, 100% 86.58%, 98.1% 97.17%, 93.09% 100.5%, 3.94% 100.25%, -1px 90.05%, -0.09% 8.97%)',
   clipPath:
-    'polygon(4.46% -0.15%, 96.33% 0px, 100.22% 11.24%, 100% 86.58%, 98.1% 97.17%, 93.09% 100.5%, 3.94% 100.25%, -1px 90.05%, -0.09% 8.97%)'
+    'polygon(4.46% -0.15%, 96.33% 0px, 100.22% 11.24%, 100% 86.58%, 98.1% 97.17%, 93.09% 100.5%, 3.94% 100.25%, -1px 90.05%, -0.09% 8.97%)',
 };
 
 class StatsBox extends PureComponent {
   render() {
     const {
-      level,
-      grade,
-      rate,
-      name,
-      restingEnergyMinutes,
-      lastSoldFor
+      level, grade, rate, name, restingEnergyMinutes, lastSoldFor,
     } = this.props;
 
     return (
@@ -49,16 +44,12 @@ class StatsBox extends PureComponent {
           WebkitClipPath:
             'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)',
           clipPath:
-            'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)'
+            'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)',
         }}
       >
         <TopHighLight style={tophighlight} />
         <div className="white pa3">
-          <h1
-            className="tc pb3 b white"
-            style={{ wordBreak: 'break-all' }}
-            data-testid="gemName"
-          >
+          <h1 className="tc pb3 b white" style={{ wordBreak: 'break-all' }} data-testid="gemName">
             {name}
           </h1>
 
@@ -70,15 +61,16 @@ class StatsBox extends PureComponent {
             restingEnergyMinutes={restingEnergyMinutes}
           />
 
-          {lastSoldFor && (
+          {lastSoldFor ? (
             <div className="pa3 pt4 mt3 tc" style={gradientAndShape}>
               <small className="white ttu ">Last Sold For</small>
               <p className="basic" style={{ fontSize: 'xx-large' }}>
-                Ξ{' '}
+                Ξ
+                {' '}
                 <span data-testid="currentPrice">{weiToEth(lastSoldFor)}</span>
               </p>
             </div>
-          )}
+          ) : null}
         </div>
       </OverlapOnDesktopView>
     );
@@ -88,13 +80,17 @@ class StatsBox extends PureComponent {
 export default StatsBox;
 
 StatsBox.propTypes = {
-  restingEnergyMinutes: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number
-  ]).isRequired,
+  restingEnergyMinutes: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   level: PropTypes.number,
   grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   name: PropTypes.string.isRequired,
-  currentPrice: PropTypes.number
+  lastSoldFor: PropTypes.number,
+};
+
+StatsBox.defaultProps = {
+  lastSoldFor: false,
+  level: 1,
+  grade: 1,
+  rate: 1,
 };

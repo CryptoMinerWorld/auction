@@ -5,10 +5,10 @@ import Input from 'antd/lib/input';
 import Icon from 'antd/lib/icon';
 // import Button from 'antd/lib/button';
 import { connect } from 'react-redux';
-import { ethToWei, daysToSeconds } from '../../mint/helpers';
-import { createAuction, removeFromAuction } from '../itemActions';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
+import { ethToWei, daysToSeconds } from '../../mint/helpers';
+import { createAuction, removeFromAuction } from '../itemActions';
 import Gembox from './Gembox';
 import ProgressMeter from './ProgressMeter';
 import GiftGems from './GiftGems';
@@ -16,7 +16,7 @@ import button from '../../../app/images/pinkBuyNowButton.png';
 
 const ColourButton = styled.button`
   background-image: url(${button});
-  background-position: center top;
+  background-position: center;
   width: 100%;
   height: 100%;
   text-align: center;
@@ -32,11 +32,11 @@ const ColourButton = styled.button`
 const TopHighLight = styled.div`
   background: linear-gradient(to right, #e36d2d, #b91a78);
   height: 4px;
-`
+`;
 
 const tophighlight = {
   background: 'linear-gradient(to right, #e36d2d, #b91a78)',
-  height: '4px'
+  height: '4px',
 };
 
 const OverlapOnDesktopView = styled.div`
@@ -53,14 +53,24 @@ class TradingBox extends PureComponent {
     tokenId: PropTypes.number.isRequired,
     handleCreateAuction: PropTypes.func.isRequired,
     handleRemoveGemFromAuction: PropTypes.func.isRequired,
-    auctionIsLive: PropTypes.bool.isRequired
+    auctionIsLive: PropTypes.bool.isRequired,
+    history: PropTypes.shape({}).isRequired,
+    level: PropTypes.number.isRequired,
+    grade: PropTypes.number.isRequired,
+    rate: PropTypes.number.isRequired,
+    restingEnergyMinutes: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    name: PropTypes.string.isRequired,
+    currentPrice: PropTypes.number.isRequired,
+    minPrice: PropTypes.number.isRequired,
+    maxPrice: PropTypes.number.isRequired,
+    sourceImage: PropTypes.string.isRequired,
   };
 
   state = {
     duration: '',
     startPrice: '',
     endPrice: '',
-    formSubmitted: false
+    formSubmitted: false,
   };
 
   handleChange = (value, field) => this.setState({ [field]: value });
@@ -82,9 +92,12 @@ class TradingBox extends PureComponent {
       currentPrice,
       minPrice,
       maxPrice,
-      sourceImage
+      sourceImage,
     } = this.props;
-    const { duration, startPrice, endPrice, formSubmitted } = this.state;
+    const {
+      duration, startPrice, endPrice, formSubmitted,
+    } = this.state;
+
     return (
       <OverlapOnDesktopView
         className="bg-dark-gray measure-l w-100 shadow-3"
@@ -92,17 +105,13 @@ class TradingBox extends PureComponent {
           WebkitClipPath:
             'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)',
           clipPath:
-            'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)'
+            'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)',
         }}
       >
         <TopHighLight style={tophighlight} />
         <div className="white pa3">
           <div className="flex col jcc ">
-            <h1
-              className="tc pb3 b white"
-              style={{ wordBreak: 'break-all' }}
-              data-testid="gemName"
-            >
+            <h1 className="tc pb3 b white" style={{ wordBreak: 'break-all' }} data-testid="gemName">
               {name}
             </h1>
             <div className="mt3" />
@@ -112,6 +121,7 @@ class TradingBox extends PureComponent {
               rate={rate}
               restingEnergyMinutes={restingEnergyMinutes}
             />
+
             {auctionIsLive ? (
               <div className="pa5 flex jcc col">
                 <div className="flex jcc">
@@ -120,18 +130,16 @@ class TradingBox extends PureComponent {
                       type="danger"
                       onClick={() => {
                         this.setState({ formSubmitted: true });
-                        handleRemoveGemFromAuction(
-                          Number(tokenId),
-                          history,
-                          this.turnLoaderOff
-                        );
+                        handleRemoveGemFromAuction(Number(tokenId), history, this.turnLoaderOff);
                       }}
                       data-testid="removeGemButton"
                       className="b"
                     >
                       {formSubmitted ? (
                         <span>
-                          <Icon type="loading" theme="outlined" /> Removing...
+                          <Icon type="loading" theme="outlined" />
+                          {' '}
+Removing...
                         </span>
                       ) : (
                         '  End Auction'
@@ -139,13 +147,7 @@ class TradingBox extends PureComponent {
                     </ColourButton>
                   </div>
                 </div>
-                {formSubmitted && (
-                  <p className="red pt3 pl3 measure">
-                    Please do not nagivate away from this page while the
-                    transaction is processing. You will be redirected once it is
-                    done.
-                  </p>
-                )}
+
                 <ProgressMeter
                   currentPrice={currentPrice}
                   minPrice={minPrice}
@@ -160,9 +162,7 @@ class TradingBox extends PureComponent {
                     placeholder="duration in days"
                     className="db"
                     value={duration}
-                    onChange={e =>
-                      this.handleChange(Number(e.target.value), 'duration')
-                    }
+                    onChange={e => this.handleChange(Number(e.target.value), 'duration')}
                     data-testid="durationInputField"
                     required
                   />
@@ -171,9 +171,7 @@ class TradingBox extends PureComponent {
                     placeholder="Start price in ether"
                     className="db"
                     value={startPrice}
-                    onChange={e =>
-                      this.handleChange(Number(e.target.value), 'startPrice')
-                    }
+                    onChange={e => this.handleChange(Number(e.target.value), 'startPrice')}
                     data-testid="startPriceInputField"
                     required
                   />
@@ -182,9 +180,7 @@ class TradingBox extends PureComponent {
                     placeholder="End price in ether"
                     className="db"
                     value={endPrice}
-                    onChange={e =>
-                      this.handleChange(Number(e.target.value), 'endPrice')
-                    }
+                    onChange={e => this.handleChange(Number(e.target.value), 'endPrice')}
                     data-testid="endPriceInputField"
                     required
                   />
@@ -194,11 +190,11 @@ class TradingBox extends PureComponent {
                       className="b"
                       disabled={
                         !(
-                          tokenId &&
-                          duration &&
-                          startPrice &&
-                          startPrice > endPrice &&
-                          startPrice !== endPrice
+                          tokenId
+                          && duration
+                          && startPrice
+                          && startPrice > endPrice
+                          && startPrice !== endPrice
                         )
                       }
                       onClick={() => {
@@ -206,35 +202,36 @@ class TradingBox extends PureComponent {
                           tokenId: Number(tokenId),
                           duration: daysToSeconds(duration),
                           startPrice: ethToWei(startPrice),
-                          endPrice: ethToWei(endPrice)
+                          endPrice: ethToWei(endPrice),
                         };
                         this.setState({ formSubmitted: true });
-                        handleCreateAuction(
-                          payload,
-                          this.turnLoaderOff,
-                          history
-                        );
+
+                        handleCreateAuction(payload, this.turnLoaderOff, history);
                       }}
                       data-testid="createAuctionButton"
                     >
                       {formSubmitted ? (
                         <span>
-                          <Icon type="loading" theme="outlined" /> Creating...
+                          <Icon type="loading" theme="outlined" />
+                          {' '}
+Creating...
                         </span>
                       ) : (
-                        'Create Auction'
+                        <span>
+                          <span className="dn-ns">Create</span>
+                          <span className="dn db-ns">Create Auction</span>
+                        </span>
                       )}
                     </ColourButton>
                   </div>
                 </div>
                 <GiftGems gemName={name} sourceImage={sourceImage} />
-                {formSubmitted && (
+                {/* {formSubmitted && (
                   <p className="red pt3 measure">
-                    Please do not nagivate away from this page while the
-                    transaction is processing. You will be redirected once it is
-                    done.
+                    Please do not nagivate away from this page while the transaction is processing.
+                    You will be redirected once it is done.
                   </p>
-                )}
+                )} */}
               </div>
             )}
           </div>
@@ -246,13 +243,13 @@ class TradingBox extends PureComponent {
 
 const actions = {
   handleCreateAuction: createAuction,
-  handleRemoveGemFromAuction: removeFromAuction
+  handleRemoveGemFromAuction: removeFromAuction,
 };
 
 export default compose(
   connect(
     null,
-    actions
+    actions,
   ),
-  withRouter
+  withRouter,
 )(TradingBox);

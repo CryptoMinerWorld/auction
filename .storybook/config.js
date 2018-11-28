@@ -1,10 +1,15 @@
-import {configure} from '@storybook/react'
+import { configure, setAddon, addDecorator } from '@storybook/react';
 import '../src/app/css/root.css';
+import JSXAddon from 'storybook-addon-jsx';
+import {withKnobs} from '@storybook/addon-knobs/react'
 
-const req = require.context('../src', true, /.stories.js$/)
+const req = require.context('../src', true, /.stories.js$/);
 
-function loadStories(){
-    req.keys().forEach(file => req(file))
+addDecorator(withKnobs)
+setAddon(JSXAddon)
+
+function loadStories() {
+  req.keys().forEach(file => req(file));
 }
 
-configure(loadStories, module)
+configure(loadStories, module);

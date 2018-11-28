@@ -1,10 +1,25 @@
-describe('App tests', () => {
-  it.skip('Users can create an account', () => {
+import { instantiateContracts } from '../appActions';
+
+it.skip('test that instantiating contracts send the instances to redux', async () => {
+  const web3 = jest.mock('../utils/getWeb3.js', () => ({
+    eth: {
+      getAccounts: jest.fn(() => [1, 2]),
+    },
+  }));
+  // web3.eth.getAccounts().then(accounts => accounts[0]);
+  const handleSendContractsToRedux = jest.fn();
+  const handleSetError = jest.fn();
+  await instantiateContracts(web3, handleSendContractsToRedux, handleSetError);
+  expect(instantiateContracts).toBeCalledWith(web3, handleSendContractsToRedux, handleSetError);
+});
+
+describe.skip('App happy path tests', () => {
+  it.skip('check taht sign up fails with wrong types of sign up data', () => {
     expect(true).toBeFalsy();
   });
 
   it.skip('Create an account modal doesn;t appear if users has already created an account', () => {
-    expect(true).toBeFalsy();
+    // expect(true).toBeFalsy();
   });
 
   it.skip('all existing gems load in when an users signs up', () => {

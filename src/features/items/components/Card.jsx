@@ -9,16 +9,7 @@ import MiniGemBox from './MiniGemBox';
 require('antd/lib/progress/style/css');
 
 const Card = styled.aside`
-  clip-path: polygon(
-    5% 0%,
-    95% 0%,
-    100% 5%,
-    100% 95%,
-    95% 100%,
-    5% 100%,
-    0% 95%,
-    0% 5%
-  );
+  clip-path: polygon(5% 0%, 95% 0%, 100% 5%, 100% 95%, 95% 100%, 5% 100%, 0% 95%, 0% 5%);
 `;
 
 const Cards = ({ auction }) => (
@@ -71,11 +62,7 @@ by
 {auction.userName}
 </p>
 
-        <MiniGemBox
-          level={auction.level}
-          grade={auction.gradeType}
-          rate={auction.rate}
-        />
+        <MiniGemBox level={auction.level} grade={auction.gradeType} rate={auction.rate} />
       </div>
     </div>
   </Card>
