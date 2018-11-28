@@ -154,7 +154,7 @@ export const validateCoupon = (couponCode) => {
     return false;
   }
 
-  if (Number(last3Characters) > 190 || Number(last3Characters) < 150) {
+  if (Number(last3Characters) > 190 || Number(last3Characters) < 171) {
     return false;
   }
 

@@ -98,7 +98,7 @@ const Navbar = ({
         >
           Gem Market
         </NavLink>
-        <NavLink
+        {/* <NavLink
           exact
           to="/map"
           activeStyle={{
@@ -108,7 +108,7 @@ const Navbar = ({
           data-testid="mapLink"
         >
           Country Market
-        </NavLink>
+        </NavLink> */}
         <a
           className="link dim dark-gray f6 f5-l dn dib-ns mr3 mr4-l"
           href="https://cryptominerworld.com/world/"
