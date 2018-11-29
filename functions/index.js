@@ -1,39 +1,51 @@
-// // DEV
-// const AUCTION_CONTRACT = '0x4ec415d87e00101867fbfa28db19cce0d564d8b3';
-// const GEM_CONTRACT = '0x82ff6bbd7b64f707e704034907d582c7b6e09d97';
+// DEV
 
-// PROD
-const AUCTION_CONTRACT = '0x1F4f6625e92C4789dCe4B92886981D7b5f484750';
-const GEM_CONTRACT = '0xeae9d154da7a1cd05076db1b83233f3213a95e4f';
+const AUCTION_CONTRACT = '0x4ec415d87e00101867fbfa28db19cce0d564d8b3';
+const GEM_CONTRACT = '0x82ff6bbd7b64f707e704034907d582c7b6e09d97';
+const COUNTRY_CONTRACT = '0x6AC79cbA4Cf4c07303d30410739b13Ee6914b619';
+
+// // PROD
+// const AUCTION_CONTRACT = '0x1F4f6625e92C4789dCe4B92886981D7b5f484750';
+// const GEM_CONTRACT = '0xeae9d154da7a1cd05076db1b83233f3213a95e4f';
+// const COUNTRY_CONTRACT = '0xE49F05Fd6DEc46660221a1C1255FfE335bc7fa7a'
 
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const Web3 = require('web3');
+const {
+  getMapIndexFromCountryId,
+  getCountryNameFromCountryId
+} = require('./helpers');
 
 admin.initializeApp(functions.config().firebase);
 admin.firestore().settings({ timestampsInSnapshots: true });
 
-// // DEV
-// const web3 = new Web3(
-//   new Web3.providers.HttpProvider(
-//     'https://rinkeby.infura.io/qWWCAOLoD65CmWAo4jLg'
-//   )
-// );
-
-// PROD
+// DEV
 const web3 = new Web3(
   new Web3.providers.HttpProvider(
-    'https://mainnet.infura.io/qWWCAOLoD65CmWAo4jLg '
+    'https://rinkeby.infura.io/qWWCAOLoD65CmWAo4jLg'
   )
 );
+
+// // PROD
+// const web3 = new Web3(
+//   new Web3.providers.HttpProvider(
+//     'https://mainnet.infura.io/qWWCAOLoD65CmWAo4jLg '
+//   )
+// );
 
 // Define the ABI of the contracts
 const Gems = require('./ABI/GemABI.json');
 
 const gemsABI = Gems.abi;
+
 const DutchAuction = require('./ABI/DutchAuction.json');
 
 const dutchAuctionABI = DutchAuction.abi;
+
+const countryContract = require('./ABI/CountryContractABI.json');
+
+const countryContractABI = countryContract.abi;
 
 // @notice instantiating gem contract
 const gemsContract = new web3.eth.Contract(gemsABI);
@@ -41,6 +53,11 @@ gemsContract.options.address = GEM_CONTRACT;
 const auctionContract = new web3.eth.Contract(dutchAuctionABI);
 auctionContract.options.address = AUCTION_CONTRACT;
 
+const countryContractInstance = new web3.eth.Contract(
+  countryContractABI,
+  COUNTRY_CONTRACT
+);
+countryContractInstance.options.address = COUNTRY_CONTRACT;
 // this function is fired once every 4 hours and checks that all the active gems are in auction
 exports.updateGemDetails = functions.https.onRequest(() =>
   // get all gems details from the database
@@ -174,3 +191,103 @@ exports.updateLiveAuctionDetails = functions.https.onRequest(() =>
     })
     .catch(err => console.log('err updating live auction cloud function', err))
 );
+
+exports.countryReconciliation = functions.https.onRequest(() => {
+  // create an array of number from 1 to 190, to represent country indexes
+  const countries = Array.from(Array(190), (_, x) => Number(x) + 1);
+  const processCountries = async countryList => {
+    for (const countryId of countryList) {
+      const mapIndex = getMapIndexFromCountryId(countryId);
+      console.log('mapIndex', mapIndex);
+      const countryName = getCountryNameFromCountryId(countryId);
+      console.log('countryName', countryName);
+      // eslint-disable-next-line
+      await countryContractInstance.methods
+        .ownerOf(Number(countryId))
+        .call()
+        .then(async owner => {
+          console.log('country already sold', countryId, owner);
+
+          const lowercaseOwner = owner
+            .split('')
+            .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
+            .join('');
+
+          await admin
+            .database()
+            .ref(`/worldMap/objects/units/geometries/${mapIndex}/properties`)
+            .update({ sold: true });
+
+            // eslint-disable-next-line
+          await admin
+            .firestore()
+            .doc(`countries/${countryName}`)
+            .get()
+            .then(async doc => {
+              if (!doc.exists) {
+                console.log('No such document!');
+                return;
+              } else {
+                console.log('Document data:', doc.data());
+// eslint-disable-next-line
+                await admin
+                  .firestore()
+                  .doc(`countries/${countryName}`)
+                  .update({
+                    owner: lowercaseOwner
+                  })
+                  .then(() => console.log('unsold country details updated'));
+                  return
+              }
+           
+            })
+            .catch(err => {
+              console.log('Error getting document', err);
+            });
+
+            return true
+        })
+        .catch(async error => {
+          // eslint-disable-next-line
+          await admin
+            .database()
+            .ref(`/worldMap/objects/units/geometries/${mapIndex}/properties`)
+            .update({ sold: false });
+
+          console.log('done marking country sold', countryId);
+          // eslint-disable-next-line
+          await admin
+            .firestore()
+            .doc(`countries/${countryName}`)
+            .get()
+            .then(async doc => {
+              if (!doc.exists) {
+                console.log('No such document!');
+                return;
+              } else {
+                console.log('Document data:', doc.data());
+// eslint-disable-next-line
+                await admin
+                  .firestore()
+                  .doc(`countries/${countryName}`)
+                  .update({
+                    owner: '0x'
+                  })
+                  .then(() => console.log('unsold country details updated'));
+                  return
+              }
+            })
+            .catch(err => {
+              console.log('Error getting document', err);
+            });
+
+          console.log(
+            'done updating user database',
+            getCountryNameFromCountryId(countryId)
+          );
+        });
+    }
+    console.log('done everything');
+  };
+  return processCountries(countries);
+});
