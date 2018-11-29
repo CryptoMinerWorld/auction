@@ -100,7 +100,7 @@ class Transaction extends PureComponent {
       <div className="flex aic jcs">
         {current.matches('signedin.pending') && (
           <a
-            href={`https://${process.env.REACT_APP_NETWORK}.etherscan.io/tx/${hash}`}
+            href={`https://${process.env.REACT_APP_NETWORK}.io/tx/${hash}`}
             target="_blank"
             rel="noopener noreferrer"
           >

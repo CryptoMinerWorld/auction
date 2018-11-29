@@ -98,17 +98,20 @@ const Navbar = ({
         >
           Gem Market
         </NavLink>
-        {/* <NavLink
+        <NavLink
           exact
           to="/map"
           activeStyle={{
             borderBottom: '2px solid purple',
           }}
-          className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
+          className="link dim dark-gray f6 f5-l dib mr3 mr4-l b"
           data-testid="mapLink"
+          style={{
+            color: 'purple',
+          }}
         >
           Country Market
-        </NavLink> */}
+        </NavLink>
         <a
           className="link dim dark-gray f6 f5-l dn dib-ns mr3 mr4-l"
           href="https://cryptominerworld.com/world/"
@@ -124,7 +127,8 @@ const Navbar = ({
           FAQ
         </a>
         {userImage
-          && userName && userId && (
+          && userName
+          && userId && (
             <AvatarDropdown
               to={`/profile/${userId}`}
               userImage={userImage}
