@@ -26,7 +26,7 @@ const menu = items => (
   <Menu data-testid="menu">
     {items.map(({ hash, txTokenId }) => (
       <a
-        href={`https://${process.env.REACT_APP_NETWORK}.etherscan.io/tx/${hash}`}
+        href={`https://${process.env.REACT_APP_NETWORK}.io/tx/${hash}`}
         key={hash}
         target="_blank"
         rel="noopener noreferrer"

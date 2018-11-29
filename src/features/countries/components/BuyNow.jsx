@@ -40,7 +40,7 @@ const BuyNow = ({
         <div className="flex">
           <dt>Total Plots</dt>
           <dd className="dib pl2">
-            {picked && picked.reduce((total, amount) => total + amount.plots, 0).toFixed(3)}
+            {picked && picked.reduce((total, amount) => total + amount.plots, 0)}
           </dd>
         </div>
         <div className="flex">
