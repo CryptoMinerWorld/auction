@@ -35,6 +35,7 @@ export const fetchAnyPendingTransactions = (walletId, setTxs) => db
   .onSnapshot(
     (coll) => {
       const pendingTxs = coll.docs.map(doc => doc.data());
+      console.log('pendingTxs', pendingTxs);
       setTxs(pendingTxs);
     },
     error => console.log('error streaming pending tx data from firestore', error),
@@ -73,10 +74,13 @@ export const resolveAnyPendingTx = async (
     .catch(error => console.log('error streaming pending tx data from firestore', error));
 
   // map(pendingTransactions, async (tx) => {
-  pendingTransactions.forEach(async (tx) => {
+  // eslint-disable-next-line
+  for (const tx of pendingTransactions) {
+    // pendingTransactions.forEach(async (tx) => {
     console.log('resolution function started');
     if (tx.txMethod === 'gem') {
       console.log('is gem');
+      // eslint-disable-next-line
       await gemsContract.methods
         .ownerOf(tx.txTokenId)
         .call()
@@ -157,7 +161,10 @@ export const resolveAnyPendingTx = async (
     if (tx.txMethod === 'country') {
       console.log('is country');
 
-      tx.txTokenId.forEach(async (eachTokenId) => {
+      // tx.txTokenId.forEach(async (eachTokenId) => {
+      // eslint-disable-next-line
+      for (const eachTokenId of tx.txTokenId) {
+        // eslint-disable-next-line
         await countryContract.methods.ownerOf(eachTokenId).call({}, async (errors, address) => {
           if (errors) {
             console.log('no country owner', errors, address);
@@ -197,7 +204,8 @@ export const resolveAnyPendingTx = async (
               .once('value')
               .then(snap => snap.val());
 
-            await db.collection('countries')
+            await db
+              .collection('countries')
               .doc(`${country.name}`)
               .set({
                 id: country.name,
@@ -242,8 +250,9 @@ export const resolveAnyPendingTx = async (
               .catch(err => console.log('err reconciling in tx reconciliation function on startup', err));
           }
         });
-      });
+      }
     }
     return false;
-  });
+  }
+  return false;
 };

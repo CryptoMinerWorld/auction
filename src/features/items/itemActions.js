@@ -65,11 +65,7 @@ export const updateGemOwnership = (gemId, newOwner, history, priceInWei) => asyn
       .catch(err => setError(err))));
 };
 
-export const createAuction = (
-  payload,
-  turnLoaderOff,
-  history,
-) => (dispatch, getState) => {
+export const createAuction = (payload, turnLoaderOff, history) => (dispatch, getState) => {
   const { auth, app } = getState();
   const currentAccount = auth.currentUserId;
   const { gemsContractInstance } = app;
@@ -153,8 +149,11 @@ export const removeFromAuction = (tokenId, history, turnLoaderOff) => async (
       db.collection('stones')
         .where('id', '==', Number(tokenId))
         .get()
-        .then((coll) => {
-          coll.docs.map(async (doc) => {
+        .then(async (coll) => {
+          // eslint-disable-next-line
+          for (const doc of coll.docs) {
+            // coll.docs.map(async (doc) => {
+            // eslint-disable-next-line
             await db.doc(`stones/${doc.id}`).update({
               auctionIsLive: false,
             });
@@ -164,7 +163,7 @@ export const removeFromAuction = (tokenId, history, turnLoaderOff) => async (
             });
             // getUserGemsOnce(currentUser)
             history.push(`/profile/${currentUser}`);
-          });
+          }
         });
     })
     .on('error', (error) => {

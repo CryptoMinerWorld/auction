@@ -23,6 +23,7 @@ const select = store => ({
   userName: store.auth.user && store.auth.user.name,
   existingUser: store.auth.existingUser,
   signInBox: store.auth.signInBox,
+  upperCaseWalletId: store.app && store.app.currentAccount,
 });
 
 const Navbar = ({
@@ -32,6 +33,7 @@ const Navbar = ({
   handleShowSignInModal,
   existingUser,
   signInBox,
+  upperCaseWalletId,
 }) => (
   <div className="shadow-1 z-9 bg-white w-100">
     {signInBox && <Auth />}
@@ -134,6 +136,7 @@ const Navbar = ({
               userImage={userImage}
               userName={userName}
               walletId={userId}
+              upperCaseWalletId={upperCaseWalletId}
             />
         )}
         <div className="dn dib-ns">
@@ -168,6 +171,7 @@ Navbar.propTypes = {
   handleShowSignInModal: PropTypes.func.isRequired,
   existingUser: PropTypes.bool,
   signInBox: PropTypes.bool.isRequired,
+  upperCaseWalletId: PropTypes.string.isRequired,
 };
 
 Navbar.defaultProps = {

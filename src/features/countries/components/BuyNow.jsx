@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// import { map } from 'p-iteration';
 import ButtonCTA from '../../../components/ButtonCTA';
 import reduxStore from '../../../app/store';
 import { startTx, completedTx, ErrorTx } from '../../transactions/txActions';
@@ -74,59 +73,95 @@ const BuyNow = ({
               const totalPrice = await countrySale.methods.getBulkPrice(countries).call();
               // console.log('totalPrice', totalPrice);
               // console.log('countries', countries);
+              const txDetails = {
+                hash: null,
+                currentUser: data.userId,
+
+                tokenId: countries,
+              };
+
               countrySale.methods
                 .bulkBuy(countries)
                 .send({
                   from: data.userId,
                   value: totalPrice,
                 })
-                .on('transactionHash', hash => reduxStore.dispatch(
-                  startTx({
-                    hash,
-                    currentUser: data.userId,
-                    method: 'country',
-                    tokenId: countries,
-                  }),
-                ))
+                .on('transactionHash', (hash) => {
+                  console.log('tx initiated', hash);
+                  txDetails.hash = hash;
+                  return reduxStore.dispatch(
+                    startTx({
+                      hash,
+                      currentUser: data.userId,
+                      method: 'country',
+                      tokenId: countries,
+                    }),
+                  );
+                })
                 .on('error', () => setLoading(false));
 
               countrySale.events
                 .BulkPurchaseComplete()
                 .on('data', async (event) => {
-                  console.log('data', event);
-                  console.log('picked', picked);
+                  console.log('data x', event.returnValues, txDetails);
 
-                  picked.forEach(async (country) => {
-                    await buyNow({
-                      variables: {
-                        id: country.name,
-                        newOwnerId: data.userId
-                          .split('')
-                          .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
-                          .join(''),
-                        price: country.price || 0,
-                        timeOfPurchase: Date.now(),
-                        totalPlots: country.plots || 0,
-                        imageLinkLarge: country.imageLinkLarge,
-                        imageLinkMedium: country.imageLinkMedium,
-                        imageLinkSmall: country.imageLinkSmall,
-                        countryId: country.countryId,
-                        mapIndex: country.mapIndex,
-                        roi: country.roi,
-                      },
-                    })
-                      .then((x) => {
-                        console.log('x bought', x);
-                        markSold(country.mapIndex);
+                  console.log(
+                    'countries',
+                    countries.toString(),
+                    event.returnValues.ids.toString(),
+                    countries.toString() === event.returnValues.ids.toString(),
+                  );
+
+                  if (
+                    data.userId
+                      .split('')
+                      .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
+                      .join('')
+                      // eslint-disable-next-line
+                      === event.returnValues._to
+                        .split('')
+                        .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
+                        .join('')
+                    && txDetails.hash === event.transactionHash
+                    && countries.toString() === event.returnValues.ids.toString()
+                  ) {
+                    // eslint-disable-next-line
+                    for (const country of picked) {
+                      console.log('buying begins...', country.name);
+                      // eslint-disable-next-line
+                      await buyNow({
+                        variables: {
+                          id: country.name,
+                          // eslint-disable-next-line
+                          newOwnerId: event.returnValues._to
+                            .split('')
+                            .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
+                            .join(''),
+                          price: country.price || 0,
+                          timeOfPurchase: Date.now(),
+                          totalPlots: country.plots || 0,
+                          imageLinkLarge: country.imageLinkLarge,
+                          imageLinkMedium: country.imageLinkMedium,
+                          imageLinkSmall: country.imageLinkSmall,
+                          countryId: country.countryId,
+                          mapIndex: country.mapIndex,
+                          roi: country.roi,
+                        },
                       })
-                      .then(() => {
-                        console.log('country map updated');
-                        setLoading(false);
-                        console.log('event', event);
-                        reduxStore.dispatch(completedTx(event));
-                      })
-                      .catch(err => console.log('error buying countries', err));
-                  });
+                        .then((x) => {
+                          console.log('x bought', x);
+                          markSold(country.mapIndex);
+                        })
+                        .then(() => {
+                          console.log('country map updated');
+                          setLoading(false);
+                          console.log('event', event);
+                          reduxStore.dispatch(completedTx(event));
+                        })
+                        .catch(err => console.log('error buying countries', err));
+                    }
+                  }
+                  return true;
                 })
                 .on('error', (error) => {
                   console.log('error', error);
