@@ -17,7 +17,7 @@ service cloud.firestore {
     }
 
     match /countries/{country} {
-      allow read, create
+      allow read, create, update;
     }
   }
 }

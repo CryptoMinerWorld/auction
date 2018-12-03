@@ -1,13 +1,12 @@
-// DEV
+// // DEV
+// const AUCTION_CONTRACT = '0x4ec415d87e00101867fbfa28db19cce0d564d8b3';
+// const GEM_CONTRACT = '0x82ff6bbd7b64f707e704034907d582c7b6e09d97';
+// const COUNTRY_CONTRACT = '0x6AC79cbA4Cf4c07303d30410739b13Ee6914b619';
 
-const AUCTION_CONTRACT = '0x4ec415d87e00101867fbfa28db19cce0d564d8b3';
-const GEM_CONTRACT = '0x82ff6bbd7b64f707e704034907d582c7b6e09d97';
-const COUNTRY_CONTRACT = '0x6AC79cbA4Cf4c07303d30410739b13Ee6914b619';
-
-// // PROD
-// const AUCTION_CONTRACT = '0x1F4f6625e92C4789dCe4B92886981D7b5f484750';
-// const GEM_CONTRACT = '0xeae9d154da7a1cd05076db1b83233f3213a95e4f';
-// const COUNTRY_CONTRACT = '0xE49F05Fd6DEc46660221a1C1255FfE335bc7fa7a'
+// PROD
+const AUCTION_CONTRACT = '0x1F4f6625e92C4789dCe4B92886981D7b5f484750';
+const GEM_CONTRACT = '0xeae9d154da7a1cd05076db1b83233f3213a95e4f';
+const COUNTRY_CONTRACT = '0xE49F05Fd6DEc46660221a1C1255FfE335bc7fa7a'
 
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
@@ -20,19 +19,19 @@ const {
 admin.initializeApp(functions.config().firebase);
 admin.firestore().settings({ timestampsInSnapshots: true });
 
-// DEV
-const web3 = new Web3(
-  new Web3.providers.HttpProvider(
-    'https://rinkeby.infura.io/qWWCAOLoD65CmWAo4jLg'
-  )
-);
-
-// // PROD
+// // DEV
 // const web3 = new Web3(
 //   new Web3.providers.HttpProvider(
-//     'https://mainnet.infura.io/qWWCAOLoD65CmWAo4jLg '
+//     'https://rinkeby.infura.io/qWWCAOLoD65CmWAo4jLg'
 //   )
 // );
+
+// PROD
+const web3 = new Web3(
+  new Web3.providers.HttpProvider(
+    'https://mainnet.infura.io/qWWCAOLoD65CmWAo4jLg '
+  )
+);
 
 // Define the ABI of the contracts
 const Gems = require('./ABI/GemABI.json');

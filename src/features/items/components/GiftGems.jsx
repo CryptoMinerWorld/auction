@@ -134,10 +134,12 @@ class GiftGems extends Component {
       .on('data', async (event) => {
         const { returnValues } = event;
         const { _from, _to, _tokenId } = returnValues;
-
-        await this.transferOwnershipOnDatabase(_from, _to, _tokenId);
-        reduxStore.dispatch(completedTx(event));
-        transition('SUCCESS', { from });
+        // eslint-disable-next-line
+        if (_to === to && _from === from && _tokenId === tokenId) {
+          await this.transferOwnershipOnDatabase(_from, _to, _tokenId);
+          reduxStore.dispatch(completedTx(event));
+          transition('SUCCESS', { from });
+        }
       })
       .on('error', (error) => {
         reduxStore.dispatch(ErrorTx(error));

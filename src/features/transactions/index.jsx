@@ -14,7 +14,7 @@ class Transaction extends PureComponent {
     txError: PropTypes.string,
     txCurrentUser: PropTypes.string,
     txMethod: PropTypes.string,
-    txTokenId: PropTypes.number,
+    txTokenId: PropTypes.arrayOf(PropTypes.number),
   };
 
   static defaultProps = {
