@@ -205,7 +205,6 @@ Removing...
                           endPrice: ethToWei(endPrice),
                         };
                         this.setState({ formSubmitted: true });
-
                         handleCreateAuction(payload, this.turnLoaderOff, history);
                       }}
                       data-testid="createAuctionButton"

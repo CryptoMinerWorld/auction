@@ -205,8 +205,7 @@ exports.countryReconciliation = functions.https.onRequest(() => {
         .ownerOf(Number(countryId))
         .call()
         .then(async owner => {
-          console.log('country already sold', countryId, owner);
-
+          // console.log('country already sold', countryId, owner);
           const lowercaseOwner = owner
             .split('')
             .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
@@ -217,18 +216,49 @@ exports.countryReconciliation = functions.https.onRequest(() => {
             .ref(`/worldMap/objects/units/geometries/${mapIndex}/properties`)
             .update({ sold: true });
 
-            // eslint-disable-next-line
+          // eslint-disable-next-line
           await admin
             .firestore()
             .doc(`countries/${countryName}`)
             .get()
             .then(async doc => {
               if (!doc.exists) {
-                console.log('No such document!');
+                // console.log('No such document!');
+                const countryDetails = await admin
+                  .database()
+                  .ref(
+                    `/worldMap/objects/units/geometries/${mapIndex}/properties`
+                  )
+                  .once('value')
+                  .then(snap => snap.val());
+
+                console.log('sold countryDetails', countryDetails);
+                await admin
+                  .firestore()
+                  .doc(`countries/${countryName}`)
+                  .set({
+                    id: countryName,
+                    owner: lowercaseOwner,
+                    onSale: false,
+                    lastPrice: countryDetails.price,
+                    lastBought: Date.now(),
+                    totalPlots: countryDetails.plots,
+                    plotsBought: 0,
+                    plotsMined: 0,
+                    plotsAvailable: countryDetails.plots,
+                    name: countryName,
+                    imageLinkLarge: countryDetails.imageLinkLarge,
+                    imageLinkMedium: countryDetails.imageLinkMedium,
+                    imageLinkSmall: countryDetails.imageLinkSmall,
+                    countryId: countryDetails.countryId,
+                    mapIndex: countryDetails.mapIndex,
+                    roi: countryDetails.roi
+                  })
+                  .then(() => console.log('sold country details updated'));
                 return;
               } else {
                 console.log('Document data:', doc.data());
-// eslint-disable-next-line
+                // eslint-disable-next-line
                 await admin
                   .firestore()
                   .doc(`countries/${countryName}`)
@@ -236,15 +266,14 @@ exports.countryReconciliation = functions.https.onRequest(() => {
                     owner: lowercaseOwner
                   })
                   .then(() => console.log('unsold country details updated'));
-                  return
+                return;
               }
-           
             })
             .catch(err => {
               console.log('Error getting document', err);
             });
 
-            return true
+          return true;
         })
         .catch(async error => {
           // eslint-disable-next-line
@@ -265,7 +294,7 @@ exports.countryReconciliation = functions.https.onRequest(() => {
                 return;
               } else {
                 console.log('Document data:', doc.data());
-// eslint-disable-next-line
+                // eslint-disable-next-line
                 await admin
                   .firestore()
                   .doc(`countries/${countryName}`)
@@ -273,7 +302,7 @@ exports.countryReconciliation = functions.https.onRequest(() => {
                     owner: '0x'
                   })
                   .then(() => console.log('unsold country details updated'));
-                  return
+                return;
               }
             })
             .catch(err => {

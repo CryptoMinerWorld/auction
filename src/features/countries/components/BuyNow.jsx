@@ -66,17 +66,17 @@ const BuyNow = ({
       <ButtonCTA
         disabled={!countrySale || !markSold || picked.length <= 0 || !buyNow}
         onClick={async () => {
+          // sets the loading spinner
           setLoading(true);
+
           if (provider && accountExists) {
             try {
               const countries = picked.map(country => country.countryId);
               const totalPrice = await countrySale.methods.getBulkPrice(countries).call();
-              // console.log('totalPrice', totalPrice);
-              // console.log('countries', countries);
+
               const txDetails = {
                 hash: null,
                 currentUser: data.userId,
-
                 tokenId: countries,
               };
 
@@ -87,7 +87,7 @@ const BuyNow = ({
                   value: totalPrice,
                 })
                 .on('transactionHash', (hash) => {
-                  console.log('tx initiated', hash);
+                  // console.log('tx initiated', hash);
                   txDetails.hash = hash;
                   return reduxStore.dispatch(
                     startTx({
@@ -103,14 +103,14 @@ const BuyNow = ({
               countrySale.events
                 .BulkPurchaseComplete()
                 .on('data', async (event) => {
-                  console.log('data x', event.returnValues, txDetails);
+                  // console.log('data x', event.returnValues, txDetails);
 
-                  console.log(
-                    'countries',
-                    countries.toString(),
-                    event.returnValues.ids.toString(),
-                    countries.toString() === event.returnValues.ids.toString(),
-                  );
+                  // console.log(
+                  //   'countries',
+                  //   countries.toString(),
+                  //   event.returnValues.ids.toString(),
+                  //   countries.toString() === event.returnValues.ids.toString(),
+                  // );
 
                   if (
                     data.userId
@@ -127,7 +127,7 @@ const BuyNow = ({
                   ) {
                     // eslint-disable-next-line
                     for (const country of picked) {
-                      console.log('buying begins...', country.name);
+                      // console.log('buying begins...', country.name);
                       // eslint-disable-next-line
                       await buyNow({
                         variables: {

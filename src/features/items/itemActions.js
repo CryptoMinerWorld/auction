@@ -74,6 +74,8 @@ export const createAuction = (payload, turnLoaderOff, history) => (dispatch, get
     tokenId, duration, startPrice, endPrice,
   } = payload;
 
+  console.log('payload', payload);
+
   createAuctionHelper(tokenId, duration, startPrice, endPrice, gemsContractInstance, currentAccount)
     .then(({ deadline, minPrice, maxPrice }) => {
       // console.log('deadline, minPrice, maxPrice ', deadline, minPrice, maxPrice);

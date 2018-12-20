@@ -10,10 +10,11 @@ import { getAuctions } from './features/market/marketActions';
 import { getCurrentUser } from './features/auth/authActions';
 
 const client = new ApolloClient({
-  uri:
-    process.env.NODE_ENV === 'development'
-      ? 'http://localhost:4000'
-      : 'https://cryptominerworld-7afd6.appspot.com/',
+  uri: process.env.NODE_ENV === 'development' && 'http://localhost:4000',
+
+  // process.env.NODE_ENV === 'development'
+  //   ? 'http://localhost:4000'
+  //   : 'https://cryptominerworld-7afd6.appspot.com/',
 
   clientState: {
     defaults: {
@@ -37,9 +38,12 @@ const client = new ApolloClient({
 store.dispatch(getCurrentUser());
 store.dispatch(getAuctions());
 
-
 ReactDOM.render(
   // eslint-disable-next-line
-<Provider store={store}><ApolloProvider client={client}><App /></ApolloProvider></Provider>,
-document.getElementById('root'),
+  <Provider store={store}>
+    <ApolloProvider client={client}>
+      <App />
+    </ApolloProvider>
+  </Provider>,
+  document.getElementById('root'),
 );
