@@ -135,7 +135,7 @@ const Navbar = ({
               to={`/profile/${userId}`}
               userImage={userImage}
               userName={userName}
-              walletId={userId}
+              // walletId={userId}
               upperCaseWalletId={upperCaseWalletId}
             />
         )}
@@ -171,7 +171,7 @@ Navbar.propTypes = {
   handleShowSignInModal: PropTypes.func.isRequired,
   existingUser: PropTypes.bool,
   signInBox: PropTypes.bool.isRequired,
-  upperCaseWalletId: PropTypes.string.isRequired,
+  upperCaseWalletId: PropTypes.string,
 };
 
 Navbar.defaultProps = {
@@ -179,4 +179,5 @@ Navbar.defaultProps = {
   userId: '',
   userName: '',
   existingUser: false,
+  upperCaseWalletId: '',
 };

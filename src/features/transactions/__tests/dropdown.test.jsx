@@ -10,6 +10,7 @@ const props = {
   to: 'string',
   userImage: 'string',
   userName: 'string',
+  upperCaseWalletId: '123',
 };
 
 test('AvatarDropdown renders correctly', () => {

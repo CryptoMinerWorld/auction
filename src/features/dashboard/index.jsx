@@ -145,10 +145,10 @@ class Dashboard extends Component {
     const { preSaleContract, match, data } = this.props;
     if (preSaleContract && preSaleContract.methods && match.params.userId !== 'false') {
       getReferralPoints(preSaleContract, match.params.userId)
-        .then(referralPoints => this.setState({ referralPoints }))
+        .then(referralPoints => referralPoints && this.setState({ referralPoints }))
         .catch(err => setError(err));
       getPlotCount(preSaleContract, match.params.userId)
-        .then(plots => this.setState({ plots }))
+        .then(plots => plots && this.setState({ plots }))
         .catch(err => setError(err));
     }
 

@@ -86,6 +86,18 @@ describe('Auction page tests', () => {
     expect(ethToWei(1)).toEqual(1000000000000000000);
   });
 
+  test('ethToWei convert units reliably', () => {
+    expect(typeof ethToWei(1)).toBe('number');
+    // expect(ethToWei(0.018)).toEqual(17999999999999998);
+    expect(ethToWei(0.018)).toEqual(18000000000000000);
+  });
+
+  test('ethToWei convert an empty value to zero ', () => {
+    expect(typeof ethToWei()).toBe('number');
+    // expect(ethToWei(0.018)).toEqual(17999999999999998);
+    expect(ethToWei()).toEqual(0);
+  });
+
   test('daysToSeconds convert units reliably', () => {
     expect(typeof daysToSeconds(1)).toBe('number');
     expect(daysToSeconds(1)).toEqual(86400);
