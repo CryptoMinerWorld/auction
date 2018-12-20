@@ -225,12 +225,6 @@ Creating...
                   </div>
                 </div>
                 <GiftGems gemName={name} sourceImage={sourceImage} />
-                {/* {formSubmitted && (
-                  <p className="red pt3 measure">
-                    Please do not nagivate away from this page while the transaction is processing.
-                    You will be redirected once it is done.
-                  </p>
-                )} */}
               </div>
             )}
           </div>

@@ -35,7 +35,7 @@ export const fetchAnyPendingTransactions = (walletId, setTxs) => db
   .onSnapshot(
     (coll) => {
       const pendingTxs = coll.docs.map(doc => doc.data());
-      console.log('pendingTxs', pendingTxs);
+      // console.log('pendingTxs', pendingTxs);
       setTxs(pendingTxs);
     },
     error => console.log('error streaming pending tx data from firestore', error),

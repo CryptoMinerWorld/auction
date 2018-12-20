@@ -85,7 +85,7 @@ StatsBox.propTypes = {
   grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   name: PropTypes.string.isRequired,
-  lastSoldFor: PropTypes.number,
+  lastSoldFor: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
 };
 
 StatsBox.defaultProps = {

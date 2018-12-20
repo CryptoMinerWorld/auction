@@ -50,21 +50,19 @@ const menu = items => (
  * to: string,
  * userImage: string
  * userName: string
- * walletId: string
+ * upperCaseWalletId: string
  * }} AvatarDropdownProps
  */
-const AvatarDropdown = ({
-  userImage, userName, walletId, upperCaseWalletId,
-}) => {
+const AvatarDropdown = ({ userImage, userName, upperCaseWalletId }) => {
   const [visibility, setVisibility] = useState(false);
   const [penidngTxs, setTxs] = useState([]);
   useEffect(() => {
     const unsubscribe = fetchAnyPendingTransactions(upperCaseWalletId, setTxs);
-    console.log('listening');
+    // console.log('listening');
     return () => unsubscribe();
   }, []);
-  console.log('walletId', walletId);
-  console.log('penidngTxs', penidngTxs);
+  // console.log('walletId', walletId);
+  // console.log('penidngTxs', penidngTxs);
   return (
     <div
       // to={to}
@@ -94,10 +92,10 @@ AvatarDropdown.propTypes = {
   // to: PropTypes.string.isRequired,
   userImage: PropTypes.string.isRequired,
   userName: PropTypes.string.isRequired,
-  walletId: PropTypes.string,
+  // walletId: PropTypes.string,
   upperCaseWalletId: PropTypes.string.isRequired,
 };
 
-AvatarDropdown.defaultProps = {
-  walletId: '',
-};
+// AvatarDropdown.defaultProps = {
+//   walletId: '',
+// };
