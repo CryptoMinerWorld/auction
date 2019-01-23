@@ -8,7 +8,9 @@ import { calculateGemName } from '../helpers';
 
 require('antd/lib/progress/style/css');
 
-const Cards = ({ auction }) => (
+const Cards = ({ auction }) => {
+  console.log("CARD:::", auction);
+  return (
   <Tilt className="Tilt" options={{ max: 20, scale: 1 }}>
     <div
       className="bg-off-black shadow-3 white"
@@ -39,7 +41,7 @@ const Cards = ({ auction }) => (
       </div>
     </div>
   </Tilt>
-);
+)}
 
 Cards.propTypes = {
   auction: PropTypes.shape({

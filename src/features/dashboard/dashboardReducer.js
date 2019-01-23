@@ -35,6 +35,11 @@ export default function dashboardReducer(
   },
   action,
 ) {
+
+  console.log('REDUCER::: action.type = ', action.type);
+  console.log('REDUCER::::::: payload =', action.payload);
+
+
   if (action.type === USER_GEMS_RETRIEVED) {
     const paginated = action.payload.length > 15 ? action.payload.slice(0, 15) : action.payload;
 

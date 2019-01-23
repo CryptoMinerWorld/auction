@@ -137,6 +137,7 @@ exports.updateLiveAuctionDetails = functions.https.onRequest(() =>
     .where('auctionIsLive', '==', true)
     .get()
     .then(coll => {
+      console.log('::::::::::::::::::functions/index.js:::::::::::::::::::::');
       // get the id for each gem in auction
       const docs = coll.docs.map(doc => doc.id);
       return docs;

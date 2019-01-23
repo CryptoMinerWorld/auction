@@ -25,6 +25,9 @@ import Gems from './ABI/GemERC721.json';
 import Presale from './ABI/Presale2.json';
 import Country from './ABI/CountryERC721.json';
 import CountrySale from './ABI/CountrySale.json';
+import RefPointsTracker from './ABI/RefPointsTracker';
+import Silver from './ABI/SilverERC20';
+import Gold from './ABI/GoldERC20';
 import { resolveAnyPendingTx } from '../features/transactions/helpers';
 
 require('antd/lib/notification/style/css');
@@ -49,6 +52,9 @@ const gemsABI = Gems.abi;
 const presaleABI = Presale.abi;
 const countryABI = Country.abi;
 const countrySaleABI = CountrySale.abi;
+const refPointsTrackerABI = RefPointsTracker.abi;
+const silverABI = Silver.abi;
+const goldABI = Gold.abi;
 
 const StickyHeader = styled.div`
   position: -webkit-sticky; /* Safari */
@@ -132,6 +138,31 @@ class App extends Component {
       },
     );
 
+    const refPointsTrackerContract = new web3.eth.Contract(
+      refPointsTrackerABI,
+      process.env.REACT_APP_REF_POINTS_TRACKER,
+      {
+          from: currentAccountId,
+      },
+    );
+
+      const goldContract = new web3.eth.Contract(
+        goldABI,
+        process.env.REACT_APP_GOLD_ERC721,
+        {
+            from: currentAccountId,
+        },
+      );
+
+      const silverContract = new web3.eth.Contract(
+        silverABI,
+        process.env.REACT_APP_SILVER_ERC721,
+        {
+            from: currentAccountId,
+        },
+      );
+
+
     Promise.all([
       dutchContract,
       gemsContract,
@@ -139,6 +170,9 @@ class App extends Component {
       presaleContract,
       theCountryContract,
       theCountrySaleContract,
+      refPointsTrackerContract,
+      silverContract,
+      goldContract
     ])
       .then(
         ([
@@ -148,6 +182,9 @@ class App extends Component {
           presale,
           countryContract,
           countrySaleContract,
+          refPointsTrackerContract,
+          silverContract,
+          goldContract
         ]) => {
           client.writeData({
             data: {
@@ -171,6 +208,10 @@ class App extends Component {
             currentAccount,
             countryContract,
             countrySaleContract,
+            refPointsTrackerContract,
+            silverContract,
+            goldContract
+
           );
         },
       )

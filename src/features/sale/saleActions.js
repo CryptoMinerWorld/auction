@@ -10,7 +10,7 @@ import {
   CHANGE_FILTER_GEM_VALUES,
   CHANGE_FILTER_VALUES,
   PAGINATE_MARKET,
-} from './marketConstants';
+} from './saleConstants';
 import { AUCTION_DETAILS_RECEIVED } from '../items/itemConstants';
 import { db } from '../../app/utils/firebase';
 import { updateDBwithNewPrice } from './helpers';

@@ -11,7 +11,6 @@
     "apollo-boost": "^0.1.18",
     "apollo-cache-inmemory": "^1.3.9",
     "babel-core": "7.0.0-bridge.0",
-    "babel-eslint": "9.0.0",
     "babel-jest": "23.6.0",
     "babel-loader": "8.0.4",
     "babel-plugin-named-asset-import": "^0.2.2",
@@ -24,11 +23,6 @@
     "css-loader": "1.0.0",
     "date-fns": "^2.0.0-alpha.16",
     "dotenv-expand": "4.2.0",
-    "eslint-config-react-app": "^3.0.4",
-    "eslint-loader": "2.1.1",
-    "eslint-plugin-cypress": "^2.1.0",
-    "eslint-plugin-flowtype": "2.50.1",
-    "eslint-plugin-react-hooks": "0.0.0",
     "file-loader": "2.0.0",
     "firebase": "^5.5.8",
     "fontfaceobserver": "^2.0.13",
@@ -134,12 +128,6 @@
     "cypress-testing-library": "^2.3.1",
     "dom-testing-library": "^3.12.0",
     "dotenv": "^6.0.0",
-    "eslint": "^5.7.0",
-    "eslint-config-airbnb": "^17.1.0",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-jest": "^21.26.1",
-    "eslint-plugin-jsx-a11y": "^6.1.2",
-    "eslint-plugin-react": "^7.11.1",
     "faker": "^4.1.0",
     "firebase-mock": "^2.2.10",
     "grpc": "^1.16.0",
@@ -195,21 +183,29 @@
       "node"
     ]
   },
-  "eslintConfig": {
-    "extends": [
-      "airbnb"
-    ],
-    "parser": "babel-eslint",
-    "parserOptions": {
-      "ecmaVersion": "2018"
-    },
-    "plugins": [
-      "eslint-plugin-cypress"
-    ],
-    "env": {
-      "cypress/globals": true,
-      "browser": true,
-      "jest": true
+  "//": [
+    {
+      "eslintConfig": {
+        "extends": [
+          "airbnb"
+        ],
+        "parser": "babel-eslint",
+        "parserOptions": {
+          "ecmaVersion": 2018,
+          "parser": "babel-eslint"
+        },
+        "rules": {
+          "no-console": "off"
+        },
+        "plugins": [
+          "eslint-plugin-cypress"
+        ],
+        "env": {
+          "cypress/globals": true,
+          "browser": true,
+          "jest": true
+        }
+      }
     }
-  }
+  ]
 }

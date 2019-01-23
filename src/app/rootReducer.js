@@ -7,21 +7,21 @@ import dashboard from '../features/dashboard/dashboardReducer';
 import txReducer from '../features/transactions/txReducer';
 
 import {
-  WEB3_ADDED,
-  DUTCH_CONTRACT_ADDED,
-  GEM_CONTRACT_ADDED,
-  FETCH_DATA_FAILED,
-  FETCH_DATA_BEGUN,
-  FETCH_DATA_SUCCEEDED,
-  CURRENT_ACCOUNT_ADDED,
-  PRESALE_CONTRACT_ADDED,
-  MODAL_VISIBLE,
-  RELEASE_CONFETTI,
-  MODAL_GONE,
-  SET_ERROR,
-  CLEAR_ERROR,
-  COUNTRY_CONTRACT_ADDED,
-  COUNTRY_SALE_ADDED,
+    WEB3_ADDED,
+    DUTCH_CONTRACT_ADDED,
+    GEM_CONTRACT_ADDED,
+    FETCH_DATA_FAILED,
+    FETCH_DATA_BEGUN,
+    FETCH_DATA_SUCCEEDED,
+    CURRENT_ACCOUNT_ADDED,
+    PRESALE_CONTRACT_ADDED,
+    MODAL_VISIBLE,
+    RELEASE_CONFETTI,
+    MODAL_GONE,
+    SET_ERROR,
+    CLEAR_ERROR,
+    COUNTRY_CONTRACT_ADDED,
+    COUNTRY_SALE_ADDED, REF_POINTS_TRACKER_CONTRACT_ADDED, SILVER_CONTRACT_ADDED, GOLD_CONTRACT_ADDED,
 } from './reduxConstants';
 
 const initialState = {
@@ -45,6 +45,18 @@ const appReducer = (state = initialState, action) => ({
     ...state,
     presaleContractInstance: action.payload,
   },
+    [REF_POINTS_TRACKER_CONTRACT_ADDED]: {
+        ...state,
+        refPointsTrackerContractInstance: action.payload,
+    },
+    [SILVER_CONTRACT_ADDED]: {
+        ...state,
+        silverContractInstance: action.payload,
+    },
+    [GOLD_CONTRACT_ADDED]: {
+        ...state,
+        goldContractInstance: action.payload,
+    },
   [MODAL_VISIBLE]: {
     ...state,
     modalVisible: true,

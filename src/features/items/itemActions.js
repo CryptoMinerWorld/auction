@@ -1,33 +1,49 @@
-import { AUCTION_DETAILS_RECEIVED, NEW_AUCTION_CREATED, CLEAR_GEM_PAGE } from './itemConstants';
-import {
-  FETCH_DATA_BEGUN,
-  FETCH_DATA_SUCCEEDED,
-  // FETCH_DATA_FAILED,
-  // MODAL_VISIBLE,
-  MODAL_GONE,
-  // RELEASE_CONFETTI,
-} from '../../app/reduxConstants';
-import { db } from '../../app/utils/firebase';
-import { createAuctionHelper, removeAuctionHelper } from './helpers';
-import { setError } from '../../app/appActions';
-import { startTx, completedTx, ErrorTx } from '../transactions/txActions';
+import {AUCTION_DETAILS_RECEIVED, CLEAR_GEM_PAGE, NEW_AUCTION_CREATED} from './itemConstants';
+import {FETCH_DATA_BEGUN, FETCH_DATA_SUCCEEDED, MODAL_GONE,} from '../../app/reduxConstants';
+import {db} from '../../app/utils/firebase';
+import {createAuctionHelper, getGemImage, getGemStory, removeAuctionHelper} from './helpers';
+import {setError} from '../../app/appActions';
+import {completedTx, ErrorTx, startTx} from '../transactions/txActions';
 import store from '../../app/store';
 
-export const getAuctionDetails = tokenId => (dispatch) => {
-  dispatch({ type: FETCH_DATA_BEGUN });
-  return db
-    .collection('stones')
-    .where('id', '==', Number(tokenId))
-    .get()
-    .then((coll) => {
-      const gemDetails = coll.docs.map(doc => doc.data());
-      dispatch({ type: FETCH_DATA_SUCCEEDED });
-      dispatch({
-        type: AUCTION_DETAILS_RECEIVED,
-        payload: gemDetails[0],
-      });
-    })
-    .catch(error => setError(error));
+export const getAuctionDetails = tokenId => async (dispatch) => {
+  dispatch({type: FETCH_DATA_BEGUN});
+
+  try {
+    const gemDetails = (await db.collection('stones')
+        .where('id', '==', Number(tokenId))
+        .get()
+    ).docs.map(doc => doc.data());
+
+    const imagesAndStoriesUploaded = gemDetails.map(async (gemDetail) => {
+        let gemImage = await getGemImage(gemDetail.color, gemDetail.gradeType, gemDetail.level, gemDetail.id);
+        let gemStory = await getGemStory(gemDetail.color, gemDetail.level, gemDetail.id);
+        //await Promise.all(gemImage, gemStory);
+        console.log("IMAGE::", gemImage);
+        console.log("STORY!!!!:", gemStory);
+        gemDetail.gemImage = gemImage;
+        gemDetail.story = gemStory;
+        return true;
+    });
+
+    await Promise.all(imagesAndStoriesUploaded);
+
+    console.log(222222222, gemDetails);
+
+    // if (!gemDetails[0].gemImage) {
+    //   return;
+    // }
+
+    dispatch({type: FETCH_DATA_SUCCEEDED});
+    dispatch({
+      type: AUCTION_DETAILS_RECEIVED,
+      payload: gemDetails[0],
+    });
+
+  } catch (error) {
+    setError(error)
+  }
+
 };
 
 export const updateGemOwnership = (gemId, newOwner, history, priceInWei) => async (dispatch) => {
@@ -42,7 +58,7 @@ export const updateGemOwnership = (gemId, newOwner, history, priceInWei) => asyn
     .then(doc => doc.data())
     .catch(err => setError(err));
 
-  const { name, imageURL } = newGemOwner;
+  const {name, imageURL} = newGemOwner;
 
   // update gem with new owner, name and image
   return db
@@ -60,15 +76,15 @@ export const updateGemOwnership = (gemId, newOwner, history, priceInWei) => asyn
       })
       .then(() => {
         history.push(`/profile/${userIdToLowerCase}`);
-        dispatch({ type: MODAL_GONE });
+        dispatch({type: MODAL_GONE});
       })
       .catch(err => setError(err))));
 };
 
 export const createAuction = (payload, turnLoaderOff, history) => (dispatch, getState) => {
-  const { auth, app } = getState();
+  const {auth, app} = getState();
   const currentAccount = auth.currentUserId;
-  const { gemsContractInstance } = app;
+  const {gemsContractInstance} = app;
 
   const {
     tokenId, duration, startPrice, endPrice,
@@ -77,7 +93,7 @@ export const createAuction = (payload, turnLoaderOff, history) => (dispatch, get
   // console.log('payload', payload);
 
   createAuctionHelper(tokenId, duration, startPrice, endPrice, gemsContractInstance, currentAccount)
-    .then(({ deadline, minPrice, maxPrice }) => {
+    .then(({deadline, minPrice, maxPrice}) => {
       // console.log('deadline, minPrice, maxPrice ', deadline, minPrice, maxPrice);
       db.collection('stones')
         .where('id', '==', tokenId)
@@ -238,6 +254,10 @@ export const getRestingEnergy = tokenId => (dispatch, getState) => {
   );
 };
 
+export const useMetalsToUpgrade = (dispatch, getState) => {
+
+}
+
 export function clearGemPageOnExit() {
-  return dispatch => dispatch({ type: CLEAR_GEM_PAGE });
+  return dispatch => dispatch({type: CLEAR_GEM_PAGE});
 }
