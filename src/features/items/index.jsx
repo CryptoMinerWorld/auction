@@ -15,7 +15,7 @@ import FAQ from './components/FAQ';
 import MailingList from '../../components/MailingList';
 import './animations.css';
 import {OverlapOnDesktopView, RockOverlay, TopHighlight} from './styledComponents';
-import {clearGemPageOnExit, getAuctionDetails, getRestingEnergy} from './itemActions';
+import {clearGemPageOnExit, getAuctionDetails, getRestingEnergy, upgradeGem} from './itemActions';
 import {calculateGemName} from './selectors';
 import StatsBox from './components/StatsBox';
 import {showConfirm} from '../../components/Modal';
@@ -23,6 +23,7 @@ import MobileHeader from './components/MobileHeader';
 import {setError} from '../../app/appActions';
 import {fetchLatestRestingEnergy} from './helpers';
 import UpgradeComponent from './components/UpgradeComponent';
+import {getAvailableGold, getAvailableSilver} from "../dashboard/helpers";
 
 const select = store => ({
     details: store.auction,
@@ -37,19 +38,24 @@ const select = store => ({
     dutchContract: store.app.dutchContractInstance,
     // eslint-disable-next-line
     gemContractAddress: store.app.gemsContractInstance && store.app.gemsContractInstance._address,
+    silverContract: store.app.silverContractInstance,
+    goldContract: store.app.goldContractInstance,
 });
 
 class Auction extends PureComponent {
     state = {
         restingEnergyMinutes: '',
         currentPrice: '',
+        goldAvailable: 0,
+        silverAvailable: 0,
     };
 
     async componentDidMount() {
         const {
-            match, handleGetAuctionDetails, dutchContract, gemContractAddress,
+            match, handleGetAuctionDetails, dutchContract, gemContractAddress, goldContract, silverContract, currentAccount
         } = this.props;
         console.log('HEY!');
+        console.log(match.params);
         if (match && match.params && match.params.gemId) {
             handleGetAuctionDetails(match.params.gemId);
         }
@@ -65,18 +71,54 @@ class Auction extends PureComponent {
                   .catch(error => console.warn(error));
             }
         }, 10000);
+
+        if (goldContract && goldContract.methods && currentAccount) {
+            console.log(11111111111);
+            const gold = await getAvailableGold(goldContract, currentAccount);
+            if (gold) {
+                this.setState({goldAvailable: gold});
+            }
+        }
+
+        if (silverContract && silverContract.methods && currentAccount) {
+            console.log(122222222);
+            const silver = await getAvailableSilver(silverContract, currentAccount);
+            if (silver) {
+                this.setState({silverAvailable: silver});
+            }
+        }
+
     }
 
-    componentDidUpdate(prevProps) {
-        const {gemContract, match} = this.props;
+    async componentDidUpdate(prevProps) {
+        const {gemContract, match, goldContract, silverContract, currentAccount} = this.props;
         const {restingEnergyMinutes} = this.state;
 
+        console.log("silver contract ::::::::::", silverContract);
+        console.log("CurrentAccount: ", currentAccount);
         if (gemContract && match.params.gemId && !restingEnergyMinutes) {
             fetchLatestRestingEnergy(gemContract, match.params.gemId, prevProps.web3)
               .then(latestRestingEnergyMinutes =>
                 // eslint-disable-next-line
                 this.setState({restingEnergyMinutes: latestRestingEnergyMinutes}),)
               .catch(err => console.log('error fetching resting energy', err));
+        }
+        console.log("LALALALACurrentAccount: ", currentAccount);
+
+        if (goldContract && goldContract.methods && currentAccount && (goldContract !== prevProps.goldContract || currentAccount !== prevProps.currentAccount)) {
+            console.log(11111111111);
+            const gold = await getAvailableGold(goldContract, currentAccount);
+            if (gold) {
+                this.setState({goldAvailable: gold});
+            }
+        }
+
+        if (silverContract && silverContract.methods && currentAccount && (silverContract !== prevProps.silverContract || currentAccount !== prevProps.currentAccount)) {
+            console.log(122222222);
+            const silver = await getAvailableSilver(silverContract, currentAccount);
+            if (silver) {
+                this.setState({silverAvailable: silver});
+            }
         }
     }
 
@@ -104,7 +146,7 @@ class Auction extends PureComponent {
             match,
         } = this.props;
 
-        const {restingEnergyMinutes, currentPrice} = this.state;
+        const {restingEnergyMinutes, currentPrice, goldAvailable, silverAvailable} = this.state;
         const socialShareUrl = `${process.env.REACT_APP_BASE_URL}${match.url}`;
         return (
           <div>
@@ -160,6 +202,8 @@ class Auction extends PureComponent {
                                       restingEnergyMinutes={restingEnergyMinutes}
                                       lastSoldFor={details && details.lastSoldFor && details.lastSoldFor}
                                       sourceImage={gemImage}
+                                      goldAvailable={goldAvailable}
+                                      silverAvailable={silverAvailable}
                                     />
                                 </ReactCSSTransitionGroup>
                               )}
@@ -280,7 +324,7 @@ const DisplayBoxStateMachine = (props) => {
         .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
         .join('');
 
-    let state = 'owner';
+    let state = 'viewer';
 
     if (ownerLowerCase === currentAccountLowerCase) {
         state = 'owner';

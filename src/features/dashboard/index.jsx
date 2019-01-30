@@ -35,7 +35,7 @@ import {
     getGemImage,
     getMapIndexFromCountryId,
     getNewReferralPoints,
-    getPlotCount,
+    getPlotCount, referralTracker,
 } from './helpers';
 import stateMachine from './stateMachine';
 import CountryDashboard from '../countries/components/Dashboard';
@@ -50,7 +50,6 @@ import Plot from '../../app/images/dashboard/Plot.png';
 import {EnhancedCoupon} from './components/Coupon';
 import {completedTx, ErrorTx, startTx} from '../transactions/txActions';
 import reduxStore from '../../app/store';
-import logo from "../../app/images/Profile-Image-Logo-60x60.png";
 
 const {TabPane} = Tabs;
 
@@ -153,6 +152,10 @@ class Dashboard extends Component {
     };
 
     async componentDidMount() {
+
+        console.log('PROPS is ', this.props);
+        referralTracker(this.props.location.search);
+
         this.setState({redirectPath: ''});
         const {preSaleContract, match, data, refPointsContract, goldContract, silverContract} = this.props;
         if (preSaleContract && preSaleContract.methods && match.params.userId !== 'false') {

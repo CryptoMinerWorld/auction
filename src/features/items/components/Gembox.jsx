@@ -9,10 +9,6 @@ import gem1 from '../../../app/images/icons/gem1.png';
 import gem2 from '../../../app/images/icons/gem2.png';
 import gem3 from '../../../app/images/icons/gem3.png';
 import restingEnergy from '../../../app/images/icons/EnergySymbolDull.png';
-import {createAuction, removeFromAuction} from "../itemActions";
-import {compose} from "redux";
-import connect from "react-redux/es/connect/connect";
-import {withRouter} from "react-router-dom";
 
 momentDurationFormatSetup(moment);
 
@@ -71,15 +67,26 @@ class Gembox extends PureComponent {
                   }}
                   >
                       <Nugget quality="level" value={level} gem={gem2}/>
-                      {handleUseMetals ? (
-                      <div
-                        style={{backgroundColor: '#dedede', width: '14rem', padding:'10px', margin:'0 5px', cursor:'pointer'}}
-                        onClick={() => {
-                            handleUseMetals('silver');
-                        }}
-                      >
-                          USE SILVER
-                      </div> ) : "" }
+                      {handleUseMetals ?
+                        level < 5 ? (
+                          <div
+                            style={{
+                                backgroundColor: '#dedede',
+                                width: '14rem',
+                                padding: '10px',
+                                margin: '0 5px',
+                                cursor: 'pointer'
+                            }}
+                            onClick={() => {
+                                handleUseMetals('silver');
+                            }}
+                          >
+                              USE SILVER
+                          </div>) : (
+                          <div>
+                              MAX LEVEL
+                          </div>
+                        ) : ""}
                   </div>
 
                   <div style={{
@@ -93,13 +100,24 @@ class Gembox extends PureComponent {
                   >
                       <Nugget quality="grade" value={this.gradeConverter(grade)} gem={gem1}/>
                       <Nugget quality="rate" value={rate} gem={gem3}/>
-                      {handleUseMetals ? (
-                      <div
-                        style={{backgroundColor: 'gold', width: '14rem', padding:'10px', margin:'0 5px', cursor:'pointer'}}
-                        onClick={() => {
-                            handleUseMetals('gold');
-                        }}
-                      >USE GOLD</div> ) : ""}
+                      {handleUseMetals ?
+                        grade < 6 ? (
+                          <div
+                            style={{
+                                backgroundColor: 'gold',
+                                width: '14rem',
+                                padding: '10px',
+                                margin: '0 5px',
+                                cursor: 'pointer'
+                            }}
+                            onClick={() => {
+                                handleUseMetals('gold');
+                            }}
+                          >USE GOLD</div>) : (
+                          <div>
+                              MAX GRADE
+                          </div>
+                        ) : ""}
                   </div>
               </div>
               {!mobileHeader
@@ -122,7 +140,7 @@ class Gembox extends PureComponent {
                         <p
                           className="ttu f5 mt2 o-50 white tc pt1 b pr2 measure"
                           data-testid="restingEnergy"
-                          style={{width:'25rem'}}
+                          style={{width: '25rem'}}
                         >
                             {moment
                               .duration(restingEnergyMinutes, 'minutes')

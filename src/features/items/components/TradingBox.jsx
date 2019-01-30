@@ -8,7 +8,7 @@ import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import {compose} from 'redux';
 import {daysToSeconds, ethToWei} from '../../mint/helpers';
-import {createAuction, removeFromAuction} from '../itemActions';
+import {createAuction, removeFromAuction, upgradeGem} from '../itemActions';
 import Gembox from './Gembox';
 import ProgressMeter from './ProgressMeter';
 import GiftGems from './GiftGems';
@@ -49,6 +49,22 @@ const OverlapOnDesktopView = styled.div`
   }
 `;
 
+const fixedOverlayStyle = {
+    position: 'fixed',
+      //width: '35%',
+      //maxWidth: '50rem',
+      //height: '20rem',
+      //backgroundColor: '#dedede',
+      margin: 'auto',
+  left: '0',
+  right: '0',
+  top: '0rem',
+  bottom: '0',
+  zIndex: '10',
+  display: 'flex',
+  cursor: 'pointer',
+}
+
 class TradingBox extends PureComponent {
     static propTypes = {
         tokenId: PropTypes.number.isRequired,
@@ -65,6 +81,8 @@ class TradingBox extends PureComponent {
         minPrice: PropTypes.number.isRequired,
         maxPrice: PropTypes.number.isRequired,
         sourceImage: PropTypes.string.isRequired,
+        silverAvailable: PropTypes.string,
+        goldAvailable: PropTypes.string,
     };
 
     state = {
@@ -96,6 +114,9 @@ class TradingBox extends PureComponent {
             minPrice,
             maxPrice,
             sourceImage,
+          silverAvailable,
+          goldAvailable,
+          handleUpgradeGem
         } = this.props;
         const {
             duration, startPrice, endPrice, formSubmitted, showUpgrade, useMetal,
@@ -103,26 +124,11 @@ class TradingBox extends PureComponent {
 
         return (
           <>
-
               {showUpgrade && useMetal && (
-                <div style={{
-                    position: 'fixed',
-                    //width: '35%',
-                    //maxWidth: '50rem',
-                    //height: '20rem',
-                    //backgroundColor: '#dedede',
-                    margin: 'auto',
-                    left: '0',
-                    right: '0',
-                    top: '0rem',
-                    bottom: '0',
-                    zIndex: '10',
-                    display: 'flex',
-                    cursor: 'pointer',
-                }}
+                <div style={fixedOverlayStyle}
                      onClick={() => this.setState({showUpgrade: false})}
                 >
-                    <UpgradeComponent level={level} grade={grade} metal={useMetal}/>
+                    <UpgradeComponent handleUpgradeGem={handleUpgradeGem} tokenId={tokenId} level={level} grade={grade} metal={useMetal} metalAvailable={useMetal === 'silver' ? +silverAvailable : +goldAvailable}/>
                     <div
                         // style={position: absolute
                         //     top: 0;
@@ -278,6 +284,7 @@ class TradingBox extends PureComponent {
 const actions = {
     handleCreateAuction: createAuction,
     handleRemoveGemFromAuction: removeFromAuction,
+    handleUpgradeGem: upgradeGem
 };
 
 export default compose(

@@ -21,7 +21,11 @@ import {
     SET_ERROR,
     CLEAR_ERROR,
     COUNTRY_CONTRACT_ADDED,
-    COUNTRY_SALE_ADDED, REF_POINTS_TRACKER_CONTRACT_ADDED, SILVER_CONTRACT_ADDED, GOLD_CONTRACT_ADDED,
+    COUNTRY_SALE_ADDED,
+    REF_POINTS_TRACKER_CONTRACT_ADDED,
+    SILVER_CONTRACT_ADDED,
+    GOLD_CONTRACT_ADDED,
+    WORKSHOP_CONTRACT_ADDED,
 } from './reduxConstants';
 
 const initialState = {
@@ -56,6 +60,10 @@ const appReducer = (state = initialState, action) => ({
     [GOLD_CONTRACT_ADDED]: {
         ...state,
         goldContractInstance: action.payload,
+    },
+    [WORKSHOP_CONTRACT_ADDED]: {
+      ...state,
+        workshopContractInstance: action.payload,
     },
   [MODAL_VISIBLE]: {
     ...state,

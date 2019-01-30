@@ -15,6 +15,8 @@ import stateChart from './statechart';
 import { createNewUser, notInterestedInSigningUp } from './authActions';
 import downloadMetamask from '../../app/images/download-metamask.webp';
 import downloadMetamaskPNG from '../../app/images/download-metamask.png';
+import queryString from 'query-string';
+import Cookies from 'universal-cookie';
 
 require('antd/lib/button/style/css');
 require('antd/lib/modal/style/css');
@@ -72,11 +74,13 @@ class Auth extends PureComponent {
 
   static getDerivedStateFromProps(props, state) {
     // update local state based on currentid from metamask
-    if (props.currentUser !== state.walletId) {
+
+      if (props.currentUser !== state.walletId) {
       return {
         walletId: props.currentUser,
       };
     }
+
     // Return null if the state hasn't changed
     return null;
   }

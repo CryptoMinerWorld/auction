@@ -8,7 +8,7 @@ import {
 } from './authConstants';
 
 export default function authReducer(
-  state = { currentUserId: 'Loading...', signInBox: false },
+  state = { currentUserId: null, signInBox: false },
   action,
 ) {
   if (action.type === WEB3_AVAILABLE) {

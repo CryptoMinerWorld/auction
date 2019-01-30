@@ -11,14 +11,18 @@ import {
     SET_ERROR,
     SILVER_CONTRACT_ADDED,
     WEB3_ADDED,
+    WORKSHOP_CONTRACT_ADDED,
 } from './reduxConstants';
 
 import DutchAuction from './ABI/DutchAuction.json';
 import Gems from './ABI/GemERC721.json';
 import Presale from './ABI/Presale2.json';
-import RefPointsTracker from './ABI/RefPointsTracker';
-import Gold from './ABI/GoldERC20';
-import Silver from './ABI/SilverERC20';
+import RefPointsTracker from './ABI/RefPointsTracker.json';
+import Gold from './ABI/GoldERC20.json';
+import Silver from './ABI/SilverERC20.json';
+import Workshop from './ABI/Workshop.json';
+import queryString from "query-string";
+import Cookies from "universal-cookie";
 
 const dutchAuctionABI = DutchAuction.abi;
 const gemsABI = Gems.abi;
@@ -26,6 +30,7 @@ const presaleABI = Presale.abi;
 const refPointsTrackerABI = RefPointsTracker.abi;
 const goldABI = Gold.abi;
 const silverABI = Silver.abi;
+const workshopABI = Workshop.abi;
 
 export const sendContractsToRedux = (
   dutchAuctionContractInstance,
@@ -37,7 +42,8 @@ export const sendContractsToRedux = (
   countrySaleContract,
   refPointsTrackerContract,
   silverContract,
-  goldContract
+  goldContract,
+  workshopContract
 ) => (dispatch) => {
     dispatch({type: WEB3_ADDED, payload: web3});
     dispatch({type: DUTCH_CONTRACT_ADDED, payload: dutchAuctionContractInstance});
@@ -48,10 +54,10 @@ export const sendContractsToRedux = (
     dispatch({type: REF_POINTS_TRACKER_CONTRACT_ADDED, payload: refPointsTrackerContract});
     dispatch({type: SILVER_CONTRACT_ADDED, payload: silverContract});
     dispatch({type: GOLD_CONTRACT_ADDED, payload: goldContract});
+    dispatch({type: WORKSHOP_CONTRACT_ADDED, payload: workshopContract});
 
     dispatch({type: COUNTRY_CONTRACT_ADDED, payload: countryContract});
     dispatch({type: COUNTRY_SALE_ADDED, payload: countrySaleContract});
-
 
 };
 
@@ -62,7 +68,6 @@ export const setError = (payload, title) => ({
     meta: title,
 });
 export const clearError = () => ({type: CLEAR_ERROR});
-
 
 export const instantiateContracts = async (web3, handleSendContractsToRedux, handleSetError) => {
     const currentAccountId = await web3.eth.getAccounts().then(accounts => accounts[0]);
@@ -96,8 +101,12 @@ export const instantiateContracts = async (web3, handleSendContractsToRedux, han
         from: currentAccountId,
     });
 
-    return Promise.all([dutchContract, gemsContract, currentAccountId, presaleContract, refPointsTrackerContract, silverContract, goldContract])
-      .then(([dutchAuctionContractInstance, gemsContractInstance, currentAccount, presale, refPointsTracker, silver, gold]) => {
+    const workshopContract = new web3.eth.Contract(workshopABI, process.env.REACT_APP_WORKSHOP, {
+        from: currentAccountId,
+    });
+
+    return Promise.all([dutchContract, gemsContract, currentAccountId, presaleContract, refPointsTrackerContract, silverContract, goldContract, workshopContract])
+      .then(([dutchAuctionContractInstance, gemsContractInstance, currentAccount, presale, refPointsTracker, silver, gold, workshop]) => {
           handleSendContractsToRedux(
             dutchAuctionContractInstance,
             gemsContractInstance,
@@ -106,7 +115,8 @@ export const instantiateContracts = async (web3, handleSendContractsToRedux, han
             currentAccount,
             refPointsTracker,
             silver,
-            gold
+            gold,
+            workshop
           );
       })
       .catch(error => handleSetError(error));

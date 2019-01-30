@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {useState} from 'react';
+import Icon from "antd/lib/icon";
+import {handleUpgradeNow} from "../itemActions";
 
 export default class UpgradeComponent extends React.Component {
 
@@ -11,21 +13,76 @@ export default class UpgradeComponent extends React.Component {
         6: 'AAA',
     }[gradeValue]);
 
+    price = (type, from, to) => {
+        const levelSilverCumulativeCharges = {
+            '1': 0,
+            '2': 5,
+            '3': 20,
+            '4': 65,
+            '5': 200,
+        }; //0,5,15,45,135
+        const gradeGoldCumulativeCharges = {
+            '1': 0,
+            '2': 1,
+            '3': 3,
+            '4': 7,
+            '5': 15,
+            '6': 31
+        } //0,1,2,4,8,16
+
+        let cost = 0;
+        switch(type) {
+            case 'level':
+                cost = levelSilverCumulativeCharges[to] - levelSilverCumulativeCharges[from];
+                break;
+            case 'grade':
+                cost = gradeGoldCumulativeCharges[to] - gradeGoldCumulativeCharges[from];
+                break;
+        }
+        return cost;
+    }
+
     constructor(props) {
         super(props);
         this.state = {
-            cost: 15,
-            total: 25,
-            grade: props.grade + 1,
-            level: props.level + 1,
+            cost: props.metal === 'silver' ?
+              this.price('level', props.level, props.level + 1):
+              this.price('grade', props.grade, props.grade + 1),
+            total: props.metalAvailable,
+            grade: props.metal === 'gold' ? props.grade + 1 : props.grade,
+            level: props.metal === 'silver' ? props.level + 1 : props.level,
             initialGrade: props.grade,
             initialLevel: props.level,
+            loading: false
         };
     }
 
-
     render() {
-        const {metal} = this.props;
+        const {metal, metalAvailable, handleUpgradeGem} = this.props;
+        const confirmButton = {
+            position: 'absolute',
+            bottom: '20px',
+            left: '0',
+            right: '0',
+            margin: 'auto',
+            width: '200px',
+            textAlign: 'center',
+            padding: '10px 0px',
+            backgroundColor: this.state.cost <= this.state.total ? 'magenta' : 'grey',
+            cursor: 'pointer',
+        };
+
+        const arrowButton = {
+            fontSize: '60px',
+            cursor: 'pointer',
+            WebkitUserSelect: 'none',  /* Chrome all / Safari all */
+            MozUserSelect: 'none',     /* Firefox all */
+            MsUserSelect: 'none',    /* IE 10+ */
+            userSelect: 'none',
+        };
+
+        //const [loading, setLoading] = useState(false);
+
         return (
               <div
                 onClick={(e) => {
@@ -51,40 +108,45 @@ export default class UpgradeComponent extends React.Component {
                       justifyContent: 'center',
                       alignItems: 'center'
                   }}>
-                      <div style={{fontSize: '60px', cursor: 'pointer'}}
+                      <div style={arrowButton}
                            onClick={() => {
                                switch (metal) {
                                    case 'silver':
                                        if (this.state.level < 5) {
                                            this.setState({
                                                level: this.state.level + 1,
-                                               cost: this.state.cost + 5
+                                               cost: this.price('level', this.state.initialLevel, this.state.level + 1)
                                            });
                                        }
                                        break;
                                    case 'gold':
                                        if (this.state.grade < 6) {
-                                           this.setState({grade: this.state.grade + 1, cost: this.state.cost + 5});
+                                           this.setState({
+                                               grade: this.state.grade + 1,
+                                               cost: this.price('grade', this.state.initialGrade, this.state.grade + 1)});
                                        }
                                        break;
                                }
                            }}>
                           ▲
                       </div>
-                      <div style={{fontSize: '60px', cursor: 'pointer'}}
+                      <div style={arrowButton}
                            onClick={() => {
                                switch (metal) {
                                    case 'silver':
                                        if (this.state.level > this.state.initialLevel + 1) {
                                            this.setState({
                                                level: this.state.level - 1,
-                                               cost: this.state.cost - 5
+                                               cost: this.price('level', this.state.initialLevel, this.state.level -1)
                                            });
                                        }
                                        break;
                                    case 'gold':
                                        if (this.state.grade > this.state.initialGrade + 1) {
-                                           this.setState({grade: this.state.grade - 1, cost: this.state.cost - 5});
+                                           this.setState({
+                                               grade: this.state.grade - 1,
+                                               cost: this.price('grade', this.state.initialGrade, this.state.grade - 1)
+                                           });
                                        }
                                        break;
                                }
@@ -98,7 +160,7 @@ export default class UpgradeComponent extends React.Component {
                           alignItems: 'flex-end',
                           fontSize: '20px'
                       }}>
-                          <span>COST</span>
+                          <span>COST ({metal})</span>
                           <span>TOTAL</span>
                       </div>
                       <div style={{
@@ -110,25 +172,25 @@ export default class UpgradeComponent extends React.Component {
                       }}>
                           <span>{this.state.cost}</span>
                           <span>/</span>
-                          <span>26</span>
+                          <span>{metalAvailable}</span>
                       </div>
                       <div style={{flex: '1'}}></div>
                   </div>
-                  <div style={{
-                      position: 'absolute',
-                      bottom: '20px',
-                      left: '0',
-                      right: '0',
-                      margin: 'auto',
-                      width: '200px',
-                      textAlign: 'center',
-                      padding: '10px 0px',
-                      backgroundColor: this.state.cost <= this.state.total ? 'magenta' : 'grey'
-                  }}>
+                  <div
+                    style={confirmButton}
+                    onClick={() => {
+                        this.setState({loading: true});
+
+                        handleUpgradeGem(this.props.tokenId, this.state.level - this.state.initialLevel, this.state.grade - this.state.initialGrade, (loading)=>{this.setState({loading:loading})});
+                    }}
+                  >
+                      {this.state.loading && <Icon type="loading" theme="outlined" className="pr3" />
+                          }
                       CONFIRM
                   </div>
               </div>
 
         );
+
     }
 }

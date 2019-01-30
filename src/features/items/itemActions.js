@@ -261,3 +261,43 @@ export const useMetalsToUpgrade = (dispatch, getState) => {
 export function clearGemPageOnExit() {
   return dispatch => dispatch({type: CLEAR_GEM_PAGE});
 }
+
+export const upgradeGem = (_tokenId, levelUp, gradeUp, setLoading) => (dispatch, getState) => {
+    console.log(333333333333, 'upgrading...');
+    const workshopContractInstance = getState().app.workshopContractInstance;
+    console.log('Contract: ', workshopContractInstance);
+    const currentUser = getState().app.currentAccount;
+    console.log('TX start');
+    return workshopContractInstance.methods
+      .upgrade(_tokenId, levelUp, gradeUp)
+      .send()
+      .on('transactionHash', (hash) => {
+          console.log('transactionHash: ', hash);
+          store.dispatch(
+            startTx({
+                hash,
+                currentUser,
+                method: 'upgrade',
+                tokenId: _tokenId,
+            }),
+          );
+      })
+      .on('receipt', (receipt) => {
+          console.log('TX receipt: ', receipt);
+          store.dispatch(completedTx(receipt));
+          //dispatch(updateGemDetail(_tokenId, _from, history, priceInWei));
+          setLoading(false);
+      })
+      .on('error', (err) => {
+          console.log('TX error');
+          store.dispatch(ErrorTx(err));
+          setLoading(false);
+          // dispatch({
+          //   type: MODAL_GONE,
+          // });
+          // dispatch({
+          //   type: FETCH_DATA_FAILED,
+          //   payload: JSON.stringify(err),
+          // });
+      });
+};
