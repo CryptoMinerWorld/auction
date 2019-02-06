@@ -36,7 +36,7 @@ const client = new ApolloClient({
 
 // @notice these are all the actions fired when the app starts up
 store.dispatch(getCurrentUser());
-store.dispatch(getAuctions());
+//store.dispatch(getAuctions());
 
 ReactDOM.render(
   // eslint-disable-next-line

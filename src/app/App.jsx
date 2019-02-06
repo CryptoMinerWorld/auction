@@ -27,7 +27,10 @@ import RefPointsTracker from './ABI/RefPointsTracker';
 import Silver from './ABI/SilverERC20';
 import Gold from './ABI/GoldERC20';
 import Workshop from './ABI/Workshop';
+import SilverSale from './ABI/Workshop';
 import {resolveAnyPendingTx} from '../features/transactions/helpers';
+import GemService from "./services/GemService";
+import AuctionService from "./services/AuctionService";
 
 
 require('antd/lib/notification/style/css');
@@ -56,6 +59,7 @@ const refPointsTrackerABI = RefPointsTracker.abi;
 const silverABI = Silver.abi;
 const goldABI = Gold.abi;
 const workshopABI = Workshop.abi;
+const silverSaleABI = SilverSale.abi;
 
 const StickyHeader = styled.div`
   position: -webkit-sticky; /* Safari */
@@ -171,6 +175,14 @@ class App extends Component {
           },
         );
 
+        const silverSaleContract = new web3.eth.Contract(
+          silverSaleABI,
+          process.env.REACT_APP_SILVER_SALE,
+          {
+              from: currentAccountId,
+          },
+        );
+
 
         Promise.all([
             dutchContract,
@@ -183,6 +195,7 @@ class App extends Component {
             silverContract,
             goldContract,
             workshopContract,
+          silverSaleContract
         ])
           .then(
             ([
@@ -195,7 +208,8 @@ class App extends Component {
                  refPointsTrackerContract,
                  silverContract,
                  goldContract,
-              workshopContract
+              workshopContract,
+              silverSaleContract
              ]) => {
                 client.writeData({
                     data: {
@@ -211,6 +225,10 @@ class App extends Component {
                   web3,
                   countryContract,
                 );
+
+                const gemService = new GemService(gemsContractInstance, web3);
+                const auctionService = new AuctionService(dutchAuctionContractInstance, gemsContractInstance);
+
                 handleSendContractsToRedux(
                   dutchAuctionContractInstance,
                   gemsContractInstance,
@@ -223,6 +241,9 @@ class App extends Component {
                   silverContract,
                   goldContract,
                   workshopContract,
+                  silverSaleContract,
+                  gemService,
+                  auctionService
                   //buySilverContract,
                   //buyGoldContract
 
@@ -246,6 +267,7 @@ class App extends Component {
     render() {
         const {visible, error, errorTitle} = this.props;
         const {font} = this.state;
+        console.warn('----------> APP starts <----------');
         return (
           <>
               {/* <React.StrictMode> */}

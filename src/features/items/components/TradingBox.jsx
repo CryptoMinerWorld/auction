@@ -67,20 +67,20 @@ const fixedOverlayStyle = {
 
 class TradingBox extends PureComponent {
     static propTypes = {
-        tokenId: PropTypes.number.isRequired,
+        //tokenId: PropTypes.number.isRequired,
         handleCreateAuction: PropTypes.func.isRequired,
         handleRemoveGemFromAuction: PropTypes.func.isRequired,
-        auctionIsLive: PropTypes.bool.isRequired,
+        //auctionIsLive: PropTypes.bool.isRequired,
         history: PropTypes.shape({}).isRequired,
-        level: PropTypes.number.isRequired,
-        grade: PropTypes.number.isRequired,
-        rate: PropTypes.number.isRequired,
-        restingEnergyMinutes: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-        name: PropTypes.string.isRequired,
-        currentPrice: PropTypes.number.isRequired,
-        minPrice: PropTypes.number.isRequired,
-        maxPrice: PropTypes.number.isRequired,
-        sourceImage: PropTypes.string.isRequired,
+        //level: PropTypes.number.isRequired,
+        //grade: PropTypes.number.isRequired,
+        //rate: PropTypes.number.isRequired,
+        //restingEnergyMinutes: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+        //name: PropTypes.string.isRequired,
+        //currentPrice: PropTypes.number.isRequired,
+        //minPrice: PropTypes.number.isRequired,
+        //maxPrice: PropTypes.number.isRequired,
+        //sourceImage: PropTypes.string.isRequired,
         silverAvailable: PropTypes.string,
         goldAvailable: PropTypes.string,
     };
@@ -100,20 +100,22 @@ class TradingBox extends PureComponent {
 
     render() {
         const {
+            gem,
+            //gemDetails,
             handleCreateAuction,
             handleRemoveGemFromAuction,
-            tokenId,
-            auctionIsLive,
+            //tokenId,
+            //auctionIsLive,
             history,
-            level,
-            grade,
-            rate,
-            restingEnergyMinutes,
-            name,
-            currentPrice,
-            minPrice,
-            maxPrice,
-            sourceImage,
+            //level,
+            //grade,
+            //rate,
+            //restingEnergyMinutes,
+            //name,
+            //currentPrice,
+            //minPrice,
+            //maxPrice,
+            //sourceImage,
           silverAvailable,
           goldAvailable,
           handleUpgradeGem
@@ -128,7 +130,7 @@ class TradingBox extends PureComponent {
                 <div style={fixedOverlayStyle}
                      onClick={() => this.setState({showUpgrade: false})}
                 >
-                    <UpgradeComponent handleUpgradeGem={handleUpgradeGem} tokenId={tokenId} level={level} grade={grade} metal={useMetal} metalAvailable={useMetal === 'silver' ? +silverAvailable : +goldAvailable}/>
+                    <UpgradeComponent metal = {useMetal} metalAvailable = {useMetal === 'silver' ? +silverAvailable : +goldAvailable}  {...this.props}/>
                     <div
                         // style={position: absolute
                         //     top: 0;
@@ -155,20 +157,17 @@ class TradingBox extends PureComponent {
                   <div className="white pa3">
                       <div className="flex col jcc ">
                           <h1 className="tc pb3 b white" style={{wordBreak: 'break-all'}} data-testid="gemName">
-                              {name}
+                              {gem.name}
                           </h1>
                           <div className="mt3"/>
                           <Gembox
-                            level={level}
-                            grade={grade}
-                            rate={rate}
-                            restingEnergyMinutes={restingEnergyMinutes}
+                            gem={gem}
                             handleUseMetals={(metalName) => {
                                 this.setState({showUpgrade: true, useMetal: metalName});
                             }}
                           />
 
-                          {auctionIsLive ? (
+                          {gem.auctionIsLive ? (
                             <div className="pa5 flex jcc col">
                                 <div className="flex jcc">
                                     <div className="w-100 w5-ns h3 center mt4">
@@ -176,7 +175,7 @@ class TradingBox extends PureComponent {
                                           type="danger"
                                           onClick={() => {
                                               this.setState({formSubmitted: true});
-                                              handleRemoveGemFromAuction(Number(tokenId), history, this.turnLoaderOff);
+                                              handleRemoveGemFromAuction(Number(gem.id), history, this.turnLoaderOff);
                                           }}
                                           data-testid="removeGemButton"
                                           className="b"
@@ -195,9 +194,9 @@ class TradingBox extends PureComponent {
                                 </div>
 
                                 <ProgressMeter
-                                  currentPrice={currentPrice}
-                                  minPrice={minPrice}
-                                  maxPrice={maxPrice}
+                                  currentPrice={gem.currentPrice}
+                                  minPrice={gem.minPrice}
+                                  maxPrice={gem.maxPrice}
                                 />
                             </div>
                           ) : (
@@ -236,7 +235,7 @@ class TradingBox extends PureComponent {
                                           className="b"
                                           disabled={
                                               !(
-                                                tokenId
+                                                gem.id
                                                 && duration
                                                 && startPrice
                                                 && startPrice > endPrice
@@ -245,7 +244,7 @@ class TradingBox extends PureComponent {
                                           }
                                           onClick={() => {
                                               const payload = {
-                                                  tokenId: Number(tokenId),
+                                                  tokenId: Number(gem.id),
                                                   duration: daysToSeconds(duration),
                                                   startPrice: ethToWei(startPrice),
                                                   endPrice: ethToWei(endPrice),
@@ -270,7 +269,7 @@ class TradingBox extends PureComponent {
                                         </ColourButton>
                                     </div>
                                 </div>
-                                <GiftGems gemName={name} sourceImage={sourceImage}/>
+                                <GiftGems gemName={gem.name} sourceImage={gem.image}/>
                             </div>
                           )}
                       </div>

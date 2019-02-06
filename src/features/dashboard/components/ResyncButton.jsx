@@ -5,7 +5,7 @@ import { withStateMachine } from 'react-automata';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import Icon from 'antd/lib/icon';
-import { updateGemDetails } from '../dashboardActions';
+//import { updateGemDetails } from '../dashboardActions';
 
 export const statechart = {
   initial: 'start',
@@ -39,8 +39,6 @@ const select = store => ({
 
 class ReSync extends PureComponent {
   static propTypes = {
-    transition: PropTypes.func.isRequired,
-    machineState: PropTypes.shape({}).isRequired,
     userId: PropTypes.string.isRequired,
     gemContract: PropTypes.shape({}).isRequired,
     userName: PropTypes.string,
@@ -57,28 +55,26 @@ class ReSync extends PureComponent {
 
   };
 
-  updateGemDetails = async () => {
-    const {
-      handleUpdateGemDetails,
-      transition,
-      userId,
-      gemContract,
-      userName,
-      userImage,
-    } = this.props;
-
-    handleUpdateGemDetails(userId, gemContract, userName, userImage)
-      .then(result => transition('SUCCESS', { success: result }))
-      .catch(error => transition('FAILURE', {
-        // eslint-disable-next-line
-          error: error.message_ || error,
-      }));
-  };
+  // updateGemDetails = async () => {
+  //   const {
+  //     handleUpdateGemDetails,
+  //     transition,
+  //     userId,
+  //     gemContract,
+  //     userName,
+  //     userImage,
+  //   } = this.props;
+  //
+  //   handleUpdateGemDetails(userId, gemContract, userName, userImage)
+  //     .then(result => transition('SUCCESS', { success: result }))
+  //     .catch(error => transition('FAILURE', {
+  //       // eslint-disable-next-line
+  //         error: error.message_ || error,
+  //     }));
+  // };
 
   render() {
     const {
-      transition,
-      machineState,
       userId,
       gemContract,
       userName,
@@ -89,10 +85,10 @@ class ReSync extends PureComponent {
 
     return (
       <div className="flex aic">
-        <div className="flex aic">
-          {machineState.value === 'error' && error && <p className="red pr4 ma0">{error}</p>}
-          {machineState.value === 'start' && success && <p className="green pr4 ma0">{success}</p>}
-        </div>
+        {/*<div className="flex aic">*/}
+          {/*{machineState.value === 'error' && error && <p className="red pr4 ma0">{error}</p>}*/}
+          {/*{machineState.value === 'start' && success && <p className="green pr4 ma0">{success}</p>}*/}
+        {/*</div>*/}
         {userId
           && gemContract
           && userName
@@ -112,7 +108,7 @@ class ReSync extends PureComponent {
 }
 
 const actions = {
-  handleUpdateGemDetails: updateGemDetails,
+  //handleUpdateGemDetails: updateGemDetails,
 };
 
 export default compose(
@@ -120,7 +116,7 @@ export default compose(
     select,
     actions,
   ),
-  withStateMachine(statechart),
+  //withStateMachine(statechart),
 )(ReSync);
 
 export const TestReSync = withStateMachine(statechart)(ReSync);

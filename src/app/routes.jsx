@@ -35,7 +35,9 @@ const Routes = props => (
       <Route path="/market" component={Marketplace}/>
       <Route path="/sale" render={() => <Sale {...props} />}/>
       <Route path="/mint" render={() => <CreateAuction {...props} />}/>
-      <Route path="/profile/:userId" render={() => <Dashboard {...props} />}/>
+      <Route path="/profile/:userId" render={() => {
+        console.warn('----------> Dashboard route starts <---------');
+        return (<Dashboard {...props} />)}}/>
       <Route path="/gem/:gemId" render={() => <Items {...props} />}/>
       <Route path="/map" render={() => <Map {...props} />}/>
   </Fragment>

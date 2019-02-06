@@ -12,16 +12,11 @@ const Triangle = styled.div`
 `;
 
 class MobileHeader extends PureComponent {
-  static propTypes = {
-    currentPrice: PropTypes.string.isRequired,
-    level: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  };
+  static propTypes = {};
 
   render() {
     const {
-      currentPrice, level, grade, rate,
+      gem
     } = this.props;
     return (
       <div className="flex-s dn-ns jca bg-base shadow-1">
@@ -36,14 +31,14 @@ price
             </small>
             <p className="white f3 tc">
 Ξ
-              {Math.round(currentPrice * 100) / 100}
+              {gem && Math.round(gem.currentPrice * 100) / 100}
             </p>
           </div>
           <Triangle />
         </div>
 
         <div className="w-100">
-          <Gembox level={level} grade={grade} rate={rate} styling="w-60 fr mr6-ns" />
+          {gem && <Gembox gem={gem} styling="w-60 fr mr6-ns" />}
         </div>
       </div>
     );

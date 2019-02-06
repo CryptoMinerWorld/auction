@@ -44,21 +44,22 @@ export default class UpgradeComponent extends React.Component {
 
     constructor(props) {
         super(props);
+        console.log('UPGRADE PROPS: ', props.gem);
         this.state = {
             cost: props.metal === 'silver' ?
-              this.price('level', props.level, props.level + 1):
-              this.price('grade', props.grade, props.grade + 1),
+              this.price('level', props.gem.level, props.gem.level + 1):
+              this.price('grade', props.gem.gradeType, props.gem.gradeType + 1),
             total: props.metalAvailable,
-            grade: props.metal === 'gold' ? props.grade + 1 : props.grade,
-            level: props.metal === 'silver' ? props.level + 1 : props.level,
-            initialGrade: props.grade,
-            initialLevel: props.level,
+            gradeType: props.metal === 'gold' ? props.gem.gradeType + 1 : props.gem.gradeType,
+            level: props.metal === 'silver' ? props.gem.level + 1 : props.gem.level,
+            initialGrade: props.gem.gradeType,
+            initialLevel: props.gem.level,
             loading: false
         };
     }
 
     render() {
-        const {metal, metalAvailable, handleUpgradeGem} = this.props;
+        const {metal, metalAvailable, handleUpgradeGem, gem} = this.props;
         const confirmButton = {
             position: 'absolute',
             bottom: '20px',
@@ -98,7 +99,7 @@ export default class UpgradeComponent extends React.Component {
                         (<span style={{fontSize: '120px'}}>{this.state.level}</span>) : ""
                       }
                       {metal === 'gold' ?
-                        (<span style={{fontSize: '80px'}}>{this.gradeConverter(this.state.grade)}</span>) : ""
+                        (<span style={{fontSize: '80px'}}>{this.gradeConverter(this.state.gradeType)}</span>) : ""
                       }
                   </div>
                   <div style={{
@@ -120,10 +121,10 @@ export default class UpgradeComponent extends React.Component {
                                        }
                                        break;
                                    case 'gold':
-                                       if (this.state.grade < 6) {
+                                       if (this.state.gradeType < 6) {
                                            this.setState({
-                                               grade: this.state.grade + 1,
-                                               cost: this.price('grade', this.state.initialGrade, this.state.grade + 1)});
+                                               gradeType: this.state.gradeType + 1,
+                                               cost: this.price('grade', this.state.initialGrade, this.state.gradeType + 1)});
                                        }
                                        break;
                                }
@@ -142,10 +143,10 @@ export default class UpgradeComponent extends React.Component {
                                        }
                                        break;
                                    case 'gold':
-                                       if (this.state.grade > this.state.initialGrade + 1) {
+                                       if (this.state.gradeType > this.state.initialGrade + 1) {
                                            this.setState({
-                                               grade: this.state.grade - 1,
-                                               cost: this.price('grade', this.state.initialGrade, this.state.grade - 1)
+                                               gradeType: this.state.gradeType - 1,
+                                               cost: this.price('grade', this.state.initialGrade, this.state.gradeType - 1)
                                            });
                                        }
                                        break;
@@ -180,8 +181,7 @@ export default class UpgradeComponent extends React.Component {
                     style={confirmButton}
                     onClick={() => {
                         this.setState({loading: true});
-
-                        handleUpgradeGem(this.props.tokenId, this.state.level - this.state.initialLevel, this.state.grade - this.state.initialGrade, (loading)=>{this.setState({loading:loading})});
+                        handleUpgradeGem(this.props.gem, this.state.level - this.state.initialLevel, this.state.gradeType - this.state.initialGrade, (loading)=>{this.setState({loading:loading})});
                     }}
                   >
                       {this.state.loading && <Icon type="loading" theme="outlined" className="pr3" />

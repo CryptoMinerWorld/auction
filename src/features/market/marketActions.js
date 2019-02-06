@@ -38,6 +38,7 @@ export const getAuctions = () => async (dispatch) => {
     dispatch({ type: FETCH_NEW_AUCTIONS_SUCCEEDED });
     dispatch({ type: NEW_AUCTIONS_RECEIVED, payload: auctions });
   } catch (err) {
+      console.log('FUCK');
   dispatch({ type: FETCH_NEW_AUCTIONS_FAILED, payload: err });
   }
 

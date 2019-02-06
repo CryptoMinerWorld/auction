@@ -34,7 +34,7 @@ const gradientAndShape = {
 class StatsBox extends PureComponent {
   render() {
     const {
-      level, grade, rate, name, restingEnergyMinutes, lastSoldFor,
+      gem, lastSoldFor,
     } = this.props;
 
     return (
@@ -50,15 +50,12 @@ class StatsBox extends PureComponent {
         <TopHighLight style={tophighlight} />
         <div className="white pa3">
           <h1 className="tc pb3 b white" style={{ wordBreak: 'break-all' }} data-testid="gemName">
-            {name}
+            {gem.name}
           </h1>
 
           <div className="mv3" />
           <Gembox
-            level={level}
-            grade={grade}
-            rate={rate}
-            restingEnergyMinutes={restingEnergyMinutes}
+            gem={gem}
           />
 
           {lastSoldFor ? (
@@ -80,17 +77,9 @@ class StatsBox extends PureComponent {
 export default StatsBox;
 
 StatsBox.propTypes = {
-  restingEnergyMinutes: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  level: PropTypes.number,
-  grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  name: PropTypes.string.isRequired,
   lastSoldFor: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
 };
 
 StatsBox.defaultProps = {
   lastSoldFor: false,
-  level: 1,
-  grade: 1,
-  rate: 1,
 };

@@ -1,10 +1,11 @@
 import {
+    AUCTION_SERVICE_ADDED,
     CLEAR_ERROR,
     COUNTRY_CONTRACT_ADDED,
     COUNTRY_SALE_ADDED,
     CURRENT_ACCOUNT_ADDED,
     DUTCH_CONTRACT_ADDED,
-    GEM_CONTRACT_ADDED,
+    GEM_CONTRACT_ADDED, GEM_SERVICE_ADDED,
     GOLD_CONTRACT_ADDED,
     PRESALE_CONTRACT_ADDED,
     REF_POINTS_TRACKER_CONTRACT_ADDED,
@@ -21,8 +22,11 @@ import RefPointsTracker from './ABI/RefPointsTracker.json';
 import Gold from './ABI/GoldERC20.json';
 import Silver from './ABI/SilverERC20.json';
 import Workshop from './ABI/Workshop.json';
+import SilverSale from './ABI/Workshop.json';
 import queryString from "query-string";
 import Cookies from "universal-cookie";
+import GemService from './services/GemService';
+import AuctionService from './services/AuctionService';
 
 const dutchAuctionABI = DutchAuction.abi;
 const gemsABI = Gems.abi;
@@ -31,6 +35,7 @@ const refPointsTrackerABI = RefPointsTracker.abi;
 const goldABI = Gold.abi;
 const silverABI = Silver.abi;
 const workshopABI = Workshop.abi;
+const silverSaleABI = SilverSale.abi;
 
 export const sendContractsToRedux = (
   dutchAuctionContractInstance,
@@ -43,8 +48,14 @@ export const sendContractsToRedux = (
   refPointsTrackerContract,
   silverContract,
   goldContract,
-  workshopContract
+  workshopContract,
+  silverSaleContract,
+  gemService,
+  auctionService
 ) => (dispatch) => {
+
+    console.log('App Actions gem service: ', gemService);
+
     dispatch({type: WEB3_ADDED, payload: web3});
     dispatch({type: DUTCH_CONTRACT_ADDED, payload: dutchAuctionContractInstance});
     dispatch({type: GEM_CONTRACT_ADDED, payload: gemsContractInstance});
@@ -55,9 +66,13 @@ export const sendContractsToRedux = (
     dispatch({type: SILVER_CONTRACT_ADDED, payload: silverContract});
     dispatch({type: GOLD_CONTRACT_ADDED, payload: goldContract});
     dispatch({type: WORKSHOP_CONTRACT_ADDED, payload: workshopContract});
+    dispatch({type: WORKSHOP_CONTRACT_ADDED, payload: silverSaleContract});
 
     dispatch({type: COUNTRY_CONTRACT_ADDED, payload: countryContract});
     dispatch({type: COUNTRY_SALE_ADDED, payload: countrySaleContract});
+
+    dispatch({type: GEM_SERVICE_ADDED, payload: gemService});
+    dispatch({type: AUCTION_SERVICE_ADDED, payload: auctionService});
 
 };
 
@@ -105,8 +120,17 @@ export const instantiateContracts = async (web3, handleSendContractsToRedux, han
         from: currentAccountId,
     });
 
-    return Promise.all([dutchContract, gemsContract, currentAccountId, presaleContract, refPointsTrackerContract, silverContract, goldContract, workshopContract])
-      .then(([dutchAuctionContractInstance, gemsContractInstance, currentAccount, presale, refPointsTracker, silver, gold, workshop]) => {
+    const silverSaleContract = new web3.eth.Contract(silverSaleABI, process.env.REACT_APP_SILVER_SALE, {
+        from: currentAccountId,
+    });
+
+    return Promise.all([dutchContract, gemsContract, currentAccountId, presaleContract, refPointsTrackerContract, silverContract, goldContract, workshopContract, silverSaleContract])
+      .then(([dutchAuctionContractInstance, gemsContractInstance, currentAccount, presale, refPointsTracker, silver, gold, workshop, silverSale]) => {
+
+          const gemService = new GemService(gemsContractInstance, web3);
+          const auctionService = new AuctionService(dutchAuctionContractInstance, gemsContractInstance);
+          console.warn('GEM SERVICE: ', gemService);
+
           handleSendContractsToRedux(
             dutchAuctionContractInstance,
             gemsContractInstance,
@@ -116,7 +140,10 @@ export const instantiateContracts = async (web3, handleSendContractsToRedux, han
             refPointsTracker,
             silver,
             gold,
-            workshop
+            workshop,
+            silverSale,
+            gemService,
+            auctionService
           );
       })
       .catch(error => handleSetError(error));

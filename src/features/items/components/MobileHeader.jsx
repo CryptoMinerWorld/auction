@@ -15,30 +15,19 @@ const Triangle = styled.div`
 `;
 
 const select = store => ({
-  rate: store.auction && store.auction.rate,
-  grade: store.auction && store.auction.gradeType,
-  level: store.auction && store.auction.level,
-  currentPrice: store.auction && store.auction.currentPrice,
 });
 
 class MobileHeader extends PureComponent {
   static propTypes = {
-    currentPrice: PropTypes.number,
-    level: PropTypes.number,
-    grade: PropTypes.number,
-    rate: PropTypes.number,
   };
 
   static defaultProps = {
-    currentPrice: 1,
-    level: 1,
-    grade: 1,
-    rate: 1,
+
   };
 
   render() {
     const {
-      currentPrice, level, grade, rate,
+      gem
     } = this.props;
     return (
       <div className="flex-s dn-ns jca bg-base shadow-1">
@@ -53,14 +42,14 @@ price
             </small>
             <p className="white f3 tc">
 Ξ
-              {Math.round(weiToEth(currentPrice) * 100) / 100}
+              {gem && Math.round(weiToEth(gem.currentPrice) * 100) / 100}
             </p>
           </div>
           <Triangle />
         </div>
 
         <div className="w-100">
-          <Gembox level={level} grade={grade} rate={rate} styling="w-60 fr mr6-ns" mobileHeader />
+            {gem && <Gembox gem={gem} styling="w-60 fr mr6-ns" mobileHeader />}
         </div>
       </div>
     );

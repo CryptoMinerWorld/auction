@@ -22,7 +22,7 @@ const Cards = ({ auction }) => {
       }}
     >
       <figure className="ma0 pa0">
-        <img src={auction.gemImage} alt="gem" className="ma0 pa3 pb0" />
+        <img src={auction.image} alt="gem" className="ma0 pa3 pb0" />
         <figcaption hidden>{auction.quality}</figcaption>
       </figure>
       <Progress

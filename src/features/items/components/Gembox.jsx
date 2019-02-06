@@ -1,33 +1,25 @@
 import React, {PureComponent} from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-// import formatDistance from 'date-fns/formatDistance';
-// import subMinutes from 'date-fns/subMinutes';
+import formatDistance from 'date-fns/formatDistance';
+import subMinutes from 'date-fns/subMinutes';
 import moment from 'moment-timezone';
 import momentDurationFormatSetup from 'moment-duration-format';
-import gem1 from '../../../app/images/icons/gem1.png';
-import gem2 from '../../../app/images/icons/gem2.png';
-import gem3 from '../../../app/images/icons/gem3.png';
+import gemBlue from '../../../app/images/icons/gem1.png';
+import gemOrange from '../../../app/images/icons/gem2.png';
+import gemPurple from '../../../app/images/icons/gem3.png';
 import restingEnergy from '../../../app/images/icons/EnergySymbolDull.png';
 
 momentDurationFormatSetup(moment);
 
 class Gembox extends PureComponent {
     static propTypes = {
-        level: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-        grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-        rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         styling: PropTypes.string,
         mobileHeader: PropTypes.bool,
-        restingEnergyMinutes: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     };
 
     static defaultProps = {
         styling: '',
-        level: 2,
-        grade: 2,
-        rate: 2,
-        restingEnergyMinutes: null,
         mobileHeader: false,
     };
 
@@ -40,18 +32,18 @@ class Gembox extends PureComponent {
         6: 'AAA',
     }[gradeValue]);
 
-    // restingEnergyConverter = (restingEnergyMinutes) => {
-    //   const now = Date.now();
-    //   const nowMinusMinutes = subMinutes(now, restingEnergyMinutes);
-    //   const differenceInWords = formatDistance(nowMinusMinutes, now, {
-    //     includeSeconds: true,
-    //   });
-    //   return differenceInWords;
-    // };
+    restingEnergyConverter = (restingEnergyMinutes) => {
+      const now = Date.now();
+      const nowMinusMinutes = subMinutes(now, restingEnergyMinutes);
+      const differenceInWords = formatDistance(nowMinusMinutes, now, {
+        includeSeconds: true,
+      });
+      return differenceInWords;
+    };
 
     render() {
         const {
-            level, grade, rate, styling, mobileHeader, restingEnergyMinutes, handleUseMetals
+            gem, styling, mobileHeader, handleUseMetals
         } = this.props;
 
         return (
@@ -66,9 +58,9 @@ class Gembox extends PureComponent {
                       padding: '0 10px'
                   }}
                   >
-                      <Nugget quality="level" value={level} gem={gem2}/>
+                      <Nugget quality="level" value={gem.level} gemImage={gemOrange}/>
                       {handleUseMetals ?
-                        level < 5 ? (
+                        gem.level < 5 ? (
                           <div
                             style={{
                                 backgroundColor: '#dedede',
@@ -98,10 +90,10 @@ class Gembox extends PureComponent {
                       margin: '20px 0 10px 0'
                   }}
                   >
-                      <Nugget quality="grade" value={this.gradeConverter(grade)} gem={gem1}/>
-                      <Nugget quality="rate" value={rate} gem={gem3}/>
+                      <Nugget quality="grade" value={this.gradeConverter(gem.gradeType)} gemImage={gemBlue}/>
+                      <Nugget quality="rate" value={gem.rate} gemImage={gemPurple}/>
                       {handleUseMetals ?
-                        grade < 6 ? (
+                        gem.gradeType < 6 ? (
                           <div
                             style={{
                                 backgroundColor: 'gold',
@@ -121,8 +113,8 @@ class Gembox extends PureComponent {
                   </div>
               </div>
               {!mobileHeader
-              && grade >= 4
-              && restingEnergyMinutes && (
+              && gem.gradeType >= 4
+              && gem.restingEnergyMinutes && (
                 <div
                   className="w-100"
                   style={{
@@ -134,16 +126,13 @@ class Gembox extends PureComponent {
                 >
                     <div className="flex jcc aic w100">
                         <img src={restingEnergy} alt="Resting Energy" className="h3"/>
-                        {/* <p >
-                  {this.restingEnergyConverter(restingEnergyMinutes)}
-                </p> */}
                         <p
                           className="ttu f5 mt2 o-50 white tc pt1 b pr2 measure"
                           data-testid="restingEnergy"
                           style={{width: '25rem'}}
                         >
                             {moment
-                              .duration(restingEnergyMinutes, 'minutes')
+                              .duration(gem.restingEnergyMinutes, 'minutes')
                               .format('w [weeks], d [days], h [hours], m [minutes]')}
                         </p>
                     </div>
@@ -192,17 +181,17 @@ Gem.defaultProps = {
     amount: 1,
 };
 
-const Nugget = ({quality, value, gem}) => (
+const Nugget = ({quality, value, gemImage}) => (
   <div>
       <small className="ttu white dn-ns">{quality}</small>
-      <Gem quality={quality} image={gem} amount={value}/>
+      <Gem quality={quality} image={gemImage} amount={value}/>
   </div>
 );
 
 Nugget.propTypes = {
     quality: PropTypes.string.isRequired,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    gem: PropTypes.string.isRequired,
+    gemImage: PropTypes.string.isRequired,
 };
 
 Nugget.defaultProps = {

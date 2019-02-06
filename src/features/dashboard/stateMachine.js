@@ -47,7 +47,7 @@ export default {
       },
       states: {
         loading: {
-          onEntry: 'loadDataFromUrlIdentifier',
+          onEntry: 'handleGetUserGems',
           on: {
             ERROR_FETCHING_GEMS: 'error',
             GOT_USER_GEMS: 'ideal',

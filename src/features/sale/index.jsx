@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {compose, lifecycle} from 'recompose';
 import Gold from '../../app/images/dashboard/Gold.png';
 import Silver from '../../app/images/dashboard/Silver.png';
+import buyNowImage from "../../app/images/pinkBuyNowButton.png";
 
 
 const select = store => ({
@@ -63,7 +64,14 @@ class Sale extends Component {
 
         const buyButton = {
             flex: '4',
-            backgroundColor: 'magenta',
+            backgroundImage: 'url('+buyNowImage+')',
+            //backgroundColor: 'magenta',
+            backgroundPosition: 'center center',
+            width:'100%',
+            height: '100%',
+            textAlign: 'center',
+            backgroundSize: 'contain',
+            backgroundRepeat: 'no-repeat',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',

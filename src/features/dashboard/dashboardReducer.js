@@ -29,7 +29,7 @@ export default function dashboardReducer(
     gemsLoading: true,
     gemsLoadingError: false,
     userGems: [],
-    filter: [],
+    userGemsPage: [],
     sortBox: true,
     paginate: [],
   },
@@ -43,11 +43,11 @@ export default function dashboardReducer(
   if (action.type === USER_GEMS_RETRIEVED) {
     const paginated = action.payload.length > 15 ? action.payload.slice(0, 15) : action.payload;
 
-    return { ...state, userGems: action.payload, filter: paginated };
+    return { ...state, userGems: action.payload, userGemsPage: paginated };
   }
 
   if (action.type === NO_USER_EXISTS) {
-    return { ...state, userGems: '', filter: '' };
+    return { ...state, userGems: '', userGemsPage: '' };
   }
 
   if (action.type === ALL_USER_GEMS_RETRIEVED) {
@@ -55,7 +55,7 @@ export default function dashboardReducer(
     return {
       ...state,
       allUserGems: action.payload,
-      filter: paginated,
+      userGemsPage: paginated,
     };
   }
 
@@ -77,7 +77,7 @@ export default function dashboardReducer(
       ...state,
       allUserGems: newGems,
       userGems: newGems,
-      filter: paginated,
+      userGemsPage: paginated,
     };
   }
 
@@ -90,13 +90,13 @@ export default function dashboardReducer(
   }
 
   if (action.type === DASHBOARD_WAS_FILTERED) {
-    return { ...state, filter: action.payload };
+    return { ...state, userGemsPage: action.payload };
   }
 
   if (action.type === 'DASHBOARD_GEMS_READY') {
     return {
       ...state,
-      filter: action.payload,
+      userGemsPage: action.payload,
       userGems: action.payload,
       gemsLoading: false,
     };
@@ -105,7 +105,7 @@ export default function dashboardReducer(
   if (action.type === 'REORDER_DASHBOARD') {
     const key = action.payload[0];
     const direction = action.payload[1];
-    const currentDashboardItems = state.filter;
+    const currentDashboardItems = state.userGemsPage;
     const newMarket = [...currentDashboardItems].sort(
       (a, b) => (direction === 'desc' ? a[key] - b[key] : b[key] - a[key]),
     );
@@ -113,7 +113,7 @@ export default function dashboardReducer(
     // returns ordered data and resets pagination to first page]
     return {
       ...state,
-      filter: newMarket,
+      userGemsPage: newMarket,
       start: 0,
       end: 15,
       page: 1,
@@ -139,7 +139,7 @@ export default function dashboardReducer(
     // returns ordered data and resets pagination to first page]
     return {
       ...state,
-      filter: newGemSelection,
+      userGemsPage: newGemSelection,
       start: 0,
       end: 15,
       page: 1,
@@ -149,12 +149,12 @@ export default function dashboardReducer(
   if (action.type === ONLY_WANT_TO_SEE_GEMS_IN_AUCTIONS) {
     return {
       ...state,
-      filter: state.userGems.filter(gem => gem.auctionIsLive),
+      userGemsPage: state.userGems.filter(gem => gem.auctionIsLive),
     };
   }
 
   if (action.type === WANT_TO_SEE_ALL_GEMS) {
-    return { ...state, filter: [...state.userGems] };
+    return { ...state, userGemsPage: [...state.userGems] };
   }
 
   if (action.type === FETCH_USER_GEMS_BEGUN) {
@@ -213,7 +213,7 @@ export default function dashboardReducer(
     return {
       ...state,
       userGems: state.userGems.filter(gem => gem.id !== action.payload),
-      filter: state.filter.filter(gem => gem.id !== Number(action.payload)),
+      userGemsPage: state.userGemsPage.filter(gem => gem.id !== Number(action.payload)),
     };
   }
 

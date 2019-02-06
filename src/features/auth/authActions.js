@@ -26,10 +26,12 @@ export const checkIfUserExists = userId => (dispatch) => {
     .doc(`users/${userIdToLowerCase}`)
     .get()
     .then(
-      doc => (doc.exists
-        ? dispatch({ type: USER_EXISTS, payload: doc.data() })
-        : dispatch({ type: NO_USER_EXISTS, payload: userId })),
-    )
+      doc => {
+        console.log('OK? ',doc.exists);
+        return doc.exists
+            ? dispatch({ type: USER_EXISTS, payload: doc.data() })
+            : dispatch({ type: NO_USER_EXISTS, payload: userId })
+      })
     .catch(error => setError(error));
 };
 
@@ -64,7 +66,9 @@ export const createNewUser = payload => (dispatch) => {
     .doc(`users/${userIdToLowerCase}`)
     .set(payload)
     .then(() => {
+        console.log('USER_EXISTS_OK');
       dispatch({ type: USER_EXISTS, payload });
+
       getDetailsForAllGemsAUserCurrentlyOwns(userIdToLowerCase);
     })
     .catch(error => setError(error));
@@ -86,7 +90,7 @@ export const getCurrentUser = () => () => getWeb3
     if (currentUser !== undefined) {
       store.dispatch({ type: CURRENT_USER_AVAILABLE, payload: currentUser });
       store.dispatch(checkIfUserExists(currentUser));
-      // store.dispatch(getUserGems(currentUser));
+      store.dispatch(getUserGems(currentUser));
     } else {
       store.dispatch({ type: CURRENT_USER_NOT_AVAILABLE });
     }

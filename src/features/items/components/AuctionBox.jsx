@@ -54,16 +54,7 @@ const select = store => ({
 });
 
 const AuctionBox = ({
-  currentPrice,
-  level,
-  grade,
-  rate,
-  restingEnergyMinutes,
-  deadline,
-  name,
-  tokenId,
-  minPrice,
-  maxPrice,
+  gem,
   currentAccount,
   accountExists,
   provider,
@@ -85,15 +76,12 @@ const AuctionBox = ({
       <TopHighLight style={tophighlight} />
       <div className="white pa3">
         <h1 className="tc pb3 b white" style={{ wordBreak: 'break-all' }} data-testid="gemName">
-          {name}
+          {gem.name}
         </h1>
-        {deadline && <CountdownTimer deadline={deadline} />}
+        {gem.deadline && <CountdownTimer deadline={gem.deadline} />}
         <div className="mt3" />
         <Gembox
-          level={level}
-          grade={grade}
-          rate={rate}
-          restingEnergyMinutes={restingEnergyMinutes}
+          gem={gem}
         />
 
         <div className="w-100 w5-ns h3 center mt4">
@@ -101,7 +89,7 @@ const AuctionBox = ({
             onClick={() => {
               if (provider && accountExists) {
                 setLoading(true);
-                handleBuyGem(tokenId, currentAccount, history, setLoading);
+                handleBuyGem(gem.id, currentAccount, history, setLoading);
               } else {
                 setLoading(false);
                 handleShowSignInBox();
@@ -125,7 +113,7 @@ const AuctionBox = ({
 
 /> */}
         </div>
-        <ProgressMeter currentPrice={currentPrice} minPrice={minPrice} maxPrice={maxPrice} />
+        <ProgressMeter currentPrice={gem.currentPrice} minPrice={gem.minPrice} maxPrice={gem.maxPrice} />
       </div>
     </OverlapOnDesktopView>
   );
@@ -146,19 +134,9 @@ export default compose(
 )(AuctionBox);
 
 AuctionBox.propTypes = {
-  currentPrice: PropTypes.number.isRequired,
-  level: PropTypes.number.isRequired,
-  grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  deadline: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  name: PropTypes.string.isRequired,
-  tokenId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  maxPrice: PropTypes.number.isRequired,
-  minPrice: PropTypes.number.isRequired,
   provider: PropTypes.bool.isRequired,
   currentAccount: PropTypes.string.isRequired,
   accountExists: PropTypes.bool,
-  restingEnergyMinutes: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   history: PropTypes.shape({}).isRequired,
   handleShowSignInBox: PropTypes.func.isRequired,
   handleBuyGem: PropTypes.func.isRequired,
@@ -166,5 +144,4 @@ AuctionBox.propTypes = {
 
 AuctionBox.defaultProps = {
   accountExists: false,
-  restingEnergyMinutes: null,
 };

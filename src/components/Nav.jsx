@@ -17,14 +17,20 @@ const BottomHighlight = styled.div`
   height: 3px;
 `;
 
-const select = store => ({
-  userImage: store.auth.user && store.auth.user.imageURL,
-  userId: store.auth.user && store.auth.user.walletId,
-  userName: store.auth.user && store.auth.user.name,
-  existingUser: store.auth.existingUser,
-  signInBox: store.auth.signInBox,
-  upperCaseWalletId: store.app && store.app.currentAccount,
-});
+const select = store => {
+
+  console.warn('----------> Nav starts <----------');
+  const res = {
+    userImage: store.auth.user && store.auth.user.imageURL,
+    userId: store.auth.user && store.auth.user.walletId,
+    userName: store.auth.user && store.auth.user.name,
+    existingUser: store.auth.existingUser,
+    signInBox: store.auth.signInBox,
+    upperCaseWalletId: store.app && store.app.currentAccount,
+  }
+console.log('NAV store: ', res);
+  return res;
+};
 
 const Navbar = ({
   userImage,
@@ -38,7 +44,7 @@ const Navbar = ({
   <div className="shadow-1 z-9 bg-white w-100">
     {signInBox && <Auth />}
     <nav className="flex wrap jcb aic w-100 border-box pa3 ph4-l bg-white mw9 center">
-      <div className="flex aic w-100 w-third-ns jcb">
+      <div style={{width: '20%'}} className="flex aic jcb">
         <a
           className=" mid-gray link dim mb2 mb0-l dib"
           href="https://cryptominerworld.com/"
@@ -53,7 +59,7 @@ const Navbar = ({
         <Tx auth={existingUser} />
       </div>
 
-      <div className="w-100 w-two-thirds-ns tc tr-ns nowrap overflow-x-auto">
+      <div style={{width: '80%'}} className="tc tr-ns nowrap overflow-x-auto">
         {/* <a href="https://cryptominerworld.com/" title="Home" className="fl">
           <img src={img} className="dib h2 w-auto br-100 dn-ns mr3" alt="CryptoMiner World" />
         </a> */}
@@ -114,6 +120,20 @@ const Navbar = ({
         >
           Country Market
         </NavLink>
+          <NavLink
+            exact
+            to="/sale"
+            activeStyle={{
+                borderBottom: '2px solid purple',
+            }}
+            className="link dim dark-gray f6 f5-l dib mr3 mr4-l b"
+            data-testid="mapLink"
+            style={{
+                color: 'purple',
+            }}
+          >
+              Silver Sale
+          </NavLink>
         <a
           className="link dim dark-gray f6 f5-l dn dib-ns mr3 mr4-l"
           href="https://cryptominerworld.com/world/"

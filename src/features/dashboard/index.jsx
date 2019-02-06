@@ -16,7 +16,7 @@ import {setError} from '../../app/appActions';
 import {
     addGemsToDashboard,
     filterUserGemsOnPageLoad,
-    getUserDetails,
+    getUserDetails, getUserGems,
     getUserGemsOnce,
     paginate,
 } from './dashboardActions';
@@ -77,30 +77,39 @@ const Primary = styled.section`
   width: 100%;
 `;
 
-const select = store => ({
-    totalGems: store.dashboard && store.dashboard.userGems && store.dashboard.userGems.length,
-    auctions: store.dashboard.filter,
-    paginatedRedux: store.dashboard
-      && store.dashboard.filter && [
-          ...store.dashboard.filter.slice(store.dashboard.start, store.dashboard.end),
-      ],
-    pageNumber: store.dashboard.page,
-    loading: store.dashboard.gemsLoading,
-    error: store.dashboard.gemsLoadingError,
-    userName: store.dashboard.userDetails && store.dashboard.userDetails.name,
-    userImage: store.dashboard.userDetails && store.dashboard.userDetails.imageURL,
-    sortBox: store.dashboard.sortBox,
-    currentUserId: store.auth.currentUserId,
-    web3: store.app.web3,
-    preSaleContract: store.app.presaleContractInstance,
-    refPointsContract: store.app.refPointsTrackerContractInstance,
-    goldContract: store.app.goldContractInstance,
-    silverContract: store.app.silverContractInstance,
-    CountrySale: store.app.countrySaleInstance,
-    currentAccount: store.app.currentAccount,
-});
+const select = store => {
+    console.log('-------------> dashboard store <---------------', store);
+    const res = {
+        userGems: store.dashboard.userGems,
+        totalGems: store.dashboard && store.dashboard.userGems && store.dashboard.userGems.length,
+        userGemsPage: store.dashboard
+          && store.dashboard.userGems && [
+              ...store.dashboard.userGems.slice(store.dashboard.start, store.dashboard.end),
+          ],
+        pageNumber: store.dashboard.page,
+        loading: store.dashboard.gemsLoading,
+        error: store.dashboard.gemsLoadingError,
+        userName: store.dashboard.userDetails && store.dashboard.userDetails.name,
+        userImage: store.dashboard.userDetails && store.dashboard.userDetails.imageURL,
+        sortBox: store.dashboard.sortBox,
+        currentUserId: store.auth.currentUserId,
+        web3: store.app.web3,
+        preSaleContract: store.app.presaleContractInstance,
+        refPointsContract: store.app.refPointsTrackerContractInstance,
+        goldContract: store.app.goldContractInstance,
+        silverContract: store.app.silverContractInstance,
+        CountrySale: store.app.countrySaleInstance,
+        currentAccount: store.app.currentAccount,
+        gemService: store.app.gemServiceInstance,
+        auctionService: store.app.auctionServiceInstance
+    };
+    console.log('dashboard store: ', res);
+    return res;
+}
+
 
 class Dashboard extends Component {
+
     static propTypes = {
         loading: PropTypes.bool.isRequired,
         error: PropTypes.bool.isRequired,
@@ -114,16 +123,16 @@ class Dashboard extends Component {
         history: PropTypes.shape({}),
         sortBox: PropTypes.bool.isRequired,
         totalGems: PropTypes.number.isRequired,
-        paginatedRedux: PropTypes.arrayOf(PropTypes.shape({})),
+        userGemsPage: PropTypes.arrayOf(PropTypes.shape({})),
         handlePagination: PropTypes.func.isRequired,
         pageNumber: PropTypes.number,
         handlePreLoadAuctionPage: PropTypes.func.isRequired,
         machineState: PropTypes.shape({}),
         data: PropTypes.shape({}).isRequired,
-        preSaleContract: PropTypes.shape({}).isRequired,
-        refPointsContract: PropTypes.shape({}).isRequired,
-        goldContract: PropTypes.shape({}).isRequired,
-        silverContract: PropTypes.shape({}).isRequired,
+        preSaleContract: PropTypes.shape({}),
+        refPointsContract: PropTypes.shape({}),
+        goldContract: PropTypes.shape({}),
+        silverContract: PropTypes.shape({}),
         CountrySale: PropTypes.shape({}),
     };
 
@@ -138,7 +147,7 @@ class Dashboard extends Component {
         machineState: {},
         pageNumber: 1,
         CountrySale: {},
-        paginatedRedux: [{}],
+        userGemsPage: [],
     };
 
     state = {
@@ -157,7 +166,13 @@ class Dashboard extends Component {
         referralTracker(this.props.location.search);
 
         this.setState({redirectPath: ''});
-        const {preSaleContract, match, data, refPointsContract, goldContract, silverContract} = this.props;
+
+        const {preSaleContract, match, data, refPointsContract, goldContract, silverContract, handleGetUserGems, gemService, auctionService} = this.props;
+
+        if (gemService && auctionService && match && match.params && match.params.userId)  {
+            handleGetUserGems(match.params.userId);
+        }
+
         if (preSaleContract && preSaleContract.methods && match.params.userId !== 'false') {
             // getReferralPoints(preSaleContract, match.params.userId)
             //   .then(referralPoints => referralPoints && this.setState({referralPoints}))
@@ -198,15 +213,22 @@ class Dashboard extends Component {
 
     async componentDidUpdate(prevProps) {
         const {
-            web3, transition, preSaleContract, match, refPointsContract, goldContract, silverContract
+            web3, transition, preSaleContract, match, refPointsContract, goldContract, silverContract, handleGetUserGems, gemService, auctionService
         } = this.props;
 
+        console.log('111 props: ', this.props, prevProps);
+
         if (web3 !== prevProps.web3) {
-            transition('WITH_METAMASK');
+            //transition('WITH_METAMASK');
         }
 
         if (match.params.userId !== prevProps.match.params.userId) {
-            transition('LOADING');
+            //transition('LOADING');
+        }
+
+        if (gemService && auctionService && (gemService !== prevProps.gemService || auctionService !== prevProps.auctionService))  {
+            console.log('Hey');
+            handleGetUserGems(match.params.userId);
         }
 
         if (preSaleContract !== prevProps.preSaleContract && match.params.userId !== 'false') {
@@ -237,48 +259,50 @@ class Dashboard extends Component {
                 this.setState({silverAvailable: silver});
             }
         }
+
     }
 
-    loadDataFromUrlIdentifier = async () => {
-        const {match, transition} = this.props;
-        const userIdToLowerCase = match.params.userId
-          .split('')
-          .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
-          .join('');
-
-        const userDetails = db
-          .doc(`users/${userIdToLowerCase}`)
-          .get()
-          .then(doc => doc.data());
-
-        try {
-            const gemDetails = (await db.collection('stones')
-                .where('owner', '==', userIdToLowerCase)
-                .orderBy('gradeType', 'desc')
-                .get()
-            ).docs.map(doc => doc.data());
-
-            const imagesUploaded = gemDetails.map(async (gemDetail) => {
-
-                gemDetail.gemImage = await getGemImage(gemDetail.color, gemDetail.gradeType, gemDetail.level, gemDetail.id);
-                return true;
-            });
-
-            await Promise.all([...imagesUploaded, userDetails]);
-            transition('GOT_USER_GEMS', {
-                gems: gemDetails,
-                userName: userDetails.name,
-                userImage: userDetails.imageURL,
-            });
-        }
-        catch (error) {
-            transition('ERROR_FETCHING_GEMS', {error})
-        }
-    };
+    // loadDataFromUrlIdentifier = async () => {
+    //     console.warn('FUCK');
+    //     const {match, transition} = this.props;
+    //     const userIdToLowerCase = match.params.userId
+    //       .split('')
+    //       .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
+    //       .join('');
+    //
+    //     const userDetails = db
+    //       .doc(`users/${userIdToLowerCase}`)
+    //       .get()
+    //       .then(doc => doc.data());
+    //
+    //     try {
+    //         const gemDetails = (await db.collection('stones')
+    //             .where('owner', '==', userIdToLowerCase)
+    //             .orderBy('gradeType', 'desc')
+    //             .get()
+    //         ).docs.map(doc => doc.data());
+    //
+    //         const imagesUploaded = gemDetails.map(async (gemDetail) => {
+    //
+    //             gemDetail.gemImage = await getGemImage(gemDetail.color, gemDetail.gradeType, gemDetail.level, gemDetail.id);
+    //             return true;
+    //         });
+    //
+    //         await Promise.all([...imagesUploaded, userDetails]);
+    //         transition('GOT_USER_GEMS', {
+    //             gems: gemDetails,
+    //             userName: userDetails.name,
+    //             userImage: userDetails.imageURL,
+    //         });
+    //     }
+    //     catch (error) {
+    //         transition('ERROR_FETCHING_GEMS', {error})
+    //     }
+    // };
 
     populateDashboard = () => {
-        const {handleAddGemsToDashboard, gems} = this.props;
-        handleAddGemsToDashboard(gems);
+        const {handleAddGemsToDashboard, userGems} = this.props;
+        handleAddGemsToDashboard(userGems);
     };
 
     checkForMetaMask = () => {
@@ -376,13 +400,16 @@ class Dashboard extends Component {
     redirect = redirectPath => this.setState({redirectPath});
 
     render() {
+
+        console.log('---------- DASHBOARD --------------');
+
         const {
             loading,
             userName,
             userImage,
             sortBox,
             totalGems,
-            paginatedRedux,
+            userGemsPage,
             handlePagination,
             pageNumber,
             handlePreLoadAuctionPage,
@@ -398,6 +425,10 @@ class Dashboard extends Component {
             this.setState({alreadyRedirected: true});
             return <Redirect to={`${redirectPath}`}/>;
         }
+
+        console.log('USER GEMS PAGE:', userGemsPage);
+
+
         return (
           <div className="bg-off-black white card-container" data-testid="profile-page">
               <div className="flex  aic  wrap jcc jcb-ns pv4">
@@ -456,7 +487,7 @@ class Dashboard extends Component {
                       >
                           Redeem Coupon
                       </EnhancedCoupon>
-                      {tab === 1 && <ReSync/>}
+                      {/*{tab === 1 && <ReSync/>}*/}
                   </div>
                 )}
                 type="card"
@@ -486,14 +517,14 @@ class Dashboard extends Component {
                               </div>
                               <CardBox>
                                   {loading && [1, 2, 3, 4, 5, 6].map(num => <LoadingCard key={num}/>)}
-                                  {paginatedRedux && paginatedRedux.length > 0 ? (
-                                    paginatedRedux.map(auction => (
+                                  {userGemsPage && userGemsPage.length > 0 ? (
+                                    userGemsPage.map(userGem => (
                                       <Link
-                                        to={`/gem/${auction.id}`}
-                                        key={auction.id}
-                                        onClick={() => handlePreLoadAuctionPage(auction)}
+                                        to={`/gem/${userGem.id}`}
+                                        key={userGem.id}
+                                        onClick={() => handlePreLoadAuctionPage(userGem)}
                                       >
-                                          <Cards auction={auction}/>
+                                          <Cards auction={userGem}/>
                                       </Link>
                                     ))
                                   ) : (
@@ -594,7 +625,7 @@ class Dashboard extends Component {
 }
 
 const actions = {
-    handleGetAuctions: getUserGemsOnce,
+    handleGetUserGems: getUserGems,
     handleGetUserDetails: getUserDetails,
     handleFilterUserGemsOnPageLoad: filterUserGemsOnPageLoad,
     handlePagination: paginate,
@@ -618,5 +649,5 @@ export default compose(
           },
       }),
   }),
-  withStateMachine(stateMachine),
+  //withStateMachine(stateMachine),
 )(Dashboard);

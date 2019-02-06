@@ -49,16 +49,16 @@ export const getGemStory = async (color, level, gemId) => {
 
         try {
             story = (await db
-                .doc(`gems/${docData.storyName}`)
-                .get()).data()[lvl];
+              .doc(`gems/${docData.storyName}`)
+              .get()).data()[lvl];
             if (!story) {
                 throw "No special story for this gem!";
             }
         }
         catch (e) {
             story = (await db
-                .doc(`gems/${type}`)
-                .get()).data()[lvl];
+              .doc(`gems/${type}`)
+              .get()).data()[lvl];
         }
         console.log("STORY::", story);
         return story;
@@ -97,27 +97,36 @@ export const getGemImage = async (color, grade, level, gemId) => {
                 url = await (storage.ref(`gems512/${doc.data().imageName}-${level}-${gradeType}.png`).getDownloadURL());
             }
             catch (e) {
-                    url = await (storage.ref(`gems512/${doc.data().imageName}.png`).getDownloadURL());
+                url = await (storage.ref(`gems512/${doc.data().imageName}.png`).getDownloadURL());
             }
         }
         catch (err) {
+            try {
                 url = await (storage.ref(`gems512/${type}-${level}-${gradeType}-4500.png`).getDownloadURL())
+            }
+            catch(e) {
+                url = await (storage.ref(`gems512/specialOneImage.png`).getDownloadURL())
+            }
         }
 
         return url;
     }
 };
 
-    export const calcMiningRate = (gradeType, gradeValue) => ({
-        1: gradeValue / 200000,
-        2: 10 + gradeValue / 200000,
-        3: 20 + gradeValue / 200000,
-        4: 40 + (3 * gradeValue) / 200000,
-        5: 100 + gradeValue / 40000,
-        6: 300 + gradeValue / 10000,
-    }[gradeType]);
+export const calcMiningRate = (gradeType, gradeValue) => ({
+    1: gradeValue / 200000,
+    2: 10 + gradeValue / 200000,
+    3: 20 + gradeValue / 200000,
+    4: 40 + (3 * gradeValue) / 200000,
+    5: 100 + gradeValue / 40000,
+    6: 300 + gradeValue / 10000,
+}[gradeType]);
 
-    export const getGemQualities = (_contract, _tokenId) => _contract.methods
+
+export const getGemQualities = (_contract, _tokenId) => {
+//     console.trace();
+    console.log("TOKEN_ID: ", _contract);
+    return _contract.methods
       .getProperties(_tokenId)
       .call()
       .then((_properties) => {
@@ -133,131 +142,128 @@ export const getGemImage = async (color, grade, level, gemId) => {
             .toNumber();
           const gradeValue = properties.modulo(0x1000000).toNumber();
           return [color, level, gradeType, gradeValue];
-      });
+      }).catch((err) =>
+        console.log(55555555555, err));
 
-    export function getPrice(_tokenId, _contract, gemContract) {
-        return _contract.methods.getCurrentPrice(gemContract, Number(_tokenId)).call();
-    }
+}
 
-    export const nonExponential = count => fromExponential(Number(count) / 1000000000000000000);
+export function getPrice(_tokenId, _contract, gemContract) {
+    return _contract.methods.getCurrentPrice(gemContract, Number(_tokenId)).call();
+}
 
-    export const calculateGemName = (providedGrade, providedTokenId) => {
-        const gemType = {
-            1: 'Garnet',
-            2: 'Amethyst',
+export const nonExponential = count => fromExponential(Number(count) / 1000000000000000000);
 
-            3: 'Aquamarine',
-            4: 'Diamond',
-            5: 'Emerald',
-            6: 'Pearl',
+export const calculateGemName = (providedGrade, providedTokenId) => {
+    const gemType = {
+        1: 'Garnet',
+        2: 'Amethyst',
 
-            7: 'Ruby',
-            8: 'Peridot',
+        3: 'Aquamarine',
+        4: 'Diamond',
+        5: 'Emerald',
+        6: 'Pearl',
 
-            9: 'Sapphire',
-            10: 'Opal',
+        7: 'Ruby',
+        8: 'Peridot',
 
-            11: 'Topaz',
-            12: 'Turquoise',
-        }[providedGrade];
-        return `${gemType} #${providedTokenId}`;
-    };
+        9: 'Sapphire',
+        10: 'Opal',
 
-    export function removeAuctionHelper(dutchContract, tokenId, gemContract) {
-        return dutchContract.methods.remove(gemContract, tokenId);
-    }
+        11: 'Topaz',
+        12: 'Turquoise',
+    }[providedGrade];
+    return `${gemType} #${providedTokenId}`;
+};
 
-    export const createAuctionHelper = async (
-      _tokenId,
-      _duration,
-      _startPriceInWei,
-      _endPriceInWei,
-      _contract,
-      _currentAccount,
-    ) => {
-        // construct auction parameters
-        const token = Number(_tokenId);
-        const tokenId = new BigNumber(token);
-        const t0 = Math.round(new Date().getTime() / 1000) || 0;
-        const t1 = t0 + _duration;
-        const p0 = _startPriceInWei;
-        const p1 = _endPriceInWei;
-        const two = new BigNumber(2);
+export function removeAuctionHelper(dutchContract, tokenId, gemContract) {
+    return dutchContract.methods.remove(gemContract, tokenId);
+}
 
-        // converts BigNumber representing Solidity uint256 into String representing Solidity bytes
-        const toBytes = (uint256) => {
-            let s = uint256.toString(16);
-            const len = s.length;
-            // 256 bits must occupy exactly 64 hex digits
-            if (len > 64) {
-                s = s.substr(0, 64);
-            }
-            for (let i = 0; i < 64 - len; i += 1) {
-                s = `0${s}`;
-            }
-            return `0x${s}`;
-        };
+export const createAuctionHelper = async (
+  _tokenId,
+  _duration,
+  _startPriceInWei,
+  _endPriceInWei,
+  _contract,
+  _currentAccount,
+) => {
+    // construct auction parameters
+    const token = Number(_tokenId);
+    const tokenId = new BigNumber(token);
+    const t0 = Math.round(new Date().getTime() / 1000) || 0;
+    const t1 = t0 + _duration;
+    const p0 = _startPriceInWei;
+    const p1 = _endPriceInWei;
+    const two = new BigNumber(2);
 
-        // convert auction parameters to bytecode for smart contract
-        const data = toBytes(
-          two
-            .pow(224)
-            .times(tokenId)
-            .plus(two.pow(192).times(t0))
-            .plus(two.pow(160).times(t1))
-            .plus(two.pow(80).times(p0))
-            .plus(p1),
-        );
-
-        // submit the auction
-        await _contract.methods
-          .safeTransferFrom(_currentAccount, process.env.REACT_APP_DUTCH_AUCTION, token, data)
-          .send()
-          .on('transactionHash', hash => store.dispatch(
-            startTx({
-                hash,
-                currentUser: _currentAccount,
-                method: 'gem',
-                tokenId: token,
-            }),
-          ))
-          .on('receipt', receipt => store.dispatch(completedTx(receipt)))
-          .on('error', error => store.dispatch(ErrorTx(error)));
-
-        const auctionDetails = {
-            deadline: t1,
-            maxPrice: _startPriceInWei,
-            minPrice: _endPriceInWei,
-        };
-
-        return auctionDetails;
-    };
-
-
-    const transform = (result, web3) => web3.eth.getBlock(result, (err, results) => {
-        if (err) {
-            return err;
+    // converts BigNumber representing Solidity uint256 into String representing Solidity bytes
+    const toBytes = (uint256) => {
+        let s = uint256.toString(16);
+        const len = s.length;
+        // 256 bits must occupy exactly 64 hex digits
+        if (len > 64) {
+            s = s.substr(0, 64);
         }
-        return results;
-    });
+        for (let i = 0; i < 64 - len; i += 1) {
+            s = `0${s}`;
+        }
+        return `0x${s}`;
+    };
 
-    export const fetchLatestRestingEnergy = (gemContract, gemId, web3) => gemContract.methods
-      .getCreationTime(gemId)
-      .call()
-      .then(async (blockNumber) => {
-          const {timestamp} = await transform(blockNumber, web3);
-          const linearThreshold = 37193;
-          // eslint-disable-next-line
-          const ageSeconds = ((Date.now() / 1000) | 0) - timestamp;
-          const ageMinutes = Math.floor(ageSeconds / 60);
-          const restedEnergyMinutes = Math.floor(
-            // eslint-disable-next-line
-            -7e-6 * Math.pow(Math.min(ageMinutes, linearThreshold), 2) +
-            0.5406 * Math.min(ageMinutes, linearThreshold)
-            + 0.0199 * Math.max(ageMinutes - linearThreshold, 0),
-          );
-          return restedEnergyMinutes;
-      })
-      .catch(error => error);
+    // convert auction parameters to bytecode for smart contract
+    const data = toBytes(
+      two
+        .pow(224)
+        .times(tokenId)
+        .plus(two.pow(192).times(t0))
+        .plus(two.pow(160).times(t1))
+        .plus(two.pow(80).times(p0))
+        .plus(p1),
+    );
 
-    export const isEmptyObject = (obj) => Object.keys(obj).length === 0 && obj.constructor === Object;
+    // submit the auction
+    await _contract.methods
+      .safeTransferFrom(_currentAccount, process.env.REACT_APP_DUTCH_AUCTION, token, data)
+      .send()
+      .on('transactionHash', hash => store.dispatch(
+        startTx({
+            hash,
+            currentUser: _currentAccount,
+            method: 'gem',
+            tokenId: token,
+        }),
+      ))
+      .on('receipt', receipt => store.dispatch(completedTx(receipt)))
+      .on('error', error => store.dispatch(ErrorTx(error)));
+
+    const auctionDetails = {
+        deadline: t1,
+        maxPrice: _startPriceInWei,
+        minPrice: _endPriceInWei,
+    };
+
+    return auctionDetails;
+};
+
+
+const transform = (result, web3) => web3.eth.getBlock(result, (err, results) => {
+    if (err) {
+        return err;
+    }
+    return results;
+});
+
+// export const fetchLatestRestingEnergy = (blockNumber) => {
+//     const {timestamp} = await transform(blockNumber, web3)
+//     const linearThreshold = 37193;
+//     const ageSeconds = ((Date.now() / 1000) | 0) - timestamp;
+//     const ageMinutes = Math.floor(ageSeconds / 60);
+//     const restedEnergyMinutes = Math.floor(
+//       -7e-6 * Math.pow(Math.min(ageMinutes, linearThreshold), 2) +
+//       0.5406 * Math.min(ageMinutes, linearThreshold)
+//       + 0.0199 * Math.max(ageMinutes - linearThreshold, 0),
+//     );
+//     return restedEnergyMinutes;
+// }
+
+export const isEmptyObject = (obj) => Object.keys(obj).length === 0 && obj.constructor === Object;

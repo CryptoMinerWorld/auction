@@ -15,14 +15,6 @@ import { Gem } from '../Gembox';
 
 class DescriptionBox extends PureComponent {
   static propTypes = {
-    level: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    grade: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    rate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    name: PropTypes.string.isRequired,
-    story: PropTypes.string.isRequired,
-    userName: PropTypes.string.isRequired,
-    userImage: PropTypes.string.isRequired,
-    ownerId: PropTypes.string.isRequired,
     shareUrl: PropTypes.string.isRequired,
   };
 
@@ -61,7 +53,7 @@ class DescriptionBox extends PureComponent {
 
   render() {
     const {
-      level, grade, rate, name, story, userName, userImage, ownerId, shareUrl,
+      gem, userName, userImage, shareUrl,
     } = this.props;
     const { inView, copied } = this.state;
 
@@ -79,7 +71,7 @@ class DescriptionBox extends PureComponent {
                   />
 
                   <h1 className="dib b white" data-testid="gemName">
-                    {name}
+                    {gem.name}
                   </h1>
 
                   <img
@@ -90,7 +82,7 @@ class DescriptionBox extends PureComponent {
                 </div>
                 <div className="flex aic jcb center">
                   <Link
-                    to={ownerId && `/profile/${ownerId}`}
+                    to={gem.owner && `/profile/${gem.owner}`}
                     className="flex aic bg-white-10 w5-ns w-auto black h-auto pa1"
                     style={{
                       WebkitClipPath:
@@ -120,7 +112,7 @@ class DescriptionBox extends PureComponent {
                   </CopyToClipboard>
                 </div>
               </div>
-              <p className="o-50 mt3">{story}</p>
+              <p className="o-50 mt3">{gem.story}</p>
             </div>
             <Waypoint onEnter={this.handleWaypointEnter}>
               <div>
@@ -135,9 +127,9 @@ class DescriptionBox extends PureComponent {
                     >
                       <FeatureBand
                         bgColour="bg-dark-blue"
-                        gem={gem1}
+                        gemImage={gem1}
                         category="grade"
-                        amount={this.gradeConverter(grade)}
+                        amount={this.gradeConverter(gem.gradeType)}
                         description="A Gem’s Grade determines how fast it can mine. There are 6 Grades, D, C, B, A, AA, and AAA. Grade As and better all store Resting Energy when they are not mining!"
                       />
                     </ReactCSSTransitionGroup>
@@ -150,9 +142,9 @@ class DescriptionBox extends PureComponent {
                     >
                       <FeatureBand
                         bgColour="bg-dark-orange"
-                        gem={gem2}
+                        gemImage={gem2}
                         category="level"
-                        amount={level}
+                        amount={gem.level}
                         description="A Gem’s level determines how far down that Gem can mine. There are 5 tiers of land and 5 levels of gems. Each successive level allows for another type of land to be mined."
                       />
                     </ReactCSSTransitionGroup>
@@ -165,9 +157,9 @@ class DescriptionBox extends PureComponent {
                     >
                       <FeatureBand
                         bgColour="bg-dark-purple"
-                        gem={gem3}
+                        gemImage={gem3}
                         category="mining rate Bonus"
-                        amount={`+${rate.toFixed(2)}%`}
+                        amount={`+${gem.rate.toFixed(2)}%`}
                         description="This is the percentage of how much faster a Gem mines compared to the base speed. +100% is twice as fast as base, +400% is five times faster. All Mining Rate Bonuses are tied to Grades. Grades give you a general sense of how how fast a Gem mines but Mining Rate Bonuses tells you exactly how much fast it is."
                       />
                     </ReactCSSTransitionGroup>
@@ -185,7 +177,7 @@ class DescriptionBox extends PureComponent {
 export default DescriptionBox;
 
 export const FeatureBand = ({
-  bgColour, gem, category, amount, description,
+  bgColour, gemImage, category, amount, description,
 }) => (
   <div className="relative">
     <div
@@ -198,7 +190,7 @@ export const FeatureBand = ({
       }}
     >
       <div className="w-20 tc">
-        <Gem quality={category} image={gem} amount={amount} />
+        <Gem quality={category} image={gemImage} amount={amount} />
       </div>
       <div className="w-80 pl3 pl0-ns">
         <p className="b ttu">{category}</p>
@@ -210,7 +202,7 @@ export const FeatureBand = ({
 
 FeatureBand.propTypes = {
   bgColour: PropTypes.string.isRequired,
-  gem: PropTypes.string.isRequired,
+  gemImage: PropTypes.string.isRequired,
   category: PropTypes.string.isRequired,
   amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   description: PropTypes.string.isRequired,

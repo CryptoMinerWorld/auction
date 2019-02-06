@@ -101,7 +101,12 @@ export const getGemImage = async (color, grade, level, gemId) => {
             }
         }
         catch (err) {
-            url = await (storage.ref(`gems512/${type}-${level}-${gradeType}-4500.png`).getDownloadURL())
+            try {
+                url = await (storage.ref(`gems512/${type}-${level}-${gradeType}-4500.png`).getDownloadURL())
+            }
+            catch(e) {
+                url = await (storage.ref(`gems512/specialOneImage.png`).getDownloadURL())
+            }
         }
 
         return url;
