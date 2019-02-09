@@ -1,7 +1,7 @@
 import {
     ALL_USER_GEMS_UPLOADED,
     AUCTION_DETAILS_RECEIVED,
-    DASHBOARD_WAS_FILTERED,
+    DASHBOARD_WAS_FILTERED, FETCH_GEMS_PAGE_IMAGES,
     FETCH_USER_DETAILS_BEGUN,
     FETCH_USER_DETAILS_FAILED,
     FETCH_USER_DETAILS_SUCCEEDED,
@@ -41,7 +41,7 @@ export const getUserGems = ownerId => async (dispatch, getState) => {
 
         console.log('222222 FETCH!');
 
-        dispatch({type: FETCH_USER_GEMS_SUCCEEDED});
+        //dispatch({type: FETCH_USER_GEMS_SUCCEEDED});
         dispatch({type: USER_GEMS_RETRIEVED, payload: ownerGems});
     }
     catch (e) {
@@ -49,39 +49,11 @@ export const getUserGems = ownerId => async (dispatch, getState) => {
     }
 };
 
-// export const getUserGemsOnce = userId => async (dispatch) => {
-//     dispatch({type: 'FETCH_USER_GEMS_ONCE_BEGUN'});
-//     const userIdToLowerCase = userId
-//       .split('')
-//       .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
-//       .join('');
-//
-//     try {
-//         const gemDetails = (await db.collection('stones')
-//             .where('owner', '==', userIdToLowerCase)
-//             .orderBy('gradeType', 'desc')
-//             .get()
-//         ).docs.map(doc => doc.data());
-//
-//         const imagesUploaded = gemDetails.map(async (gemDetail) => {
-//             gemDetail.gemImage = await getGemImage(gemDetail.color, gemDetail.gradeType, gemDetail.level, gemDetail.id);
-//             return true;
-//         });
-//
-//         await Promise.all(imagesUploaded);
-//
-//         // if (!gemDetails[0].gemImage) {
-//         //   return;
-//         // }
-//
-//         dispatch({type: FETCH_USER_GEMS_SUCCEEDED});
-//         dispatch({type: USER_GEMS_RETRIEVED, payload: gemDetails});
-//
-//     } catch (error) {
-//         setError(error)
-//     }
-//
-// };
+export const getImagesForGems = gems => async (dispatch, getState) => {
+    const gemService = getState().app.gemServiceInstance;
+    const gemsWithImages = await gemService.getImagesForGems(gems);
+    dispatch({type: FETCH_GEMS_PAGE_IMAGES, payload: gemsWithImages});
+}
 
 export const getUserDetails = userId => (dispatch) => {
     dispatch({type: FETCH_USER_DETAILS_BEGUN});
@@ -90,6 +62,7 @@ export const getUserDetails = userId => (dispatch) => {
           .where('walletId', '==', userId)
           .onSnapshot((collection) => {
               const userDetails = collection.docs.map(doc => doc.data());
+              console.log('USER DETAILS: ', userDetails);
               dispatch({type: FETCH_USER_DETAILS_SUCCEEDED});
               dispatch({type: USER_DETAILS_RETRIEVED, payload: userDetails[0]});
           });
@@ -99,77 +72,77 @@ export const getUserDetails = userId => (dispatch) => {
 };
 
 
-// this is called in authActions when you create a new User
-export const getDetailsForAllGemsAUserCurrentlyOwns = (userId) => {
-    store.dispatch({type: FETCH_USER_GEMS_BEGUN});
-    const gemContract = store.getState().app.gemsContractInstance;
-    const userName = store.getState().auth.user.name;
-    const userImage = store.getState().auth.user.imageURL;
-
-    const listOfGemIds = [];
-
-    getAllUserGems(userId, gemContract).then(listOfGemIdsTheUserOwns => Promise.all(
-      listOfGemIdsTheUserOwns.map((gemId) => {
-          listOfGemIds.push(gemId);
-          return getGemQualities(gemContract, gemId).then(
-            ([color, level, gradeType, gradeValue]) => ({
-                color,
-                level,
-                gradeType,
-                gradeValue,
-            }),
-          );
-      }),
-    ).then((responses) => {
-        const gemImages = Promise.all(
-          responses.map(gem => getGemImage(gem.color, gem.gradeType, gem.level)),
-        );
-
-        const gemStories = Promise.all(responses.map(gem => getGemStory(gem.color, gem.level)));
-
-        Promise.all([gemImages, gemStories])
-          .then(async ([images, stories]) => {
-              const userIdToLowerCase = userId
-                .split('')
-                .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
-                .join('');
-
-              const completeGemDetails = listOfGemIds.map((gemId, index) => ({
-                  id: Number(gemId),
-                  ...responses[index],
-                  rate: Number(calcMiningRate(responses[index].gradeType, responses[index].gradeValue)),
-                  auctionIsLive: false,
-                  owner: userIdToLowerCase,
-                  gemImage: images[index],
-                  story: stories[index],
-                  userName,
-                  userImage,
-              }));
-
-              if (completeGemDetails.length === 0) {
-                  store.dispatch({type: FETCH_USER_GEMS_SUCCEEDED});
-                  store.dispatch({
-                      type: USER_HAS_NO_GEMS_IN_WORKSHOP,
-                  });
-              } else {
-                  await completeGemDetails.forEach(gem => db
-                    .collection('stones')
-                    .doc(`${gem.id}`)
-                    .set(gem));
-
-                  store.dispatch({
-                      type: ALL_USER_GEMS_UPLOADED,
-                      payload: completeGemDetails,
-                  });
-                  /* eslint-disable no-console */
-
-                  /* eslint-enable no-console */
-                  store.dispatch({type: FETCH_USER_GEMS_SUCCEEDED});
-              }
-          })
-          .catch(error => setError(error));
-    }));
-};
+// // this is called in authActions when you create a new User
+// export const getDetailsForAllGemsAUserCurrentlyOwns = (userId) => {
+//     store.dispatch({type: FETCH_USER_GEMS_BEGUN});
+//     const gemContract = store.getState().app.gemsContractInstance;
+//     const userName = store.getState().auth.user.name;
+//     const userImage = store.getState().auth.user.imageURL;
+//
+//     const listOfGemIds = [];
+//
+//     getAllUserGems(userId, gemContract).then(listOfGemIdsTheUserOwns => Promise.all(
+//       listOfGemIdsTheUserOwns.map((gemId) => {
+//           listOfGemIds.push(gemId);
+//           return getGemQualities(gemContract, gemId).then(
+//             ([color, level, gradeType, gradeValue]) => ({
+//                 color,
+//                 level,
+//                 gradeType,
+//                 gradeValue,
+//             }),
+//           );
+//       }),
+//     ).then((responses) => {
+//         const gemImages = Promise.all(
+//           responses.map(gem => getGemImage(gem.color, gem.gradeType, gem.level)),
+//         );
+//
+//         const gemStories = Promise.all(responses.map(gem => getGemStory(gem.color, gem.level)));
+//
+//         Promise.all([gemImages, gemStories])
+//           .then(async ([images, stories]) => {
+//               const userIdToLowerCase = userId
+//                 .split('')
+//                 .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
+//                 .join('');
+//
+//               const completeGemDetails = listOfGemIds.map((gemId, index) => ({
+//                   id: Number(gemId),
+//                   ...responses[index],
+//                   rate: Number(calcMiningRate(responses[index].gradeType, responses[index].gradeValue)),
+//                   auctionIsLive: false,
+//                   owner: userIdToLowerCase,
+//                   gemImage: images[index],
+//                   story: stories[index],
+//                   userName,
+//                   userImage,
+//               }));
+//
+//               if (completeGemDetails.length === 0) {
+//                   store.dispatch({type: FETCH_USER_GEMS_SUCCEEDED});
+//                   store.dispatch({
+//                       type: USER_HAS_NO_GEMS_IN_WORKSHOP,
+//                   });
+//               } else {
+//                   await completeGemDetails.forEach(gem => db
+//                     .collection('stones')
+//                     .doc(`${gem.id}`)
+//                     .set(gem));
+//
+//                   store.dispatch({
+//                       type: ALL_USER_GEMS_UPLOADED,
+//                       payload: completeGemDetails,
+//                   });
+//                   /* eslint-disable no-console */
+//
+//                   /* eslint-enable no-console */
+//                   store.dispatch({type: FETCH_USER_GEMS_SUCCEEDED});
+//               }
+//           })
+//           .catch(error => setError(error));
+//     }));
+// };
 
 export const getGemDetails = tokenId => dispatch => db
   .collection('stones')

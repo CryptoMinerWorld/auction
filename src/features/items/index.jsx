@@ -15,7 +15,14 @@ import FAQ from './components/FAQ';
 import MailingList from '../../components/MailingList';
 import './animations.css';
 import {OverlapOnDesktopView, RockOverlay, TopHighlight} from './styledComponents';
-import {clearGemPageOnExit, getAuctionDetails, getGemData, getRestingEnergy, upgradeGem} from './itemActions';
+import {
+    clearGemPageOnExit,
+    getAuctionDetails,
+    getGemData,
+    getOwnerDataByOwnerId,
+    getRestingEnergy,
+    upgradeGem
+} from './itemActions';
 import {calculateGemName} from './selectors';
 import StatsBox from './components/StatsBox';
 import {showConfirm} from '../../components/Modal';
@@ -25,24 +32,28 @@ import {fetchLatestRestingEnergy} from './helpers';
 import UpgradeComponent from './components/UpgradeComponent';
 import {getAvailableGold, getAvailableSilver} from "../dashboard/helpers";
 
-const select = store => ({
-    gem: store.auction.gem,
-    details: store.auction,
-    gemName: store.auction && calculateGemName(store.auction.color, store.auction.id),
-    gemImage: store.auction && store.auction.gemImage,
-    error: store.app.error,
-    currentAccount: store.auth.currentUserId,
-    releaseConfetti: store.app.releaseConfetti,
-    provider: store.auth.web3 && !!store.auth.web3.currentProvider,
-    gemContract: store.app.gemsContractInstance,
-    web3: store.app.web3,
-    dutchContract: store.app.dutchContractInstance,
-    gemService: store.app.gemServiceInstance,
-    auctionService: store.app.auctionServiceInstance,
-    gemContractAddress: store.app.gemsContractInstance && store.app.gemsContractInstance._address,
-    silverContract: store.app.silverContractInstance,
-    goldContract: store.app.goldContractInstance,
-});
+const select = store => {
+    console.warn('GEM PAGE STORE: ', store);
+    return {
+        gem: store.auction.gem,
+          ownerData: store.auction.ownerData,
+      details: store.auction,
+      //gemName: store.auction && calculateGemName(store.auction.color, store.auction.id),
+      gemImage: store.auction && store.auction.gemImage,
+      error: store.app.error,
+      currentAccount: store.auth.currentUserId,
+      releaseConfetti: store.app.releaseConfetti,
+      provider: store.auth.web3 && !!store.auth.web3.currentProvider,
+      gemContract: store.app.gemsContractInstance,
+      web3: store.app.web3,
+      dutchContract: store.app.dutchContractInstance,
+      gemService: store.app.gemServiceInstance,
+      auctionService: store.app.auctionServiceInstance,
+      gemContractAddress: store.app.gemsContractInstance && store.app.gemsContractInstance._address,
+      silverContract: store.app.silverContractInstance,
+      goldContract: store.app.goldContractInstance,
+    }
+};
 
 class Auction extends PureComponent {
     state = {
@@ -70,7 +81,7 @@ class Auction extends PureComponent {
                   })
                   .catch(error => console.warn(error));
             }
-        }, 10000);
+        }, 60000);
 
         if (goldContract && goldContract.methods && currentAccount) {
             //console.log(11111111111);
@@ -96,6 +107,12 @@ class Auction extends PureComponent {
         const {gemContract, match, goldContract, silverContract, currentAccount, handleGetGemData, gemService, auctionService} = this.props;
         const {restingEnergyMinutes} = this.state;
 
+        if (this.props.gem && !this.state.ownerData) {
+            const ownerData = await getOwnerDataByOwnerId(this.props.gem.owner);
+            console.log('OWNER DATA: ', ownerData);
+            this.setState({ownerData});
+        }
+
         if (gemService && auctionService && (gemService !== prevProps.gemService || auctionService !== prevProps.auctionService))  {
             handleGetGemData(match.params.gemId);
         }
@@ -116,10 +133,10 @@ class Auction extends PureComponent {
     }
 
     componentWillUnmount() {
-        const {match, handleClearGemPage} = this.props;
-        if (match && match.params && match.params.gemId) {
-            handleClearGemPage(match.params.gemId);
-        }
+        // const {match, handleClearGemPage} = this.props;
+        // if (match && match.params && match.params.gemId) {
+        //     handleClearGemPage(match.params.gemId);
+        // }
         clearInterval(this.Priceinterval);
     }
 
@@ -136,7 +153,7 @@ class Auction extends PureComponent {
             gem
         } = this.props;
 
-        const {goldAvailable, silverAvailable} = this.state;
+        const {goldAvailable, silverAvailable, ownerData} = this.state;
         const socialShareUrl = `${process.env.REACT_APP_BASE_URL}${match.url}`;
         return (
           <div>
@@ -171,29 +188,12 @@ class Auction extends PureComponent {
                                 >
                                     <DisplayBoxStateMachine
                                       gem = {gem}
-                                      //gemDetails={details}
-                                      //currentPrice={currentPrice || details.currentPrice}
-                                      //minPrice={details.minPrice}
-                                      //maxPrice={details.maxPrice}
-                                      //deadline={details.deadline}
                                       handleBuyNow={buyNow}
-                                      //level={details.level}
-                                      //grade={details.gradeType}
-                                      //rate={details.rate}
-                                      //name={gemName}
-                                      //tokenId={details.id}
-                                      //redirectTo={redirectTo}
                                       showConfirm={showConfirm}
                                       provider={provider}
                                       currentAccount={currentAccount}
-                                      //story={details.story}
-                                      //owner={details.owner}
                                       userImage={details.userImage}
-                                      //auctionIsLive={details.auctionIsLive}
-                                      //gemId={details.gemId}
-                                      //restingEnergyMinutes={restingEnergyMinutes}
                                       lastSoldFor={details && details.lastSoldFor && details.lastSoldFor}
-                                      //sourceImage={gemImage}
                                       goldAvailable={goldAvailable}
                                       silverAvailable={silverAvailable}
                                     />
@@ -208,17 +208,8 @@ class Auction extends PureComponent {
                           {gem && (
                             <DescriptionBox
                               gem = {gem}
-                              //gemDetails={details}
-                              //level={details.level}
-                              //grade={details.gradeType}
-                              //rate={details.rate}
-                              //color={details.color}
-                              //story={details.story}
-                              //name={gemName}
+                              ownerData = {ownerData}
                               userName={details.userName}
-                              //auctionIsLive={details.auctionIsLive}
-                              //ownerId={details.owner}
-                              //gemId={details.id}
                               userImage={details.userImage}
                               shareUrl={socialShareUrl}
                             />
@@ -281,7 +272,6 @@ Auction.propTypes = {
     //redirectTo: PropTypes.string,
     //story: PropTypes.string,
     provider: PropTypes.bool,
-
     //currentAccount: PropTypes.string.isRequired,
 };
 

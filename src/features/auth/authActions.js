@@ -11,7 +11,7 @@ import {
 } from './authConstants';
 import {
   getUserGems,
-  getDetailsForAllGemsAUserCurrentlyOwns,
+  //getDetailsForAllGemsAUserCurrentlyOwns,
   getUserDetails,
 } from '../dashboard/dashboardActions';
 import { setError } from '../../app/appActions';
@@ -69,7 +69,7 @@ export const createNewUser = payload => (dispatch) => {
         console.log('USER_EXISTS_OK');
       dispatch({ type: USER_EXISTS, payload });
 
-      getDetailsForAllGemsAUserCurrentlyOwns(userIdToLowerCase);
+      //getDetailsForAllGemsAUserCurrentlyOwns(userIdToLowerCase);
     })
     .catch(error => setError(error));
 };
@@ -90,7 +90,7 @@ export const getCurrentUser = () => () => getWeb3
     if (currentUser !== undefined) {
       store.dispatch({ type: CURRENT_USER_AVAILABLE, payload: currentUser });
       store.dispatch(checkIfUserExists(currentUser));
-      store.dispatch(getUserGems(currentUser));
+      //store.dispatch(getUserGems(currentUser));
     } else {
       store.dispatch({ type: CURRENT_USER_NOT_AVAILABLE });
     }

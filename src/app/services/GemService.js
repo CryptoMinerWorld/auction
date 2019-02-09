@@ -3,10 +3,11 @@ import {db, storage} from '../../app/utils/firebase';
 
 export default class GemService {
 
-    constructor(gemContractInstance, web3Instance) {
+    constructor(gemContractInstance, web3Instance, auctionContractInstance) {
         console.log('Gem Service constructor called', gemContractInstance);
         this.contract = gemContractInstance;
         this.web3 = web3Instance;
+        this.auctionContract = auctionContractInstance;
     }
 
     getGemProperties = async (tokenId) => {
@@ -70,6 +71,27 @@ export default class GemService {
         }
     }
 
+    getGemAuctionIsLive = async (tokenId) => {
+        return !(new BigNumber(
+          await (this.auctionContract.methods
+            .getTokenSaleStatus(this.contract._address, tokenId)
+            .call()))).isZero();
+    }
+
+    getImagesForGems = async (gemsToLoadImages) => {
+        await Promise.all(
+          gemsToLoadImages.map(async gem => {
+              gem.image = await getGemImage(
+                {
+                    color: gem.color,
+                    level: gem.level,
+                    gradeType: gem.gradeType,
+                    gradeValue: gem.gradeValue
+                }, gem.id);
+              return gem;
+          }));
+    }
+
     getOwnerGems = async (ownerId) => {
 
         const idsOfGemsUserOwns = await this.contract.methods.getCollection(ownerId).call();
@@ -81,8 +103,9 @@ export default class GemService {
                   ...gemProperties,
                   id: gemId,
                   owner: ownerId,
-                  story: await getGemStory(gemProperties, gemId),
-                  image: await getGemImage(gemProperties, gemId),
+                  auctionIsLive: await this.getGemAuctionIsLive(gemId),
+                  //story: await getGemStory(gemProperties, gemId),
+                  //image: await getGemImage(gemProperties, gemId),
                   name: calculateGemName(gemProperties.color, gemId),
                   rate: calculateMiningRate(gemProperties.gradeType, gemProperties.gradeValue),
                   //restingEnergyMinutes: calculateGemRestingEnergy(gemCreationTime)

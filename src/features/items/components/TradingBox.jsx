@@ -67,20 +67,9 @@ const fixedOverlayStyle = {
 
 class TradingBox extends PureComponent {
     static propTypes = {
-        //tokenId: PropTypes.number.isRequired,
         handleCreateAuction: PropTypes.func.isRequired,
         handleRemoveGemFromAuction: PropTypes.func.isRequired,
-        //auctionIsLive: PropTypes.bool.isRequired,
         history: PropTypes.shape({}).isRequired,
-        //level: PropTypes.number.isRequired,
-        //grade: PropTypes.number.isRequired,
-        //rate: PropTypes.number.isRequired,
-        //restingEnergyMinutes: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-        //name: PropTypes.string.isRequired,
-        //currentPrice: PropTypes.number.isRequired,
-        //minPrice: PropTypes.number.isRequired,
-        //maxPrice: PropTypes.number.isRequired,
-        //sourceImage: PropTypes.string.isRequired,
         silverAvailable: PropTypes.string,
         goldAvailable: PropTypes.string,
     };
@@ -101,24 +90,11 @@ class TradingBox extends PureComponent {
     render() {
         const {
             gem,
-            //gemDetails,
             handleCreateAuction,
             handleRemoveGemFromAuction,
-            //tokenId,
-            //auctionIsLive,
             history,
-            //level,
-            //grade,
-            //rate,
-            //restingEnergyMinutes,
-            //name,
-            //currentPrice,
-            //minPrice,
-            //maxPrice,
-            //sourceImage,
           silverAvailable,
           goldAvailable,
-          handleUpgradeGem
         } = this.props;
         const {
             duration, startPrice, endPrice, formSubmitted, showUpgrade, useMetal,
@@ -130,7 +106,11 @@ class TradingBox extends PureComponent {
                 <div style={fixedOverlayStyle}
                      onClick={() => this.setState({showUpgrade: false})}
                 >
-                    <UpgradeComponent metal = {useMetal} metalAvailable = {useMetal === 'silver' ? +silverAvailable : +goldAvailable}  {...this.props}/>
+                    <UpgradeComponent metal = {useMetal} metalAvailable = {useMetal === 'silver' ? +silverAvailable : +goldAvailable}
+                                      hidePopup = {() =>
+                                          this.setState({showUpgrade: false})
+                                      }
+                                      {...this.props}/>
                     <div
                         // style={position: absolute
                         //     top: 0;

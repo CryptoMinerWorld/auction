@@ -59,7 +59,7 @@ export default class UpgradeComponent extends React.Component {
     }
 
     render() {
-        const {metal, metalAvailable, handleUpgradeGem, gem} = this.props;
+        const {metal, metalAvailable, handleUpgradeGem, gem, hidePopup} = this.props;
         const confirmButton = {
             position: 'absolute',
             bottom: '20px',
@@ -181,7 +181,7 @@ export default class UpgradeComponent extends React.Component {
                     style={confirmButton}
                     onClick={() => {
                         this.setState({loading: true});
-                        handleUpgradeGem(this.props.gem, this.state.level - this.state.initialLevel, this.state.gradeType - this.state.initialGrade, (loading)=>{this.setState({loading:loading})});
+                        handleUpgradeGem(this.props.gem, this.state.level - this.state.initialLevel, this.state.gradeType - this.state.initialGrade, hidePopup);
                     }}
                   >
                       {this.state.loading && <Icon type="loading" theme="outlined" className="pr3" />

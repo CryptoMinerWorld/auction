@@ -15,7 +15,7 @@ import {db} from '../../app/utils/firebase';
 import {setError} from '../../app/appActions';
 import {
     addGemsToDashboard,
-    filterUserGemsOnPageLoad,
+    filterUserGemsOnPageLoad, getImagesForGems,
     getUserDetails, getUserGems,
     getUserGemsOnce,
     paginate,
@@ -50,6 +50,8 @@ import Plot from '../../app/images/dashboard/Plot.png';
 import {EnhancedCoupon} from './components/Coupon';
 import {completedTx, ErrorTx, startTx} from '../transactions/txActions';
 import reduxStore from '../../app/store';
+import Loading from "../../components/Loading";
+import Spin from "antd/lib/spin";
 
 const {TabPane} = Tabs;
 
@@ -82,15 +84,19 @@ const select = store => {
     const res = {
         userGems: store.dashboard.userGems,
         totalGems: store.dashboard && store.dashboard.userGems && store.dashboard.userGems.length,
-        userGemsPage: store.dashboard
-          && store.dashboard.userGems && [
-              ...store.dashboard.userGems.slice(store.dashboard.start, store.dashboard.end),
-          ],
+        userGemsFiltered: (store.dashboard.userGemsFiltered && store.dashboard.userGemsFiltered.length > 0) ?
+          store.dashboard.userGemsFiltered :
+          store.dashboard.userGems,
+        userGemsPage: store.dashboard.userGemsPage ? store.dashboard.userGemsPage :
+          (store.dashboard.userGemsFiltered && store.dashboard.userGemsFiltered.length > 0) ?
+          store.dashboard.userGemsFiltered.slice(store.dashboard.start, store.dashboard.end) :
+          store.dashboard.userGems.slice(store.dashboard.start, store.dashboard.end),
         pageNumber: store.dashboard.page,
+        needToLoadImages: store.dashboard.updateImages,
         loading: store.dashboard.gemsLoading,
         error: store.dashboard.gemsLoadingError,
-        userName: store.dashboard.userDetails && store.dashboard.userDetails.name,
-        userImage: store.dashboard.userDetails && store.dashboard.userDetails.imageURL,
+        userName: store.auth.user && store.auth.user.name,
+        userImage: store.auth.user && store.auth.user.imageURL,
         sortBox: store.dashboard.sortBox,
         currentUserId: store.auth.currentUserId,
         web3: store.app.web3,
@@ -101,7 +107,8 @@ const select = store => {
         CountrySale: store.app.countrySaleInstance,
         currentAccount: store.app.currentAccount,
         gemService: store.app.gemServiceInstance,
-        auctionService: store.app.auctionServiceInstance
+        auctionService: store.app.auctionServiceInstance,
+        silverGoldService: store.app.silverGoldServiceInstance,
     };
     console.log('dashboard store: ', res);
     return res;
@@ -117,7 +124,6 @@ class Dashboard extends Component {
         userImage: PropTypes.string,
         handleAddGemsToDashboard: PropTypes.func.isRequired,
         web3: PropTypes.shape({}),
-        transition: PropTypes.func.isRequired,
         match: PropTypes.shape({}),
         gems: PropTypes.shape({}),
         history: PropTypes.shape({}),
@@ -138,8 +144,8 @@ class Dashboard extends Component {
 
     static defaultProps = {
         userName: 'Loading...',
-        userImage:
-          'https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FAquamarine%20Face%20Emoji.png?alt=media&token=b759ae07-bb8c-4ec8-9399-d3844d5428ef',
+        //userImage:
+          //'https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FAquamarine%20Face%20Emoji.png?alt=media&token=b759ae07-bb8c-4ec8-9399-d3844d5428ef',
         web3: {},
         match: {},
         gems: {},
@@ -148,10 +154,11 @@ class Dashboard extends Component {
         pageNumber: 1,
         CountrySale: {},
         userGemsPage: [],
+        updateImages: true,
     };
 
     state = {
-        referralPoints: 0,
+        referralPoints: null,
         plots: 0,
         silverAvailable: 'loading...',
         goldAvailable: 'loading...',
@@ -167,7 +174,7 @@ class Dashboard extends Component {
 
         this.setState({redirectPath: ''});
 
-        const {preSaleContract, match, data, refPointsContract, goldContract, silverContract, handleGetUserGems, gemService, auctionService} = this.props;
+        const {preSaleContract, match, data, refPointsContract, goldContract, silverContract, handleGetUserGems, gemService, auctionService, silverGoldService} = this.props;
 
         if (gemService && auctionService && match && match.params && match.params.userId)  {
             handleGetUserGems(match.params.userId);
@@ -189,15 +196,15 @@ class Dashboard extends Component {
               .catch(err => setError(err));
         }
 
-        if (goldContract && goldContract.methods && match.params.userId !== 'false') {
-            const gold = await getAvailableGold(goldContract, match.params.userId);
+        if (silverGoldService && goldContract && goldContract.methods && match.params.userId !== 'false') {
+            const gold = await silverGoldService.getAvailableGold(match.params.userId);
             if (gold) {
                 this.setState({goldAvailable: gold});
             }
         }
 
-        if (silverContract && silverContract.methods && match.params.userId !== 'false') {
-            const silver = await getAvailableSilver(silverContract, match.params.userId);
+        if (silverGoldService && silverContract && silverContract.methods && match.params.userId !== 'false') {
+            const silver = await silverGoldService.getAvailableSilver(match.params.userId);
             if (silver) {
                 this.setState({silverAvailable: silver});
             }
@@ -212,8 +219,11 @@ class Dashboard extends Component {
     }
 
     async componentDidUpdate(prevProps) {
+
         const {
-            web3, transition, preSaleContract, match, refPointsContract, goldContract, silverContract, handleGetUserGems, gemService, auctionService
+            web3, transition, preSaleContract, match, refPointsContract, goldContract, silverContract,
+            handleGetUserGems, handleGetImagesForGems, gemService, auctionService, silverGoldService,
+          pageNumber, userGemsPage, userGemsFiltered, needToLoadImages
         } = this.props;
 
         console.log('111 props: ', this.props, prevProps);
@@ -222,13 +232,13 @@ class Dashboard extends Component {
             //transition('WITH_METAMASK');
         }
 
-        if (match.params.userId !== prevProps.match.params.userId) {
-            //transition('LOADING');
+        if (gemService && auctionService && (gemService !== prevProps.gemService || auctionService !== prevProps.auctionService))  {
+            handleGetUserGems(match.params.userId);
         }
 
-        if (gemService && auctionService && (gemService !== prevProps.gemService || auctionService !== prevProps.auctionService))  {
-            console.log('Hey');
-            handleGetUserGems(match.params.userId);
+        if (gemService && (needToLoadImages || (userGemsPage && pageNumber !== prevProps.pageNumber))) {
+            console.log('GET IMAGES!');
+            handleGetImagesForGems(userGemsPage);
         }
 
         if (preSaleContract !== prevProps.preSaleContract && match.params.userId !== 'false') {
@@ -246,63 +256,24 @@ class Dashboard extends Component {
               .catch(err => setError(err));
         }
 
-        if (goldContract !== prevProps.goldContract && match.params.userId !== 'false') {
-            const gold = await getAvailableGold(goldContract, match.params.userId);
+        if (silverGoldService !== prevProps.silverGoldService && match.params.userId !== 'false') {
+            const gold = await silverGoldService.getAvailableGold(match.params.userId);
             if (gold) {
                 this.setState({goldAvailable: gold});
             }
         }
 
-        if (silverContract !== prevProps.silverContract && match.params.userId !== 'false') {
-            const silver = await getAvailableSilver(silverContract, match.params.userId);
+        if (silverGoldService !== prevProps.silverGoldService && match.params.userId !== 'false') {
+            const silver = await silverGoldService.getAvailableSilver(match.params.userId);
             if (silver) {
                 this.setState({silverAvailable: silver});
             }
         }
-
     }
 
-    // loadDataFromUrlIdentifier = async () => {
-    //     console.warn('FUCK');
-    //     const {match, transition} = this.props;
-    //     const userIdToLowerCase = match.params.userId
-    //       .split('')
-    //       .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
-    //       .join('');
-    //
-    //     const userDetails = db
-    //       .doc(`users/${userIdToLowerCase}`)
-    //       .get()
-    //       .then(doc => doc.data());
-    //
-    //     try {
-    //         const gemDetails = (await db.collection('stones')
-    //             .where('owner', '==', userIdToLowerCase)
-    //             .orderBy('gradeType', 'desc')
-    //             .get()
-    //         ).docs.map(doc => doc.data());
-    //
-    //         const imagesUploaded = gemDetails.map(async (gemDetail) => {
-    //
-    //             gemDetail.gemImage = await getGemImage(gemDetail.color, gemDetail.gradeType, gemDetail.level, gemDetail.id);
-    //             return true;
-    //         });
-    //
-    //         await Promise.all([...imagesUploaded, userDetails]);
-    //         transition('GOT_USER_GEMS', {
-    //             gems: gemDetails,
-    //             userName: userDetails.name,
-    //             userImage: userDetails.imageURL,
-    //         });
-    //     }
-    //     catch (error) {
-    //         transition('ERROR_FETCHING_GEMS', {error})
-    //     }
-    // };
-
     populateDashboard = () => {
-        const {handleAddGemsToDashboard, userGems} = this.props;
-        handleAddGemsToDashboard(userGems);
+        const {handleAddGemsToDashboard, userGemsFiltered} = this.props;
+        handleAddGemsToDashboard(userGemsFiltered);
     };
 
     checkForMetaMask = () => {
@@ -428,12 +399,15 @@ class Dashboard extends Component {
 
         console.log('USER GEMS PAGE:', userGemsPage);
 
-
         return (
           <div className="bg-off-black white card-container" data-testid="profile-page">
               <div className="flex  aic  wrap jcc jcb-ns pv4">
                   <div className=" flex aic pt3 pt0-ns">
-                      <img src={userImage} className="h3 w-auto pr3 pl3-ns dib" alt="gem auctions"/>
+                      {userImage ? <img src={userImage} className="h3 w-auto pr3 pl3-ns dib" alt=""/> :
+                        <Spin indicator={
+                          <Icon type="loading" style={{ fontSize: 24, color: '#e406a5' }} spin />}
+                        />
+                      }
                       <h1 className="white" data-testid="userName">
                           {userName}
                       </h1>
@@ -465,7 +439,7 @@ class Dashboard extends Component {
                       <Spring from={{opacity: 0}} to={{opacity: 1}} config={{delay: 4000}}>
                           {props => (
                             <div style={props} className="pr4">
-                                {referralPoints === '' ? (
+                                {!referralPoints ? (
                                   <p data-testid="loadingReferralPoints" className="tr o-50 white">
                                       Loading Referral Points...
                                   </p>
@@ -517,7 +491,7 @@ class Dashboard extends Component {
                               </div>
                               <CardBox>
                                   {loading && [1, 2, 3, 4, 5, 6].map(num => <LoadingCard key={num}/>)}
-                                  {userGemsPage && userGemsPage.length > 0 ? (
+                                  {!loading && userGemsPage && userGemsPage.length > 0 ? (
                                     userGemsPage.map(userGem => (
                                       <Link
                                         to={`/gem/${userGem.id}`}
@@ -527,9 +501,9 @@ class Dashboard extends Component {
                                           <Cards auction={userGem}/>
                                       </Link>
                                     ))
-                                  ) : (
-                                    <NoCard/>
-                                  )}
+                                  ) :
+                                    !loading ? <NoCard/> : ""
+                                  }
                               </CardBox>
                               <div className="white w-100 tc pv4">
                                   <Pagination
@@ -631,6 +605,7 @@ const actions = {
     handlePagination: paginate,
     handlePreLoadAuctionPage: preLoadAuctionPage,
     handleAddGemsToDashboard: addGemsToDashboard,
+    handleGetImagesForGems: getImagesForGems,
 };
 
 export default compose(

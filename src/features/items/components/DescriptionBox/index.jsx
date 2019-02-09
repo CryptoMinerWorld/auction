@@ -53,7 +53,7 @@ class DescriptionBox extends PureComponent {
 
   render() {
     const {
-      gem, userName, userImage, shareUrl,
+      gem, ownerData, shareUrl,
     } = this.props;
     const { inView, copied } = this.state;
 
@@ -92,14 +92,14 @@ class DescriptionBox extends PureComponent {
                     }}
                   >
                     <img
-                      src={userImage || logo}
+                      src={ownerData ? ownerData.imageURL : logo}
                       alt="seller logo"
                       className="br-100 h2 w-auto pl3-ns"
                     />
                     <small className="pl3 white-60 dib truncate mw5">
                       <span>
-                        Owned By
-                        {userName}
+                          Owned By
+                        {ownerData ? ' ' + ownerData.name : ' ...' || ' ...'}
                       </span>
                     </small>
                   </Link>

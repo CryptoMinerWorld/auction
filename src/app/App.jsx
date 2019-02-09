@@ -27,10 +27,11 @@ import RefPointsTracker from './ABI/RefPointsTracker';
 import Silver from './ABI/SilverERC20';
 import Gold from './ABI/GoldERC20';
 import Workshop from './ABI/Workshop';
-import SilverSale from './ABI/Workshop';
+import SilverSale from './ABI/SilverSale';
 import {resolveAnyPendingTx} from '../features/transactions/helpers';
 import GemService from "./services/GemService";
 import AuctionService from "./services/AuctionService";
+import SilverGoldService from "./services/SilverGoldService";
 
 
 require('antd/lib/notification/style/css');
@@ -226,8 +227,9 @@ class App extends Component {
                   countryContract,
                 );
 
-                const gemService = new GemService(gemsContractInstance, web3);
+                const gemService = new GemService(gemsContractInstance, web3, dutchAuctionContractInstance);
                 const auctionService = new AuctionService(dutchAuctionContractInstance, gemsContractInstance);
+                const silverGoldService = new SilverGoldService(silverSaleContract, silverContract, goldContract);
 
                 handleSendContractsToRedux(
                   dutchAuctionContractInstance,
@@ -243,7 +245,8 @@ class App extends Component {
                   workshopContract,
                   silverSaleContract,
                   gemService,
-                  auctionService
+                  auctionService,
+                  silverGoldService
                   //buySilverContract,
                   //buyGoldContract
 

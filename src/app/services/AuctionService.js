@@ -2,7 +2,7 @@ import {BigNumber} from "bignumber.js";
 import store from "../store";
 
 
-export default class AuctionDao {
+export default class AuctionService {
 
     constructor(auctionContractInstance, gemContractInstance) {
         this.auctionContract = auctionContractInstance;
@@ -10,13 +10,17 @@ export default class AuctionDao {
     }
 
 
-    getGemAuctionData = async (tokenId) => {
-
-        const packed224uint = new BigNumber(
+    getTokenSaleStatus = async (tokenId) => {
+        return new BigNumber(
           await (this.auctionContract.methods
             .getTokenSaleStatus(this.gemContract._address, tokenId)
             .call())
         );
+    }
+
+    getGemAuctionData = async (tokenId) => {
+
+        const packed224uint = await this.getTokenSaleStatus(tokenId);
 
         const gemAuctionData = {};
 

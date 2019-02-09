@@ -1,14 +1,7 @@
 import {AUCTION_DETAILS_RECEIVED, CLEAR_GEM_PAGE, NEW_AUCTION_CREATED} from './itemConstants';
-import {FETCH_DATA_BEGUN, FETCH_DATA_SUCCEEDED, MODAL_GONE,} from '../../app/reduxConstants';
+import {FETCH_DATA_BEGUN, FETCH_DATA_SUCCEEDED,} from '../../app/reduxConstants';
 import {db} from '../../app/utils/firebase';
-import {
-    calcMiningRate,
-    createAuctionHelper,
-    getGemImage,
-    getGemQualities,
-    getGemStory,
-    removeAuctionHelper
-} from './helpers';
+import {createAuctionHelper, removeAuctionHelper} from './helpers';
 import {setError} from '../../app/appActions';
 import {completedTx, ErrorTx, startTx} from '../transactions/txActions';
 import store from '../../app/store';
@@ -49,7 +42,23 @@ export const getGemData = tokenId => async (dispatch, getState) => {
     }
 }
 
+export const getOwnerDataByOwnerId = async ownerId => {
+    console.log('OWNER_ID: ', ownerId);
 
+    try {
+        const userIdToLowerCase = ownerId
+          .split('')
+          .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
+          .join('');
+
+        return db
+          .doc(`users/${userIdToLowerCase}`)
+          .get()
+          .then(doc => doc.data())
+    } catch (err) {
+        setError(err);
+    }
+}
 // export const getAuctionDetails = tokenId => async (dispatch, getState) => {
 //     dispatch({type: FETCH_DATA_BEGUN});
 //     console.log('getAuctionDetails:::::::::::::::1');
@@ -266,10 +275,10 @@ export function clearGemPageOnExit() {
     return dispatch => dispatch({type: CLEAR_GEM_PAGE});
 }
 
-export const upgradeGem = (gem, levelUp, gradeUp, setLoading) => (dispatch, getState) => {
+export const upgradeGem = (gem, levelUp, gradeUp, hidePopup) => (dispatch, getState) => {
     console.log(333333333333, 'upgrading...');
     const workshopContractInstance = getState().app.workshopContractInstance;
-    const gemContractInstance = getState().app.gemsContractInstance;
+    const gemService = getState().app.gemServiceInstance;
     console.log('Contract: ', workshopContractInstance);
     const currentUser = getState().app.currentAccount;
     console.log('TX start');
@@ -278,6 +287,7 @@ export const upgradeGem = (gem, levelUp, gradeUp, setLoading) => (dispatch, getS
       .send()
       .on('transactionHash', (hash) => {
           console.log('transactionHash: ', hash);
+          hidePopup();
           store.dispatch(
             startTx({
                 hash,
@@ -291,18 +301,22 @@ export const upgradeGem = (gem, levelUp, gradeUp, setLoading) => (dispatch, getS
           console.log('TX receipt: ', receipt);
           store.dispatch(completedTx(receipt));
           console.log('COMPLETED_TX dispatched');
-          const gemDetails = await updateGemQualities(gemContractInstance, gem);
-          dispatch({type: FETCH_DATA_SUCCEEDED});
+          const newGemData = await gemService.getGem(gem.id);
+
+          console.log('NEW GEM DATA: ', newGemData);
+          console.log('GEM DATA + NEW DATA:', {...gem, ...newGemData});
+
+          //dispatch({type: FETCH_DATA_SUCCEEDED});
           dispatch({
               type: AUCTION_DETAILS_RECEIVED,
-              payload: gemDetails,
+              payload: {gem: {...gem, ...newGemData}}
           });
-          setLoading(false);
+          //setLoading(false);
       })
       .on('error', (err) => {
           console.log('TX error');
           store.dispatch(ErrorTx(err));
-          setLoading(false);
+          //setLoading(false);
           // dispatch({
           //   type: MODAL_GONE,
           // });

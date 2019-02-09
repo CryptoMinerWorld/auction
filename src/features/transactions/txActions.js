@@ -2,9 +2,9 @@ import { TX_STARTED, TX_COMPLETED, TX_ERROR } from './txConstants';
 
 import { setError } from '../../app/appActions';
 
-export const startTx = payload => ({ type: TX_STARTED, payload });
-export const completedTx = receipt => ({ type: TX_COMPLETED, payload: receipt });
-export const ErrorTx = error => ({ type: TX_ERROR, payload: error });
+export const startTx = tx => ({type: TX_STARTED, payload: tx});
+export const completedTx = tx => ({ type: TX_COMPLETED, payload: tx});
+export const ErrorTx = tx => ({ type: TX_ERROR, payload: {error: tx.error, ...tx}});
 
 export const resolveTXStatus = async (pendingTransactions, dbWrite, dbDelete, queryBlockchain) => {
   // eslint-disable-next-line
