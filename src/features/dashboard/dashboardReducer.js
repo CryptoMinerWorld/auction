@@ -28,6 +28,8 @@ export default function dashboardReducer(
       userGemsFiltered: [],
       sortBox: true,
       paginate: [],
+      start: 0,
+      end: 15
   },
   action,
 ) {
@@ -36,7 +38,7 @@ export default function dashboardReducer(
     console.log('REDUCER::::::: payload =', action.payload);
 
     if (action.type === FETCH_GEMS_PAGE_IMAGES) {
-        return {...state, userGemsPage: action.payload, updateImages: false};
+        return {...state, /*userGemsPage: action.payload,*/ updateImages: false};
     }
 
     if (action.type === USER_GEMS_RETRIEVED) {
@@ -137,11 +139,14 @@ export default function dashboardReducer(
             newGemSelection = allGems && allGems.filter(gem => gem.auctionIsLive === false);
         }
 
+        console.warn('NEW GEM SELECTION: ', newGemSelection);
+
         // returns ordered data and resets pagination to first page]
         return {
             ...state,
             userGemsFiltered: newGemSelection,
             updateImages: true,
+            userGemsPage: null,
             start: 0,
             end: 15,
             page: 1,
@@ -152,7 +157,8 @@ export default function dashboardReducer(
         return {
             ...state,
             userGemsFiltered: state.userGems.filter(gem => gem.auctionIsLive),
-            updateImages: true
+            updateImages: true,
+            userGemsPage: null,
         };
     }
 
@@ -188,13 +194,13 @@ export default function dashboardReducer(
         return {...state, userLoading: false, userDetails: action.payload};
     }
 
-    if (action.type === RERENDER_SORT_BOX) {
-        return {...state, sortBox: false};
-    }
-
-    if (action.type === SORT_BOX_RERENDERED) {
-        return {...state, sortBox: true};
-    }
+    // if (action.type === RERENDER_SORT_BOX) {
+    //     return {...state, sortBox: false};
+    // }
+    //
+    // if (action.type === SORT_BOX_RERENDERED) {
+    //     return {...state, sortBox: true};
+    // }
 
     if (action.type === PAGINATE) {
         const start = action.payload[0] * action.payload[1] - action.payload[1];
@@ -204,6 +210,7 @@ export default function dashboardReducer(
             start,
             end,
             page: action.payload[0],
+            userGemsPage: null,
         };
     }
 

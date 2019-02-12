@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Progress from 'antd/lib/progress';
-import { calculatePercentage, weiToEth } from '../../market/helpers';
+import { calculatePercentage } from '../../market/helpers';
 
 require('antd/lib/progress/style/css');
 
@@ -14,7 +14,7 @@ class ProgressMeter extends PureComponent {
         <p className="basic" style={{ fontSize: 'xx-large' }}>
           Ξ
           {' '}
-          <span data-testid="currentPrice">{weiToEth(currentPrice)}</span>
+          <span data-testid="currentPrice">{currentPrice}</span>
         </p>
 
         <Progress
@@ -28,12 +28,12 @@ class ProgressMeter extends PureComponent {
           <small className="basic">
             Ξ
             {' '}
-            <span data-testid="minPrice">{weiToEth(maxPrice)}</span>
+            <span data-testid="minPrice">{maxPrice}</span>
           </small>
           <small className="basic">
             Ξ
             {' '}
-            <span data-testid="maxPrice">{weiToEth(minPrice)}</span>
+            <span data-testid="maxPrice">{minPrice}</span>
           </small>
         </div>
       </div>

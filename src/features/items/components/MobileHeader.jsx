@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Gembox from './Gembox';
 
-import { weiToEth } from '../../market/helpers';
+import { } from '../../market/helpers';
 
 const Triangle = styled.div`
   width: 140px;
@@ -42,7 +42,7 @@ price
             </small>
             <p className="white f3 tc">
 Ξ
-              {gem && Math.round(weiToEth(gem.currentPrice) * 100) / 100}
+              {gem && Math.round((gem.currentPrice) * 100) / 100}
             </p>
           </div>
           <Triangle />

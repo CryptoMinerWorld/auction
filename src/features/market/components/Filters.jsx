@@ -4,7 +4,7 @@ import Slider from 'antd/lib/slider';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Icon from 'antd/lib/icon';
 import { connect } from 'react-redux';
-import { weiToEth, gradeConverter } from '../helpers';
+import {gradeConverter } from '../helpers';
 import { filterChange, filterMarketplaceResults } from '../marketActions';
 
 const Loading1 = () => <Icon type="loading" style={{ fontSize: 24, color: '#e89e59' }} spin />;
@@ -144,13 +144,13 @@ const Filters = ({
               <p>
                 <span className="basic">Ξ </span>
                 <span className=" f3" style={{ color: '#945cbe' }}>
-                  {`${weiToEth(currentPrice.min)}`}
+                  {`${currentPrice.min}`}
                 </span>
                 {' '}
                 <span className="o-60"> to </span>
                 <span className="basic">Ξ </span>
                 <span className=" f3" style={{ color: '#945cbe' }}>
-                  {`${weiToEth(currentPrice.max)}`}
+                  {`${currentPrice.max}`}
                 </span>
               </p>
             </div>
@@ -159,11 +159,11 @@ const Filters = ({
           <Slider
             range
             defaultValue={[currentPrice.min, currentPrice.max]}
-            max={10000000000000000000}
+            max={100}
             onChange={values => handleChange('currentPrice', values)}
             onAfterChange={() => finalFilter()}
             className="slider4"
-            tipFormatter={val => weiToEth(val)}
+            tipFormatter={val => val}
           />
         </div>
       </ReactCSSTransitionGroup>

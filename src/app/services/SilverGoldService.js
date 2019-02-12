@@ -5,12 +5,23 @@ import {setError} from "../appActions";
 
 export default class SilverGoldService {
 
-    constructor(silverSaleContractInstance, silverContractInstance, goldContractInstance) {
+    constructor(silverSaleContractInstance, silverContractInstance, goldContractInstance, refPointsTrackerContractInstance) {
         console.log('SilverGoldService constructor called', silverSaleContractInstance);
         this.saleContract = silverSaleContractInstance;
         this.silverContract = silverContractInstance;
         this.goldContract = goldContractInstance;
+        this.refPointsTrackerContract = refPointsTrackerContractInstance;
     }
+
+    getUserBalance = async (userId) => {
+        console.log('get user balance for:', this.saleContract.methods);
+        const balance = await this.saleContract.methods
+          .balanceOf(userId)
+          .call();
+        console.log('>>>>>>>>>>>>> BALANCE:', balance);
+        return balance;
+    }
+
 
     getBoxesAvailable = async () => {
         return await this.saleContract.methods

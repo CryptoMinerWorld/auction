@@ -7,7 +7,7 @@ import Icon from 'antd/lib/icon';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import {compose} from 'redux';
-import {daysToSeconds, ethToWei} from '../../mint/helpers';
+import {daysToSeconds, ethToGWei, ethToWei} from '../../mint/helpers';
 import {createAuction, removeFromAuction, upgradeGem} from '../itemActions';
 import Gembox from './Gembox';
 import ProgressMeter from './ProgressMeter';

@@ -1,28 +1,22 @@
 import {
-    ALL_USER_GEMS_UPLOADED,
     AUCTION_DETAILS_RECEIVED,
-    DASHBOARD_WAS_FILTERED, FETCH_GEMS_PAGE_IMAGES,
+    DASHBOARD_WAS_FILTERED,
+    FETCH_GEMS_PAGE_IMAGES,
     FETCH_USER_DETAILS_BEGUN,
     FETCH_USER_DETAILS_FAILED,
     FETCH_USER_DETAILS_SUCCEEDED,
     FETCH_USER_GEMS_BEGUN,
-    FETCH_USER_GEMS_SUCCEEDED,
     ONLY_WANT_TO_SEE_GEMS_IN_AUCTIONS,
     PAGINATE,
     RERENDER_SORT_BOX,
     SORT_BOX_RERENDERED,
     USER_DETAILS_RETRIEVED,
     USER_GEMS_RETRIEVED,
-    USER_HAS_NO_GEMS_IN_WORKSHOP,
     WANT_TO_SEE_ALL_GEMS,
 } from './dashboardConstants';
 import {db} from '../../app/utils/firebase';
-import store from '../../app/store';
-import {calcMiningRate, getGemQualities} from '../items/helpers';
-import {getGemImage, getGemStory} from './helpers';
-import {setError} from '../../app/appActions';
 
-// this gets all the gems from the database
+
 export const getUserGems = ownerId => async (dispatch, getState) => {
     console.log('11111 FETCH!');
     dispatch({type: FETCH_USER_GEMS_BEGUN});
@@ -37,12 +31,19 @@ export const getUserGems = ownerId => async (dispatch, getState) => {
 
     try {
         console.log('11111 FETCH!');
-        const ownerGems = await gemService.getOwnerGems(ownerId);
+        const [notAuctionOwnerGems, auctionOwnerGems] = await Promise.all([
+              gemService.getOwnerGems(ownerId),
+              auctionService.getAuctionOwnerGems(ownerId)
+        ]);
 
         console.log('222222 FETCH!');
 
         //dispatch({type: FETCH_USER_GEMS_SUCCEEDED});
-        dispatch({type: USER_GEMS_RETRIEVED, payload: ownerGems});
+        console.warn('AUCTIONOWNERGEMS: ', auctionOwnerGems);
+        console.warn('NOTAUCTIONGEMS:', notAuctionOwnerGems);
+
+
+        dispatch({type: USER_GEMS_RETRIEVED, payload: auctionOwnerGems.concat(notAuctionOwnerGems)});
     }
     catch (e) {
         console.error("Get user gems failed: ", e);
@@ -51,6 +52,8 @@ export const getUserGems = ownerId => async (dispatch, getState) => {
 
 export const getImagesForGems = gems => async (dispatch, getState) => {
     const gemService = getState().app.gemServiceInstance;
+    console.log(':::::::::::::GEM SERVICE::', gemService);
+    if (!gemService) return;
     const gemsWithImages = await gemService.getImagesForGems(gems);
     dispatch({type: FETCH_GEMS_PAGE_IMAGES, payload: gemsWithImages});
 }
@@ -163,19 +166,6 @@ export const onlyGemsInAuction = () => ({
 export const allMyGems = () => ({
     type: WANT_TO_SEE_ALL_GEMS,
 });
-
-// this is not an action its just a regular function, no dispatch
-export const updateGemDetails = (userId, userName, userImage) => async () => {
-    const userIdToLowerCase = userId
-      .split('')
-      .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
-      .join('');
-    try {
-
-    } catch (err) {
-        return err;
-    }
-};
 
 export const filterUserGemsOnPageLoad = () => (dispatch, getState) => {
     const allUserGemItems = getState().dashboard.userGems;

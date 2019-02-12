@@ -1,7 +1,8 @@
 import {completedTx, ErrorTx, startTx} from "../transactions/txActions";
 import {AUCTION_DETAILS_RECEIVED} from "../items/itemConstants";
+import {parseTransactionHashFromError} from "../transactions/helpers";
 
-export const buyGeode = (type, amount, price, hidePopup) => async (dispatch, getState) => {
+export const buyGeode = (type, amount, price, referralPointsUsed, hidePopup) => async (dispatch, getState) => {
 
     const silverGoldService = getState().app.silverGoldServiceInstance;
     const currentUser = getState().auth.currentUserId;
@@ -16,6 +17,8 @@ export const buyGeode = (type, amount, price, hidePopup) => async (dispatch, get
               description: 'silver sale (description)',
               currentUser,
               txMethod: 'SILVER_SALE',
+              referralPointsUsed,
+              cost: price,
           }),
         );
     })
@@ -38,7 +41,7 @@ export const buyGeode = (type, amount, price, hidePopup) => async (dispatch, get
               txMethod: 'SILVER_SALE',
               description: 'silver sale failed',
               error: err,
-              hash: parseTransactionHash(err.message)
+              hash: parseTransactionHashFromError(err.message)
           }));
           // dispatch({
           //   type: MODAL_GONE,
@@ -52,18 +55,6 @@ export const buyGeode = (type, amount, price, hidePopup) => async (dispatch, get
     console.log('TX RESULT AWAITED:', txResult);
 
 };
-
-const parseTransactionHash = (err) => {
-    const hashFieldIndex = err.indexOf("transactionHash");
-    let hashValue;
-    if (hashFieldIndex !== -1) {
-        const hashValueStart = err.indexOf("0x", hashFieldIndex);
-        const hashValueEnd = err.indexOf("\"", hashValueStart);
-        hashValue = err.substring(hashValueStart, hashValueEnd);
-    }
-    console.log('ERROR TX HASH: ', hashValue);
-    return hashValue;
-}
 
 export const getBoxesAvailableData = () => async (dispatch, getState) => {
 

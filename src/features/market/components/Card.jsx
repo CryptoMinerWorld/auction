@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Progress from 'antd/lib/progress';
 import format from 'date-fns/format';
 import Tilt from 'react-tilt';
-import { calculatePercentage, weiToEth } from '../helpers';
+import { calculatePercentage} from '../helpers';
 import MiniGemBox from '../../../components/MiniGemBox';
 
 require('antd/lib/progress/style/css');
@@ -35,19 +35,19 @@ const Cards = ({ auction }) => (
         <small className="basic">
           Ξ
           {' '}
-          <small>{weiToEth(auction.maxPrice)}</small>
+          <small>{auction.maxPrice}</small>
         </small>
         <big className="db b f3 o-70">
           <span className="basic" style={{ color: '#FFB700' }}>
             Ξ
           </span>
           {' '}
-          <span style={{ color: '#FFB700' }}>{weiToEth(auction.currentPrice)}</span>
+          <span style={{ color: '#FFB700' }}>{auction.currentPrice}</span>
         </big>
         <small className="basic">
           Ξ
           {' '}
-          <small>{weiToEth(auction.minPrice)}</small>
+          <small>{auction.minPrice}</small>
         </small>
       </div>
       <div className="tc">

@@ -40,7 +40,7 @@ class GemSortBox extends PureComponent {
     </div>
   );
 
-  handleFetchAllGemsNOTInAuction = () => {
+  handleFetchAllGemsNotInAuction = () => {
     const { fetchGems } = this.props;
     fetchGems('notInAuction');
   };

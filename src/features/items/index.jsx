@@ -71,6 +71,7 @@ class Auction extends PureComponent {
             handleGetGemData(match.params.gemId);
         }
 
+        //todo: improve priceInterval (only if auction is live ?)
         this.Priceinterval = setInterval(() => {
             if (dutchContract && gemContractAddress) {
                 dutchContract.methods

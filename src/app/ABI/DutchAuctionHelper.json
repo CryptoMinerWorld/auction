@@ -1,0 +1,61 @@
+{
+  "contractName": "DutchAuctionHelper",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "auction",
+          "type": "address"
+        },
+        {
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "getGemCollection",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint240[]"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "auction",
+          "type": "address"
+        },
+        {
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "getCountryCollection",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint200[]"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "schemaVersion": "2.0.0",
+  "updatedAt": "2019-02-10T16:52:56.874Z"
+}

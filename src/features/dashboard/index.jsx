@@ -114,7 +114,6 @@ const select = store => {
     return res;
 }
 
-
 class Dashboard extends Component {
 
     static propTypes = {
@@ -130,6 +129,7 @@ class Dashboard extends Component {
         sortBox: PropTypes.bool.isRequired,
         totalGems: PropTypes.number.isRequired,
         userGemsPage: PropTypes.arrayOf(PropTypes.shape({})),
+        userGemsFiltered: PropTypes.arrayOf(PropTypes.shape({})),
         handlePagination: PropTypes.func.isRequired,
         pageNumber: PropTypes.number,
         handlePreLoadAuctionPage: PropTypes.func.isRequired,
@@ -158,10 +158,10 @@ class Dashboard extends Component {
     };
 
     state = {
-        referralPoints: null,
+        //referralPoints:,
         plots: 0,
-        silverAvailable: 'loading...',
-        goldAvailable: 'loading...',
+        //silverAvailable: 'loading...',
+        //goldAvailable: 'loading...',
         tab: 1,
         redirectPath: '',
         alreadyRedirected: false,
@@ -189,26 +189,35 @@ class Dashboard extends Component {
               .catch(err => setError(err));
         }
 
-        if (refPointsContract && refPointsContract.methods && match.params.userId !== 'false') {
-
-            getNewReferralPoints(refPointsContract, match.params.userId)
-              .then(referralPoints => referralPoints && this.setState({referralPoints}))
-              .catch(err => setError(err));
+        if (silverGoldService) {
+            const balance = await silverGoldService.getUserBalance(match.params.userId);
+            this.setState({
+                referralPoints: balance[0],
+                silverAvailable: balance[1],
+                goldAvailable: balance[2]
+            });
         }
 
-        if (silverGoldService && goldContract && goldContract.methods && match.params.userId !== 'false') {
-            const gold = await silverGoldService.getAvailableGold(match.params.userId);
-            if (gold) {
-                this.setState({goldAvailable: gold});
-            }
-        }
-
-        if (silverGoldService && silverContract && silverContract.methods && match.params.userId !== 'false') {
-            const silver = await silverGoldService.getAvailableSilver(match.params.userId);
-            if (silver) {
-                this.setState({silverAvailable: silver});
-            }
-        }
+        // if (refPointsContract && refPointsContract.methods && match.params.userId !== 'false') {
+        //
+        //     getNewReferralPoints(refPointsContract, match.params.userId)
+        //       .then(referralPoints => referralPoints && this.setState({referralPoints}))
+        //       .catch(err => setError(err));
+        // }
+        //
+        // if (silverGoldService && goldContract && goldContract.methods && match.params.userId !== 'false') {
+        //     const gold = await silverGoldService.getAvailableGold(match.params.userId);
+        //     if (gold) {
+        //         this.setState({goldAvailable: gold});
+        //     }
+        // }
+        //
+        // if (silverGoldService && silverContract && silverContract.methods && match.params.userId !== 'false') {
+        //     const silver = await silverGoldService.getAvailableSilver(match.params.userId);
+        //     if (silver) {
+        //         this.setState({silverAvailable: silver});
+        //     }
+        // }
 
         data.refetch();
         const country = window.location.hash.length;
@@ -226,18 +235,31 @@ class Dashboard extends Component {
           pageNumber, userGemsPage, userGemsFiltered, needToLoadImages
         } = this.props;
 
-        console.log('111 props: ', this.props, prevProps);
+        const {
+            silverAvailable, goldAvailable, referralPoints, imagesLoadingStarted
+        } = this.state;
 
+
+        if (!needToLoadImages && imagesLoadingStarted) {
+            this.setState({imagesLoadingStarted: false});
+        }
+
+        console.log('111 props: ', this.props, prevProps);
+        console.log('111 state: ', this.state);
         if (web3 !== prevProps.web3) {
             //transition('WITH_METAMASK');
         }
 
         if (gemService && auctionService && (gemService !== prevProps.gemService || auctionService !== prevProps.auctionService))  {
+            console.warn('HANDLE GET USER GEMS <<<<<<<<<<<<<');
+            this.setState({imagesLoadingStarted: false});
             handleGetUserGems(match.params.userId);
         }
 
-        if (gemService && (needToLoadImages || (userGemsPage && pageNumber !== prevProps.pageNumber))) {
-            console.log('GET IMAGES!');
+        if (!imagesLoadingStarted && gemService && userGemsPage && (userGemsPage.length > 0) && (needToLoadImages || pageNumber !== prevProps.pageNumber)) {
+            console.log('GET IMAGES! 1');
+            this.setState({imagesLoadingStarted: true});
+            console.log('GET IMAGES! 2');
             handleGetImagesForGems(userGemsPage);
         }
 
@@ -250,25 +272,34 @@ class Dashboard extends Component {
               .catch(err => setError(err));
         }
 
-        if (refPointsContract !== prevProps.refPointsContract && match.params.userId !== 'false') {
-            getNewReferralPoints(refPointsContract, match.params.userId)
-              .then(referralPoints => referralPoints && this.setState({referralPoints}))
-              .catch(err => setError(err));
+        if (silverGoldService && !(silverAvailable && goldAvailable && referralPoints) || (silverGoldService !== prevProps.silverGoldService)) {
+            const balance = await silverGoldService.getUserBalance(match.params.userId);
+            this.setState({
+                referralPoints: balance[0],
+                silverAvailable: balance[1],
+                goldAvailable: balance[2]
+            });
         }
-
-        if (silverGoldService !== prevProps.silverGoldService && match.params.userId !== 'false') {
-            const gold = await silverGoldService.getAvailableGold(match.params.userId);
-            if (gold) {
-                this.setState({goldAvailable: gold});
-            }
-        }
-
-        if (silverGoldService !== prevProps.silverGoldService && match.params.userId !== 'false') {
-            const silver = await silverGoldService.getAvailableSilver(match.params.userId);
-            if (silver) {
-                this.setState({silverAvailable: silver});
-            }
-        }
+        //
+        // if (refPointsContract !== prevProps.refPointsContract && match.params.userId !== 'false') {
+        //     getNewReferralPoints(refPointsContract, match.params.userId)
+        //       .then(referralPoints => referralPoints && this.setState({referralPoints}))
+        //       .catch(err => setError(err));
+        // }
+        //
+        // if (silverGoldService !== prevProps.silverGoldService && match.params.userId !== 'false') {
+        //     const gold = await silverGoldService.getAvailableGold(match.params.userId);
+        //     if (gold) {
+        //         this.setState({goldAvailable: gold});
+        //     }
+        // }
+        //
+        // if (silverGoldService !== prevProps.silverGoldService && match.params.userId !== 'false') {
+        //     const silver = await silverGoldService.getAvailableSilver(match.params.userId);
+        //     if (silver) {
+        //         this.setState({silverAvailable: silver});
+        //     }
+        // }
     }
 
     populateDashboard = () => {
@@ -381,6 +412,7 @@ class Dashboard extends Component {
             sortBox,
             totalGems,
             userGemsPage,
+          userGemsFiltered,
             handlePagination,
             pageNumber,
             handlePreLoadAuctionPage,
@@ -492,7 +524,9 @@ class Dashboard extends Component {
                               <CardBox>
                                   {loading && [1, 2, 3, 4, 5, 6].map(num => <LoadingCard key={num}/>)}
                                   {!loading && userGemsPage && userGemsPage.length > 0 ? (
-                                    userGemsPage.map(userGem => (
+                                    userGemsPage.map(userGem => {
+                                        console.log('USER GEM: ', userGem);
+                                        return (
                                       <Link
                                         to={`/gem/${userGem.id}`}
                                         key={userGem.id}
@@ -500,7 +534,7 @@ class Dashboard extends Component {
                                       >
                                           <Cards auction={userGem}/>
                                       </Link>
-                                    ))
+                                    )})
                                   ) :
                                     !loading ? <NoCard/> : ""
                                   }
@@ -509,7 +543,7 @@ class Dashboard extends Component {
                                   <Pagination
                                     current={pageNumber}
                                     pageSize={15}
-                                    total={totalGems}
+                                    total={userGemsFiltered.length}
                                     hideOnSinglePage
                                     onChange={(page, pageSize) => {
                                         window.scrollTo(0, 0);

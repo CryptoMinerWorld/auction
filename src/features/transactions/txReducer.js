@@ -35,7 +35,7 @@ export default (state = {}, action) => {
         const updatedTransactions = state.transactions && state.transactions.map((tx) => {
             if (tx.hash === action.payload.hash) {
                 found = true;
-                return {...action.payload, unseen: true, status: 'COMPLETED'}
+                return {...tx, ...action.payload, unseen: true, status: 'COMPLETED'}
             }
             else {
                 return tx;

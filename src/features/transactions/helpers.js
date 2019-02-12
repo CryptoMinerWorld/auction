@@ -13,6 +13,18 @@ import { getMapIndexFromCountryId } from '../dashboard/helpers';
  * }} event
  */
 
+export const parseTransactionHashFromError = (err) => {
+    const hashFieldIndex = err.indexOf("transactionHash");
+    let hashValue;
+    if (hashFieldIndex !== -1) {
+        const hashValueStart = err.indexOf("0x", hashFieldIndex);
+        const hashValueEnd = err.indexOf("\"", hashValueStart);
+        hashValue = err.substring(hashValueStart, hashValueEnd);
+    }
+    console.log('ERROR TX HASH: ', hashValue);
+    return hashValue;
+}
+
 export const savePendingTxToFirestore = (ctx, {
   hash, txCurrentUser, txMethod, txTokenId,
 }) => db

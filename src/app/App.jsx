@@ -19,6 +19,7 @@ import ScrollToTop from '../components/ScrollToTop';
 import {clearError, instantiateContracts, sendContractsToRedux, setError,} from './appActions';
 import {updateWalletId} from '../features/auth/authActions';
 import DutchAuction from './ABI/DutchAuction.json';
+import DutchAuctionHelper from './ABI/DutchAuctionHelper';
 import Gems from './ABI/GemERC721.json';
 import Presale from './ABI/Presale2.json';
 import Country from './ABI/CountryERC721.json';
@@ -52,6 +53,7 @@ Sentry.init({
 });
 
 const dutchAuctionABI = DutchAuction.abi;
+const dutchAuctionHelperABI = DutchAuctionHelper.abi;
 const gemsABI = Gems.abi;
 const presaleABI = Presale.abi;
 const countryABI = Country.abi;
@@ -114,6 +116,14 @@ class App extends Component {
         const dutchContract = new web3.eth.Contract(
           dutchAuctionABI,
           process.env.REACT_APP_DUTCH_AUCTION,
+          {
+              from: currentAccountId,
+          },
+        );
+
+        const dutchHelperContract = new web3.eth.Contract(
+          dutchAuctionHelperABI,
+          process.env.REACT_APP_DUTCH_AUCTION_HELPER,
           {
               from: currentAccountId,
           },
@@ -187,6 +197,7 @@ class App extends Component {
 
         Promise.all([
             dutchContract,
+            dutchHelperContract,
             gemsContract,
             currentAccountId,
             presaleContract,
@@ -201,6 +212,7 @@ class App extends Component {
           .then(
             ([
                  dutchAuctionContractInstance,
+                 dutchAuctionHelperContractInstance,
                  gemsContractInstance,
                  currentAccount,
                  presale,
@@ -228,11 +240,12 @@ class App extends Component {
                 );
 
                 const gemService = new GemService(gemsContractInstance, web3, dutchAuctionContractInstance);
-                const auctionService = new AuctionService(dutchAuctionContractInstance, gemsContractInstance);
-                const silverGoldService = new SilverGoldService(silverSaleContract, silverContract, goldContract);
+                const auctionService = new AuctionService(dutchAuctionContractInstance, dutchAuctionHelperContractInstance, gemsContractInstance);
+                const silverGoldService = new SilverGoldService(silverSaleContract, silverContract, goldContract, refPointsTrackerContract);
 
                 handleSendContractsToRedux(
                   dutchAuctionContractInstance,
+                  dutchAuctionHelperContractInstance,
                   gemsContractInstance,
                   web3,
                   presale,

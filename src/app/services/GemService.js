@@ -12,25 +12,14 @@ export default class GemService {
 
     getGemProperties = async (tokenId) => {
         try {
-            const properties = new BigNumber (await (this.contract.methods
+            const properties = new BigNumber(await (this.contract.methods
               .getProperties(tokenId)
               .call()));
 
-            const color = properties.dividedToIntegerBy(0x10000000000).toNumber();
-            const level = properties
-              .dividedToIntegerBy(0x100000000)
-              .modulo(0x100)
-              .toNumber();
-            const gradeType = properties
-              .dividedToIntegerBy(0x1000000)
-              .modulo(0x100)
-              .toNumber();
-            const gradeValue = properties.modulo(0x1000000).toNumber();
-
-            return { color, level, gradeType, gradeValue }
+            return unpackGemProperties(properties);
         }
-        catch(err) {
-              console.log('ERROR in getGemProperties', err)
+        catch (err) {
+            console.log('ERROR in getGemProperties', err)
         }
     }
 
@@ -79,7 +68,8 @@ export default class GemService {
     }
 
     getImagesForGems = async (gemsToLoadImages) => {
-        await Promise.all(
+        console.log('GEMS TO LOAD IMAGES: ', gemsToLoadImages);
+        return await Promise.all(
           gemsToLoadImages.map(async gem => {
               gem.image = await getGemImage(
                 {
@@ -88,31 +78,46 @@ export default class GemService {
                     gradeType: gem.gradeType,
                     gradeValue: gem.gradeValue
                 }, gem.id);
-              return gem;
+              //return gem;
           }));
     }
 
     getOwnerGems = async (ownerId) => {
 
-        const idsOfGemsUserOwns = await this.contract.methods.getCollection(ownerId).call();
-
-        return await Promise.all(
-          idsOfGemsUserOwns.map(async gemId => {
-              const gemProperties = await this.getGemProperties(gemId);
-              return {
-                  ...gemProperties,
-                  id: gemId,
-                  owner: ownerId,
-                  auctionIsLive: await this.getGemAuctionIsLive(gemId),
-                  //story: await getGemStory(gemProperties, gemId),
-                  //image: await getGemImage(gemProperties, gemId),
-                  name: calculateGemName(gemProperties.color, gemId),
-                  rate: calculateMiningRate(gemProperties.gradeType, gemProperties.gradeValue),
-                  //restingEnergyMinutes: calculateGemRestingEnergy(gemCreationTime)
-              }
-          })
-        )
+        const notAuctionGemsUserOwns = await this.contract.methods.getPackedCollection(ownerId).call();
+        return notAuctionGemsUserOwns.map(notAuctionGem => {
+            const packed80uint = new BigNumber(notAuctionGem);
+            const gemId = packed80uint.dividedToIntegerBy(new BigNumber(2).pow(48)).toNumber();
+            const gemPackedProperties = packed80uint.modulo(new BigNumber(2).pow(48));
+            const gemProperties = unpackGemProperties(gemPackedProperties);
+            return {
+                ...gemProperties,
+                id: gemId,
+                owner: ownerId,
+                auctionIsLive: false, //await this.getGemAuctionIsLive(gemId),
+                //story: await getGemStory(gemProperties, gemId),
+                //image: await getGemImage(gemProperties, gemId),
+                name: calculateGemName(gemProperties.color, gemId),
+                rate: calculateMiningRate(gemProperties.gradeType, gemProperties.gradeValue),
+                //restingEnergyMinutes: calculateGemRestingEnergy(gemCreationTime)
+            }
+        })
     }
+}
+
+export const unpackGemProperties = (properties) => {
+    const color = properties.dividedToIntegerBy(0x10000000000).toNumber();
+    const level = properties
+      .dividedToIntegerBy(0x100000000)
+      .modulo(0x100)
+      .toNumber();
+    const gradeType = properties
+      .dividedToIntegerBy(0x1000000)
+      .modulo(0x100)
+      .toNumber();
+    const gradeValue = properties.modulo(0x1000000).toNumber();
+
+    return {color, level, gradeType, gradeValue}
 }
 
 export const getGemStory = async (gemProperties, tokenId) => {
@@ -169,7 +174,7 @@ export const getGemStory = async (gemProperties, tokenId) => {
 
 export const getGemImage = async (gemProperties, tokenId) => {
 
-    console.log('GET GEM STORY, gemProperties: ', gemProperties);
+    console.log('GET GEM IMAGE, gemProperties: ', gemProperties);
 
     const type = {
         9: 'Sap',
@@ -212,7 +217,7 @@ export const getGemImage = async (gemProperties, tokenId) => {
             try {
                 url = await (storage.ref(`gems512/${type}-${level}-${gradeType}-4500.png`).getDownloadURL())
             }
-            catch(e) {
+            catch (e) {
                 url = await (storage.ref(`gems512/specialOneImage.png`).getDownloadURL())
             }
         }

@@ -180,5 +180,6 @@ export function paginate(pageNumber, pagePerView) {
 }
 
 export function preLoadAuctionPage(auction) {
-  return dispatch => dispatch({ type: AUCTION_DETAILS_RECEIVED, payload: auction });
+    console.log('>>>>>>>>>>> PRELOAD <<<<<<<<<<<', auction);
+  return dispatch => dispatch({ type: AUCTION_DETAILS_RECEIVED, payload: {gem:auction} });
 }

@@ -181,7 +181,7 @@ export default class UpgradeComponent extends React.Component {
                     style={confirmButton}
                     onClick={() => {
                         this.setState({loading: true});
-                        handleUpgradeGem(this.props.gem, this.state.level - this.state.initialLevel, this.state.gradeType - this.state.initialGrade, hidePopup);
+                        handleUpgradeGem(this.props.gem, this.state.level - this.state.initialLevel, this.state.gradeType - this.state.initialGrade, hidePopup, this.state.cost);
                     }}
                   >
                       {this.state.loading && <Icon type="loading" theme="outlined" className="pr3" />

@@ -354,7 +354,7 @@ export const ConfirmBuyPopup = ({type, amount, price, handleConfirmBuy, hidePopu
           <div
             style={confirmButton}
             onClick={(e) => {
-                handleConfirmBuy(type, amount, price, hidePopup);
+                handleConfirmBuy(type, amount, price, 0, hidePopup);
             }}
           >
               CONFIRM

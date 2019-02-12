@@ -7,6 +7,8 @@ import Badge from 'antd/lib/badge';
 import Avatar from 'antd/lib/avatar';
 // import { NavLink } from 'react-router-dom';
 import connect from "react-redux/es/connect/connect";
+import {gradeConverter} from "../../market/helpers";
+import Icon from "antd/lib/icon";
 
 require('antd/lib/dropdown/style/css');
 require('antd/lib/badge/style/css');
@@ -19,45 +21,68 @@ const menuItemContainer = {}
 const generateMenuItemForTx = tx => {
     switch (tx.txMethod) {
         case 'SILVER_SALE':
-            return (
-              <Badge count={tx.unseen ? 1 : 0}>
-                  <div>
-                      <p>{tx.description}</p>
-                      <p>{tx.status}</p>
-                      {
-                          tx.status === 'COMPLETED' ?
-                            <p>
-                                Silver received: {tx.receipt.events.Unboxed.returnValues.silver + " "}
-                                {tx.receipt.events.Unboxed.returnValues.gold > 0 ?
-                                  "Gold received:" + tx.receipt.events.Unboxed.returnValues.gold : ""}
-                            </p> : ""
-                      }
-                  </div>
-              </Badge>
-            );
-        case 'GEM_UPGRADE':
-
+            switch (tx.status) {
+                case 'COMPLETED':
+                    return (
+                      <div>
+                          <p>
+                              Silver received: {tx.receipt.events.Unboxed.returnValues.silver + " "}
+                              {tx.receipt.events.Unboxed.returnValues.gold > 0 ?
+                                "Gold received:" + tx.receipt.events.Unboxed.returnValues.gold : ""}
+                          </p>
+                          <p>
+                              Cost: {tx.cost} ETH {tx.referralPointsUsed > 0 ? ', ' + tx.referralPointsUsed + 'referral' +
+                            ' points' : ''}
+                          </p>
+                      </div>
+                    );
+            }
             break;
-
+        case 'GEM_UPGRADE':
+            switch (tx.status) {
+                case 'PENDING':
+                case 'COMPLETED':
+                    return (
+                      <div>
+                          <p>
+                              From: grade {gradeConverter(tx.gem.gradeType)}, level {tx.gem.level}
+                          </p>
+                          <p>
+                              To: grade {gradeConverter(tx.gem.gradeType + tx.gradeUp)},
+                              level {tx.gem.level + tx.levelUp}
+                          </p>
+                          <p>Cost: {tx.cost} {tx.gradeUp > 0 ? 'gold' : 'silver'}</p>
+                      </div>
+                    );
+            }
+            break;
         case 'COUPON_REDEEM':
 
             break;
     }
-}
+};
 
 const menu = items => (
   <Menu>
+      {items.length === 0 ? <Menu.Item>No recent transactions</Menu.Item> : ""}
       {items.map((tx) => (
         <Menu.Item className="flex aic" key={tx.hash}>
-            <a
-              href={`https://${process.env.REACT_APP_NETWORK}.io/tx/${tx.hash}`}
-              key={tx.hash}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-                {generateMenuItemForTx(tx)}
-                {/*<Icon type="link" style={{fontSize: '24px'}} className="pointer blue pl3"/>*/}
-            </a>
+            <Badge count={tx.unseen ? 1 : 0}>
+                <a
+                  href={`https://${process.env.REACT_APP_NETWORK}.io/tx/${tx.hash}`}
+                  key={tx.hash}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                    <div>
+                        <p>Description: {tx.description}</p>
+                        {generateMenuItemForTx(tx)}
+                        <p>Status: {tx.status}</p>
+                    </div>
+
+                    <Icon type="link" style={{fontSize: '24px'}} className="pointer blue pl3"/>
+                </a>
+            </Badge>
         </Menu.Item>
       ))}
   </Menu>

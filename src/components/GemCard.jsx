@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import Progress from 'antd/lib/progress';
 import format from 'date-fns/format';
-import { calculatePercentage, weiToEth } from '../../market/helpers';
+import { calculatePercentage} from '../../market/helpers';
 import MiniGemBox from '../../../components/MiniGemBox';
 
 require('antd/lib/progress/style/css');
@@ -30,12 +30,12 @@ const Cards = ({ auction }) => (
       <small className="basic">
         Ξ
         {' '}
-        <small>{weiToEth(auction.maxPrice)}</small>
+        <small>{auction.maxPrice}</small>
       </small>
       <small className="basic">
         Ξ
         {' '}
-        <small>{weiToEth(auction.minPrice)}</small>
+        <small>{auction.minPrice}</small>
       </small>
     </div>
     <div className="tc">
@@ -43,7 +43,7 @@ const Cards = ({ auction }) => (
         {' '}
         <span className="basic">Ξ</span>
         {' '}
-        {weiToEth(auction.currentPrice)}
+        {auction.currentPrice}
       </big>
       <small>
         Auction ends on

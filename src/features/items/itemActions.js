@@ -5,6 +5,8 @@ import {createAuctionHelper, removeAuctionHelper} from './helpers';
 import {setError} from '../../app/appActions';
 import {completedTx, ErrorTx, startTx} from '../transactions/txActions';
 import store from '../../app/store';
+import {gradeConverter} from "../market/helpers";
+import {parseTransactionHashFromError} from "../transactions/helpers";
 
 
 export const getGemData = tokenId => async (dispatch, getState) => {
@@ -118,7 +120,7 @@ export const createAuction = (payload, turnLoaderOff, history) => (dispatch, get
         tokenId, duration, startPrice, endPrice,
     } = payload;
 
-    // console.log('payload', payload);
+    console.log('payload_auction', payload);
 
     createAuctionHelper(tokenId, duration, startPrice, endPrice, gemsContractInstance, currentAccount)
       .then(({deadline, minPrice, maxPrice}) => {
@@ -275,7 +277,7 @@ export function clearGemPageOnExit() {
     return dispatch => dispatch({type: CLEAR_GEM_PAGE});
 }
 
-export const upgradeGem = (gem, levelUp, gradeUp, hidePopup) => (dispatch, getState) => {
+export const upgradeGem = (gem, levelUp, gradeUp, hidePopup, cost) => (dispatch, getState) => {
     console.log(333333333333, 'upgrading...');
     const workshopContractInstance = getState().app.workshopContractInstance;
     const gemService = getState().app.gemServiceInstance;
@@ -292,21 +294,28 @@ export const upgradeGem = (gem, levelUp, gradeUp, hidePopup) => (dispatch, getSt
             startTx({
                 hash,
                 currentUser,
-                method: 'upgrade',
-                tokenId: gem.id,
+                txMethod: 'GEM_UPGRADE',
+                gem,
+                levelUp,
+                gradeUp,
+                cost,
+                description: `Upgrading gem ${gem.name}`,
             }),
           );
       })
       .on('receipt', async (receipt) => {
           console.log('TX receipt: ', receipt);
-          store.dispatch(completedTx(receipt));
+          store.dispatch(completedTx({
+              receipt,
+              hash: receipt.transactionHash,
+              txMethod: 'GEM_UPGRADE',
+          }));
           console.log('COMPLETED_TX dispatched');
           const newGemData = await gemService.getGem(gem.id);
 
           console.log('NEW GEM DATA: ', newGemData);
           console.log('GEM DATA + NEW DATA:', {...gem, ...newGemData});
 
-          //dispatch({type: FETCH_DATA_SUCCEEDED});
           dispatch({
               type: AUCTION_DETAILS_RECEIVED,
               payload: {gem: {...gem, ...newGemData}}
@@ -315,15 +324,11 @@ export const upgradeGem = (gem, levelUp, gradeUp, hidePopup) => (dispatch, getSt
       })
       .on('error', (err) => {
           console.log('TX error');
-          store.dispatch(ErrorTx(err));
-          //setLoading(false);
-          // dispatch({
-          //   type: MODAL_GONE,
-          // });
-          // dispatch({
-          //   type: FETCH_DATA_FAILED,
-          //   payload: JSON.stringify(err),
-          // });
+          store.dispatch(ErrorTx({
+              txMethod: 'GEM_UPGRADE',
+              error: err,
+              hash: parseTransactionHashFromError(err.message)
+          }));
       });
 };
 

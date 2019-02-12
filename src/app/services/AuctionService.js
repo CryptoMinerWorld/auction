@@ -1,14 +1,56 @@
 import {BigNumber} from "bignumber.js";
 import store from "../store";
+import {calculateGemName, calculateMiningRate, unpackGemProperties} from "./GemService";
+import {GWeiToEth, weiToEth} from "../../features/market/helpers";
 
 
 export default class AuctionService {
 
-    constructor(auctionContractInstance, gemContractInstance) {
+    constructor(auctionContractInstance, auctionHelperContractInstance, gemContractInstance) {
         this.auctionContract = auctionContractInstance;
+        this.auctionHelperContract = auctionHelperContractInstance;
         this.gemContract = gemContractInstance;
     }
 
+    getAuctionOwnerGems = async (ownerId) => {
+
+        const auctionUserGems = await this.auctionHelperContract.methods
+          .getGemCollection(this.auctionContract._address, this.gemContract._address, ownerId).call();
+
+        return auctionUserGems.map(auctionGem => {
+            const packed240uint = new BigNumber(auctionGem);
+
+            /*     gem id, 32 bits
+            *      gem color, 8 bits
+            *      gem level, 8 bits
+            *      gem grade type, 8 bits
+            *      gem grade value, 24 bits
+            *      auction start time (unix timestamp), 32 bits
+            *      auction end time (unix timestamp), 32 bits
+            *      starting price (Gwei), 32 bits
+            *      final price (Gwei), 32 bits
+            *      current price (Gwei), 32 bits
+            */
+
+            const gem = {};
+            gem.auctionIsLive = true;
+            gem.owner = ownerId;
+            gem.id = packed240uint.dividedToIntegerBy(new BigNumber(2).pow(8*3 + 24 + 32*5)).toNumber();
+            gem.deadline = packed240uint.dividedToIntegerBy(new BigNumber(2).pow(32*3)).modulo(0x100000000).toNumber();
+            gem.maxPrice = GWeiToEth(packed240uint.dividedToIntegerBy(new BigNumber(2).pow(32*2)).modulo(0x100000000).toNumber());
+            gem.minPrice = GWeiToEth(packed240uint.dividedToIntegerBy(new BigNumber(2).pow(32)).modulo(0x100000000).toNumber());
+            gem.currentPrice = GWeiToEth(packed240uint.modulo(0x100000000).toNumber());
+            const gemPackedProperties = packed240uint.dividedToIntegerBy(new BigNumber(2).pow(32*5)).modulo(new BigNumber(2).pow(48));
+            const gemProperties = unpackGemProperties(gemPackedProperties);
+
+            return {
+                ...gem,
+                ...gemProperties,
+                name: calculateGemName(gemProperties.color, gem.id),
+                rate: calculateMiningRate(gemProperties.gradeType, gemProperties.gradeValue)
+            }
+        })
+    }
 
     getTokenSaleStatus = async (tokenId) => {
         return new BigNumber(
@@ -24,15 +66,17 @@ export default class AuctionService {
 
         const gemAuctionData = {};
 
+        //todo: get owner
+
         if (packed224uint.isZero()) {
             gemAuctionData.auctionIsLive = false;
         }
         else {
             gemAuctionData.auctionIsLive = true;
-            gemAuctionData.deadline = packed224uint.dividedToIntegerBy(new BigNumber(2).pow(160)).modulo(0x100000).toNumber();
-            gemAuctionData.maxPrice = packed224uint.dividedToIntegerBy(new BigNumber(2).pow(96)).modulo(0x100000).toNumber();
-            gemAuctionData.minPrice = packed224uint.dividedToIntegerBy(new BigNumber(2).pow(64)).modulo(0x100000).toNumber();
-            gemAuctionData.currentPrice = packed224uint.dividedToIntegerBy(new BigNumber(2).pow(32)).modulo(0x100000).toNumber();
+            gemAuctionData.deadline = packed224uint.dividedToIntegerBy(new BigNumber(2).pow(160)).modulo(0x100000000).toNumber();
+            gemAuctionData.maxPrice = GWeiToEth(packed224uint.dividedToIntegerBy(new BigNumber(2).pow(96)).modulo(0x100000000).toNumber());
+            gemAuctionData.minPrice = GWeiToEth(packed224uint.dividedToIntegerBy(new BigNumber(2).pow(64)).modulo(0x100000000).toNumber());
+            gemAuctionData.currentPrice = GWeiToEth(packed224uint.dividedToIntegerBy(new BigNumber(2).pow(32)).modulo(0x100000000).toNumber());
         }
         return gemAuctionData;
     }

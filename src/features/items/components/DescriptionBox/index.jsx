@@ -112,7 +112,7 @@ class DescriptionBox extends PureComponent {
                   </CopyToClipboard>
                 </div>
               </div>
-              <p className="o-50 mt3">{gem.story}</p>
+              <p className="o-50 mt3">{gem.story ? gem.story : "Story is loading.."}</p>
             </div>
             <Waypoint onEnter={this.handleWaypointEnter}>
               <div>

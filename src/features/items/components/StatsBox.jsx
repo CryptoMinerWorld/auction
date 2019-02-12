@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Gembox from './Gembox';
-import { weiToEth } from '../../market/helpers';
+import {  } from '../../market/helpers';
 
 const TopHighLight = styled.div`
   background: linear-gradient(to right, #e36d2d, #b91a78);
@@ -64,7 +64,7 @@ class StatsBox extends PureComponent {
               <p className="basic" style={{ fontSize: 'xx-large' }}>
                 Ξ
                 {' '}
-                <span data-testid="currentPrice">{weiToEth(lastSoldFor)}</span>
+                <span data-testid="currentPrice">{lastSoldFor}</span>
               </p>
             </div>
           ) : null}
