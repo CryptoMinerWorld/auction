@@ -74,7 +74,7 @@ class Mint extends PureComponent {
       3: 'B',
       4: 'A',
       5: 'AA',
-      6: 'AAA',
+      6: 'BBB',
     }[gradeType];
     console.log('FUCKFUCKFUCKFUCKFUCK');
     const fileName = `${type}-${level}-${grade}-4500.png`;
