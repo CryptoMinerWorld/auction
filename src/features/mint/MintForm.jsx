@@ -51,7 +51,7 @@ const MintForm = ({
       >
         <Select.Option value="7">Ruby (July)</Select.Option>
         <Select.Option value="9">Sapphire (September)</Select.Option>
-        <Select.Option value="10">Opals (October)</Select.Option>
+        <Select.Option value="10">Opal (October)</Select.Option>
         <Select.Option value="1">Garnet (January)</Select.Option>
         <Select.Option value="2">Amethyst (February)</Select.Option>
       </Select>
