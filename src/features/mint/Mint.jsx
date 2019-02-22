@@ -61,6 +61,7 @@ class Mint extends PureComponent {
     this.setState({ imageLoading: true });
 
     const type = {
+      7: 'Rub',
       9: 'Sap',
       10: 'Opa',
       1: 'Gar',
