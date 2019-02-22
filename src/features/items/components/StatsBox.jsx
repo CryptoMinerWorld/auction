@@ -34,7 +34,7 @@ const gradientAndShape = {
 class StatsBox extends PureComponent {
   render() {
     const {
-      gem, lastSoldFor,
+      gem, lastSoldFor, role,
     } = this.props;
 
     return (
@@ -56,6 +56,7 @@ class StatsBox extends PureComponent {
           <div className="mv3" />
           <Gembox
             gem={gem}
+            role={role}
           />
 
           {lastSoldFor ? (

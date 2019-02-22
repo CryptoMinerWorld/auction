@@ -35,7 +35,7 @@ import {
     getGemImage,
     getMapIndexFromCountryId,
     getNewReferralPoints,
-    getPlotCount, referralTracker,
+    getPlotCount,
 } from './helpers';
 import stateMachine from './stateMachine';
 import CountryDashboard from '../countries/components/Dashboard';
@@ -52,6 +52,7 @@ import {completedTx, ErrorTx, startTx} from '../transactions/txActions';
 import reduxStore from '../../app/store';
 import Loading from "../../components/Loading";
 import Spin from "antd/lib/spin";
+import {getUserBalance} from "../sale/saleActions";
 
 const {TabPane} = Tabs;
 
@@ -80,7 +81,7 @@ const Primary = styled.section`
 `;
 
 const select = store => {
-    console.log('-------------> dashboard store <---------------', store);
+    //console.log('-------------> dashboard store <---------------', store);
     const res = {
         userGems: store.dashboard.userGems,
         totalGems: store.dashboard && store.dashboard.userGems && store.dashboard.userGems.length,
@@ -97,6 +98,7 @@ const select = store => {
         error: store.dashboard.gemsLoadingError,
         userName: store.auth.user && store.auth.user.name,
         userImage: store.auth.user && store.auth.user.imageURL,
+        userBalance: store.sale.balance,
         sortBox: store.dashboard.sortBox,
         currentUserId: store.auth.currentUserId,
         web3: store.app.web3,
@@ -110,7 +112,7 @@ const select = store => {
         auctionService: store.app.auctionServiceInstance,
         silverGoldService: store.app.silverGoldServiceInstance,
     };
-    console.log('dashboard store: ', res);
+    //console.log('dashboard store: ', res);
     return res;
 }
 
@@ -170,11 +172,11 @@ class Dashboard extends Component {
     async componentDidMount() {
 
         console.log('PROPS is ', this.props);
-        referralTracker(this.props.location.search);
+        //referralTracker(this.props.location.search);
 
         this.setState({redirectPath: ''});
 
-        const {preSaleContract, match, data, refPointsContract, goldContract, silverContract, handleGetUserGems, gemService, auctionService, silverGoldService} = this.props;
+        const {preSaleContract, match, data, handleGetUserBalance, refPointsContract, goldContract, silverContract, handleGetUserGems, gemService, auctionService, silverGoldService} = this.props;
 
         if (gemService && auctionService && match && match.params && match.params.userId)  {
             handleGetUserGems(match.params.userId);
@@ -190,13 +192,17 @@ class Dashboard extends Component {
         }
 
         if (silverGoldService) {
-            const balance = await silverGoldService.getUserBalance(match.params.userId);
-            this.setState({
-                referralPoints: balance[0],
-                silverAvailable: balance[1],
-                goldAvailable: balance[2]
-            });
+            handleGetUserBalance(match.params.userId);
         }
+
+        // if (silverGoldService) {
+        //     const balance = await silverGoldService.getUserBalance(match.params.userId);
+        //     this.setState({
+        //         referralPoints: balance[0],
+        //         silverAvailable: balance[1],
+        //         goldAvailable: balance[2]
+        //     });
+        // }
 
         // if (refPointsContract && refPointsContract.methods && match.params.userId !== 'false') {
         //
@@ -229,26 +235,37 @@ class Dashboard extends Component {
 
     async componentDidUpdate(prevProps) {
 
+        console.log('DASHBOARD PROPS is ', this.props);
+
         const {
             web3, transition, preSaleContract, match, refPointsContract, goldContract, silverContract,
-            handleGetUserGems, handleGetImagesForGems, gemService, auctionService, silverGoldService,
-          pageNumber, userGemsPage, userGemsFiltered, needToLoadImages
+            handleGetUserGems, handleGetUserDetails, handleGetImagesForGems, gemService, auctionService, silverGoldService,
+          pageNumber, userGemsPage, userGemsFiltered, needToLoadImages, userBalance, handleGetUserBalance, currentUserId,
         } = this.props;
 
         const {
             silverAvailable, goldAvailable, referralPoints, imagesLoadingStarted
         } = this.state;
 
+        // if (!userImage || !userName) {
+        //     if (match.params.userId && (match.params.userId !== currentUserId)) {
+        //         handleGetUserDetails(match.params.userId);
+        //     } else {
+        //         this.
+        //     }
+        // }
 
         if (!needToLoadImages && imagesLoadingStarted) {
             this.setState({imagesLoadingStarted: false});
         }
 
-        console.log('111 props: ', this.props, prevProps);
-        console.log('111 state: ', this.state);
+        //console.log('111 props: ', this.props, prevProps);
+        //console.log('111 state: ', this.state);
         if (web3 !== prevProps.web3) {
             //transition('WITH_METAMASK');
         }
+
+
 
         if (gemService && auctionService && (gemService !== prevProps.gemService || auctionService !== prevProps.auctionService))  {
             console.warn('HANDLE GET USER GEMS <<<<<<<<<<<<<');
@@ -257,9 +274,9 @@ class Dashboard extends Component {
         }
 
         if (!imagesLoadingStarted && gemService && userGemsPage && (userGemsPage.length > 0) && (needToLoadImages || pageNumber !== prevProps.pageNumber)) {
-            console.log('GET IMAGES! 1');
+            //console.log('GET IMAGES! 1');
             this.setState({imagesLoadingStarted: true});
-            console.log('GET IMAGES! 2');
+            //console.log('GET IMAGES! 2');
             handleGetImagesForGems(userGemsPage);
         }
 
@@ -272,14 +289,18 @@ class Dashboard extends Component {
               .catch(err => setError(err));
         }
 
-        if (silverGoldService && !(silverAvailable && goldAvailable && referralPoints) || (silverGoldService !== prevProps.silverGoldService)) {
-            const balance = await silverGoldService.getUserBalance(match.params.userId);
-            this.setState({
-                referralPoints: balance[0],
-                silverAvailable: balance[1],
-                goldAvailable: balance[2]
-            });
+        if ((silverGoldService !== prevProps.silverGoldService) || (silverGoldService && !userBalance)) {
+            handleGetUserBalance(match.params.userId);
         }
+
+        // if (silverGoldService && !(silverAvailable && goldAvailable && referralPoints) || (silverGoldService !== prevProps.silverGoldService)) {
+        //     const balance = await silverGoldService.getUserBalance(match.params.userId);
+        //     this.setState({
+        //         referralPoints: balance[0],
+        //         silverAvailable: balance[1],
+        //         goldAvailable: balance[2]
+        //     });
+        // }
         //
         // if (refPointsContract !== prevProps.refPointsContract && match.params.userId !== 'false') {
         //     getNewReferralPoints(refPointsContract, match.params.userId)
@@ -403,7 +424,7 @@ class Dashboard extends Component {
 
     render() {
 
-        console.log('---------- DASHBOARD --------------');
+        //console.log('---------- DASHBOARD --------------');
 
         const {
             loading,
@@ -419,17 +440,18 @@ class Dashboard extends Component {
             data,
             match,
             CountrySale,
+          userBalance
         } = this.props;
 
         const {
-            plots, goldAvailable, silverAvailable, referralPoints, tab, redirectPath, alreadyRedirected,
+            plots, tab, redirectPath, alreadyRedirected,
         } = this.state;
         if (redirectPath && !alreadyRedirected) {
             this.setState({alreadyRedirected: true});
             return <Redirect to={`${redirectPath}`}/>;
         }
 
-        console.log('USER GEMS PAGE:', userGemsPage);
+        //console.log('USER GEMS PAGE:', userGemsPage);
 
         return (
           <div className="bg-off-black white card-container" data-testid="profile-page">
@@ -451,11 +473,11 @@ class Dashboard extends Component {
                           <div className="flex">
                               <div className="flex col tc">
                                   <img src={Gold} alt="Gold" className="h3 w-auto ph3"/>
-                                  {goldAvailable}
+                                  {userBalance && userBalance.goldAvailable}
                               </div>
                               <div className="flex col tc">
                                   <img src={Silver} alt="Silver" className="h3 w-auto ph3"/>
-                                  {silverAvailable}
+                                  {userBalance && userBalance.silverAvailable}
                               </div>
                           </div>
                       </Link>
@@ -471,14 +493,14 @@ class Dashboard extends Component {
                       <Spring from={{opacity: 0}} to={{opacity: 1}} config={{delay: 4000}}>
                           {props => (
                             <div style={props} className="pr4">
-                                {!referralPoints ? (
+                                {!userBalance ? (
                                   <p data-testid="loadingReferralPoints" className="tr o-50 white">
                                       Loading Referral Points...
                                   </p>
                                 ) : (
                                   <small data-testid="referralPoints" className="tr fr o-50 white">
-                                      {`${referralPoints} REFERAL ${
-                                        referralPoints === 1 ? 'POINT' : 'POINTS'
+                                      {`${userBalance.referralPoints} REFERRAL ${
+                                        userBalance.referralPoints === 1 ? 'POINT' : 'POINTS'
                                         } AVAILABLE `}
                                   </small>
                                 )}
@@ -525,7 +547,7 @@ class Dashboard extends Component {
                                   {loading && [1, 2, 3, 4, 5, 6].map(num => <LoadingCard key={num}/>)}
                                   {!loading && userGemsPage && userGemsPage.length > 0 ? (
                                     userGemsPage.map(userGem => {
-                                        console.log('USER GEM: ', userGem);
+                                        //console.log('USER GEM: ', userGem);
                                         return (
                                       <Link
                                         to={`/gem/${userGem.id}`}
@@ -640,6 +662,7 @@ const actions = {
     handlePreLoadAuctionPage: preLoadAuctionPage,
     handleAddGemsToDashboard: addGemsToDashboard,
     handleGetImagesForGems: getImagesForGems,
+    handleGetUserBalance: getUserBalance
 };
 
 export default compose(

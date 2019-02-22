@@ -15,8 +15,6 @@ import stateChart from './statechart';
 import { createNewUser, notInterestedInSigningUp } from './authActions';
 import downloadMetamask from '../../app/images/download-metamask.webp';
 import downloadMetamaskPNG from '../../app/images/download-metamask.png';
-import queryString from 'query-string';
-import Cookies from 'universal-cookie';
 
 require('antd/lib/button/style/css');
 require('antd/lib/modal/style/css');
@@ -115,7 +113,7 @@ class Auth extends PureComponent {
     const {
       name, imageURL, email, mailinglist,
     } = this.state;
-    const { currentUser, handleCreateNewUser, transition } = this.props;
+    const { currentUser, handleCreateNewUser, transition} = this.props;
     const payload = {
       name,
       imageURL,

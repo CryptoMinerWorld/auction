@@ -39,25 +39,74 @@ export default class GemService {
     }
 
     getGem = async (tokenId) => {
-        const [gemProperties, gemOwner, gemCreationTime] = await Promise.all(
-          [
-              this.getGemProperties(tokenId),
-              this.getGemOwner(tokenId),
-              this.getGemCreationTime(tokenId)
-          ]);
+        // const [gemProperties, gemOwner, gemCreationTime] = await Promise.all(
+        //   [
+        //       this.getGemProperties(tokenId),
+        //       this.getGemOwner(tokenId),
+        //       this.getGemCreationTime(tokenId)
+        //   ]);
 
-        console.log(1111111111, gemProperties, gemOwner, gemCreationTime);
+        //console.log(1111111111, gemProperties, gemOwner, gemCreationTime);
+
+        console.log('GEM WILL BE UNPACKED: ');
+
+        const gem = await this.getPackedGem(tokenId);
+
+        console.log('GEM UNPACKED: ', gem);
 
         return {
-            ...gemProperties,
+          ...gem,
             id: tokenId,
-            owner: gemOwner,
-            story: await getGemStory(gemProperties, tokenId),
-            image: await getGemImage(gemProperties, tokenId),
-            name: calculateGemName(gemProperties.color, tokenId),
-            rate: calculateMiningRate(gemProperties.gradeType, gemProperties.gradeValue),
-            restingEnergyMinutes: calculateGemRestingEnergy(gemCreationTime)
+            //owner: gemOwner,
+            story: await getGemStory(gem, tokenId),
+            image: await getGemImage(gem, tokenId),
+            name: calculateGemName(gem.color, tokenId),
+            rate: calculateMiningRate(gem.gradeType, gem.gradeValue),
+            restingEnergyMinutes: calculateGemRestingEnergy(gem.creationTime)
         }
+    }
+
+
+    getPackedGem = async (tokenId) => {
+        try {
+            const packed256_256 = await (this.contract.methods
+              .getPacked(tokenId)
+              .call());
+            console.log('PACKED GEM!!!!!!!!!!!!!!', packed256_256);
+            return await this.unpackGem([new BigNumber(packed256_256[0]), new BigNumber(packed256_256[1])]);
+        }
+        catch (err) {
+            console.log('ERROR in getPacked', err)
+        }
+    }
+
+    unpackGem = async ([high256, low256]) => {
+        const color = high256.dividedToIntegerBy(new BigNumber(2).pow(184)).modulo(0x100).toNumber();
+        const level = high256
+          .dividedToIntegerBy(new BigNumber(2).pow(144))
+          .modulo(0x100)
+          .toNumber();
+        const gradeType = high256
+          .dividedToIntegerBy(new BigNumber(2).pow(80+24))
+          .modulo(0x100)
+          .toNumber();
+        const gradeValue = high256
+          .dividedToIntegerBy(new BigNumber(2).pow(80))
+          .modulo(0x1000000).toNumber();
+        const gradeModifiedTime = await transform(high256
+          .dividedToIntegerBy(new BigNumber(2).pow(112))
+          .modulo(new BigNumber(2).pow(32)).toNumber(), this.web3);
+        const levelModifiedTime = await transform(high256
+          .dividedToIntegerBy(new BigNumber(2).pow(152))
+          .modulo(0x100000000).toNumber(), this.web3);
+
+        const owner = '0x'+low256.modulo(new BigNumber(2).pow(160)).toString(16);
+        const creationTime = await transform(low256
+          .dividedToIntegerBy(new BigNumber(2).pow(224)).modulo(0x100000000).toNumber(), this.web3);
+
+        console.log(333333333, levelModifiedTime.timestamp, gradeModifiedTime.timestamp, creationTime.timestamp, Date.now());
+
+        return {color, level, gradeType, gradeValue, owner, creationTime: Math.max(creationTime.timestamp, gradeModifiedTime.timestamp, levelModifiedTime.timestamp)}
     }
 
     getGemAuctionIsLive = async (tokenId) => {
@@ -104,6 +153,7 @@ export default class GemService {
         })
     }
 }
+
 
 export const unpackGemProperties = (properties) => {
     const color = properties.dividedToIntegerBy(0x10000000000).toNumber();

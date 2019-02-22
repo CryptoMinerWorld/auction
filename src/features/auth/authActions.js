@@ -16,6 +16,7 @@ import {
 } from '../dashboard/dashboardActions';
 import { setError } from '../../app/appActions';
 
+//todo: replace with userService call
 export const checkIfUserExists = userId => (dispatch) => {
   const userIdToLowerCase = userId
     .split('')
@@ -53,6 +54,7 @@ export const updateWalletId = walletId => (dispatch, getState) => {
   }
 };
 
+//todo: replace with userService call
 // this is called in `authentication/index` when you submit a new form
 export const createNewUser = payload => (dispatch) => {
   const { walletId } = payload;

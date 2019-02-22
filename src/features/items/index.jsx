@@ -31,6 +31,7 @@ import {setError} from '../../app/appActions';
 import {fetchLatestRestingEnergy} from './helpers';
 import UpgradeComponent from './components/UpgradeComponent';
 import {getAvailableGold, getAvailableSilver} from "../dashboard/helpers";
+import {getUserBalance} from "../sale/saleActions";
 
 const select = store => {
     console.warn('GEM PAGE STORE: ', store);
@@ -52,6 +53,7 @@ const select = store => {
       gemContractAddress: store.app.gemsContractInstance && store.app.gemsContractInstance._address,
       silverContract: store.app.silverContractInstance,
       goldContract: store.app.goldContractInstance,
+        userBalance: store.sale.balance,
     }
 };
 
@@ -65,7 +67,7 @@ class Auction extends PureComponent {
 
     async componentDidMount() {
         const {
-            match, handleGetGemData, dutchContract, gemContractAddress, goldContract, silverContract, currentAccount
+            match, handleGetUserBalance, silverGoldService, handleGetGemData, dutchContract, gemContractAddress, goldContract, silverContract, currentAccount
         } = this.props;
         if (match && match.params && match.params.gemId) {
             handleGetGemData(match.params.gemId);
@@ -84,28 +86,33 @@ class Auction extends PureComponent {
             }
         }, 60000);
 
-        if (goldContract && goldContract.methods && currentAccount) {
-            //console.log(11111111111);
-            const gold = await getAvailableGold(goldContract, currentAccount);
-            if (gold) {
-                this.setState({goldAvailable: gold});
-            }
+        if (silverGoldService && currentAccount ) {
+            handleGetUserBalance(currentAccount);
         }
 
-        if (silverContract && silverContract.methods && currentAccount) {
-            //console.log(122222222);
-            const silver = await getAvailableSilver(silverContract, currentAccount);
-            if (silver) {
-                this.setState({silverAvailable: silver});
-            }
-        }
+        // if (goldContract && goldContract.methods && currentAccount) {
+        //     //console.log(11111111111);
+        //     const gold = await getAvailableGold(goldContract, currentAccount);
+        //     if (gold) {
+        //         this.setState({goldAvailable: gold});
+        //     }
+        // }
+        //
+        // if (silverContract && silverContract.methods && currentAccount) {
+        //     //console.log(122222222);
+        //     const silver = await getAvailableSilver(silverContract, currentAccount);
+        //     if (silver) {
+        //         this.setState({silverAvailable: silver});
+        //     }
+        // }
     }
 
     async componentDidUpdate(prevProps) {
 
         console.log('componentDidUpdateProps: ', this.props);
+        console.log('componentDidUpdateState: ', this.state);
 
-        const {gemContract, match, goldContract, silverContract, currentAccount, handleGetGemData, gemService, auctionService} = this.props;
+        const {gemContract, match, userBalance, silverGoldService, handleGetUserBalance, goldContract, silverContract, currentAccount, handleGetGemData, gemService, auctionService} = this.props;
         const {restingEnergyMinutes} = this.state;
 
         if (this.props.gem && !this.state.ownerData) {
@@ -118,19 +125,23 @@ class Auction extends PureComponent {
             handleGetGemData(match.params.gemId);
         }
 
-        if (goldContract && goldContract.methods && currentAccount && (goldContract !== prevProps.goldContract || currentAccount !== prevProps.currentAccount)) {
-            const gold = await getAvailableGold(goldContract, currentAccount);
-            if (gold) {
-                this.setState({goldAvailable: gold});
-            }
+        if ((silverGoldService !== prevProps.silverGoldService) || (silverGoldService && !userBalance) || (currentAccount !== prevProps.currentAccount)) {
+            handleGetUserBalance(currentAccount);
         }
 
-        if (silverContract && silverContract.methods && currentAccount && (silverContract !== prevProps.silverContract || currentAccount !== prevProps.currentAccount)) {
-            const silver = await getAvailableSilver(silverContract, currentAccount);
-            if (silver) {
-                this.setState({silverAvailable: silver});
-            }
-        }
+        // if (goldContract && goldContract.methods && currentAccount && (goldContract !== prevProps.goldContract || currentAccount !== prevProps.currentAccount)) {
+        //     const gold = await getAvailableGold(goldContract, currentAccount);
+        //     if (gold) {
+        //         this.setState({goldAvailable: gold});
+        //     }
+        // }
+        //
+        // if (silverContract && silverContract.methods && currentAccount && (silverContract !== prevProps.silverContract || currentAccount !== prevProps.currentAccount)) {
+        //     const silver = await getAvailableSilver(silverContract, currentAccount);
+        //     if (silver) {
+        //         this.setState({silverAvailable: silver});
+        //     }
+        // }
     }
 
     componentWillUnmount() {
@@ -232,6 +243,7 @@ class Auction extends PureComponent {
 
 const actions = {
     handleGetGemData: getGemData,
+    handleGetUserBalance: getUserBalance,
     //handleGetAuctionDetails: getAuctionDetails,
     showConfirm,
     handleClearGemPage: clearGemPageOnExit,
@@ -341,8 +353,8 @@ const DisplayBoxStateMachine = (props) => {
     console.log('State: ', state);
 
     return {
-        owner: <TradingBox {...props} />,
-        buyer: <AuctionBox {...props} />,
-        viewer: <StatsBox {...props} />,
+        owner: <TradingBox {...props} role={"owner"}/>,
+        buyer: <AuctionBox {...props} role={"buyer"}/>,
+        viewer: <StatsBox {...props} role={"viewer"}  />,
     }[state];
 };

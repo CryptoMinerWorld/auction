@@ -17,7 +17,9 @@ export default class AuctionService {
         const auctionUserGems = await this.auctionHelperContract.methods
           .getGemCollection(this.auctionContract._address, this.gemContract._address, ownerId).call();
 
-        return auctionUserGems.map(auctionGem => {
+        console.log('>>>>>>>>> AUCTION GEMS: ', auctionUserGems, ownerId);
+
+        return await Promise.all(auctionUserGems.map(async auctionGem => {
             const packed240uint = new BigNumber(auctionGem);
 
             /*     gem id, 32 bits
@@ -36,20 +38,24 @@ export default class AuctionService {
             gem.auctionIsLive = true;
             gem.owner = ownerId;
             gem.id = packed240uint.dividedToIntegerBy(new BigNumber(2).pow(8*3 + 24 + 32*5)).toNumber();
-            gem.deadline = packed240uint.dividedToIntegerBy(new BigNumber(2).pow(32*3)).modulo(0x100000000).toNumber();
-            gem.maxPrice = GWeiToEth(packed240uint.dividedToIntegerBy(new BigNumber(2).pow(32*2)).modulo(0x100000000).toNumber());
-            gem.minPrice = GWeiToEth(packed240uint.dividedToIntegerBy(new BigNumber(2).pow(32)).modulo(0x100000000).toNumber());
-            gem.currentPrice = GWeiToEth(packed240uint.modulo(0x100000000).toNumber());
+            //gem.deadline = packed240uint.dividedToIntegerBy(new
+            // BigNumber(2).pow(32*3)).modulo(0x100000000).toNumber();
+            //gem.maxPrice = GWeiToEth(packed240uint.dividedToIntegerBy(new
+            // BigNumber(2).pow(32*2)).modulo(0x100000000).toNumber());
+            //gem.minPrice = GWeiToEth(packed240uint.dividedToIntegerBy(new
+            // BigNumber(2).pow(32)).modulo(0x100000000).toNumber());
+            //gem.currentPrice = GWeiToEth(packed240uint.modulo(0x100000000).toNumber());
             const gemPackedProperties = packed240uint.dividedToIntegerBy(new BigNumber(2).pow(32*5)).modulo(new BigNumber(2).pow(48));
             const gemProperties = unpackGemProperties(gemPackedProperties);
-
+            const gemAuctionData = await this.getGemAuctionData(gem.id);
             return {
                 ...gem,
                 ...gemProperties,
+              ...gemAuctionData,
                 name: calculateGemName(gemProperties.color, gem.id),
                 rate: calculateMiningRate(gemProperties.gradeType, gemProperties.gradeValue)
             }
-        })
+        }));
     }
 
     getTokenSaleStatus = async (tokenId) => {
@@ -60,23 +66,53 @@ export default class AuctionService {
         );
     }
 
+    getItem = async (tokenId) => {
+         return await (this.auctionContract.methods
+            .items(this.gemContract._address, tokenId)
+            .call()
+        );
+    }
+
+    getPreviousOwner = async (tokenId) => {
+        return (await this.auctionContract.methods
+          .owners(this.gemContract._address, tokenId)
+          .call())
+    }
+
+    getCurrentPrice = async (tokenId) => {
+        return (await this.auctionContract.methods
+          .getCurrentPrice(this.gemContract._address, tokenId)
+          .call())
+    }
+
     getGemAuctionData = async (tokenId) => {
 
-        const packed224uint = await this.getTokenSaleStatus(tokenId);
+        //const packed224uint = await this.getTokenSaleStatus(tokenId);
+
+        const packed256item = await this.getItem(tokenId);
+        console.log('PACKED_ITEM:', packed256item);
 
         const gemAuctionData = {};
 
         //todo: get owner
-
-        if (packed224uint.isZero()) {
+        if (Number(packed256item['0']) === 0) {
             gemAuctionData.auctionIsLive = false;
         }
         else {
+            gemAuctionData.owner = await this.getPreviousOwner(tokenId);
             gemAuctionData.auctionIsLive = true;
-            gemAuctionData.deadline = packed224uint.dividedToIntegerBy(new BigNumber(2).pow(160)).modulo(0x100000000).toNumber();
-            gemAuctionData.maxPrice = GWeiToEth(packed224uint.dividedToIntegerBy(new BigNumber(2).pow(96)).modulo(0x100000000).toNumber());
-            gemAuctionData.minPrice = GWeiToEth(packed224uint.dividedToIntegerBy(new BigNumber(2).pow(64)).modulo(0x100000000).toNumber());
-            gemAuctionData.currentPrice = GWeiToEth(packed224uint.dividedToIntegerBy(new BigNumber(2).pow(32)).modulo(0x100000000).toNumber());
+
+            gemAuctionData.deadline = Number(packed256item['1']); //.dividedToIntegerBy(new
+            // BigNumber(2).pow(160)).modulo(0x100000000).toNumber();
+            gemAuctionData.maxPrice = weiToEth(Number(packed256item['2']));
+            gemAuctionData.minPrice = weiToEth(Number(packed256item['3']));
+            gemAuctionData.currentPrice = weiToEth(Number(await this.getCurrentPrice(tokenId)));
+
+            //GWeiToEth(packed224uint.dividedToIntegerBy(new BigNumber(2).pow(32)).modulo(0x100000000).toNumber())
+            // gemAuctionData.deadline = packed224uint.dividedToIntegerBy(new BigNumber(2).pow(160)).modulo(0x100000000).toNumber();
+            // gemAuctionData.maxPrice = GWeiToEth(packed224uint.dividedToIntegerBy(new BigNumber(2).pow(96)).modulo(0x100000000).toNumber());
+            // gemAuctionData.minPrice = GWeiToEth(packed224uint.dividedToIntegerBy(new BigNumber(2).pow(64)).modulo(0x100000000).toNumber());
+            // gemAuctionData.currentPrice = GWeiToEth(packed224uint.dividedToIntegerBy(new BigNumber(2).pow(32)).modulo(0x100000000).toNumber());
         }
         return gemAuctionData;
     }

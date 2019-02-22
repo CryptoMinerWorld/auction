@@ -21,3 +21,10 @@ export const resolveTXStatus = async (pendingTransactions, dbWrite, dbDelete, qu
     }
   }
 };
+
+export const setTransactionsSeen = (unseenCount) => async (dispatch, getState) => {
+
+  const firstSeen = getState().tx.transactions.findIndex((tx) => (tx.unseen));
+  getState().tx.transactions.slice(firstSeen - unseenCount, firstSeen);
+
+}

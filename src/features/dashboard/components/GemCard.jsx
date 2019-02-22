@@ -13,7 +13,7 @@ const transitionRules = {
 }
 
 const Cards = ({auction}) => {
-    console.log("CARD:::", auction);
+    //console.log("CARD:::", auction);
     return (
       <Tilt className="Tilt" options={{max: 20, scale: 1}}>
           <div
@@ -26,9 +26,7 @@ const Cards = ({auction}) => {
             }}
           >
               <figure className="ma0 pa0">
-                  <div className="w-100 h5 flex aic jcc" style={{position: 'relative'}}>
-                      {auction.image ?
-                        <img src={auction.image} alt="" className="ma0 pa3 pb0"/> : ""}
+                  <div className="w-100" style={{position: 'relative', display:'block', paddingTop: '100%'}}>
                         <div style={{
                             position: 'absolute',
                             top: 0,
@@ -36,6 +34,8 @@ const Cards = ({auction}) => {
                             left: 0,
                             right: 0,
                         }}>
+                            {auction.image ?
+                              <img src={auction.image} alt="" className="ma0 pa3 pb0"/> : ""}
                             <Loading hidden={auction.image}/>
                         </div>
                   </div>

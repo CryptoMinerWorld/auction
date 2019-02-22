@@ -112,7 +112,7 @@ const Navbar = ({
           activeStyle={{
             borderBottom: '2px solid purple',
           }}
-          className="link dim dark-gray f6 f5-l dib mr3 mr4-l b"
+          className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
           data-testid="mapLink"
           style={{
             color: 'purple',
@@ -120,20 +120,36 @@ const Navbar = ({
         >
           Country Market
         </NavLink>
-          <NavLink
-            exact
-            to="/sale"
-            activeStyle={{
-                borderBottom: '2px solid purple',
-            }}
-            className="link dim dark-gray f6 f5-l dib mr3 mr4-l b"
-            data-testid="mapLink"
-            style={{
-                color: 'purple',
-            }}
-          >
-              Silver Sale
-          </NavLink>
+
+          {existingUser ? (
+            <NavLink
+              exact
+              to="/S_and_G_Sale"
+              activeStyle={{
+                  borderBottom: '2px solid purple',
+              }}
+              className="link dim dark-gray f6 f5-l dib mr3 mr4-l b"
+              data-testid="mapLink"
+              style={{
+                  color: 'purple',
+              }}
+            >
+                Silver and Gold
+            </NavLink>
+          ) : (
+            <div
+              className=" dim dark-gray f6 f5-l dib mr3 mr4-l pointer b"
+              title="Silver and Gold"
+              onClick={() => handleShowSignInModal()}
+              onKeyPress={() => handleShowSignInModal()}
+              role="button"
+              tabIndex={0}
+              data-testid="signUp"
+            >
+                Silver and Gold
+            </div>
+          )}
+
         <a
           className="link dim dark-gray f6 f5-l dn dib-ns mr3 mr4-l"
           href="https://cryptominerworld.com/world/"

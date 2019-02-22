@@ -1,20 +1,27 @@
 import {
-  NEW_AUCTIONS_RECEIVED,
-  MARKETPLACE_WAS_FILTERED,
-  FETCH_NEW_AUCTIONS_SUCCEEDED,
-  FETCH_NEW_AUCTIONS_FAILED,
-  FETCH_NEW_AUCTIONS_BEGUN,
-  MARKETPLACE_FILTER_BEGUN,
-  MARKETPLACE_FILTER_FAILED,
-  CHANGE_FILTER_GEM_VALUES,
-  CHANGE_FILTER_VALUES,
-  PAGINATE_MARKET,
+    NEW_AUCTIONS_RECEIVED,
+    MARKETPLACE_WAS_FILTERED,
+    FETCH_NEW_AUCTIONS_SUCCEEDED,
+    FETCH_NEW_AUCTIONS_FAILED,
+    FETCH_NEW_AUCTIONS_BEGUN,
+    MARKETPLACE_FILTER_BEGUN,
+    MARKETPLACE_FILTER_FAILED,
+    CHANGE_FILTER_GEM_VALUES,
+    CHANGE_FILTER_VALUES,
+    PAGINATE_MARKET, FETCH_AUCTIONS_PAGE_IMAGES,
 } from './marketConstants';
 import { NEW_AUCTION_CREATED } from '../items/itemConstants';
 
-export const marketReducer = (state = [], action) => {
+export const marketReducer = (state = {
+  auctions: [],
+    auctionsFiltered: [],
+    paginated: null,
+    auctionsLoading: true,
+}, action) => {
   if (action.type === NEW_AUCTIONS_RECEIVED) {
-    return action.payload;
+    const newState = {...state, auctions: action.payload, auctionsFiltered: action.payload, auctionsLoading:false, updateImages: true};
+    console.log('NEW STATE: ', newState);
+    return newState;
   }
 
   if (action.type === NEW_AUCTION_CREATED) {
@@ -23,8 +30,12 @@ export const marketReducer = (state = [], action) => {
     return [...state, newAuction];
   }
 
+  if (action.type === FETCH_AUCTIONS_PAGE_IMAGES) {
+    return {...state, updateImages: false}
+  }
+
   if (action.type === MARKETPLACE_WAS_FILTERED) {
-    return action.payload;
+    return {...state, auctionsFiltered: action.payload, updateImages: true}
   }
 
   return state;
@@ -52,14 +63,15 @@ const initialState = {
     min: 1,
     max: 6,
   },
+    //GWei price
   currentPrice: {
     min: 0,
-    max: 10000000000000000000,
+    max: 100000000000,
   },
 };
 
 export const marketActionsReducer = (state = initialState, action) => {
-  if (action.type === FETCH_NEW_AUCTIONS_SUCCEEDED) {
+  if (action.type === NEW_AUCTIONS_RECEIVED) {
     return { ...state, loading: false, error: false };
   }
 

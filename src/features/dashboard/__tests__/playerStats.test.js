@@ -51,7 +51,7 @@ test.skip('referral points function is called when the workshop page loads', asy
 
   const referralPoints = await waitForElement(() => getByTestId('referralPoints'));
 
-  expect(referralPoints).toHaveTextContent('1 REFERAL POINT AVAILABLE');
+  expect(referralPoints).toHaveTextContent('1 REFERRAL POINT AVAILABLE');
   expect(getPoints).toHaveBeenCalled();
 });
 
@@ -74,7 +74,7 @@ test.skip('referral points componnet show plural grammer', async () => {
 
   const referralPoints = await waitForElement(() => getByTestId('referralPoints'));
 
-  expect(referralPoints).toHaveTextContent('2 REFERAL POINTS AVAILABLE');
+  expect(referralPoints).toHaveTextContent('2 REFERRAL POINTS AVAILABLE');
   expect(getPoints).toHaveBeenCalled();
 });
 

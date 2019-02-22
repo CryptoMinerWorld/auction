@@ -5,6 +5,7 @@ import auction from '../features/items/itemReducer';
 import auth from '../features/auth/authReducer';
 import dashboard from '../features/dashboard/dashboardReducer';
 import txReducer from '../features/transactions/txReducer';
+import {sale} from '../features/sale/saleReducers';
 
 import {
     AUCTION_SERVICE_ADDED,
@@ -106,6 +107,7 @@ export default combineReducers({
     auction,
     auth,
     dashboard,
+    sale,
     tooltip,
     tx: txReducer,
 });

@@ -34,8 +34,8 @@ export default function dashboardReducer(
   action,
 ) {
 
-    console.log('REDUCER::: action.type = ', action.type);
-    console.log('REDUCER::::::: payload =', action.payload);
+    //console.log('REDUCER::: action.type = ', action.type);
+    //console.log('REDUCER::::::: payload =', action.payload);
 
     if (action.type === FETCH_GEMS_PAGE_IMAGES) {
         return {...state, /*userGemsPage: action.payload,*/ updateImages: false};
@@ -44,7 +44,7 @@ export default function dashboardReducer(
     if (action.type === USER_GEMS_RETRIEVED) {
         const paginated = action.payload.length > 15 ? action.payload.slice(0, 15) : action.payload;
         //userGemsPage: paginated
-        return {...state, userGems: action.payload, updateImages: true, gemsLoading: false};
+        return {...state, userGems: action.payload, userGemsFiltered: action.payload, updateImages: true, gemsLoading: false};
     }
 
     if (action.type === NO_USER_EXISTS) {
@@ -106,10 +106,13 @@ export default function dashboardReducer(
     if (action.type === 'REORDER_DASHBOARD') {
         const key = action.payload[0];
         const direction = action.payload[1];
-        const currentDashboardItems = state.userGems;
+        const currentDashboardItems = state.userGemsFiltered;
         const newMarket = currentDashboardItems.sort(
           (a, b) => (direction === 'desc' ? a[key] - b[key] : b[key] - a[key]),
         );
+
+        console.log(state);
+        console.log(key, direction, newMarket);
 
         // returns ordered data and resets pagination to first page]
         return {

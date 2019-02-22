@@ -12,8 +12,15 @@ import { ReactComponent as Clock } from '../../../app/images/svg/clock.svg';
 import { ReactComponent as Percent } from '../../../app/images/svg/percent.svg';
 
 const stateMachine = {
-  initial: 'priceASC',
+  initial: 'noOrderBy',
   states: {
+    noOrderBy: {
+        on: {
+            TOGGLE_RATE: 'rateASC',
+            TOGGLE_TIME: 'timeASC',
+            TOGGLE_PRICE: 'priceDESC',
+        },
+    },
     priceASC: {
       onEntry: 'orderByPrice',
       on: {

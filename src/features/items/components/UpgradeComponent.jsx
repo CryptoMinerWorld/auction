@@ -1,6 +1,9 @@
 import React, {useState} from 'react';
 import Icon from "antd/lib/icon";
 import {handleUpgradeNow} from "../itemActions";
+import silverUpgradePopup from "../../../app/images/sale/silverUpgradePopup.png";
+import goldUpgradePopup from "../../../app/images/sale/goldUpgradePopup.png";
+import buyNowImage from "../../../app/images/pinkBuyNowButton.png";
 
 export default class UpgradeComponent extends React.Component {
 
@@ -11,6 +14,7 @@ export default class UpgradeComponent extends React.Component {
         4: 'A',
         5: 'AA',
         6: 'AAA',
+        7: 'AAA'
     }[gradeValue]);
 
     price = (type, from, to) => {
@@ -27,7 +31,7 @@ export default class UpgradeComponent extends React.Component {
             '3': 3,
             '4': 7,
             '5': 15,
-            '6': 31
+            '6': 31,
         } //0,1,2,4,8,16
 
         let cost = 0;
@@ -36,7 +40,7 @@ export default class UpgradeComponent extends React.Component {
                 cost = levelSilverCumulativeCharges[to] - levelSilverCumulativeCharges[from];
                 break;
             case 'grade':
-                cost = gradeGoldCumulativeCharges[to] - gradeGoldCumulativeCharges[from];
+                cost = to > 6 ? 16 * (to-from) : gradeGoldCumulativeCharges[to] - gradeGoldCumulativeCharges[from];
                 break;
         }
         return cost;
@@ -62,24 +66,29 @@ export default class UpgradeComponent extends React.Component {
         const {metal, metalAvailable, handleUpgradeGem, gem, hidePopup} = this.props;
         const confirmButton = {
             position: 'absolute',
-            bottom: '20px',
+            bottom: '40px',
             left: '0',
-            right: '0',
+            right: '30px',
             margin: 'auto',
             width: '200px',
             textAlign: 'center',
-            padding: '10px 0px',
-            backgroundColor: this.state.cost <= this.state.total ? 'magenta' : 'grey',
+            padding: '16px 0px',
+            //backgroundColor: this.state.cost <= this.state.total ? 'magenta' : 'grey',
+            backgroundImage: 'url(' + buyNowImage + ')',
+            backgroundSize: 'cover',
             cursor: 'pointer',
+            color: 'white',
+            fontWeight: 'bold',
         };
 
         const arrowButton = {
-            fontSize: '60px',
+            fontSize: '70px',
             cursor: 'pointer',
             WebkitUserSelect: 'none',  /* Chrome all / Safari all */
             MozUserSelect: 'none',     /* Firefox all */
             MsUserSelect: 'none',    /* IE 10+ */
             userSelect: 'none',
+            marginTop: '-20px',
         };
 
         //const [loading, setLoading] = useState(false);
@@ -90,16 +99,24 @@ export default class UpgradeComponent extends React.Component {
                     e.preventDefault();
                     e.stopPropagation();
                 }}
-                style={{display: 'flex', height: '20rem', width: '35%', maxWidth: '50rem', backgroundColor: '#dedede',
+                style={{display: 'flex', maxWidth: '50rem',
+                    backgroundImage: 'url('+ (metal === 'silver' ? silverUpgradePopup : goldUpgradePopup) +')',
+                    backgroundSize: 'cover',
                     margin: 'auto', flexDirection: 'row', alignItems: 'stretch', position: 'relative',
-                    cursor: 'default'
+                    cursor: 'default',
+                    minWidth: '650px',
+                    minHeight: metal === 'silver' ? '310px' : '352px',
+                    padding: '10px 40px',
                 }}>
-                  <div style={{flex: '1', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                  <div style={{flex: '1', display: 'flex', justifyContent: 'flex-end', fontWeight: 'bold', alignItems: 'center'}}>
                       {metal === 'silver' ?
-                        (<span style={{fontSize: '120px'}}>{this.state.level}</span>) : ""
+                        (<span style={{fontSize: '110px'}}>{this.state.level}</span>) : ""
                       }
                       {metal === 'gold' ?
-                        (<span style={{fontSize: '80px'}}>{this.gradeConverter(this.state.gradeType)}</span>) : ""
+                        (<div>
+                            <span style={{fontSize: '75px'}}>{this.gradeConverter(this.state.gradeType)}</span>
+                              {this.state.gradeType > 6 ? <p style={{fontSize: '14px'}}>Upgrades rate randomly</p> : ""}
+                        </div>) : ""
                       }
                   </div>
                   <div style={{
@@ -138,7 +155,7 @@ export default class UpgradeComponent extends React.Component {
                                        if (this.state.level > this.state.initialLevel + 1) {
                                            this.setState({
                                                level: this.state.level - 1,
-                                               cost: this.price('level', this.state.initialLevel, this.state.level -1)
+                                               cost: this.price('level', this.state.initialLevel, this.state.level - 1)
                                            });
                                        }
                                        break;
@@ -180,8 +197,12 @@ export default class UpgradeComponent extends React.Component {
                   <div
                     style={confirmButton}
                     onClick={() => {
+                        if (this.state.loading) {
+                            return;
+                        }
                         this.setState({loading: true});
-                        handleUpgradeGem(this.props.gem, this.state.level - this.state.initialLevel, this.state.gradeType - this.state.initialGrade, hidePopup, this.state.cost);
+                        const gradeUp = this.state.initialGrade < 6 ? this.state.gradeType - this.state.initialGrade : 0;
+                        handleUpgradeGem(this.props.gem, this.state.level - this.state.initialLevel, gradeUp, hidePopup, this.state.cost);
                     }}
                   >
                       {this.state.loading && <Icon type="loading" theme="outlined" className="pr3" />

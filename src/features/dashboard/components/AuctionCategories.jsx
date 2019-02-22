@@ -79,7 +79,7 @@ class PlayerStats extends PureComponent {
                 </p>
               ) : (
                 <small data-testid="referralPoints" className="tr fr o-50">
-                  {`${referralPoints} REFERAL ${
+                  {`${referralPoints} REFERRAL ${
                     referralPoints === 1 ? 'POINT' : 'POINTS'
                   } AVAILABLE `}
                 </small>

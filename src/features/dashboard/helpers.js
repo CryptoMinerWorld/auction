@@ -8,22 +8,6 @@ import queryString from "query-string";
 import Cookies from "universal-cookie";
 
 
-export const referralTracker = (locationSearch) => {
-
-    let params = queryString.parse(locationSearch);
-
-    console.log('PARAMS: ', params);
-
-    const cookies = new Cookies();
-
-    let referral = cookies.get('referralId');
-    if (!referral) {
-        if (params.refId) {
-            cookies.set('referralId', params.refId, { path: '/' });
-            console.log('Cookie set: ', cookies.get('referralId'));
-        }
-    }
-};
 
 export function isTokenForSale(_contract, _tokenId) {
     return _contract.methods.isTokenOnSale(_tokenId).call();

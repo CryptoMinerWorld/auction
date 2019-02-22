@@ -1,16 +1,42 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import windowSize from 'react-window-size';
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 import {compose, lifecycle} from 'recompose';
 import Gold from '../../app/images/dashboard/Gold.png';
 import Silver from '../../app/images/dashboard/Silver.png';
+import goldishSilver from '../../app/images/sale/goldishSilverGeode.png';
+import rotundSilver from '../../app/images/sale/rotundSilverGeode.png';
+import smallSilver from '../../app/images/sale/smallSilverGeode.png';
 import buyNowImage from "../../app/images/pinkBuyNowButton.png";
-import {buyGeode, getBoxesAvailableData, getGeodesData} from "./saleActions";
-import {Link} from "react-router-dom";
+import {
+    buyGeode,
+    getBoxesAvailableData,
+    getGeodesData,
+    getSaleState,
+    getUserBalance,
+    updateSaleState
+} from "./saleActions";
+import {withRouter} from "react-router-dom";
+import {parseSaleEventData} from "../../app/services/SilverGoldService";
+import {Spring} from "react-spring";
+import CountdownTimer from "./components/CountdownTimer";
 
+import tableReferralPoints from '../../app/images/sale/tableReferralPoints.png';
+import gemEating from '../../app/images/sale/gemEatingGoldGeode.png';
+import getLoot from '../../app/images/sale/getLoot.png';
+import tableGoldAmounts from '../../app/images/sale/tableGoldAmounts.png';
+import tableSilverAmounts from '../../app/images/sale/tableSilverAmounts.png';
+import tableSilverGoldDropRates from '../../app/images/sale/tableSilverGoldDropRates.png';
+import upArrow from '../../app/images/sale/upMagentaArrow.png';
+import downArrow from '../../app/images/sale/downMagentaArrow.png';
+import Loading from "../../components/Loading";
 
 const select = store => ({
     silverGoldService: store.app.silverGoldServiceInstance,
     currentUserId: store.auth.currentUserId,
+    saleState: store.sale.saleState,
+    userBalance: store.sale.balance
 });
 
 class Sale extends Component {
@@ -24,55 +50,138 @@ class Sale extends Component {
         proceedBuyType: '',
         proceedBuyAmount: 0,
         boxesAvailable: ['...', '...', '...'],
-        boxesPrices: []
+        boxesPrices: [],
+        referrer: null,
+        smallScreen: false,
+        copied: false,
     };
 
+    static defaultProps = {
+        saleState: {
+            '0': {currentPrice: '...', boxesAvailable: '...'},
+            '1': {currentPrice: '...', boxesAvailable: '...'},
+            '2': {currentPrice: '...', boxesAvailable: '...'},
+        }
+    }
+
     async componentDidMount() {
-        const {handleGetBoxesAvailable, silverGoldService, currentUserId} = this.props;
+        console.log(888888888888, ' PROPS: ', this.props);
+        const {handleGetBoxesAvailable, handleUpdateSaleState, handleGetSaleState, silverGoldService, currentUserId, handleGetUserBalance} = this.props;
+
+        this.interval = setInterval(
+          () => this.setState({
+              currentTime: new Date().getTime()
+          }),
+          10000,
+        ); //10 sec interval
+
+        this.setState({
+            currentTime: new Date().getTime()
+        });
 
         if (silverGoldService && currentUserId) {
-            const boxesAvailable = await handleGetBoxesAvailable();
-            const goldAvailable = await silverGoldService.getAvailableGold(currentUserId);
-            const silverAvailable = await silverGoldService.getAvailableSilver(currentUserId);
-            this.setState({...boxesAvailable, goldAvailable, silverAvailable});
+
+            silverGoldService.saleContract.events.SaleStateChanged({
+                fromBlock: 'latest'
+            })
+              .on('data', function (event) {
+                  handleUpdateSaleState(event);
+                  console.log('DATA EVENT:', event); // same results as the optional callback above
+              })
+              .on('changed', function (event) {
+                  // remove event from local database
+              })
+              .on('error', console.error);
+
+            handleGetSaleState();
+            handleGetUserBalance(currentUserId);
+            //const boxesAvailable = await handleGetBoxesAvailable();
+            //const goldAvailable = await silverGoldService.getAvailableGold(currentUserId);
+            //const silverAvailable = await silverGoldService.getAvailableSilver(currentUserId);
+            //this.setState({goldAvailable, silverAvailable});
         }
     }
 
     async componentDidUpdate(prevProps) {
-        const {handleGetBoxesAvailable, silverGoldService, currentUserId} = this.props;
+        const {handleGetUserBalance, silverGoldService, currentUserId, handleUpdateSaleState, handleGetSaleState, saleState, userBalance} = this.props;
+        const {silverAvailable, goldAvailable} = this.state;
 
         console.log('11111 PROPS: ', this.props);
         console.log('22222 PROPS: ', prevProps);
         if (silverGoldService && currentUserId && (prevProps.silverGoldService !== silverGoldService || currentUserId !== prevProps.currentUserId)) {
-            const boxesAvailable = await handleGetBoxesAvailable();
-            const goldAvailable = await silverGoldService.getAvailableGold(currentUserId);
-            const silverAvailable = await silverGoldService.getAvailableSilver(currentUserId);
-            this.setState({...boxesAvailable, goldAvailable, silverAvailable});
-            //console.log('state:', this.state);
+
+            silverGoldService.saleContract.events.SaleStateChanged({
+                fromBlock: 'latest'
+            })
+              .on('data', function (event) {
+                  handleUpdateSaleState(event);
+                  console.log('DATA EVENT:', event); // same results as the optional callback above
+              })
+              .on('changed', function (event) {
+                  // remove event from local database
+              })
+              .on('error', console.error);
+
+            handleGetSaleState();
+
+            let referrer = silverGoldService.getReferralId(this.props.location.search);
+            console.log('Saved referrer: ', referrer);
+            if (referrer && !(await silverGoldService.ifReferrerIsValid(referrer, currentUserId))) {
+                referrer = 'some referral link is already used';
+            }
+            this.setState({referrer});
+            console.log('state-state:', this.state);
         }
+
+        if (currentUserId && ((silverGoldService !== prevProps.silverGoldService) || (silverGoldService && !userBalance) || (currentUserId !== prevProps.currentUserId))) {
+            handleGetUserBalance(currentUserId);
+        }
+
     }
 
     render() {
         const geodeBlockStyle = {
-            maxWidth: '20em',
+            maxWidth: '23em',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            padding: '10px 3em',
-            minWidth: '350px'
+            padding: '50px 3% 0 3%',
+            minWidth: '300px',
+            fontSize: '18px',
+            fontWeight: '600',
+            color: 'lightgrey',
+            flex: '1'
         };
+
+        const smallScreenGeode = {
+            margin: '10px 0',
+            borderRadius: '10px',
+        }
+
         const buyArea = {
             display: 'flex',
             width: '100%',
             alignItems: 'center',
+            borderRadius: '15px 15px 0 0',
+            padding: '10px 10px 5px 5px',
         };
+
+        const chosenCounter = {
+            flex: '1',
+            fontSize: '30px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+        }
 
         const arrows = {
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'flex-start',
+            alignItems: 'center',
             flex: '1',
-            fontSize: '20px'
+            fontSize: '20px',
+            height: '60px',
+            justifyContent: 'space-around'
         };
 
         const fixedOverlayStyle = {
@@ -89,9 +198,38 @@ class Sale extends Component {
             zIndex: '10',
             display: 'flex',
             cursor: 'pointer',
+            backgroundColor: 'rgba(101,101,101,0.4)',
         };
 
+        const silverColor = {
+            color: '#8ca0b4',
+        }
+
+        const goldColor = {
+            color: 'gold',
+        }
+
         const buyButton = {
+            flex: '4',
+            backgroundImage: 'url(' + buyNowImage + ')',
+            //backgroundColor: 'magenta',
+            backgroundPosition: 'center center',
+            width: '100%',
+            height: '100%',
+            textAlign: 'center',
+            backgroundSize: 'contain',
+            backgroundRepeat: 'no-repeat',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontWeight: 'bold',
+            padding: '12px',
+            cursor: 'pointer',
+            color: 'white',
+            fontSize: '16px'
+        };
+
+        const disabledBuyButton = {
             flex: '4',
             backgroundImage: 'url(' + buyNowImage + ')',
             //backgroundColor: 'magenta',
@@ -115,198 +253,381 @@ class Sale extends Component {
             MozUserSelect: 'none', /* Firefox all */
             msUserSelect: 'none', /* IE 10+ */
             userSelect: 'none',
+            width: '24px',
+            height: '23px',
         };
 
-        const {handleConfirmBuy} = this.props;
-        const {boxesPrices, boxesAvailable, goldAvailable, silverAvailable} = this.state;
+        const upArrowButton = {
+            ...arrowButton,
+            backgroundImage: 'url(' + upArrow + ')',
+            backgroundSize: 'contain'
+        }
+
+        const downArrowButton = {
+            ...arrowButton,
+            backgroundImage: 'url(' + downArrow + ')',
+            backgroundSize: 'contain'
+        }
+
+        const referralPointsPrices = {
+            '0': 20,
+            '1': 80,
+            '2': 200,
+        }
+
+        const {handleConfirmBuy, saleState, userBalance, windowWidth, currentUserId} = this.props;
+        const {referrer, currentTime, smallScreen} = this.state;
 
         const price = (type, amount) => {
             const index = {
-                'Silver Geode': 0,
-                'Rotund Silver Geode': 1,
-                'Goldish Silver Geode': 2
+                'Silver Geode': '0',
+                'Rotund Silver Geode': '1',
+                'Goldish Silver Geode': '2'
             }[type];
-            return (this.state.boxesPrices[index] * amount).toFixed(5);
+            return {
+                'ether': (saleState[index].currentPrice * amount).toFixed(5),
+                'points': (referralPointsPrices[index] * amount)
+            }
         }
+        console.log('SALE STATE PROP:', saleState);
 
+        const saleStarted = saleState['3'] && saleState['3'].saleStart * 1000 <= Math.round(new Date().getTime());
+        const timeLeftInHours = t => Math.floor((t % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const timeLeftInMinutes = t => Math.floor((t % (1000 * 60 * 60)) / (1000 * 60));
+        const timeLeftInDays = t => Math.floor(t / (1000 * 60 * 60 * 24));
+
+        let saleValue = saleState['3'] && (20 - timeLeftInDays(currentTime - saleState['3'].saleStart * 1000));
+        if (saleValue < 0) saleValue = 0;
+        if (saleValue > 20) saleValue = 20;
 
         return (
-          <div className="bg-off-black white pa4 " data-testid="market-page">
+          <div className="bg-off-black white pa4" data-testid="market-page" style={{paddingTop:'0px'}}>
               {this.state.proceedBuy ?
                 <div style={fixedOverlayStyle}
                      onClick={() => this.setState({proceedBuy: false})}>
                     <ConfirmBuyPopup type={this.state.proceedBuyType} amount={this.state.proceedBuyAmount}
-                                     price = {price(this.state.proceedBuyType, this.state.proceedBuyAmount)}
-                                     handleConfirmBuy={handleConfirmBuy} hidePopup={() => {this.setState({proceedBuy: false})}}/>
+                                     price={price(this.state.proceedBuyType, this.state.proceedBuyAmount)}
+                                     referrer={referrer}
+                                     refPointsAvailable={userBalance.referralPoints}
+                                     handleConfirmBuy={handleConfirmBuy} hidePopup={() => {
+                        this.setState({proceedBuy: false})
+                    }}/>
                 </div> : ""
               }
-              <div style={{display: 'flex'}}>
-                  <div style={{flex:'1'}}></div>
-                  <div style={{flex:'3'}}>
-                      <div style={{display: 'flex', justifyContent: 'center'}}>
-                          <div style={geodeBlockStyle}>
-                              <p>Silver Geode</p>
-                              <img src={Silver} alt='geode image' style={{width: '10em'}}/>
-                              <p>{boxesPrices[0]} ETH</p>
-                              <p>20-30 Silver pieces</p>
-                              <p>{boxesAvailable[0]}/500 Left</p>
-                              <div style={buyArea}>
-                                  <div style={{
-                                      flex: '1',
-                                      fontSize: '24px',
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      justifyContent: 'center'
-                                  }}>
+              <div style={{display: 'flex', flexWrap: 'wrap-reverse'}}>
+                  <div style={{flex: '1'}}>
+                      {/*<CountdownTimer message={<span style={{fontSize: '20px'}}>Sale started!</span>}*/}
+                      {/*deadline={saleState['3'].saleStart}/>*/}
+                      <p></p>
+                      {/*{saleState['3'] ?*/}
+                      {/*<CountdownTimer message={'Lower prices before'}*/}
+                      {/*deadline={saleState['3'].nextPriceTimestamp}/> : ""*/}
+                      {/*}*/}
+                  </div>
+                  <div style={{flex: '5'}}>
+                      <div style={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          flexWrap: windowWidth < 900 ? 'wrap' : 'nowrap'
+                      }}>
+                          <div style={windowWidth < 900 ? {
+                                ...geodeBlockStyle, ...smallScreenGeode,
+                                backgroundColor: '#2f353c'
+                            }
+                            : {...geodeBlockStyle, backgroundColor: '#2f353c'}}>
+                              <p style={{marginBottom: '0.5em', fontSize: '24px'}}>Silver Geode</p>
+                              <img src={smallSilver} alt='geode image' style={{maxHeight: '155px', marginBottom: '5px'}}/>
+                              <p>{saleState['0'].currentPrice} ETH {/*or {referralPointsPrices['0']} referral
+                               points*/}</p>
+                              <p style={{flexGrow: '1'}}>20-30 <span style={silverColor}> Silver </span> pieces</p>
+                              <p>{saleState['0'].boxesAvailable}/500 Left</p>
+                              <div style={{...buyArea, backgroundColor: '#24292f'}}>
+                                  <div style={chosenCounter}>
                                       {this.state.silverGeodeChosen}
                                   </div>
                                   <div style={arrows}>
-                                      <div style={arrowButton}
+                                      <div style={upArrowButton}
                                            onClick={() => {
                                                this.setState({
                                                    silverGeodeChosen: this.state.silverGeodeChosen + 1
                                                })
                                            }}
-                                      >▲
+                                      >
                                       </div>
-                                      <div style={arrowButton}
+                                      <div style={downArrowButton}
                                            onClick={() => {
                                                this.setState({
                                                    silverGeodeChosen: this.state.silverGeodeChosen > 1 ? this.state.silverGeodeChosen - 1 : 1
                                                })
                                            }}
-                                      >▼
+                                      >
                                       </div>
                                   </div>
-                                  <div style={buyButton} onClick={() => {
-                                      this.setState({
-                                          proceedBuy: true,
-                                          proceedBuyType: 'Silver Geode',
-                                          proceedBuyAmount: this.state.silverGeodeChosen
-                                      });
-                                  }}>BUY NOW
-                                  </div>
+                                  {(saleStarted || !saleStarted) ?
+                                    <div style={buyButton} onClick={() => {
+                                        this.setState({
+                                            proceedBuy: true,
+                                            proceedBuyType: 'Silver Geode',
+                                            proceedBuyAmount: this.state.silverGeodeChosen
+                                        });
+                                    }}>BUY NOW
+                                    </div> :
+                                    <div style={disabledBuyButton}>BUY NOW</div>
+                                  }
                               </div>
                           </div>
-                          <div style={{...geodeBlockStyle, borderLeft: '1px solid grey', borderRight: '1px solid grey'}}>
-                              <p>Rotund Silver Geode</p>
-                              <img src={Silver} alt='geode image' style={{width: '10em'}}/>
-                              <p>{boxesPrices[1]} ETH</p>
-                              <p>70-90 Silver pieces</p>
-                              <p>{boxesAvailable[1]}/300 Left</p>
-                              <div style={buyArea}>
-                                  <div style={{
-                                      flex: '1',
-                                      fontSize: '24px',
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      justifyContent: 'center'
-                                  }}>
+                          <div style={windowWidth < 900 ? {
+                                ...geodeBlockStyle, ...smallScreenGeode,
+                                backgroundColor: '#2f353c'
+                            }
+                            : {...geodeBlockStyle}}>
+                              <p style={{marginBottom: '0.5em', fontSize: '24px'}}>Rotund Silver Geode</p>
+                              <img src={rotundSilver} alt='geode image' style={{maxHeight: '165px', marginBottom: '5px'}}/>
+                              <p>{saleState['1'].currentPrice} ETH {/*or {referralPointsPrices['1']} referral
+                               points*/}</p>
+                              <p style={{flexGrow: '1'}}>70-90 <span style={silverColor}> Silver </span> pieces</p>
+                              <p>{saleState['1'].boxesAvailable}/300 Left</p>
+                              <div style={{...buyArea, backgroundColor: '#2f353c'}}>
+                                  <div style={chosenCounter}>
                                       {this.state.rotundGeodeChosen}
                                   </div>
                                   <div style={arrows}>
-                                      <div style={arrowButton}
+                                      <div style={upArrowButton}
                                            onClick={() => {
                                                this.setState({
                                                    rotundGeodeChosen: this.state.rotundGeodeChosen + 1
                                                })
                                            }}
-                                      >▲
+                                      >
                                       </div>
-                                      <div style={arrowButton}
+                                      <div style={downArrowButton}
                                            onClick={() => {
                                                this.setState({
                                                    rotundGeodeChosen: this.state.rotundGeodeChosen > 1 ? this.state.rotundGeodeChosen - 1 : 1
                                                })
                                            }}
-                                      >▼
+                                      >
                                       </div>
                                   </div>
-                                  <div style={buyButton} onClick={() => {
-                                      this.setState({
-                                          proceedBuy: true,
-                                          proceedBuyType: 'Rotund Silver Geode',
-                                          proceedBuyAmount: this.state.rotundGeodeChosen
-                                      });
-                                  }}>BUY NOW
-                                  </div>
+                                  {(saleStarted || !saleStarted) ?
+                                    <div style={buyButton} onClick={() => {
+                                        this.setState({
+                                            proceedBuy: true,
+                                            proceedBuyType: 'Rotund Silver Geode',
+                                            proceedBuyAmount: this.state.rotundGeodeChosen
+                                        });
+                                    }}>BUY NOW
+                                    </div> :
+                                    <div style={disabledBuyButton}>BUY NOW</div>
+                                  }
                               </div>
                           </div>
-                          <div style={geodeBlockStyle}>
-                              <p>Goldish Silver Geode</p>
-                              <img src={Gold} alt='geode image' style={{width: '10em'}}/>
-                              <p>{boxesPrices[2]} ETH</p>
-                              <p>100-200 Silver pieces</p>
-                              <p>0-1 Gold pieces*</p>
-                              <p>{boxesAvailable[2]}/150 Left</p>
-                              <div style={buyArea}>
-                                  <div style={{
-                                      flex: '1',
-                                      fontSize: '24px',
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      justifyContent: 'center'
-                                  }}>
+                          <div style={windowWidth < 900 ? {
+                                ...geodeBlockStyle, ...smallScreenGeode,
+                                backgroundColor: '#2f353c'
+                            }
+                            : {...geodeBlockStyle, backgroundColor: '#2f353c'}}>
+                              <p style={{marginBottom: '0.5em', fontSize: '24px'}}><span style={goldColor}>Goldish</span> Silver Geode</p>
+                              <img src={goldishSilver} alt='geode image' style={{maxHeight: '165px', marginBottom: '5px'}}/>
+                              <p>{saleState['2'].currentPrice} ETH {/*or {referralPointsPrices['2']} referral
+                               points*/}</p>
+                              <div>100-200 <span style={silverColor}> Silver </span> pieces</div>
+                              <div style={goldColor}>0-1 Gold pieces*</div>
+                              <p style={{flexGrow: '1', fontSize: '14px'}}><span style={goldColor}>42%</span> chance of
+                                  finding <span style={goldColor}>Gold</span></p>
+                              <p>{saleState['2'].boxesAvailable}/<span style={goldColor}>150 Left</span></p>
+                              <div style={{...buyArea, backgroundColor: '#24292f'}}>
+                                  <div style={chosenCounter}>
                                       {this.state.goldishGeodeChosen}
                                   </div>
                                   <div style={arrows}>
-                                      <div style={arrowButton}
+                                      <div style={upArrowButton}
                                            onClick={() => {
                                                this.setState({
                                                    goldishGeodeChosen: this.state.goldishGeodeChosen + 1
                                                })
                                            }}
-                                      >▲
+                                      >
                                       </div>
-                                      <div style={arrowButton}
+                                      <div style={downArrowButton}
                                            onClick={() => {
                                                this.setState({
                                                    goldishGeodeChosen: this.state.goldishGeodeChosen > 1 ? this.state.goldishGeodeChosen - 1 : 1
                                                })
                                            }}
-                                      >▼
+                                      >
                                       </div>
                                   </div>
-                                  <div style={buyButton} onClick={() => {
-                                      this.setState({
-                                          proceedBuy: true,
-                                          proceedBuyType: 'Goldish Silver Geode',
-                                          proceedBuyAmount: this.state.goldishGeodeChosen
-                                      });
-                                  }}>BUY NOW
-                                  </div>
+                                  {(saleStarted || !saleStarted) ?
+                                    <div style={buyButton} onClick={() => {
+                                        this.setState({
+                                            proceedBuy: true,
+                                            proceedBuyType: 'Goldish Silver Geode',
+                                            proceedBuyAmount: this.state.goldishGeodeChosen
+                                        });
+                                    }}>BUY NOW
+                                    </div> :
+                                    <div style={disabledBuyButton}>BUY NOW</div>
+                                  }
                               </div>
                           </div>
                       </div>
                   </div>
-                  <div style={{flex:'1'}}>
-                      <div className="flex-ns dn col tc">
-                          <div className="flex jcc">
+                  <div style={{flex: '1', minWidth: '260px'}}>
+                      <div className="flex-ns dn aic row tc jcs flex-wrap" style={{paddingLeft: '15px', paddingTop: '50px'}}>
+                          <div className="flex jcc" style={{maxWidth: '300px'}}>
                               <div className="flex col tc">
                                   <img src={Gold} alt="Gold" className="h3 w-auto ph3"/>
-                                  {goldAvailable}
+                                  {userBalance && userBalance.goldAvailable}
                               </div>
                               <div className="flex col tc">
                                   <img src={Silver} alt="Silver" className="h3 w-auto ph3"/>
-                                  {silverAvailable}
+                                  {userBalance && userBalance.silverAvailable}
                               </div>
                           </div>
-                    </div>
+                          <Spring from={{opacity: 0}} to={{opacity: 1}} config={{delay: 1000}}>
+                              {props => (
+                                <div style={props} className="pr4">
+                                    {!userBalance ? (
+                                      <p data-testid="loadingReferralPoints" className="tr o-50 white">
+                                          Loading Referral Points...
+                                      </p>
+                                    ) : (
+                                      <small data-testid="referralPoints" className="tr fr o-50 white">
+                                          {`${userBalance.referralPoints} REFERRAL ${
+                                            userBalance.referralPoints === 1 ? 'POINT' : 'POINTS'
+                                            } AVAILABLE `}
+                                      </small>
+                                    )}
+                                    <CopyToClipboard text={"https://game.cryptominerworld.com/S_and_G_Sale?refId="+currentUserId}
+                                                     onCopy={() => this.setState({copied: true})}>
+                                        <span style={{cursor: 'pointer', textDecoration: 'underline'}}>Copy referral link</span>
+                                    </CopyToClipboard>{this.state.copied ? <span style={{color:'magenta'}}> copied!</span> : ""}
+                                </div>
+                              )}
+                          </Spring>
+
+                          {saleState['3'] ?
+                            saleState['3'].saleStart * 1000 > Math.round(new Date().getTime()) ?
+                              <CountdownTimer message={'Sale starts on'} deadline={saleState['3'].saleStart}/> : ""
+                            : ""
+                          }
+                      </div>
                   </div>
               </div>
-
+              <div style={{
+                  backgroundColor: '#383f45',
+                  borderTop: '4px solid #be007d',
+                  position: 'absolute', width: '100%',
+                  marginTop: '0px', left: 0,
+                  textAlign: 'center', fontWeight: 'bold',
+                  color: '#a9acaf', fontSize: '20px', padding: '5px 0px 20px 0px',
+              }}>
+                  {(saleState['3'] && saleValue > 0) ?
+                    <div>Prices currently
+                        <span style={{fontSize: '40px', color: '#ff00ce'}}> {saleValue}%</span>
+                        <span style={{fontSize: '40px'}}> OFF!!!</span>
+                    </div> : ""}
+                  {(saleState['3'] && saleValue > 0) ?
+                    <div>Sale changing to <span style={{fontSize: '20px', color: '#ff00ce'}}> {saleValue- 1}% </span>
+                        in <span style={{
+                            fontSize: '20px',
+                            color: '#ff00ce'
+                        }}>{timeLeftInHours(saleState['3'].nextPriceTimestamp * 1000 - currentTime) + (saleStarted ? 0 : 24)}</span>
+                        <span style={{fontSize: '16px', color: '#ff00ce'}}>hrs</span>{' & '}
+                        <span style={{
+                            fontSize: '20px',
+                            color: '#ff00ce'
+                        }}>{timeLeftInMinutes(saleState['3'].nextPriceTimestamp * 1000 - currentTime)}</span>
+                        <span style={{fontSize: '16px', color: '#ff00ce'}}>mins</span>
+                    </div>
+                    : ""}
+              </div>
+              <div style={{display: 'flex', paddingTop: '150px'}}>
+                  <div style={{order: '1', flex: '3'}}></div>
+                  <div style={{order: '3', flex: '3'}}></div>
+                  <div style={{order: '2', flex: '5', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                      <p>The Referral Point System rewards the person that referred, 2 points for every 1 point awarded
+                          to
+                          the
+                          person that was referred. Here is the break down of how points are earned and what someone can
+                          get
+                          with said referral points!</p>
+                      <img src={tableReferralPoints}/>
+                      {/*<p style={{borderTop: '2px solid #ea3e34', width: '100%'}}></p>*/}
+                      <h1 style={{color: 'white'}}>
+                          What is this Silver and Gold Sale about?
+                      </h1>
+                      <div style={{display: 'flex', flexWrap:'wrap'}}>
+                          <div style={{flex: '6', minWidth: '300px', paddingTop: '20px', paddingRight: '20px'}}>
+                              <p>It is a way for you to get your hands on some Silver and Gold, of course! The right
+                                  question
+                                  to ask is, “What is Silver and Gold?” Silver and Gold are items in CryptoMiner World
+                                  used
+                                  to
+                                  increase the level and the grade of your gems, respectfully. The higher the level the
+                                  deeper
+                                  your Gem and mine. The higher the grade the faster it can do that mining! The best
+                                  loot is
+                                  furthest down so you will really want to level up you Gems to max level (Level 5)</p>
+                              <p>The Sale will run until every Geode has been sold. The 20% discount will decrease 1%
+                                  every
+                                  24 hours until the Geodes prices are no longer discounted.</p>
+                          </div>
+                          <div style={{minWidth: '200px', flex: '4'}}>
+                              <img src={gemEating}/>
+                          </div>
+                      </div>
+                      <p style={{marginTop: '5px'}}>
+                          Here is a list of the amount of Silver needed for each Gem’s level up.
+                      </p>
+                      <img src={tableSilverAmounts}/>
+                      <p style={{marginTop: '10px'}}>
+                          This is how much Gold you need to increase each Gem’s grade.
+                      </p>
+                      <img src={tableGoldAmounts}/>
+                      <div style={{display: 'flex', marginTop: '15px', flexWrap: 'wrap'}}>
+                          <div style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              flex: '4'
+                          }}><img src={getLoot} style={{flex: '4', minWidth: '200px'}}/></div>
+                          <div style={{flex: '6', minWidth: '300px', paddingTop: '20px', paddingLeft: '20px'}}>
+                              <p>Once your Gems can start mining your Gems will be able to find silver and gold as they
+                                  mine.
+                                  But before that, this sale is the only way to get some of these shiny things! Silver
+                                  will
+                                  be
+                                  relatively common find for your mining Gems, on average you will get 200 Silver after
+                                  fully
+                                  mining 5 Plots of Land. Gold on the other hand, will be quite rare! On average, one
+                                  piece
+                                  of
+                                  Gold will be found in every 60 Plots of land!
+                              </p>
+                              <p>Here are the current drop rates of Silver and Gold. These numbers are subject to change
+                                  as
+                                  a result of playtesting while we are in development.</p>
+                          </div>
+                      </div>
+                      <img src={tableSilverGoldDropRates}/>
+                  </div>
+              </div>
           </div>
         )
     }
 }
 
-
 const actions = {
     handleConfirmBuy: buyGeode,
     handleGetBoxesAvailable: getBoxesAvailableData,
+    handleUpdateSaleState: updateSaleState,
+    handleGetSaleState: getSaleState,
+    handleGetUserBalance: getUserBalance
 };
 
 export default compose(
+  withRouter,
   connect(
     select,
     actions,
@@ -315,28 +636,52 @@ export default compose(
       componentDidMount() {
       },
   }),
-)(Sale);
+)(windowSize(Sale));
 
 
-export const ConfirmBuyPopup = ({type, amount, price, handleConfirmBuy, hidePopup}) => {
+export const subscribeOnSaleEvent = () => {
 
-    const confirmButton = {
-        position: 'absolute',
-        bottom: '20px',
-        left: '0',
-        right: '0',
-        margin: 'auto',
-        width: '200px',
+}
+
+
+export const ConfirmBuyPopup = ({type, amount, price, refPoints, refPointsAvailable, referrer, handleConfirmBuy, hidePopup}) => {
+
+    const confirmButton1 = {
+        //position: 'absolute',
+        //bottom: '20px',
+        //left: '0',
+        //right: '0',
+        //margin: 'auto',
+        width: '206px',
         textAlign: 'center',
-        padding: '10px 0px',
+        padding: '12px 0px',
         backgroundImage: 'url(' + buyNowImage + ')',
         backgroundPosition: 'center center',
-        backgroundSize: 'contain',
+        backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
         cursor: 'pointer',
         color: 'white',
         fontWeight: 'bold'
     }
+
+    const confirmButton2 = {
+        //position: 'absolute',
+        //bottom: '20px',
+        //left: '250px',
+        //right: '0',
+        //margin: 'auto',
+        width: '206px',
+        textAlign: 'center',
+        padding: '12px 0px',
+        backgroundImage: 'url(' + buyNowImage + ')',
+        backgroundPosition: 'center center',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        cursor: 'pointer',
+        color: 'white',
+        fontWeight: 'bold'
+    }
+
 
     return (
       <div
@@ -344,20 +689,52 @@ export const ConfirmBuyPopup = ({type, amount, price, handleConfirmBuy, hidePopu
             e.stopPropagation();
         }}
         style={{
-            display: 'flex', height: '20rem', width: '35%', maxWidth: '50rem', backgroundColor: '#eeeeee',
+            display: 'flex', height: '20rem', width: '35%', maxWidth: '50rem', backgroundColor: 'rgb(105,105,105)',
             margin: 'auto', flexDirection: 'column', position: 'relative',
-            cursor: 'default', color: 'black'
+            cursor: 'default', color: 'white', fontWeight: 'bold'
         }}>
-          <p>Item: {type}</p>
-          <p>Count: {amount}</p>
-          <p>Total ETH: {price}</p>
-          <div
-            style={confirmButton}
-            onClick={(e) => {
-                handleConfirmBuy(type, amount, price, 0, hidePopup);
-            }}
-          >
-              CONFIRM
+          <div>
+              <p style={{margin: '5px 0',
+                  borderBottom: '2px solid #ff00ce',
+                fontSize: '24px',
+                  textAlign: 'center'
+              }}>{type}</p>
+          </div>
+          <div style={{display: 'flex', flex:'1'}}>
+              <div style={{flex: '1',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center'}}>
+                  {type === 'Silver Geode' ? <img src={smallSilver} style={{width:'80%'}}/> : ""}
+                  {type === 'Rotund Silver Geode' ? <img src={rotundSilver} style={{width:'80%'}}/> : ""}
+                  {type === 'Goldish Silver Geode' ? <img src={goldishSilver} style={{width:'80%'}}/> : ""}
+              </div>
+              <div style={{flex: 1,
+                  fontSize: '18px',
+                  paddingTop: '10px'}}>
+                  <p>Count: {amount}</p>
+                  <p style={{margin:'0'}}>Total ETH: {price.ether}</p>
+                  <div
+                    style={confirmButton1}
+                    onClick={(e) => {
+                        handleConfirmBuy(type, amount, price.ether, 0, referrer, hidePopup);
+                    }}
+                  >
+                      BUY WITH ETHER
+                  </div>
+                  {referrer ? referrer.startsWith('0x') ? <p style={{fontSize:'12px'}}> Referrer: {referrer}</p> : "some referral link was used" +
+                    " before" : ""}
+                  {refPointsAvailable >= price.points ? <p style={{margin:'10px 0 0'}}>Referral points: {price.points}</p> : ""}
+                  {refPointsAvailable >= price.points ?
+                    <div style={confirmButton2}
+                    onClick={(e) => {
+                        if (refPointsAvailable < price.points) return;
+                        handleConfirmBuy(type, amount, 0, price.points, referrer, hidePopup);
+                    }}
+                  >
+                      BUY WITH POINTS
+                  </div> : ""}
+              </div>
           </div>
       </div>
     )

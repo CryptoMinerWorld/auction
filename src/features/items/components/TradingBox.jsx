@@ -7,7 +7,7 @@ import Icon from 'antd/lib/icon';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import {compose} from 'redux';
-import {daysToSeconds, ethToGWei, ethToWei} from '../../mint/helpers';
+import {daysToSeconds, ethToWei} from '../../mint/helpers';
 import {createAuction, removeFromAuction, upgradeGem} from '../itemActions';
 import Gembox from './Gembox';
 import ProgressMeter from './ProgressMeter';
@@ -51,27 +51,37 @@ const OverlapOnDesktopView = styled.div`
 
 const fixedOverlayStyle = {
     position: 'fixed',
-      //width: '35%',
-      //maxWidth: '50rem',
-      //height: '20rem',
-      //backgroundColor: '#dedede',
-      margin: 'auto',
-  left: '0',
-  right: '0',
-  top: '0rem',
-  bottom: '0',
-  zIndex: '10',
-  display: 'flex',
-  cursor: 'pointer',
+    //width: '35%',
+    //maxWidth: '50rem',
+    //height: '20rem',
+    //backgroundColor: '#dedede',
+    margin: 'auto',
+    left: '0',
+    right: '0',
+    top: '0rem',
+    bottom: '0',
+    zIndex: '10',
+    display: 'flex',
+    cursor: 'pointer',
+    backgroundColor: 'rgba(100,128,149,0.4)'
 }
+
+const select = store => {
+
+    console.log('Trading box store', store);
+    return {
+        userBalance: store.sale.balance
+    }
+}
+
 
 class TradingBox extends PureComponent {
     static propTypes = {
         handleCreateAuction: PropTypes.func.isRequired,
         handleRemoveGemFromAuction: PropTypes.func.isRequired,
         history: PropTypes.shape({}).isRequired,
-        silverAvailable: PropTypes.string,
-        goldAvailable: PropTypes.string,
+        silverAvailable:PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        goldAvailable: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     };
 
     state = {
@@ -93,8 +103,11 @@ class TradingBox extends PureComponent {
             handleCreateAuction,
             handleRemoveGemFromAuction,
             history,
-          silverAvailable,
-          goldAvailable,
+            silverAvailable,
+            goldAvailable,
+            userBalance,
+          currentAccount,
+          role
         } = this.props;
         const {
             duration, startPrice, endPrice, formSubmitted, showUpgrade, useMetal,
@@ -106,22 +119,24 @@ class TradingBox extends PureComponent {
                 <div style={fixedOverlayStyle}
                      onClick={() => this.setState({showUpgrade: false})}
                 >
-                    <UpgradeComponent metal = {useMetal} metalAvailable = {useMetal === 'silver' ? +silverAvailable : +goldAvailable}
-                                      hidePopup = {() =>
-                                          this.setState({showUpgrade: false})
+                    <UpgradeComponent metal={useMetal}
+                                      metalAvailable={useMetal === 'silver' ? +userBalance.silverAvailable : +userBalance.goldAvailable}
+                                      hidePopup={() =>
+                                        this.setState({showUpgrade: false})
                                       }
                                       {...this.props}/>
                     <div
-                        // style={position: absolute
-                        //     top: 0;
-                        //     bottom: 20rem;
-                        //     right: 0;
-                        //     left: 34%;
-                        //     margin: auto;
-                        //     width: 10px;
-                        //     height: 10px;}
-                        //
-                    >X</div>
+                      // style={position: absolute
+                      //     top: 0;
+                      //     bottom: 20rem;
+                      //     right: 0;
+                      //     left: 34%;
+                      //     margin: auto;
+                      //     width: 10px;
+                      //     height: 10px;}
+                      //
+                    >X
+                    </div>
                 </div>
               )}
               <OverlapOnDesktopView
@@ -142,6 +157,7 @@ class TradingBox extends PureComponent {
                           <div className="mt3"/>
                           <Gembox
                             gem={gem}
+                            role={role}
                             handleUseMetals={(metalName) => {
                                 this.setState({showUpgrade: true, useMetal: metalName});
                             }}
@@ -268,7 +284,7 @@ const actions = {
 
 export default compose(
   connect(
-    null,
+    select,
     actions,
   ),
   withRouter,

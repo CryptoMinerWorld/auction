@@ -9,6 +9,7 @@ import Avatar from 'antd/lib/avatar';
 import connect from "react-redux/es/connect/connect";
 import {gradeConverter} from "../../market/helpers";
 import Icon from "antd/lib/icon";
+import {setTransactionsSeen} from "../txActions";
 
 require('antd/lib/dropdown/style/css');
 require('antd/lib/badge/style/css');
@@ -31,7 +32,7 @@ const generateMenuItemForTx = tx => {
                                 "Gold received:" + tx.receipt.events.Unboxed.returnValues.gold : ""}
                           </p>
                           <p>
-                              Cost: {tx.cost} ETH {tx.referralPointsUsed > 0 ? ', ' + tx.referralPointsUsed + 'referral' +
+                              Cost: {tx.ether} ETH {tx.points > 0 ? ', ' + tx.points + 'referral' +
                             ' points' : ''}
                           </p>
                       </div>
@@ -51,7 +52,7 @@ const generateMenuItemForTx = tx => {
                               To: grade {gradeConverter(tx.gem.gradeType + tx.gradeUp)},
                               level {tx.gem.level + tx.levelUp}
                           </p>
-                          <p>Cost: {tx.cost} {tx.gradeUp > 0 ? 'gold' : 'silver'}</p>
+                          <p>Cost: {tx.cost} {tx.levelUp > 0 ? 'silver' : 'gold'}</p>
                       </div>
                     );
             }
@@ -116,13 +117,17 @@ class AvatarDropdown extends React.Component {
 
     render() {
 
-        const {userImage, userName, upperCaseWalletId, transactions, unseen} = this.props;
+        const {userImage, userName, upperCaseWalletId, transactions, unseen, handleSetTransactionsSeen} = this.props;
 
         return (
           <div
             className="dib-ns"
             onMouseEnter={() => this.setState({visibility: true})}
-            onMouseLeave={() => this.setState({visibility: false})}
+            onMouseLeave={() => {
+                this.setState({visibility: false})
+                //todo transactions notifications
+                //handleSetTransactionsSeen(unseen);
+            }}
           >
               <Dropdown overlay={menu(transactions)} visible={this.state.visibility}>
                   <>
@@ -153,6 +158,10 @@ const select = store => {
         //txTokenId: store.tx.txTokenId,
     }
 };
+
+const actions = {
+    handleSetTransactionsSeen: setTransactionsSeen,
+}
 
 export default connect(select)(AvatarDropdown);
 

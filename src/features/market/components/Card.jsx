@@ -5,6 +5,7 @@ import format from 'date-fns/format';
 import Tilt from 'react-tilt';
 import { calculatePercentage} from '../helpers';
 import MiniGemBox from '../../../components/MiniGemBox';
+import Loading from "../../../components/Loading";
 
 require('antd/lib/progress/style/css');
 
@@ -20,7 +21,32 @@ const Cards = ({ auction }) => (
       }}
     >
       <figure className="ma0 pa0">
-        <img src={auction.gemImage} alt="gem" className="ma0 pa3 pb0" />
+          <div className="w-100" style={{position: 'relative', display:'block', paddingTop: '100%'}}>
+              <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+              }}>
+                  {auction.image ?
+                    <img src={auction.image} alt="" className="ma0 pa3 pb0"/> : ""}
+                  <Loading hidden={auction.image}/>
+              </div>
+          </div>
+          {/*<div className="w-100 h5 flex aic jcc" style={{position: 'relative'}}>*/}
+              {/*{auction.image ?*/}
+                {/*<img src={auction.image} alt="" className="ma0 pa3 pb0"/> : ""}*/}
+              {/*<div style={{*/}
+                  {/*position: 'absolute',*/}
+                  {/*top: 0,*/}
+                  {/*bottom: 0,*/}
+                  {/*left: 0,*/}
+                  {/*right: 0,*/}
+              {/*}}>*/}
+                  {/*<Loading hidden={auction.image}/>*/}
+              {/*</div>*/}
+          {/*</div>*/}
         <figcaption hidden>{auction.quality}</figcaption>
       </figure>
       <Progress

@@ -55,6 +55,7 @@ const select = store => ({
 
 const AuctionBox = ({
   gem,
+  role,
   currentAccount,
   accountExists,
   provider,
@@ -82,6 +83,7 @@ const AuctionBox = ({
         <div className="mt3" />
         <Gembox
           gem={gem}
+          role={role}
         />
 
         <div className="w-100 w5-ns h3 center mt4">
@@ -89,7 +91,7 @@ const AuctionBox = ({
             onClick={() => {
               if (provider && accountExists) {
                 setLoading(true);
-                handleBuyGem(gem.id, currentAccount, history, setLoading);
+                handleBuyGem(gem, currentAccount, history, setLoading);
               } else {
                 setLoading(false);
                 handleShowSignInBox();

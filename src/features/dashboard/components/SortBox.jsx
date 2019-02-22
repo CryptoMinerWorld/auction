@@ -8,8 +8,14 @@ import { ReactComponent as DownArrowCircle } from '../../../app/images/svg/chevr
 import { ReactComponent as UpArrowCircle } from '../../../app/images/svg/chevrons-up.svg';
 
 export const stateMachine = {
-  initial: 'priceASC',
+  initial: 'noOrderBy',
   states: {
+    noOrderBy: {
+        on: {
+            TOGGLE_TIME: 'timeASC',
+            TOGGLE_PRICE: 'priceDESC',
+        },
+    },
     priceASC: {
       onEntry: 'orderByPrice',
       on: {

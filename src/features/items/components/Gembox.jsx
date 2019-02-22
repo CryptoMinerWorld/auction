@@ -10,6 +10,14 @@ import gemOrange from '../../../app/images/icons/gem2.png';
 import gemPurple from '../../../app/images/icons/gem3.png';
 import restingEnergy from '../../../app/images/icons/EnergySymbolDull.png';
 
+import useGoldButton from '../../../app/images/sale/goldButtonWithText.png';
+import useSilverButton from '../../../app/images/sale/silverButtonWithText.png';
+import silverButton from '../../../app/images/sale/silverButtonNoText.png';
+//import levelBackground from '../../../app/images/sale/Level upgrade BG shape.png';
+import levelBackground from '../../../app/images/sale/levelUpgradeBG.png';
+import gradeMiningBackground from '../../../app/images/sale/gradeMiningUpgradeBG.png';
+import energyBackground from '../../../app/images/sale/energyBG.png';
+
 momentDurationFormatSetup(moment);
 
 class Gembox extends PureComponent {
@@ -33,84 +41,117 @@ class Gembox extends PureComponent {
     }[gradeValue]);
 
     restingEnergyConverter = (restingEnergyMinutes) => {
-      const now = Date.now();
-      const nowMinusMinutes = subMinutes(now, restingEnergyMinutes);
-      const differenceInWords = formatDistance(nowMinusMinutes, now, {
-        includeSeconds: true,
-      });
-      return differenceInWords;
+        const now = Date.now();
+        const nowMinusMinutes = subMinutes(now, restingEnergyMinutes);
+        const differenceInWords = formatDistance(nowMinusMinutes, now, {
+            includeSeconds: true,
+        });
+        return differenceInWords;
     };
 
     render() {
         const {
-            gem, styling, mobileHeader, handleUseMetals
+            gem, styling, mobileHeader, handleUseMetals, currentAccount, role
         } = this.props;
+
+        console.log('CURRENT ACCOUNT:', currentAccount);
 
         return (
           <div className={styling}>
-              <div className="flex tc pa3 col" style={{alignItems: 'center'}}>
-
+              <div className="flex tc row" style={{alignItems: 'center', justifyContent: 'space-around'}}>
+                  {(!gem.auctionIsLive && role==='owner') ?
                   <div style={{
-                      backgroundColor: 'rgb(200, 173, 142)',
-                      display: 'flex',
+                      //backgroundColor: 'rgb(200, 173, 142)',
+                      //backgroundImage: 'url('+levelBackground +')',
+                      //display: 'flex',
                       alignItems: 'center',
                       maxWidth: '20rem',
-                      padding: '0 10px'
+                      padding: '18px 5px',
+                      backgroundImage: 'url(' + levelBackground + ')',
+                      backgroundPosition: 'center center',
+                      backgroundSize: 'cover',
+                      backgroundRepeat: 'no-repeat',
+                      width: '50%',
+                      height: '12rem'
                   }}
                   >
                       <Nugget quality="level" value={gem.level} gemImage={gemOrange}/>
                       {handleUseMetals ?
-                        gem.level < 5 ? (
-                          <div
-                            style={{
-                                backgroundColor: '#dedede',
-                                width: '14rem',
-                                padding: '10px',
-                                margin: '0 5px',
-                                cursor: 'pointer'
-                            }}
-                            onClick={() => {
-                                handleUseMetals('silver');
-                            }}
-                          >
-                              USE SILVER
-                          </div>) : (
-                          <div>
-                              MAX LEVEL
-                          </div>
-                        ) : ""}
-                  </div>
+                        gem.upgradingLevel ?
+                          <div>Gem level upgrading isn't finished</div> :
+                          gem.level < 5 ? (
+                            <div
+                              style={{
+                                  backgroundImage: `url(${useSilverButton})`,
+                                  padding: '10px',
+                                  cursor: 'pointer',
+                                  width: '95%',
+                                  margin: '16px auto',
+                                  height: '4.5rem',
+                                  backgroundSize: 'cover',
+                              }}
+                              onClick={() => {
+                                  handleUseMetals('silver');
+                              }}
+                            ></div>) : (
+                            <div
+                              style={{
+                                  backgroundImage: `url(${silverButton})`,
+                                  padding: '13px 10px 10px 10px',
+                                  width: '95%',
+                                  margin: '16px auto',
+                                  height: '4.5rem',
+                                  backgroundSize: 'cover',
+                                  fontSize: '25px',
+                                    fontWeight:'bold',
+                              color:'#5d5d5d'}}>
+                                MAX LEVEL
+                            </div>
+                          ) : ""}
+                  </div> : <Nugget quality="level" value={gem.level} gemImage={gemOrange}/> }
 
+                  {(!gem.auctionIsLive && role==="owner")?
                   <div style={{
-                      backgroundColor: 'rgb(173, 146, 194)',
-                      display: 'flex',
+                      //backgroundColor: 'rgb(173, 146, 194)',
+                      backgroundImage: 'url(' + gradeMiningBackground + ')',
+                      //display: 'flex',
                       alignItems: 'center',
                       maxWidth: '25rem',
-                      padding: '4px 10px',
-                      margin: '20px 0 10px 0'
+                      padding: '18px 10px 4px 10px',
+                      margin: '20px 0px 10px',
+                      width: '50%',
+                      backgroundPosition: 'center center',
+                      backgroundSize: 'cover',
+                      backgroundRepeat: 'no-repeat',
+                      height: '12rem',
                   }}
                   >
-                      <Nugget quality="grade" value={this.gradeConverter(gem.gradeType)} gemImage={gemBlue}/>
-                      <Nugget quality="rate" value={gem.rate} gemImage={gemPurple}/>
+                      <div style={{display: 'flex', justifyContent: 'center'}}>
+                          <Nugget quality="grade" value={this.gradeConverter(gem.gradeType)} gemImage={gemBlue}/>
+                          <Nugget quality="rate" value={gem.rate} gemImage={gemPurple}/>
+                      </div>
                       {handleUseMetals ?
-                        gem.gradeType < 6 ? (
+                        gem.upgradingGrade ?
+                          <div>Gem grade upgrading isn't finished</div> :
                           <div
                             style={{
-                                backgroundColor: 'gold',
-                                width: '14rem',
-                                padding: '10px',
-                                margin: '0 5px',
-                                cursor: 'pointer'
+                                backgroundImage: `url(${useGoldButton})`,
+                                width: '93%',
+                                padding: '0px',
+                                margin: '9px 4px',
+                                cursor: 'pointer',
+                                backgroundSize: 'cover',
+                                height: '5rem',
                             }}
                             onClick={() => {
                                 handleUseMetals('gold');
                             }}
-                          >USE GOLD</div>) : (
-                          <div>
-                              MAX GRADE
-                          </div>
-                        ) : ""}
-                  </div>
+                          ></div> : ""}
+                  </div> : <React.Fragment>
+                        <Nugget quality="grade" value={this.gradeConverter(gem.gradeType)} gemImage={gemBlue}/>
+                        <Nugget quality="rate" value={gem.rate} gemImage={gemPurple}/>
+                    </React.Fragment>
+                  }
               </div>
               {!mobileHeader
               && gem.gradeType >= 4
@@ -118,10 +159,12 @@ class Gembox extends PureComponent {
                 <div
                   className="w-100"
                   style={{
-                      backgroundColor: '#8bcc8b',
+                      backgroundImage: `url(${energyBackground})`,
+                      backgroundSize: 'cover',
                       display: 'flex',
                       alignItems: 'center',
-                      padding: '10px 5px'
+                      padding: '10px 5px',
+                      height: '7rem',
                   }}
                 >
                     <div className="flex jcc aic w100">
