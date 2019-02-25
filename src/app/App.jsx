@@ -29,11 +29,11 @@ import Silver from './ABI/SilverERC20';
 import Gold from './ABI/GoldERC20';
 import Workshop from './ABI/Workshop';
 import SilverSale from './ABI/SilverSale';
+import SilverCoupons from './ABI/SilverCoupons';
 import {resolveAnyPendingTx} from '../features/transactions/helpers';
 import GemService from "./services/GemService";
 import AuctionService from "./services/AuctionService";
 import SilverGoldService from "./services/SilverGoldService";
-
 
 require('antd/lib/notification/style/css');
 require('antd/lib/modal/style/css');
@@ -63,6 +63,7 @@ const silverABI = Silver.abi;
 const goldABI = Gold.abi;
 const workshopABI = Workshop.abi;
 const silverSaleABI = SilverSale.abi;
+const silverCouponsABI = SilverCoupons.abi;
 
 const StickyHeader = styled.div`
   position: -webkit-sticky; /* Safari */
@@ -81,6 +82,7 @@ class App extends Component {
         super(props);
         this.state = {
             font: '',
+            wrongNetwork: false,
         };
     }
 
@@ -99,8 +101,18 @@ class App extends Component {
           .catch(error => handleSetError(error));
 
         // @notice loading web3 when component mounts
-        const Web3 = await getWeb3;
+        let Web3;
+        try {
+            Web3 = await getWeb3;
+        } catch(err) {
+            return;
+        }
+        //console.log('WEB3', Web3);
         const {web3} = Web3;
+        const network = await web3.eth.net.getNetworkType();
+        console.log(3333333333, network);
+        if (network !== process.env.REACT_APP_NETWORK_TYPE) {this.setState({wrongNetwork: true})}
+        //console.log('web3', web3);
 
         instantiateContracts(web3, handleSendContractsToRedux, handleSetError);
 
@@ -194,6 +206,13 @@ class App extends Component {
           },
         );
 
+        const silverCouponsContract = new web3.eth.Contract(
+          silverCouponsABI,
+          process.env.REACT_APP_SILVER_COUPONS,
+          {
+              from: currentAccountId,
+          },
+        );
 
         Promise.all([
             dutchContract,
@@ -207,7 +226,8 @@ class App extends Component {
             silverContract,
             goldContract,
             workshopContract,
-          silverSaleContract
+          silverSaleContract,
+          silverCouponsContract,
         ])
           .then(
             ([
@@ -222,26 +242,18 @@ class App extends Component {
                  silverContract,
                  goldContract,
               workshopContract,
-              silverSaleContract
+              silverSaleContract,
+              silverCouponsContract
              ]) => {
                 client.writeData({
                     data: {
                         userId: currentAccount,
                     },
                 });
-                resolveAnyPendingTx(
-                  currentAccount,
-                  gemsContractInstance,
-                  dutchAuctionContractInstance,
-                  process.env.REACT_APP_DUTCH_AUCTION,
-                  process.env.REACT_APP_GEM_ERC721,
-                  web3,
-                  countryContract,
-                );
 
                 const gemService = new GemService(gemsContractInstance, web3, dutchAuctionContractInstance);
                 const auctionService = new AuctionService(dutchAuctionContractInstance, dutchAuctionHelperContractInstance, gemsContractInstance);
-                const silverGoldService = new SilverGoldService(silverSaleContract, silverContract, goldContract, refPointsTrackerContract);
+                const silverGoldService = new SilverGoldService(silverSaleContract, silverContract, goldContract, refPointsTrackerContract, silverCouponsContract);
 
                 handleSendContractsToRedux(
                   dutchAuctionContractInstance,
@@ -257,6 +269,7 @@ class App extends Component {
                   goldContract,
                   workshopContract,
                   silverSaleContract,
+                  silverCouponsContract,
                   gemService,
                   auctionService,
                   silverGoldService
@@ -282,7 +295,7 @@ class App extends Component {
 
     render() {
         const {visible, error, errorTitle} = this.props;
-        const {font} = this.state;
+        const {font, wrongNetwork} = this.state;
         console.warn('----------> APP starts <----------');
         return (
           <>
@@ -303,6 +316,14 @@ class App extends Component {
                               Once you pay for the Gem using Metamask, you will be redirected to your workshop.
                           </p>
                           <strong>This may take a few moments.</strong>
+                      </Modal>
+                      <Modal
+                        visible={wrongNetwork}
+                        title={"Please change network for Ether transactions to "+ process.env.REACT_APP_NETWORK_TYPE +" Net."}
+                        zindex={2000}
+                        closable={false}
+                        footer={false}
+                      >
                       </Modal>
                       <StickyHeader>
                           <Navbar/>

@@ -3,6 +3,7 @@ import {BigNumber} from 'bignumber.js';
 import {db, storage} from '../../app/utils/firebase';
 import {completedTx, ErrorTx, startTx,} from '../transactions/txActions';
 import store from '../../app/store';
+import {parseTransactionHashFromError} from "../transactions/helpers";
 
 export function isTokenForSale(_contract, _tokenId) {
     return _contract.methods.isTokenOnSale(_tokenId).call();
@@ -229,12 +230,21 @@ export const createAuctionHelper = async (
         startTx({
             hash,
             currentUser: _currentAccount,
-            method: 'gem',
+            method: 'AUCTION_START',
             tokenId: token,
+            description: 'Adding gem on auction'
         }),
       ))
-      .on('receipt', receipt => store.dispatch(completedTx(receipt)))
-      .on('error', error => store.dispatch(ErrorTx(error)));
+      .on('receipt', receipt => store.dispatch(completedTx({
+          receipt,
+          hash: receipt.transactionHash,
+          txMethod: 'AUCTION_START',
+      })))
+      .on('error', err => store.dispatch(ErrorTx({
+          txMethod: 'AUCTION_START',
+          error: err,
+          hash: parseTransactionHashFromError(err.message)
+      })));
 
     const auctionDetails = {
         deadline: t1,

@@ -19,7 +19,7 @@ export const buyGeode = (type, amount, etherUsed, referralPointsUsed, referrer, 
           dispatch(
             startTx({
                 hash,
-                description: 'Buying silver' + type,
+                description: 'Buying ' + type,
                 currentUser,
                 txMethod: 'SILVER_SALE',
                 points: referralPointsUsed,
@@ -34,7 +34,7 @@ export const buyGeode = (type, amount, etherUsed, referralPointsUsed, referrer, 
           dispatch(completedTx({
               receipt,
               txMethod: 'SILVER_SALE',
-              description: 'silver received',
+              description: 'Silver received',
               hash: receipt.transactionHash,
           }));
       })
@@ -42,7 +42,7 @@ export const buyGeode = (type, amount, etherUsed, referralPointsUsed, referrer, 
           //setLoading(false);
           dispatch(ErrorTx({
               txMethod: 'SILVER_SALE',
-              description: 'silver sale failed',
+              description: 'Silver sale failed',
               error: err,
               hash: parseTransactionHashFromError(err.message)
           }));

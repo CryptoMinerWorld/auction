@@ -37,6 +37,15 @@ const generateMenuItemForTx = tx => {
                           </p>
                       </div>
                     );
+                case 'PENDING':
+                    return (
+                      <div>
+                          <p>
+                              Cost: {tx.ether} ETH {tx.points > 0 ? ', ' + tx.points + 'referral' +
+                            ' points' : ''}
+                          </p>
+                      </div>
+                    )
             }
             break;
         case 'GEM_UPGRADE':
@@ -60,6 +69,9 @@ const generateMenuItemForTx = tx => {
         case 'COUPON_REDEEM':
 
             break;
+        default:
+
+            break;
     }
 };
 
@@ -67,7 +79,9 @@ const menu = items => (
   <Menu>
       {items.length === 0 ? <Menu.Item>No recent transactions</Menu.Item> : ""}
       {items.map((tx) => (
-        <Menu.Item className="flex aic" key={tx.hash}>
+        tx.hash ?
+        <Menu.Item className="flex aic" style={{backgroundColor: (tx.status === 'PENDING' && '#fff9bc') ||
+              (tx.status === 'COMPLETED' && '#e4ffe4') || (tx.status === 'FAILED' && '#ffd9d9') }} key={tx.hash}>
             <Badge count={tx.unseen ? 1 : 0}>
                 <a
                   href={`https://${process.env.REACT_APP_NETWORK}.io/tx/${tx.hash}`}
@@ -75,16 +89,16 @@ const menu = items => (
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                    <div>
+                    <div style={{paddingRight: '30px'}}>
                         <p>Description: {tx.description}</p>
                         {generateMenuItemForTx(tx)}
                         <p>Status: {tx.status}</p>
                     </div>
 
-                    <Icon type="link" style={{fontSize: '24px'}} className="pointer blue pl3"/>
+                    <Icon type="link" style={{fontSize: '24px', position:'absolute', top: '20px', right:'0px'}} className="pointer blue"/>
                 </a>
             </Badge>
-        </Menu.Item>
+        </Menu.Item> : ""
       ))}
   </Menu>
 );

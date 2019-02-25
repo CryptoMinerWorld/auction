@@ -9,6 +9,10 @@ export default (state = {}, action) => {
         state.transactions = [];
     }
 
+    if (!(action.payload && action.payload.hash)) {
+        return {...state};
+    }
+
     console.warn('TX REDUCER:::::::::::::');
     console.warn('ACTION: ', action);
     console.warn('STATE: ', state);

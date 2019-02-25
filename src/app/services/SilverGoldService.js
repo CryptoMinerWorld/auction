@@ -8,12 +8,13 @@ import {BigNumber} from "bignumber.js";
 
 export default class SilverGoldService {
 
-    constructor(silverSaleContractInstance, silverContractInstance, goldContractInstance, refPointsTrackerContractInstance) {
+    constructor(silverSaleContractInstance, silverContractInstance, goldContractInstance, refPointsTrackerContractInstance, silverCouponsContractInstance) {
         console.log('SilverGoldService constructor called', silverSaleContractInstance);
         this.saleContract = silverSaleContractInstance;
         this.silverContract = silverContractInstance;
         this.goldContract = goldContractInstance;
         this.refPointsTrackerContract = refPointsTrackerContractInstance;
+        this.silverCouponsContract = silverCouponsContractInstance;
     }
 
     getUserBalance = async (userId) => {
@@ -58,25 +59,10 @@ export default class SilverGoldService {
         ))
     }
 
-
-    getAvailableSilver = (userId) => {
-
-        return this.silverContract.methods.balanceOf(userId)
-            .call()
-            .then(silver => silver)
-            .catch(error => setError(error));
+    useCoupon = async (couponCode) => {
+        return await this.silverCouponsContract.methods.useCoupon(couponCode)
+          .send();
     }
-
-    getAvailableGold = (userId) => {
-        console.log('GOOOLD:');
-        return this.goldContract.methods.balanceOf(userId)
-            .call()
-            .then(gold => gold)
-            .catch(error => {
-                setError(error)
-            });
-    }
-
 
     buyGeode = (type, amount, priceInEth, priceInPoints, referrer) => {
 

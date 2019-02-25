@@ -28,8 +28,6 @@ import {preLoadAuctionPage} from '../market/marketActions';
 import ReSync from './components/ResyncButton';
 import SortBox from './components/SortBox';
 import {
-    getAvailableGold,
-    getAvailableSilver,
     getCountryDetailsFromFirebase,
     getCountryNameFromCountryId,
     getGemImage,
@@ -467,9 +465,7 @@ class Dashboard extends Component {
                       </h1>
                   </div>
                   <div className="flex-ns dn col tc">
-                      <Link
-                        to={'/sale'}
-                      >
+
                           <div className="flex">
                               <div className="flex col tc">
                                   <img src={Gold} alt="Gold" className="h3 w-auto ph3"/>
@@ -480,7 +476,6 @@ class Dashboard extends Component {
                                   {userBalance && userBalance.silverAvailable}
                               </div>
                           </div>
-                      </Link>
                   </div>
               </div>
 

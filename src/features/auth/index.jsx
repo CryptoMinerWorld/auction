@@ -221,56 +221,58 @@ class Auth extends PureComponent {
               </a>
             </div>
           ) : (
-            <Input value={currentUser} disabled size="large" className="mv3" />
-          )}
-          <Input
-            placeholder="Username"
-            value={name}
-            onChange={e => this.updateName(e.target.value)}
-            size="large"
-            className="mv3"
-            type="text"
-            data-testid="name"
-          />
-          <Input
-            placeholder="Email"
-            value={email}
-            onChange={e => this.updateEmail(e.target.value)}
-            size="large"
-            type="email"
-            required
-            data-testid="email"
-          />
-          <div className="pa3">
-            <div className="flex wrap jcb">
-              {images.map(url => (
-                <Avatar
-                  key={url}
-                  src={url}
-                  onClick={() => this.updateImage(url)}
-                  size={64}
-                  className="mv2 pointer grow"
-                  data-testid="avatars"
+            <React.Fragment>
+                <Input value={currentUser} disabled size="large" className="mv3" />
+                <Input
+                  placeholder="Username"
+                  value={name}
+                  onChange={e => this.updateName(e.target.value)}
+                  size="large"
+                  className="mv3"
+                  type="text"
+                  data-testid="name"
                 />
-              ))}
-            </div>
+                <Input
+                  placeholder="Email"
+                  value={email}
+                  onChange={e => this.updateEmail(e.target.value)}
+                  size="large"
+                  type="email"
+                  required
+                  data-testid="email"
+                />
+                <div className="pa3">
+                    <div className="flex wrap jcb">
+                        {images.map(url => (
+                          <Avatar
+                            key={url}
+                            src={url}
+                            onClick={() => this.updateImage(url)}
+                            size={64}
+                            className="mv2 pointer grow"
+                            data-testid="avatars"
+                          />
+                        ))}
+                    </div>
 
-            {machineState.value === 'error' ? (
-              <Spring from={{ opacity: 0 }} to={{ opacity: 1 }} delay={200}>
-                {styles => (
-                  <ul className="red b tl pt3 " style={styles}>
-                    <li>Please check that is your wallet id in the top field.</li>
-                    <li>Picked a username?</li>
-                    <li>Provided a valid email?</li>
-                    <li>Selected an avatar?</li>
-                    <li>Agreed to the terms and conditions?</li>
-                  </ul>
-                )}
-              </Spring>
-            ) : (
-              <p className="tc pt3">Please pick an avatar.</p>
-            )}
-          </div>
+                    {machineState.value === 'error' ? (
+                      <Spring from={{ opacity: 0 }} to={{ opacity: 1 }} delay={200}>
+                          {styles => (
+                            <ul className="red b tl pt3 " style={styles}>
+                                <li>Please check that is your wallet id in the top field.</li>
+                                <li>Picked a username?</li>
+                                <li>Provided a valid email?</li>
+                                <li>Selected an avatar?</li>
+                                <li>Agreed to the terms and conditions?</li>
+                            </ul>
+                          )}
+                      </Spring>
+                    ) : (
+                      <p className="tc pt3">Please pick an avatar.</p>
+                    )}
+                </div>
+            </React.Fragment>
+          )}
         </Modal>
       </div>
     );

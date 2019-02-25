@@ -179,26 +179,6 @@ export const getPlotCount = (preSaleContract, userId) => preSaleContract.methods
   .then(referralPoints => referralPoints)
   .catch(error => setError(error));
 
-export const getAvailableSilver = (silverContract, userId) => {
-
-    return silverContract &&
-      silverContract.methods && silverContract.methods.balanceOf(userId)
-        .call()
-        .then(silver => silver)
-        .catch(error => setError(error));
-}
-
-export const getAvailableGold = (goldContract, userId) => {
-
-    return goldContract &&
-      goldContract.methods && goldContract.methods.balanceOf(userId)
-        .call()
-        .then(gold => gold)
-        .catch(error => {
-
-            setError(error)
-        });
-}
 
 // eslint-disable-next-line
 export const markSold = mapIndex => rtdb.ref(`/worldMap/objects/units/geometries/${mapIndex}/properties`).update({sold: true});

@@ -189,16 +189,18 @@ export const removeFromAuction = (tokenId, history, turnLoaderOff) => async (
             startTx({
                 hash,
                 currentUser,
-                method: 'gem',
+                txMethod: 'AUCTION_END',
                 tokenId,
+                description: 'Removing gem from auction'
             }),
           );
       })
       .on('receipt', (receipt) => {
-          store.dispatch(completedTx(receipt));
-          dispatch({
-                            type: 'GEM_REMOVED_FROM_AUCTION',
-          });
+          store.dispatch(completedTx({
+              receipt,
+              hash: receipt.transactionHash,
+              txMethod: 'AUCTION_END',
+          }));
           // db.collection('stones')
           //   .where('id', '==', Number(tokenId))
           //   .get()
@@ -216,8 +218,12 @@ export const removeFromAuction = (tokenId, history, turnLoaderOff) => async (
           //       }
           //   });
       })
-      .on('error', (error) => {
-          store.dispatch(ErrorTx(error));
+      .on('error', (err) => {
+          store.dispatch(ErrorTx({
+              txMethod: 'AUCTION_END',
+              error: err,
+              hash: parseTransactionHashFromError(err.message)
+          }));
           console.error(error, 'error removing gem from auction');
           setError(error, 'Error removing gem from auction');
           turnLoaderOff();
@@ -244,19 +250,28 @@ export const handleBuyNow = (gem, _from, history, setLoading) => (dispatch, getS
             startTx({
                 hash,
                 currentUser,
-                method: 'gem',
+                txMethod: 'GEM_BUY',
                 tokenId: gem.id,
+                description: 'Buying gem on auction'
             }),
           );
       })
       .on('receipt', (receipt) => {
-          store.dispatch(completedTx(receipt));
+          store.dispatch(completedTx({
+              receipt,
+              hash: receipt.transactionHash,
+              txMethod: 'GEM_BUY',
+             }));
           //dispatch(updateGemOwnership(_tokenId, _from, history, priceInWei));
           setLoading(false);
       })
       .on('error', (err) => {
           setLoading(false);
-          store.dispatch(ErrorTx(err));
+          store.dispatch(ErrorTx({
+              txMethod: 'GEM_BUY',
+              error: err,
+              hash: parseTransactionHashFromError(err.message)
+          }));
           // dispatch({
           //   type: MODAL_GONE,
           // });
@@ -339,8 +354,9 @@ export const upgradeGem = (gem, levelUp, gradeUp, hidePopup, cost) => (dispatch,
           //setLoading(false);
       })
       .on('error', (err) => {
-          console.log('TX error');
+          console.log('TX error', err);
           gem[key] = false;
+          hidePopup();
           store.dispatch(ErrorTx({
               txMethod: 'GEM_UPGRADE',
               error: err,

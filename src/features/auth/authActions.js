@@ -82,8 +82,9 @@ export const notInterestedInSigningUp = () => ({ type: 'NOT_SIGNING_UP' });
 
 // @dev this action fires when the app starts up
 export const getCurrentUser = () => () => getWeb3
-  .then(result => result.web3)
-  .then((web3) => {
+  .then(result => {console.log('FUCK', result); return result.web3})
+  .then( async (web3) => {
+    await web3.eth.net.getNetworkType((err, network) => console.log(222222222222222, network));
     store.dispatch({ type: WEB3_AVAILABLE, payload: web3 });
     return web3.eth.getAccounts();
   })
@@ -94,6 +95,7 @@ export const getCurrentUser = () => () => getWeb3
       store.dispatch(checkIfUserExists(currentUser));
       //store.dispatch(getUserGems(currentUser));
     } else {
+      store.dispatch({type: 'SHOW_SIGN_IN_BOX'});
       store.dispatch({ type: CURRENT_USER_NOT_AVAILABLE });
     }
-  });
+  }).catch((err) => store.dispatch({type: 'SHOW_SIGN_IN_BOX'}));
