@@ -8,7 +8,7 @@ import { BUY_NOW_MUTATION } from '../../countries/mutations';
 import { markSold, validateCoupon } from '../helpers';
 
 export const Coupon = ({
-  handleRedemption, CountrySaleMethods, buyNow, markedSold, redirect,
+  handleRedemption, redirect,
 }) => {
   const [visible, showModal] = useState(false);
   const [value, setValue] = useState('');
@@ -22,41 +22,15 @@ export const Coupon = ({
       // console.log('no input value');
       setError('The coupon field cannot be empty. Please enter a valid coupon code.');
       setloading(false);
-    } else if (!validateCoupon(value)) {
-      // console.log('not valid coupon');
-      setError('Sorry, this is not a valid coupon code.');
-      setloading(false);
-    } else {
+    }
+    // else if (!validateCoupon(value)) {
+    //   // console.log('not valid coupon');
+    //   setError('Sorry, this is not a valid coupon code.');
+    //   setloading(false);
+    // }
+    else {
       // console.log('valid input and coupon format');
-      return (
-        CountrySaleMethods
-        && CountrySaleMethods.methods
-        && CountrySaleMethods.methods
-          .isCouponValid(value)
-          .call()
-          .then(async (result) => {
-            if (result === '0') {
-              console.log('just not a valid coupon');
-              throw new Error();
-            }
-            console.log('coupon is valid');
-
-            handleRedemption(
-              value,
-              CountrySaleMethods,
-              buyNow,
-              markedSold,
-              setloading,
-              showModal,
-              redirect,
-            );
-          })
-          .catch((err) => {
-            console.log('err reteiving a coupon', err);
-            setError('Sorry, this is not a valid coupon code.');
-            setloading(false);
-          })
-      );
+      return handleRedemption(value, ()=>{setloading(false); showModal(false)})
     }
   };
 
@@ -72,7 +46,7 @@ export const Coupon = ({
         type="button"
         ghost
         onClick={() => showModal(true)}
-        loading={!CountrySaleMethods || CountrySaleMethods.methods === {} || !buyNow || !markedSold}
+        //loading={!handleRedemption}
       >
         Redeem Coupon
       </Button>
@@ -81,7 +55,7 @@ export const Coupon = ({
         visible={visible}
         onCancel={() => handleCancel()}
         onOk={() => handleOk()}
-        okButtonProps={{ disabled: !CountrySaleMethods, loading }}
+        okButtonProps={{ loading }}
       >
         <Input
           data-testid="countryCouponModal"
@@ -104,20 +78,14 @@ export const Coupon = ({
 };
 
 export const EnhancedCoupon = props => (
-  <Mutation mutation={BUY_NOW_MUTATION}>
-    {buyNow => <Coupon {...props} buyNow={buyNow} markedSold={markSold} />}
-  </Mutation>
+  <Coupon {...props} />
 );
 
 Coupon.propTypes = {
   handleRedemption: PropTypes.func.isRequired,
-  CountrySaleMethods: PropTypes.shape({}),
-  buyNow: PropTypes.func.isRequired,
-  markedSold: PropTypes.func.isRequired,
   redirect: PropTypes.func,
 };
 
 Coupon.defaultProps = {
-  CountrySaleMethods: {},
   redirect: () => {},
 };

@@ -29,10 +29,15 @@ const getWeb3 = new Promise((resolve, reject) => {
 
       resolve(results);
     } else {
-      // Non-dapp browsers...
       console.error('Non-Ethereum browser detected. You should consider trying MetaMask!');
-      reject(new Error('Non-Ethereum browser detected'));
-      //throw 'Non-Ethereum browser detected';
+      const web3 = new Web3(process.env.REACT_APP_INFURA_URL);
+      if (web3) {
+          resolve({web3});
+      } else {
+          reject(new Error('Non-Ethereum browser detected'));
+          throw 'Non-Ethereum browser detected';
+      }
+        // Non-dapp browsers...
     }
   });
 });

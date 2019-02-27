@@ -15,6 +15,9 @@ import {
     WANT_TO_SEE_ALL_GEMS,
 } from './dashboardConstants';
 import {db} from '../../app/utils/firebase';
+import {completedTx, ErrorTx, startTx} from "../transactions/txActions";
+import {parseTransactionHashFromError} from "../transactions/helpers";
+import {getUserBalance} from "../sale/saleActions";
 
 
 export const getUserGems = ownerId => async (dispatch, getState) => {
@@ -50,6 +53,24 @@ export const getUserGems = ownerId => async (dispatch, getState) => {
     }
 };
 
+
+export const getUserDetails = async userId => {
+
+    const userIdToLowerCase = userId
+      .split('')
+      .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
+      .join('');
+    try {
+        const col = db.collection('users')
+          .where('walletId', '==', userId)
+          .get();
+        const userDetails = (await col).docs.map(doc => doc.data());
+        return userDetails[0];
+    } catch (err) {
+        console.log(err);
+    }
+};
+
 export const getImagesForGems = gems => async (dispatch, getState) => {
     const gemService = getState().app.gemServiceInstance;
     console.log(':::::::::::::GEM SERVICE::', gemService);
@@ -58,22 +79,53 @@ export const getImagesForGems = gems => async (dispatch, getState) => {
     dispatch({type: FETCH_GEMS_PAGE_IMAGES, payload: gemsWithImages});
 }
 
-export const getUserDetails = userId => (dispatch) => {
-    dispatch({type: FETCH_USER_DETAILS_BEGUN});
-    try {
-        db.collection('users')
-          .where('walletId', '==', userId)
-          .onSnapshot((collection) => {
-              const userDetails = collection.docs.map(doc => doc.data());
-              console.log('USER DETAILS: ', userDetails);
-              dispatch({type: FETCH_USER_DETAILS_SUCCEEDED});
-              dispatch({type: USER_DETAILS_RETRIEVED, payload: userDetails[0]});
-          });
-    } catch (err) {
-        dispatch({type: FETCH_USER_DETAILS_FAILED, payload: err});
-    }
-};
-
+export const useCoupon = (couponCode, hidePopup) => async (dispatch, getState) => {
+    //console.log('COUPON')
+    const silverGoldService = getState().app.silverGoldServiceInstance;
+    const currentUser = getState().auth.currentUserId;
+    //console.log('Service:::', silverGoldService);
+    if (!silverGoldService) return;
+    return silverGoldService.useCoupon(couponCode)
+      .on('transactionHash', (hash) => {
+          hidePopup();
+          dispatch(
+            startTx({
+                hash,
+                description: 'Submitting coupon code',
+                txMethod: 'COUPON_USE',
+                code: couponCode,
+            }),
+          );
+      })
+      .on('receipt', async (receipt) => {
+          console.log('111RECEIPT: ', receipt);
+          getUserBalance(currentUser)(dispatch, getState);
+          dispatch(completedTx({
+              receipt,
+              txMethod: 'COUPON_USE',
+              description: 'Coupon accepted',
+              hash: receipt.transactionHash,
+              code: couponCode
+          }));
+      })
+      .on('error', (err) => {
+          hidePopup();
+          //setLoading(false);
+          dispatch(ErrorTx({
+              txMethod: 'COUPON_USE',
+              description: 'Coupon submitting failed',
+              error: err,
+              hash: parseTransactionHashFromError(err.message)
+          }));
+          // dispatch({
+          //   type: MODAL_GONE,
+          // });
+          // dispatch({
+          //   type: FETCH_DATA_FAILED,
+          //   payload: JSON.stringify(err),
+          // });
+      });
+}
 
 // // this is called in authActions when you create a new User
 // export const getDetailsForAllGemsAUserCurrentlyOwns = (userId) => {

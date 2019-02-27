@@ -9,6 +9,7 @@ import Avatar from 'antd/lib/avatar';
 import connect from "react-redux/es/connect/connect";
 import {gradeConverter} from "../../market/helpers";
 import Icon from "antd/lib/icon";
+import img from '../../../app/images/Profile-Image-Logo-60x60.png';
 import {setTransactionsSeen} from "../txActions";
 
 require('antd/lib/dropdown/style/css');
@@ -18,6 +19,12 @@ require('antd/lib/avatar/style/css');
 
 
 const menuItemContainer = {}
+
+const geodeTypes = {
+    '0': 'Small silver geode',
+    '1': 'Rotund silver geode',
+    '2': 'Goldish silver geode'
+}
 
 const generateMenuItemForTx = tx => {
     switch (tx.txMethod) {
@@ -66,8 +73,35 @@ const generateMenuItemForTx = tx => {
                     );
             }
             break;
-        case 'COUPON_REDEEM':
-
+        case 'COUPON_USE':
+            switch (tx.status) {
+                case 'COMPLETED':
+                    return (
+                      <div>
+                          <p>
+                              Received: {geodeTypes[tx.receipt.events.CouponConsumed.returnValues.boxType] + " "}
+                          </p>
+                          <p>
+                              {tx.receipt.events.CouponConsumed.returnValues.gold > 0 ?
+                                "Additional Gold received:" + tx.receipt.events.CouponConsumed.returnValues.gold :
+                                ""}
+                          </p>
+                          <p>
+                              {tx.receipt.events.CouponConsumed.returnValues.silver > 0 ?
+                                "Additional Silver received:" + tx.receipt.events.CouponConsumed.returnValues.silver :
+                                ""}
+                          </p>
+                      </div>
+                    );
+                case 'PENDING':
+                    return (
+                      <div>
+                          <p>
+                              Code: {tx.code}
+                          </p>
+                      </div>
+                    )
+            }
             break;
         default:
 
@@ -80,25 +114,28 @@ const menu = items => (
       {items.length === 0 ? <Menu.Item>No recent transactions</Menu.Item> : ""}
       {items.map((tx) => (
         tx.hash ?
-        <Menu.Item className="flex aic" style={{backgroundColor: (tx.status === 'PENDING' && '#fff9bc') ||
-              (tx.status === 'COMPLETED' && '#e4ffe4') || (tx.status === 'FAILED' && '#ffd9d9') }} key={tx.hash}>
-            <Badge count={tx.unseen ? 1 : 0}>
-                <a
-                  href={`https://${process.env.REACT_APP_NETWORK}.io/tx/${tx.hash}`}
-                  key={tx.hash}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                    <div style={{paddingRight: '30px'}}>
-                        <p>Description: {tx.description}</p>
-                        {generateMenuItemForTx(tx)}
-                        <p>Status: {tx.status}</p>
-                    </div>
+          <Menu.Item className="flex aic" style={{
+              backgroundColor: (tx.status === 'PENDING' && '#fff9bc') ||
+                (tx.status === 'COMPLETED' && '#e4ffe4') || (tx.status === 'FAILED' && '#ffd9d9')
+          }} key={tx.hash}>
+              <Badge count={tx.unseen ? 1 : 0}>
+                  <a
+                    href={`https://${process.env.REACT_APP_NETWORK}.io/tx/${tx.hash}`}
+                    key={tx.hash}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                      <div style={{paddingRight: '30px'}}>
+                          <p>Description: {tx.description}</p>
+                          {generateMenuItemForTx(tx)}
+                          <p>Status: {tx.status}</p>
+                      </div>
 
-                    <Icon type="link" style={{fontSize: '24px', position:'absolute', top: '20px', right:'0px'}} className="pointer blue"/>
-                </a>
-            </Badge>
-        </Menu.Item> : ""
+                      <Icon type="link" style={{fontSize: '24px', position: 'absolute', top: '20px', right: '0px'}}
+                            className="pointer blue"/>
+                  </a>
+              </Badge>
+          </Menu.Item> : ""
       ))}
   </Menu>
 );
@@ -131,30 +168,41 @@ class AvatarDropdown extends React.Component {
 
     render() {
 
-        const {userImage, userName, upperCaseWalletId, transactions, unseen, handleSetTransactionsSeen} = this.props;
+        const {user, userImage, userName, upperCaseWalletId, transactions, unseen, handleSetTransactionsSeen} = this.props;
+
+        console.log('USER RENDER:', user);
 
         return (
-          <div
-            className="dib-ns"
-            onMouseEnter={() => this.setState({visibility: true})}
-            onMouseLeave={() => {
-                this.setState({visibility: false})
-                //todo transactions notifications
-                //handleSetTransactionsSeen(unseen);
-            }}
-          >
-              <Dropdown overlay={menu(transactions)} visible={this.state.visibility}>
-                  <>
-                      <Badge count={unseen}>
-                          <Avatar src={userImage} className="dib"/>
-                      </Badge>
-                      <p className="dib pl2">
-                          {userName}
-                      </p>
-                  </>
-              </Dropdown>
-          </div>
-        );
+          user && (
+            user.name && user.imageURL && user.walletId &&
+            <div
+              className="dib-ns"
+              onMouseEnter={() => this.setState({visibility: true})}
+              onMouseLeave={() => {
+                  this.setState({visibility: false})
+                  //todo transactions notifications
+                  //handleSetTransactionsSeen(unseen);
+              }}
+            >
+                <Dropdown overlay={menu(transactions)} visible={this.state.visibility}>
+                    <>
+                        <Badge count={unseen}>
+                            <Avatar src={user.imageURL} className="dib"/>
+                        </Badge>
+                        <p className="dib pl2">
+                            {user.name}
+                        </p>
+                    </>
+                </Dropdown>
+            </div>
+            || (user.name === 'Guest' && !user.imageURL && !user.walletId) &&
+            //<Dropdown overlay={<></>} visible={this.state.visibility}>
+            <div className="dib-ns">
+                <Avatar src={img} className="dib"/>
+                <p className="dib pl2">Guest</p>
+            </div>
+            //</Dropdown>
+          ))
     };
 }
 
@@ -181,8 +229,8 @@ export default connect(select)(AvatarDropdown);
 
 AvatarDropdown.propTypes = {
     // to: PropTypes.string.isRequired,
-    userImage: PropTypes.string.isRequired,
-    userName: PropTypes.string.isRequired,
+    //userImage: PropTypes.string.isRequired,
+    //userName: PropTypes.string.isRequired,
     // walletId: PropTypes.string,
     upperCaseWalletId: PropTypes.string.isRequired,
 };

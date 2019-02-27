@@ -1,10 +1,10 @@
 import {
-  CURRENT_USER_AVAILABLE,
-  CURRENT_USER_NOT_AVAILABLE,
-  WEB3_AVAILABLE,
-  USER_EXISTS,
-  NEW_USER,
-  NO_USER_EXISTS,
+    CURRENT_USER_AVAILABLE,
+    CURRENT_USER_NOT_AVAILABLE,
+    WEB3_AVAILABLE,
+    USER_EXISTS,
+    NEW_USER,
+    NO_USER_EXISTS, GUEST_USER,
 } from './authConstants';
 
 export default function authReducer(
@@ -21,6 +21,16 @@ export default function authReducer(
 
   if (action.type === CURRENT_USER_NOT_AVAILABLE) {
     return { ...state, currentUserId: 'PLEASE SIGN IN TO METAMASK' };
+  }
+
+  if (action.type === GUEST_USER) {
+      return {
+          ...state,
+          user: {
+            name: "Guest",
+          },
+          existingUser: false,
+      };
   }
 
   if (action.type === USER_EXISTS) {

@@ -31,12 +31,16 @@ import tableSilverGoldDropRates from '../../app/images/sale/tableSilverGoldDropR
 import upArrow from '../../app/images/sale/upMagentaArrow.png';
 import downArrow from '../../app/images/sale/downMagentaArrow.png';
 import Loading from "../../components/Loading";
+import {showSignInModal} from "../auth/authActions";
+import {handleBuyNow} from "../items/itemActions";
 
 const select = store => ({
     silverGoldService: store.app.silverGoldServiceInstance,
     currentUserId: store.auth.currentUserId,
     saleState: store.sale.saleState,
-    userBalance: store.sale.balance
+    userBalance: store.sale.balance,
+    provider: store.auth.web3 && store.auth.web3.currentProvider,
+    accountExists: store.auth.existingUser,
 });
 
 class Sale extends Component {
@@ -79,8 +83,7 @@ class Sale extends Component {
             currentTime: new Date().getTime()
         });
 
-        if (silverGoldService && currentUserId) {
-
+        if (silverGoldService) {
             silverGoldService.saleContract.events.SaleStateChanged({
                 fromBlock: 'latest'
             })
@@ -92,13 +95,10 @@ class Sale extends Component {
                   // remove event from local database
               })
               .on('error', console.error);
-
             handleGetSaleState();
-            handleGetUserBalance(currentUserId);
-            //const boxesAvailable = await handleGetBoxesAvailable();
-            //const goldAvailable = await silverGoldService.getAvailableGold(currentUserId);
-            //const silverAvailable = await silverGoldService.getAvailableSilver(currentUserId);
-            //this.setState({goldAvailable, silverAvailable});
+            if (currentUserId) {
+                handleGetUserBalance(currentUserId);
+            }
         }
     }
 
@@ -108,7 +108,7 @@ class Sale extends Component {
 
         console.log('11111 PROPS: ', this.props);
         console.log('22222 PROPS: ', prevProps);
-        if (silverGoldService && currentUserId && (prevProps.silverGoldService !== silverGoldService || currentUserId !== prevProps.currentUserId)) {
+        if (silverGoldService && (prevProps.silverGoldService !== silverGoldService)) {
 
             silverGoldService.saleContract.events.SaleStateChanged({
                 fromBlock: 'latest'
@@ -123,6 +123,9 @@ class Sale extends Component {
               .on('error', console.error);
 
             handleGetSaleState();
+        }
+
+        if (silverGoldService && currentUserId && (silverGoldService !== prevProps.silverGoldService || !userBalance || currentUserId  !== prevProps.currentUserId)) {
 
             let referrer = silverGoldService.getReferralId(this.props.location.search);
             console.log('Saved referrer: ', referrer);
@@ -131,12 +134,9 @@ class Sale extends Component {
             }
             this.setState({referrer});
             console.log('state-state:', this.state);
-        }
 
-        if (currentUserId && ((silverGoldService !== prevProps.silverGoldService) || (silverGoldService && !userBalance) || (currentUserId !== prevProps.currentUserId))) {
             handleGetUserBalance(currentUserId);
         }
-
     }
 
     render() {
@@ -275,7 +275,7 @@ class Sale extends Component {
             '2': 200,
         }
 
-        const {handleConfirmBuy, saleState, userBalance, windowWidth, currentUserId} = this.props;
+        const {handleConfirmBuy, saleState, userBalance, windowWidth, currentUserId, provider, accountExists, handleShowSignInBox} = this.props;
         const {referrer, currentTime, smallScreen} = this.state;
 
         const price = (type, amount) => {
@@ -365,11 +365,15 @@ class Sale extends Component {
                                   </div>
                                   {(saleStarted || !saleStarted) ?
                                     <div style={buyButton} onClick={() => {
-                                        this.setState({
-                                            proceedBuy: true,
-                                            proceedBuyType: 'Silver Geode',
-                                            proceedBuyAmount: this.state.silverGeodeChosen
-                                        });
+                                        if (provider && accountExists) {
+                                            this.setState({
+                                                proceedBuy: true,
+                                                proceedBuyType: 'Silver Geode',
+                                                proceedBuyAmount: this.state.silverGeodeChosen
+                                            });
+                                        } else {
+                                            handleShowSignInBox();
+                                        }
                                     }}>BUY NOW
                                     </div> :
                                     <div style={disabledBuyButton}>BUY NOW</div>
@@ -411,11 +415,15 @@ class Sale extends Component {
                                   </div>
                                   {(saleStarted || !saleStarted) ?
                                     <div style={buyButton} onClick={() => {
-                                        this.setState({
-                                            proceedBuy: true,
-                                            proceedBuyType: 'Rotund Silver Geode',
-                                            proceedBuyAmount: this.state.rotundGeodeChosen
-                                        });
+                                        if (provider && accountExists) {
+                                            this.setState({
+                                                proceedBuy: true,
+                                                proceedBuyType: 'Rotund Silver Geode',
+                                                proceedBuyAmount: this.state.rotundGeodeChosen
+                                            });
+                                        } else {
+                                            handleShowSignInBox();
+                                        }
                                     }}>BUY NOW
                                     </div> :
                                     <div style={disabledBuyButton}>BUY NOW</div>
@@ -460,11 +468,15 @@ class Sale extends Component {
                                   </div>
                                   {(saleStarted || !saleStarted) ?
                                     <div style={buyButton} onClick={() => {
-                                        this.setState({
-                                            proceedBuy: true,
-                                            proceedBuyType: 'Goldish Silver Geode',
-                                            proceedBuyAmount: this.state.goldishGeodeChosen
-                                        });
+                                        if (provider && accountExists) {
+                                            this.setState({
+                                                proceedBuy: true,
+                                                proceedBuyType: 'Goldish Silver Geode',
+                                                proceedBuyAmount: this.state.goldishGeodeChosen
+                                            });
+                                        } else {
+                                            handleShowSignInBox();
+                                        }
                                     }}>BUY NOW
                                     </div> :
                                     <div style={disabledBuyButton}>BUY NOW</div>
@@ -475,6 +487,7 @@ class Sale extends Component {
                   </div>
                   <div style={{flex: '1', minWidth: '260px'}}>
                       <div className="flex-ns dn aic row tc jcs flex-wrap" style={{paddingLeft: '15px', paddingTop: '50px'}}>
+                          {currentUserId &&
                           <div className="flex jcc" style={{maxWidth: '300px'}}>
                               <div className="flex col tc">
                                   <img src={Gold} alt="Gold" className="h3 w-auto ph3"/>
@@ -484,7 +497,8 @@ class Sale extends Component {
                                   <img src={Silver} alt="Silver" className="h3 w-auto ph3"/>
                                   {userBalance && userBalance.silverAvailable}
                               </div>
-                          </div>
+                          </div>}
+                          {currentUserId &&
                           <Spring from={{opacity: 0}} to={{opacity: 1}} config={{delay: 1000}}>
                               {props => (
                                 <div style={props} className="pr4">
@@ -499,13 +513,16 @@ class Sale extends Component {
                                             } AVAILABLE `}
                                       </small>
                                     )}
-                                    <CopyToClipboard text={"https://game.cryptominerworld.com/S_and_G_Sale?refId="+currentUserId}
-                                                     onCopy={() => this.setState({copied: true})}>
+                                    <CopyToClipboard
+                                      text={"https://game.cryptominerworld.com/S_and_G_Sale?refId=" + currentUserId}
+                                      onCopy={() => this.setState({copied: true})}>
                                         <span style={{cursor: 'pointer', textDecoration: 'underline'}}>Copy referral link</span>
-                                    </CopyToClipboard>{this.state.copied ? <span style={{color:'magenta'}}> copied!</span> : ""}
+                                    </CopyToClipboard>{this.state.copied ?
+                                  <span style={{color: 'magenta'}}> copied!</span> : ""}
                                 </div>
                               )}
                           </Spring>
+                          }
 
                           {saleState['3'] ?
                             saleState['3'].saleStart * 1000 > Math.round(new Date().getTime()) ?
@@ -623,7 +640,8 @@ const actions = {
     handleGetBoxesAvailable: getBoxesAvailableData,
     handleUpdateSaleState: updateSaleState,
     handleGetSaleState: getSaleState,
-    handleGetUserBalance: getUserBalance
+    handleGetUserBalance: getUserBalance,
+    handleShowSignInBox: () => ({ type: 'SHOW_SIGN_IN_BOX' }),
 };
 
 export default compose(

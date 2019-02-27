@@ -54,6 +54,7 @@ const select = store => {
       silverContract: store.app.silverContractInstance,
       goldContract: store.app.goldContractInstance,
         userBalance: store.sale.balance,
+        silverGoldService: store.app.silverGoldServiceInstance,
     }
 };
 
@@ -67,9 +68,10 @@ class Auction extends PureComponent {
 
     async componentDidMount() {
         const {
-            match, handleGetUserBalance, silverGoldService, handleGetGemData, dutchContract, gemContractAddress, goldContract, silverContract, currentAccount
+            match, handleGetUserBalance, silverGoldService, gemService, handleGetGemData, dutchContract, gemContractAddress, goldContract, silverContract, currentAccount
         } = this.props;
-        if (match && match.params && match.params.gemId) {
+
+        if (match && match.params && match.params.gemId && gemService) {
             handleGetGemData(match.params.gemId);
         }
 
@@ -86,25 +88,9 @@ class Auction extends PureComponent {
             }
         }, 60000);
 
-        if (silverGoldService && currentAccount ) {
+        if (silverGoldService && currentAccount) {
             handleGetUserBalance(currentAccount);
         }
-
-        // if (goldContract && goldContract.methods && currentAccount) {
-        //     //console.log(11111111111);
-        //     const gold = await getAvailableGold(goldContract, currentAccount);
-        //     if (gold) {
-        //         this.setState({goldAvailable: gold});
-        //     }
-        // }
-        //
-        // if (silverContract && silverContract.methods && currentAccount) {
-        //     //console.log(122222222);
-        //     const silver = await getAvailableSilver(silverContract, currentAccount);
-        //     if (silver) {
-        //         this.setState({silverAvailable: silver});
-        //     }
-        // }
     }
 
     async componentDidUpdate(prevProps) {
@@ -117,7 +103,6 @@ class Auction extends PureComponent {
 
         if (this.props.gem && !this.state.ownerData) {
             const ownerData = await getOwnerDataByOwnerId(this.props.gem.owner);
-            console.log('OWNER DATA: ', ownerData);
             this.setState({ownerData});
         }
 
@@ -125,23 +110,9 @@ class Auction extends PureComponent {
             handleGetGemData(match.params.gemId);
         }
 
-        if ((silverGoldService !== prevProps.silverGoldService) || (silverGoldService && !userBalance) || (currentAccount !== prevProps.currentAccount)) {
+        if (silverGoldService && currentAccount && (silverGoldService !== prevProps.silverGoldService || !userBalance || currentAccount !== prevProps.currentAccount)) {
             handleGetUserBalance(currentAccount);
         }
-
-        // if (goldContract && goldContract.methods && currentAccount && (goldContract !== prevProps.goldContract || currentAccount !== prevProps.currentAccount)) {
-        //     const gold = await getAvailableGold(goldContract, currentAccount);
-        //     if (gold) {
-        //         this.setState({goldAvailable: gold});
-        //     }
-        // }
-        //
-        // if (silverContract && silverContract.methods && currentAccount && (silverContract !== prevProps.silverContract || currentAccount !== prevProps.currentAccount)) {
-        //     const silver = await getAvailableSilver(silverContract, currentAccount);
-        //     if (silver) {
-        //         this.setState({silverAvailable: silver});
-        //     }
-        // }
     }
 
     componentWillUnmount() {

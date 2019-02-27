@@ -3,5 +3,6 @@ export const CURRENT_USER_NOT_AVAILABLE = 'CURRENT_USER_NOT_AVAILABLE';
 export const WEB3_AVAILABLE = 'WEB3_AVAILABLE';
 export const USER_EXISTS = 'USER_EXISTS';
 export const NEW_USER = 'NEW_USER';
+export const GUEST_USER = 'GUEST_USER';
 
 export const NO_USER_EXISTS = 'NO_USER_EXISTS';

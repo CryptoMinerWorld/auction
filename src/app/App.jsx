@@ -114,12 +114,14 @@ class App extends Component {
         if (network !== process.env.REACT_APP_NETWORK_TYPE) {this.setState({wrongNetwork: true})}
         //console.log('web3', web3);
 
-        instantiateContracts(web3, handleSendContractsToRedux, handleSetError);
+        //todo: remove duplicated code instantiating contracts;
+
+        //instantiateContracts(web3, handleSendContractsToRedux, handleSetError);
 
         const currentAccountId = await web3.eth.getAccounts().then(accounts => accounts[0]);
 
         // this ensures that the wallet in metamask is always the wallet in the currentAccountId
-        // however this is a problem because it means that you cant view someone elses profile page
+        // however this is a problem because it means that you cant view someone else profile page
         if (web3.currentProvider.publicConfigStore) {
             web3.currentProvider.publicConfigStore.on('update', ({selectedAddress}) => handleUpdateWalletId(selectedAddress));
         }

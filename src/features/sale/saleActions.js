@@ -61,12 +61,8 @@ export const buyGeode = (type, amount, etherUsed, referralPointsUsed, referrer, 
 
 export const getUserBalance = (userId) => async (dispatch, getState) => {
 
-    console.log('GET USER BALANCE!!!!!');
-
     const silverGoldService = getState().app.silverGoldServiceInstance;
     const balance = await silverGoldService.getUserBalance(userId);
-
-    console.log('BALANCE GOT AFTER SALE:', balance);
 
     dispatch({
         type: USER_BALANCE_RECEIVED,

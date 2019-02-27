@@ -9,12 +9,12 @@ import {BigNumber} from "bignumber.js";
 export default class SilverGoldService {
 
     constructor(silverSaleContractInstance, silverContractInstance, goldContractInstance, refPointsTrackerContractInstance, silverCouponsContractInstance) {
-        console.log('SilverGoldService constructor called', silverSaleContractInstance);
         this.saleContract = silverSaleContractInstance;
         this.silverContract = silverContractInstance;
         this.goldContract = goldContractInstance;
         this.refPointsTrackerContract = refPointsTrackerContractInstance;
         this.silverCouponsContract = silverCouponsContractInstance;
+        console.log('SilverGoldService constructor called', silverCouponsContractInstance);
     }
 
     getUserBalance = async (userId) => {
@@ -59,8 +59,9 @@ export default class SilverGoldService {
         ))
     }
 
-    useCoupon = async (couponCode) => {
-        return await this.silverCouponsContract.methods.useCoupon(couponCode)
+    useCoupon = (couponCode) => {
+        console.log('use coupon')
+        return this.silverCouponsContract.methods.useCoupon(couponCode)
           .send();
     }
 

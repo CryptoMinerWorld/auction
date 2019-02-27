@@ -137,7 +137,7 @@ export default compose(
 
 AuctionBox.propTypes = {
   provider: PropTypes.bool.isRequired,
-  currentAccount: PropTypes.string.isRequired,
+  currentAccount: PropTypes.string,
   accountExists: PropTypes.bool,
   history: PropTypes.shape({}).isRequired,
   handleShowSignInBox: PropTypes.func.isRequired,

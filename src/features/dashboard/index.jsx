@@ -17,8 +17,7 @@ import {
     addGemsToDashboard,
     filterUserGemsOnPageLoad, getImagesForGems,
     getUserDetails, getUserGems,
-    getUserGemsOnce,
-    paginate,
+    paginate, useCoupon,
 } from './dashboardActions';
 import GemSortBox from './components/GemSortBox';
 import Cards from './components/GemCard';
@@ -79,7 +78,7 @@ const Primary = styled.section`
 `;
 
 const select = store => {
-    //console.log('-------------> dashboard store <---------------', store);
+    console.log('-------------> dashboard store <---------------', store);
     const res = {
         userGems: store.dashboard.userGems,
         totalGems: store.dashboard && store.dashboard.userGems && store.dashboard.userGems.length,
@@ -94,8 +93,10 @@ const select = store => {
         needToLoadImages: store.dashboard.updateImages,
         loading: store.dashboard.gemsLoading,
         error: store.dashboard.gemsLoadingError,
-        userName: store.auth.user && store.auth.user.name,
-        userImage: store.auth.user && store.auth.user.imageURL,
+        currentUser: store.auth.user,
+        userExists: store.auth.existingUser,
+        //userName: store.auth.user && store.auth.user.name,
+        //userImage: store.auth.user && store.auth.user.imageURL,
         userBalance: store.sale.balance,
         sortBox: store.dashboard.sortBox,
         currentUserId: store.auth.currentUserId,
@@ -143,7 +144,6 @@ class Dashboard extends Component {
     };
 
     static defaultProps = {
-        userName: 'Loading...',
         //userImage:
           //'https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FAquamarine%20Face%20Emoji.png?alt=media&token=b759ae07-bb8c-4ec8-9399-d3844d5428ef',
         web3: {},
@@ -160,6 +160,7 @@ class Dashboard extends Component {
     state = {
         //referralPoints:,
         plots: 0,
+        dashboardUser: null,
         //silverAvailable: 'loading...',
         //goldAvailable: 'loading...',
         tab: 1,
@@ -174,7 +175,9 @@ class Dashboard extends Component {
 
         this.setState({redirectPath: ''});
 
-        const {preSaleContract, match, data, handleGetUserBalance, refPointsContract, goldContract, silverContract, handleGetUserGems, gemService, auctionService, silverGoldService} = this.props;
+        const {preSaleContract, match, data, handleGetUserBalance, refPointsContract,
+            goldContract, silverContract, handleGetUserGems, gemService,
+            auctionService, silverGoldService, userExists, currentUserId, currentUser, handleShowSignInBox} = this.props;
 
         if (gemService && auctionService && match && match.params && match.params.userId)  {
             handleGetUserGems(match.params.userId);
@@ -191,6 +194,29 @@ class Dashboard extends Component {
 
         if (silverGoldService) {
             handleGetUserBalance(match.params.userId);
+        }
+
+        if (userExists !== false) {
+            if (match.params.userId && match.params.userId !== currentUserId) {
+                const userDetails = await getUserDetails(match.params.userId);
+                if (userDetails) {
+                    this.setState({dashboardUser: userDetails});
+                }
+            }
+            else {
+                this.setState({dashboardUser: currentUser});
+            }
+        }
+        else {
+            if (match.params.userId) {
+                const userDetails = await getUserDetails(match.params.userId);
+                if (userDetails) {
+                    this.setState({dashboardUser: userDetails});
+                }
+            }
+            else {
+                handleShowSignInBox();
+            }
         }
 
         // if (silverGoldService) {
@@ -234,15 +260,16 @@ class Dashboard extends Component {
     async componentDidUpdate(prevProps) {
 
         console.log('DASHBOARD PROPS is ', this.props);
-
+        console.log('DASHBOARD STATE is ', this.state);
         const {
             web3, transition, preSaleContract, match, refPointsContract, goldContract, silverContract,
             handleGetUserGems, handleGetUserDetails, handleGetImagesForGems, gemService, auctionService, silverGoldService,
-          pageNumber, userGemsPage, userGemsFiltered, needToLoadImages, userBalance, handleGetUserBalance, currentUserId,
+          pageNumber, userGemsPage, userGemsFiltered, needToLoadImages, userBalance, handleGetUserBalance, currentUserId, userExists, currentUser,
+          handleShowSignInBox
         } = this.props;
 
         const {
-            silverAvailable, goldAvailable, referralPoints, imagesLoadingStarted
+            silverAvailable, goldAvailable, referralPoints, imagesLoadingStarted, dashboardUser
         } = this.state;
 
         // if (!userImage || !userName) {
@@ -252,6 +279,33 @@ class Dashboard extends Component {
         //         this.
         //     }
         // }
+        if ((userExists !== prevProps.userExists) || (match.params.userId !== prevProps.match.params.userId)) {
+            console.log('CHECK EXISTS:', userExists);
+            if (userExists) {
+                if (match.params.userId && match.params.userId !== currentUserId) {
+                    const userDetails = await getUserDetails(match.params.userId);
+                    if (userDetails) {
+                        this.setState({dashboardUser: userDetails});
+                    }
+                }
+                else {
+                    this.setState({dashboardUser: currentUser});
+                }
+            }
+            else {
+                if (match.params.userId) {
+                    console.log('match.params.userId:', match.params.userId);
+                    const userDetails = await getUserDetails(match.params.userId);
+                    console.log('user details:', userDetails);
+                    if (userDetails) {
+                        this.setState({dashboardUser: userDetails});
+                    }
+                }
+                else {
+                    handleShowSignInBox();
+                }
+            }
+        }
 
         if (!needToLoadImages && imagesLoadingStarted) {
             this.setState({imagesLoadingStarted: false});
@@ -263,9 +317,8 @@ class Dashboard extends Component {
             //transition('WITH_METAMASK');
         }
 
-
-
-        if (gemService && auctionService && (gemService !== prevProps.gemService || auctionService !== prevProps.auctionService))  {
+        if (gemService && auctionService &&
+          (gemService !== prevProps.gemService || auctionService !== prevProps.auctionService || match.params.userId !== prevProps.match.params.userId))  {
             console.warn('HANDLE GET USER GEMS <<<<<<<<<<<<<');
             this.setState({imagesLoadingStarted: false});
             handleGetUserGems(match.params.userId);
@@ -287,7 +340,7 @@ class Dashboard extends Component {
               .catch(err => setError(err));
         }
 
-        if ((silverGoldService !== prevProps.silverGoldService) || (silverGoldService && !userBalance)) {
+        if ((silverGoldService !== prevProps.silverGoldService) || (silverGoldService && !userBalance) || match.params.userId !== prevProps.match.params.userId) {
             handleGetUserBalance(match.params.userId);
         }
 
@@ -351,6 +404,8 @@ class Dashboard extends Component {
         history.push('/market');
     };
 
+    //unused
+    //todo: refactor
     redeemCoupon = async (
       value,
       CountrySaleMethods,
@@ -426,8 +481,8 @@ class Dashboard extends Component {
 
         const {
             loading,
-            userName,
-            userImage,
+            //userName,
+            //userImage,
             sortBox,
             totalGems,
             userGemsPage,
@@ -438,11 +493,13 @@ class Dashboard extends Component {
             data,
             match,
             CountrySale,
-          userBalance
+          userBalance,
+          handleUseCoupon,
+          userExists
         } = this.props;
 
         const {
-            plots, tab, redirectPath, alreadyRedirected,
+            plots, tab, redirectPath, alreadyRedirected, dashboardUser
         } = this.state;
         if (redirectPath && !alreadyRedirected) {
             this.setState({alreadyRedirected: true});
@@ -455,17 +512,16 @@ class Dashboard extends Component {
           <div className="bg-off-black white card-container" data-testid="profile-page">
               <div className="flex  aic  wrap jcc jcb-ns pv4">
                   <div className=" flex aic pt3 pt0-ns">
-                      {userImage ? <img src={userImage} className="h3 w-auto pr3 pl3-ns dib" alt=""/> :
+                      {dashboardUser && dashboardUser.imageURL ? <img src={dashboardUser.imageURL} className="h3 w-auto pr3 pl3-ns dib" alt=""/> :
                         <Spin indicator={
                           <Icon type="loading" style={{ fontSize: 24, color: '#e406a5' }} spin />}
                         />
                       }
                       <h1 className="white" data-testid="userName">
-                          {userName}
+                          {dashboardUser && dashboardUser.name || "Loading..."}
                       </h1>
                   </div>
                   <div className="flex-ns dn col tc">
-
                           <div className="flex">
                               <div className="flex col tc">
                                   <img src={Gold} alt="Gold" className="h3 w-auto ph3"/>
@@ -502,14 +558,15 @@ class Dashboard extends Component {
                             </div>
                           )}
                       </Spring>
+                      {userExists &&
                       <EnhancedCoupon
-                        handleRedemption={this.redeemCoupon}
-                        CountrySaleMethods={CountrySale}
+                        handleRedemption={handleUseCoupon}
                         redirect={this.redirect}
                         userId={data && data.userId}
                       >
                           Redeem Coupon
                       </EnhancedCoupon>
+                      }
                       {/*{tab === 1 && <ReSync/>}*/}
                   </div>
                 )}
@@ -601,6 +658,7 @@ class Dashboard extends Component {
                         !(data && data.user && data.user.countries.length >= 0)
                         || data.user.countries.length === 0
                     }
+
                     key="2"
                   >
                       <CountryDashboard
@@ -624,9 +682,9 @@ class Dashboard extends Component {
                     tab={(
                       <span className="h-100 flex aic white o-50 ">
                 <img src={Plot} alt="" className="h2 w-auto pr2"/>
-                          {plots}
-                          {' '}
-                          Plots
+                          {/*{plots}*/}
+                          {/*{' '}*/}
+                          0 Plots
               </span>
                     )}
                     disabled
@@ -657,7 +715,9 @@ const actions = {
     handlePreLoadAuctionPage: preLoadAuctionPage,
     handleAddGemsToDashboard: addGemsToDashboard,
     handleGetImagesForGems: getImagesForGems,
-    handleGetUserBalance: getUserBalance
+    handleGetUserBalance: getUserBalance,
+    handleUseCoupon: useCoupon,
+    handleShowSignInBox: () => ({ type: 'SHOW_SIGN_IN_BOX' }),
 };
 
 export default compose(

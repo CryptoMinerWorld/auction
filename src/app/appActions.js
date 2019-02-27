@@ -10,7 +10,7 @@ import {
     PRESALE_CONTRACT_ADDED,
     REF_POINTS_TRACKER_CONTRACT_ADDED,
     SET_ERROR,
-    SILVER_CONTRACT_ADDED, SILVER_GOLD_SERVICE_ADDED, SILVER_SALE_CONTRACT_ADDED,
+    SILVER_CONTRACT_ADDED, SILVER_COUPONS_CONTRACT_ADDED, SILVER_GOLD_SERVICE_ADDED, SILVER_SALE_CONTRACT_ADDED,
     WEB3_ADDED,
     WORKSHOP_CONTRACT_ADDED,
 } from './reduxConstants';
@@ -66,23 +66,23 @@ export const sendContractsToRedux = (
     console.log('Dispatching:', );
 
     dispatch({type: CONTRACTS_ADDED, payload: {
-            dutchAuctionContractInstance,
-            dutchAuctionHelperContractInstance,
-            gemsContractInstance,
+            dutchContractInstance: dutchAuctionContractInstance,
+            dutchHelperContractInstance: dutchAuctionHelperContractInstance,
+            gemsContractInstance: gemsContractInstance,
             web3,
-            presaleContract,
+            presaleContractInstance: presaleContract,
             currentAccount,
-            countryContract,
-            countrySaleContract,
-            refPointsTrackerContract,
-            silverContract,
-            goldContract,
-            workshopContract,
-            silverSaleContract,
+            countrySaleInstance: countryContract,
+            countryContractInstance: countrySaleContract,
+            refPointsTrackerContractInstance: refPointsTrackerContract,
+            silverContractInstance: silverContract,
+            goldContractInstance: goldContract,
+            workshopContractInstance: workshopContract,
+            silverSaleContractInstance: silverSaleContract,
             silverCouponsContract,
-            gemService,
-            auctionService,
-            silverGoldService
+            gemServiceInstance: gemService,
+            auctionServiceInstance: auctionService,
+            silverGoldServiceInstance: silverGoldService
     }});
 
     // dispatch({type: WEB3_ADDED, payload: web3});
@@ -97,7 +97,7 @@ export const sendContractsToRedux = (
     // dispatch({type: GOLD_CONTRACT_ADDED, payload: goldContract});
     // dispatch({type: WORKSHOP_CONTRACT_ADDED, payload: workshopContract});
     // dispatch({type: SILVER_SALE_CONTRACT_ADDED, payload: silverSaleContract});
-    // //dispatch({type: SILVER_SALE_CONTRACT_ADDED, payload: silverContract});
+    // dispatch({type: SILVER_COUPONS_CONTRACT_ADDED, payload: silverCouponsContract});
     //
     // dispatch({type: COUNTRY_CONTRACT_ADDED, payload: countryContract});
     // dispatch({type: COUNTRY_SALE_ADDED, payload: countrySaleContract});
@@ -116,6 +116,7 @@ export const setError = (payload, title) => ({
 });
 export const clearError = () => ({type: CLEAR_ERROR});
 
+//not all contracts
 export const instantiateContracts = async (web3, handleSendContractsToRedux, handleSetError) => {
     const currentAccountId = await web3.eth.getAccounts().then(accounts => accounts[0]);
     // @notice instantiating auction contract
