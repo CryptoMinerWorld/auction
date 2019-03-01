@@ -18,7 +18,7 @@ export default class SilverGoldService {
     }
 
     getUserBalance = async (userId) => {
-        console.log('get user balance for:', this.saleContract.methods);
+        console.log('get user balance for:', userId);
         const balance = await this.saleContract.methods
           .balanceOf(userId)
           .call();

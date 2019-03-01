@@ -1,7 +1,7 @@
 import {
     AUCTION_DETAILS_RECEIVED,
     DASHBOARD_WAS_FILTERED,
-    FETCH_GEMS_PAGE_IMAGES,
+    FETCH_GEMS_PAGE_IMAGES, FETCH_USER_COUNTRIES,
     FETCH_USER_DETAILS_BEGUN,
     FETCH_USER_DETAILS_FAILED,
     FETCH_USER_DETAILS_SUCCEEDED,
@@ -54,6 +54,13 @@ export const getUserGems = ownerId => async (dispatch, getState) => {
 };
 
 
+export const getUserCountries = userId => async (dispatch, getState) => {
+    const countryService = getState().app.countryServiceInstance;
+    const userCountries = await countryService.getUserCountries(userId);
+    console.log(' ::::::::::::: GET USER COUNTRIES ACTION:', userCountries);
+    dispatch({type: FETCH_USER_COUNTRIES, payload: {userCountries}})
+}
+
 export const getUserDetails = async userId => {
 
     const userIdToLowerCase = userId
@@ -62,10 +69,12 @@ export const getUserDetails = async userId => {
       .join('');
     try {
         const col = db.collection('users')
-          .where('walletId', '==', userId)
+          .doc(userIdToLowerCase)
+          //.where('walletId', '==', userId)
           .get();
-        const userDetails = (await col).docs.map(doc => doc.data());
-        return userDetails[0];
+        //const userDetails = (await col).docs.map(doc => doc.data());
+        const userDetails = (await col).data();
+        return userDetails || {name: "", imageURL: ""};
     } catch (err) {
         console.log(err);
     }

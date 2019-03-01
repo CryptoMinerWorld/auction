@@ -59,7 +59,8 @@ export const sendContractsToRedux = (
   silverCouponsContract,
   gemService,
   auctionService,
-  silverGoldService
+  silverGoldService,
+  countryService
 ) => (dispatch) => {
 
     console.log('App Actions gem service: ');
@@ -72,17 +73,18 @@ export const sendContractsToRedux = (
             web3,
             presaleContractInstance: presaleContract,
             currentAccount,
-            countrySaleInstance: countryContract,
-            countryContractInstance: countrySaleContract,
+            countrySaleInstance: countrySaleContract,
+            countryContractInstance: countryContract,
             refPointsTrackerContractInstance: refPointsTrackerContract,
             silverContractInstance: silverContract,
             goldContractInstance: goldContract,
             workshopContractInstance: workshopContract,
             silverSaleContractInstance: silverSaleContract,
-            silverCouponsContract,
+            silverCouponsContractInstance: silverCouponsContract,
             gemServiceInstance: gemService,
             auctionServiceInstance: auctionService,
-            silverGoldServiceInstance: silverGoldService
+            silverGoldServiceInstance: silverGoldService,
+            countryServiceInstance:countryService
     }});
 
     // dispatch({type: WEB3_ADDED, payload: web3});

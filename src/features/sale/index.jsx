@@ -125,7 +125,7 @@ class Sale extends Component {
             handleGetSaleState();
         }
 
-        if (silverGoldService && currentUserId && (silverGoldService !== prevProps.silverGoldService || !userBalance || currentUserId  !== prevProps.currentUserId)) {
+        if (silverGoldService && currentUserId && (silverGoldService !== prevProps.silverGoldService || currentUserId  !== prevProps.currentUserId)) {
 
             let referrer = silverGoldService.getReferralId(this.props.location.search);
             console.log('Saved referrer: ', referrer);

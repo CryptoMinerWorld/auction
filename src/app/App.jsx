@@ -16,7 +16,7 @@ import getWeb3 from './utils/getWeb3';
 import Routes from './routes';
 import './css/root.css';
 import ScrollToTop from '../components/ScrollToTop';
-import {clearError, instantiateContracts, sendContractsToRedux, setError,} from './appActions';
+import {clearError, sendContractsToRedux, setError,} from './appActions';
 import {updateWalletId} from '../features/auth/authActions';
 import DutchAuction from './ABI/DutchAuction.json';
 import DutchAuctionHelper from './ABI/DutchAuctionHelper';
@@ -34,6 +34,7 @@ import {resolveAnyPendingTx} from '../features/transactions/helpers';
 import GemService from "./services/GemService";
 import AuctionService from "./services/AuctionService";
 import SilverGoldService from "./services/SilverGoldService";
+import CountryService from "./services/CountryService";
 
 require('antd/lib/notification/style/css');
 require('antd/lib/modal/style/css');
@@ -115,7 +116,6 @@ class App extends Component {
         //console.log('web3', web3);
 
         //todo: remove duplicated code instantiating contracts;
-
         //instantiateContracts(web3, handleSendContractsToRedux, handleSetError);
 
         const currentAccountId = await web3.eth.getAccounts().then(accounts => accounts[0]);
@@ -208,13 +208,15 @@ class App extends Component {
           },
         );
 
-        const silverCouponsContract = new web3.eth.Contract(
-          silverCouponsABI,
-          process.env.REACT_APP_SILVER_COUPONS,
-          {
-              from: currentAccountId,
-          },
-        );
+        // const silverCouponsContract = new web3.eth.Contract(
+        //   silverCouponsABI,
+        //   process.env.REACT_APP_SILVER_COUPONS,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // );
+
+        const silverCouponsContract = {};
 
         Promise.all([
             dutchContract,
@@ -256,6 +258,7 @@ class App extends Component {
                 const gemService = new GemService(gemsContractInstance, web3, dutchAuctionContractInstance);
                 const auctionService = new AuctionService(dutchAuctionContractInstance, dutchAuctionHelperContractInstance, gemsContractInstance);
                 const silverGoldService = new SilverGoldService(silverSaleContract, silverContract, goldContract, refPointsTrackerContract, silverCouponsContract);
+                const countryService = new CountryService(null, countryContract);
 
                 handleSendContractsToRedux(
                   dutchAuctionContractInstance,
@@ -274,7 +277,8 @@ class App extends Component {
                   silverCouponsContract,
                   gemService,
                   auctionService,
-                  silverGoldService
+                  silverGoldService,
+                  countryService,
                   //buySilverContract,
                   //buyGoldContract
 

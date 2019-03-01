@@ -15,7 +15,7 @@ import {db} from '../../app/utils/firebase';
 import {setError} from '../../app/appActions';
 import {
     addGemsToDashboard,
-    filterUserGemsOnPageLoad, getImagesForGems,
+    filterUserGemsOnPageLoad, getImagesForGems, getUserCountries, getUserCountriesNumber,
     getUserDetails, getUserGems,
     paginate, useCoupon,
 } from './dashboardActions';
@@ -98,6 +98,7 @@ const select = store => {
         //userName: store.auth.user && store.auth.user.name,
         //userImage: store.auth.user && store.auth.user.imageURL,
         userBalance: store.sale.balance,
+        userCountries: store.dashboard.userCountries,
         sortBox: store.dashboard.sortBox,
         currentUserId: store.auth.currentUserId,
         web3: store.app.web3,
@@ -110,6 +111,7 @@ const select = store => {
         gemService: store.app.gemServiceInstance,
         auctionService: store.app.auctionServiceInstance,
         silverGoldService: store.app.silverGoldServiceInstance,
+        countryService: store.app.countryServiceInstance,
     };
     //console.log('dashboard store: ', res);
     return res;
@@ -135,7 +137,6 @@ class Dashboard extends Component {
         pageNumber: PropTypes.number,
         handlePreLoadAuctionPage: PropTypes.func.isRequired,
         machineState: PropTypes.shape({}),
-        data: PropTypes.shape({}).isRequired,
         preSaleContract: PropTypes.shape({}),
         refPointsContract: PropTypes.shape({}),
         goldContract: PropTypes.shape({}),
@@ -176,11 +177,15 @@ class Dashboard extends Component {
         this.setState({redirectPath: ''});
 
         const {preSaleContract, match, data, handleGetUserBalance, refPointsContract,
-            goldContract, silverContract, handleGetUserGems, gemService,
-            auctionService, silverGoldService, userExists, currentUserId, currentUser, handleShowSignInBox} = this.props;
+            goldContract, silverContract, handleGetUserGems, gemService, countryService,
+            auctionService, silverGoldService, userExists, currentUserId, currentUser, handleShowSignInBox, handleGetUserCountries} = this.props;
 
         if (gemService && auctionService && match && match.params && match.params.userId)  {
             handleGetUserGems(match.params.userId);
+        }
+
+        if (countryService && match.params.userId) {
+            handleGetUserCountries(match.params.userId);
         }
 
         if (preSaleContract && preSaleContract.methods && match.params.userId !== 'false') {
@@ -249,7 +254,7 @@ class Dashboard extends Component {
         //     }
         // }
 
-        data.refetch();
+        //data.refetch();
         const country = window.location.hash.length;
 
         if (country > 0) {
@@ -263,7 +268,7 @@ class Dashboard extends Component {
         console.log('DASHBOARD STATE is ', this.state);
         const {
             web3, transition, preSaleContract, match, refPointsContract, goldContract, silverContract,
-            handleGetUserGems, handleGetUserDetails, handleGetImagesForGems, gemService, auctionService, silverGoldService,
+            handleGetUserGems, handleGetUserDetails, handleGetImagesForGems, gemService, auctionService, silverGoldService, countryService, handleGetUserCountries,
           pageNumber, userGemsPage, userGemsFiltered, needToLoadImages, userBalance, handleGetUserBalance, currentUserId, userExists, currentUser,
           handleShowSignInBox
         } = this.props;
@@ -340,8 +345,13 @@ class Dashboard extends Component {
               .catch(err => setError(err));
         }
 
-        if ((silverGoldService !== prevProps.silverGoldService) || (silverGoldService && !userBalance) || match.params.userId !== prevProps.match.params.userId) {
+        //may cause infinite updating: (silverGoldService && !userBalance) ||
+        if ((silverGoldService !== prevProps.silverGoldService) || match.params.userId !== prevProps.match.params.userId) {
             handleGetUserBalance(match.params.userId);
+        }
+
+        if ((countryService !== prevProps.countryService) || match.params.userId !== prevProps.match.params.userId) {
+            handleGetUserCountries(match.params.userId);
         }
 
         // if (silverGoldService && !(silverAvailable && goldAvailable && referralPoints) || (silverGoldService !== prevProps.silverGoldService)) {
@@ -406,72 +416,72 @@ class Dashboard extends Component {
 
     //unused
     //todo: refactor
-    redeemCoupon = async (
-      value,
-      CountrySaleMethods,
-      buyNow,
-      markSold,
-      setloading,
-      showModal,
-      // redirect,
-    ) => {
-        const {data} = this.props;
-        CountrySaleMethods.methods
-          .useCoupon(value)
-          .send()
-          .on('transactionHash', hash => reduxStore.dispatch(
-            startTx({
-                hash,
-                method: 'country',
-            }),
-          ));
-
-        await CountrySaleMethods.events
-          .CouponConsumed()
-          .on('data', async (event) => {
-
-              const {returnValues} = event;
-              const {plots, _by, _tokenId} = returnValues;
-              const newOwnerId = _by
-                .split('')
-                .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
-                .join('');
-              const countryId = Number(_tokenId);
-              const totalPlots = Number(plots);
-              const countryMapIndex = getMapIndexFromCountryId(countryId);
-              const country = await getCountryDetailsFromFirebase(countryMapIndex);
-
-              buyNow({
-                  variables: {
-                      id: getCountryNameFromCountryId(countryId),
-                      newOwnerId,
-                      price: 0,
-                      timeOfPurchase: Date.now(),
-                      totalPlots,
-                      imageLinkLarge: country.imageLinkLarge,
-                      imageLinkMedium: country.imageLinkMedium,
-                      imageLinkSmall: country.imageLinkSmall,
-                      countryId: country.countryId,
-                      mapIndex: country.mapIndex,
-                      roi: country.roi,
-                  },
-              })
-                .then(async () => {
-                    await markSold(getMapIndexFromCountryId(countryId));
-                    return getCountryNameFromCountryId(countryId);
-                })
-                .then(async () => {
-                    // async (countryName) => {
-                    setloading(false);
-                    showModal(false);
-                    await data.refetch();
-                    reduxStore.dispatch(completedTx(event));
-                    // redirect(`/profile/${newOwnerId}#${countryName}`);
-                })
-                .catch(err => reduxStore.dispatch(ErrorTx(err)));
-          })
-          .on('error', error => reduxStore.dispatch(ErrorTx(error)));
-    };
+    // redeemCoupon = async (
+    //   value,
+    //   CountrySaleMethods,
+    //   buyNow,
+    //   markSold,
+    //   setloading,
+    //   showModal,
+    //   // redirect,
+    // ) => {
+    //     const {data} = this.props;
+    //     CountrySaleMethods.methods
+    //       .useCoupon(value)
+    //       .send()
+    //       .on('transactionHash', hash => reduxStore.dispatch(
+    //         startTx({
+    //             hash,
+    //             method: 'country',
+    //         }),
+    //       ));
+    //
+    //     await CountrySaleMethods.events
+    //       .CouponConsumed()
+    //       .on('data', async (event) => {
+    //
+    //           const {returnValues} = event;
+    //           const {plots, _by, _tokenId} = returnValues;
+    //           const newOwnerId = _by
+    //             .split('')
+    //             .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
+    //             .join('');
+    //           const countryId = Number(_tokenId);
+    //           const totalPlots = Number(plots);
+    //           const countryMapIndex = getMapIndexFromCountryId(countryId);
+    //           const country = await getCountryDetailsFromFirebase(countryMapIndex);
+    //
+    //           buyNow({
+    //               variables: {
+    //                   id: getCountryNameFromCountryId(countryId),
+    //                   newOwnerId,
+    //                   price: 0,
+    //                   timeOfPurchase: Date.now(),
+    //                   totalPlots,
+    //                   imageLinkLarge: country.imageLinkLarge,
+    //                   imageLinkMedium: country.imageLinkMedium,
+    //                   imageLinkSmall: country.imageLinkSmall,
+    //                   countryId: country.countryId,
+    //                   mapIndex: country.mapIndex,
+    //                   roi: country.roi,
+    //               },
+    //           })
+    //             .then(async () => {
+    //                 await markSold(getMapIndexFromCountryId(countryId));
+    //                 return getCountryNameFromCountryId(countryId);
+    //             })
+    //             .then(async () => {
+    //                 // async (countryName) => {
+    //                 setloading(false);
+    //                 showModal(false);
+    //                 await data.refetch();
+    //                 reduxStore.dispatch(completedTx(event));
+    //                 // redirect(`/profile/${newOwnerId}#${countryName}`);
+    //             })
+    //             .catch(err => reduxStore.dispatch(ErrorTx(err)));
+    //       })
+    //       .on('error', error => reduxStore.dispatch(ErrorTx(error)));
+    // };
 
     redirect = redirectPath => this.setState({redirectPath});
 
@@ -495,7 +505,8 @@ class Dashboard extends Component {
             CountrySale,
           userBalance,
           handleUseCoupon,
-          userExists
+          userExists,
+          userCountries
         } = this.props;
 
         const {
@@ -562,7 +573,7 @@ class Dashboard extends Component {
                       <EnhancedCoupon
                         handleRedemption={handleUseCoupon}
                         redirect={this.redirect}
-                        userId={data && data.userId}
+                        //userId={data && data.userId}
                       >
                           Redeem Coupon
                       </EnhancedCoupon>
@@ -636,33 +647,28 @@ class Dashboard extends Component {
                         role="button"
                         onClick={() => this.setState({tab: 2})}
                         className={`h-100 flex aic white ${!(
-                          data
-                          && data.user
-                          && data.user.countries.length > 0
+                          userCountries
                         ) && ' o-50'}`}
                       >
                 <img src={Land} alt="" className="h2 w-auto pr2"/>
                           {// eslint-disable-next-line
-                              data && data.user && data.user.countries.length === 0 ? (
-                                0
-                              ) : data && data.user && data.user.countries.length > 0 ? (
-                                data.user.countries.length
-                              ) : (
+                              !userCountries ? (
                                 <Icon type="loading" theme="outlined"/>
-                              )}
+                              ) : userCountries.length
+                          }
                           {' '}
                           Countries
               </span>
                     )}
                     disabled={
-                        !(data && data.user && data.user.countries.length >= 0)
-                        || data.user.countries.length === 0
+                        !(userCountries)
+                        || userCountries.length === 0
                     }
 
                     key="2"
                   >
                       <CountryDashboard
-                        countries={data && data.user && data.user.countries}
+                        userCountryIdList={userCountries}
                         userId={match.params.userId}
                       />
                   </TabPane>
@@ -718,6 +724,7 @@ const actions = {
     handleGetUserBalance: getUserBalance,
     handleUseCoupon: useCoupon,
     handleShowSignInBox: () => ({ type: 'SHOW_SIGN_IN_BOX' }),
+    handleGetUserCountries: getUserCountries,
 };
 
 export default compose(
@@ -726,15 +733,15 @@ export default compose(
     select,
     actions,
   ),
-  graphql(USER_COUNTRIES, {
-      options: props => ({
-          variables: {
-              id: props.match.params.userId
-                .split('')
-                .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
-                .join(''),
-          },
-      }),
-  }),
+  // graphql(USER_COUNTRIES, {
+  //     options: props => ({
+  //         variables: {
+  //             id: props.match.params.userId
+  //               .split('')
+  //               .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
+  //               .join(''),
+  //         },
+  //     }),
+  // }),
   //withStateMachine(stateMachine),
 )(Dashboard);

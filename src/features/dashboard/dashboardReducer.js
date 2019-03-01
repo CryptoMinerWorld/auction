@@ -1,5 +1,5 @@
 import {
-    DASHBOARD_WAS_FILTERED, FETCH_GEMS_PAGE_IMAGES,
+    DASHBOARD_WAS_FILTERED, FETCH_GEMS_PAGE_IMAGES, FETCH_USER_COUNTRIES,
     FETCH_USER_DETAILS_BEGUN,
     FETCH_USER_DETAILS_FAILED,
     FETCH_USER_DETAILS_SUCCEEDED,
@@ -45,6 +45,10 @@ export default function dashboardReducer(
         const paginated = action.payload.length > 15 ? action.payload.slice(0, 15) : action.payload;
         //userGemsPage: paginated
         return {...state, userGems: action.payload, userGemsFiltered: action.payload, updateImages: true, gemsLoading: false};
+    }
+
+    if (action.type === FETCH_USER_COUNTRIES) {
+        return {...state, userCountries: action.payload.userCountries};
     }
 
     if (action.type === NO_USER_EXISTS) {

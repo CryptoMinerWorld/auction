@@ -67,18 +67,21 @@ export const handleResell = (
     });
 };
 
-export const checkIfCountryIsForSale = countryId => store
-  && store.getState().app.countryContractInstance
-  && store
-    .getState()
-    .app.countryContractInstance.methods.ownerOf(countryId)
-    .call({}, (error, address) => {
-      if (address) {
-        console.log('country already sold', countryId);
-        return false;
-      }
+export const checkIfCountryIsForSale = countryId => {
+  console.log('STORE:', store.getState());
+  return store
+    && store.getState().app.countryContractInstance
+    && store
+      .getState()
+      .app.countryContractInstance.methods.ownerOf(countryId)
+      .call({}, (error, address) => {
+          if (address) {
+              console.log('country already sold', countryId);
+              return false;
+          }
 
-      console.log('country is for sale', countryId);
+          console.log('country is for sale', countryId);
 
-      return true;
-    });
+          return true;
+      });
+}

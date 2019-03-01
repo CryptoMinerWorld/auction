@@ -23,10 +23,10 @@ const CountryDetails = ({
       <div className="w-50-ns w-100">
         <h1 className="white f1 b">{name}</h1>
 
-        <small className="pb3">
-          Owned for
-          {` ${formatDistance(new Date(lastBought), new Date())}`}
-        </small>
+        {/*<small className="pb3">*/}
+          {/*Owned for*/}
+          {/*{` ${formatDistance(new Date(lastBought), new Date())}`}*/}
+        {/*</small>*/}
 
         <div className="flex aie jcb white">
           <div className="">

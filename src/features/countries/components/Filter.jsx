@@ -183,11 +183,12 @@ class Filter extends Component {
 
 // pollInterval
 const EnhancedFilter = props => (
-  <Query query={MAP_COUNTRY_DATA}>
-    {({ data, loading }) => (
-      <Filter cities={data ? data.mapCountries : props.countryData} {...props} loading={loading} />
-    )}
-  </Query>
+  <Filter cities={props.countryData} {...props} />
+  // <Query query={MAP_COUNTRY_DATA}>
+  //   {({ data, loading }) => (
+  //     <Filter cities={data ? data.mapCountries : props.countryData} {...props} loading={loading} />
+  //   )}
+  // </Query>
 );
 
 export default EnhancedFilter;
@@ -196,7 +197,6 @@ Filter.propTypes = {
   addToCart: PropTypes.func.isRequired,
   cities: PropTypes.arrayOf(PropTypes.shape({})),
   handleCityClick: PropTypes.func.isRequired,
-  loading: PropTypes.bool.isRequired,
   setHoverCountry: PropTypes.func.isRequired,
 };
 

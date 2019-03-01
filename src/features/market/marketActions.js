@@ -37,20 +37,13 @@ export const getAuctions = () => async (dispatch, getState) => {
     try {
         const zeroAddress = "0x0000000000000000000000000000000000000000";
         const auctionGems = await auctionService.getAuctionOwnerGems(zeroAddress);
-
-        console.log('222222 FETCH!');
-
-        //dispatch({type: FETCH_USER_GEMS_SUCCEEDED});
-        console.warn('AUCTION_GEMS: ', auctionGems);
-        //console.warn('NOTAUCTIONGEMS:', notAuctionOwnerGems);
-
+        console.warn('*********** AUCTION_GEMS ************: ', auctionGems);
         dispatch({ type: NEW_AUCTIONS_RECEIVED, payload: auctionGems });
     }
     catch (e) {
         console.error("Get user gems failed: ", e);
         dispatch({type: FETCH_NEW_AUCTIONS_FAILED, payload: e});
     }
-
 };
 
 

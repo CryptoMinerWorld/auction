@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import {connect} from 'react-redux';
 // import PropTypes from 'prop-types';
 import Icon from 'antd/lib/icon';
 import Cart from './components/Cart';
@@ -11,12 +12,47 @@ import MapPageDetails from './components/MapPageDetails';
 // import countryDatum from './components/countryData';
 import { checkIfCountryIsForSale } from './helpers';
 
-const CountryAuction = () => {
+const select = store => ({
+  countryService: store.app.countryServiceInstance
+});
+
+const CountryAuction = ({countryService}) => {
+  console.log('COUNTRY SERVICE:',countryService);
   const [countryData, setCountryData] = useState([]);
   useEffect(() => {
-    rtdb.ref('/worldMap').on('value', snap => snap && setCountryData(snap.val()));
+    console.log('1111');
+    if (!countryService) {return }
+
+    rtdb.ref('/worldMap').on('value', async snap => {
+      console.log('COUNTRY SNAP:::', snap.val());
+
+      const tokenMapString = await countryService.getTokenSoldMap();
+
+      console.log('TOKEN MAP STRING:::', tokenMapString);
+
+      const countryDataSnap = snap.val();
+      countryDataSnap.objects.units.geometries.forEach((country) => {
+        if (country.properties.countryId !== 200)
+        country.properties.sold = tokenMapString.charAt(192 - country.properties.countryId) !== '0';
+      });
+
+
+//         COUNTRY SNAP:::
+//         {…}
+// ​          objects: {…}
+// ​​             units: {…}
+// ​​                geometries: (241) […]
+//     ​​​​                 [0…99]
+//     ​​​​​                    0: {…}
+// ​​​​​​                             arcs: Array [ (1) […] ]
+//     ​​​​​​                         properties: {…}
+
+
+
+      snap && setCountryData(countryDataSnap)
+    });
     return () => rtdb.ref('/worldMap').off();
-  }, []);
+  }, [countryService]);
 
   // eslint-disable-next-line
   const markSold = countryId => rtdb.ref(`/worldMap/objects/units/geometries/${countryId}/properties`).update({ sold: true });
@@ -117,7 +153,7 @@ const CountryAuction = () => {
   );
 };
 
-export default CountryAuction;
+export default connect(select)(CountryAuction);
 
 // CountryAuction.propTypes = {
 //   countryFilterData: PropTypes.arrayOf(PropTypes.shape({})).isRequired,

@@ -1,99 +1,111 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import { State, withStateMachine } from 'react-automata';
-import NoCountries from './NoCountries';
 import CountryDisplay from './CountryDisplay';
+import {graphql} from 'react-apollo';
+import {MAP_COUNTRY_DATA} from "../../queries";
 
-const statechart = {
-  initial: 'noMetamask',
-  states: {
-    noMetamask: {
-      on: {
-        COUNTRIES: 'countries',
-        NO_COUNTRIES: 'noCountries',
-        NO_ACCOUNT: 'noAccount',
-        NO_METAMASK: 'noMetamask',
-      },
-    },
-    countries: {
-      on: {
-        COUNTRIES: 'countries',
-        NO_COUNTRIES: 'noCountries',
-        NO_ACCOUNT: 'noAccount',
-        NO_METAMASK: 'noMetamask',
-      },
-    },
-    noCountries: {
-      on: {
-        COUNTRIES: 'countries',
-        NO_COUNTRIES: 'noCountries',
-        NO_ACCOUNT: 'noAccount',
-        NO_METAMASK: 'noMetamask',
-      },
-    },
-    noAccount: {
-      on: {
-        COUNTRIES: 'countries',
-        NO_COUNTRIES: 'noCountries',
-        NO_ACCOUNT: 'noAccount',
-        NO_METAMASK: 'noMetamask',
-      },
-    },
-  },
-};
+// const statechart = {
+//   initial: 'noMetamask',
+//   states: {
+//     noMetamask: {
+//       on: {
+//         COUNTRIES: 'countries',
+//         NO_COUNTRIES: 'noCountries',
+//         NO_ACCOUNT: 'noAccount',
+//         NO_METAMASK: 'noMetamask',
+//       },
+//     },
+//     countries: {
+//       on: {
+//         COUNTRIES: 'countries',
+//         NO_COUNTRIES: 'noCountries',
+//         NO_ACCOUNT: 'noAccount',
+//         NO_METAMASK: 'noMetamask',
+//       },
+//     },
+//     noCountries: {
+//       on: {
+//         COUNTRIES: 'countries',
+//         NO_COUNTRIES: 'noCountries',
+//         NO_ACCOUNT: 'noAccount',
+//         NO_METAMASK: 'noMetamask',
+//       },
+//     },
+//     noAccount: {
+//       on: {
+//         COUNTRIES: 'countries',
+//         NO_COUNTRIES: 'noCountries',
+//         NO_ACCOUNT: 'noAccount',
+//         NO_METAMASK: 'noMetamask',
+//       },
+//     },
+//   },
+// };
 
 class CountryDashboard extends Component {
-  static propTypes = {
-    countries: PropTypes.arrayOf(PropTypes.shape({})),
-    transition: PropTypes.func.isRequired,
-    userId: PropTypes.string.isRequired,
-  };
+    static propTypes = {
+        userId: PropTypes.string.isRequired,
+    };
 
-  static defaultProps = {
-    countries: [],
-  };
+    static defaultProps = {
+        userCountryIdList: [],
+    };
 
-  componentDidMount() {
-    const {
-      transition,
+    componentDidMount() {
+        const {
+        } = this.props;
 
-      countries,
-    } = this.props;
-
-    if (!countries || countries.length === 0) {
-      transition('NO_COUNTRIES');
-    } else {
-      transition('COUNTRIES');
+        // if (!countries || countries.length === 0) {
+        //   transition('NO_COUNTRIES');
+        // } else {
+        //   transition('COUNTRIES');
+        // }
     }
-  }
 
-  componentDidUpdate(prevProps) {
-    const { countries, transition } = this.props;
+    componentDidUpdate(prevProps) {
+        const {data, userCountryIdList, userCountries, transition} = this.props;
+        console.log('COUNTRY DASHBOARD PROPS', this.props);
 
-    if (prevProps.countries !== countries) {
-      if (!countries || countries.length === 0) {
-        transition('NO_COUNTRIES');
-      } else {
-        transition('COUNTRIES');
-      }
+        // if (data && (userCountryIdList !== prevProps.userCountryIdList || prevProps.data.mapCountries !== data.mapCountries)) {
+        //     let userCountries = [];
+        //
+        //     this.setState({
+        //         userCountries: userCountries,
+        //     })
+        // }
+
+        // if (prevProps.countries !== countries) {
+        //   if (!countries || countries.length === 0) {
+        //     transition('NO_COUNTRIES');
+        //   } else {
+        //     transition('COUNTRIES');
+        //   }
+        // }
     }
-  }
 
-  render() {
-    const { countries, userId } = this.props;
+    render() {
+        const {userCountryIdList, userId, data} = this.props;
 
-    return (
-      <div className="pa0">
-        <State is="noCountries">
-          <NoCountries />
-        </State>
+        let userCountries = [];
+        if (data && data.mapCountries && userCountryIdList.length > 0) {
+            userCountries = data.mapCountries.filter((country =>
+                userCountryIdList.includes(country.countryId)
+            ))
+            userCountries.forEach((country) => {
+                country.plotsBought = 0;
+                country.plotsMined = 0;
+                country.plotsAvailable = country.plots;
+                country.totalPlots = country.plots;
+                country.lastPrice = country.price;
+            })
+        }
 
-        <State is="countries">
-          <CountryDisplay countries={countries} userId={userId} />
-        </State>
-      </div>
-    );
-  }
+        return (
+          <div className="pa0">
+              <CountryDisplay countries={userCountries} userId={userId}/>
+          </div>
+        );
+    }
 }
 
-export default withStateMachine(statechart)(CountryDashboard);
+export default graphql(MAP_COUNTRY_DATA)(CountryDashboard);

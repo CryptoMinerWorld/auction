@@ -45,25 +45,29 @@ const Card = styled.aside`
   clip-path: polygon(5% 0%, 95% 0%, 100% 5%, 100% 95%, 95% 100%, 5% 100%, 0% 95%, 0% 5%);
 `;
 
-const select = store => ({
-    auctions: store.market.auctions,
-    auctionsFiltered: (store.market.auctionsFiltered && store.market.auctionsFiltered.length > 0) ?
-      store.market.auctionsFiltered :
-      store.market.auctions,
-    loading: store.market.auctions ? store.market.auctionsLoading : true,
-    error: store.marketActions.error,
-    totalGems: store.market.auctions && store.market.auctions.length,
-    paginated: store.market.paginated ? store.market.paginated :
-        (store.market.auctionsFiltered && store.market.auctionsFiltered.length > 0) ?
-          store.market.auctionsFiltered.slice(store.marketActions.start, store.marketActions.end) :
-          store.market.auctions.slice(store.marketActions.start, store.marketActions.end),
-    pageNumber: store.marketActions.page,
-    needToLoadImages: store.market.updateImages,
-    dutchContract: store.app.dutchContractInstance,
-    gemContractAddress: store.app.gemsContractInstance && store.app.gemsContractInstance._address,
-    gemService: store.app.gemServiceInstance,
-    auctionService: store.app.auctionServiceInstance,
-});
+const select = store => {
+    console.log(' ************* STORE ************* ', store);
+    return ({
+        auctions: store.market.auctions,
+        auctionsFiltered: (store.market.auctionsFiltered && store.market.auctionsFiltered.length > 0) ?
+          store.market.auctionsFiltered :
+          store.market.auctions,
+        loading: store.market.auctions ? store.market.auctionsLoading : true,
+        error: store.marketActions.error,
+        totalGems: store.market.auctions && store.market.auctions.length,
+        //store.market.paginated ? store.market.paginated
+        paginated:
+          (store.market.auctionsFiltered && store.market.auctionsFiltered.length > 0) ?
+            store.market.auctionsFiltered.slice(store.marketActions.start, store.marketActions.end) :
+            store.market.auctions.slice(store.marketActions.start, store.marketActions.end),
+        pageNumber: store.marketActions.page,
+        needToLoadImages: store.market.updateImages,
+        dutchContract: store.app.dutchContractInstance,
+        gemContractAddress: store.app.gemsContractInstance && store.app.gemsContractInstance._address,
+        gemService: store.app.gemServiceInstance,
+        auctionService: store.app.auctionServiceInstance,
+    });
+}
 
 
 class Marketplace extends React.Component {
@@ -77,20 +81,15 @@ class Marketplace extends React.Component {
     }
 
     componentDidMount() {
-
         const {auctionService, handleGetAuctions, handlePagination} = this.props;
-
         if (auctionService) {
             handleGetAuctions();
             handlePagination(1, 15);
         }
     }
 
-
     componentDidUpdate(prevProps) {
-
         console.log('PROPS: ', this.props);
-
         const {auctionService, handleGetAuctions, handlePagination, needToLoadImages, pageNumber, paginated, handleGetImagesForGems} = this.props;
         const {imagesLoadingStarted} = this.state;
 
@@ -104,20 +103,13 @@ class Marketplace extends React.Component {
         }
 
         if (!imagesLoadingStarted && auctionService && paginated && (paginated.length > 0) && (needToLoadImages || pageNumber !== prevProps.pageNumber)) {
-            //console.log('GET IMAGES! 1');
             this.setState({imagesLoadingStarted: true});
-            //console.log('GET IMAGES! 2');
             handleGetImagesForGems(paginated);
         }
-
-
     }
 
-
     render() {
-
         console.warn('RENDER PROPS: ', this.props);
-
         const {
             loading,
             paginated,
@@ -127,6 +119,9 @@ class Marketplace extends React.Component {
             handlePreLoadAuctionPage,
           auctionsFiltered,
         } = this.props;
+
+        console.log('AUCTIONS FILTERED LENGTH:', auctionsFiltered.length);
+        console.log('PAGINATED:', paginated);
 
         return (
           <div className="bg-off-black white pa4 " data-testid="market-page">
@@ -141,22 +136,23 @@ class Marketplace extends React.Component {
                       <SortBox/>
                       <CardBox>
                           {loading && [1, 2, 3, 4, 5, 6].map(num => <LoadingCard key={num}/>)}
-                          {paginated && paginated.length > 0 ? (
-                            paginated.map(auction => (
-                              <Link
-                                to={`/gem/${auction.id}`}
-                                key={auction.id}
-                                onClick={() => handlePreLoadAuctionPage(auction)}
-                              >
-                                  <Cards auction={auction}/>
-                              </Link>
-                            ))
-                          ) : (
-                            !loading ?
+                          {!loading && (
+                            paginated && paginated.length > 0 ? (
+                                paginated.map(auction => (
+                                  <Link
+                                    to={`/gem/${auction.id}`}
+                                    key={auction.id}
+                                    onClick={() => handlePreLoadAuctionPage(auction)}
+                                  >
+                                      <Cards auction={auction}/>
+                                  </Link>
+                                ))
+                              )
+                          :
                             <Card className="bg-dark-gray h5 flex x wrap">
                                 <p className="f4 tc">No Auctions Available.</p>
-                            </Card> : ""
-                          )}
+                            </Card>)
+                          }
                       </CardBox>
                       <div className="w-100 tc pv4">
                           <Pagination
