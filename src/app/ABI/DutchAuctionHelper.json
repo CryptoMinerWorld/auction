@@ -21,7 +21,7 @@
       "outputs": [
         {
           "name": "",
-          "type": "uint240[]"
+          "type": "uint256[]"
         }
       ],
       "payable": false,
@@ -44,30 +44,7 @@
       "outputs": [
         {
           "name": "",
-          "type": "uint240[]"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "auction",
-          "type": "address"
-        },
-        {
-          "name": "token",
-          "type": "address"
-        }
-      ],
-      "name": "getCountryCollectionByOwner",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint200[]"
+          "type": "uint256[]"
         }
       ],
       "payable": false,
@@ -94,7 +71,30 @@
       "outputs": [
         {
           "name": "",
-          "type": "uint200[]"
+          "type": "uint224[]"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "auction",
+          "type": "address"
+        },
+        {
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "getAllCountries",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint224[]"
         }
       ],
       "payable": false,
@@ -142,6 +142,37 @@
         {
           "name": "p",
           "type": "uint128"
+        },
+        {
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "auction",
+          "type": "address"
+        },
+        {
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "name": "tokenId",
+          "type": "uint32"
+        }
+      ],
+      "name": "getSaleStatusPacked",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint184"
         }
       ],
       "payable": false,
@@ -204,5 +235,5 @@
     }
   ],
   "schemaVersion": "2.0.0",
-  "updatedAt": "2019-02-27T15:48:22.845Z"
+  "updatedAt": "2019-03-05T12:07:29.321Z"
 }

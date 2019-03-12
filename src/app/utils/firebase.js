@@ -19,8 +19,6 @@ export const storage = firebase.storage();
 export const rtdb = firebase.database();
 // eslint-disable-next-line
 export let db = firebase.firestore();
-const settings = { timestampsInSnapshots: true };
-db.settings(settings);
 
 // const firestore = new Firestore();
 //   const settings = {/* your settings... */ timestampsInSnapshots: true};

@@ -12,6 +12,7 @@ import buyNowImage from "../../app/images/pinkBuyNowButton.png";
 import {
     buyGeode,
     getBoxesAvailableData,
+    getChestValue,
     getGeodesData,
     getSaleState,
     getUserBalance,
@@ -19,7 +20,6 @@ import {
 } from "./saleActions";
 import {withRouter} from "react-router-dom";
 import {parseSaleEventData} from "../../app/services/SilverGoldService";
-import {Spring} from "react-spring";
 import CountdownTimer from "./components/CountdownTimer";
 
 import tableReferralPoints from '../../app/images/sale/tableReferralPoints.png';
@@ -30,17 +30,18 @@ import tableSilverAmounts from '../../app/images/sale/tableSilverAmounts.png';
 import tableSilverGoldDropRates from '../../app/images/sale/tableSilverGoldDropRates.png';
 import upArrow from '../../app/images/sale/upMagentaArrow.png';
 import downArrow from '../../app/images/sale/downMagentaArrow.png';
-import Loading from "../../components/Loading";
-import {showSignInModal} from "../auth/authActions";
-import {handleBuyNow} from "../items/itemActions";
+import foundersChest from '../../app/images/sale/foundersChest.png';
+
 
 const select = store => ({
     silverGoldService: store.app.silverGoldServiceInstance,
+    presaleContract: store.app.presaleContractInstance,
     currentUserId: store.auth.currentUserId,
     saleState: store.sale.saleState,
     userBalance: store.sale.balance,
     provider: store.auth.web3 && store.auth.web3.currentProvider,
     accountExists: store.auth.existingUser,
+    chestValue: store.sale.chestValue
 });
 
 class Sale extends Component {
@@ -70,7 +71,10 @@ class Sale extends Component {
 
     async componentDidMount() {
         console.log(888888888888, ' PROPS: ', this.props);
-        const {handleGetBoxesAvailable, handleUpdateSaleState, handleGetSaleState, silverGoldService, currentUserId, handleGetUserBalance} = this.props;
+        const {
+            handleGetBoxesAvailable, handleUpdateSaleState, handleGetSaleState, silverGoldService,
+            currentUserId, handleGetUserBalance, presaleContract, handleGetChestValue
+        } = this.props;
 
         this.interval = setInterval(
           () => this.setState({
@@ -82,6 +86,10 @@ class Sale extends Component {
         this.setState({
             currentTime: new Date().getTime()
         });
+
+        if (presaleContract) {
+            handleGetChestValue();
+        }
 
         if (silverGoldService) {
             silverGoldService.saleContract.events.SaleStateChanged({
@@ -103,11 +111,19 @@ class Sale extends Component {
     }
 
     async componentDidUpdate(prevProps) {
-        const {handleGetUserBalance, silverGoldService, currentUserId, handleUpdateSaleState, handleGetSaleState, saleState, userBalance} = this.props;
+        const {
+            handleGetUserBalance, silverGoldService, currentUserId, handleUpdateSaleState, handleGetSaleState,
+            saleState, userBalance, presaleContract, handleGetChestValue
+        } = this.props;
         const {silverAvailable, goldAvailable} = this.state;
 
         console.log('11111 PROPS: ', this.props);
         console.log('22222 PROPS: ', prevProps);
+
+        if (presaleContract && presaleContract !== prevProps.presaleContract) {
+            handleGetChestValue();
+        }
+
         if (silverGoldService && (prevProps.silverGoldService !== silverGoldService)) {
 
             silverGoldService.saleContract.events.SaleStateChanged({
@@ -125,7 +141,7 @@ class Sale extends Component {
             handleGetSaleState();
         }
 
-        if (silverGoldService && currentUserId && (silverGoldService !== prevProps.silverGoldService || currentUserId  !== prevProps.currentUserId)) {
+        if (silverGoldService && currentUserId && (silverGoldService !== prevProps.silverGoldService || currentUserId !== prevProps.currentUserId)) {
 
             let referrer = silverGoldService.getReferralId(this.props.location.search);
             console.log('Saved referrer: ', referrer);
@@ -275,7 +291,10 @@ class Sale extends Component {
             '2': 200,
         }
 
-        const {handleConfirmBuy, saleState, userBalance, windowWidth, currentUserId, provider, accountExists, handleShowSignInBox} = this.props;
+        const {
+            handleConfirmBuy, saleState, userBalance, windowWidth, currentUserId, provider, accountExists,
+            handleShowSignInBox, chestValue
+        } = this.props;
         const {referrer, currentTime, smallScreen} = this.state;
 
         const price = (type, amount) => {
@@ -301,7 +320,8 @@ class Sale extends Component {
         if (saleValue > 20) saleValue = 20;
 
         return (
-          <div className="bg-off-black white pa4" data-testid="market-page" style={{paddingTop:'0px'}}>
+          <div className="bg-off-black white" data-testid="market-page"
+               style={{paddingTop: '0px', padding: '0 20px 20px'}}>
               {this.state.proceedBuy ?
                 <div style={fixedOverlayStyle}
                      onClick={() => this.setState({proceedBuy: false})}>
@@ -315,7 +335,48 @@ class Sale extends Component {
                 </div> : ""
               }
               <div style={{display: 'flex', flexWrap: 'wrap-reverse'}}>
-                  <div style={{flex: '1'}}>
+                  <div style={{flex: '3', paddingTop: '20px', minWidth: '300px', display: 'flex',
+                      flexWrap: 'wrap', alignItems:'center', justifyContent:'center'}}>
+                      <div style={{maxWidth:'420px', alignSelf: 'flex-end'}}>
+                          <div style={{
+                              display: 'flex',
+                              alignItems: 'flex-end',
+                              flexWrap: 'wrap'
+                          }}>
+                              <img src={foundersChest} style={{
+                                  flex: '3',
+                                  minWidth: '125px',
+                                  maxWidth: '175px',
+                                  marginLeft: '-10px',
+                                  marginRight: '16px'
+                              }}/>
+                              <div style={{
+                                  minWidth: '180px',
+                                  flex: '4',
+                                  paddingBottom: '12px',
+                                  fontSize: '18px',
+                                  fontWeight: 'bold'
+                              }}>
+                                  <div style={{color: '#ff00ce'}}>{chestValue} ETH</div>
+                                  <div>In Founder's Chest</div>
+                              </div>
+                          </div>
+                          <div><span style={{color: '#ff00ce'}}>5%</span> of all sales go to the Founder's Chest!</div>
+                      </div>
+                      <div style={{
+                          fontSize: '14px',
+                          color: 'rgb(140, 160, 180)',
+                          marginTop: '10px',
+                          maxWidth: '500px',
+                          alignSelf: 'flex-start'
+                      }}>Don’t worry if you do not have any Founder’s Plots.
+                          Yes, they are the only way to find Founder’s
+                          Keys, which are the only thing that can open the
+                          Founder’s Chest. But you will be able
+                          to buy keys or even Founder’s Plots
+                          From other players in the market
+                          once mining starts!
+                      </div>
                       {/*<CountdownTimer message={<span style={{fontSize: '20px'}}>Sale started!</span>}*/}
                       {/*deadline={saleState['3'].saleStart}/>*/}
                       <p></p>
@@ -324,7 +385,7 @@ class Sale extends Component {
                       {/*deadline={saleState['3'].nextPriceTimestamp}/> : ""*/}
                       {/*}*/}
                   </div>
-                  <div style={{flex: '5'}}>
+                  <div style={{flex: '10'}}>
                       <div style={{
                           display: 'flex',
                           justifyContent: 'center',
@@ -336,7 +397,8 @@ class Sale extends Component {
                             }
                             : {...geodeBlockStyle, backgroundColor: '#2f353c'}}>
                               <p style={{marginBottom: '0.5em', fontSize: '24px'}}>Silver Geode</p>
-                              <img src={smallSilver} alt='geode image' style={{maxHeight: '155px', marginBottom: '5px'}}/>
+                              <img src={smallSilver} alt='geode image'
+                                   style={{maxHeight: '155px', marginBottom: '5px'}}/>
                               <p>{saleState['0'].currentPrice} ETH {/*or {referralPointsPrices['0']} referral
                                points*/}</p>
                               <p style={{flexGrow: '1'}}>20-30 <span style={silverColor}> Silver </span> pieces</p>
@@ -386,7 +448,8 @@ class Sale extends Component {
                             }
                             : {...geodeBlockStyle}}>
                               <p style={{marginBottom: '0.5em', fontSize: '24px'}}>Rotund Silver Geode</p>
-                              <img src={rotundSilver} alt='geode image' style={{maxHeight: '165px', marginBottom: '5px'}}/>
+                              <img src={rotundSilver} alt='geode image'
+                                   style={{maxHeight: '165px', marginBottom: '5px'}}/>
                               <p>{saleState['1'].currentPrice} ETH {/*or {referralPointsPrices['1']} referral
                                points*/}</p>
                               <p style={{flexGrow: '1'}}>70-90 <span style={silverColor}> Silver </span> pieces</p>
@@ -435,8 +498,10 @@ class Sale extends Component {
                                 backgroundColor: '#2f353c'
                             }
                             : {...geodeBlockStyle, backgroundColor: '#2f353c'}}>
-                              <p style={{marginBottom: '0.5em', fontSize: '24px'}}><span style={goldColor}>Goldish</span> Silver Geode</p>
-                              <img src={goldishSilver} alt='geode image' style={{maxHeight: '165px', marginBottom: '5px'}}/>
+                              <p style={{marginBottom: '0.5em', fontSize: '24px'}}><span
+                                style={goldColor}>Goldish</span> Silver Geode</p>
+                              <img src={goldishSilver} alt='geode image'
+                                   style={{maxHeight: '165px', marginBottom: '5px'}}/>
                               <p>{saleState['2'].currentPrice} ETH {/*or {referralPointsPrices['2']} referral
                                points*/}</p>
                               <div>100-200 <span style={silverColor}> Silver </span> pieces</div>
@@ -486,9 +551,21 @@ class Sale extends Component {
                       </div>
                   </div>
                   <div style={{flex: '1', minWidth: '260px'}}>
-                      <div className="flex-ns dn aic row tc jcs flex-wrap" style={{paddingLeft: '15px', paddingTop: '50px'}}>
+                      <div className="flex aic row tc jce flex-wrap-reverse"
+                           style={{paddingLeft: '15px', paddingTop: '50px'}}>
                           {currentUserId &&
-                          <div className="flex jcc" style={{maxWidth: '300px'}}>
+                          <div className="pr4">
+                              <CopyToClipboard
+                                text={"https://game.cryptominerworld.com/S_and_G_Sale?refId=" + currentUserId}
+                                onCopy={() => this.setState({copied: true})}>
+                                  <span
+                                    style={{cursor: 'pointer', textDecoration: 'underline'}}>Copy referral link</span>
+                              </CopyToClipboard>{this.state.copied ?
+                            <span style={{color: 'magenta'}}> copied!</span> : ""}
+                          </div>
+                          }
+                          {currentUserId &&
+                          <div className="flex jce flex-wrap" style={{maxWidth: '280px'}}>
                               <div className="flex col tc">
                                   <img src={Gold} alt="Gold" className="h3 w-auto ph3"/>
                                   {userBalance && userBalance.goldAvailable}
@@ -497,32 +574,20 @@ class Sale extends Component {
                                   <img src={Silver} alt="Silver" className="h3 w-auto ph3"/>
                                   {userBalance && userBalance.silverAvailable}
                               </div>
+                              <div className="pr4">
+                                  {!userBalance ? (
+                                    <p data-testid="loadingReferralPoints" className="tr o-50 white">
+                                        Loading Referral Points...
+                                    </p>
+                                  ) : (
+                                    <small data-testid="referralPoints" className="tr fr o-50 white">
+                                        {`${userBalance.referralPoints} REFERRAL ${
+                                          userBalance.referralPoints === 1 ? 'POINT' : 'POINTS'
+                                          } AVAILABLE `}
+                                    </small>
+                                  )}
+                              </div>
                           </div>}
-                          {currentUserId &&
-                          <Spring from={{opacity: 0}} to={{opacity: 1}} config={{delay: 1000}}>
-                              {props => (
-                                <div style={props} className="pr4">
-                                    {!userBalance ? (
-                                      <p data-testid="loadingReferralPoints" className="tr o-50 white">
-                                          Loading Referral Points...
-                                      </p>
-                                    ) : (
-                                      <small data-testid="referralPoints" className="tr fr o-50 white">
-                                          {`${userBalance.referralPoints} REFERRAL ${
-                                            userBalance.referralPoints === 1 ? 'POINT' : 'POINTS'
-                                            } AVAILABLE `}
-                                      </small>
-                                    )}
-                                    <CopyToClipboard
-                                      text={"https://game.cryptominerworld.com/S_and_G_Sale?refId=" + currentUserId}
-                                      onCopy={() => this.setState({copied: true})}>
-                                        <span style={{cursor: 'pointer', textDecoration: 'underline'}}>Copy referral link</span>
-                                    </CopyToClipboard>{this.state.copied ?
-                                  <span style={{color: 'magenta'}}> copied!</span> : ""}
-                                </div>
-                              )}
-                          </Spring>
-                          }
 
                           {saleState['3'] ?
                             saleState['3'].saleStart * 1000 > Math.round(new Date().getTime()) ?
@@ -546,7 +611,7 @@ class Sale extends Component {
                         <span style={{fontSize: '40px'}}> OFF!!!</span>
                     </div> : ""}
                   {(saleState['3'] && saleValue > 0) ?
-                    <div>Sale changing to <span style={{fontSize: '20px', color: '#ff00ce'}}> {saleValue- 1}% </span>
+                    <div>Sale changing to <span style={{fontSize: '20px', color: '#ff00ce'}}> {saleValue - 1}% </span>
                         in <span style={{
                             fontSize: '20px',
                             color: '#ff00ce'
@@ -575,7 +640,7 @@ class Sale extends Component {
                       <h1 style={{color: 'white'}}>
                           What is this Silver and Gold Sale about?
                       </h1>
-                      <div style={{display: 'flex', flexWrap:'wrap'}}>
+                      <div style={{display: 'flex', flexWrap: 'wrap'}}>
                           <div style={{flex: '6', minWidth: '300px', paddingTop: '20px', paddingRight: '20px'}}>
                               <p>It is a way for you to get your hands on some Silver and Gold, of course! The right
                                   question
@@ -584,7 +649,7 @@ class Sale extends Component {
                                   to
                                   increase the level and the grade of your gems, respectfully. The higher the level the
                                   deeper
-                                  your Gem and mine. The higher the grade the faster it can do that mining! The best
+                                  your Gem can mine. The higher the grade the faster it can do that mining! The best
                                   loot is
                                   furthest down so you will really want to level up you Gems to max level (Level 5)</p>
                               <p>The Sale will run until every Geode has been sold. The 20% discount will decrease 1%
@@ -641,7 +706,8 @@ const actions = {
     handleUpdateSaleState: updateSaleState,
     handleGetSaleState: getSaleState,
     handleGetUserBalance: getUserBalance,
-    handleShowSignInBox: () => ({ type: 'SHOW_SIGN_IN_BOX' }),
+    handleGetChestValue: getChestValue,
+    handleShowSignInBox: () => ({type: 'SHOW_SIGN_IN_BOX'}),
 };
 
 export default compose(
@@ -670,7 +736,8 @@ export const ConfirmBuyPopup = ({type, amount, price, refPoints, refPointsAvaila
         //left: '0',
         //right: '0',
         //margin: 'auto',
-        width: '206px',
+        width: '182px',
+        height: '53px',
         textAlign: 'center',
         padding: '12px 0px',
         backgroundImage: 'url(' + buyNowImage + ')',
@@ -679,7 +746,10 @@ export const ConfirmBuyPopup = ({type, amount, price, refPoints, refPointsAvaila
         backgroundRepeat: 'no-repeat',
         cursor: 'pointer',
         color: 'white',
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        marginTop: '7px',
+        marginBottom: '7px',
+        fontSize: '16px'
     }
 
     const confirmButton2 = {
@@ -688,7 +758,8 @@ export const ConfirmBuyPopup = ({type, amount, price, refPoints, refPointsAvaila
         //left: '250px',
         //right: '0',
         //margin: 'auto',
-        width: '206px',
+        width: '182px',
+        height: '53px',
         textAlign: 'center',
         padding: '12px 0px',
         backgroundImage: 'url(' + buyNowImage + ')',
@@ -697,7 +768,9 @@ export const ConfirmBuyPopup = ({type, amount, price, refPoints, refPointsAvaila
         backgroundRepeat: 'no-repeat',
         cursor: 'pointer',
         color: 'white',
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        marginTop: '7px',
+        fontSize: '16px'
     }
 
 
@@ -712,46 +785,56 @@ export const ConfirmBuyPopup = ({type, amount, price, refPoints, refPointsAvaila
             cursor: 'default', color: 'white', fontWeight: 'bold'
         }}>
           <div>
-              <p style={{margin: '5px 0',
+              <p style={{
+                  margin: '5px 0',
                   borderBottom: '2px solid #ff00ce',
-                fontSize: '24px',
+                  fontSize: '24px',
                   textAlign: 'center'
               }}>{type}</p>
           </div>
-          <div style={{display: 'flex', flex:'1'}}>
-              <div style={{flex: '1',
+          <div style={{display: 'flex', flex: '1'}}>
+              <div style={{
+                  flex: '1',
                   display: 'flex',
                   justifyContent: 'center',
-                  alignItems: 'center'}}>
-                  {type === 'Silver Geode' ? <img src={smallSilver} style={{width:'80%'}}/> : ""}
-                  {type === 'Rotund Silver Geode' ? <img src={rotundSilver} style={{width:'80%'}}/> : ""}
-                  {type === 'Goldish Silver Geode' ? <img src={goldishSilver} style={{width:'80%'}}/> : ""}
+                  alignItems: 'center'
+              }}>
+                  {type === 'Silver Geode' ? <img src={smallSilver} style={{width: '80%'}}/> : ""}
+                  {type === 'Rotund Silver Geode' ? <img src={rotundSilver} style={{width: '80%'}}/> : ""}
+                  {type === 'Goldish Silver Geode' ? <img src={goldishSilver} style={{width: '80%'}}/> : ""}
               </div>
-              <div style={{flex: 1,
+              <div style={{
+                  flex: 1,
                   fontSize: '18px',
-                  paddingTop: '10px'}}>
+                  paddingTop: '10px'
+              }}>
                   <p>Count: {amount}</p>
-                  <p style={{margin:'0'}}>Total ETH: {price.ether}</p>
+                  <p style={{margin: '0'}}>Total ETH: {price.ether}</p>
                   <div
                     style={confirmButton1}
                     onClick={(e) => {
                         handleConfirmBuy(type, amount, price.ether, 0, referrer, hidePopup);
                     }}
                   >
-                      BUY WITH ETHER
+                      BUY WITH ETH
                   </div>
-                  {referrer ? referrer.startsWith('0x') ? <p style={{fontSize:'12px'}}> Referrer: {referrer}</p> : "some referral link was used" +
-                    " before" : ""}
-                  {refPointsAvailable >= price.points ? <p style={{margin:'10px 0 0'}}>Referral points: {price.points}</p> : ""}
+                  {referrer ? referrer.startsWith('0x') ? <p style={{fontSize: '12px'}}> Referrer: {referrer}</p> :
+                    <div style={{
+                        fontSize: '14px',
+                        lineHeight: '100%'
+                    }}>Account not eligible to use Referral codes.
+                        Account can give Referral code to others.</div> : ""}
+                  {refPointsAvailable >= price.points ?
+                    <p style={{margin: '10px 0 0'}}>Referral points: {price.points}</p> : ""}
                   {refPointsAvailable >= price.points ?
                     <div style={confirmButton2}
-                    onClick={(e) => {
-                        if (refPointsAvailable < price.points) return;
-                        handleConfirmBuy(type, amount, 0, price.points, referrer, hidePopup);
-                    }}
-                  >
-                      BUY WITH POINTS
-                  </div> : ""}
+                         onClick={(e) => {
+                             if (refPointsAvailable < price.points) return;
+                             handleConfirmBuy(type, amount, 0, price.points, referrer, hidePopup);
+                         }}
+                    >
+                        BUY WITH POINTS
+                    </div> : ""}
               </div>
           </div>
       </div>

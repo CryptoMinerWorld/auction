@@ -4,6 +4,8 @@ import {handleUpgradeNow} from "../itemActions";
 import silverUpgradePopup from "../../../app/images/sale/silverUpgradePopup.png";
 import goldUpgradePopup from "../../../app/images/sale/goldUpgradePopup.png";
 import buyNowImage from "../../../app/images/pinkBuyNowButton.png";
+import upArrow from '../../../app/images/sale/upMagentaArrow.png';
+import downArrow from '../../../app/images/sale/downMagentaArrow.png';
 
 export default class UpgradeComponent extends React.Component {
 
@@ -76,7 +78,6 @@ export default class UpgradeComponent extends React.Component {
             //backgroundColor: this.state.cost <= this.state.total ? 'magenta' : 'grey',
             backgroundImage: 'url(' + buyNowImage + ')',
             backgroundSize: 'cover',
-            cursor: 'pointer',
             color: 'white',
             fontWeight: 'bold',
         };
@@ -88,9 +89,22 @@ export default class UpgradeComponent extends React.Component {
             MozUserSelect: 'none',     /* Firefox all */
             MsUserSelect: 'none',    /* IE 10+ */
             userSelect: 'none',
-            marginTop: '-20px',
+            width: '50px',
+            height: '48px',
+            marginBottom: '20px'
         };
 
+        const upArrowButton = {
+            ...arrowButton,
+            backgroundImage: 'url(' + upArrow + ')',
+            backgroundSize: 'cover'
+        }
+
+        const downArrowButton = {
+            ...arrowButton,
+            backgroundImage: 'url(' + downArrow + ')',
+            backgroundSize: 'cover'
+        }
         //const [loading, setLoading] = useState(false);
 
         return (
@@ -108,13 +122,13 @@ export default class UpgradeComponent extends React.Component {
                     minHeight: metal === 'silver' ? '310px' : '352px',
                     padding: '10px 40px',
                 }}>
-                  <div style={{flex: '1', display: 'flex', justifyContent: 'flex-end', fontWeight: 'bold', alignItems: 'center'}}>
+                  <div style={{flex: '1', display: 'flex', justifyContent: 'center', fontWeight: 'bold', alignItems: 'center', minWidth: '160px'}}>
                       {metal === 'silver' ?
                         (<span style={{fontSize: '110px'}}>{this.state.level}</span>) : ""
                       }
                       {metal === 'gold' ?
                         (<div>
-                            <span style={{fontSize: '75px'}}>{this.gradeConverter(this.state.gradeType)}</span>
+                            <span style={{fontSize: '70px'}}>{this.gradeConverter(this.state.gradeType)}</span>
                               {this.state.gradeType > 6 ? <p style={{fontSize: '14px'}}>Upgrades rate randomly</p> : ""}
                         </div>) : ""
                       }
@@ -126,7 +140,10 @@ export default class UpgradeComponent extends React.Component {
                       justifyContent: 'center',
                       alignItems: 'center'
                   }}>
-                      <div style={arrowButton}
+                      <div style={{...upArrowButton,
+                          opacity: (metal === 'silver' && this.state.level < 5 || metal === 'gold' && this.state.gradeType < 6) ? "1" : "0.5",
+                          cursor: (metal === 'silver' && this.state.level < 5 || metal === 'gold' && this.state.gradeType < 6) ? 'pointer' : "default"
+                      }}
                            onClick={() => {
                                switch (metal) {
                                    case 'silver':
@@ -146,9 +163,13 @@ export default class UpgradeComponent extends React.Component {
                                        break;
                                }
                            }}>
-                          ▲
                       </div>
-                      <div style={arrowButton}
+                      <div style={{...downArrowButton,
+                          opacity: (metal === 'silver' && this.state.level > this.state.initialLevel + 1 ||
+                            metal === 'gold' && this.state.gradeType > this.state.initialGrade + 1) ? "1" : "0.5",
+                          cursor: (metal === 'silver' && this.state.level > this.state.initialLevel + 1 ||
+                            metal === 'gold' && this.state.gradeType > this.state.initialGrade + 1) ? 'pointer' : "default"
+                      }}
                            onClick={() => {
                                switch (metal) {
                                    case 'silver':
@@ -168,7 +189,8 @@ export default class UpgradeComponent extends React.Component {
                                        }
                                        break;
                                }
-                           }}>▼</div>
+                           }}>
+                      </div>
                   </div>
                   <div style={{flex: '3', flexDirection: 'column', display: 'flex'}}>
                       <div style={{
@@ -195,9 +217,12 @@ export default class UpgradeComponent extends React.Component {
                       <div style={{flex: '1'}}></div>
                   </div>
                   <div
-                    style={confirmButton}
+                    style={{...confirmButton,
+                        opacity: this.state.cost <= metalAvailable ? "1" : "0.5",
+                        cursor: this.state.cost <= metalAvailable ? 'pointer' : "default"
+                    }}
                     onClick={() => {
-                        if (this.state.loading) {
+                        if (this.state.loading || this.state.cost > metalAvailable) {
                             return;
                         }
                         this.setState({loading: true});

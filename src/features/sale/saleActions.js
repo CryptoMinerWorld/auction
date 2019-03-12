@@ -1,8 +1,9 @@
 import {completedTx, ErrorTx, startTx} from "../transactions/txActions";
 import {parseTransactionHashFromError} from "../transactions/helpers";
 import {BigNumber} from "bignumber.js";
-import {SALE_STATE_RECEIVED, USER_BALANCE_RECEIVED} from "./saleConstants";
+import {CHEST_VALUE_RECEIVED, SALE_STATE_RECEIVED, USER_BALANCE_RECEIVED} from "./saleConstants";
 import {utils} from "web3";
+import {weiToEth} from "./helpers";
 
 
 export const ONE_UNIT = 0.001;
@@ -58,6 +59,20 @@ export const buyGeode = (type, amount, etherUsed, referralPointsUsed, referrer, 
     console.log('TX RESULT AWAITED:', txResult);
 
 };
+
+export const getChestValue = () => async (dispatch, getState) => {
+    const preSaleContract = getState().app.presaleContractInstance;
+    const web3 = getState().app.web3;
+    const chestAddress = await preSaleContract.methods
+      .chestVault().call();
+    console.log('CHEST ADDRESS:', chestAddress);
+    const chestValue = weiToEth(await web3.eth.getBalance(chestAddress));
+    console.log('CHEST VALUE:', chestValue);
+    dispatch({
+        type: CHEST_VALUE_RECEIVED,
+        payload: chestValue
+    });
+}
 
 export const getUserBalance = (userId) => async (dispatch, getState) => {
 

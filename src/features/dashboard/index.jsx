@@ -532,7 +532,7 @@ class Dashboard extends Component {
                           {dashboardUser && dashboardUser.name || "Loading..."}
                       </h1>
                   </div>
-                  <div className="flex-ns dn col tc">
+                  <div className="flex col tc">
                           <div className="flex">
                               <div className="flex col tc">
                                   <img src={Gold} alt="Gold" className="h3 w-auto ph3"/>
@@ -688,9 +688,9 @@ class Dashboard extends Component {
                     tab={(
                       <span className="h-100 flex aic white o-50 ">
                 <img src={Plot} alt="" className="h2 w-auto pr2"/>
-                          {/*{plots}*/}
-                          {/*{' '}*/}
-                          0 Plots
+                          {plots}
+                          {' '}
+                          Plots
               </span>
                     )}
                     disabled

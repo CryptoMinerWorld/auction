@@ -208,15 +208,15 @@ class App extends Component {
           },
         );
 
-        // const silverCouponsContract = new web3.eth.Contract(
-        //   silverCouponsABI,
-        //   process.env.REACT_APP_SILVER_COUPONS,
-        //   {
-        //       from: currentAccountId,
-        //   },
-        // );
+        const silverCouponsContract = new web3.eth.Contract(
+          silverCouponsABI,
+          process.env.REACT_APP_SILVER_COUPONS,
+          {
+              from: currentAccountId,
+          },
+        );
 
-        const silverCouponsContract = {};
+        //const silverCouponsContract = {};
 
         Promise.all([
             dutchContract,

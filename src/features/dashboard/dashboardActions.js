@@ -35,8 +35,8 @@ export const getUserGems = ownerId => async (dispatch, getState) => {
     try {
         console.log('11111 FETCH!');
         const [notAuctionOwnerGems, auctionOwnerGems] = await Promise.all([
-              gemService.getOwnerGems(ownerId),
-              auctionService.getAuctionOwnerGems(ownerId)
+              gemService.getOwnerGems(userIdToLowerCase),
+              auctionService.getAuctionOwnerGems(userIdToLowerCase)
         ]);
 
         console.log('222222 FETCH!');
@@ -76,7 +76,7 @@ export const getUserDetails = async userId => {
         const userDetails = (await col).data();
         return userDetails || {name: "", imageURL: ""};
     } catch (err) {
-        console.log(err);
+        console.log(33333333333, err);
     }
 };
 

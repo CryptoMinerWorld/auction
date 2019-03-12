@@ -63,7 +63,7 @@ const fixedOverlayStyle = {
     zIndex: '10',
     display: 'flex',
     cursor: 'pointer',
-    backgroundColor: 'rgba(100,128,149,0.4)'
+    backgroundColor: 'rgba(0,0,0,0.5)'
 }
 
 const select = store => {
@@ -198,27 +198,32 @@ class TradingBox extends PureComponent {
                           ) : (
                             <div className="pa5 flex jcc col">
                                 <div>
+                                    <div>Auction duration:</div>
                                     <Input
                                       type="number"
-                                      placeholder="duration in days"
+                                      placeholder="From 0 to 1000 days"
                                       className="db"
                                       value={duration}
                                       onChange={e => this.handleChange(Number(e.target.value), 'duration')}
                                       data-testid="durationInputField"
                                       required
                                     />
+                                    <div>Start (max) price:</div>
                                     <Input
                                       type="number"
-                                      placeholder="Start price in ether"
+                                      step="0.001"
+                                      placeholder="From 0 to 1000 ETH (0.001 ETH step)"
                                       className="db"
                                       value={startPrice}
                                       onChange={e => this.handleChange(Number(e.target.value), 'startPrice')}
                                       data-testid="startPriceInputField"
                                       required
                                     />
+                                    <div>End (min) price:</div>
                                     <Input
                                       type="number"
-                                      placeholder="End price in ether"
+                                      step="0.001"
+                                      placeholder="Less than start price (0.001 ETH step)"
                                       className="db"
                                       value={endPrice}
                                       onChange={e => this.handleChange(Number(e.target.value), 'endPrice')}
@@ -233,9 +238,11 @@ class TradingBox extends PureComponent {
                                               !(
                                                 gem.id
                                                 && duration
+                                                  && duration < 1000
                                                 && startPrice
                                                 && startPrice > endPrice
-                                                && startPrice !== endPrice
+                                                && startPrice < 1001
+                                                && endPrice > 0
                                               )
                                           }
                                           onClick={() => {

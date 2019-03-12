@@ -1,7 +1,7 @@
 import {BigNumber} from "bignumber.js";
 import store from "../store";
 import {calculateGemName, calculateMiningRate, unpackGemProperties} from "./GemService";
-import {GWeiToEth} from "../../features/market/helpers";
+import {GWeiToEth, weiToEth} from "../../features/market/helpers";
 import {getUserDetails} from "../../features/dashboard/dashboardActions";
 
 
@@ -14,11 +14,12 @@ export default class AuctionService {
     }
 
     getAuctionOwnerGems = async (ownerId) => {
-
+        console.log('AUCTION CONTRACT:::::',this.auctionContract);
+        console.log('AUCTION CONTRACT:ADDR:',this.auctionContract.options.address);
         let auctionUserGems = [];
         if (ownerId !== "0x0000000000000000000000000000000000000000") {
             auctionUserGems = await this.auctionHelperContract.methods
-              .getGemCollectionByOwner(this.auctionContract._address, this.gemContract._address, ownerId).call();
+              .getGemCollectionByOwner(this.auctionContract.options.address, this.gemContract.options.address, ownerId).call();
 
             console.log('GEMS:', auctionUserGems);
             return auctionUserGems.map(packedGem => {
@@ -31,12 +32,11 @@ export default class AuctionService {
             const extendedAuctionGemList = await this.auctionHelperContract.methods
               .getAllGems(this.auctionContract._address, this.gemContract._address).call();
 
-            //let auctionUserGems = [];
-
             const auctionUserGems = extendedAuctionGemList.map(async (packedGem, index, initialList) => {
                 if (index % 2 === 0) {
+                    console.log('PACKED GEM:', packedGem);
                     let auctionGem = parseAuctionData(packedGem);
-                    auctionGem.owner = '0x'+new BigNumber(initialList[index+1]).toString(16);
+                    auctionGem.owner = '0x'+new BigNumber(initialList[index+1]).toString(16).padStart(40, '0');
                     console.log('USER ADDRESS:', auctionGem.owner);
                     const userDetails = await getUserDetails(auctionGem.owner);
                     console.log('USER DETAILS:', userDetails);
@@ -83,11 +83,10 @@ export default class AuctionService {
     }
 
     getTokenSaleStatus = async (tokenId) => {
-        return new BigNumber(
-          await (this.auctionContract.methods
-            .getTokenSaleStatus(this.gemContract._address, tokenId)
-            .call())
-        );
+        return await this.auctionHelperContract.methods
+            .getTokenSaleStatus(this.auctionContract._address, this.gemContract._address, tokenId)
+            .call()
+
     }
 
     getItem = async (tokenId) => {
@@ -111,20 +110,21 @@ export default class AuctionService {
 
     getGemAuctionData = async (tokenId) => {
 
-        const packed224uint = await this.getTokenSaleStatus(tokenId);
-
+        const tokenSaleStatusArray = await this.getTokenSaleStatus(tokenId);
+        console.log('TOKEN SALE STATUS ARRAY:', tokenSaleStatusArray);
         const gemAuctionData = {};
 
         //todo: get owner
-        if (packed224uint.isZero()) {
+        if (tokenSaleStatusArray['0'] === "0") {
             gemAuctionData.auctionIsLive = false;
         }
         else {
+            gemAuctionData.owner = tokenSaleStatusArray['6']; //await this.getPreviousOwner(tokenId);
             gemAuctionData.auctionIsLive = true;
-            gemAuctionData.deadline = packed224uint.dividedToIntegerBy(new BigNumber(2).pow(160)).modulo(0x100000000).toNumber();
-            gemAuctionData.maxPrice = GWeiToEth(packed224uint.dividedToIntegerBy(new BigNumber(2).pow(96)).modulo(0x100000000).toNumber());
-            gemAuctionData.minPrice = GWeiToEth(packed224uint.dividedToIntegerBy(new BigNumber(2).pow(64)).modulo(0x100000000).toNumber());
-            gemAuctionData.currentPrice = GWeiToEth(packed224uint.dividedToIntegerBy(new BigNumber(2).pow(32)).modulo(0x100000000).toNumber());
+            gemAuctionData.deadline = Number(tokenSaleStatusArray['1']);
+            gemAuctionData.maxPrice = weiToEth(Number(tokenSaleStatusArray['3']));
+            gemAuctionData.minPrice = weiToEth(Number(tokenSaleStatusArray['4']));
+            gemAuctionData.currentPrice = weiToEth(Number(tokenSaleStatusArray['5']));
         }
         return gemAuctionData;
 
@@ -161,25 +161,26 @@ export default class AuctionService {
 export const
   parseAuctionData = (auctionGem) => {
       const packed240uint = new BigNumber(auctionGem);
-      /*     gem id, 32 bits
-      *      gem color, 8 bits
-      *      gem level, 8 bits
-      *      gem grade type, 8 bits
-      *      gem grade value, 24 bits
-      *      auction start time (unix timestamp), 32 bits
-      *      auction end time (unix timestamp), 32 bits
-      *      starting price (Gwei), 32 bits
-      *      final price (Gwei), 32 bits
-      *      current price (Gwei), 32 bits
+      /*
+      *        gem id, 24 bits (truncated)
+      *        gem color, 8 bits
+      *        gem level, 8 bits
+      *        gem grade type, 8 bits
+      *        gem grade value, 24 bits
+      *        auction start time (unix timestamp), 32 bits
+      *        auction end time (unix timestamp), 32 bits
+      *        starting price (Gwei), 40 bits
+      *        final price (Gwei), 40 bits
+      *        current price (Gwei), 40 bits
       */
       const gem = {};
       gem.auctionIsLive = true;
-      gem.id = packed240uint.dividedToIntegerBy(new BigNumber(2).pow(8 * 3 + 24 + 32 * 5)).toNumber();
-      gem.deadline = packed240uint.dividedToIntegerBy(new BigNumber(2).pow(32 * 3)).modulo(0x100000000).toNumber();
-      gem.maxPrice = GWeiToEth(packed240uint.dividedToIntegerBy(new BigNumber(2).pow(32 * 2)).modulo(0x100000000).toNumber());
-      gem.minPrice = GWeiToEth(packed240uint.dividedToIntegerBy(new BigNumber(2).pow(32)).modulo(0x100000000).toNumber());
-      gem.currentPrice = GWeiToEth(packed240uint.modulo(0x100000000).toNumber());
-      const gemPackedProperties = packed240uint.dividedToIntegerBy(new BigNumber(2).pow(32 * 5)).modulo(new BigNumber(2).pow(48));
+      gem.id = packed240uint.dividedToIntegerBy(new BigNumber(2).pow(8 * 3 + 24 + 32 * 2 + 40*3)).toNumber();
+      gem.deadline = packed240uint.dividedToIntegerBy(new BigNumber(2).pow(40 * 3)).modulo(0x100000000).toNumber();
+      gem.maxPrice = GWeiToEth(packed240uint.dividedToIntegerBy(new BigNumber(2).pow(40 * 2)).modulo(0x10000000000).toNumber());
+      gem.minPrice = GWeiToEth(packed240uint.dividedToIntegerBy(new BigNumber(2).pow(40)).modulo(0x10000000000).toNumber());
+      gem.currentPrice = GWeiToEth(packed240uint.modulo(0x10000000000).toNumber());
+      const gemPackedProperties = packed240uint.dividedToIntegerBy(new BigNumber(2).pow(40 * 3 + 32*2)).modulo(new BigNumber(2).pow(48));
       const gemProperties = unpackGemProperties(gemPackedProperties);
 
       return {

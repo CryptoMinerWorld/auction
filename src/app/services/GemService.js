@@ -100,13 +100,16 @@ export default class GemService {
           .dividedToIntegerBy(new BigNumber(2).pow(152))
           .modulo(0x100000000).toNumber(), this.web3);
 
-        const owner = '0x'+low256.modulo(new BigNumber(2).pow(160)).toString(16);
+        const owner = '0x'+low256.modulo(new BigNumber(2).pow(160)).toString(16).padStart(40, "0");
+
+        console.log('unpack gem owner: ', owner);
+
         const creationTime = await transform(low256
           .dividedToIntegerBy(new BigNumber(2).pow(224)).modulo(0x100000000).toNumber(), this.web3);
 
         console.log(333333333, levelModifiedTime.timestamp, gradeModifiedTime.timestamp, creationTime.timestamp, Date.now());
 
-        return {color, level, gradeType, gradeValue, owner, creationTime: Math.max(creationTime.timestamp, gradeModifiedTime.timestamp, levelModifiedTime.timestamp)}
+        return {color: 7, level, gradeType, gradeValue, owner, creationTime: Math.max(creationTime.timestamp, gradeModifiedTime.timestamp, levelModifiedTime.timestamp)}
     }
 
     getGemAuctionIsLive = async (tokenId) => {
@@ -167,7 +170,7 @@ export const unpackGemProperties = (properties) => {
       .toNumber();
     const gradeValue = properties.modulo(0x1000000).toNumber();
 
-    return {color, level, gradeType, gradeValue}
+    return {color:7, level, gradeType, gradeValue}
 }
 
 export const getGemStory = async (gemProperties, tokenId) => {
@@ -227,10 +230,18 @@ export const getGemImage = async (gemProperties, tokenId) => {
     console.log('GET GEM IMAGE, gemProperties: ', gemProperties);
 
     const type = {
-        9: 'Sap',
-        10: 'Opa',
         1: 'Gar',
         2: 'Ame',
+        3: 'Aqu',
+        4: 'Dia',
+        5: 'Eme',
+        6: 'Pea',
+        7: 'Rub',
+        8: 'Per',
+        9: 'Sap',
+        10: 'Opa',
+        11: 'Top',
+        12: 'Tur',
     }[gemProperties.color];
 
     const gradeType = {

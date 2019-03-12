@@ -37,7 +37,7 @@ const select = store => {
     console.warn('GEM PAGE STORE: ', store);
     return {
         gem: store.auction.gem,
-          ownerData: store.auction.ownerData,
+          //ownerData: store.auction.ownerData,
       details: store.auction,
       //gemName: store.auction && calculateGemName(store.auction.color, store.auction.id),
       gemImage: store.auction && store.auction.gemImage,
@@ -306,6 +306,9 @@ const DisplayBoxStateMachine = (props) => {
         .split('')
         .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
         .join('');
+
+
+    console.log('Owner lower case:', ownerLowerCase);
 
     let state = 'viewer';
 
