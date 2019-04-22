@@ -74,6 +74,7 @@ export const filterMarketplaceResults = () => (dispatch, getState) => {
         || (state.gems.garnet && gem.color === 1)
         || (state.gems.sapphire && gem.color === 9)
         || (state.gems.opal && gem.color === 10)
+        || (state.gems.ruby && gem.color === 7)
       )
     );
     console.log('NEW MARKET::', newMarket);

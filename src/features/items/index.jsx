@@ -50,7 +50,7 @@ const select = store => {
       dutchContract: store.app.dutchContractInstance,
       gemService: store.app.gemServiceInstance,
       auctionService: store.app.auctionServiceInstance,
-      gemContractAddress: store.app.gemsContractInstance && store.app.gemsContractInstance._address,
+      gemContractAddress: store.app.gemsContractInstance && store.app.gemsContractInstance.options.address,
       silverContract: store.app.silverContractInstance,
       goldContract: store.app.goldContractInstance,
         userBalance: store.sale.balance,

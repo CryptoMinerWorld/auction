@@ -30,7 +30,7 @@ export default class AuctionService {
         }
         else {
             const extendedAuctionGemList = await this.auctionHelperContract.methods
-              .getAllGems(this.auctionContract._address, this.gemContract._address).call();
+              .getAllGems(this.auctionContract.options.address, this.gemContract.options.address).call();
 
             const auctionUserGems = extendedAuctionGemList.map(async (packedGem, index, initialList) => {
                 if (index % 2 === 0) {
@@ -84,27 +84,27 @@ export default class AuctionService {
 
     getTokenSaleStatus = async (tokenId) => {
         return await this.auctionHelperContract.methods
-            .getTokenSaleStatus(this.auctionContract._address, this.gemContract._address, tokenId)
+            .getTokenSaleStatus(this.auctionContract.options.address, this.gemContract.options.address, tokenId)
             .call()
 
     }
 
     getItem = async (tokenId) => {
         return await (this.auctionContract.methods
-            .items(this.gemContract._address, tokenId)
+            .items(this.gemContract.options.address, tokenId)
             .call()
         );
     }
 
     getPreviousOwner = async (tokenId) => {
         return (await this.auctionContract.methods
-          .owners(this.gemContract._address, tokenId)
+          .owners(this.gemContract.options.address, tokenId)
           .call())
     }
 
     getCurrentPrice = async (tokenId) => {
         return (await this.auctionContract.methods
-          .getCurrentPrice(this.gemContract._address, tokenId)
+          .getCurrentPrice(this.gemContract.options.address, tokenId)
           .call())
     }
 

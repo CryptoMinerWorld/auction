@@ -379,7 +379,7 @@
         },
         {
           "indexed": true,
-          "name": "_address",
+          "name": "options.address",
           "type": "address"
         }
       ],
@@ -477,7 +477,7 @@
       "constant": true,
       "inputs": [
         {
-          "name": "_address",
+          "name": "options.address",
           "type": "address"
         }
       ],
@@ -611,7 +611,7 @@
       "constant": false,
       "inputs": [
         {
-          "name": "_address",
+          "name": "options.address",
           "type": "address"
         }
       ],
@@ -661,7 +661,7 @@
       "constant": false,
       "inputs": [
         {
-          "name": "_addresses",
+          "name": "options.addresses",
           "type": "address[]"
         }
       ],

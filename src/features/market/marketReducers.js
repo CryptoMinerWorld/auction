@@ -54,6 +54,7 @@ const initialState = {
     garnet: true,
     sapphire: true,
     opal: true,
+      ruby: true,
   },
   level: {
     min: 0,

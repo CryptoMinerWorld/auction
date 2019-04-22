@@ -178,7 +178,7 @@ export const removeFromAuction = (tokenId, history, turnLoaderOff) => async (
     const dutchContract = getState().app.dutchContractInstance;
     const currentUser = getState().auth.currentUserId;
     // eslint-disable-next-line
-    const gemContractAddress = getState().app.gemsContractInstance._address;
+    const gemContractAddress = getState().app.gemsContractInstance.options.address;
 
     removeAuctionHelper(dutchContract, tokenId, gemContractAddress)
       .send({
@@ -235,7 +235,7 @@ export const handleBuyNow = (gem, _from, history, setLoading) => (dispatch, getS
     const dutchAuctionContractInstance = getState().app.dutchContractInstance;
     const priceInEth = gem.currentPrice;
     // eslint-disable-next-line
-    const gemContractAddress = getState().app.gemsContractInstance._address;
+    const gemContractAddress = getState().app.gemsContractInstance.options.address;
     const currentUser = getState().app.currentAccount;
 
 

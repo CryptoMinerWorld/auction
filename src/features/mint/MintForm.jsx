@@ -33,7 +33,7 @@ const MintForm = ({
 
       <Select
         required
-        id="helper_address"
+        id="helperoptions.address"
         defaultValue="Mainnet"
         style={{ width: 120 }}
         onChange={handleNetworkChange}

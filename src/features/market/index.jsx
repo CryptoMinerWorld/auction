@@ -63,7 +63,7 @@ const select = store => {
         pageNumber: store.marketActions.page,
         needToLoadImages: store.market.updateImages,
         dutchContract: store.app.dutchContractInstance,
-        gemContractAddress: store.app.gemsContractInstance && store.app.gemsContractInstance._address,
+        gemContractAddress: store.app.gemsContractInstance && store.app.gemsContractInstance.options.address,
         gemService: store.app.gemServiceInstance,
         auctionService: store.app.auctionServiceInstance,
     });

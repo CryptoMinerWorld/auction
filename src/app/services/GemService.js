@@ -50,22 +50,27 @@ export default class GemService {
 
         console.log('GEM WILL BE UNPACKED: ');
 
-        const gem = await this.getPackedGem(tokenId);
+        try {
+            const gem = await this.getPackedGem(tokenId);
+            console.log('GEM UNPACKED: ', gem);
 
-        console.log('GEM UNPACKED: ', gem);
-
-        return {
-          ...gem,
-            id: tokenId,
-            //owner: gemOwner,
-            story: await getGemStory(gem, tokenId),
-            image: await getGemImage(gem, tokenId),
-            name: calculateGemName(gem.color, tokenId),
-            rate: calculateMiningRate(gem.gradeType, gem.gradeValue),
-            restingEnergyMinutes: calculateGemRestingEnergy(gem.creationTime)
+            const finalGem = {
+                ...gem,
+                id: tokenId,
+                //owner: gemOwner,
+                story: await getGemStory(gem, tokenId),
+                image: await getGemImage(gem, tokenId),
+                name: calculateGemName(gem.color, tokenId),
+                rate: calculateMiningRate(gem.gradeType, gem.gradeValue),
+                restingEnergyMinutes: calculateGemRestingEnergy(gem.creationTime)
+            }
+            console.log('FINAL GEM:', finalGem);
+            return finalGem;
+        }
+        catch (e) {
+            console.error('GET GEM ERROR:', e);
         }
     }
-
 
     getPackedGem = async (tokenId) => {
         try {
@@ -87,7 +92,7 @@ export default class GemService {
           .modulo(0x100)
           .toNumber();
         const gradeType = high256
-          .dividedToIntegerBy(new BigNumber(2).pow(80+24))
+          .dividedToIntegerBy(new BigNumber(2).pow(80 + 24))
           .modulo(0x100)
           .toNumber();
         const gradeValue = high256
@@ -100,7 +105,7 @@ export default class GemService {
           .dividedToIntegerBy(new BigNumber(2).pow(152))
           .modulo(0x100000000).toNumber(), this.web3);
 
-        const owner = '0x'+low256.modulo(new BigNumber(2).pow(160)).toString(16).padStart(40, "0");
+        const owner = '0x' + low256.modulo(new BigNumber(2).pow(160)).toString(16).padStart(40, "0");
 
         console.log('unpack gem owner: ', owner);
 
@@ -109,13 +114,20 @@ export default class GemService {
 
         console.log(333333333, levelModifiedTime.timestamp, gradeModifiedTime.timestamp, creationTime.timestamp, Date.now());
 
-        return {color: 7, level, gradeType, gradeValue, owner, creationTime: Math.max(creationTime.timestamp, gradeModifiedTime.timestamp, levelModifiedTime.timestamp)}
+        return {
+            color,
+            level,
+            gradeType,
+            gradeValue,
+            owner,
+            creationTime: Math.max(creationTime.timestamp, gradeModifiedTime.timestamp, levelModifiedTime.timestamp)
+        }
     }
 
     getGemAuctionIsLive = async (tokenId) => {
         return !(new BigNumber(
           await (this.auctionContract.methods
-            .getTokenSaleStatus(this.contract._address, tokenId)
+            .getTokenSaleStatus(this.contract.options.address, tokenId)
             .call()))).isZero();
     }
 
@@ -123,13 +135,15 @@ export default class GemService {
         console.log('GEMS TO LOAD IMAGES: ', gemsToLoadImages);
         return await Promise.all(
           gemsToLoadImages.map(async gem => {
-              gem.image = await getGemImage(
-                {
-                    color: gem.color,
-                    level: gem.level,
-                    gradeType: gem.gradeType,
-                    gradeValue: gem.gradeValue
-                }, gem.id);
+              if (!gem.image) {
+                  gem.image = await getGemImage(
+                    {
+                        color: gem.color,
+                        level: gem.level,
+                        gradeType: gem.gradeType,
+                        gradeValue: gem.gradeValue
+                    }, gem.id);
+              }
               //return gem;
           }));
     }
@@ -170,7 +184,7 @@ export const unpackGemProperties = (properties) => {
       .toNumber();
     const gradeValue = properties.modulo(0x1000000).toNumber();
 
-    return {color:7, level, gradeType, gradeValue}
+    return {color, level, gradeType, gradeValue}
 }
 
 export const getGemStory = async (gemProperties, tokenId) => {
@@ -197,31 +211,43 @@ export const getGemStory = async (gemProperties, tokenId) => {
     }[gemProperties.color];
     const lvl = `lvl${gemProperties.level}`;
 
-
     console.log('GET GEM STORY: ', type, lvl);
 
-    if (type && lvl) {
+    try {
+        if (type && lvl) {
+            let story = "";
+            const docData = (await db
+              .doc(`specialStones/${tokenId}`)
+              .get()).data();
 
-        let story;
-        const docData = (await db
-          .doc(`specialStones/${tokenId}`)
-          .get()).data();
-
-        try {
-            story = (await db
-              .doc(`gems/${docData.storyName}`)
-              .get()).data()[lvl];
-            if (!story) {
-                throw "No special story for this gem!";
+            if (!docData) {
+                try {
+                    const storyDoc = (await db
+                      .doc(`gems/${type}`)
+                      .get())
+                    if (storyDoc) {
+                        story = storyDoc.data()[lvl] || ""
+                    }
+                }
+                catch (err) {
+                    throw "No default story for this type of gem!";
+                }
             }
+            else {
+                story = (await db
+                  .doc(`gems/${docData.storyName}`)
+                  .get()).data()[lvl];
+                if (!story) {
+                    throw "No special story for this gem!";
+                }
+            }
+            console.log("STORY::", story);
+            return story;
         }
-        catch (e) {
-            story = (await db
-              .doc(`gems/${type}`)
-              .get()).data()[lvl];
-        }
-        console.log("STORY::", story);
-        return story;
+    }
+    catch (e) {
+        console.log("Empty story returned");
+        return "Nothing is known about this gem";
     }
 };
 

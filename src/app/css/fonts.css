@@ -19,6 +19,17 @@
       url('../fonts/muli-v11-latin-900.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 
+@font-face {
+  font-family: 'Franklin Gothic Medium';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Franklin Gothic Medium'), url('../fonts/FranklinGothicMediumRegular.ttf') format('ttf');
+}
+
+.plots {
+  font-family: 'Franklin Gothic Medium', sans-serif !important;
+}
+
 .muli {
   font-family: 'Muli' !important;
   font-size: 16px;

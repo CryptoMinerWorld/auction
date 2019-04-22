@@ -176,8 +176,14 @@ export const getNewReferralPoints = (refPointsContract, userId) => {
 export const getPlotCount = (preSaleContract, userId) => preSaleContract.methods
   .geodeBalances(userId)
   .call()
-  .then(referralPoints => referralPoints)
-  .catch(error => setError(error));
+  .then(referralPoints => {
+      console.log('PLOTS:', referralPoints);
+      return referralPoints;
+  })
+  .catch(error => {
+      console.log('ERR:', error);
+      setError(error)
+  });
 
 
 // eslint-disable-next-line

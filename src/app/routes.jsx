@@ -17,7 +17,7 @@ const Dashboard = Loadable({
     loading: Loading,
 });
 const Map = Loadable({
-    loader: () => import('../features/countries/index'),
+    loader: () => import('../features/plotsale/index'),
     loading: Loading,
 });
 const Marketplace = Loadable({

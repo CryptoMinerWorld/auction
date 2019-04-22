@@ -108,22 +108,21 @@ class App extends Component {
         } catch(err) {
             return;
         }
-        //console.log('WEB3', Web3);
+        console.log('WEB3', Web3);
         const {web3} = Web3;
         const network = await web3.eth.net.getNetworkType();
         console.log(3333333333, network);
+        console.log('WEB3 provider', web3.currentProvider.isMetaMask);
         if (network !== process.env.REACT_APP_NETWORK_TYPE) {this.setState({wrongNetwork: true})}
-        //console.log('web3', web3);
-
-        //todo: remove duplicated code instantiating contracts;
-        //instantiateContracts(web3, handleSendContractsToRedux, handleSetError);
 
         const currentAccountId = await web3.eth.getAccounts().then(accounts => accounts[0]);
+        console.log('CURRENT ACCAOUNT ID:', currentAccountId);
 
         // this ensures that the wallet in metamask is always the wallet in the currentAccountId
         // however this is a problem because it means that you cant view someone else profile page
         if (web3.currentProvider.publicConfigStore) {
-            web3.currentProvider.publicConfigStore.on('update', ({selectedAddress}) => handleUpdateWalletId(selectedAddress));
+            web3.currentProvider.publicConfigStore.on('update', ({selectedAddress}) => {
+                handleUpdateWalletId(selectedAddress)});
         }
 
         // @notice instantiating auction contract

@@ -50,6 +50,7 @@ import reduxStore from '../../app/store';
 import Loading from "../../components/Loading";
 import Spin from "antd/lib/spin";
 import {getUserBalance} from "../sale/saleActions";
+import PlotDashboard from "../plots";
 
 const {TabPane} = Tabs;
 
@@ -341,8 +342,11 @@ class Dashboard extends Component {
             //   .then(referralPoints => this.setState({referralPoints}))
             //   .catch(err => setError(err));
             getPlotCount(preSaleContract, match.params.userId)
-              .then(plots => this.setState({plots}))
-              .catch(err => setError(err));
+              .then(plots => {
+                  console.log('LALALA:',plots);
+                  this.setState({plots})
+              })
+              .catch(err => {console.log('AAAAA:', err); setError(err)});
         }
 
         //may cause infinite updating: (silverGoldService && !userBalance) ||
@@ -495,6 +499,7 @@ class Dashboard extends Component {
             //userImage,
             sortBox,
             totalGems,
+            userGems,
             userGemsPage,
           userGemsFiltered,
             handlePagination,
@@ -585,12 +590,32 @@ class Dashboard extends Component {
               >
                   <TabPane
                     tab={(
+
+                      <span
+                        tabIndex={-2}
+                        onKeyPress={() => this.setState({tab: 1})}
+                        role="button"
+                        onClick={() => this.setState({tab: 1})}
+                        className="h-100 flex aic white ">
+                <img src={Plot} alt="" className="h2 w-auto pr2"/>
+                          {plots || 0}
+                          {' '}
+                          Plots
+              </span>
+                    )}
+                    disabled={false}
+                    key="1"
+                  >
+                      <PlotDashboard/>
+                  </TabPane>
+                  <TabPane
+                    tab={(
                       <span
                         tabIndex={-1}
                         role="button"
-                        onKeyPress={() => this.setState({tab: 1})}
+                        onKeyPress={() => this.setState({tab: 2})}
                         className="h-100 flex aic"
-                        onClick={() => this.setState({tab: 1})}
+                        onClick={() => this.setState({tab: 2})}
                       >
                 <img src={Gem} alt="Gems" className="h2 w-auto pr2"/>
                           {totalGems || 0}
@@ -598,7 +623,7 @@ class Dashboard extends Component {
                           Gems
               </span>
                     )}
-                    key="1"
+                    key="2"
                   >
                       <Grid className="ph3">
                           <Primary>
@@ -643,9 +668,9 @@ class Dashboard extends Component {
                     tab={(
                       <span
                         tabIndex={-2}
-                        onKeyPress={() => this.setState({tab: 2})}
+                        onKeyPress={() => this.setState({tab: 3})}
                         role="button"
-                        onClick={() => this.setState({tab: 2})}
+                        onClick={() => this.setState({tab: 3})}
                         className={`h-100 flex aic white ${!(
                           userCountries
                         ) && ' o-50'}`}
@@ -665,7 +690,7 @@ class Dashboard extends Component {
                         || userCountries.length === 0
                     }
 
-                    key="2"
+                    key="3"
                   >
                       <CountryDashboard
                         userCountryIdList={userCountries}
@@ -681,22 +706,8 @@ class Dashboard extends Component {
               </span>
                     )}
                     disabled
-                    key="3"
-                  />
-
-                  <TabPane
-                    tab={(
-                      <span className="h-100 flex aic white o-50 ">
-                <img src={Plot} alt="" className="h2 w-auto pr2"/>
-                          {plots}
-                          {' '}
-                          Plots
-              </span>
-                    )}
-                    disabled
                     key="4"
                   />
-
                   <TabPane
                     tab={(
                       <span className="h-100 flex aic white o-50">

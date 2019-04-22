@@ -357,7 +357,7 @@ class Sale extends Component {
                                   fontSize: '18px',
                                   fontWeight: 'bold'
                               }}>
-                                  <div style={{color: '#ff00ce'}}>{chestValue} ETH</div>
+                                  <div style={{color: '#ff00ce'}}>{chestValue && chestValue.toFixed(2)} ETH</div>
                                   <div>In Founder's Chest</div>
                               </div>
                           </div>

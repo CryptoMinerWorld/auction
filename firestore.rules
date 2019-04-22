@@ -5,19 +5,15 @@ service cloud.firestore {
     }
 
     match /users/{walletId} {
-      allow read, create, update;
+      allow read, create;
     }
 
     match /stones/{gemId} {
-      allow read, create, update;
-    
-    }
-    match /pending/{tx} {
-      allow read, create, delete;
+      allow read;
     }
 
     match /countries/{country} {
-      allow read, create, update;
+      allow read;
     }
   }
 }

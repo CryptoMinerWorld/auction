@@ -67,6 +67,13 @@ const Filters = ({ handleToggleGem, filterLoading, selection }) => (
                   toggleTheGem={handleToggleGem}
                   filterLoading={filterLoading}
                 />
+                  <GemFilter
+                    gemType="ruby"
+                    ifItsSelected={selection.ruby}
+                    url="https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FRuby%20Face%20Emoji.png?alt=media&token=a8602159-0a25-4670-8593-8a35a4fde8e8"
+                    toggleTheGem={handleToggleGem}
+                    filterLoading={filterLoading}
+                  />
               </div>
             </div>
           </div>
