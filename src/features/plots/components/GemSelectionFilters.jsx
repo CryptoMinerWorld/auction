@@ -16,10 +16,76 @@ import {
     typePaneOutlineColors
 } from "./propertyPaneStyles";
 import {CutEdgesButton} from "./CutEdgesButton";
+import styled from "styled-components";
 
 const transitionRules = {
     //transitionDelay: 'display 2s'
 }
+
+const GemFiltersContainer = styled.div`
+              bottom: -11px;
+              background-color: rgb(42, 50, 56);
+              position: absolute;
+              z-index: 20;
+              left: 10px;
+              padding: 10px 0px 0;
+              right: 14px;
+              
+              
+              &:before {
+                position: absolute;
+                display: block;
+                width: 100%;
+                content: "";
+                height: 10px;
+                background-color: rgb(42, 50, 56);
+                top: -17px;
+                left: 0;
+                right: 0;
+              }
+              
+              &:after {
+                position: absolute;
+                display: block;
+                width: 100%;
+                content: "";
+                height: 5px;
+                background-color: rgb(42, 50, 56);
+                top: -28px;
+                left: 0;
+                right: 0;
+              }
+            
+`;
+
+const GradeAndLevelBox = styled.div`
+
+    media(max-width: 599px) {
+        font-size: 16px;
+        margin: 2px 1px; 
+    }
+
+    font-size: 20px;
+    width: 50px;
+    margin: 2px 2px; 
+    font-weight: normal;
+`;
+
+const TypeBox = styled.div`
+    
+    @media(max-width: 599px) {
+        margin: 1px 3px;
+        min-width: 50px;
+        font-size: 12px;
+    }
+    
+    font-size: 16px;
+    flex: 1;
+    min-width: 70px; 
+    margin: 5px 3px; 
+    font-weight: normal
+`;
+
 
 class GemSelectionFilters extends Component {
 
@@ -32,15 +98,7 @@ class GemSelectionFilters extends Component {
         const {toggleFilter, selectedSort, toggleSort} = this.props;
 
         return (
-          <div style={{
-              bottom: "-11px",
-              backgroundColor: "rgb(42, 50, 56)",
-              position: "absolute",
-              zIndex: "20",
-              left: "10px",
-              padding: "10px 0px 0",
-              right: "14px"
-          }}>
+          <GemFiltersContainer>
               <div
                 className="flex col ais bg-off-black shadow-3 white"
                 style={{
@@ -52,7 +110,7 @@ class GemSelectionFilters extends Component {
                 }}>
                   <div style={{width: "100%", textAlign: "center"}}>Filtering and Sorting Section</div>
                   <GradesAndLevels selectedFilters={selectedFilters} toggleFilter={toggleFilter}/>
-                  <div style={{width: "100%", display: "flex"}}>
+                  <div style={{width: "100%", display: "flex", flexWrap: "wrap"}}>
                       <div style={{flex: "9"}}>
                           <Types selectedFilters={selectedFilters} toggleFilter={toggleFilter}/>
                       </div>
@@ -82,7 +140,7 @@ class GemSelectionFilters extends Component {
                       </div>
                   </div>
               </div>
-          </div>
+          </GemFiltersContainer>
         )
     }
 }
@@ -95,13 +153,14 @@ const GradesAndLevels = ({selectedFilters, toggleFilter}) => {
           width: "100%",
           display: "flex",
           flexDirection: "row",
-          justifyContent: "space-evenly"
+          justifyContent: "space-evenly",
+          flexWrap: "wrap",
       }}>
           <div className="flex jcc" style={{flex: 6}}>
           {[1,2,3,4,5,6].map((grade) => {
               const gradeType = gradeConverter(grade);
               return (
-                <div style={{width: "50px", margin: "2px 5px", fontWeight: "normal"}}
+                <GradeAndLevelBox
                      onClick={() => toggleFilter(gradeType)}>
                     <CutEdgesButton
                       outlineColor={() => selectedFilters.includes(gradeType) ? gradeOutlineColor : "transparent"}
@@ -110,14 +169,13 @@ const GradesAndLevels = ({selectedFilters, toggleFilter}) => {
                       edgeSizes={20}
                       outlineWidth={1}
                       height={45}
-                      fontSize={20}
                       content={gradeType}/>
-                </div>)}
+                </GradeAndLevelBox>)}
           )}
           </div>
           <div className="flex jcc" style={{flex: 5}}>
           {[1,2,3,4,5].map((level =>
-              <div style={{width:"50px", margin: "2px 5px", fontWeight: "normal"}}
+              <GradeAndLevelBox
                    onClick={() => toggleFilter("lvl_"+level)}>
                   <CutEdgesButton outlineColor={() => selectedFilters.includes("lvl_"+level) ? levelOutlineColor : "transparent"}
                                   backgroundColor={() => selectedFilters.includes("lvl_"+level) ? levelPaneColors(level) : "black"}
@@ -125,9 +183,8 @@ const GradesAndLevels = ({selectedFilters, toggleFilter}) => {
                                   edgeSizes={20}
                                   outlineWidth={1}
                                   height={45}
-                                  fontSize={20}
                                   content={level}/>
-              </div>
+              </GradeAndLevelBox>
           ))}
           </div>
       </div>
@@ -136,12 +193,12 @@ const GradesAndLevels = ({selectedFilters, toggleFilter}) => {
 
 const Types = ({selectedFilters, toggleFilter}) => {
     return (
-      <div style={{display: "flex", flexWrap: "wrap"}}>
+      <div style={{display: "flex", flexWrap: "wrap", minWidth: "276px"}}>
           {[1,2,3,4,5,6,7,8,9,10,11,12].map((typeColor) => {
               const color = typePaneOutlineColors(typeColor);
               const typeName = type(typeColor);
                 return (
-            <div style={{flex: 1, minWidth: "70px", margin: "5px 3px", fontWeight: "normal"}}
+            <TypeBox
                 onClick={() => toggleFilter(typeName)}>
                 <CutEdgesButton outlineColor={() => selectedFilters.includes(typeName) ? color : "black"}
                                 backgroundColor={() => selectedFilters.includes(typeName) ? typePaneColors(typeColor) : "black"}
@@ -149,9 +206,8 @@ const Types = ({selectedFilters, toggleFilter}) => {
                                 edgeSizes={[10,20]}
                                 outlineWidth={2}
                                 height={30}
-                                fontSize={16}
                                 content={typeName}/>
-            </div>)
+            </TypeBox>)
           })}
       </div>
     )
@@ -161,7 +217,7 @@ const SortOptions = ({selectedSort, toggleSort}) => {
     const mrbActive = ["mrb_up", "mrb_down"].includes(selectedSort);
     const levelActive = !mrbActive;
     return (
-      <div style={{width: "100%", backgroundColor: "#2A3238", display: "flex", padding: "5px", fontWeight: "normal", borderRadius: "5px"}}>
+      <div style={{width: "100%", backgroundColor: "#2A3238", display: "flex", padding: "5px", fontWeight: "normal", borderRadius: "5px", minWidth: "140px"}}>
           <div className="flex col" style={{flex: 1, margin: "0 5px"}}>
               <CutEdgesButton outlineColor={mrbActive ? mrbOutlineColor : "transparent"}
                               backgroundColor={mrbActive ? mrbPaneColor : "black"}

@@ -103,6 +103,29 @@ const generateMenuItemForTx = tx => {
                     )
             }
             break;
+        case 'PLOT_SALE':
+            switch (tx.status) {
+                case 'COMPLETED':
+                    console.log('TX::', tx.receipt);
+                    return (
+                      <div>
+                          <p>
+                          </p>
+                          <p>
+                              Cost: {tx.price} ETH
+                          </p>
+                      </div>
+                    );
+                case 'PENDING':
+                    return (
+                      <div>
+                          <p>
+                              Cost: {tx.price} ETH
+                          </p>
+                      </div>
+                    )
+            }
+            break;
         default:
 
             break;

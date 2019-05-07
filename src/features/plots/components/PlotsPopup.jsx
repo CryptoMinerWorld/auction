@@ -3,6 +3,7 @@ import styled from "styled-components";
 import React from "react";
 import actionButtonImage from "../../../app/images/noTextGemButton.png";
 import octagonImage from "../../../app/images/octagonOutline.png";
+import {CutEdgesButton} from "./CutEdgesButton";
 
 export class PlotsPopup extends Component {
 
@@ -17,8 +18,10 @@ export class PlotsPopup extends Component {
 
         const container = {
             display: "flex",
-            width: "100%",
-            padding: "0 10px"
+            maxWidth: "520px",
+            padding: "0 10px",
+            overflowY: "auto",
+            maxHeight: "520px",
         }
 
         const UnprocessedBlocks = styled.div`
@@ -26,10 +29,9 @@ export class PlotsPopup extends Component {
             flex-direction: column;
             flex: 3;
             align-items: stretch;
-            margin-right: 20px;
+            margin-right: 2%;
             background-color: #24292F;
             padding: 5px;
-            margin-top: -12px;
             z-index: 30;
             border-radius: 15px;
         `;
@@ -40,7 +42,6 @@ export class PlotsPopup extends Component {
             flex: 7;
             align-items: center;
             border-radius: 10px;
-            margin-top: -12px;
             z-index: 30;
         `;
 
@@ -98,11 +99,18 @@ export class PlotsPopup extends Component {
         `;
 
         const TierIndicator = styled.div`
+            @media (max-width: 600px) {
+                font-size: 36px;  
+                line-height: 52px; 
+            }
+        
             padding: 0px 0;
             text-align: center;
             font-size: 44px;
             line-height: 64px;
             margin: 5px;
+            clip-path: polygon(9% 0%, 91% 0%, 100% 18%, 100% 82%, 91% 100%, 9% 100%, 0% 82%, 0% 18%);
+            -webkit-clip-path: polygon(9% 0%, 91% 0%, 100% 18%, 100% 82%, 91% 100%, 9% 100%, 0% 82%, 0% 18%);
             background-color: ${props => {
                 switch(props.tier) {
                     case 0:
@@ -134,23 +142,23 @@ export class PlotsPopup extends Component {
             border-radius: 10px;
         `;
 
-        const ShowButton = styled.div`
-            background-color: #2A3238;
-            border: 3px solid #62626B;
-            border-radius: 10px;
-            font-weight: bold;
-            padding: 5px;
-            cursor: pointer;
-            color: white;
-            font-size: 12px;
-            text-align: center;
-            margin: 5px;
-        `;
+        // const ShowButton = styled.div`
+        //     background-color: #2A3238;
+        //     border: 3px solid #62626B;
+        //     border-radius: 10px;
+        //     font-weight: bold;
+        //     padding: 5px;
+        //     cursor: pointer;
+        //     color: white;
+        //     font-size: 12px;
+        //     text-align: center;
+        //     margin: 5px;
+        // `;
 
         return (
           <div style={container}>
               <UnprocessedBlocks>
-                  <div style={{fontSize: "12px", fontWeight: "bold"}}>Unprocessed Blocks</div>
+                  <div style={{fontSize: "12px", fontWeight: "bold", textAlign: "center"}}>Unprocessed Blocks</div>
                   <TierIndicator tier={0}>53</TierIndicator>
                   <TierIndicator tier={1}>46</TierIndicator>
                   <TierIndicator tier={2}>23</TierIndicator>
@@ -161,7 +169,7 @@ export class PlotsPopup extends Component {
               <InfoSection>
                   <ActionButton>BUY PLOTS OF LAND</ActionButton>
                   <PlotsInfo>
-                      <Col flex={3}>
+                      <Col flex={3} style={{minWidth: "150px"}}>
                           <div>Plots Owned: 22222</div>
                           <div style={{color: "#AEAEB7"}}>Plots 100% Mined: 22222</div>
                           <div>Plots With No Gem: 22222</div>
@@ -176,12 +184,12 @@ export class PlotsPopup extends Component {
                   </PlotsInfo>
                   <PlotsInfo>
                       <div style={{width: "100%", textAlign: "center", color: "#AEAEB7"}}>Total Processed Blocks</div>
-                      <Col flex={1} style={{color: "#fff776"}}>
+                      <Col flex={1} style={{color: "#fff776", minWidth: "140px"}}>
                           <div>Tier 1 (Dirt, Snow): 222</div>
                           <div>Tier 3 (Limestone): 222</div>
                           <div>Tier 5 (Obsidian): 333</div>
                       </Col>
-                      <Col flex={1} style={{color: "#fff776"}}>
+                      <Col flex={1} style={{color: "#fff776", minWidth: "140px"}}>
                           <div>Tier 2 (Clay, Ice): 333</div>
                           <div>Tier 4 (Marble): 333</div>
                           <div>BoP Geodes: 233</div>
@@ -189,23 +197,40 @@ export class PlotsPopup extends Component {
                   </PlotsInfo>
                   <PlotsInfo>
                       <Col flex={1}>Items Found: 1234</Col>
-                      <Col flex={1}><ShowButton>Show Items</ShowButton></Col>
+                      <Col flex={1}><ShowButton content={"Show Items"}/></Col>
                   </PlotsInfo>
                   <PlotsInfo>
                       <div style={{width: "100%", textAlign: "center", color: "#AEAEB7"}}>Show only Plots with:</div>
-                      <Col flex={1}>
-                          <ShowButton>No Gems</ShowButton>
-                          <ShowButton>100 Blocks</ShowButton>
+                      <Col flex={"1 0 50%"}>
+                          <ShowButton content={"No Gems"}/>
+                          <ShowButton content={"100 Blocks"}/>
                       </Col>
-                      <Col flex={1}>
-                          <ShowButton>Stuck Gems</ShowButton>
-                          <ShowButton>0 Blocks</ShowButton>
+                      <Col flex={"1 0 50%"}>
+                          <ShowButton content={"Stuck Gems"}/>
+                          <ShowButton content={"0 Blocks"}/>
                       </Col>
                   </PlotsInfo>
               </InfoSection>
           </div>
         );
     }
+}
+
+const ShowButton = ({content, ...props}) => {
+    return (
+      <div style={{
+          padding: "5px",
+          width: "100%"
+      }}>
+          <CutEdgesButton outlineColor={"#DADAE8"}
+                          backgroundColor={"#2A3238"}
+                          edgeSizes={[5, 20]}
+                          outlineWidth={2}
+                          height={32}
+                          fontSize={12}
+                          content={content}
+                          {...props}/>
+      </div>)
 }
 
 export default PlotsPopup;

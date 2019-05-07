@@ -39,7 +39,7 @@ const Routes = props => (
         console.warn('----------> Dashboard route starts <---------');
         return (<Dashboard {...props} />)}}/>
       <Route path="/gem/:gemId" render={() => <Items {...props} />}/>
-      <Route path="/map" render={() => <Map {...props} />}/>
+      <Route path="/plots" render={() => <Map {...props} />}/>
   </Fragment>
 );
 

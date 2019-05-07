@@ -62,10 +62,10 @@ const Map = ({
     if (properties.countryId === 200) {
       return '#23292e';
     }
-    if (properties.sold === true) {
+    //if (properties.sold === true) {
       return boughtColorScale[continents.indexOf(properties.continent)];
-    }
-    return colorScale[continents.indexOf(properties.continent)];
+    //}
+    //return colorScale[continents.indexOf(properties.continent)];
   };
 
   return (
@@ -136,10 +136,7 @@ const Map = ({
                           }
                       onClick={() => (cart.some(
                         country => country.countryId === geography.properties.countryId,
-                      )
-                        ? removeFromCart({ countryId: geography.properties.countryId })
-                        : geography.properties.sold === false
-                                && addToCart({
+                      ) ? {} : addToCart({
                                   id: geography.properties.countryId,
                                   countryId: geography.properties.countryId,
                                   name: geography.properties.name,

@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import styled from "styled-components";
 import actionButtonImage from "../../../app/images/noTextGemButton.png";
 import octagonImage from "../../../app/images/octagonOutline.png";
+import {CutEdgesButton} from "./CutEdgesButton";
 
 export class GemsPopup extends Component {
 
@@ -12,20 +13,26 @@ export class GemsPopup extends Component {
 
     render() {
 
-        const container = {
-            display: "flex",
-            width: "100%",
-            padding: "0 10px",
-            fontSize: "14px",
-            fontWeight: "bold"
-        }
+        const PopupContainer = styled.div`
+            @media (max-width: 600px) {
+                font-size: 12px;
+            }
+        
+            display: flex;
+            width: 100%;
+            padding: 0 1%;
+            font-size: 14px;
+            font-weight: bold;
+            max-width: 520px;
+        `;
+
 
         const UnprocessedBlocks = styled.div`
             display: flex;
             flex-direction: column;
             flex: 3;
             align-items: stretch;
-            margin-right: 20px;
+            margin-right: 2%;
             background-color: #24292F;
             padding: 5px;
             margin-top: -12px;
@@ -44,6 +51,11 @@ export class GemsPopup extends Component {
         `;
 
         const ActionButton = styled.div`
+        
+            @media (max-width: 600px) {
+                font-size: 11px;
+            }
+            
             background-image: url(${actionButtonImage});
             background-position: center center;
             text-align: center;
@@ -56,13 +68,14 @@ export class GemsPopup extends Component {
             padding: 12px;
             cursor: pointer;
             color: white;
+           
             font-size: 14px;
             margin: 10px 0;
         `;
 
         const PlotsInfo = styled.div`
             background-color: #24292F;
-            padding: 5px 10px;
+            padding: 5px 1%;
             border-radius: 10px;
             width: 100%;
             display: flex;
@@ -76,7 +89,7 @@ export class GemsPopup extends Component {
             display: flex;
             flex-direction: column;
             justify-content: space-evenly;
-            margin: 0 2%;
+            margin: 0 1%;
         `;
 
         const PlotsNotMiningIndicator = styled.div`
@@ -137,21 +150,21 @@ export class GemsPopup extends Component {
             border-radius: 10px;
         `;
 
-        const ShowButton = styled.div`
-            background-color: #2A3238;
-            border: 3px solid #62626B;
-            border-radius: 10px;
-            font-weight: bold;
-            padding: 5px;
-            cursor: pointer;
-            color: white;
-            font-size: 12px;
-            text-align: center;
-            margin: 5px;
-        `;
+        // const ShowButton = styled.div`
+        //     background-color: #2A3238;
+        //     border: 3px solid #62626B;
+        //     border-radius: 10px;
+        //     font-weight: bold;
+        //     padding: 5px;
+        //     cursor: pointer;
+        //     color: white;
+        //     font-size: 12px;
+        //     text-align: center;
+        //     margin: 5px;
+        // `;
 
         return (
-          <div style={container}>
+          <PopupContainer>
               <Col flex={5} style={{
                   marginTop: "-12px",
                   zIndex: "30"
@@ -193,8 +206,8 @@ export class GemsPopup extends Component {
                   </PlotsInfo>
                   <PlotsInfo>
                       <Col flex={1}>
-                          <ShowButton>Go to Gem Workshop</ShowButton>
-                          <ShowButton>Go to Gem Market</ShowButton>
+                          <ShowButton content={"Go to Gem Workshop"} edgeSizes={[3, 20]}/>
+                          <ShowButton content={"Go to Gem Market"} edgeSizes={[3, 20]}/>
                       </Col>
                   </PlotsInfo>
               </Col>
@@ -222,15 +235,32 @@ export class GemsPopup extends Component {
                           Show Gems on Plots that are:
                       </div>
                       <Col flex={1} style={{alignItems: "stretch"}}>
-                          <ShowButton style={{color: "#94BED9"}}>Mining</ShowButton>
-                          <ShowButton style={{color: "#DBA6AC"}}>Stuck</ShowButton>
-                          <ShowButton style={{color: "#D199DE"}}>Finished</ShowButton>
+                          <ShowButton fontColor={"#94BED9"} content = {"Mining"}/>
+                          <ShowButton fontColor={"#DBA6AC"} content = {"Stuck"}/>
+                          <ShowButton fontColor={"#D199DE"} content = {"Finished"}/>
                       </Col>
                   </PlotsInfo>
               </Col>
-          </div>
+          </PopupContainer>
         );
     }
+}
+
+const ShowButton = ({content, ...props}) => {
+    return (
+      <div style={{
+          padding: "5px",
+          width: "100%"
+      }}>
+          <CutEdgesButton outlineColor={"#DADAE8"}
+                          backgroundColor={"#2A3238"}
+                          edgeSizes={[5, 20]}
+                          outlineWidth={2}
+                          height={32}
+                          fontSize={12}
+                          content={content}
+                          {...props}/>
+      </div>)
 }
 
 export default GemsPopup;

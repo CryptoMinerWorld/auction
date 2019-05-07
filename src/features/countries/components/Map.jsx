@@ -53,6 +53,7 @@ const Map = ({
   removeFromCart,
 }) => {
   const decideColor = (properties, hover, continents, picked) => {
+    console.log("HOVER MAP: ", hover);
     if (properties.countryId === hover) {
       return chroma('#ff00cd');
     }
@@ -67,6 +68,8 @@ const Map = ({
     }
     return colorScale[continents.indexOf(properties.continent)];
   };
+
+  console.log("HOVERED ON MAP: ", countryBeingHoveredOnInFilter);
 
   return (
     <div

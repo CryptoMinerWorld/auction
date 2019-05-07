@@ -1,95 +1,69 @@
 import React, {Component} from "react";
 import styled from "styled-components";
-import actionButtonImage from "../../../app/images/noTextGemButton.png";
-import octagonImage from "../../../app/images/octagonOutline.png";
+import {CutEdgesButton} from "./CutEdgesButton";
+import arrowUpActive from "./../../../app/images/arrowUpActive.png";
+import arrowDownActive from "./../../../app/images/arrowDownActive.png";
 
-export class FilterPopup extends Component {
+const container = {
+    display: "flex",
+    padding: "0 10px",
+    fontSize: "14px",
+    fontWeight: "bold",
+    width: "350px",
+}
 
-    state = {};
 
-    componentDidMount() {
-    }
-
-    render() {
-        
-        const container = {
-            display: "flex",
-            width: "100%",
-            padding: "0 10px",
-            fontSize: "14px",
-            fontWeight: "bold"
-        }
-        
-
-        const PlotsInfo = styled.div`
+const PlotsInfo = styled.div`
             background-color: #24292F;
-            padding: 5px 10px;
+            padding: 2px 15px;
             border-radius: 10px;
             width: 100%;
             display: flex;
             margin: 6px 0;
-            flex-wrap: wrap;
-           
-        `;
+            flex-direction: column;
+            clip-path: ${props => {
+    const lowerVerticals = (props.edgeSizes[1] || props.edgeSizes) + "%";
+    const lowerHorizontals = (props.edgeSizes[0] || props.edgeSizes) + "%";
+    const higherVerticals = 100 - (props.edgeSizes[1] || props.edgeSizes) + "%";
+    const higherHorizontals = 100 - (props.edgeSizes[0] || props.edgeSizes) + "%";
+    return 'polygon(' + lowerHorizontals + ' 0, ' + higherHorizontals + ' 0, 100% ' +
+      lowerVerticals + ', 100% ' + higherVerticals + ', ' + higherHorizontals + ' 100%, ' +
+      lowerHorizontals + ' 100%, 0% ' + higherVerticals + ', 0 ' + lowerVerticals + ')';
+}};
+    -webkit-clip-path: ${props => {
+    const lowerVerticals = (props.edgeSizes[1] || props.edgeSizes) + "%";
+    const lowerHorizontals = (props.edgeSizes[0] || props.edgeSizes) + "%";
+    const higherVerticals = 100 - (props.edgeSizes[1] || props.edgeSizes) + "%";
+    const higherHorizontals = 100 - (props.edgeSizes[0] || props.edgeSizes) + "%";
+    return 'polygon(' + lowerHorizontals + ' 0, ' + higherHorizontals + ' 0, 100% ' +
+      lowerVerticals + ', 100% ' + higherVerticals + ', ' + higherHorizontals + ' 100%, ' +
+      lowerHorizontals + ' 100%, 0% ' + higherVerticals + ', 0 ' + lowerVerticals + ')';
+}};
+            `;
 
-        const Col = styled.div`
+const Col = styled.div`
             flex: ${props => props.flex}
             display: flex;
             flex-direction: column;
             justify-content: space-evenly;
             margin: 0 2%;
         `;
-        
 
-        const ShowButton = styled.div`
-            background-color: #2A3238;
-            border: 3px solid #62626B;
-            border-radius: 10px;
-            font-weight: bold;
-            padding: 5px;
-            cursor: pointer;
-            color: white;
-            color: ${props => props.selected ? "#eee" : "#4F565D"};
-            border: 3px solid ${props => props.selected ? "#eee" : "#4F565D"};
-            font-size: 12px;
-            text-align: center;
-            margin: 5px;
-            
-            &:hover {
-                color: #eee;
-                background-color: #24292F;
-                border: 2px solid #4F565D;
-            };
-        `;
-        
+const plainText = {
+    color: "#88898F",
+    alignSelf: "center",
+    fontSize: "20px",
+    fontWeight: "normal"
+}
 
-        const plainText = {
-            color: "black",
-            alignSelf: "center",
-            fontWeight: "bold"
-        }
-        
-        const filterStyle = {
-            position: "absolute",
-            top: "0",
-            left: "0",
-            display: "flex",
-            flexDirection: "column",
-            width: "150px",
-            backgroundColor: "#2A3238",
-            fontSize: "14px",
-            padding: "5px",
-            alignItems: "stretch"
-        }
-        
-        const arrowButtonStyle = {
-            display: "block",
-            width: "60px",
-            height: "60px",
-            fontSize: "28px"
-        }
-        
-        const ArrowButton = styled('a')`
+const additionalText = {
+    width: "100%",
+    textAlign: "center",
+    color: "#88898F",
+    fontSize: "12px"
+}
+
+const ArrowButton = styled('a')`
             display: block;
             width: 60px;
             height: 60px;
@@ -105,93 +79,170 @@ export class FilterPopup extends Component {
                 border: 2px solid #4F565D;
             }`;
 
-        const buttonBlockStyle = {
-            display: "flex",
-            justifyContent: "space-around"
-        }
+const buttonBlockStyle = {
+    display: "flex",
+    justifyContent: "space-around"
+}
+
+const arrowButtonStyle = {
+    width: "40px",
+    height: "40px",
+    top: "7px",
+    position: "absolute",
+    left: "0",
+    right: "0",
+    margin: "auto",
+    zIndex: "40",
+    cursor: "pointer"
+}
+
+export class FilterPopup extends Component {
+
+    state = {};
+
+    componentDidMount() {
+    }
+
+    render() {
 
         const {applyFilter, applySort, prevPage, nextPage, activeControls} = this.props;
 
 
         return (
           <div style={container}>
-              {/*<Col flex={1} style={{*/}
-                  {/*marginTop: "-12px",*/}
-                  {/*zIndex: "30"*/}
-              {/*}}>*/}
-                  {/*<PlotsInfo>*/}
-                      {/*<ShowButton>Apply</ShowButton>*/}
-                      {/*<ShowButton>Cancel</ShowButton>*/}
-                  {/*</PlotsInfo>*/}
-                  {/*<PlotsInfo>*/}
-                      {/*<div style={plainText}>Sort By</div>*/}
-                      {/*<ShowButton selected={activeControls.includes("time_left")}*/}
-                                    {/*onClick={() => applySort("time_left")}>*/}
-                          {/*Time Left*/}
-                      {/*</ShowButton>*/}
-                      {/*<ShowButton selected={activeControls.includes("mined")}*/}
-                                    {/*onClick={() => applySort("mined")}>*/}
-                          {/*% Mined</ShowButton>*/}
-                      {/*<ShowButton selected={activeControls.includes("dirt")}*/}
-                                    {/*underlined={activeControls.includes("dirt_filter")}*/}
-                                    {/*onClick={() => applySort("dirt")}>Dirt</ShowButton>*/}
-                      {/*<ShowButton selected={activeControls.includes("clay")}*/}
-                                    {/*underlined={activeControls.includes("clay_filter")}*/}
-                                    {/*onClick={() => applySort("clay")}>Clay</ShowButton>*/}
-                      {/*<ShowButton selected={activeControls.includes("limestone")}*/}
-                                    {/*underlined={activeControls.includes("limestone_filter")}*/}
-                                    {/*onClick={() => applySort("limestone")}>Limestone</ShowButton>*/}
-                      {/*<ShowButton selected={activeControls.includes("marble")}*/}
-                                    {/*underlined={activeControls.includes("marble_filter")}*/}
-                                    {/*onClick={() => applySort("marble")}>Marble</ShowButton>*/}
-                      {/*<ShowButton selected={activeControls.includes("obsidian")}*/}
-                                    {/*underlined={activeControls.includes("obsidian_filter")}*/}
-                                    {/*onClick={() => applySort("obsidian")}>Obsidian</ShowButton>*/}
-                      {/*<div style={buttonBlockStyle}>*/}
-                          {/*<ArrowButton selected={activeControls.includes("sort_btn_up")}*/}
-                                       {/*onClick={() => applySort("sort_btn_up")}>∧</ArrowButton>*/}
-                          {/*<ArrowButton selected={activeControls.includes("sort_btn_down")}*/}
-                                       {/*onClick={() => applySort("sort_btn_down")}>∨</ArrowButton></div>*/}
-                  {/*</PlotsInfo>*/}
-              {/*</Col>*/}
-              {/*<Col flex={1} style={{*/}
-                  {/*marginTop: "-15px",*/}
-                  {/*zIndex: "30"*/}
-              {/*}}>*/}
-                  {/*<PlotsInfo>*/}
-                      {/*<div style={plainText}>Show</div>*/}
-                      {/*<ShowButton selected={activeControls.includes("show_gem_mining")}*/}
-                                    {/*onClick={() => applyFilter("show_gem_mining")}>Gem Mining</ShowButton>*/}
-                      {/*<ShowButton selected={activeControls.includes("show_not_mining")}*/}
-                                    {/*onClick={() => applyFilter("show_not_mining")}>Not Mining</ShowButton>*/}
-                      {/*<ShowButton selected={activeControls.includes("show_no_gem")}*/}
-                                    {/*onClick={() => applyFilter("show_no_gem")}>No Gem</ShowButton>*/}
-                      {/*<ShowButton selected={activeControls.includes("show_completed")}*/}
-                                    {/*onClick={() => applyFilter("show_completed")}>Completed</ShowButton>*/}
-
-                      {/*<ShowButton selected={activeControls.includes("dirt")}*/}
-                                    {/*underlined={activeControls.includes("dirt_filter")}*/}
-                                    {/*onClick={() => applySort("dirt")}>Dirt</ShowButton>*/}
-                      {/*<ShowButton selected={activeControls.includes("clay")}*/}
-                                    {/*underlined={activeControls.includes("clay_filter")}*/}
-                                    {/*onClick={() => applySort("clay")}>Clay</ShowButton>*/}
-                      {/*<ShowButton selected={activeControls.includes("limestone")}*/}
-                                    {/*underlined={activeControls.includes("limestone_filter")}*/}
-                                    {/*onClick={() => applySort("limestone")}>Limestone</ShowButton>*/}
-                      {/*<ShowButton selected={activeControls.includes("marble")}*/}
-                                    {/*underlined={activeControls.includes("marble_filter")}*/}
-                                    {/*onClick={() => applySort("marble")}>Marble</ShowButton>*/}
-                      {/*<ShowButton selected={activeControls.includes("obsidian")}*/}
-                                    {/*underlined={activeControls.includes("obsidian_filter")}*/}
-                                    {/*onClick={() => applySort("obsidian")}>Obsidian</ShowButton>*/}
-                  {/*</PlotsInfo>*/}
-                  {/*<PlotsInfo>*/}
-                      {/*<ShowButton>Defaults</ShowButton>*/}
-                  {/*</PlotsInfo>*/}
-              {/*</Col>*/}
+              <Col flex={1} style={{
+                  marginTop: "-15px",
+                  zIndex: "30"
+              }}>
+                  <PlotsInfo edgeSizes={[10, 15]}>
+                      <CutEdgesButton outlineColor={"#FF6EE4"}
+                                      backgroundColor={"#4C2742"}
+                                      edgeSizes={[6, 20]}
+                                      outlineWidth={2}
+                                      height={32}
+                                      fontSize={18}
+                                      content={"Apply"}
+                                      style={"margin: 10px 0 0"}
+                      />
+                      <CutEdgesButton outlineColor={"#934A2A"}
+                                      backgroundColor={"#492417"}
+                                      edgeSizes={[6, 20]}
+                                      outlineWidth={2}
+                                      height={32}
+                                      fontSize={18}
+                                      content={"Cancel"}
+                                      style={"margin: 10px 0"}
+                      />
+                  </PlotsInfo>
+                  <PlotsInfo edgeSizes={[10, 4]}>
+                      <div style={plainText}>Sort By</div>
+                      <ShowButton selected={activeControls.includes("time_left")}
+                                  onClick={() => applySort("time_left")}
+                                  content={"Time Left"}/>
+                      <ShowButton selected={activeControls.includes("mined")}
+                                  onClick={() => applySort("mined")}
+                                  content={"% Mined"}/>
+                      <ShowButton selected={activeControls.includes("dirt")}
+                                  onClick={() => applySort("dirt")} content={"Dirt"}/>
+                      <ShowButton selected={activeControls.includes("clay")}
+                                  onClick={() => applySort("clay")} content={"Clay"}/>
+                      <ShowButton selected={activeControls.includes("limestone")}
+                                  onClick={() => applySort("limestone")} content={"Limestone"}/>
+                      <ShowButton selected={activeControls.includes("marble")}
+                                  onClick={() => applySort("marble")} content={"Marble"}/>
+                      <ShowButton selected={activeControls.includes("obsidian")}
+                                  onClick={() => applySort("obsidian")} content={"Obsidian"}/>
+                      <div style={buttonBlockStyle}>
+                          <div style={{width: "100%", position: "relative", margin: "5px 5px 5px 0px"}}
+                               onClick={() => applySort("sort_btn_up")}
+                          >
+                              <img src={arrowUpActive}
+                                   style={{...arrowButtonStyle, opacity: activeControls.includes("sort_btn_up") ? "1" : "0.35"}}/>
+                              <CutEdgesButton
+                                outlineColor={activeControls.includes("sort_btn_up") ? "#DADAE8" : "#62626B"}
+                                backgroundColor={activeControls.includes("sort_btn_up") ? "#2A3238" : "#2A3238"}
+                                edgeSizes={15}
+                                outlineWidth={2}
+                                height={55}
+                                fontSize={30}
+                                content={""}/>
+                          </div>
+                          <div style={{width: "100%", position: "relative", margin: "5px 0px 5px 5px"}}
+                               onClick={() => applySort("sort_btn_down")}
+                          >
+                              <img src={arrowDownActive}
+                                   style={{...arrowButtonStyle, opacity: activeControls.includes("sort_btn_down") ? "1" : "0.35"}}/>
+                              <CutEdgesButton
+                                outlineColor={activeControls.includes("sort_btn_down") ? "#DADAE8" : "#62626B"}
+                                backgroundColor={activeControls.includes("sort_btn_down") ? "#2A3238" : "#2A3238"}
+                                edgeSizes={15}
+                                outlineWidth={2}
+                                height={55}
+                                fontSize={30}
+                                content={""}/>
+                          </div>
+                      </div>
+                  </PlotsInfo>
+              </Col>
+              <Col flex={1} style={{
+                  marginTop: "-20px",
+                  zIndex: "30"
+              }}>
+                  <PlotsInfo edgeSizes={[10, 4]}>
+                      <div style={plainText}>Show</div>
+                      <ShowButton selected={activeControls.includes("show_gem_mining")}
+                                  onClick={() => applyFilter("show_gem_mining")} content={"Gem Mining"}/>
+                      <ShowButton selected={activeControls.includes("show_not_mining")}
+                                  onClick={() => applyFilter("show_not_mining")} content={"Gem Stuck"}/>
+                      <ShowButton selected={activeControls.includes("show_no_gem")}
+                                  onClick={() => applyFilter("show_no_gem")} content={"No Gem"}/>
+                      <ShowButton selected={activeControls.includes("show_completed")}
+                                  onClick={() => applyFilter("show_completed")}
+                                  fontSize={13}
+                                  content={"Completed Plots"}/>
+                      <div style={additionalText}>Current Tier</div>
+                      <ShowButton selected={activeControls.includes("dirt_filter")}
+                                  onClick={() => applyFilter("dirt_filter")} content={"Dirt"}/>
+                      <ShowButton selected={activeControls.includes("clay_filter")}
+                                  onClick={() => applyFilter("clay_filter")} content={"Clay"}/>
+                      <ShowButton selected={activeControls.includes("limestone_filter")}
+                                  onClick={() => applyFilter("limestone_filter")} content={"Limestone"}/>
+                      <ShowButton selected={activeControls.includes("marble_filter")}
+                                  onClick={() => applyFilter("marble_filter")} content={"Marble"}/>
+                      <ShowButton selected={activeControls.includes("obsidian_filter")}
+                                  onClick={() => applyFilter("obsidian_filter")} content={"Obsidian"}/>
+                  </PlotsInfo>
+                  <PlotsInfo edgeSizes={[7, 20]}>
+                      <CutEdgesButton outlineColor={"#2A8A91"}
+                                      backgroundColor={"#174746"}
+                                      edgeSizes={[7, 20]}
+                                      outlineWidth={2}
+                                      height={32}
+                                      fontSize={18}
+                                      content={"Defaults"}
+                                      style={"margin: 5px 0"}/>
+                  </PlotsInfo>
+              </Col>
           </div>
         );
     }
 }
 
 export default FilterPopup;
+
+const ShowButton = ({content, selected, ...props}) => {
+    return (
+      <div style={{
+          margin: "5px 0",
+          width: "100%"
+      }}>
+          <CutEdgesButton outlineColor={selected ? "#DADAE8" : "#62626B"}
+                          backgroundColor={selected ? "#2A3238" : "#2A3238"}
+                          edgeSizes={[5, 20]}
+                          outlineWidth={2}
+                          height={32}
+                          fontSize={16}
+                          content={content}
+                          {...props}/>
+      </div>)
+}

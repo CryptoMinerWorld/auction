@@ -3,6 +3,7 @@ import styled from "styled-components";
 import actionButtonImage from "../../../app/images/noTextGemButton.png";
 import octagonImage from "../../../app/images/octagonOutline.png";
 import gemImage from "../../../app/images/gemKid.png";
+import {CutEdgesButton} from "./CutEdgesButton";
 
 
 export class SelectedGemsPopup extends Component {
@@ -19,7 +20,8 @@ export class SelectedGemsPopup extends Component {
             width: "100%",
             padding: "0 10px",
             flexDirection: "column",
-            fontSize: "14px"
+            fontSize: "14px",
+            maxWidth: "500px",
         }
 
         const MinedBlocks = styled.div`
@@ -32,6 +34,7 @@ export class SelectedGemsPopup extends Component {
             justify-content: space-evenly;
             flex-wrap: wrap;
             height: 103px;
+            max-width: 320px;
         `;
 
         const InfoSection = styled.div`
@@ -69,7 +72,6 @@ export class SelectedGemsPopup extends Component {
             display: flex;
             margin: 6px 0;
             flex-wrap: wrap;
-            height: 225px;
         `;
 
         const Col = styled.div`
@@ -104,6 +106,8 @@ export class SelectedGemsPopup extends Component {
             text-align: center;
             font-size: 14px;
             margin: 5px;
+            clip-path: polygon(15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%, 0% 15%);
+            -webkit-clip-path: polygon(15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%, 0% 15%);
             background-color: ${props => {
             switch (props.tier) {
                 case 0:
@@ -134,21 +138,21 @@ export class SelectedGemsPopup extends Component {
             }
         }
           };
-            border-radius: 10px;
+           
         `;
 
-        const ShowButton = styled.div`
-            background-color: ${props => props.disabled ? "black" : "#2A3238"};
-            border: 3px solid ${props => props.disabled ? "black" : "#62626B"};
-            border-radius: 10px;
-            font-weight: bold;
-            padding: 5px;
-            cursor: pointer;
-            color: ${props => props.disabled ? "#2A3238" : "white"};
-            font-size: 12px;
-            text-align: center;
-            margin: 5px;
-        `;
+        // const ShowButton = styled.div`
+        //     background-color: ${props => props.disabled ? "black" : "#2A3238"};
+        //     border: 3px solid ${props => props.disabled ? "black" : "#62626B"};
+        //     border-radius: 10px;
+        //     font-weight: bold;
+        //     padding: 5px;
+        //     cursor: pointer;
+        //     color: ${props => props.disabled ? "#2A3238" : "white"};
+        //     font-size: 12px;
+        //     text-align: center;
+        //     margin: 5px;
+        // `;
 
         const LimitLine = styled.div`
             width: 55px;
@@ -212,6 +216,9 @@ export class SelectedGemsPopup extends Component {
             border-radius: 10px;
             width: 100%;
             min-width: 155px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
         `;
 
         return (
@@ -233,7 +240,7 @@ export class SelectedGemsPopup extends Component {
                   </Col>
               </PlotsInfo>
               <div style={{display: "flex", flexWrap: "wrap"}}>
-                  <Col flex={2} style={{marginRight: "10px"}}>
+                  <Col flex={2} style={{marginRight: "10px", minWidth: "300px", alignItems: "center"}}>
                       <MinedBlocks>
                           <div style={{width: "100%", textAlign: "center", color: "#AEAEB7"}}>
                               Total Blocks Gem has Mined
@@ -247,14 +254,33 @@ export class SelectedGemsPopup extends Component {
                   </Col>
                   <Col flex={1}>
                       <ButtonsBlock>
-                          <ShowButton>Stop Mining</ShowButton>
-                          <ShowButton>Go to Gem's Page</ShowButton>
+                          <ShowButton content={"Stop Mining"}/>
+                          <ShowButton content={"Go to Gem's Page"}/>
                       </ButtonsBlock>
                   </Col>
               </div>
           </div>
         );
     }
+}
+
+const ShowButton = ({content, ...props}) => {
+    return (
+      <div style={{
+          padding: "5px",
+          minWidth: "120px",
+          maxWidth: "160px",
+          flex: "1",
+      }}>
+          <CutEdgesButton outlineColor={"#DADAE8"}
+                          backgroundColor={"#2A3238"}
+                          edgeSizes={[5, 20]}
+                          outlineWidth={2}
+                          height={32}
+                          fontSize={12}
+                          content={content}
+                          {...props}/>
+      </div>)
 }
 
 export default SelectedGemsPopup;

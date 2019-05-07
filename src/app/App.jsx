@@ -30,11 +30,14 @@ import Gold from './ABI/GoldERC20';
 import Workshop from './ABI/Workshop';
 import SilverSale from './ABI/SilverSale';
 import SilverCoupons from './ABI/SilverCoupons';
+import PlotSale from './ABI/PlotSale';
+import Plot from './ABI/PlotERC721';
 import {resolveAnyPendingTx} from '../features/transactions/helpers';
 import GemService from "./services/GemService";
 import AuctionService from "./services/AuctionService";
 import SilverGoldService from "./services/SilverGoldService";
 import CountryService from "./services/CountryService";
+import PlotService from "./services/PlotService";
 
 require('antd/lib/notification/style/css');
 require('antd/lib/modal/style/css');
@@ -65,6 +68,8 @@ const goldABI = Gold.abi;
 const workshopABI = Workshop.abi;
 const silverSaleABI = SilverSale.abi;
 const silverCouponsABI = SilverCoupons.abi;
+const plotSaleABI = PlotSale.abi;
+const plotABI = Plot.abi;
 
 const StickyHeader = styled.div`
   position: -webkit-sticky; /* Safari */
@@ -215,6 +220,22 @@ class App extends Component {
           },
         );
 
+        const plotSaleContract = new web3.eth.Contract(
+          plotSaleABI,
+          process.env.REACT_APP_PLOT_SALE,
+          {
+              from: currentAccountId,
+          },
+        );
+
+        const plotContract = new web3.eth.Contract(
+          plotABI,
+          process.env.REACT_APP_PLOT_ERC721,
+          {
+              from: currentAccountId,
+          },
+        );
+
         //const silverCouponsContract = {};
 
         Promise.all([
@@ -231,6 +252,8 @@ class App extends Component {
             workshopContract,
           silverSaleContract,
           silverCouponsContract,
+          plotContract,
+          plotSaleContract
         ])
           .then(
             ([
@@ -246,7 +269,9 @@ class App extends Component {
                  goldContract,
               workshopContract,
               silverSaleContract,
-              silverCouponsContract
+              silverCouponsContract,
+              plotContract,
+              plotSaleContract
              ]) => {
                 client.writeData({
                     data: {
@@ -258,6 +283,7 @@ class App extends Component {
                 const auctionService = new AuctionService(dutchAuctionContractInstance, dutchAuctionHelperContractInstance, gemsContractInstance);
                 const silverGoldService = new SilverGoldService(silverSaleContract, silverContract, goldContract, refPointsTrackerContract, silverCouponsContract);
                 const countryService = new CountryService(null, countryContract);
+                const plotService = new PlotService(plotContract, plotSaleContract);
 
                 handleSendContractsToRedux(
                   dutchAuctionContractInstance,
@@ -274,13 +300,13 @@ class App extends Component {
                   workshopContract,
                   silverSaleContract,
                   silverCouponsContract,
+                  plotService,
                   gemService,
                   auctionService,
                   silverGoldService,
                   countryService,
                   //buySilverContract,
                   //buyGoldContract
-
                 );
             },
           )

@@ -1,16 +1,13 @@
 import {
     AUCTION_DETAILS_RECEIVED,
     DASHBOARD_WAS_FILTERED,
-    FETCH_GEMS_PAGE_IMAGES, FETCH_USER_COUNTRIES,
-    FETCH_USER_DETAILS_BEGUN,
-    FETCH_USER_DETAILS_FAILED,
-    FETCH_USER_DETAILS_SUCCEEDED,
+    FETCH_USER_COUNTRIES,
     FETCH_USER_GEMS_BEGUN,
     ONLY_WANT_TO_SEE_GEMS_IN_AUCTIONS,
     PAGINATE,
     RERENDER_SORT_BOX,
+    SCROLL_GEMS,
     SORT_BOX_RERENDERED,
-    USER_DETAILS_RETRIEVED,
     USER_GEMS_RETRIEVED,
     WANT_TO_SEE_ALL_GEMS,
 } from './dashboardConstants';
@@ -35,8 +32,8 @@ export const getUserGems = ownerId => async (dispatch, getState) => {
     try {
         console.log('11111 FETCH!');
         const [notAuctionOwnerGems, auctionOwnerGems] = await Promise.all([
-              gemService.getOwnerGems(userIdToLowerCase),
-              auctionService.getAuctionOwnerGems(userIdToLowerCase)
+            gemService.getOwnerGems(userIdToLowerCase),
+            auctionService.getAuctionOwnerGems(userIdToLowerCase)
         ]);
 
         console.log('222222 FETCH!');
@@ -80,13 +77,6 @@ export const getUserDetails = async userId => {
     }
 };
 
-export const getImagesForGems = gems => async (dispatch, getState) => {
-    const gemService = getState().app.gemServiceInstance;
-    console.log(':::::::::::::GEM SERVICE::', gemService);
-    if (!gemService) return;
-    const gemsWithImages = await gemService.getImagesForGems(gems);
-    dispatch({type: FETCH_GEMS_PAGE_IMAGES, payload: gemsWithImages});
-}
 
 export const useCoupon = (couponCode, hidePopup) => async (dispatch, getState) => {
     //console.log('COUPON')
@@ -136,78 +126,6 @@ export const useCoupon = (couponCode, hidePopup) => async (dispatch, getState) =
       });
 }
 
-// // this is called in authActions when you create a new User
-// export const getDetailsForAllGemsAUserCurrentlyOwns = (userId) => {
-//     store.dispatch({type: FETCH_USER_GEMS_BEGUN});
-//     const gemContract = store.getState().app.gemsContractInstance;
-//     const userName = store.getState().auth.user.name;
-//     const userImage = store.getState().auth.user.imageURL;
-//
-//     const listOfGemIds = [];
-//
-//     getAllUserGems(userId, gemContract).then(listOfGemIdsTheUserOwns => Promise.all(
-//       listOfGemIdsTheUserOwns.map((gemId) => {
-//           listOfGemIds.push(gemId);
-//           return getGemQualities(gemContract, gemId).then(
-//             ([color, level, gradeType, gradeValue]) => ({
-//                 color,
-//                 level,
-//                 gradeType,
-//                 gradeValue,
-//             }),
-//           );
-//       }),
-//     ).then((responses) => {
-//         const gemImages = Promise.all(
-//           responses.map(gem => getGemImage(gem.color, gem.gradeType, gem.level)),
-//         );
-//
-//         const gemStories = Promise.all(responses.map(gem => getGemStory(gem.color, gem.level)));
-//
-//         Promise.all([gemImages, gemStories])
-//           .then(async ([images, stories]) => {
-//               const userIdToLowerCase = userId
-//                 .split('')
-//                 .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
-//                 .join('');
-//
-//               const completeGemDetails = listOfGemIds.map((gemId, index) => ({
-//                   id: Number(gemId),
-//                   ...responses[index],
-//                   rate: Number(calcMiningRate(responses[index].gradeType, responses[index].gradeValue)),
-//                   auctionIsLive: false,
-//                   owner: userIdToLowerCase,
-//                   gemImage: images[index],
-//                   story: stories[index],
-//                   userName,
-//                   userImage,
-//               }));
-//
-//               if (completeGemDetails.length === 0) {
-//                   store.dispatch({type: FETCH_USER_GEMS_SUCCEEDED});
-//                   store.dispatch({
-//                       type: USER_HAS_NO_GEMS_IN_WORKSHOP,
-//                   });
-//               } else {
-//                   await completeGemDetails.forEach(gem => db
-//                     .collection('stones')
-//                     .doc(`${gem.id}`)
-//                     .set(gem));
-//
-//                   store.dispatch({
-//                       type: ALL_USER_GEMS_UPLOADED,
-//                       payload: completeGemDetails,
-//                   });
-//                   /* eslint-disable no-console */
-//
-//                   /* eslint-enable no-console */
-//                   store.dispatch({type: FETCH_USER_GEMS_SUCCEEDED});
-//               }
-//           })
-//           .catch(error => setError(error));
-//     }));
-// };
-
 export const getGemDetails = tokenId => dispatch => db
   .collection('stones')
   .where('id', '==', Number(tokenId))
@@ -250,6 +168,10 @@ export const sortBoxReredendered = () => dispatch => dispatch({type: SORT_BOX_RE
 
 export function paginate(pageNumber, pagePerView) {
     return dispatch => dispatch({type: PAGINATE, payload: [pageNumber, pagePerView]});
+}
+
+export function scrollGems(pageNumber, gemsNumber) {
+    return dispatch => dispatch({type: SCROLL_GEMS, payload: [pageNumber, gemsNumber]});
 }
 
 export const addGemsToDashboard = gems => {

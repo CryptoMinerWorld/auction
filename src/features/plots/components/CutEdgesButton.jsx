@@ -33,8 +33,10 @@ const StyledButton = styled.div`
         display: flex;
         align-items: center;
         justify-content: center;
+        text-align: center;
         content: "${props => props.content || ""}";
         background-color: ${props => props.backgroundColor};
+        padding: 2px;
         top: ${props => props.outlineWidth}px;
         left: ${props => props.outlineWidth}px;
         right: ${props => props.outlineWidth}px;
@@ -58,7 +60,8 @@ const StyledButton = styled.div`
             lowerVerticals + ', 100% ' + higherVerticals + ', ' + higherHorizontals + ' 100%, ' +
             lowerHorizontals + ' 100%, 0% ' + higherVerticals + ', 0 ' + lowerVerticals + ')';
         }};
-        font-size: ${props => props.fontSize || "14"}px;
+              
+        ${props => props.fontSize ? "font-size: "+props.fontSize+"px;": ""}
     }
 `;
 

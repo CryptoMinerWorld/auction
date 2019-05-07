@@ -110,17 +110,17 @@ const Navbar = ({
               </NavLink>
               <NavLink
                 exact
-                to="/map"
+                to="/plots"
                 activeStyle={{
                     borderBottom: '2px solid purple',
                 }}
-                className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
+                className="link dim dark-gray f6 f5-l dib mr3 mr4-l b"
                 data-testid="mapLink"
                 style={{
                     color: 'purple',
                 }}
               >
-                  Country Market
+                  Plots of Land
               </NavLink>
               <NavLink
                 exact
@@ -128,7 +128,7 @@ const Navbar = ({
                 activeStyle={{
                     borderBottom: '2px solid purple',
                 }}
-                className="link dim dark-gray f6 f5-l dib mr3 mr4-l b"
+                className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
                 data-testid="mapLink"
                 style={{
                     color: 'purple',

@@ -25,11 +25,14 @@ import Silver from './ABI/SilverERC20.json';
 import Workshop from './ABI/Workshop.json';
 import SilverSale from './ABI/SilverSale';
 import SilverCoupons from './ABI/SilverCoupons';
+import Plot from './ABI/PlotERC721';
+import PlotSale from './ABI/PlotSale';
 import queryString from "query-string";
 import Cookies from "universal-cookie";
 import GemService from './services/GemService';
 import AuctionService from './services/AuctionService';
 import SilverGoldService from "./services/SilverGoldService";
+import PlotService from "./services/PlotService";
 
 const dutchAuctionABI = DutchAuction.abi;
 const dutchAuctionHelperABI = DutchAuctionHelper.abi;
@@ -41,6 +44,8 @@ const silverABI = Silver.abi;
 const workshopABI = Workshop.abi;
 const silverSaleABI = SilverSale.abi;
 const silverCouponsABI = SilverCoupons.abi;
+const plotABI = Plot.abi;
+const plotSaleABI = PlotSale.abi;
 
 export const sendContractsToRedux = (
   dutchAuctionContractInstance,
@@ -57,6 +62,7 @@ export const sendContractsToRedux = (
   workshopContract,
   silverSaleContract,
   silverCouponsContract,
+  plotService,
   gemService,
   auctionService,
   silverGoldService,
@@ -81,6 +87,7 @@ export const sendContractsToRedux = (
             workshopContractInstance: workshopContract,
             silverSaleContractInstance: silverSaleContract,
             silverCouponsContractInstance: silverCouponsContract,
+            plotServiceInstance: plotService,
             gemServiceInstance: gemService,
             auctionServiceInstance: auctionService,
             silverGoldServiceInstance: silverGoldService,
@@ -171,12 +178,22 @@ export const instantiateContracts = async (web3, handleSendContractsToRedux, han
         from: currentAccountId,
     });
 
-    return Promise.all([dutchContract, dutchHelperContract, gemsContract, currentAccountId, presaleContract, refPointsTrackerContract, silverContract, goldContract, workshopContract, silverSaleContract, silverCouponsContract])
-      .then(([dutchAuctionContractInstance, dutchAuctionHelperContractInstance, gemsContractInstance, currentAccount, presale, refPointsTracker, silver, gold, workshop, silverSaleContractInstance, silverCouponsContractInstance]) => {
+    const plotContract = new web3.eth.Contract(plotABI, process.env.REACT_APP_PLOT_ERC721, {
+        from: currentAccountId,
+    });
+
+    const plotSaleContract = new web3.eth.Contract(plotSaleABI, process.env.REACT_APP_PLOT_SALE, {
+        from: currentAccountId,
+    });
+
+    return Promise.all([dutchContract, dutchHelperContract, gemsContract, currentAccountId, presaleContract, refPointsTrackerContract, silverContract, goldContract, workshopContract, silverSaleContract, silverCouponsContract, plotContract, plotSaleContract])
+      .then(([dutchAuctionContractInstance, dutchAuctionHelperContractInstance, gemsContractInstance, currentAccount, presale, refPointsTracker, silver, gold, workshop, silverSaleContractInstance, silverCouponsContractInstance, plotContract, plotSaleContract]) => {
 
           const gemService = new GemService(gemsContractInstance, web3, dutchAuctionContractInstance);
           const auctionService = new AuctionService(dutchAuctionContractInstance, dutchAuctionHelperContractInstance, gemsContractInstance);
           const silverGoldService = new SilverGoldService(silverSaleContractInstance, silver, gold, refPointsTracker, silverCouponsContractInstance);
+          const plotService = new PlotService(plotContract, plotSaleContract);
+
           console.warn('GEM SERVICE: ', gemService);
 
           handleSendContractsToRedux(
@@ -192,6 +209,7 @@ export const instantiateContracts = async (web3, handleSendContractsToRedux, han
             workshop,
             silverSaleContractInstance,
             silverCouponsContractInstance,
+            plotService,
             gemService,
             auctionService,
             silverGoldService

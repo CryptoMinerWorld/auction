@@ -11,6 +11,7 @@ import DetailsBar from './components/DetailsBar';
 import MapPageDetails from './components/MapPageDetails';
 // import countryDatum from './components/countryData';
 import { checkIfCountryIsForSale } from './helpers';
+import styled from "styled-components";
 
 const select = store => ({
   countryService: store.app.countryServiceInstance

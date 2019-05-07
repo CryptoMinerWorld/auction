@@ -1,18 +1,16 @@
 import React, {Component} from "react";
 import styled from "styled-components";
 import GemSelectionCard from "./GemSelectionCard";
-//import GemSelectionCard from "./GemSelectionCard";
 import InfiniteScroll from 'react-infinite-scroller';
 import {compose} from "redux";
 import connect from "react-redux/es/connect/connect";
-import {getImagesForGems} from "../../dashboard/dashboardActions";
 import GemSelectionFilters from "./GemSelectionFilters";
 import {gradeConverter, type} from "./propertyPaneStyles";
 
 const CardBox = styled.section`
   display: grid;
   width: 100%;
-  grid-template-columns: repeat(auto-fill, minMax(170px, 1fr));
+  grid-template-columns: repeat(auto-fill, minMax(150px, 1fr));
   grid-column-gap: 10px
   grid-row-gap: 10px;
 `;
@@ -38,6 +36,7 @@ export class GemSelectionPopup extends Component {
 
     componentDidMount() {
         this.sortGems("mrb_up")
+        this.setState({windowWidth: window.innerWidth});
     }
 
     loadMore(page) {
@@ -47,7 +46,6 @@ export class GemSelectionPopup extends Component {
             scrolledGems: this.state.allGems.slice(0, scrollTo),
             hasMoreGems: scrollTo < this.state.allGems.length,
         });
-        //this.props.handleGetImagesForGems(this.state.scrolledGems.slice(0, scrollTo));
     }
 
     addFilterOption = (filterOption) => {
@@ -97,7 +95,7 @@ export class GemSelectionPopup extends Component {
 
         const container = {
             display: "flex",
-            width: "800px",
+            width: this.state.windowWidth > 800 ? "800px" : this.state.windowWidth,
             padding: "0 10px",
             fontSize: "14px",
             fontWeight: "bold",
@@ -187,13 +185,10 @@ export class GemSelectionPopup extends Component {
     }
 }
 
-const actions = {
-    handleGetImagesForGems: getImagesForGems
-}
 
 export default compose(
   connect(
     select,
-    actions
+    {}
   )
 )(GemSelectionPopup);

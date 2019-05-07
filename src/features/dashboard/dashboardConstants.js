@@ -21,3 +21,4 @@ export const RERENDER_SORT_BOX = 'RERENDER_SORT_BOX';
 export const SORT_BOX_RERENDERED = 'SORT_BOX_RERENDERED';
 
 export const PAGINATE = 'PAGINATE';
+export const SCROLL_GEMS = 'SCROLL_GEMS';

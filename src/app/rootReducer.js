@@ -29,7 +29,9 @@ import {
     SILVER_CONTRACT_ADDED, SILVER_GOLD_SERVICE_ADDED, SILVER_SALE_CONTRACT_ADDED,
     WEB3_ADDED,
     WORKSHOP_CONTRACT_ADDED,
+    PLOT_SERVICE_ADDED,
 } from './reduxConstants';
+import {plots} from "../features/plots/plotReducer";
 
 const initialState = {
     loading: false,
@@ -49,6 +51,7 @@ const appReducer = (state = initialState, action) => ({
     [GEM_SERVICE_ADDED]: {...state, gemServiceInstance: action.payload},
     [AUCTION_SERVICE_ADDED]: {...state, auctionServiceInstance: action.payload},
     [SILVER_GOLD_SERVICE_ADDED]: {...state, silverGoldServiceInstance: action.payload},
+    [PLOT_SERVICE_ADDED]: {...state, plotServiceInstance: action.payload},
     [FETCH_DATA_BEGUN]: {...state, loading: true},
     [FETCH_DATA_FAILED]: {...state, error: action.payload, loading: false},
     [FETCH_DATA_SUCCEEDED]: {...state, loading: false},
@@ -112,6 +115,7 @@ export default combineReducers({
     auth,
     dashboard,
     sale,
+    plots,
     tooltip,
     tx: txReducer,
 });

@@ -10,21 +10,21 @@ import GemSelectionPopup from "./GemSelectionPopup";
 
 export class SidebarPopup extends Component {
 
-    state = {
-        activeOptions: []
-    };
+    // state = {
+    //     activeOptions: []
+    // };
 
     componentDidMount() {
-        this.setState({
-            activeOptions: this.props.activeOptions
-        });
+        // this.setState({
+        //     activeOptions: this.props.activeOptions
+        // });
     }
 
-    addFilterOption = (filterOption) => {
-        this.setState({
-            activeOptions: this.state.activeOptions.includes(filterOption) ? this.state.activeOptions.filter(e => e !== filterOption) : this.state.activeOptions.concat(filterOption)
-        });
-    }
+    // addFilterOption = (filterOption) => {
+    //     this.setState({
+    //         activeOptions: this.state.activeOptions.includes(filterOption) ? this.state.activeOptions.filter(e => e !== filterOption) : this.state.activeOptions.concat(filterOption)
+    //     });
+    // }
 
     static generatePopupContent(props) {
         switch(props.type) {
@@ -37,7 +37,7 @@ export class SidebarPopup extends Component {
             case "gems-selected":
                 return <SelectedGemsPopup/>;
             case "filter":
-                return <FilterPopup/>;
+                return <FilterPopup activeControls={props.activeControls} applySort={props.applySort} applyFilter={props.applyFilter}/>;
             case "gem-selection":
                 return <GemSelectionPopup userGems={props.userGems}/>
         }
@@ -55,6 +55,8 @@ export class SidebarPopup extends Component {
                 return "Selected Gem Info";
             case "gem-selection":
                 return "Available Gem Selection";
+            case "filter":
+                return "Sort & Filter Menu"
         }
     }
 
@@ -92,7 +94,8 @@ export class SidebarPopup extends Component {
        `;
 
         const SemiOctagonHeaderOuter = styled.div`
-            width: 200px;
+            width: 40%;
+            min-width: 200px;
             height: 20px;
             background: #62626B;
             position: relative;
@@ -102,7 +105,7 @@ export class SidebarPopup extends Component {
          
          &:before { 
             content: "";
-            width: 200px;
+            width: 100%;
             height: 0;
             position: absolute;
             top: -18px;
@@ -146,7 +149,7 @@ export class SidebarPopup extends Component {
        `;
 
         const SemiOctagonHeaderInner = styled.div`
-            width: 192px;
+            width: 100%;
             height: 20px;
             background: #2a3238;
             position: relative;
@@ -155,7 +158,7 @@ export class SidebarPopup extends Component {
          
          &:before { 
             content: "";
-            width: 192px;
+            width: 100%;
             height: 0;
             position: absolute;
             top: -15px;
@@ -220,7 +223,7 @@ export class SidebarPopup extends Component {
                   <SemiOctagonHeaderOuter>
                       <SemiOctagonHeaderInner>
                           <div style={{
-                              fontSize: "18px", color: "#97A8B4", position: "absolute",
+                              fontSize: "20px", color: "#97A8B4", position: "absolute",
                               top: "-11px", width: "100%", textAlign: "center"}}>
                               {SidebarPopup.generatePopupHeader(this.props.type)}
                           </div>

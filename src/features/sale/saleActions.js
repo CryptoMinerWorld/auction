@@ -65,9 +65,7 @@ export const getChestValue = () => async (dispatch, getState) => {
     const web3 = getState().app.web3;
     const chestAddress = await preSaleContract.methods
       .chestVault().call();
-    console.log('CHEST ADDRESS:', chestAddress);
     const chestValue = weiToEth(await web3.eth.getBalance(chestAddress));
-    console.log('CHEST VALUE:', chestValue);
     dispatch({
         type: CHEST_VALUE_RECEIVED,
         payload: chestValue
