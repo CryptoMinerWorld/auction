@@ -1,8 +1,4 @@
 import React, {Component} from "react";
-import PropTypes from 'prop-types';
-import Tilt from 'react-tilt';
-import Loading from "../../../components/Loading";
-import {getGemImage} from "../../../app/services/GemService";
 import {
     gradeConverter,
     gradeOutlineColor,
@@ -94,8 +90,8 @@ class GemSelectionFilters extends Component {
 
     render() {
 
-        const selectedFilters = this.props.selectedFilters || [];
-        const {toggleFilter, selectedSort, toggleSort} = this.props;
+        const unselectedFilters = this.props.unselectedFilters || {};
+        const {toggleFilter, selectedSort, toggleSort, clearFilters, setDefaultFilters} = this.props;
 
         return (
           <GemFiltersContainer>
@@ -109,10 +105,10 @@ class GemSelectionFilters extends Component {
                       'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)',
                 }}>
                   <div style={{width: "100%", textAlign: "center"}}>Filtering and Sorting Section</div>
-                  <GradesAndLevels selectedFilters={selectedFilters} toggleFilter={toggleFilter}/>
+                  <GradesAndLevels unselectedFilters={unselectedFilters} toggleFilter={toggleFilter}/>
                   <div style={{width: "100%", display: "flex", flexWrap: "wrap"}}>
                       <div style={{flex: "9"}}>
-                          <Types selectedFilters={selectedFilters} toggleFilter={toggleFilter}/>
+                          <Types unselectedFilters={unselectedFilters} toggleFilter={toggleFilter}/>
                       </div>
                       <div style={{flex: "3", padding: "5px 5px"}}>
                           <SortOptions selectedSort={selectedSort} toggleSort={toggleSort}/>
@@ -122,20 +118,22 @@ class GemSelectionFilters extends Component {
                           <div style={{flex: 2, margin: "5px 3px", fontWeight: "normal"}}>
                               <CutEdgesButton outlineColor={"orange"}
                                               backgroundColor={"black"}
-                                              edgeSizes={[7,20]}
+                                              edgeSizes={[7, 20]}
                                               outlineWidth={2}
                                               height={32}
                                               fontSize={16}
-                                              content={"Clear"}/>
+                                              content={"Clear"}
+                                              onClick={() => clearFilters()}/>
                           </div>
                           <div style={{flex: 2, margin: "8px 3px", fontWeight: "normal"}}>
                               <CutEdgesButton outlineColor={"aquamarine"}
                                               backgroundColor={"black"}
-                                              edgeSizes={[7,20]}
+                                              edgeSizes={[7, 20]}
                                               outlineWidth={2}
                                               height={32}
                                               fontSize={16}
-                                              content={"Default"}/>
+                                              content={"Default"}
+                                              onClick={() => setDefaultFilters()}/>
                           </div>
                       </div>
                   </div>
@@ -147,7 +145,7 @@ class GemSelectionFilters extends Component {
 
 export default GemSelectionFilters;
 
-const GradesAndLevels = ({selectedFilters, toggleFilter}) => {
+const GradesAndLevels = ({unselectedFilters, toggleFilter}) => {
     return (
       <div style={{
           width: "100%",
@@ -157,57 +155,59 @@ const GradesAndLevels = ({selectedFilters, toggleFilter}) => {
           flexWrap: "wrap",
       }}>
           <div className="flex jcc" style={{flex: 6}}>
-          {[1,2,3,4,5,6].map((grade) => {
-              const gradeType = gradeConverter(grade);
-              return (
-                <GradeAndLevelBox
-                     onClick={() => toggleFilter(gradeType)}>
-                    <CutEdgesButton
-                      outlineColor={() => selectedFilters.includes(gradeType) ? gradeOutlineColor : "transparent"}
-                      backgroundColor={() => selectedFilters.includes(gradeType) ? gradePaneColors(grade) : "black"}
-                      fontColor={gradeOutlineColor}
-                      edgeSizes={20}
-                      outlineWidth={1}
-                      height={45}
-                      content={gradeType}/>
-                </GradeAndLevelBox>)}
-          )}
+              {[1, 2, 3, 4, 5, 6].map((grade) => {
+                    const gradeType = gradeConverter(grade);
+                    return (
+                      <GradeAndLevelBox key={grade}
+                                        onClick={() => toggleFilter(gradeType, "grades")}>
+                          <CutEdgesButton
+                            outlineColor={() => !unselectedFilters.grades.includes(gradeType) ? gradeOutlineColor : "transparent"}
+                            backgroundColor={() => !unselectedFilters.grades.includes(gradeType) ? gradePaneColors(grade) : "black"}
+                            fontColor={gradeOutlineColor}
+                            edgeSizes={20}
+                            outlineWidth={1}
+                            height={45}
+                            content={gradeType}/>
+                      </GradeAndLevelBox>)
+                }
+              )}
           </div>
           <div className="flex jcc" style={{flex: 5}}>
-          {[1,2,3,4,5].map((level =>
-              <GradeAndLevelBox
-                   onClick={() => toggleFilter("lvl_"+level)}>
-                  <CutEdgesButton outlineColor={() => selectedFilters.includes("lvl_"+level) ? levelOutlineColor : "transparent"}
-                                  backgroundColor={() => selectedFilters.includes("lvl_"+level) ? levelPaneColors(level) : "black"}
-                                  fontColor={levelOutlineColor}
-                                  edgeSizes={20}
-                                  outlineWidth={1}
-                                  height={45}
-                                  content={level}/>
-              </GradeAndLevelBox>
-          ))}
+              {[1, 2, 3, 4, 5].map((level =>
+                  <GradeAndLevelBox key={level}
+                                    onClick={() => toggleFilter("lvl_" + level, "levels")}>
+                      <CutEdgesButton
+                        outlineColor={() => !unselectedFilters.levels.includes("lvl_" + level) ? levelOutlineColor : "transparent"}
+                        backgroundColor={() => !unselectedFilters.levels.includes("lvl_" + level) ? levelPaneColors(level) : "black"}
+                        fontColor={levelOutlineColor}
+                        edgeSizes={20}
+                        outlineWidth={1}
+                        height={45}
+                        content={level}/>
+                  </GradeAndLevelBox>
+              ))}
           </div>
       </div>
     )
 }
 
-const Types = ({selectedFilters, toggleFilter}) => {
+const Types = ({unselectedFilters, toggleFilter}) => {
     return (
       <div style={{display: "flex", flexWrap: "wrap", minWidth: "276px"}}>
-          {[1,2,3,4,5,6,7,8,9,10,11,12].map((typeColor) => {
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((typeColor) => {
               const color = typePaneOutlineColors(typeColor);
               const typeName = type(typeColor);
-                return (
-            <TypeBox
-                onClick={() => toggleFilter(typeName)}>
-                <CutEdgesButton outlineColor={() => selectedFilters.includes(typeName) ? color : "black"}
-                                backgroundColor={() => selectedFilters.includes(typeName) ? typePaneColors(typeColor) : "black"}
-                                fontColor={color}
-                                edgeSizes={[10,20]}
-                                outlineWidth={2}
-                                height={30}
-                                content={typeName}/>
-            </TypeBox>)
+              return (
+                <TypeBox key={typeColor}
+                         onClick={() => toggleFilter(typeName, "types")}>
+                    <CutEdgesButton outlineColor={() => !unselectedFilters.types.includes(typeName) ? color : "black"}
+                                    backgroundColor={() => !unselectedFilters.types.includes(typeName) ? typePaneColors(typeColor) : "black"}
+                                    fontColor={color}
+                                    edgeSizes={[10, 20]}
+                                    outlineWidth={2}
+                                    height={30}
+                                    content={typeName}/>
+                </TypeBox>)
           })}
       </div>
     )
@@ -217,21 +217,30 @@ const SortOptions = ({selectedSort, toggleSort}) => {
     const mrbActive = ["mrb_up", "mrb_down"].includes(selectedSort);
     const levelActive = !mrbActive;
     return (
-      <div style={{width: "100%", backgroundColor: "#2A3238", display: "flex", padding: "5px", fontWeight: "normal", borderRadius: "5px", minWidth: "140px"}}>
+      <div style={{
+          width: "100%",
+          backgroundColor: "#2A3238",
+          display: "flex",
+          padding: "5px",
+          fontWeight: "normal",
+          borderRadius: "5px",
+          minWidth: "140px"
+      }}>
           <div className="flex col" style={{flex: 1, margin: "0 5px"}}>
               <CutEdgesButton outlineColor={mrbActive ? mrbOutlineColor : "transparent"}
                               backgroundColor={mrbActive ? mrbPaneColor : "black"}
                               fontColor={mrbOutlineColor}
-                              edgeSizes={[10,20]}
+                              edgeSizes={[10, 20]}
                               outlineWidth={1}
                               height={26}
                               fontSize={16}
-                              content={"MRB"}/>
+                              content={"MRB"}
+                              onClick={() => toggleSort("mrb_down")}/>
               <div className="flex row jce" style={{marginTop: "5px"}}>
                   <CutEdgesButton outlineColor={selectedSort === "mrb_up" ? mrbOutlineColor : "transparent"}
                                   backgroundColor={selectedSort === "mrb_up" ? mrbPaneColor : "black"}
                                   fontColor={mrbOutlineColor}
-                                  edgeSizes={[10,20]}
+                                  edgeSizes={[10, 20]}
                                   outlineWidth={1}
                                   height={26}
                                   fontSize={16}
@@ -240,9 +249,9 @@ const SortOptions = ({selectedSort, toggleSort}) => {
                                   onClick={() => toggleSort("mrb_up")}
                   />
                   <CutEdgesButton outlineColor={selectedSort === "mrb_down" ? mrbOutlineColor : "transparent"}
-                                  backgroundColor={selectedSort === "mrb_down" ? mrbPaneColor: "black"}
+                                  backgroundColor={selectedSort === "mrb_down" ? mrbPaneColor : "black"}
                                   fontColor={mrbOutlineColor}
-                                  edgeSizes={[10,20]}
+                                  edgeSizes={[10, 20]}
                                   outlineWidth={1}
                                   height={26}
                                   fontSize={16}
@@ -255,16 +264,17 @@ const SortOptions = ({selectedSort, toggleSort}) => {
               <CutEdgesButton outlineColor={levelActive ? "yellow" : "transparent"}
                               backgroundColor={levelActive ? "#492106" : "black"}
                               fontColor={"yellow"}
-                              edgeSizes={[10,20]}
+                              edgeSizes={[10, 20]}
                               outlineWidth={1}
                               height={26}
                               fontSize={16}
-                              content={"Level"}/>
-              <div className="flex row jce" style={{marginTop: "5px", }}>
+                              content={"Level"}
+                              onClick={() => toggleSort("level_up")}/>
+              <div className="flex row jce" style={{marginTop: "5px",}}>
                   <CutEdgesButton outlineColor={() => selectedSort === "level_up" ? "yellow" : "transparent"}
-                                  backgroundColor={() => selectedSort === "level_down" ? "#492106" : "black"}
+                                  backgroundColor={() => selectedSort === "level_up" ? "#492106" : "black"}
                                   fontColor={"yellow"}
-                                  edgeSizes={[10,20]}
+                                  edgeSizes={[10, 20]}
                                   outlineWidth={1}
                                   height={26}
                                   fontSize={16}
@@ -274,7 +284,7 @@ const SortOptions = ({selectedSort, toggleSort}) => {
                   <CutEdgesButton outlineColor={() => selectedSort === "level_down" ? "yellow" : "transparent"}
                                   backgroundColor={() => selectedSort === "level_down" ? "#492106" : "black"}
                                   fontColor={"yellow"}
-                                  edgeSizes={[10,20]}
+                                  edgeSizes={[10, 20]}
                                   outlineWidth={1}
                                   height={26}
                                   fontSize={16}

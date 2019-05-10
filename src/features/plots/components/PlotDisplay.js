@@ -1,6 +1,5 @@
 import React, {Component} from "react";
 import PlotBar from "./PlotBar";
-import buyNowImage from "../../../app/images/pinkBuyNowButton.png";
 import PlotSidebar from "./PlotSidebar";
 import SidebarPopup from "./SidebarPopup";
 import styled from "styled-components";
@@ -11,7 +10,8 @@ import plotFinishButton from "../../../app/images/finishButton.png";
 import Slider from "react-slick";
 import {compose} from "redux";
 import connect from "react-redux/es/connect/connect";
-import {GemSelectionPopup} from "./GemSelectionPopup";
+import {releaseGem} from "../plotActions";
+import {CANT_MINE, FINISHED, MINING, NOT_MINING} from "../../../app/services/PlotService";
 
 // import "../../../app/css/slick.min.css";
 // import "../../../app/css/slick-theme.min.css";
@@ -209,23 +209,30 @@ const sliderSettings = {
     ]
 };
 
+const allTierFilterOptions = ["dirt_filter", "clay_filter", "limestone_filter", "marble_filter", "obsidian_filter"];
+const allPlotFilterOptions = ["show_gem_mining", "show_not_mining", "show_no_gem", "show_completed"];
+const defaultPlotFilterOptions = ["show_gem_mining", "show_not_mining", "show_no_gem", "show_completed"];
+const defaultTierFilterOptions = [];
+const defaultSortOption = "mined";
 
 class PlotDisplay extends Component {
 
     state = {
-        sortOption: "time_left",
+        sortOption: defaultSortOption,
         sortOptionDirection: "sort_btn_down",
-        filterOptions: ["show_gem_mining", "show_not_mining", "show_no_gem"],
+        plotFilterOptions: defaultPlotFilterOptions,
+        tierFilterOptions: defaultTierFilterOptions,
         filteredPlots: [],
         showSidebarPopup: false,
         showSidebarFilters: false,
+        sliderIndex: 0,
     }
 
     componentDidMount() {
         this.setState({
             currentTime: new Date().getTime(),
-            filteredPlots: this.props.plots || [],
         });
+        this.sortFiltered(this.props.plots || []);
         const {} = this.props;
     }
 
@@ -234,17 +241,28 @@ class PlotDisplay extends Component {
         if (plots !== prevProps.plots) {
             this.setState({
                 currentTime: new Date().getTime(),
-                filteredPlots: this.props.plots || [],
             });
+            this.sortFiltered(this.props.plots || []);
         }
     }
 
     applyFilterOption = (filterOption) => {
-        this.setState({
-            filterOptions: this.state.filterOptions.includes(filterOption) ? this.state.filterOptions.filter(e => e !== filterOption) : this.state.filterOptions.concat(filterOption)
-        }, () => {
-            this.applyAllFilters();
-        });
+        if (allTierFilterOptions.includes(filterOption)) {
+            this.setState({
+                plotFilterOptions: this.state.tierFilterOptions.length === 0 ? allPlotFilterOptions : this.state.plotFilterOptions,
+                tierFilterOptions: this.state.tierFilterOptions.includes(filterOption) ? this.state.tierFilterOptions.filter(e => e !== filterOption) : this.state.tierFilterOptions.concat(filterOption)
+            }, () => {
+                this.applyAllFilters();
+            });
+            return;
+        }
+        if (allPlotFilterOptions.includes(filterOption)) {
+            this.setState({
+                plotFilterOptions: this.state.plotFilterOptions.includes(filterOption) ? this.state.plotFilterOptions.filter(e => e !== filterOption) : this.state.plotFilterOptions.concat(filterOption)
+            }, () => {
+                this.applyAllFilters();
+            });
+        }
     };
 
     applySortOption = (sortOption) => {
@@ -295,7 +313,6 @@ class PlotDisplay extends Component {
         }
 
         plots.sort((p1, p2) => {
-            console.log("sort: ", p1, " vs ", p2);
             return directionFlag * sortingFunction(p1, p2);
         });
 
@@ -305,72 +322,76 @@ class PlotDisplay extends Component {
     applyAllFilters() {
         let plots = this.props.plots.filter((plot) => {
             let filterPassed = false;
-            this.state.filterOptions.forEach((option) => {
+
+            this.state.tierFilterOptions.length > 0 && this.state.tierFilterOptions.forEach((option) => {
                 switch (option) {
-                    case "show_gem_mining":
-                        if (plot.gemMines) filterPassed = true;
-                        break;
-                    case "show_not_mining":
-                        if (!plot.gemMines) filterPassed = true;
-                        break;
-                    case "show_no_gem":
-                        break;
-                    case "show_completed":
-                        break;
                     case "dirt_filter":
-                        if (plot.gemMines && plot.currentPercentage <= plot.layerEndPercentages[0]) filterPassed = true;
+                        if (plot.currentPercentage <= plot.layerEndPercentages[0]) filterPassed = true;
                         break;
                     case "clay_filter":
-                        if (plot.gemMines && plot.currentPercentage < plot.layerEndPercentages[1] && plot.currentPercentage >= plot.layerEndPercentages[0]) filterPassed = true;
+                        if (plot.currentPercentage < plot.layerEndPercentages[1] && plot.currentPercentage >= plot.layerEndPercentages[0]) filterPassed = true;
                         break;
                     case "limestone_filter":
-                        if (plot.gemMines && plot.currentPercentage <= plot.layerEndPercentages[2] && plot.currentPercentage >= plot.layerEndPercentages[1]) filterPassed = true;
+                        if (plot.currentPercentage <= plot.layerEndPercentages[2] && plot.currentPercentage >= plot.layerEndPercentages[1]) filterPassed = true;
                         break;
                     case "marble_filter":
-                        if (plot.gemMines && plot.currentPercentage <= plot.layerEndPercentages[3] && plot.currentPercentage >= plot.layerEndPercentages[2]) filterPassed = true;
+                        if (plot.currentPercentage <= plot.layerEndPercentages[3] && plot.currentPercentage >= plot.layerEndPercentages[2]) filterPassed = true;
                         break;
                     case "obsidian_filter":
-                        if (plot.gemMines && plot.currentPercentage <= plot.layerEndPercentages[4] && plot.currentPercentage >= plot.layerEndPercentages[3]) filterPassed = true;
+                        if (plot.currentPercentage <= plot.layerEndPercentages[4] && plot.currentPercentage >= plot.layerEndPercentages[3]) filterPassed = true;
                         break;
                 }
             });
+
+            if (filterPassed || this.state.tierFilterOptions.length === 0) {
+                filterPassed = false;
+                this.state.plotFilterOptions.forEach((option) => {
+                    switch (option) {
+                        case "show_gem_mining":
+                            if (plot.miningState === MINING) filterPassed = true;
+                            break;
+                        case "show_not_mining":
+                            if (plot.miningState === CANT_MINE) filterPassed = true;
+                            break;
+                        case "show_no_gem":
+                            if (plot.miningState === NOT_MINING) filterPassed = true;
+                            break;
+                        case "show_completed":
+                            if (plot.miningState === FINISHED) filterPassed = true;
+                            break;
+                        default:
+                            filterPassed = false;
+                    }
+                })
+            }
             return filterPassed;
         });
         this.sortFiltered(plots);
     }
 
-    calculateMiningStatus(plot) {
-        const timeLeftInHours = t => Math.floor((t % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const timeLeftInMinutes = t => Math.floor((t % (1000 * 60 * 60)) / (1000 * 60));
-        const timeLeftInDays = t => Math.floor(t / (1000 * 60 * 60 * 24));
-
-        if (!plot.gemMines) {
-            return "Not Mining";
+    calculateAllowedPlotAction(plot) {
+        switch (plot.miningState) {
+            case CANT_MINE:
+                return "upgrade";
+            case FINISHED:
+                return "stop";
+            case NOT_MINING:
+                return "start";
+            case MINING:
+                return "stop";
         }
-
-        const timeLeft = plot.deadline * 1000 - this.state.currentTime;
-        if (timeLeft < 0) {
-            return "Finished!";
-        }
-
-        const hoursLeft = timeLeftInHours(timeLeft);
-        const minutesLeft = timeLeftInMinutes(timeLeft);
-        const daysLeft = timeLeftInDays(timeLeft);
-
-        return daysLeft + "d " + hoursLeft + "h";
     }
 
-    calculateAllowedPlotAction(plot) {
-        switch (this.calculateMiningStatus(plot)) {
-            case "Can't Mine":
-                return "UPGRADE";
-            case "Finished!":
-                return "STOP";
-            case "Not Mining":
-                return "START";
-            default:
-                return "STOP";
+    handleActionButtonClick = (action, plotId) => {
+        switch (action) {
+            case "start":
+                break;
+            case "stop":
+                this.props.handleReleaseGem(plotId, () => this.setState({showSidebarPopup: false}));
+                break;
+            case "upgrade":
         }
+        this.showSidebarPopup("plot-action-" + action)
     }
 
     showSidebarPopup = (type) => {
@@ -403,15 +424,99 @@ class PlotDisplay extends Component {
     }
 
     render() {
-        console.log("State: ", this.state);
-        console.log("Props: ", this.props);
-        const {sortOption, sortOptionDirection, sortTier, sortTierDirection, filterOptions, filteredPlots} = this.state;
-        const startStopButton = {
+        //console.log("State: ", this.state);
+        //console.log("Props: ", this.props);
+        const {sortOption, sortOptionDirection, tierFilterOptions, plotFilterOptions, filteredPlots, plotSelected, sliderIndex} = this.state;
+        const {handleBindGem} = this.props;
+        const startStopButton = {}
 
-        }
+        return (
+          <div style={{
+              display: "flex",
+              flexDirection: "row-reverse",
+              justifyContent: "flex-end",
+              position: "relative"
+          }}>
+              <SliderWrapper>
+                  <Slider ref={slider => (this.slider = slider)}
+                          {...sliderSettings}
+                          initialSlide={sliderIndex}
+                    //beforeChange = {(current, next) => this.setState({ sliderIndex: next })}
+                          afterChange={(index) => this.setState({sliderIndex: index})}
+                  >
+                      {filteredPlots.map(plot => {
+                            const plotAction = this.calculateAllowedPlotAction(plot);
+                            return (
+                              <PlotBarContainer key={plot.id} plot={plot}
+                                                selected={plotSelected && plotSelected.id === plot.id}
+                                                clipPath={PlotDisplay.generateRandomClipPath()}
+                                                onClick={() => {
+                                                    this.setState({plotSelected: plotSelected && plotSelected.id === plot.id ? null : plot});
+                                                }}>
+                                  <div style={miningStatus}>{plot.miningState}</div>
+                                  <div style={miningStatus}>{plot.currentPercentage}%</div>
+                                  <PlotBar plot={{...plot, timeLeft: plot.deadline * 1000 - this.state.currentTime}}/>
+                                  <PlotActionButton
+                                    plot={plot}
+                                    inactive={plotSelected && plot.id !== plotSelected.id}
+                                    onClick={() => {
+                                        this.handleActionButtonClick(plotAction, plot.id)
+                                    }}>
+                                      {plotAction.toUpperCase()}
+                                  </PlotActionButton>
+                              </PlotBarContainer>
+                            )
+                        }
+                      )}
+                  </Slider>
+              </SliderWrapper>
+              <PlotSidebar
+                showSidebarPopup={(type) => this.showSidebarPopup(type)}
+                plotSelected={plotSelected}
+                nextPage={() => {
+                }}
+                prevPage={() => {
+                }}
+              />
+              {/*{this.state.showSidebarFilters ?*/}
+              {/*<PlotFilter*/}
+              {/*activeControls={[].concat(sortOption, sortOptionDirection, sortTier, sortTierDirection, filterOptions)}*/}
+              {/*closeCallback={() => this.setState({showSidebarFilter: false})}*/}
+              {/*/> : ""}*/}
+              <SidebarPopup type={this.state.showSidebarPopup}
+                            activeControls={[].concat(sortOption, sortOptionDirection, plotFilterOptions, tierFilterOptions)}
+                            applySort={(sortOption) => {
+                                this.applySortOption(sortOption)
+                            }}
+                            applyFilter={(filterOption) => this.applyFilterOption(filterOption)}
+                            selectedPlotId={plotSelected && plotSelected.id}
+                            closeCallback={() => this.setState({showSidebarPopup: false})}
+                            filterDefault={() => {
+                                this.setState({
+                                    plotFilterOptions: defaultPlotFilterOptions,
+                                    tierFilterOptions: defaultTierFilterOptions
+                                }, () => this.applyAllFilters());
 
-        const PlotBarContainer = styled.div`
+                            }}
+
+              />
+          </div>
+        );
+    }
+}
+
+export default compose(
+  connect(
+    select,
+    {
+        handleReleaseGem: releaseGem,
+    }
+  )
+)(PlotDisplay);
+
+const PlotBarContainer = styled.div`
             padding: 10px 0px 70px;
+            position: relative;
             width: 130px !important;
             min-width: 130px;
             max-width: 130px;
@@ -419,23 +524,50 @@ class PlotDisplay extends Component {
             flex-direction: column;
             align-items: center;
             background-color: ${props => {
-            switch (this.calculateMiningStatus(props.plot)) {
-                case "Can't Mine":
-                    return "#70575A";
-                case "Finished!":
-                    return "#655872";
-                case "Not Mining":
-                    return "#4B6653";
-                default:
-                    return "#536373";
-            }
-        }}
+    switch (props.plot.miningState) {
+        case CANT_MINE:
+            return props.selected ? "#EFB1B2" : "#70575A";
+        case FINISHED:
+            return props.selected ? "#b9a3c9" : "#655872";
+        case NOT_MINING:
+            return props.selected ? "#6daf7a" : "#4B6653";
+        default:
+            return props.selected ? "#98c0d6" : "#536373";
+    }
+}}
             margin: 0px 10px;
             max-height: 620px;
-            ${props => PlotDisplay.generateRandomClipPath()}
+            z-index: 2;
+            cursor: pointer;
+            ${props => props.clipPath};
+            
+            ${props => props.selected &&
+  `&:after {
+                    position: absolute;
+                    z-index: 1;
+                    width: 136px;
+                    height: 100%;
+                    left: -3px;
+                    background-color: ${props => {
+      switch (props.plot.miningState) {
+          case CANT_MINE:
+              return "#E12D2C";
+          case FINISHED:
+              return "#655872";
+          case NOT_MINING:
+              return "#4B6653";
+          case MINING:
+              return "#536373";
+          default:
+              return "#536373";
+      }
+  }}  
+                ${props => props.clipPath}; 
+                }`
+  }
         `;
 
-        const PlotActionButton = styled.div`
+const PlotActionButton = styled.div`
             width: 85px;
             height: 32px;
             text-align: center;
@@ -449,25 +581,27 @@ class PlotDisplay extends Component {
             margin-top: 40px;
             margin-bottom: 7px;
             font-size: 13px;
+            opacity: ${props => props.inactive ? "0.6" : "1"};
             background-image: ${props => {
-            switch (this.calculateMiningStatus(props.plot)) {
-                case "Can't Mine":
-                    return 'url(' + plotUpgradeButton + ')';
-                case "Finished!":
-                    return 'url(' + plotFinishButton + ')';
-                case "Not Mining":
-                    return 'url(' + plotStartButton + ')';
-                default:
-                    return 'url(' + plotStopButton + ')';
-            }}}
+    switch (props.plot.miningState) {
+        case CANT_MINE:
+            return 'url(' + plotUpgradeButton + ')';
+        case FINISHED:
+            return 'url(' + plotFinishButton + ')';
+        case NOT_MINING:
+            return 'url(' + plotStartButton + ')';
+        default:
+            return 'url(' + plotStopButton + ')';
+    }
+}}
         `;
 
-        const miningStatus = {
-            color: "white",
-            fontSize: "18px",
-        }
+const miningStatus = {
+    color: "white",
+    fontSize: "18px",
+}
 
-        const SliderWrapper = styled.div`
+const SliderWrapper = styled.div`
             @media(min-width: 600px) {
                 max-height: 640px;
                 width: calc(100% - 185px);
@@ -477,58 +611,6 @@ class PlotDisplay extends Component {
             @media(max-width: 599px) {
                 width: 100%;
                 padding: 0 20px;
+                margin-bottom: 65px;
             }
         `;
-
-        return (
-          <div style={{
-              display: "flex",
-              flexDirection: "row-reverse",
-              justifyContent: "flex-end",
-              position: "relative"
-          }}>
-              <SliderWrapper>
-                  <Slider {...sliderSettings}>
-                  {filteredPlots.map(plot =>
-                    <PlotBarContainer key={plot.plotId} plot={plot}>
-                        <div style = {miningStatus}>{this.calculateMiningStatus(plot)}</div>
-                        <div style = {miningStatus}>{plot.currentPercentage}%</div>
-                        <PlotBar plot={{...plot, timeLeft: plot.deadline * 1000 - this.state.currentTime}}/>
-                        <PlotActionButton plot={plot} onClick={() => this.showSidebarPopup("gem-selection")}>
-                            {this.calculateAllowedPlotAction(plot)}
-                            </PlotActionButton>
-                    </PlotBarContainer>
-                  )}
-                  </Slider>
-              </SliderWrapper>
-              <PlotSidebar
-                showSidebarPopup={(type) => this.showSidebarPopup(type)}
-                nextPage={() => {
-                }}
-                prevPage={() => {
-                }}
-              />
-              {/*{this.state.showSidebarFilters ?*/}
-                {/*<PlotFilter*/}
-                  {/*activeControls={[].concat(sortOption, sortOptionDirection, sortTier, sortTierDirection, filterOptions)}*/}
-                  {/*closeCallback={() => this.setState({showSidebarFilter: false})}*/}
-                {/*/> : ""}*/}
-              <SidebarPopup type={this.state.showSidebarPopup}
-                            activeControls={[].concat(sortOption, sortOptionDirection, filterOptions)}
-                            applySort={(sortOption) => {
-                                this.applySortOption(sortOption)
-                            }}
-                            applyFilter={(filterOption) => this.applyFilterOption(filterOption)}
-                            userGems={this.props.userGems}
-                            closeCallback={() => this.setState({showSidebarPopup: false})}/>
-          </div>
-        );
-    }
-}
-
-export default compose(
-  connect(
-    select,
-    {}
-  )
-)(PlotDisplay);

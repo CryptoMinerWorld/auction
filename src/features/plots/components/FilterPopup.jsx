@@ -105,7 +105,7 @@ export class FilterPopup extends Component {
 
     render() {
 
-        const {applyFilter, applySort, prevPage, nextPage, activeControls} = this.props;
+        const {applyFilter, applySort, prevPage, nextPage, activeControls, filterDefault} = this.props;
 
 
         return (
@@ -114,26 +114,38 @@ export class FilterPopup extends Component {
                   marginTop: "-15px",
                   zIndex: "30"
               }}>
-                  <PlotsInfo edgeSizes={[10, 15]}>
-                      <CutEdgesButton outlineColor={"#FF6EE4"}
-                                      backgroundColor={"#4C2742"}
-                                      edgeSizes={[6, 20]}
+                  <PlotsInfo edgeSizes={[7, 20]}>
+                      <CutEdgesButton outlineColor={"#2A8A91"}
+                                      backgroundColor={"#174746"}
+                                      edgeSizes={[7, 20]}
                                       outlineWidth={2}
                                       height={32}
                                       fontSize={18}
-                                      content={"Apply"}
-                                      style={"margin: 10px 0 0"}
-                      />
-                      <CutEdgesButton outlineColor={"#934A2A"}
-                                      backgroundColor={"#492417"}
-                                      edgeSizes={[6, 20]}
-                                      outlineWidth={2}
-                                      height={32}
-                                      fontSize={18}
-                                      content={"Cancel"}
-                                      style={"margin: 10px 0"}
+                                      content={"Defaults"}
+                                      style={"margin: 5px 0"}
+                                      onClick={() => filterDefault()}
                       />
                   </PlotsInfo>
+                    {/*<PlotsInfo edgeSizes={[10, 15]}>*/}
+                      {/*<CutEdgesButton outlineColor={"#FF6EE4"}*/}
+                                      {/*backgroundColor={"#4C2742"}*/}
+                                      {/*edgeSizes={[6, 20]}*/}
+                                      {/*outlineWidth={2}*/}
+                                      {/*height={32}*/}
+                                      {/*fontSize={18}*/}
+                                      {/*content={"Apply"}*/}
+                                      {/*style={"margin: 10px 0 0"}*/}
+                      {/*/>*/}
+                      {/*<CutEdgesButton outlineColor={"#934A2A"}*/}
+                                      {/*backgroundColor={"#492417"}*/}
+                                      {/*edgeSizes={[6, 20]}*/}
+                                      {/*outlineWidth={2}*/}
+                                      {/*height={32}*/}
+                                      {/*fontSize={18}*/}
+                                      {/*content={"Cancel"}*/}
+                                      {/*style={"margin: 10px 0"}*/}
+                      {/*/>*/}
+                  {/*</PlotsInfo>*/}
                   <PlotsInfo edgeSizes={[10, 4]}>
                       <div style={plainText}>Sort By</div>
                       <ShowButton selected={activeControls.includes("time_left")}
@@ -211,16 +223,6 @@ export class FilterPopup extends Component {
                                   onClick={() => applyFilter("marble_filter")} content={"Marble"}/>
                       <ShowButton selected={activeControls.includes("obsidian_filter")}
                                   onClick={() => applyFilter("obsidian_filter")} content={"Obsidian"}/>
-                  </PlotsInfo>
-                  <PlotsInfo edgeSizes={[7, 20]}>
-                      <CutEdgesButton outlineColor={"#2A8A91"}
-                                      backgroundColor={"#174746"}
-                                      edgeSizes={[7, 20]}
-                                      outlineWidth={2}
-                                      height={32}
-                                      fontSize={18}
-                                      content={"Defaults"}
-                                      style={"margin: 5px 0"}/>
                   </PlotsInfo>
               </Col>
           </div>

@@ -100,7 +100,8 @@ class PlotSale extends Component {
 
         return (
           <div data-testid="mapPage" className="plot-sale bg-off-black white w-100">
-              <div className="flex w-100 col-reverse row-ns mw9 center">
+              <div className="flex ais w-100 col-reverse row-ns mw9 center"
+                   style={{padding: "25px 10px 15px", minHeight: "601px"}}>
                   <BuyFormContainer>
                       <BuyForm countryData={searchCountryList}
                                handleClick={(country) => {

@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import styled from 'styled-components';
 
 class PlotBar extends Component {
 
@@ -6,7 +7,7 @@ class PlotBar extends Component {
 
     componentDidMount() {
         const {} = this.props;
-        this.setState({windowWidth: window.innerWidth});
+        this.setState({windowWidth: window.innerWidth, windowHeight: window.innerHeight});
     }
 
     componentDidUpdate(prevProps) {
@@ -14,12 +15,12 @@ class PlotBar extends Component {
     }
 
     calculateEmptiedPercentage(plot, tier) {
-        //plot.layerEndPercentages[tier]
+        return Math.max(Math.min(plot.currentPercentage - (tier > 0 ? plot.layerEndPercentages[tier-1] : 0), plot.layerPercentages[tier]) , 0);
     }
 
     render() {
         const {plot} = this.props;
-        const barHeight = (this.state.windowWidth && this.state.windowWidth < 560) ? 300 : 450;
+        const barHeight = (this.state.windowHeight && this.state.windowHeight < 730) ? 300 : 450;
 
         return (
           <div style={{
@@ -30,15 +31,19 @@ class PlotBar extends Component {
               paddingTop: "20px",
               marginTop: "5px"
           }}>
-              <Hat/>
+              <Hat emptied={plot.currentPercentage > 0}/>
               <Layer tier={0}
                      height={plot.layerPercentages["0"] * barHeight / 100}
-                //heightFilled={plot.}
+                     heightEmptied={this.calculateEmptiedPercentage(plot, 0) * barHeight / 100}
               />
-              <Layer tier={1} height={plot.layerPercentages["1"] * barHeight / 100}/>
-              <Layer tier={2} height={plot.layerPercentages["2"] * barHeight / 100}/>
-              <Layer tier={3} height={plot.layerPercentages["3"] * barHeight / 100}/>
-              <Layer tier={4} height={plot.layerPercentages["4"] * barHeight / 100}/>
+              <Layer tier={1} height={plot.layerPercentages["1"] * barHeight / 100}
+                     heightEmptied={this.calculateEmptiedPercentage(plot, 1) * barHeight / 100}/>
+              <Layer tier={2} height={plot.layerPercentages["2"] * barHeight / 100}
+                     heightEmptied={this.calculateEmptiedPercentage(plot, 2) * barHeight / 100}/>
+              <Layer tier={3} height={plot.layerPercentages["3"] * barHeight / 100}
+                     heightEmptied={this.calculateEmptiedPercentage(plot, 3) * barHeight / 100}/>
+              <Layer tier={4} height={plot.layerPercentages["4"] * barHeight / 100}
+                     heightEmptied={this.calculateEmptiedPercentage(plot, 4) * barHeight / 100}/>
               {plot.gemMines && <CurrentLevel topOffset={plot.currentPercentage * barHeight / 100}/>}
               {plot.gemMines && <CurrentGemUsed topOffset={0} image={plot.gemMines.image}/>}
           </div>
@@ -96,33 +101,26 @@ const CurrentLevel = ({topOffset}) => {
 
     return (
       <div className="prism" style={arrowStyle}>
-          <div className="face-left" style={faceLeftStyle}></div>
-          <div className="face-right" style={faceRightStyle}></div>
+          <div className="face-left" style={faceLeftStyle}/>
+          <div className="face-right" style={faceRightStyle}/>
       </div>
     );
 }
 
 
-const Hat = () => {
+const Hat = styled.div`
+    width: 44px;
+    height: 44px;
+    background-color: #664330;
+    transform: rotateX(79deg) rotateZ(45deg);
+    position: absolute;
+    top: -5px;
+    left: 8px;
+    opacity: ${props => props.emptied ? "0.5" : "1"};
+`;
 
-    const hatStyle = {
-        width: "44px",
-        height: "44px",
-        backgroundColor: "#664330",
-        //backgroundColor: "#A5DB68",
-        transform: "rotateX(79deg) rotateZ(45deg)",
-        position: "absolute",
-        top: "-5px",
-        left: "8px",
-    }
 
-    return (
-      <div className="hat" style={hatStyle}>
-      </div>
-    );
-}
-
-const Layer = ({tier, height}) => {
+const Layer = ({tier, height, heightEmptied}) => {
 
     //console.log("Height:", height);
 
@@ -150,25 +148,6 @@ const Layer = ({tier, height}) => {
             break;
     }
 
-    const faceRightStyle = {
-        transform: "skew(0deg, -10deg)",
-        width: "30px",
-        height: Math.ceil(height) + "px",
-        backgroundColor: backgroundColorRight,
-        float: "left",
-        position: "relative",
-
-    }
-
-    const faceLeftStyle = {
-        transform: "skew(0deg, 10deg)",
-        width: "30px",
-        height: Math.ceil(height) + "px",
-        backgroundColor: backgroundColorLeft,
-        float: "left",
-        position: "relative",
-        zIndex: "5",
-    }
 
     const faceLeftTopEdgeStyle = {
         position: "absolute",
@@ -201,21 +180,54 @@ const Layer = ({tier, height}) => {
         WebkitClipPath: "polygon(1% 0%, 78% 12%, 45% 22%, 84% 27%, 68% 33%, 85% 38%, 100% 49%, 84% 55%, 62% 63%, 37% 76%, 71% 83%, 1% 92%, 67% 100%, 0% 100%)"
     }
 
-    const prismStyle = {
-        //position: "absolute",
-        //top: "33px"
-    }
+    const Prism = styled.div`   
+    `;
+
+    const FaceLeft = styled.div`
+        transform: skew(0deg, 10deg);
+        width: 30px;
+        height: ${props => Math.ceil(props.height || 0)}px;
+        background-color: ${backgroundColorLeft};
+        float: left;
+        position: relative;
+        z-index: 5;
+        opacity: ${props => props.emptied ? "0.5" : "1"};
+    `;
+
+    const FaceRight = styled.div`
+        transform: skew(0deg, -10deg);
+        width: 30px;
+        height: ${props => Math.ceil(props.height || 0)}px;
+        background-color: ${backgroundColorRight};
+        float: left;
+        position: relative;
+        opacity: ${props => props.emptied ? "0.5" : "1"};
+    `;
 
     return (
-      <div className="prism" style={prismStyle}>
-          <div className="face-left" style={faceLeftStyle}>
-              {tier !== 0 ? <div style={faceLeftTopEdgeStyle}></div> : ""}
-              <div style={faceLeftSideEdgeStyle}></div>
-          </div>
-          <div className="face-right" style={faceRightStyle}>
-              {tier !== 0 ? <div style={faceRightEdgeStyle}></div> : ""}
-          </div>
-      </div>
+      <>
+          {heightEmptied > 0 &&
+          <Prism>
+              <FaceLeft height={heightEmptied} emptied>
+
+              </FaceLeft>
+              <FaceRight height={heightEmptied} emptied>
+
+              </FaceRight>
+          </Prism>
+          }
+          {(height > heightEmptied) &&
+          <Prism>
+              <FaceLeft height={height - heightEmptied}>
+                  {/*{tier !== 0 ? <div style={faceLeftTopEdgeStyle}></div> : ""}*/}
+                  {/*<div style={faceLeftSideEdgeStyle}></div>*/}
+              </FaceLeft>
+              <FaceRight height={height - heightEmptied}>
+                  {/*{tier !== 0 ? <div style={faceRightEdgeStyle}></div> : ""}*/}
+              </FaceRight>
+          </Prism>
+          }
+      </>
     );
 }
 

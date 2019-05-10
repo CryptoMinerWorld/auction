@@ -70,6 +70,24 @@ const Primary = styled.section`
   width: 100%;
 `;
 
+const RedeemCoupon = styled.div`
+    @media(min-width: 900px) {
+        margin-right: 190px;
+    }
+    @media(max-width: 700px) {
+        display: none !important;
+    }
+`;
+
+const SilverGoldBalance = styled.div`
+    @media(min-width: 900px) {
+        position: absolute;
+        right: 0;
+        top: 15px;
+        z-index: 20;
+    }
+`;
+
 const infiniteScrollContainer = {
     display: "flex",
     overflow: "hidden",
@@ -131,7 +149,6 @@ class Dashboard extends Component {
         totalGems: PropTypes.number.isRequired,
         userGemsPage: PropTypes.arrayOf(PropTypes.shape({})),
         userGemsFiltered: PropTypes.arrayOf(PropTypes.shape({})),
-        handlePagination: PropTypes.func.isRequired,
         pageNumber: PropTypes.number,
         handlePreLoadAuctionPage: PropTypes.func.isRequired,
         machineState: PropTypes.shape({}),
@@ -355,7 +372,7 @@ class Dashboard extends Component {
 
         return (
           <div className="bg-off-black white card-container" data-testid="profile-page">
-              <div className="flex  aic  wrap jcc jcb-ns pv4">
+              <div className="flex aic wrap jcc jcb-ns relative">
                   <div className=" flex aic pt3 pt0-ns">
                       {dashboardUser && dashboardUser.imageURL ?
                         <img src={dashboardUser.imageURL} className="h3 w-auto pr3 pl3-ns dib" alt=""/> :
@@ -363,11 +380,11 @@ class Dashboard extends Component {
                             <Icon type="loading" style={{fontSize: 24, color: '#e406a5'}} spin/>}
                         />
                       }
-                      <h1 className="white" data-testid="userName">
+                      <h1 className="white" data-testid="userName" style={{margin: "10px 0"}}>
                           {dashboardUser && dashboardUser.name || "Loading..."}
                       </h1>
                   </div>
-                  <div className="flex col tc">
+                  <SilverGoldBalance className="flex col tc">
                       <div className="flex">
                           <div className="flex col tc">
                               <img src={Gold} alt="Gold" className="h3 w-auto ph3"/>
@@ -378,7 +395,7 @@ class Dashboard extends Component {
                               {userBalance && userBalance.silverAvailable}
                           </div>
                       </div>
-                  </div>
+                  </SilverGoldBalance>
               </div>
 
               <Tabs
@@ -386,7 +403,7 @@ class Dashboard extends Component {
                 animated
                 className="bg-off-black white"
                 tabBarExtraContent={(
-                  <div className="flex-ns dn">
+                  <RedeemCoupon className="flex-ns dn">
                       <Spring from={{opacity: 0}} to={{opacity: 1}} config={{delay: 4000}}>
                           {props => (
                             <div style={props} className="pr4">
@@ -414,7 +431,7 @@ class Dashboard extends Component {
                       </EnhancedCoupon>
                       }
                       {/*{tab === 1 && <ReSync/>}*/}
-                  </div>
+                  </RedeemCoupon>
                 )}
                 type="card"
               >

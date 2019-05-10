@@ -32,7 +32,7 @@ import SilverSale from './ABI/SilverSale';
 import SilverCoupons from './ABI/SilverCoupons';
 import PlotSale from './ABI/PlotSale';
 import Plot from './ABI/PlotERC721';
-import {resolveAnyPendingTx} from '../features/transactions/helpers';
+import Miner from './ABI/Miner';
 import GemService from "./services/GemService";
 import AuctionService from "./services/AuctionService";
 import SilverGoldService from "./services/SilverGoldService";
@@ -70,6 +70,7 @@ const silverSaleABI = SilverSale.abi;
 const silverCouponsABI = SilverCoupons.abi;
 const plotSaleABI = PlotSale.abi;
 const plotABI = Plot.abi;
+const minerABI = Miner.abi;
 
 const StickyHeader = styled.div`
   position: -webkit-sticky; /* Safari */
@@ -110,7 +111,7 @@ class App extends Component {
         let Web3;
         try {
             Web3 = await getWeb3;
-        } catch(err) {
+        } catch (err) {
             return;
         }
         console.log('WEB3', Web3);
@@ -118,7 +119,9 @@ class App extends Component {
         const network = await web3.eth.net.getNetworkType();
         console.log(3333333333, network);
         console.log('WEB3 provider', web3.currentProvider.isMetaMask);
-        if (network !== process.env.REACT_APP_NETWORK_TYPE) {this.setState({wrongNetwork: true})}
+        if (network !== process.env.REACT_APP_NETWORK_TYPE) {
+            this.setState({wrongNetwork: true})
+        }
 
         const currentAccountId = await web3.eth.getAccounts().then(accounts => accounts[0]);
         console.log('CURRENT ACCAOUNT ID:', currentAccountId);
@@ -127,7 +130,8 @@ class App extends Component {
         // however this is a problem because it means that you cant view someone else profile page
         if (web3.currentProvider.publicConfigStore) {
             web3.currentProvider.publicConfigStore.on('update', ({selectedAddress}) => {
-                handleUpdateWalletId(selectedAddress)});
+                handleUpdateWalletId(selectedAddress)
+            });
         }
 
         // @notice instantiating auction contract
@@ -236,6 +240,14 @@ class App extends Component {
           },
         );
 
+        const minerContract = new web3.eth.Contract(
+          minerABI,
+          process.env.REACT_APP_MINER,
+          {
+              from: currentAccountId,
+          },
+        );
+
         //const silverCouponsContract = {};
 
         Promise.all([
@@ -250,10 +262,11 @@ class App extends Component {
             silverContract,
             goldContract,
             workshopContract,
-          silverSaleContract,
-          silverCouponsContract,
-          plotContract,
-          plotSaleContract
+            silverSaleContract,
+            silverCouponsContract,
+            plotContract,
+            plotSaleContract,
+            minerContract
         ])
           .then(
             ([
@@ -267,11 +280,12 @@ class App extends Component {
                  refPointsTrackerContract,
                  silverContract,
                  goldContract,
-              workshopContract,
-              silverSaleContract,
-              silverCouponsContract,
-              plotContract,
-              plotSaleContract
+                 workshopContract,
+                 silverSaleContract,
+                 silverCouponsContract,
+                 plotContract,
+                 plotSaleContract,
+                 minerContract
              ]) => {
                 client.writeData({
                     data: {
@@ -283,7 +297,7 @@ class App extends Component {
                 const auctionService = new AuctionService(dutchAuctionContractInstance, dutchAuctionHelperContractInstance, gemsContractInstance);
                 const silverGoldService = new SilverGoldService(silverSaleContract, silverContract, goldContract, refPointsTrackerContract, silverCouponsContract);
                 const countryService = new CountryService(null, countryContract);
-                const plotService = new PlotService(plotContract, plotSaleContract);
+                const plotService = new PlotService(plotContract, plotSaleContract, minerContract);
 
                 handleSendContractsToRedux(
                   dutchAuctionContractInstance,
@@ -350,7 +364,7 @@ class App extends Component {
                       </Modal>
                       <Modal
                         visible={wrongNetwork}
-                        title={"Please change network for Ether transactions to "+ process.env.REACT_APP_NETWORK_TYPE +" Net."}
+                        title={"Please change network for Ether transactions to " + process.env.REACT_APP_NETWORK_TYPE + " Net."}
                         zindex={2000}
                         closable={false}
                         footer={false}

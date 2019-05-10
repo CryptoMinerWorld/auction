@@ -8,60 +8,7 @@ import GemsPopup from "./GemsPopup";
 import FilterPopup from "./FilterPopup";
 import GemSelectionPopup from "./GemSelectionPopup";
 
-export class SidebarPopup extends Component {
-
-    // state = {
-    //     activeOptions: []
-    // };
-
-    componentDidMount() {
-        // this.setState({
-        //     activeOptions: this.props.activeOptions
-        // });
-    }
-
-    // addFilterOption = (filterOption) => {
-    //     this.setState({
-    //         activeOptions: this.state.activeOptions.includes(filterOption) ? this.state.activeOptions.filter(e => e !== filterOption) : this.state.activeOptions.concat(filterOption)
-    //     });
-    // }
-
-    static generatePopupContent(props) {
-        switch(props.type) {
-            case "plots-all":
-                return <PlotsPopup/>;
-            case "plots-selected":
-                return <SelectedPlotsPopup/>;
-            case "gems-all":
-                return <GemsPopup/>;
-            case "gems-selected":
-                return <SelectedGemsPopup/>;
-            case "filter":
-                return <FilterPopup activeControls={props.activeControls} applySort={props.applySort} applyFilter={props.applyFilter}/>;
-            case "gem-selection":
-                return <GemSelectionPopup userGems={props.userGems}/>
-        }
-    }
-
-    static generatePopupHeader(type) {
-        switch(type) {
-            case "plots-all":
-                return "All of My Plots Info";
-            case "plots-selected":
-                return "Selected Plot Info";
-            case "gems-all":
-                return "All of My Gems Info";
-            case "gems-selected":
-                return "Selected Gem Info";
-            case "gem-selection":
-                return "Available Gem Selection";
-            case "filter":
-                return "Sort & Filter Menu"
-        }
-    }
-
-    render() {
-        const OctagonLayoutOuter = styled.div`
+const OctagonLayoutOuter = styled.div`
             max-width: 900px;
             max-height: 525px;
             background: #62626B;
@@ -93,7 +40,7 @@ export class SidebarPopup extends Component {
             border-right: 29px solid transparent;
        `;
 
-        const SemiOctagonHeaderOuter = styled.div`
+const SemiOctagonHeaderOuter = styled.div`
             width: 40%;
             min-width: 200px;
             height: 20px;
@@ -117,7 +64,7 @@ export class SidebarPopup extends Component {
         `;
 
 
-        const OctagonLayoutInner = styled.div`
+const OctagonLayoutInner = styled.div`
             max-width: 892px;
             max-height: 525px;
             background: #2a3238;
@@ -148,7 +95,7 @@ export class SidebarPopup extends Component {
             border-right: 26px solid transparent;
        `;
 
-        const SemiOctagonHeaderInner = styled.div`
+const SemiOctagonHeaderInner = styled.div`
             width: 100%;
             height: 20px;
             background: #2a3238;
@@ -170,7 +117,7 @@ export class SidebarPopup extends Component {
         `;
 
 
-        const FilterButton = styled.div`
+const FilterButton = styled.div`
             margin: 5px 0;
             padding: 5px;
             text-align: center;
@@ -187,6 +134,85 @@ export class SidebarPopup extends Component {
                 border: 2px solid #4F565D;
             }`;
 
+const popupStyle = {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    maxWidth: "900px",
+    maxHeight: "600px",
+    fontSize: "12px",
+    padding: "5px",
+    alignItems: "center",
+    color: "white",
+    backgroundColor: 'transparent',
+    cursor: "default",
+}
+
+const PlotActionPopup = styled.div`
+    width: 300px;
+    height: 80px;
+    font-size: 16px;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+`
+
+export class SidebarPopup extends Component {
+
+    componentDidMount() {
+        // this.setState({
+        //     activeOptions: this.props.activeOptions
+        // });
+    }
+
+    generatePopupContent() {
+        switch(this.props.type) {
+            case "plots-all":
+                return <PlotsPopup/>;
+            case "plots-selected":
+                return <SelectedPlotsPopup/>;
+            case "gems-all":
+                return <GemsPopup/>;
+            case "gems-selected":
+                return <SelectedGemsPopup/>;
+            case "filter":
+                return <FilterPopup activeControls={this.props.activeControls} applySort={this.props.applySort}
+                                    applyFilter={this.props.applyFilter} filterDefault={this.props.filterDefault}/>;
+            case "plot-action-start":
+                return <GemSelectionPopup userGems={this.props.userGems} selectedPlotId={this.props.selectedPlotId}/>
+            case "plot-action-stop":
+                return <PlotActionPopup>Please confirm the transaction to stop mining</PlotActionPopup>
+            case "coming-soon":
+                return <PlotActionPopup>Coming Soon</PlotActionPopup>
+        }
+    }
+
+    static generatePopupHeader(type) {
+        switch(type) {
+            case "plots-all":
+                return "All of My Plots Info";
+            case "plots-selected":
+                return "Selected Plot Info";
+            case "gems-all":
+                return "All of My Gems Info";
+            case "gems-selected":
+                return "Selected Gem Info";
+            case "plot-action-start":
+                return "Available Gem Selection";
+            case "filter":
+                return "Sort & Filter Menu";
+            case "plot-action-stop":
+                return "Stop mining";
+            case "coming-soon":
+                return "Coming Soon";
+            default:
+                return "";
+        }
+    }
+
+    render() {
+
         const shadowLayerStyle = {
             position: 'fixed',
             margin: 'auto',
@@ -202,21 +228,6 @@ export class SidebarPopup extends Component {
             backgroundColor: 'rgba(101,101,101,0.4)',
         }
 
-        const popupStyle = {
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            maxWidth: "900px",
-            maxHeight: "600px",
-            fontSize: "12px",
-            padding: "5px",
-            alignItems: "center",
-            color: "white",
-            backgroundColor: 'transparent',
-            cursor: "default",
-        }
-
-
         return (
           <div style={shadowLayerStyle} onClick={() => this.props.closeCallback()}>
               <div style={popupStyle} onClick={(e) => {e.stopPropagation()}}>
@@ -231,7 +242,7 @@ export class SidebarPopup extends Component {
                   </SemiOctagonHeaderOuter>
                   <OctagonLayoutOuter>
                       <OctagonLayoutInner>
-                          {SidebarPopup.generatePopupContent(this.props)}
+                          {this.generatePopupContent()}
                       </OctagonLayoutInner>
                   </OctagonLayoutOuter>
               </div>

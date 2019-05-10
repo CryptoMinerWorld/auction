@@ -47,8 +47,9 @@ class GemSelectionCard extends Component {
         const {gemImage} = this.state;
 
         return (
-          <Tilt className="Tilt" options={{max: 20, scale: 1}}>
+          <Tilt className="Tilt" options={{max: 35, scale: 1.02}} style={{cursor: "pointer", opacity: auction.auctionIsLive ? "0.5" : "1"}}>
               <div
+                onClick={this.props.onClick}
                 className="bg-off-black shadow-3 white"
                 style={{
                     WebkitClipPath:
@@ -80,7 +81,7 @@ class GemSelectionCard extends Component {
                                           outlineWidth={1}
                                           height={32}
                                           fontSize={16}
-                                          content={() => gradeConverter(auction.gradeType)}/>
+                                          content={gradeConverter(auction.gradeType)}/>
                       </div>
                       <div style={{flex: 2, margin: "2px 3px", fontWeight: "normal"}}>
                           <CutEdgesButton outlineColor={levelOutlineColor}
@@ -98,7 +99,7 @@ class GemSelectionCard extends Component {
                                           outlineWidth={1}
                                           height={32}
                                           fontSize={12}
-                                          content={() => type(auction.color)}/>
+                                          content={type(auction.color)}/>
                       </div>
                       <div style={{flex: 3, margin: "2px 3px", fontWeight: "normal"}}>
                           <CutEdgesButton outlineColor={mrbOutlineColor}
