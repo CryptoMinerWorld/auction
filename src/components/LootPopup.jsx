@@ -1,12 +1,28 @@
 import {Component} from "react";
 import styled from "styled-components";
 import React from "react";
-import PlotsPopup from "./PlotsPopup";
-import SelectedPlotsPopup from "./SelectedPlotsPopup";
-import SelectedGemsPopup from "./SelectedGemsPopup";
-import GemsPopup from "./GemsPopup";
-import FilterPopup from "./FilterPopup";
-import GemSelectionPopup from "./GemSelectionPopup";
+import actionButtonImage from "../app/images/noTextGemButton.png";
+
+const ActionButton = styled.div`
+            background-image: url(${actionButtonImage});
+            background-position: center center;
+            text-align: center;
+            background-size: contain;
+            background-repeat: no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            padding: 12px;
+            cursor: pointer;
+            color: white;
+            font-size: 18px;
+            margin-top: 10px;
+            position: absolute;
+            bottom: -20px;
+            z-index: 30;
+            width: 100px;
+        `;
 
 const OctagonLayoutOuter = styled.div`
             max-width: 900px;
@@ -14,7 +30,7 @@ const OctagonLayoutOuter = styled.div`
             background: #62626B;
             position: relative;
             padding: 0 4px;
-            z-index: 10;
+            z-index: 30;
          
          &:before { 
             content: "";
@@ -48,7 +64,7 @@ const SemiOctagonHeaderOuter = styled.div`
             position: relative;
             margin-bottom: 29px;
             padding: 0 4px;
-            z-index: 10;
+            z-index: 30;
          
          &:before { 
             content: "";
@@ -69,7 +85,7 @@ const OctagonLayoutInner = styled.div`
             max-height: 525px;
             background: #2a3238;
             position: relative;
-            z-index: 20;
+            z-index: 40;
          
          &:before { 
             content: "";
@@ -101,7 +117,7 @@ const SemiOctagonHeaderInner = styled.div`
             background: #2a3238;
             position: relative;
             margin-bottom: 29px;
-            z-index: 20;
+            z-index: 40;
          
          &:before { 
             content: "";
@@ -116,23 +132,22 @@ const SemiOctagonHeaderInner = styled.div`
             } 
         `;
 
+const LootContainer = styled.div`
 
-const FilterButton = styled.div`
-            margin: 5px 0;
-            padding: 5px;
-            text-align: center;
-            cursor: pointer;
-            background-color: #24292F;
-            color: ${props => props.selected ? "#eee" : "#4F565D"};
-            border: 2px solid ${props => props.selected ? "#4F565D" : "transparent"};
-            text-decoration: ${props => props.underlined ? "underline" : "none"};
-            text-decoration-color: #ff00ce;
-            
-            &:hover {
-                color: #eee;
-                background-color: #24292F;
-                border: 2px solid #4F565D;
-            }`;
+    @media(min-width: 500px) {
+        width: 500px
+    }
+    
+    width: 320px;
+    min-height: 80px;
+    display: flex;
+    padding: 0px 5px 15px;
+    font-size: 18px;
+    color: #CFCFD3;
+    justify-content: flex-start;
+    flex-direction: column;
+    align-items: center;
+`;
 
 const popupStyle = {
     display: "flex",
@@ -148,17 +163,18 @@ const popupStyle = {
     cursor: "default",
 }
 
-const PlotActionPopup = styled.div`
-    width: 300px;
-    height: 80px;
-    font-size: 16px;
-    display: flex;
+const LootMessage = styled.div`
+    font-size: 20px;
+    color: #939399;
     text-align: center;
-    justify-content: center;
-    align-items: center;
-`
+`;
 
-export class SidebarPopup extends Component {
+const LootRow = styled.div`
+    margin: 3px 0;
+    text-align: center;
+`;
+
+export class LootPopup extends Component {
 
     componentDidMount() {
         // this.setState({
@@ -166,63 +182,38 @@ export class SidebarPopup extends Component {
         // });
     }
 
-    generatePopupContent() {
-        switch(this.props.type) {
-            case "plots-all":
-                return <PlotsPopup plots={this.props.plots} setFilterOptions={this.props.setFilterOptions}/>;
-            case "plots-selected":
-                return <SelectedPlotsPopup plot={this.props.selectedPlot} showAnotherPopup={this.props.showAnotherPopup}
-                                           processBlocks={this.props.processBlocks} stopMining={this.props.stopMining}/>;
-            case "gems-all":
-                return <GemsPopup gems={this.props.gems} plots={this.props.plots} goToGemWorkshop={this.props.goToGemWorkshop}
-                                  setFilterOptions={this.props.setFilterOptions}
-                />;
-            case "gems-selected":
-                return <SelectedGemsPopup selectedPlot={this.props.selectedPlot} showAnotherPopup={this.props.showAnotherPopup}
-                stopMining={this.props.stopMining}/>;
-            case "filter":
-                return <FilterPopup activeControls={this.props.activeControls} applySort={this.props.applySort}
-                                    applyFilter={this.props.applyFilter} filterDefault={this.props.filterDefault}/>;
-            case "plot-action-start":
-                return <GemSelectionPopup userGems={this.props.userGems} selectedPlot={this.props.selectedPlot}
-                                          transactionStartCallback={this.props.closeCallback}
-                                          updatePlot={(modifiedPlot) => {
-                                              this.props.updatePlot(modifiedPlot)
-                                          }}/>
-            case "plot-action-stop":
-                return <PlotActionPopup>Please confirm the transaction to stop mining</PlotActionPopup>
-            case "coming-soon":
-                return <PlotActionPopup>Artifacts are coming soon</PlotActionPopup>
-        }
-    }
+    generateLootModal = (lootFound, lootEmpty) => {
+        console.log("GENERATE LOOT MODAL", lootFound);
+        const lootArray = lootFound['loot'];
 
-    static generatePopupHeader(type) {
-        switch(type) {
-            case "plots-all":
-                return "All of My Plots Info";
-            case "plots-selected":
-                return "Selected Plot Info";
-            case "gems-all":
-                return "All of My Gems Info";
-            case "gems-selected":
-                return "Selected Gem Info";
-            case "plot-action-start":
-                return "Available Gem Selection";
-            case "filter":
-                return "Sort & Filter Menu";
-            case "plot-action-stop":
-                return "Stop mining";
-            case "coming-soon":
-                return "Coming Soon";
-            default:
-                return "";
+        if (lootEmpty) {
+            return <LootContainer>
+                <div>Nothing was found</div>
+                <ActionButton onClick={this.props.onClose}>Close</ActionButton>
+            </LootContainer>
+        }
+        else {
+            return (<LootContainer>
+                {lootFound['plotState'] && <LootMessage>{`After Processing the ${lootFound['blocksProcessed']} Blocks ${' '}
+                of ${lootFound['plotsProcessed']} plots your Gems mined, You Found:`}</LootMessage>}
+                {!lootFound['plotState'] && <LootMessage>{`Your Gem used its Resting Energy!
+                    It mined as deep as it could. Below is what it found. It is now returning back to the workshop.`}</LootMessage>}
+                {Number(lootArray[0]) > 0 && <LootRow>{lootArray[0]} Level 1 Gem{Number(lootArray[0]) > 1 ? "s" : ""}</LootRow>}
+                {Number(lootArray[1]) > 0 && <LootRow>{lootArray[1]} Level 2 Gem{Number(lootArray[1]) > 1 ? "s" : ""}</LootRow>}
+                {Number(lootArray[2]) > 0 && <LootRow>{lootArray[2]} Level 3 Gem{Number(lootArray[2]) > 1 ? "s" : ""}</LootRow>}
+                {Number(lootArray[3]) > 0 && <LootRow>{lootArray[3]} Level 4 Gem{Number(lootArray[3]) > 1 ? "s" : ""}</LootRow>}
+                {Number(lootArray[4]) > 0 && <LootRow>{lootArray[4]} Level 5 Gem{Number(lootArray[4]) > 1 ? "s" : ""}</LootRow>}
+                {Number(lootArray[5]) > 0 && <LootRow>{lootArray[5]} Piece{Number(lootArray[5]) > 1 ? "s" : ""} of Silver</LootRow>}
+                {Number(lootArray[6]) > 0 && <LootRow>{lootArray[6]} Piece{Number(lootArray[6]) > 1 ? "s" : ""} of Gold</LootRow>}
+                {Number(lootArray[7]) > 0 && <LootRow>{lootArray[7]} Artifacts</LootRow>}
+                {Number(lootArray[8]) > 0 && <LootRow>{lootArray[8]} Key{Number(lootArray[8]) > 1 ? "s" : ""}</LootRow>}
+
+                <ActionButton onClick={this.props.onClose}>Close</ActionButton>
+            </LootContainer>)
         }
     }
 
     render() {
-
-        console.log("SELECTED PLOT: ", this.props.selectedPlot);
-
         const shadowLayerStyle = {
             position: 'fixed',
             margin: 'auto',
@@ -230,29 +221,32 @@ export class SidebarPopup extends Component {
             right: '0',
             top: '0rem',
             bottom: '0',
-            zIndex: '10',
-            display: this.props.type ? 'flex' : 'none',
+            zIndex: '30',
+            display: this.props.visible ? 'flex' : 'none',
             justifyContent: 'center',
             alignItems: 'center',
             cursor: 'pointer',
             backgroundColor: 'rgba(101,101,101,0.4)',
         }
 
+        console.log("Loot event:: ", this.props.lootFound);
+        const lootFound = this.props.lootFound;
+        const lootEmpty = !(lootFound['loot'].find(el => Number(el) > 0));
         return (
-          <div style={shadowLayerStyle} onClick={() => this.props.closeCallback()}>
+          <div style={shadowLayerStyle} onClick={this.props.onClose}>
               <div style={popupStyle} onClick={(e) => {e.stopPropagation()}}>
                   <SemiOctagonHeaderOuter>
                       <SemiOctagonHeaderInner>
                           <div style={{
                               fontSize: "20px", color: "#97A8B4", position: "absolute",
                               top: "-11px", width: "100%", textAlign: "center"}}>
-                              {SidebarPopup.generatePopupHeader(this.props.type)}
+                              {lootEmpty ? "No Loot" : "Loot Found"}
                           </div>
                       </SemiOctagonHeaderInner>
                   </SemiOctagonHeaderOuter>
                   <OctagonLayoutOuter>
                       <OctagonLayoutInner>
-                          {this.generatePopupContent()}
+                          {this.generateLootModal(lootFound, lootEmpty)}
                       </OctagonLayoutInner>
                   </OctagonLayoutOuter>
               </div>
@@ -263,4 +257,4 @@ export class SidebarPopup extends Component {
 
 }
 
-export default SidebarPopup;
+export default LootPopup;

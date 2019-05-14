@@ -1,1 +1,13 @@
 export const USER_PLOTS_RECEIVED = 'USER_PLOTS_RECEIVED';
+export const NOT_MINING = 'Not Mining';
+export const CANT_MINE = "Can't Mine";
+export const FINISHED = 'Mined!';
+export const COMPLETED = 'Completed';
+export const MINING = 'Mining';
+export const PROCESSED = 'Processed';
+export const BINDING_GEM = 'Getting Ready';
+export const UNBINDING_GEM = 'Going Home';
+export const NEW_PLOT = 'New Plot';
+export const NO_GEM = 'No Gem';
+export const STUCK = 'Stuck';
+export const PROCESSING = 'Processing';

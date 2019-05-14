@@ -9,6 +9,7 @@ import ReactGA from 'react-ga';
 import {ApolloConsumer} from 'react-apollo';
 import notification from 'antd/lib/notification';
 import Modal from 'antd/lib/modal';
+import Button from 'antd/lib/button';
 import ErrorBoundary from '../components/ErrorBoundary';
 import Navbar from '../components/Nav';
 import Footer from '../components/Footer';
@@ -38,6 +39,7 @@ import AuctionService from "./services/AuctionService";
 import SilverGoldService from "./services/SilverGoldService";
 import CountryService from "./services/CountryService";
 import PlotService from "./services/PlotService";
+import LootPopup from "../components/LootPopup";
 
 require('antd/lib/notification/style/css');
 require('antd/lib/modal/style/css');
@@ -80,8 +82,10 @@ const StickyHeader = styled.div`
 `;
 
 const select = store => ({
+    plotService: store.app.plotServiceInstance,
     visible: store.app.modalVisible,
     error: store.app.error,
+    currentUserId: store.auth.currentUserId,
 });
 
 class App extends Component {
@@ -90,6 +94,7 @@ class App extends Component {
         this.state = {
             font: '',
             wrongNetwork: false,
+            lootFound: false,
         };
     }
 
@@ -328,6 +333,61 @@ class App extends Component {
               handleSetError(error);
           });
     }
+    //
+    // //todo: uncomment loot
+    componentDidUpdate(prevProps) {
+
+        if (this.props.plotService && this.props.plotService !== prevProps.plotService) {
+            const showLootClosure = this.showLoot;
+            console.warn(">>>>>>>>> adding update event listener <<<<<<<<<");
+                this.props.plotService.minerContract.events.Updated({
+                    fromBlock: 'latest',
+                    filter: {_by: this.props.currentUserId}
+                })
+                  .on('data', function (event) {
+                      console.log('DATA EVENT:', event); // same results as the optional callback above
+                      if (event.returnValues['loot'])
+                          showLootClosure(event);
+                  })
+                  .on('changed', function (event) {
+                      console.log('CHANGED EVENT:', event);
+                      // remove event from local database
+                  })
+                  .on('error', console.error);
+        }
+    }
+
+    clearLoot = () => {
+        this.setState({lootFound: null});
+    }
+
+    showLoot = async (eventUpdate) => {
+        let lootFound = this.state.lootFound;
+        if (lootFound) {
+            console.log("LOOT IS ALREADY NOT EMPTY", lootFound);
+            let lootArray = lootFound['loot'] || [0, 0, 0, 0, 0, 0, 0, 0, 0]; //9 types of loot
+            const newLootFound = eventUpdate.returnValues;
+            const newLootArray = newLootFound['loot'];
+            if (newLootArray) {
+                for (let i = 0; i < lootArray.length; i++) {
+                    lootArray[i] = Number(lootArray[i]) + Number(newLootArray[i]);
+                }
+            }
+            lootFound['blocksProcessed'] += (Number(newLootFound['offsetTo']) - Number(newLootFound['offsetFrom']));
+            lootFound['plotsProcessed']++;
+            lootFound['loot'] = lootArray;
+            lootFound['plotState'] = lootFound['plotState'] || await this.props.plotService.getPlotState(eventUpdate.returnValues['plotId']);
+            console.log("NEW LOOT", lootFound);
+        } else {
+            eventUpdate.returnValues['plotState'] = await this.props.plotService.getPlotState(eventUpdate.returnValues['plotId']);
+            lootFound = eventUpdate.returnValues;
+            lootFound['blocksProcessed'] = (Number(lootFound['offsetTo']) - Number(lootFound['offsetFrom']));
+            lootFound['plotsProcessed'] = 1;
+        }
+        this.setState({
+            lootFound: lootFound
+        })
+    }
 
     errorNotification = (error, title) => {
         const {handleClearError} = this.props;
@@ -340,7 +400,7 @@ class App extends Component {
 
     render() {
         const {visible, error, errorTitle} = this.props;
-        const {font, wrongNetwork} = this.state;
+        const {font, wrongNetwork, lootFound} = this.state;
         console.warn('----------> APP starts <----------');
         return (
           <>
@@ -366,10 +426,11 @@ class App extends Component {
                         visible={wrongNetwork}
                         title={"Please change network for Ether transactions to " + process.env.REACT_APP_NETWORK_TYPE + " Net."}
                         zindex={2000}
-                        closable={false}
                         footer={false}
+                        closable={false}
                       >
                       </Modal>
+                      {lootFound && <LootPopup visible={!!lootFound} lootFound={lootFound} onClose={() => {this.setState({lootFound: false})}}/>}
                       <StickyHeader>
                           <Navbar/>
                       </StickyHeader>

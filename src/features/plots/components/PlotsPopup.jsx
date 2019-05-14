@@ -1,9 +1,31 @@
 import {Component} from "react";
 import styled from "styled-components";
 import React from "react";
-import actionButtonImage from "../../../app/images/noTextGemButton.png";
+import actionButtonImage from "../../../app/images/thickAndWidePinkButton.png";
+// import actionButtonImage from "../../../app/images/noTextGemButton.png";
 import octagonImage from "../../../app/images/octagonOutline.png";
 import {CutEdgesButton} from "./CutEdgesButton";
+import {CANT_MINE, NEW_PLOT, NO_GEM, NOT_MINING, PROCESSED, STUCK} from "../plotConstants";
+
+const setNoGemsFilters = {
+    plotFilterOptions: [NO_GEM],
+    tierFilterOptions: ["dirt_filter", "clay_filter", "limestone_filter", "marble_filter", "obsidian_filter"],
+}
+
+const setStuckGemsFilters = {
+    plotFilterOptions: [STUCK],
+    tierFilterOptions: ["dirt_filter", "clay_filter", "limestone_filter", "marble_filter", "obsidian_filter"],
+}
+
+const setFinishedFilters = {
+    plotFilterOptions: [PROCESSED],
+    tierFilterOptions: ["dirt_filter", "clay_filter", "limestone_filter", "marble_filter", "obsidian_filter"],
+}
+
+const setNewPlotsFilters = {
+    plotFilterOptions: [NEW_PLOT],
+    tierFilterOptions: ["dirt_filter", "clay_filter", "limestone_filter", "marble_filter", "obsidian_filter"],
+}
 
 export class PlotsPopup extends Component {
 
@@ -15,16 +37,118 @@ export class PlotsPopup extends Component {
     }
 
     render() {
+        let plotsFullyMined = 0;
+        let plotsWithNoGem = 0;
+        let blocksNotMined = 0;
+        let plotsNotMining = 0;
+        let totalProcessedBlocks = [0, 0, 0, 0, 0];
 
-        const container = {
-            display: "flex",
-            maxWidth: "520px",
-            padding: "0 10px",
-            overflowY: "auto",
-            maxHeight: "520px",
-        }
+        const {plots, setFilterOptions} = this.props;
+        let totalUnprocessedBlocks = [0, 0, 0, 0, 0];
+        let totalUnprocessedSum = 0;
+        plots.forEach((plot) => {
+            if (plot.currentPercentage >= 100) {
+                plotsFullyMined++;
+            }
+            if (!plot.gemMines && plot.currentPercentage < 100) {
+                plotsWithNoGem++;
+            }
+            if (plot.miningState === NO_GEM || plot.miningState === NEW_PLOT || plot.miningState === STUCK) {
+                plotsNotMining++;
+            }
+            if (plot.currentPercentage > plot.processedBlocks) {
+                totalUnprocessedBlocks[0] += Math.max(Math.min(plot.currentPercentage, plot.layerEndPercentages[0]) - Math.max(0, plot.processedBlocks), 0);
+                totalUnprocessedSum += totalUnprocessedBlocks[0];
+                for (let i = 1; i < 5; i++) {
+                    totalUnprocessedBlocks[i] += Math.max(Math.min(plot.currentPercentage, plot.layerEndPercentages[i])
+                      - Math.max(plot.layerEndPercentages[i - 1], plot.processedBlocks), 0);
+                    totalUnprocessedSum += totalUnprocessedBlocks[i];
+                }
+            }
+            if (plot.processedBlocks > 0) {
+                totalProcessedBlocks[0] += Math.max(Math.min(plot.layerPercentages[0], plot.processedBlocks), 0);
+                for (let i = 1; i < 5; i++) {
+                    totalProcessedBlocks[i] += Math.max(Math.min(plot.layerPercentages[i], plot.processedBlocks - plot.layerEndPercentages[i - 1]), 0)
+                }
+            }
+            blocksNotMined += Math.max(100 - plot.currentPercentage, 0);
+        });
 
-        const UnprocessedBlocks = styled.div`
+
+        return (
+          <div style={container}>
+              <UnprocessedBlocks>
+                  <div style={{fontSize: "12px", fontWeight: "bold", textAlign: "center"}}>Unprocessed Blocks</div>
+                  <TierIndicator tier={0}>{totalUnprocessedBlocks[0]}</TierIndicator>
+                  <TierIndicator tier={1}>{totalUnprocessedBlocks[1]}</TierIndicator>
+                  <TierIndicator tier={2}>{totalUnprocessedBlocks[2]}</TierIndicator>
+                  <TierIndicator tier={3}>{totalUnprocessedBlocks[3]}</TierIndicator>
+                  <TierIndicator tier={4}>{totalUnprocessedBlocks[4]}</TierIndicator>
+                  {/*<ActionButton>PROCESS</ActionButton>*/}
+              </UnprocessedBlocks>
+              <InfoSection>
+                  <a href={"/plots"}><ActionButton>BUY PLOTS OF LAND</ActionButton></a>
+                  <PlotsInfo>
+                      <Col flex={3} style={{minWidth: "150px"}}>
+                          <div>Plots Owned: {plots.length}</div>
+                          <div style={{color: "#AEAEB7"}}>Processed Plots: {plotsFullyMined}</div>
+                          <div>Plots With No Gem: {plotsWithNoGem}</div>
+                          <div style={{color: "#AEAEB7"}}>Blocks Not Mined: {blocksNotMined}</div>
+                      </Col>
+                      <Col flex={2} style={{alignItems: "center"}}>
+                          <PlotsNotMiningIndicator>
+                              {plotsNotMining}
+                          </PlotsNotMiningIndicator>
+                          <span style={{color: "#AEAEB7"}}>Plots Not Mining</span>
+                      </Col>
+                  </PlotsInfo>
+                  <PlotsInfo>
+                      <div style={{width: "100%", textAlign: "center", color: "#AEAEB7"}}>Total Processed Blocks</div>
+                      <Col flex={1} style={{color: "#fff776", minWidth: "140px"}}>
+                          <div>Tier 1 (Dirt, Snow): {totalProcessedBlocks[0]}</div>
+                          <div>Tier 3 (Limestone): {totalProcessedBlocks[2]}</div>
+                          <div>Tier 5 (Obsidian): {totalProcessedBlocks[4]}</div>
+                      </Col>
+                      <Col flex={1} style={{color: "#fff776", minWidth: "140px"}}>
+                          <div>Tier 2 (Clay, Ice): {totalProcessedBlocks[1]}</div>
+                          <div>Tier 4 (Marble): {totalProcessedBlocks[3]}</div>
+                          <div>BoP Geodes: {plotsFullyMined}</div>
+                      </Col>
+                  </PlotsInfo>
+                  {/*<PlotsInfo>*/}
+                      {/*<Col flex={1}>Items Found: 1234</Col>*/}
+                      {/*<Col flex={1}><ShowButton content={"Show Items"}/></Col>*/}
+                  {/*</PlotsInfo>*/}
+                  <PlotsInfo>
+                      <div style={{width: "100%", textAlign: "center", color: "#AEAEB7"}}>Show only:</div>
+                      <Col flex={"1 0 50%"}>
+                          <ShowButton content={"Plots w/ No Gem"}
+                          onClick={() => {setFilterOptions(setNoGemsFilters)}}/>
+                          <ShowButton content={"New Plots"}
+                                      onClick={() => {setFilterOptions(setNewPlotsFilters)}}/>
+                      </Col>
+                      <Col flex={"1 0 50%"}>
+                          <ShowButton content={"Plots w/ Stuck Gem"} onClick={() => {setFilterOptions(setStuckGemsFilters)}}/>
+                          <ShowButton content={"Processed Plots"} onClick={() => {setFilterOptions(setFinishedFilters)}}/>
+                      </Col>
+                      <div style={{width: "100%", textAlign: "center", color: "#AEAEB7", fontSize:"8px"}}>
+                          Make more changes in "Sort/Filter"</div>
+                  </PlotsInfo>
+              </InfoSection>
+          </div>
+        );
+    }
+}
+
+const container = {
+    display: "flex",
+    maxWidth: "520px",
+    padding: "0 10px",
+    overflowY: "auto",
+    maxHeight: "520px",
+}
+
+const UnprocessedBlocks = styled.div`
             display: flex;
             flex-direction: column;
             flex: 3;
@@ -36,7 +160,7 @@ export class PlotsPopup extends Component {
             border-radius: 15px;
         `;
 
-        const InfoSection = styled.div`
+const InfoSection = styled.div`
             display: flex;
             flex-direction: column;
             flex: 7;
@@ -45,7 +169,7 @@ export class PlotsPopup extends Component {
             z-index: 30;
         `;
 
-        const ActionButton = styled.div`
+const ActionButton = styled.div`
             background-image: url(${actionButtonImage});
             background-position: center center;
             text-align: center;
@@ -55,13 +179,13 @@ export class PlotsPopup extends Component {
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            padding: 12px;
+            padding: 20px 25px;
             cursor: pointer;
             color: white;
             font-size: 14px;
         `;
 
-        const PlotsInfo = styled.div`
+const PlotsInfo = styled.div`
             background-color: #24292F;
             padding: 5px 10px;
             border-radius: 10px;
@@ -72,14 +196,14 @@ export class PlotsPopup extends Component {
             
         `;
 
-        const Col = styled.div`
+const Col = styled.div`
             flex: ${props => props.flex}
             display: flex;
             flex-direction: column;
             justify-content: space-evenly;
         `;
 
-        const PlotsNotMiningIndicator = styled.div`
+const PlotsNotMiningIndicator = styled.div`
             font-size: 28px;
             background-image: url(${octagonImage});
             background-position: center center;
@@ -98,7 +222,7 @@ export class PlotsPopup extends Component {
             margin-bottom: 10px;
         `;
 
-        const TierIndicator = styled.div`
+const TierIndicator = styled.div`
             @media (max-width: 600px) {
                 font-size: 36px;  
                 line-height: 52px; 
@@ -112,109 +236,35 @@ export class PlotsPopup extends Component {
             clip-path: polygon(9% 0%, 91% 0%, 100% 18%, 100% 82%, 91% 100%, 9% 100%, 0% 82%, 0% 18%);
             -webkit-clip-path: polygon(9% 0%, 91% 0%, 100% 18%, 100% 82%, 91% 100%, 9% 100%, 0% 82%, 0% 18%);
             background-color: ${props => {
-                switch(props.tier) {
-                    case 0:
-                        return "#563621";
-                    case 1:
-                        return "#592E21";
-                    case 2:
-                        return "#525256";
-                    case 3:
-                        return "#E2DED3";
-                    case 4:
-                        return "#281E1E";
-                }}
-            };
+    switch(props.tier) {
+        case 0:
+            return "#563621";
+        case 1:
+            return "#592E21";
+        case 2:
+            return "#525256";
+        case 3:
+            return "#E2DED3";
+        case 4:
+            return "#281E1E";
+    }}
+  };
             color: ${props => {
-                switch(props.tier) {
-                    case 0:
-                        return "#C99E85";
-                    case 1:
-                        return "#BA8D83";
-                    case 2:
-                        return "#AEAEB7";
-                    case 3:
-                        return "#7A766C";
-                    case 4:
-                        return "#968181";
-                }}
-            };
+    switch(props.tier) {
+        case 0:
+            return "#C99E85";
+        case 1:
+            return "#BA8D83";
+        case 2:
+            return "#AEAEB7";
+        case 3:
+            return "#7A766C";
+        case 4:
+            return "#968181";
+    }}
+  };
             border-radius: 10px;
         `;
-
-        // const ShowButton = styled.div`
-        //     background-color: #2A3238;
-        //     border: 3px solid #62626B;
-        //     border-radius: 10px;
-        //     font-weight: bold;
-        //     padding: 5px;
-        //     cursor: pointer;
-        //     color: white;
-        //     font-size: 12px;
-        //     text-align: center;
-        //     margin: 5px;
-        // `;
-
-        return (
-          <div style={container}>
-              <UnprocessedBlocks>
-                  <div style={{fontSize: "12px", fontWeight: "bold", textAlign: "center"}}>Unprocessed Blocks</div>
-                  <TierIndicator tier={0}>53</TierIndicator>
-                  <TierIndicator tier={1}>46</TierIndicator>
-                  <TierIndicator tier={2}>23</TierIndicator>
-                  <TierIndicator tier={3}>17</TierIndicator>
-                  <TierIndicator tier={4}>6</TierIndicator>
-                  <ActionButton>PROCESS</ActionButton>
-              </UnprocessedBlocks>
-              <InfoSection>
-                  <ActionButton>BUY PLOTS OF LAND</ActionButton>
-                  <PlotsInfo>
-                      <Col flex={3} style={{minWidth: "150px"}}>
-                          <div>Plots Owned: 22222</div>
-                          <div style={{color: "#AEAEB7"}}>Plots 100% Mined: 22222</div>
-                          <div>Plots With No Gem: 22222</div>
-                          <div style={{color: "#AEAEB7"}}>Blocks Not Mined: 22222</div>
-                      </Col>
-                      <Col flex={2} style={{alignItems: "center"}}>
-                          <PlotsNotMiningIndicator>
-                              282
-                          </PlotsNotMiningIndicator>
-                          <span style={{color: "#AEAEB7"}}>Plots Not Mining</span>
-                      </Col>
-                  </PlotsInfo>
-                  <PlotsInfo>
-                      <div style={{width: "100%", textAlign: "center", color: "#AEAEB7"}}>Total Processed Blocks</div>
-                      <Col flex={1} style={{color: "#fff776", minWidth: "140px"}}>
-                          <div>Tier 1 (Dirt, Snow): 222</div>
-                          <div>Tier 3 (Limestone): 222</div>
-                          <div>Tier 5 (Obsidian): 333</div>
-                      </Col>
-                      <Col flex={1} style={{color: "#fff776", minWidth: "140px"}}>
-                          <div>Tier 2 (Clay, Ice): 333</div>
-                          <div>Tier 4 (Marble): 333</div>
-                          <div>BoP Geodes: 233</div>
-                      </Col>
-                  </PlotsInfo>
-                  <PlotsInfo>
-                      <Col flex={1}>Items Found: 1234</Col>
-                      <Col flex={1}><ShowButton content={"Show Items"}/></Col>
-                  </PlotsInfo>
-                  <PlotsInfo>
-                      <div style={{width: "100%", textAlign: "center", color: "#AEAEB7"}}>Show only Plots with:</div>
-                      <Col flex={"1 0 50%"}>
-                          <ShowButton content={"No Gems"}/>
-                          <ShowButton content={"100 Blocks"}/>
-                      </Col>
-                      <Col flex={"1 0 50%"}>
-                          <ShowButton content={"Stuck Gems"}/>
-                          <ShowButton content={"0 Blocks"}/>
-                      </Col>
-                  </PlotsInfo>
-              </InfoSection>
-          </div>
-        );
-    }
-}
 
 const ShowButton = ({content, ...props}) => {
     return (

@@ -12,10 +12,19 @@ import ChestsBar from "./components/ChestsBar";
 import BuyForm from "./components/BuyForm";
 import arrowDownActive from "../../app/images/arrowDownActive.png";
 import styled from "styled-components";
-import {buyPlots, getAvailableCountryPlots} from "./plotSaleActions";
+import {buyPlots, getAvailableCountryPlots, getChestValues} from "./plotSaleActions";
+import {getChestValue} from "../sale/saleActions";
+import plot1 from '../../app/images/plots/1plot.png';
+import plot2 from '../../app/images/plots/2-15_Plot.png';
+import plot16 from '../../app/images/plots/16-30_Plot.png';
+import plot31 from '../../app/images/plots/31-45_Plot.png';
+import plot46 from '../../app/images/plots/46-60_Plot.png';
 
 const select = store => ({
-    countryService: store.app.countryServiceInstance
+    countryService: store.app.countryServiceInstance,
+    worldChestValue: store.plotSale.worldChestValue,
+    monthlyChestValue: store.plotSale.monthlyChestValue,
+    web3: store.app.web3,
 });
 
 class PlotSale extends Component {
@@ -41,24 +50,29 @@ class PlotSale extends Component {
     }
 
     componentDidMount() {
-        const {countryService} = this.props;
+        const {countryService, handleGetChestValues, web3} = this.props;
         if (!countryService) {
             console.log('No service')
         }
         if (countryService) {
             this.rtdbListen();
         }
+        if (web3) {
+            handleGetChestValues();
+        }
     }
 
-    componentDidUpdate(prevProps) {
-        const {countryService} = this.props;
+    async componentDidUpdate(prevProps) {
+        const {countryService, handleGetChestValues, web3} = this.props;
         if (!countryService) {
             console.log('No service')
         }
         if (countryService !== prevProps.countryService) {
             this.rtdbListen();
         }
-        console.log("Getting country data");
+        if (web3 !== prevProps.web3) {
+            handleGetChestValues();
+        }
     }
 
     rtdbListen = () => {
@@ -89,14 +103,18 @@ class PlotSale extends Component {
         });
     };
 
+    getPlotImage = () => {
+        if (this.state.numberOfPlots < 2) return plot1;
+        if (this.state.numberOfPlots < 16) return plot2;
+        if (this.state.numberOfPlots < 31) return plot16;
+        if (this.state.numberOfPlots < 46) return plot31;
+        return plot46;
+    }
+
     render() {
 
         const {countryData, zoom, coordinates, countryIdHovered, selection, cart, mapIsShown, searchCountryValue, countryList, searchCountryList, numberOfPlots} = this.state;
-        const {getAvailableCountryPlots, handleBuy} = this.props;
-
-        console.log("Country data: ", countryData);
-
-        console.log("Country hovered: ", countryIdHovered);
+        const {getAvailableCountryPlots, handleBuy, worldChestValue, monthlyChestValue} = this.props;
 
         return (
           <div data-testid="mapPage" className="plot-sale bg-off-black white w-100">
@@ -116,7 +134,7 @@ class PlotSale extends Component {
                                }}
                                mapIsShown={mapIsShown}
                                toggleMap={() => {
-                                   this.setState({mapIsShown: !mapIsShown})
+                                   this.setState({mapIsShown: false})
                                }}
                                selectedCountry={this.state.selection}
                                searchCountryValue={searchCountryValue}
@@ -141,15 +159,17 @@ class PlotSale extends Component {
                       }
                   </BuyFormContainer>
                   <MapArea className="w-60-ns w-100">
+                      <PlotImages src={this.getPlotImage()}/>
                       {mapIsShown &&
-                      <div className="w-100 pa3">
+                      <MapContainer className="pa3">
                           {countryData && Object.keys(countryData).length > 0 ? (
                             <Map
                               data={{
                                   ...geoData,
                                   ...countryData,
                               }}
-                              setSelection={()=>{}}
+                              setSelection={() => {
+                              }}
                               addToCart={(country) => {
                                   this.setState({selection: country}, async () => {
                                       country.availablePlots = await getAvailableCountryPlots(country.countryId);
@@ -169,11 +189,11 @@ class PlotSale extends Component {
                                 <Icon type="loading" theme="outlined"/>
                             </div>
                           )}
-                      </div>
+                      </MapContainer>
                       }
                   </MapArea>
               </div>
-              <ChestsBar/>
+              <ChestsBar worldChestValue={worldChestValue} monthlyChestValue={monthlyChestValue}/>
           </div>
         );
     }
@@ -182,6 +202,7 @@ class PlotSale extends Component {
 const actions = {
     getAvailableCountryPlots: getAvailableCountryPlots,
     handleBuy: buyPlots,
+    handleGetChestValues: getChestValues,
 }
 
 export default compose(
@@ -239,6 +260,20 @@ const MapArea = styled.div`
     @media(max-width: 800px) {
         display: none;
     }
+    position: relative;
+`;
+
+const MapContainer = styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    clip-path: polygon(0% 50%, 11% 8%, 22% 0%, 78% 0%, 89% 8%, 100% 50%, 89% 92%, 78% 100%, 22% 100%, 11% 92%);
+    -webkit-clip-path: polygon(0% 50%, 11% 8%, 22% 0%, 78% 0%, 89% 8%, 100% 50%, 89% 92%, 78% 100%, 22% 100%, 11% 92%);
+`;
+
+const PlotImages = styled.img `
 `;
 
 const BuyFormContainer = styled.div`

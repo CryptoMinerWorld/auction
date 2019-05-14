@@ -3,6 +3,7 @@ import styled from "styled-components";
 import {CutEdgesButton} from "./CutEdgesButton";
 import arrowUpActive from "./../../../app/images/arrowUpActive.png";
 import arrowDownActive from "./../../../app/images/arrowDownActive.png";
+import {CANT_MINE, FINISHED, MINING, NEW_PLOT, NO_GEM, NOT_MINING, PROCESSED, STUCK} from "./../plotConstants";
 
 const container = {
     display: "flex",
@@ -153,7 +154,7 @@ export class FilterPopup extends Component {
                                   content={"Time Left"}/>
                       <ShowButton selected={activeControls.includes("mined")}
                                   onClick={() => applySort("mined")}
-                                  content={"% Mined"}/>
+                                  content={"Blocks Mined"}/>
                       <ShowButton selected={activeControls.includes("dirt")}
                                   onClick={() => applySort("dirt")} content={"Dirt"}/>
                       <ShowButton selected={activeControls.includes("clay")}
@@ -202,16 +203,18 @@ export class FilterPopup extends Component {
               }}>
                   <PlotsInfo edgeSizes={[10, 4]}>
                       <div style={plainText}>Show</div>
-                      <ShowButton selected={activeControls.includes("show_gem_mining")}
-                                  onClick={() => applyFilter("show_gem_mining")} content={"Gem Mining"}/>
-                      <ShowButton selected={activeControls.includes("show_not_mining")}
-                                  onClick={() => applyFilter("show_not_mining")} content={"Gem Stuck"}/>
-                      <ShowButton selected={activeControls.includes("show_no_gem")}
-                                  onClick={() => applyFilter("show_no_gem")} content={"No Gem"}/>
-                      <ShowButton selected={activeControls.includes("show_completed")}
-                                  onClick={() => applyFilter("show_completed")}
+                      <ShowButton selected={activeControls.includes(NEW_PLOT)}
+                                  onClick={() => applyFilter(NEW_PLOT)} content={"New Plots"}/>
+                      <ShowButton selected={activeControls.includes(MINING)}
+                                  onClick={() => applyFilter(MINING)} content={"Gem Mining"}/>
+                      <ShowButton selected={activeControls.includes(STUCK)}
+                                  onClick={() => applyFilter(STUCK)} content={"Gem Stuck"}/>
+                      <ShowButton selected={activeControls.includes(NO_GEM)}
+                                  onClick={() => applyFilter(NO_GEM)} content={"No Gem"}/>
+                      <ShowButton selected={activeControls.includes(PROCESSED)}
+                                  onClick={() => applyFilter(PROCESSED)}
                                   fontSize={13}
-                                  content={"Completed Plots"}/>
+                                  content={"Processed Plots"}/>
                       <div style={additionalText}>Current Tier</div>
                       <ShowButton selected={activeControls.includes("dirt_filter")}
                                   onClick={() => applyFilter("dirt_filter")} content={"Dirt"}/>

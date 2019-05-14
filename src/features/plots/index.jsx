@@ -357,7 +357,7 @@ class PlotDashboard extends Component {
 
         return (
           <div className="plots" style={{padding: "20px 0px 30px 0"}}>
-              <PlotDisplay plots={userPlots} userGems={userGems}/>
+              <PlotDisplay plots={userPlots} userGems={userGems} goToGemWorkshop={this.props.goToGemWorkshop}/>
               {/*<UnprocessedItemsDisplay/>*/}
           </div>
         );

@@ -143,7 +143,7 @@ const MonthlyChestInfo = styled.div`
     margin-bottom: 10px;
 `;
 
-const ChestsBar = ({worldChestValue, monthlyChestsValue}) => {
+const ChestsBar = ({worldChestValue, monthlyChestValue}) => {
     return (
       <ChestBarContainer>
           <FullWidthLine/>
@@ -151,7 +151,7 @@ const ChestsBar = ({worldChestValue, monthlyChestsValue}) => {
               <ChestContainer>
                   <ChestImg src={worldChest}/>
                   <ChestDescription>
-                      <ChestValue>123.89 ETH</ChestValue>
+                      <ChestValue>{worldChestValue && worldChestValue.toFixed(2)} ETH</ChestValue>
                       <ChestTitle>In The World Chest!</ChestTitle>
                       <ChestInfo>Once the last plot of land is bought, one key will be able to open the
                           World Chest
@@ -161,10 +161,10 @@ const ChestsBar = ({worldChestValue, monthlyChestsValue}) => {
               <ChestContainer>
                   <ChestImg src={monthlyChests}/>
                   <ChestDescription>
-                      <MonthlyChestNumber><Pink style={{fontSize: "150%"}}>5</Pink> Monthly Chests so far!</MonthlyChestNumber>
-                      <MonthlyChestInfo><Pink>2.47 ETH</Pink> Until the next Chest is found!</MonthlyChestInfo>
+                      <MonthlyChestNumber><Pink style={{fontSize: "150%"}}>{monthlyChestValue && Math.floor(monthlyChestValue / 10)}</Pink> Monthly Chests so far!</MonthlyChestNumber>
+                      <MonthlyChestInfo><Pink>{monthlyChestValue && 10 - (monthlyChestValue.toFixed(2) % 10)} ETH</Pink> Until the next Chest is found!</MonthlyChestInfo>
                       <MonthlyChestDescription>Every <Pink>10 ETH</Pink> stored, creates a new Chest.</MonthlyChestDescription>
-                      <MonthlyChestDescription><Pink>57.53 ETH</Pink> Stored just this month!</MonthlyChestDescription>
+                      <MonthlyChestDescription><Pink>{monthlyChestValue && monthlyChestValue.toFixed(2)} ETH</Pink> Stored just this month!</MonthlyChestDescription>
                   </ChestDescription>
               </ChestContainer>
           </ChestBar>

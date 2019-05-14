@@ -1,5 +1,7 @@
 import React, {Component} from "react";
 import styled from 'styled-components';
+import {getGemImage} from "../../../app/services/GemService";
+import GemImage from "../../../components/GemImage";
 
 class PlotBar extends Component {
 
@@ -21,6 +23,7 @@ class PlotBar extends Component {
     render() {
         const {plot} = this.props;
         const barHeight = (this.state.windowHeight && this.state.windowHeight < 730) ? 300 : 450;
+        const inAntarctica = plot.countryId === 0;
 
         return (
           <div style={{
@@ -31,12 +34,14 @@ class PlotBar extends Component {
               paddingTop: "20px",
               marginTop: "5px"
           }}>
-              <Hat emptied={plot.currentPercentage > 0}/>
+              <Hat emptied={plot.currentPercentage > 0} inAntarctica={inAntarctica}/>
               <Layer tier={0}
+                     inAntarctica={inAntarctica}
                      height={plot.layerPercentages["0"] * barHeight / 100}
                      heightEmptied={this.calculateEmptiedPercentage(plot, 0) * barHeight / 100}
               />
               <Layer tier={1} height={plot.layerPercentages["1"] * barHeight / 100}
+                     inAntarctica={inAntarctica}
                      heightEmptied={this.calculateEmptiedPercentage(plot, 1) * barHeight / 100}/>
               <Layer tier={2} height={plot.layerPercentages["2"] * barHeight / 100}
                      heightEmptied={this.calculateEmptiedPercentage(plot, 2) * barHeight / 100}/>
@@ -44,35 +49,39 @@ class PlotBar extends Component {
                      heightEmptied={this.calculateEmptiedPercentage(plot, 3) * barHeight / 100}/>
               <Layer tier={4} height={plot.layerPercentages["4"] * barHeight / 100}
                      heightEmptied={this.calculateEmptiedPercentage(plot, 4) * barHeight / 100}/>
-              {plot.gemMines && <CurrentLevel topOffset={plot.currentPercentage * barHeight / 100}/>}
-              {plot.gemMines && <CurrentGemUsed topOffset={0} image={plot.gemMines.image}/>}
+              {plot.gemMines && <MaxDepthLevel topOffset={plot.layerEndPercentages[plot.gemMines.level-1] * barHeight / 100}/>}
+              {plot.gemMines && <CurrentGemUsed topOffset={plot.currentPercentage*barHeight / 100} gem={plot.gemMines} onClick={this.props.onGemClick}/>}
           </div>
 
         );
     }
 }
 
-const CurrentGemUsed = ({topOffset, image}) => {
+const CurrentGemUsed = ({topOffset, gem, onClick}) => {
+
+    const calculateGemBackgroundColor = (grade) => {
+        return "#7a7a7a";
+    }
 
     const imageStyle = {
         width: "74px",
         height: "74px",
         position: "absolute",
-        top: topOffset + "px",
-        backgroundColor: "#7a7a7a",
+        top: Math.max(topOffset - 60, 0) + "px",
+        backgroundColor: calculateGemBackgroundColor(gem.gradeValue),
         border: "4px solid black",
         left: "-7px",
         zIndex: "10",
     }
 
     return (
-      <div style={imageStyle}>
-          <img src={image}/>
+      <div style={imageStyle} onClick={onClick}>
+          <GemImage gem={gem}/>
       </div>
     )
 }
 
-const CurrentLevel = ({topOffset}) => {
+const MaxDepthLevel = ({topOffset}) => {
 
     const arrowStyle = {
         width: "80px",
@@ -120,7 +129,7 @@ const Hat = styled.div`
 `;
 
 
-const Layer = ({tier, height, heightEmptied}) => {
+const Layer = ({tier, height, heightEmptied, inAntarctica}) => {
 
     //console.log("Height:", height);
 

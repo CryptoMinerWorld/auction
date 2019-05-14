@@ -1,12 +1,12 @@
-import {Component} from "react";
+import React, {Component} from "react";
 import styled from "styled-components";
-import React from "react";
 import actionButtonImage from "../../../app/images/noTextGemButton.png";
 import octagonImage from "../../../app/images/octagonOutline.png";
-import gemImage from "../../../app/images/gemKid.png";
 import indiaImage from "../../../app/images/flags/in.png";
 import {CutEdgesButton} from "./CutEdgesButton";
-
+import {FINISHED, MINING, NOT_MINING} from "../plotConstants";
+import {getCountryData} from "../plotActions";
+import buyNowImage from "../../../app/images/thickAndWidePinkButton.png";
 
 const PopupContainer = styled.div`
             display: flex;
@@ -113,7 +113,7 @@ const TierIndicator = styled.div`
             clip-path: polygon(15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%, 0% 15%);
             -webkit-clip-path: polygon(15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%, 0% 15%);
             background-color: ${props => {
-    switch(props.tier) {
+    switch (props.tier) {
         case 0:
             return "#563621";
         case 1:
@@ -124,10 +124,11 @@ const TierIndicator = styled.div`
             return "#E2DED3";
         case 4:
             return "#281E1E";
-    }}
+    }
+}
   };
             color: ${props => {
-    switch(props.tier) {
+    switch (props.tier) {
         case 0:
             return "#C99E85";
         case 1:
@@ -138,7 +139,8 @@ const TierIndicator = styled.div`
             return "#7A766C";
         case 4:
             return "#968181";
-    }}
+    }
+}
   };
         `;
 
@@ -162,7 +164,7 @@ const LimitLine = styled.div`
             background-color: red;
             position: absolute;
             top: ${props =>
-  330*props.block/100+30+"px"
+  330 * props.block / 100 + 30 + "px"
   };  
             
            
@@ -179,7 +181,7 @@ const LimitLine = styled.div`
 const CurrentLevel = styled.div`
             width: 55px;
             height: ${props =>
-  330*props.block/100+"px"
+  330 * props.block / 100 + "px"
   };  
             font-weight: bold;
             background-color: rgba(53, 53, 53, 0.72);
@@ -209,6 +211,10 @@ const GemMiningImageBlock = styled.div`
             background-color: #AEAEB7;
             border: 2px solid #525256;
             text-align: center;
+            cursor: pointer;
+            display: flex;
+            font-size: 22px;
+            align-items: center;
         `;
 
 const GemMiningImage = styled.img`
@@ -226,6 +232,9 @@ const CountryImageBlock = styled.div`
             width: 100px;
             height: 100px;
             text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         `;
 
 const CountryImage = styled.img`
@@ -257,7 +266,7 @@ const TierLevel = styled.div`
             position: relative;
             font-size: 14px;
             background-color: ${props => {
-    switch(props.tier) {
+    switch (props.tier) {
         case 0:
             return "#563621";
         case 1:
@@ -268,10 +277,11 @@ const TierLevel = styled.div`
             return "#E2DED3";
         case 4:
             return "#281E1E";
-    }}
+    }
+}
   };
             height: ${props =>
-  330*props.blocks/100+"px"
+  330 * props.blocks / 100 + "px"
   };  
             
             &:before {
@@ -280,10 +290,10 @@ const TierLevel = styled.div`
                 position: absolute;
                 left: -26px;
                 top: ${props =>
-  165*props.blocks/100-10+"px"
+  165 * props.blocks / 100 - 10 + "px"
   };  
                 color: ${props => {
-    switch(props.tier) {
+    switch (props.tier) {
         case 0:
             return "#C99E85";
         case 1:
@@ -294,7 +304,8 @@ const TierLevel = styled.div`
             return "#7A766C";
         case 4:
             return "#968181";
-    }}
+    }
+}
   };
             }
         `;
@@ -302,76 +313,126 @@ const TierLevel = styled.div`
 export class PlotsPopup extends Component {
 
     state = {
-
+        plotCountryData: null,
     };
 
-    componentDidMount() {
+    async componentDidMount() {
+        const country = await getCountryData(this.props.plot.countryId);
+        console.log("COUNTRY:", country);
+        this.setState({plotCountryData: country});
     }
 
     render() {
+        const {plotCountryData} = this.state;
+        const {plot, processBlocks} = this.props;
+        const limitLine = plot.gemMines ? plot.layerEndPercentages[plot.gemMines.level - 1] : 100;
+        let totalUnprocessedBlocks = [0, 0, 0, 0, 0];
+        let totalUnprocessedSum = 0;
+        if (plot.currentPercentage !== plot.processedBlocks) {
+            totalUnprocessedBlocks[0] = Math.max(Math.min(plot.currentPercentage, plot.layerEndPercentages[0]) - Math.max(0, plot.processedBlocks),0);
+            totalUnprocessedSum = totalUnprocessedBlocks[0];
+            for (let i = 1; i < 5; i++) {
+                totalUnprocessedBlocks[i] = Math.max(Math.min(plot.currentPercentage, plot.layerEndPercentages[i])
+                  - Math.max(plot.layerEndPercentages[i - 1], plot.processedBlocks), 0);
+                totalUnprocessedSum += totalUnprocessedBlocks[i];
+            }
+        }
+        const countryId = plot.countryId;
+        console.log("SELECTED PLOT:", plot);
 
         return (
           <PopupContainer>
               <ProgressStats>
                   <div style={{fontWeight: "bold", marginBottom: "7px"}}>Progress Stats</div>
-                  <TierLevel tier={0} blocks={22}/>
-                  <TierLevel tier={1} blocks={28}/>
-                  <TierLevel tier={2} blocks={10}/>
-                  <TierLevel tier={3} blocks={31}/>
-                  <TierLevel tier={4} blocks={9}/>
-                  <LimitLine block={91}/>
-                  <CurrentLevel block={63}/>
+                  <TierLevel tier={0} blocks={plot.layerPercentages[0]}/>
+                  <TierLevel tier={1} blocks={plot.layerPercentages[1]}/>
+                  <TierLevel tier={2} blocks={plot.layerPercentages[2]}/>
+                  <TierLevel tier={3} blocks={plot.layerPercentages[3]}/>
+                  <TierLevel tier={4} blocks={plot.layerPercentages[4]}/>
+                  {plot.gemMines && <LimitLine block={limitLine}/>}
+                  <CurrentLevel block={plot.currentPercentage}/>
               </ProgressStats>
               <InfoSection>
                   <PlotsInfo>
                       <Col flex={4} style={{minWidth: "150px"}}>
-                          <div>Plot #052163</div>
-                          <div style={{color: "#AEAEB7"}}>Blocks Not Mined: 24</div>
-                          <div>Gem Mining: Yes</div>
-                          <div style={{color: "#AEAEB7"}}>Gem Can Mine: 15 More Blocks</div>
-                          <div>Time Gem Can Mine: 2 days 15 hours</div>
-                          <div style={{color: "#AEAEB7"}}>Can Gem Finish: No</div>
-                          <div>Blocks Processed: 48</div>
-                          <div style={{color: "#AEAEB7"}}>Located in Country: India</div>
+                          <div>Plot #{plot.id}</div>
+                          <div style={{color: "#AEAEB7"}}>Blocks Not Mined: {100 - plot.currentPercentage}</div>
+                          <div>Gem Mining: {plot.gemMines ? "Yes" : "No"}</div>
+                          {plot.gemMines &&
+                          <div style={{color: "#AEAEB7"}}>Gem Can Mine: {limitLine - plot.currentPercentage} More
+                              Blocks</div>}
+                          {plot.gemMines && false && <div>Time Gem Can Mine: 2 days 15 hours</div>}
+                          {plot.gemMines &&
+                          <div style={{color: "#AEAEB7"}}>Can Gem Finish: {limitLine === 100 ? "Yes" : "No"}</div>}
+                          <div>Blocks Processed: {plot.processedBlocks}</div>
+                          <div style={{color: "#AEAEB7"}}>Located in Country: {plotCountryData && plotCountryData.name}</div>
                       </Col>
                       <Row flex={3} style={{alignItems: "center"}}>
-                          <GemMiningImageBlock>
-                              <GemMiningImage src={gemImage}/>
+                          <GemMiningImageBlock onClick={() => {
+                              plot.gemMines ? this.props.showAnotherPopup("gems-selected") : this.props.showAnotherPopup("plot-action-start")}}>
+                              {plot.gemMines ?
+                              <GemMiningImage src={plot.gemMines.image}/> : <span>Select a gem</span>}
                           </GemMiningImageBlock>
                           <CountryImageBlock>
-                              <CountryImage src={indiaImage}/>
+                              <CountryImage src={plotCountryData && plotCountryData.imageLinkSmall}
+                                            alt={"Image loading"}/>
                           </CountryImageBlock>
                       </Row>
                   </PlotsInfo>
                   <PlotsInfo>
                       <Col flex={1}>
-                          <ShowButton disabled={true} content={"Start"}/>
+                          <ShowButton disabled={plot.miningState !== NOT_MINING} content={"Start"}
+                          onClick={() => !plot.gemMines && this.props.showAnotherPopup("plot-action-start")}/>
                           <ShowButton disabled={true} content={"Sell"}/>
                       </Col>
                       <Col flex={1}>
-                          <ShowButton disabled={false} content={"Stop"}/>
-                          <ShowButton disabled={true} contnet={"Gift"}/>
+                          <ShowButton disabled={plot.miningState === NOT_MINING}
+                                      content={"Stop"}
+                          onClick={() => plot.gemMines && this.props.stopMining(plot)}/>
+                          <ShowButton disabled={true} content={"Gift"}/>
                       </Col>
                   </PlotsInfo>
-                  <PlotsInfo>
-                      <Col flex={1} style={{color: "#AEAEB7"}}>Items Found: 6</Col>
-                      <Col flex={1}><ShowButton content={"Show Items"}/></Col>
-                  </PlotsInfo>
+                  {/*<PlotsInfo>*/}
+                      {/*<Col flex={1} style={{color: "#AEAEB7"}}>Items Found: 6</Col>*/}
+                      {/*<Col flex={1}><ShowButton content={"Show Items"}/></Col>*/}
+                  {/*</PlotsInfo>*/}
               </InfoSection>
               <UnprocessedBlocks>
-                  <TierIndicator tier={0}>0</TierIndicator>
-                  <TierIndicator tier={1}>2</TierIndicator>
-                  <TierIndicator tier={2}>10</TierIndicator>
-                  <TierIndicator tier={3}>16</TierIndicator>
-                  <TierIndicator tier={4}>0</TierIndicator>
+                  <TierIndicator tier={0}>{totalUnprocessedBlocks[0]}</TierIndicator>
+                  <TierIndicator tier={1}>{totalUnprocessedBlocks[1]}</TierIndicator>
+                  <TierIndicator tier={2}>{totalUnprocessedBlocks[2]}</TierIndicator>
+                  <TierIndicator tier={3}>{totalUnprocessedBlocks[3]}</TierIndicator>
+                  <TierIndicator tier={4}>{totalUnprocessedBlocks[4]}</TierIndicator>
                   <div style={{flex: 1, padding: "1px 0", maxWidth: "160px"}}>
-                        <ShowButton height={40} edgeSizes={[5, 15]} content={"Process 28 Blocks"}/>
+                      <ProcessButton disabled={totalUnprocessedSum === 0}
+                                     onClick={() => totalUnprocessedSum > 0 && processBlocks(plot)}>
+                          Process {totalUnprocessedSum} Blocks</ProcessButton>
+                      {/*<ShowButton disabled={totalUnprocessedSum === 0} height={40} edgeSizes={[5, 15]} content={`Process ${totalUnprocessedSum} Blocks`}*/}
+                      {/*onClick={() => totalUnprocessedSum > 0 && processBlocks(plot.id)}/>*/}
                   </div>
               </UnprocessedBlocks>
           </PopupContainer>
         );
     }
 }
+
+const ProcessButton = styled.div`
+    opacity: ${props => props.disabled ? "0.5" : "1"}
+    background-image: url(${buyNowImage});
+    background-position: center center;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+    color: white;
+    font-size: 15px
+`;
 
 const ShowButtonWrapper = styled.div`
     @media(max-width: 420px) {
@@ -385,13 +446,13 @@ const ShowButtonWrapper = styled.div`
 const ShowButton = ({content, disabled, ...props}) => {
     return (
       <ShowButtonWrapper>
-          <CutEdgesButton outlineColor={disabled ? "black" : "#62626B"}
-                          backgroundColor={disabled ? "black" : "#2A3238"}
+          <CutEdgesButton outlineColor={disabled ? "#191D21" : "#62626B"}
+                          backgroundColor={disabled ? "#191D21" : "#2A3238"}
                           edgeSizes={[5, 20]}
                           outlineWidth={2}
-                          fontColor={disabled ? "#2A3238" : "white"}
-                          height={32}
-                          fontSize={12}
+                          fontColor={disabled ? "#293137" : "#D4D4E2"}
+                          height={42}
+                          fontSize={20}
                           content={content}
                           {...props}/>
       </ShowButtonWrapper>)

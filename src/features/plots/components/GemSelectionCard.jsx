@@ -16,6 +16,8 @@ import {
     typePaneColors,
     typePaneOutlineColors
 } from "./propertyPaneStyles";
+import GemImage from "../../../components/GemImage";
+import styled from 'styled-components';
 
 const transitionRules = {
     //transitionDelay: 'display 2s'
@@ -24,39 +26,21 @@ const transitionRules = {
 
 class GemSelectionCard extends Component {
 
-    state = {
-        gemImage: this.props.auction.image
-    }
-
-    async componentDidMount() {
-        const {auction} = this.props;
-        if (!this.state.gemImage) {
-            const image = await getGemImage({
-                color: auction.color,
-                level: auction.level,
-                gradeType: auction.gradeType,
-                gradeValue: auction.gradeValue
-            }, auction.id);
-            this.props.auction.image = image;
-            this.setState({gemImage: image});
-        }
-    }
-
     render() {
-        const {auction} = this.props;
-        const {gemImage} = this.state;
+        const {auction, available} = this.props;
 
         return (
-          <Tilt className="Tilt" options={{max: 35, scale: 1.02}} style={{cursor: "pointer", opacity: auction.auctionIsLive ? "0.5" : "1"}}>
+          <Tilt className="Tilt" options={{max: 35, scale: 1.02}} style={{cursor: "pointer", opacity: available ? "1" : "0.5"}}>
               <div
                 onClick={this.props.onClick}
-                className="bg-off-black shadow-3 white"
+                className="bg-off-black shadow-3 white relative"
                 style={{
                     WebkitClipPath:
                       'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)',
                     clipPath:
                       'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)',
                 }}>
+                  <GemName>{auction.id}</GemName>
                   <figure className="ma0 pa0">
                       <div className="w-100" style={{position: 'relative', display: 'block', paddingTop: '100%'}}>
                           <div style={{
@@ -65,10 +49,9 @@ class GemSelectionCard extends Component {
                               bottom: 0,
                               left: 0,
                               right: 0,
+                              padding: "5px",
                           }}>
-                              {gemImage ?
-                                <img src={gemImage} alt="" className="ma0 pa3 pb0"/> : ""}
-                              <Loading hidden={gemImage}/>
+                              <GemImage gem={this.props.auction}/>
                           </div>
                       </div>
                       <figcaption hidden>{auction.quality}</figcaption>
@@ -132,3 +115,15 @@ GemSelectionCard.propTypes = {
 };
 
 export default GemSelectionCard;
+
+const GemName = styled.div`
+    position: absolute;
+    top: 1px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    font-size: 9px;
+    color: #656565;
+    text-align: right;
+    padding-right: 5px;
+`;

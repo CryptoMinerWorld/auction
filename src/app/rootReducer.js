@@ -32,6 +32,7 @@ import {
     PLOT_SERVICE_ADDED,
 } from './reduxConstants';
 import {plots} from "../features/plots/plotReducer";
+import {plotSale} from "../features/plotsale/plotSaleReducer";
 
 const initialState = {
     loading: false,
@@ -115,6 +116,7 @@ export default combineReducers({
     auth,
     dashboard,
     sale,
+    plotSale,
     plots,
     tooltip,
     tx: txReducer,

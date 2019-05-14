@@ -17,6 +17,37 @@
     },
     {
       "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "uint24"
+        }
+      ],
+      "name": "miningPlots",
+      "outputs": [
+        {
+          "name": "gemId",
+          "type": "uint32"
+        },
+        {
+          "name": "artifactId",
+          "type": "uint16"
+        },
+        {
+          "name": "player",
+          "type": "address"
+        },
+        {
+          "name": "bound",
+          "type": "uint32"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
       "inputs": [],
       "name": "FEATURE_MINING_ENABLED",
       "outputs": [
@@ -102,7 +133,35 @@
     {
       "constant": true,
       "inputs": [],
+      "name": "gemExt",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
       "name": "MINER_UID",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "GEM_EXT_UID_REQUIRED",
       "outputs": [
         {
           "name": "",
@@ -243,6 +302,20 @@
         {
           "name": "",
           "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "ROLE_ROLLBACK_OPERATOR",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint32"
         }
       ],
       "payable": false,
@@ -460,6 +533,10 @@
           "type": "address"
         },
         {
+          "name": "_gemExt",
+          "type": "address"
+        },
+        {
           "name": "_plot",
           "type": "address"
         },
@@ -556,8 +633,16 @@
         },
         {
           "indexed": false,
-          "name": "offset",
+          "name": "offsetFrom",
           "type": "uint8"
+        },
+        {
+          "name": "offsetTo",
+          "type": "uint8"
+        },
+        {
+          "name": "loot",
+          "type": "uint16[]"
         }
       ],
       "name": "Updated",
@@ -690,6 +775,20 @@
       "type": "function"
     },
     {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "plotId",
+          "type": "uint24"
+        }
+      ],
+      "name": "rollback",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
       "constant": true,
       "inputs": [
         {
@@ -712,19 +811,92 @@
       "constant": true,
       "inputs": [
         {
-          "name": "gemId",
-          "type": "uint32"
+          "name": "k",
+          "type": "uint8"
         },
+        {
+          "name": "n",
+          "type": "uint16"
+        },
+        {
+          "name": "bos",
+          "type": "bool"
+        },
+        {
+          "name": "loot",
+          "type": "uint16[]"
+        }
+      ],
+      "name": "genLoot",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint16[]"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "seedOffset",
+          "type": "uint16"
+        },
+        {
+          "name": "p",
+          "type": "uint16"
+        },
+        {
+          "name": "n",
+          "type": "uint16"
+        }
+      ],
+      "name": "rndEval",
+      "outputs": [
+        {
+          "name": "amount",
+          "type": "uint16"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
         {
           "name": "plotId",
           "type": "uint24"
         }
       ],
-      "name": "levelAllowsToMineBy",
+      "name": "getBoundGemId",
       "outputs": [
         {
           "name": "",
-          "type": "uint8"
+          "type": "uint32"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "plotId",
+          "type": "uint24"
+        }
+      ],
+      "name": "getBoundArtifactId",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint32"
         }
       ],
       "payable": false,
@@ -743,7 +915,7 @@
           "type": "uint24"
         }
       ],
-      "name": "levelAllowsToMineTo",
+      "name": "gemMinesTo",
       "outputs": [
         {
           "name": "",
@@ -958,5 +1130,5 @@
     }
   ],
   "schemaVersion": "2.0.0",
-  "updatedAt": "2019-05-09T10:40:32.630Z"
+  "updatedAt": "2019-05-12T16:06:21.567Z"
 }

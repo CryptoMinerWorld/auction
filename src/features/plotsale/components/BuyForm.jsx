@@ -157,7 +157,8 @@ class BuyForm extends Component {
                   <SliderWithTooltip
                     tipProps={{overlayClassName: 'foo'}}
                     onChange={(value) => {
-                        setNumberOfPlots(value)
+                        setNumberOfPlots(value);
+                        toggleMap();
                     }}
                     min={1}
                     max={60}

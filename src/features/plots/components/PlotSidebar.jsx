@@ -6,6 +6,7 @@ import artifactIcon from "../../../app/images/artifactIcon.png";
 import filterIcon from "../../../app/images/filterIcon.png";
 import gemIcon from "../../../app/images/gemIcon.png";
 import plotIcon from "../../../app/images/plotIcon.png";
+import {Link} from "react-router-dom";
 
 const SidebarSection = styled.div`
     @media(max-width: 599px) {
@@ -138,11 +139,17 @@ class PlotSidebar extends Component {
         return state.selectedTab !== this.state.selectedTab || props.plotSelected !== this.props.plotSelected;
     }
 
+    componentDidUpdate(prevProps) {
+        if (this.props.plotSelected && this.props.plotSelected !== prevProps.plotSelected) {
+            this.setState({selectedTab: "selected"});
+        }
+    }
+
     render() {
         const {plotSelected} = this.props;
         const {selectedTab} = this.state;
         const disableSidebarIcons = (selectedTab === "selected") && !plotSelected;
-
+        const disableSidebarGemIcon = (selectedTab === "selected") && (!plotSelected || (plotSelected && !plotSelected.gemMines));
         return (
           <Sidebar>
               <SidebarTabs>
@@ -157,14 +164,14 @@ class PlotSidebar extends Component {
               </SidebarTabs>
               <SidebarSection selectedTab={selectedTab} mobileFlex={4} mobileDirection={"row"}>
                   <SidebarIcon disabled={disableSidebarIcons} icon={plotIcon} onClick={() => !disableSidebarIcons && this.props.showSidebarPopup("plots-"+selectedTab)}/>
-                  <SidebarIcon disabled={disableSidebarIcons} icon={gemIcon} onClick={() => !disableSidebarIcons && this.props.showSidebarPopup("gems-"+selectedTab)}/>
+                  <SidebarIcon disabled={disableSidebarGemIcon} icon={gemIcon} onClick={() => !disableSidebarGemIcon && this.props.showSidebarPopup("gems-"+selectedTab)}/>
                   <SidebarIcon disabled={true} icon={artifactIcon} style={{margin: "10px 0"}}
                                onClick={() => this.props.showSidebarPopup("coming-soon")}
                   />
               </SidebarSection>
               <SidebarSection mobileFlex={3} mobileDirection={"column"}>
-                  <BuyButton>BUY PLOTS</BuyButton>
-                  <BuyButton>PROCESS ALL</BuyButton>
+                  <BuyButton><a style={{width: "100%", color: "white"}} href={'/plots'}>BUY PLOTS</a></BuyButton>
+                  {/*<BuyButton>PROCESS ALL</BuyButton>*/}
               </SidebarSection>
               <SidebarSection mobileFlex={1} mobileDirection={"row"}>
                   <SidebarIcon icon={filterIcon} onClick={() => this.props.showSidebarPopup("filter")}/>

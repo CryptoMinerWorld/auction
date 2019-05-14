@@ -20,8 +20,10 @@ const GemSelectionFilter = styled.div`
 `;
 
 const select = store => {
+    console.log("Gem Mining Ids", store.plots);
     return {
         userGems: store.dashboard.userGems,
+        gemMiningIds: store.plots.gemMiningIds,
     }
 }
 const defaultFiltersUnselected = {
@@ -145,6 +147,8 @@ export class GemSelectionPopup extends Component {
 
     render() {
 
+        console.log("gem selection props:", this.props);
+
         const container = {
             display: "flex",
             width: this.state.windowWidth > 800 ? "800px" : this.state.windowWidth,
@@ -197,7 +201,7 @@ export class GemSelectionPopup extends Component {
             };
         `;
 
-        const {applyFilter, applySort, prevPage, nextPage, activeControls, userGems, handleBindGem, selectedPlotId} = this.props;
+        const {applyFilter, applySort, prevPage, nextPage, activeControls, userGems, handleBindGem, selectedPlot, gemMiningIds, transactionStartCallback, updatePlot} = this.props;
         const {unselectedFilters, selectedSort, scrolledGems} = this.state;
 
         return (
@@ -215,11 +219,12 @@ export class GemSelectionPopup extends Component {
                     <CardBox>
                         {scrolledGems && scrolledGems.length > 0 ? (
                           scrolledGems.map(userGem => {
+                              const available = !userGem.auctionIsLive && gemMiningIds && !gemMiningIds.includes(userGem.id.toString());
                               //console.log('USER GEM: ', userGem);
                               return (
                                 //<div></div>
-                                <GemSelectionCard auction={userGem} key={userGem.id}
-                                    onClick={() => {!userGem.auctionIsLive && handleBindGem(selectedPlotId, userGem.id)}}
+                                <GemSelectionCard auction={userGem} key={userGem.id} available={available}
+                                    onClick={() => {available && handleBindGem(selectedPlot, userGem, updatePlot, transactionStartCallback)}}
                                 />
                               )
                           })

@@ -84,7 +84,7 @@ const SilverGoldBalance = styled.div`
         position: absolute;
         right: 0;
         top: 15px;
-        z-index: 20;
+        z-index: 2;
     }
 `;
 
@@ -453,7 +453,7 @@ class Dashboard extends Component {
                     disabled={false}
                     key="1"
                   >
-                      <PlotDashboard/>
+                      <PlotDashboard goToGemWorkshop={() => this.setState({tab: 2})}/>
                   </TabPane>
                   <TabPane
                     tab={(

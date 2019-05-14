@@ -116,7 +116,6 @@ const Map = ({
             style={{
               width: '100%',
               height: 'auto',
-              backgroundColor: '#24292f',
             }}
           >
             <ZoomableGroup center={[x, y]} zoom={zoom}>

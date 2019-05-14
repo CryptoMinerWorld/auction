@@ -253,8 +253,6 @@ export const getGemStory = async (gemProperties, tokenId) => {
 
 export const getGemImage = async (gemProperties, tokenId) => {
 
-    console.log('GET GEM IMAGE, gemProperties: ', gemProperties);
-
     const type = {
         1: 'Gar',
         2: 'Ame',
@@ -270,16 +268,8 @@ export const getGemImage = async (gemProperties, tokenId) => {
         12: 'Tur',
     }[gemProperties.color];
 
-    const gradeType = {
-        1: 'D',
-        2: 'C',
-        3: 'B',
-        4: 'A',
-        5: 'AA',
-        6: 'AAA',
-    }[gemProperties.gradeType];
-
     const level = gemProperties.level;
+    const gradeType = calculateGradeType(gemProperties.gradeType);
     // check if any special images are present for gem
     // if no - use type-level-grade formula
     //const sourceImage = `${type}-${level}-${gradeType}-4500.png`;
@@ -319,6 +309,15 @@ export const calculateMiningRate = (gradeType, gradeValue) => ({
     4: 40 + (3 * gradeValue) / 200000,
     5: 100 + gradeValue / 40000,
     6: 300 + gradeValue / 10000,
+}[gradeType]);
+
+export const calculateGradeType = (gradeType) => ({
+    1: 'D',
+    2: 'C',
+    3: 'B',
+    4: 'A',
+    5: 'AA',
+    6: 'AAA',
 }[gradeType]);
 
 
