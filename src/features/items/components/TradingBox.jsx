@@ -14,6 +14,7 @@ import ProgressMeter from './ProgressMeter';
 import GiftGems from './GiftGems';
 import button from '../../../app/images/pinkBuyNowButton.png';
 import UpgradeComponent from "./UpgradeComponent";
+import {getUserPlots, processBlocks} from "../../plots/plotActions";
 
 const ColourButton = styled.button`
   background-image: url(${button});
@@ -66,13 +67,12 @@ const fixedOverlayStyle = {
     backgroundColor: 'rgba(0,0,0,0.5)'
 }
 
-const select = store => {
-
-    console.log('Trading box store', store);
-    return {
-        userBalance: store.sale.balance
-    }
-}
+const select = store => ({
+    userPlots: store.plots.userPlots,
+    gemMiningIds: store.plots.gemMiningIds,
+    plotService: store.app.plotServiceInstance,
+    userBalance: store.sale.balance
+})
 
 
 class TradingBox extends PureComponent {
@@ -80,7 +80,7 @@ class TradingBox extends PureComponent {
         handleCreateAuction: PropTypes.func.isRequired,
         handleRemoveGemFromAuction: PropTypes.func.isRequired,
         history: PropTypes.shape({}).isRequired,
-        silverAvailable:PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        silverAvailable: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         goldAvailable: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     };
 
@@ -97,21 +97,44 @@ class TradingBox extends PureComponent {
 
     turnLoaderOff = () => this.setState({formSubmitted: false});
 
+
+    componentDidMount() {
+        if (this.props.plotService) {
+            console.log('GET USER PLOTS:');
+            this.props.handleGetUserPlots(this.props.currentAccount);
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        console.log('PROPS:', this.props);
+        if (this.props.plotService && this.props.plotService !== prevProps.plotService) {
+            this.props.role === 'owner' && this.props.handleGetUserPlots(this.props.currentAccount);
+        }
+    }
+
     render() {
         const {
             gem,
             handleCreateAuction,
             handleRemoveGemFromAuction,
+            handleProcessBlocks,
+          handleGetUserPlots,
             history,
-            silverAvailable,
-            goldAvailable,
             userBalance,
-          currentAccount,
-          role
+            currentAccount,
+            role
         } = this.props;
         const {
-            duration, startPrice, endPrice, formSubmitted, showUpgrade, useMetal,
+            duration, startPrice, endPrice, formSubmitted, showUpgrade, useMetal
         } = this.state;
+
+
+        let gemMines, plotMined;
+        if (this.props.gemMiningIds && this.props.userPlots && this.props.gemMiningIds.includes(this.props.gem.id)) {
+            gemMines = true;
+            plotMined = this.props.userPlots.find(plot => plot && plot.gemMinesId === this.props.gem.id);
+        }
+        const unprocessed = gemMines && plotMined && (plotMined.processedBlocks < plotMined.currentPercentage);
 
         return (
           <>
@@ -119,12 +142,13 @@ class TradingBox extends PureComponent {
                 <div style={fixedOverlayStyle}
                      onClick={() => this.setState({showUpgrade: false})}
                 >
-                    <UpgradeComponent metal={useMetal}
-                                      metalAvailable={useMetal === 'silver' ? +userBalance.silverAvailable : +userBalance.goldAvailable}
-                                      hidePopup={() =>
-                                        this.setState({showUpgrade: false})
-                                      }
-                                      {...this.props}/>
+                    {!unprocessed && <UpgradeComponent metal={useMetal}
+                                                    metalAvailable={useMetal === 'silver' ? +userBalance.silverAvailable : +userBalance.goldAvailable}
+                                                    hidePopup={() =>
+                                                      this.setState({showUpgrade: false})
+                                                    }
+                                                    {...this.props}/>
+                    }
                     <div
                       // style={position: absolute
                       //     top: 0;
@@ -161,6 +185,9 @@ class TradingBox extends PureComponent {
                             handleUseMetals={(metalName) => {
                                 this.setState({showUpgrade: true, useMetal: metalName});
                             }}
+                            plotMined={plotMined}
+                            gemMines={gemMines}
+                            handleProcessBlocks={(plot) => handleProcessBlocks(plot, () => handleGetUserPlots(currentAccount))}
                           />
 
                           {gem.auctionIsLive ? (
@@ -211,6 +238,7 @@ class TradingBox extends PureComponent {
                                     <div>Start (max) price:</div>
                                     <Input
                                       type="number"
+                                      lang="en-150"
                                       step="0.001"
                                       placeholder="From 0 to 1000 ETH (0.001 ETH step)"
                                       className="db"
@@ -222,6 +250,7 @@ class TradingBox extends PureComponent {
                                     <div>End (min) price:</div>
                                     <Input
                                       type="number"
+                                      lang="en-150"
                                       step="0.001"
                                       placeholder="Less than start price (0.001 ETH step)"
                                       className="db"
@@ -238,7 +267,7 @@ class TradingBox extends PureComponent {
                                               !(
                                                 gem.id
                                                 && duration
-                                                  && duration < 1000
+                                                && duration < 1000
                                                 && startPrice
                                                 && startPrice > endPrice
                                                 && startPrice < 1001
@@ -286,7 +315,9 @@ class TradingBox extends PureComponent {
 const actions = {
     handleCreateAuction: createAuction,
     handleRemoveGemFromAuction: removeFromAuction,
-    handleUpgradeGem: upgradeGem
+    handleUpgradeGem: upgradeGem,
+    handleGetUserPlots: getUserPlots,
+    handleProcessBlocks: processBlocks,
 };
 
 export default compose(

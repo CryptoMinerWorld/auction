@@ -3,7 +3,7 @@ import styled from "styled-components";
 import {CutEdgesButton} from "./CutEdgesButton";
 import arrowUpActive from "./../../../app/images/arrowUpActive.png";
 import arrowDownActive from "./../../../app/images/arrowDownActive.png";
-import {CANT_MINE, FINISHED, MINING, NEW_PLOT, NO_GEM, NOT_MINING, PROCESSED, STUCK} from "./../plotConstants";
+import {CANT_MINE, MINED, MINING, NEW_PLOT, NO_GEM, NOT_MINING, PROCESSED, STUCK} from "./../plotConstants";
 
 const container = {
     display: "flex",

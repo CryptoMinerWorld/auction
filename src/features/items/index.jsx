@@ -32,10 +32,12 @@ import {fetchLatestRestingEnergy} from './helpers';
 import UpgradeComponent from './components/UpgradeComponent';
 import {getAvailableGold, getAvailableSilver} from "../dashboard/helpers";
 import {getUserBalance} from "../sale/saleActions";
+import {getUserPlots, processBlocks} from "../plots/plotActions";
 
 const select = store => {
     console.warn('GEM PAGE STORE: ', store);
     return {
+
         gem: store.auction.gem,
           //ownerData: store.auction.ownerData,
       details: store.auction,
@@ -68,7 +70,7 @@ class Auction extends PureComponent {
 
     async componentDidMount() {
         const {
-            match, handleGetUserBalance, silverGoldService, gemService, handleGetGemData, dutchContract, gemContractAddress, goldContract, silverContract, currentAccount
+            match, handleGetUserBalance, silverGoldService, gemService, handleGetGemData, dutchContract, gemContractAddress, currentAccount
         } = this.props;
 
         if (match && match.params && match.params.gemId && gemService) {
@@ -91,6 +93,8 @@ class Auction extends PureComponent {
         if (silverGoldService && currentAccount) {
             handleGetUserBalance(currentAccount);
         }
+
+
     }
 
     async componentDidUpdate(prevProps) {
@@ -98,7 +102,7 @@ class Auction extends PureComponent {
         console.log('componentDidUpdateProps: ', this.props);
         console.log('componentDidUpdateState: ', this.state);
 
-        const {gemContract, match, userBalance, silverGoldService, handleGetUserBalance, goldContract, silverContract, currentAccount, handleGetGemData, gemService, auctionService} = this.props;
+        const {gemContract, match, userBalance, silverGoldService, handleGetUserBalance, currentAccount, handleGetGemData, gemService, auctionService} = this.props;
         const {restingEnergyMinutes} = this.state;
 
         if (this.props.gem && !this.state.ownerData) {
@@ -113,6 +117,7 @@ class Auction extends PureComponent {
         if (silverGoldService && currentAccount && (silverGoldService !== prevProps.silverGoldService || !userBalance || currentAccount !== prevProps.currentAccount)) {
             handleGetUserBalance(currentAccount);
         }
+
     }
 
     componentWillUnmount() {
@@ -133,7 +138,7 @@ class Auction extends PureComponent {
             details,
             error,
             match,
-            gem
+            gem,
         } = this.props;
 
         const {goldAvailable, silverAvailable, ownerData} = this.state;
@@ -215,10 +220,12 @@ class Auction extends PureComponent {
 const actions = {
     handleGetGemData: getGemData,
     handleGetUserBalance: getUserBalance,
+
     //handleGetAuctionDetails: getAuctionDetails,
     showConfirm,
     handleClearGemPage: clearGemPageOnExit,
     handleSetError: setError,
+
 };
 
 export default compose(

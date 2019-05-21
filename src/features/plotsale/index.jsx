@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 // import PropTypes from 'prop-types';
 import Icon from 'antd/lib/icon';
-import {rtdb} from '../../app/utils/firebase';
+import {db, rtdb} from '../../app/utils/firebase';
 import Map from './components/Map';
 import geoData from '../../app/maps/world-50m-with-population.json';
 // import countryDatum from './components/countryData';
@@ -19,6 +19,7 @@ import plot2 from '../../app/images/plots/2-15_Plot.png';
 import plot16 from '../../app/images/plots/16-30_Plot.png';
 import plot31 from '../../app/images/plots/31-45_Plot.png';
 import plot46 from '../../app/images/plots/46-60_Plot.png';
+import rockBackground from '../../app/images/rockBackground.png';
 
 const select = store => ({
     countryService: store.app.countryServiceInstance,
@@ -76,7 +77,29 @@ class PlotSale extends Component {
     }
 
     rtdbListen = () => {
+        const countriesMapping = {};
         rtdb.ref('/worldMap').on('value', async snap => {
+
+            // snap && snap.val().objects.units.geometries
+            //       .filter(country => country.properties.countryId !== 200)
+            //       .forEach(async country => {
+            //           const props = country.properties;
+            //           const data = (await db.collection('countries').where('countryId', '==',
+            //             Number(props.countryId)).get());
+            //           if (!data.docs[0]) {
+            //               await db.collection('countries').doc(props['name']).set({
+            //                   countryId: props['countryId'],
+            //                   imageLinkLarge: props['imageLinkLarge'],
+            //                   imageLinkMedium: props['imageLinkMedium'],
+            //                   imageLinkSmall: props['imageLinkSmall'],
+            //                   mapIndex: props['mapIndex'],
+            //                   onSale: false,
+            //                   name: props['name'],
+            //                   id: props['name']
+            //               })
+            //           }
+            //       })
+                  //country.properties)
             snap && this.setState({
                 countryData: snap.val(),
                 countryList: snap.val().objects.units.geometries
@@ -117,7 +140,11 @@ class PlotSale extends Component {
         const {getAvailableCountryPlots, handleBuy, worldChestValue, monthlyChestValue} = this.props;
 
         return (
-          <div data-testid="mapPage" className="plot-sale bg-off-black white w-100">
+          <div data-testid="mapPage" className="plot-sale bg-off-black white w-100" style={{
+              backgroundImage: 'url('+rockBackground+')',
+              backgroundRepeat: 'repeat',
+              backgroundSize: 'contain',
+          }}>
               <div className="flex ais w-100 col-reverse row-ns mw9 center"
                    style={{padding: "25px 10px 15px", minHeight: "601px"}}>
                   <BuyFormContainer>
@@ -159,8 +186,14 @@ class PlotSale extends Component {
                       }
                   </BuyFormContainer>
                   <MapArea className="w-60-ns w-100">
-                      <PlotImages src={this.getPlotImage()}/>
-                      {mapIsShown &&
+                      <PlotImages>
+                          <PlotImage src={plot1} visible={numberOfPlots === 1}/>
+                          <PlotImage src={plot2} visible={numberOfPlots >= 2 && numberOfPlots < 16}/>
+                          <PlotImage src={plot16} visible={numberOfPlots >= 16 && numberOfPlots < 31}/>
+                          <PlotImage src={plot31} visible={numberOfPlots >= 31 && numberOfPlots < 46}/>
+                          <PlotImage src={plot46} visible={numberOfPlots >= 46}/>
+                      </PlotImages>
+                          {mapIsShown &&
                       <MapContainer className="pa3">
                           {countryData && Object.keys(countryData).length > 0 ? (
                             <Map
@@ -273,7 +306,14 @@ const MapContainer = styled.div`
     -webkit-clip-path: polygon(0% 50%, 11% 8%, 22% 0%, 78% 0%, 89% 8%, 100% 50%, 89% 92%, 78% 100%, 22% 100%, 11% 92%);
 `;
 
-const PlotImages = styled.img `
+const PlotImage = styled.img `
+    position: absolute;
+    top:0;
+    opacity: ${props => props.visible ? "1" : "0"};
+`;
+
+const PlotImages = styled.div`
+    width: 100%;
 `;
 
 const BuyFormContainer = styled.div`

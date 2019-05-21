@@ -10,20 +10,16 @@ import plotFinishButton from "../../../app/images/finishButton.png";
 import Slider from "react-slick";
 import {compose} from "redux";
 import connect from "react-redux/es/connect/connect";
-import {calculateMiningStatus, processBlocks, releaseGem} from "../plotActions";
-import {CANT_MINE, FINISHED, MINING, NEW_PLOT, NOT_MINING, STUCK} from "./../plotConstants";
+import {calculateMiningStatus, getUserPlots, processBlocks, releaseGem} from "../plotActions";
+import {CANT_MINE, MINED, MINING, NEW_PLOT, NOT_MINING, STUCK} from "./../plotConstants";
 import {NO_GEM, PROCESSED} from "../plotConstants";
 
 // import "../../../app/css/slick.min.css";
 // import "../../../app/css/slick-theme.min.css";
 
 const select = store => {
-
     const gems = store.dashboard.userGems;
     const plots = store.plots.userPlots;
-
-    console.log("GEMS:", gems);
-
     plots && plots.forEach((plot) => {
         if (!plot) return;
         if (plot.gemMinesId) {
@@ -68,12 +64,12 @@ class PlotDisplay extends Component {
         if (this.props.plots) {
             this.applyAllFilters();
         }
-        //this.sortFiltered(this.props.plots || []);
     }
 
     componentDidUpdate(prevProps) {
         const {plots} = this.props;
         if (plots !== prevProps.plots) {
+            console.log("NEW PLOTS GOT");
             this.setState({
                 currentTime: new Date().getTime(),
             });
@@ -132,6 +128,8 @@ class PlotDisplay extends Component {
 
     sortFiltered(filteredPlotsOptional) {
 
+        console.log('sort filtered fn:', filteredPlotsOptional);
+
         let plots = filteredPlotsOptional || [...this.state.filteredPlots];
         let sortingFunction;
         const directionFlag = this.state.sortOptionDirection === "sort_btn_up" ? 1 : -1;
@@ -189,7 +187,7 @@ class PlotDisplay extends Component {
                         if (plot.miningState === MINING) filterPassed = true;
                         break;
                     case STUCK:
-                        if (plot.miningState === STUCK || plot.miningState === FINISHED) filterPassed = true;
+                        if (plot.miningState === STUCK || plot.miningState === MINED) filterPassed = true;
                         break;
                     case NO_GEM:
                         if (plot.miningState === NO_GEM) filterPassed = true;
@@ -238,7 +236,7 @@ class PlotDisplay extends Component {
         switch (plot.miningState) {
             case STUCK:
                 return "upgrade";
-            case FINISHED:
+            case MINED:
             case MINING:
                 return "stop";
             case NO_GEM:
@@ -254,9 +252,9 @@ class PlotDisplay extends Component {
             case "start":
                 break;
             case "stop":
-                this.props.handleReleaseGem(plot, (modifiedPlot) => {
+                this.props.handleReleaseGem(plot, () => {
                     this.setState({showSidebarPopup: false});
-                    this.updatePlot(modifiedPlot);
+                    this.props.handleGetUserPlots();
                 });
                 break;
             case "upgrade":
@@ -275,13 +273,14 @@ class PlotDisplay extends Component {
         this.setState({showSidebarFilters: true})
     }
 
-    updatePlot = (modifiedPlot) => {
-        if (this.state.plotSelected.id === modifiedPlot.id) {
-            this.setState({plotSelected: modifiedPlot});
-        }
-        const modifiedPlots = this.state.filteredPlots.map((plot) => plot.id === modifiedPlot.id ? modifiedPlot : plot);
-        this.setState({filteredPlots: modifiedPlots});
-    }
+    // updatePlot = (modifiedPlot) => {
+    //     if (this.state.plotSelected.id === modifiedPlot.id) {
+    //         this.setState({plotSelected: modifiedPlot});
+    //     }
+    //     this.setState(prevState => ({
+    //         filteredPlots: prevState.filteredPlots.map((plot) => plot.id === modifiedPlot.id ? modifiedPlot : plot)
+    //     }));
+    // }
 
     // static generateRandomClipPath() {
     //
@@ -308,7 +307,7 @@ class PlotDisplay extends Component {
         //console.log("State: ", this.state);
         //console.log("Props: ", this.props);
         const {sortOption, sortOptionDirection, tierFilterOptions, plotFilterOptions, filteredPlots, plotSelected, sliderIndex} = this.state;
-        const {handleBindGem, plots, gems} = this.props;
+        const {handleBindGem, plots, gems, handleGetUserPlots} = this.props;
         const startStopButton = {}
 
         return (
@@ -343,7 +342,7 @@ class PlotDisplay extends Component {
                                       this.setState({plotSelected: plot}, () =>
                                       this.showSidebarPopup("gems-selected"));
                                   }}/>
-                                  {plot.miningState === NO_GEM || plot.miningState === NEW_PLOT || plot.miningState === FINISHED ||
+                                  {plot.miningState === NO_GEM || plot.miningState === NEW_PLOT || plot.miningState === MINED ||
                                   plot.miningState === MINING ? <PlotActionButton
                                     plot={plot}
                                     inactive={plotSelected && plot.id !== plotSelected.id}
@@ -403,20 +402,20 @@ class PlotDisplay extends Component {
 
                             }}
                             processBlocks={(plot) => {
-                                this.props.handleProcessBlocks(plot, (modifiedPlot) => {
+                                this.props.handleProcessBlocks(plot, () => {
                                     this.setState({showSidebarPopup: false});
-                                    this.updatePlot(modifiedPlot);
+                                    handleGetUserPlots();
                                 });
                             }}
                             showAnotherPopup={(type) => this.setState({showSidebarPopup: type})}
                             stopMining={(plot) => {
-                                this.props.handleReleaseGem(plot, (modifiedPlot) => {
+                                this.props.handleReleaseGem(plot, () => {
                                     this.setState({showSidebarPopup: false});
-                                    this.updatePlot(modifiedPlot);
+                                    handleGetUserPlots();
                                 });
                             }}
                             optionalData={this.state.optionalPopupData}
-                            updatePlot={(plot) => this.updatePlot(plot)}
+                            updatePlot={handleGetUserPlots}
                             goToGemWorkshop={this.props.goToGemWorkshop}
               />
           </div>
@@ -430,6 +429,7 @@ export default compose(
     {
         handleReleaseGem: releaseGem,
         handleProcessBlocks: processBlocks,
+        handleGetUserPlots: getUserPlots
     }
   )
 )(PlotDisplay);
@@ -447,7 +447,7 @@ const PlotBarContainer = styled.div`
     switch (props.plot.miningState) {
         case STUCK:
             return props.selected ? "#EFB1B2" : "#70575A";
-        case FINISHED:
+        case MINED:
         case PROCESSED:
             return props.selected ? "#b9a3c9" : "#655872";
         case NO_GEM:
@@ -475,7 +475,7 @@ const PlotBarContainer = styled.div`
       switch (props.plot.miningState) {
           case STUCK:
               return "#E12D2C";
-          case FINISHED:
+          case MINED:
           case PROCESSED:
               return "#655872";
           case NO_GEM:
@@ -512,7 +512,7 @@ const PlotActionButton = styled.div`
     switch (props.plot.miningState) {
         case STUCK:
             return 'url(' + plotUpgradeButton + ')';
-        case FINISHED:
+        case MINED:
             return 'url(' + plotFinishButton + ')';
         case NO_GEM:
         case NEW_PLOT:

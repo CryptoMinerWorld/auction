@@ -9,6 +9,7 @@ import {gradeConverter} from "../market/helpers";
 import {parseTransactionHashFromError} from "../transactions/helpers";
 import {getUserBalance} from "../sale/saleActions";
 import {utils} from "web3";
+import {USER_PLOTS_RECEIVED} from "../plots/plotConstants";
 
 
 export const getGemData = tokenId => async (dispatch, getState) => {
@@ -364,4 +365,3 @@ export const upgradeGem = (gem, levelUp, gradeUp, hidePopup, cost) => (dispatch,
           }));
       });
 };
-

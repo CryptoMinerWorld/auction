@@ -19,7 +19,7 @@ const ActionButton = styled.div`
             font-size: 18px;
             margin-top: 10px;
             position: absolute;
-            bottom: -20px;
+            bottom: -25px;
             z-index: 30;
             width: 100px;
         `;
@@ -141,7 +141,7 @@ const LootContainer = styled.div`
     width: 320px;
     min-height: 80px;
     display: flex;
-    padding: 0px 5px 15px;
+    padding: 0px 5px 20px;
     font-size: 18px;
     color: #CFCFD3;
     justify-content: flex-start;
@@ -196,8 +196,8 @@ export class LootPopup extends Component {
             return (<LootContainer>
                 {lootFound['plotState'] && <LootMessage>{`After Processing the ${lootFound['blocksProcessed']} Blocks ${' '}
                 of ${lootFound['plotsProcessed']} plots your Gems mined, You Found:`}</LootMessage>}
-                {!lootFound['plotState'] && <LootMessage>{`Your Gem used its Resting Energy!
-                    It mined as deep as it could. Below is what it found. It is now returning back to the workshop.`}</LootMessage>}
+                {/*{!lootFound['plotState'] && <LootMessage>{`Your Gem used its Resting Energy!*/}
+                    {/*It mined as deep as it could. Below is what it found. It is now returning back to the workshop.`}</LootMessage>}*/}
                 {Number(lootArray[0]) > 0 && <LootRow>{lootArray[0]} Level 1 Gem{Number(lootArray[0]) > 1 ? "s" : ""}</LootRow>}
                 {Number(lootArray[1]) > 0 && <LootRow>{lootArray[1]} Level 2 Gem{Number(lootArray[1]) > 1 ? "s" : ""}</LootRow>}
                 {Number(lootArray[2]) > 0 && <LootRow>{lootArray[2]} Level 3 Gem{Number(lootArray[2]) > 1 ? "s" : ""}</LootRow>}
@@ -207,7 +207,6 @@ export class LootPopup extends Component {
                 {Number(lootArray[6]) > 0 && <LootRow>{lootArray[6]} Piece{Number(lootArray[6]) > 1 ? "s" : ""} of Gold</LootRow>}
                 {Number(lootArray[7]) > 0 && <LootRow>{lootArray[7]} Artifacts</LootRow>}
                 {Number(lootArray[8]) > 0 && <LootRow>{lootArray[8]} Key{Number(lootArray[8]) > 1 ? "s" : ""}</LootRow>}
-
                 <ActionButton onClick={this.props.onClose}>Close</ActionButton>
             </LootContainer>)
         }

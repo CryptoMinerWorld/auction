@@ -3,7 +3,7 @@ import styled from "styled-components";
 import actionButtonImage from "../../../app/images/noTextGemButton.png";
 import octagonImage from "../../../app/images/octagonOutline.png";
 import {CutEdgesButton} from "./CutEdgesButton";
-import {CANT_MINE, FINISHED, MINING, STUCK} from "../plotConstants";
+import {CANT_MINE, MINED, MINING, STUCK} from "../plotConstants";
 
 const setMiningFilters = {
     plotFilterOptions: [MINING],
@@ -12,11 +12,11 @@ const setMiningFilters = {
 
 const setStuckFilters = {
     plotFilterOptions: [STUCK],
-    tierFilterOptions: ["dirt_filter", "clay_filter", "limestone_filter", "marble_filter", "obsidian_filter"],
+    tierFilterOptions: ["dirt_filter", "clay_filter", "limestone_filter", "marble_filter"],
 }
 
 const setFinishedFilters = {
-    plotFilterOptions: [FINISHED],
+    plotFilterOptions: [STUCK],
     tierFilterOptions: ["obsidian_filter"],
 }
 
@@ -41,7 +41,7 @@ export class GemsPopup extends Component {
             if (plot.miningState === MINING) {
                 miningNumber++;
             }
-            if (plot.miningState === STUCK) {
+            if (plot.miningState === STUCK || plot.miningState === MINED) {
                 stuckNumber++;
             }
         });

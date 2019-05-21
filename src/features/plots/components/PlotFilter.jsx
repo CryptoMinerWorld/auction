@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import styled from "styled-components";
+import {MINING, NO_GEM, PROCESSED, STUCK} from "../plotConstants";
 
 class PlotFilter extends Component {
 
@@ -103,14 +104,14 @@ class PlotFilter extends Component {
                                onClick={() => applySort("sort_btn_down")}>∨</ArrowButton></div>
 
               <div style={plainText}>Show</div>
-              <FilterButton selected={activeControls.includes("show_gem_mining")}
-                            onClick={() => applyFilter("show_gem_mining")}>Gem Mining</FilterButton>
-              <FilterButton selected={activeControls.includes("show_not_mining")}
-                            onClick={() => applyFilter("show_not_mining")}>Not Mining</FilterButton>
-              <FilterButton selected={activeControls.includes("show_no_gem")}
-                            onClick={() => applyFilter("show_no_gem")}>No Gem</FilterButton>
-              <FilterButton selected={activeControls.includes("show_completed")}
-                            onClick={() => applyFilter("show_completed")}>Completed</FilterButton>
+              <FilterButton selected={activeControls.includes(MINING)}
+                            onClick={() => applyFilter(MINING)}>Gem Mining</FilterButton>
+              <FilterButton selected={activeControls.includes(STUCK)}
+                            onClick={() => applyFilter(STUCK)}>Gem Stuck</FilterButton>
+              <FilterButton selected={activeControls.includes(NO_GEM)}
+                            onClick={() => applyFilter(NO_GEM)}>No Gem</FilterButton>
+              <FilterButton selected={activeControls.includes(PROCESSED)}
+                            onClick={() => applyFilter(PROCESSED)}>Processed</FilterButton>
               <FilterButton selected={activeControls.includes("show_tier")}
                             underlined={activeControls.includes("show_tier")}
                             onClick={() => {this.setState({showTierFilter: true})}}>Selected tiers</FilterButton>

@@ -1,7 +1,11 @@
 export const USER_PLOTS_RECEIVED = 'USER_PLOTS_RECEIVED';
+export const GEM_CHANGE_LOCK_STATE = 'GEM_CHANGE_LOCK_STATE';
+export const APPLY_PLOT_FILTER = 'APPLY_PLOT_FILTER';
+export const APPLY_TIER_FILTER = 'APPLY_TIER_FILTER';
+export const APPLY_PLOT_SORT = 'APPLY_PLOT_SORT';
 export const NOT_MINING = 'Not Mining';
 export const CANT_MINE = "Can't Mine";
-export const FINISHED = 'Mined!';
+export const MINED = 'Mined!';
 export const COMPLETED = 'Completed';
 export const MINING = 'Mining';
 export const PROCESSED = 'Processed';

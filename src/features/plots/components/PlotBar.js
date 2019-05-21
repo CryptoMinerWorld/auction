@@ -31,6 +31,7 @@ class PlotBar extends Component {
               display: "flex",
               flexDirection: "column",
               height: barHeight,
+              minHeight: barHeight,
               paddingTop: "20px",
               marginTop: "5px"
           }}>

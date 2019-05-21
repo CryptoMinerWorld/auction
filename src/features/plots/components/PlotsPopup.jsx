@@ -5,7 +5,7 @@ import actionButtonImage from "../../../app/images/thickAndWidePinkButton.png";
 // import actionButtonImage from "../../../app/images/noTextGemButton.png";
 import octagonImage from "../../../app/images/octagonOutline.png";
 import {CutEdgesButton} from "./CutEdgesButton";
-import {CANT_MINE, NEW_PLOT, NO_GEM, NOT_MINING, PROCESSED, STUCK} from "../plotConstants";
+import {CANT_MINE, MINING, NEW_PLOT, NO_GEM, NOT_MINING, PROCESSED, STUCK} from "../plotConstants";
 
 const setNoGemsFilters = {
     plotFilterOptions: [NO_GEM],
@@ -17,8 +17,8 @@ const setStuckGemsFilters = {
     tierFilterOptions: ["dirt_filter", "clay_filter", "limestone_filter", "marble_filter", "obsidian_filter"],
 }
 
-const setFinishedFilters = {
-    plotFilterOptions: [PROCESSED],
+const setMiningFilters = {
+    plotFilterOptions: [MINING],
     tierFilterOptions: ["dirt_filter", "clay_filter", "limestone_filter", "marble_filter", "obsidian_filter"],
 }
 
@@ -129,7 +129,7 @@ export class PlotsPopup extends Component {
                       </Col>
                       <Col flex={"1 0 50%"}>
                           <ShowButton content={"Plots w/ Stuck Gem"} onClick={() => {setFilterOptions(setStuckGemsFilters)}}/>
-                          <ShowButton content={"Processed Plots"} onClick={() => {setFilterOptions(setFinishedFilters)}}/>
+                          <ShowButton content={"Mining Plots"} onClick={() => {setFilterOptions(setMiningFilters)}}/>
                       </Col>
                       <div style={{width: "100%", textAlign: "center", color: "#AEAEB7", fontSize:"8px"}}>
                           Make more changes in "Sort/Filter"</div>

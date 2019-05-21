@@ -337,17 +337,23 @@ class App extends Component {
     // //todo: uncomment loot
     componentDidUpdate(prevProps) {
 
-        if (this.props.plotService && this.props.plotService !== prevProps.plotService) {
+        if (this.props.plotService && this.props.currentUserId && (this.props.plotService !== prevProps.plotService || this.props.currentUserId !== prevProps.currentUserId)) {
             const showLootClosure = this.showLoot;
+            const currentUserId = this.props.currentUserId;
             console.warn(">>>>>>>>> adding update event listener <<<<<<<<<");
                 this.props.plotService.minerContract.events.Updated({
-                    fromBlock: 'latest',
-                    filter: {_by: this.props.currentUserId}
+                    filter: {'_by': currentUserId},
+                    fromBlock: 'latest'
                 })
                   .on('data', function (event) {
                       console.log('DATA EVENT:', event); // same results as the optional callback above
-                      if (event.returnValues['loot'])
-                          showLootClosure(event);
+                      if (event.returnValues['_by'] !== currentUserId) {
+                          console.error("_by address is different from current user address.", event.returnValues['_by'], currentUserId);
+                      }
+                      else {
+                          if (event.returnValues['loot'])
+                              showLootClosure(event);
+                      }
                   })
                   .on('changed', function (event) {
                       console.log('CHANGED EVENT:', event);
@@ -377,10 +383,9 @@ class App extends Component {
             lootFound['plotsProcessed']++;
             lootFound['loot'] = lootArray;
             lootFound['plotState'] = lootFound['plotState'] || await this.props.plotService.getPlotState(eventUpdate.returnValues['plotId']);
-            console.log("NEW LOOT", lootFound);
         } else {
-            eventUpdate.returnValues['plotState'] = await this.props.plotService.getPlotState(eventUpdate.returnValues['plotId']);
             lootFound = eventUpdate.returnValues;
+            lootFound['plotState'] = await this.props.plotService.getPlotState(eventUpdate.returnValues['plotId']);
             lootFound['blocksProcessed'] = (Number(lootFound['offsetTo']) - Number(lootFound['offsetFrom']));
             lootFound['plotsProcessed'] = 1;
         }

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import actionButtonImage from "../../../app/images/noTextGemButton.png";
 import octagonImage from "../../../app/images/octagonOutline.png";
 import {CutEdgesButton} from "./CutEdgesButton";
-import {CANT_MINE, FINISHED, MINING, NEW_PLOT, NO_GEM, NOT_MINING, PROCESSED, STUCK} from "../plotConstants";
+import {CANT_MINE, MINED, MINING, NEW_PLOT, NO_GEM, NOT_MINING, PROCESSED, STUCK} from "../plotConstants";
 import {calculateGemName, calculateGradeType} from "../../../app/services/GemService";
 
 
@@ -292,7 +292,7 @@ const MiningStatus = styled.div`
                         return "green";
                     case STUCK:
                         return "red";
-                    case FINISHED:
+                    case MINED:
                     case PROCESSED:
                         return "#ca86dc";
                     default:
