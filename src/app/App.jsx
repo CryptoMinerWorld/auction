@@ -41,6 +41,7 @@ import SilverGoldService from "./services/SilverGoldService";
 import CountryService from "./services/CountryService";
 import PlotService from "./services/PlotService";
 import LootPopup from "../components/LootPopup";
+import assist from "bnc-assist/src/js";
 
 require('antd/lib/notification/style/css');
 require('antd/lib/modal/style/css');
@@ -116,19 +117,34 @@ class App extends Component {
 
         // @notice loading web3 when component mounts
         let Web3;
+        let web3;
+
+        let bncAssistConfig = {
+            dappId: "e8432341-1602-487b-ba82-c3e2c46fb47d",      // [String] The API key created by step one above
+            networkId: 4  // [Integer] The Ethereum network ID your dapp uses.
+        };
+
+        let assistInstance = assist.init(bncAssistConfig);
+
+        //const network = await web3.eth.net.getNetworkType();
+
         try {
-            Web3 = await getWeb3;
-        } catch (err) {
-            return;
+            await assistInstance.onboard();
+            try {
+                Web3 = await getWeb3;
+            } catch (err) {
+                return;
+            }
+            web3 = Web3.web3;
+        }
+        catch(e) {
+            console.log(e.message);
         }
 
-        const {web3} = Web3;
-        const network = await web3.eth.net.getNetworkType();
 
-
-        if (network !== process.env.REACT_APP_NETWORK_TYPE) {
-            this.setState({wrongNetwork: true})
-        }
+        // if (network !== process.env.REACT_APP_NETWORK_TYPE) {
+        //     this.setState({wrongNetwork: true})
+        // }
 
         const currentAccountId = await web3.eth.getAccounts().then(accounts => accounts[0]);
 
@@ -141,126 +157,126 @@ class App extends Component {
         }
 
         // @notice instantiating auction contract
-        const dutchContract = new web3.eth.Contract(
+        const dutchContract =assistInstance.Contract(new web3.eth.Contract(
           dutchAuctionABI,
           process.env.REACT_APP_DUTCH_AUCTION,
           {
               from: currentAccountId,
           },
-        );
+        ))
 
-        const dutchHelperContract = new web3.eth.Contract(
+        const dutchHelperContract =assistInstance.Contract(new web3.eth.Contract(
           dutchAuctionHelperABI,
           process.env.REACT_APP_DUTCH_AUCTION_HELPER,
           {
               from: currentAccountId,
           },
-        );
+        ))
 
-        const presaleContract = new web3.eth.Contract(presaleABI, process.env.REACT_APP_PRESALE2, {
+        const presaleContract =assistInstance.Contract(new web3.eth.Contract(presaleABI, process.env.REACT_APP_PRESALE2, {
             from: currentAccountId,
-        });
+        }))
 
         // @notice instantiating gem contract
-        const gemsContract = new web3.eth.Contract(gemsABI, process.env.REACT_APP_GEM_ERC721, {
+        const gemsContract =assistInstance.Contract(new web3.eth.Contract(gemsABI, process.env.REACT_APP_GEM_ERC721, {
             from: currentAccountId,
-        });
+        }))
 
-        const theCountrySaleContract = new web3.eth.Contract(
+        const theCountrySaleContract =assistInstance.Contract(new web3.eth.Contract(
           countrySaleABI,
           process.env.REACT_APP_COUNTRY_SALE,
           {
               from: currentAccountId,
           },
-        );
+        ))
 
-        const theCountryContract = new web3.eth.Contract(
+        const theCountryContract =assistInstance.Contract(new web3.eth.Contract(
           countryABI,
           process.env.REACT_APP_COUNTRY_ERC721,
           {
               from: currentAccountId,
           },
-        );
+        ))
 
-        const refPointsTrackerContract = new web3.eth.Contract(
+        const refPointsTrackerContract =assistInstance.Contract(new web3.eth.Contract(
           refPointsTrackerABI,
           process.env.REACT_APP_REF_POINTS_TRACKER,
           {
               from: currentAccountId,
           },
-        );
+        ))
 
-        const goldContract = new web3.eth.Contract(
+        const goldContract =assistInstance.Contract(new web3.eth.Contract(
           goldABI,
           process.env.REACT_APP_GOLD_ERC721,
           {
               from: currentAccountId,
           },
-        );
+        ))
 
-        const silverContract = new web3.eth.Contract(
+        const silverContract =assistInstance.Contract(new web3.eth.Contract(
           silverABI,
           process.env.REACT_APP_SILVER_ERC721,
           {
               from: currentAccountId,
           },
-        );
+        ))
 
-        const workshopContract = new web3.eth.Contract(
+        const workshopContract =assistInstance.Contract(new web3.eth.Contract(
           workshopABI,
           process.env.REACT_APP_WORKSHOP,
           {
               from: currentAccountId,
           },
-        );
+        ))
 
-        const silverSaleContract = new web3.eth.Contract(
+        const silverSaleContract =assistInstance.Contract(new web3.eth.Contract(
           silverSaleABI,
           process.env.REACT_APP_SILVER_SALE,
           {
               from: currentAccountId,
           },
-        );
+        ))
 
-        const silverCouponsContract = new web3.eth.Contract(
+        const silverCouponsContract =assistInstance.Contract(new web3.eth.Contract(
           silverCouponsABI,
           process.env.REACT_APP_SILVER_COUPONS,
           {
               from: currentAccountId,
           },
-        );
+        ))
 
-        const plotSaleContract = new web3.eth.Contract(
+        const plotSaleContract = assistInstance.Contract(new web3.eth.Contract(
           plotSaleABI,
           process.env.REACT_APP_PLOT_SALE,
           {
               from: currentAccountId,
           },
-        );
+        ))
 
-        const plotContract = new web3.eth.Contract(
+        const plotContract =assistInstance.Contract(new web3.eth.Contract(
           plotABI,
           process.env.REACT_APP_PLOT_ERC721,
           {
               from: currentAccountId,
           },
-        );
+        ))
 
-        const minerContract = new web3.eth.Contract(
+        const minerContract =assistInstance.Contract(new web3.eth.Contract(
           minerABI,
           process.env.REACT_APP_MINER,
           {
               from: currentAccountId,
           },
-        );
+        ))
 
-        const artifactContract = new web3.eth.Contract(
+        const artifactContract =assistInstance.Contract(new web3.eth.Contract(
           artifactABI,
           process.env.REACT_APP_ARTIFACT_ERC20,
           {
               from: currentAccountId,
           },
-        );
+        ))
 
         //const silverCouponsContract = {};
 
