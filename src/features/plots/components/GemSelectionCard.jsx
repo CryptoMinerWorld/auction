@@ -30,7 +30,7 @@ class GemSelectionCard extends Component {
         const {auction, available} = this.props;
 
         return (
-          <Tilt className="Tilt" options={{max: 35, scale: 1.02}} style={{cursor: "pointer", opacity: available ? "1" : "0.5"}}>
+          <Tilt className="Tilt gem-selection-card" options={{max: 35, scale: 1.02}} style={{cursor: "pointer", opacity: available ? "1" : "0.5"}}>
               <div
                 onClick={this.props.onClick}
                 className="bg-off-black shadow-3 white relative"

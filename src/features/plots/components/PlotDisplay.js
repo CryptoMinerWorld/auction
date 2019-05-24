@@ -34,6 +34,7 @@ const select = store => {
         gems: store.dashboard.userGems,
         gemMiningIds: store.plots.gemMinesId,
         plotService: store.app.plotServiceInstance,
+        currentAccount: store.auth.currentUserId,
     }
 }
 
@@ -253,9 +254,8 @@ class PlotDisplay extends Component {
                 break;
             case "stop":
                 this.props.handleReleaseGem(plot, () => {
-                    this.setState({showSidebarPopup: false});
                     this.props.handleGetUserPlots();
-                });
+                }, () => this.setState({showSidebarPopup: false}));
                 break;
             case "upgrade":
         }
@@ -307,8 +307,10 @@ class PlotDisplay extends Component {
         //console.log("State: ", this.state);
         //console.log("Props: ", this.props);
         const {sortOption, sortOptionDirection, tierFilterOptions, plotFilterOptions, filteredPlots, plotSelected, sliderIndex} = this.state;
-        const {handleBindGem, plots, gems, handleGetUserPlots} = this.props;
+        const {handleBindGem, plots, gems, handleGetUserPlots, currentAccount} = this.props;
         const startStopButton = {}
+
+        const isOwner = filteredPlots && (filteredPlots.length > 0) && filteredPlots[0].owner === currentAccount;
 
         return (
           <div style={{
@@ -323,11 +325,14 @@ class PlotDisplay extends Component {
                           initialSlide={sliderIndex}
                     //beforeChange = {(current, next) => this.setState({ sliderIndex: next })}
                           afterChange={(index) => this.setState({sliderIndex: index})}
+                          filteredPlots={filteredPlots}
                   >
-                      {filteredPlots.map(plot => {
+                      {filteredPlots.map((plot, index) => {
                             const plotAction = this.calculateAllowedPlotAction(plot);
                             return (
+                              <div key={plot.id} data-index={index}>
                               <PlotBarContainer key={plot.id}
+                                                data-index={plot.id}
                                                 plot={plot}
                                                 selected={plotSelected && plotSelected.id === plot.id}
                                                 //clipPath={PlotDisplay.generateRandomClipPath()}
@@ -339,21 +344,24 @@ class PlotDisplay extends Component {
                                   <div style={miningStatus}>{plot.currentPercentage} Blocks</div>
                                   <PlotBar plot={plot} onGemClick={(e) => {
                                       e.stopPropagation();
+                                      if (!isOwner) return;
                                       this.setState({plotSelected: plot}, () =>
                                       this.showSidebarPopup("gems-selected"));
                                   }}/>
-                                  {plot.miningState === NO_GEM || plot.miningState === NEW_PLOT || plot.miningState === MINED ||
+                                  {isOwner &&
+                                  (plot.miningState === NO_GEM || plot.miningState === NEW_PLOT || plot.miningState === MINED ||
                                   plot.miningState === MINING ? <PlotActionButton
-                                    plot={plot}
-                                    inactive={plotSelected && plot.id !== plotSelected.id}
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        this.setState({plotSelected: plot}, () =>
-                                        this.handleActionButtonClick(plotAction, plot));
-                                    }}
-                                  >
-                                      {plotAction.toUpperCase()}
-                                  </PlotActionButton> :
+                                      plot={plot}
+                                      inactive={plotSelected && plot.id !== plotSelected.id}
+                                      onClick={(e) => {
+                                          e.stopPropagation();
+                                          if (!isOwner) return;
+                                          this.setState({plotSelected: plot}, () =>
+                                            this.handleActionButtonClick(plotAction, plot));
+                                      }}
+                                    >
+                                        {plotAction.toUpperCase()}
+                                    </PlotActionButton> :
                                     (plot.miningState === STUCK ? <a href={`/gem/${plot.gemMines.id}`}>
                                           <PlotActionButton
                                             plot={plot}
@@ -361,9 +369,12 @@ class PlotDisplay extends Component {
                                           >
                                               {plotAction.toUpperCase()}
                                           </PlotActionButton>
-                                      </a>:
-                                    <div style={{height: "32px"}}/>)}
+                                      </a> :
+                                      <div style={{height: "32px"}}/>))
+                                  }
+
                               </PlotBarContainer>
+                              </div>
                             )
                         }
                       )}
@@ -420,6 +431,11 @@ class PlotDisplay extends Component {
               />
           </div>
         );
+    }
+
+    verifyOwnership = () => {
+        console.log('verify ownership: ', this.props.currentAccount, this.props.userId);
+        return this.props.currentAccount && this.props.currentAccount === this.props.userId;
     }
 }
 

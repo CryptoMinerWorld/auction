@@ -1,5 +1,5 @@
 import {
-    BINDING_GEM,
+    BINDING_GEM, GEM_BINDING,
     GEM_CHANGE_LOCK_STATE,
     MINED,
     MINING,
@@ -28,10 +28,16 @@ export const bindGem = (plot, gem, updatePlotCallback, transactionStartCallback)
     console.log(`BIND GEM ${gem.id} to PLOT ${plot.id}`);
     const currentUser = getState().auth.currentUserId;
     const initialMiningState = plot.miningState;
+    const web3 = getState().app.web3;
     const result = getState().app.plotServiceInstance.bindGem(plot.id, gem.id, currentUser)
       .on('transactionHash', (hash) => {
           transactionStartCallback();
-          //updatePlotCallback({...plot, miningState: BINDING_GEM});
+          dispatch({
+              type: GEM_BINDING,
+              payload: {gemId: gem.id, state: 1}
+          })
+
+          //web3.eth.getBlock("pending").then((block) => console.log("PENDING:", block));
       })
       .on('receipt', async (receipt) => {
           console.log("BIND RECEIPT:", receipt);
@@ -39,7 +45,12 @@ export const bindGem = (plot, gem, updatePlotCallback, transactionStartCallback)
           // plot.currentPercentage;
           //const bound = !!receipt.events.Bound;
           //let newMiningState;
+          dispatch({
+              type: GEM_BINDING,
+              payload: {gemId: gem.id, state: 1}
+          })
           updatePlotCallback();
+
           // if (!bound) {
           //     newMiningState = NO_GEM;
           //     dispatch({
@@ -74,14 +85,21 @@ export const bindGem = (plot, gem, updatePlotCallback, transactionStartCallback)
           // }
       })
       .on('error', (err) => {
-          updatePlotCallback({...plot, miningState: initialMiningState});
+          dispatch({
+              type: GEM_BINDING,
+              payload: {gemId: gem.id, state: 1}
+          });
+          updatePlotCallback();
       });
 }
 
-export const releaseGem = (plot, updatePlotCallback) => async (dispatch, getState) => {
+export const releaseGem = (plot, updatePlotCallback, transactionStartCallback) => async (dispatch, getState) => {
     console.log(`RELEASE GEM ON PLOT ${plot.id}`);
+    const currentUser = getState().auth.currentUserId;
+    const web3 = getState().app.web3;
     const result = getState().app.plotServiceInstance.releaseGem(plot.id)
       .on('transactionHash', (hash) => {
+          transactionStartCallback();
           //updatePlotCallback({...plot, miningState: UNBINDING_GEM});
       })
       .on('receipt', async (receipt) => {
@@ -113,7 +131,7 @@ export const releaseGem = (plot, updatePlotCallback) => async (dispatch, getStat
           // }
       })
       .on('error', (err) => {
-          updatePlotCallback({...plot});
+          updatePlotCallback();
       });
 }
 

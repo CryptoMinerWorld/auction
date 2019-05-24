@@ -9,27 +9,14 @@ import {sale} from '../features/sale/saleReducers';
 
 import {
     CONTRACTS_ADDED,
-    AUCTION_SERVICE_ADDED,
     CLEAR_ERROR,
-    COUNTRY_CONTRACT_ADDED,
-    COUNTRY_SALE_ADDED,
-    CURRENT_ACCOUNT_ADDED,
-    DUTCH_CONTRACT_ADDED, DUTCH_HELPER_CONTRACT_ADDED,
     FETCH_DATA_BEGUN,
     FETCH_DATA_FAILED,
     FETCH_DATA_SUCCEEDED,
-    GEM_CONTRACT_ADDED, GEM_SERVICE_ADDED,
-    GOLD_CONTRACT_ADDED,
     MODAL_GONE,
     MODAL_VISIBLE,
-    PRESALE_CONTRACT_ADDED,
-    REF_POINTS_TRACKER_CONTRACT_ADDED,
     RELEASE_CONFETTI,
     SET_ERROR,
-    SILVER_CONTRACT_ADDED, SILVER_GOLD_SERVICE_ADDED, SILVER_SALE_CONTRACT_ADDED,
-    WEB3_ADDED,
-    WORKSHOP_CONTRACT_ADDED,
-    PLOT_SERVICE_ADDED,
 } from './reduxConstants';
 import {plots} from "../features/plots/plotReducer";
 import {plotSale} from "../features/plotsale/plotSaleReducer";
@@ -45,44 +32,44 @@ const appReducer = (state = initialState, action) => ({
 
     [CONTRACTS_ADDED]: {...state, ...action.payload},
 
-    [WEB3_ADDED]: {...state, web3: action.payload},
-    [GEM_CONTRACT_ADDED]: {...state, gemsContractInstance: action.payload},
-    [DUTCH_CONTRACT_ADDED]: {...state, dutchContractInstance: action.payload},
-    [DUTCH_HELPER_CONTRACT_ADDED]: {...state, dutchHelperContractInstance: action.payload},
-    [GEM_SERVICE_ADDED]: {...state, gemServiceInstance: action.payload},
-    [AUCTION_SERVICE_ADDED]: {...state, auctionServiceInstance: action.payload},
-    [SILVER_GOLD_SERVICE_ADDED]: {...state, silverGoldServiceInstance: action.payload},
-    [PLOT_SERVICE_ADDED]: {...state, plotServiceInstance: action.payload},
+    // [WEB3_ADDED]: {...state, web3: action.payload},
+    // [GEM_CONTRACT_ADDED]: {...state, gemsContractInstance: action.payload},
+    // [DUTCH_CONTRACT_ADDED]: {...state, dutchContractInstance: action.payload},
+    // [DUTCH_HELPER_CONTRACT_ADDED]: {...state, dutchHelperContractInstance: action.payload},
+    // [GEM_SERVICE_ADDED]: {...state, gemServiceInstance: action.payload},
+    // [AUCTION_SERVICE_ADDED]: {...state, auctionServiceInstance: action.payload},
+    // [SILVER_GOLD_SERVICE_ADDED]: {...state, silverGoldServiceInstance: action.payload},
+    // [PLOT_SERVICE_ADDED]: {...state, plotServiceInstance: action.payload},
     [FETCH_DATA_BEGUN]: {...state, loading: true},
     [FETCH_DATA_FAILED]: {...state, error: action.payload, loading: false},
     [FETCH_DATA_SUCCEEDED]: {...state, loading: false},
-    [CURRENT_ACCOUNT_ADDED]: {...state, currentAccount: action.payload},
-    [COUNTRY_CONTRACT_ADDED]: {...state, countryContractInstance: action.payload},
-    [COUNTRY_SALE_ADDED]: {...state, countrySaleInstance: action.payload},
-    [PRESALE_CONTRACT_ADDED]: {
-        ...state,
-        presaleContractInstance: action.payload,
-    },
-    [REF_POINTS_TRACKER_CONTRACT_ADDED]: {
-        ...state,
-        refPointsTrackerContractInstance: action.payload,
-    },
-    [SILVER_CONTRACT_ADDED]: {
-        ...state,
-        silverContractInstance: action.payload,
-    },
-    [GOLD_CONTRACT_ADDED]: {
-        ...state,
-        goldContractInstance: action.payload,
-    },
-    [WORKSHOP_CONTRACT_ADDED]: {
-        ...state,
-        workshopContractInstance: action.payload,
-    },
-    [SILVER_SALE_CONTRACT_ADDED]: {
-        ...state,
-        silverSaleContractInstance: action.payload,
-    },
+    // [CURRENT_ACCOUNT_ADDED]: {...state, currentAccount: action.payload},
+    // [COUNTRY_CONTRACT_ADDED]: {...state, countryContractInstance: action.payload},
+    // [COUNTRY_SALE_ADDED]: {...state, countrySaleInstance: action.payload},
+    // [PRESALE_CONTRACT_ADDED]: {
+    //     ...state,
+    //     presaleContractInstance: action.payload,
+    // },
+    // [REF_POINTS_TRACKER_CONTRACT_ADDED]: {
+    //     ...state,
+    //     refPointsTrackerContractInstance: action.payload,
+    // },
+    // [SILVER_CONTRACT_ADDED]: {
+    //     ...state,
+    //     silverContractInstance: action.payload,
+    // },
+    // [GOLD_CONTRACT_ADDED]: {
+    //     ...state,
+    //     goldContractInstance: action.payload,
+    // },
+    // [WORKSHOP_CONTRACT_ADDED]: {
+    //     ...state,
+    //     workshopContractInstance: action.payload,
+    // },
+    // [SILVER_SALE_CONTRACT_ADDED]: {
+    //     ...state,
+    //     silverSaleContractInstance: action.payload,
+    // },
     [MODAL_VISIBLE]: {
         ...state,
         modalVisible: true,

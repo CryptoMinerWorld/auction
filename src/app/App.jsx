@@ -33,6 +33,7 @@ import SilverSale from './ABI/SilverSale';
 import SilverCoupons from './ABI/SilverCoupons';
 import PlotSale from './ABI/PlotSale';
 import Plot from './ABI/PlotERC721';
+import Artifact from './ABI/ArtifactERC20';
 import Miner from './ABI/Miner';
 import GemService from "./services/GemService";
 import AuctionService from "./services/AuctionService";
@@ -73,6 +74,7 @@ const silverCouponsABI = SilverCoupons.abi;
 const plotSaleABI = PlotSale.abi;
 const plotABI = Plot.abi;
 const minerABI = Miner.abi;
+const artifactABI = Artifact.abi;
 
 const StickyHeader = styled.div`
   position: -webkit-sticky; /* Safari */
@@ -119,17 +121,16 @@ class App extends Component {
         } catch (err) {
             return;
         }
-        console.log('WEB3', Web3);
+
         const {web3} = Web3;
         const network = await web3.eth.net.getNetworkType();
-        console.log(3333333333, network);
-        console.log('WEB3 provider', web3.currentProvider.isMetaMask);
+
+
         if (network !== process.env.REACT_APP_NETWORK_TYPE) {
             this.setState({wrongNetwork: true})
         }
 
         const currentAccountId = await web3.eth.getAccounts().then(accounts => accounts[0]);
-        console.log('CURRENT ACCAOUNT ID:', currentAccountId);
 
         // this ensures that the wallet in metamask is always the wallet in the currentAccountId
         // however this is a problem because it means that you cant view someone else profile page
@@ -253,6 +254,14 @@ class App extends Component {
           },
         );
 
+        const artifactContract = new web3.eth.Contract(
+          artifactABI,
+          process.env.REACT_APP_ARTIFACT_ERC20,
+          {
+              from: currentAccountId,
+          },
+        );
+
         //const silverCouponsContract = {};
 
         Promise.all([
@@ -271,7 +280,8 @@ class App extends Component {
             silverCouponsContract,
             plotContract,
             plotSaleContract,
-            minerContract
+            minerContract,
+            artifactContract
         ])
           .then(
             ([
@@ -290,7 +300,8 @@ class App extends Component {
                  silverCouponsContract,
                  plotContract,
                  plotSaleContract,
-                 minerContract
+                 minerContract,
+              artifactContract
              ]) => {
                 client.writeData({
                     data: {
@@ -319,13 +330,12 @@ class App extends Component {
                   workshopContract,
                   silverSaleContract,
                   silverCouponsContract,
+                  artifactContract,
                   plotService,
                   gemService,
                   auctionService,
                   silverGoldService,
                   countryService,
-                  //buySilverContract,
-                  //buyGoldContract
                 );
             },
           )
@@ -333,20 +343,18 @@ class App extends Component {
               handleSetError(error);
           });
     }
-    //
-    // //todo: uncomment loot
+
     componentDidUpdate(prevProps) {
 
         if (this.props.plotService && this.props.currentUserId && (this.props.plotService !== prevProps.plotService || this.props.currentUserId !== prevProps.currentUserId)) {
             const showLootClosure = this.showLoot;
             const currentUserId = this.props.currentUserId;
-            console.warn(">>>>>>>>> adding update event listener <<<<<<<<<");
                 this.props.plotService.minerContract.events.Updated({
                     filter: {'_by': currentUserId},
                     fromBlock: 'latest'
                 })
                   .on('data', function (event) {
-                      console.log('DATA EVENT:', event); // same results as the optional callback above
+                      //console.log('DATA EVENT:', event);
                       if (event.returnValues['_by'] !== currentUserId) {
                           console.error("_by address is different from current user address.", event.returnValues['_by'], currentUserId);
                       }
@@ -356,11 +364,10 @@ class App extends Component {
                       }
                   })
                   .on('changed', function (event) {
-                      console.log('CHANGED EVENT:', event);
-                      // remove event from local database
                   })
                   .on('error', console.error);
         }
+
     }
 
     clearLoot = () => {
@@ -370,7 +377,7 @@ class App extends Component {
     showLoot = async (eventUpdate) => {
         let lootFound = this.state.lootFound;
         if (lootFound) {
-            console.log("LOOT IS ALREADY NOT EMPTY", lootFound);
+            //console.log("LOOT IS ALREADY NOT EMPTY", lootFound);
             let lootArray = lootFound['loot'] || [0, 0, 0, 0, 0, 0, 0, 0, 0]; //9 types of loot
             const newLootFound = eventUpdate.returnValues;
             const newLootArray = newLootFound['loot'];

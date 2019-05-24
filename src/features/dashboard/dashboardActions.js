@@ -7,7 +7,7 @@ import {
     PAGINATE,
     RERENDER_SORT_BOX,
     SCROLL_GEMS,
-    SORT_BOX_RERENDERED,
+    SORT_BOX_RERENDERED, USER_ARTIFACTS_RETRIEVED,
     USER_GEMS_RETRIEVED,
     WANT_TO_SEE_ALL_GEMS,
 } from './dashboardConstants';
@@ -50,6 +50,10 @@ export const getUserGems = ownerId => async (dispatch, getState) => {
     }
 };
 
+export const getUserArtifacts = userId => async (dispatch, getState) => {
+    const artifactsBalance = await getState().app.artifactContractInstance.methods.balanceOf(userId).call();
+    dispatch({type: USER_ARTIFACTS_RETRIEVED, payload: {userArtifacts: artifactsBalance}});
+}
 
 export const getUserCountries = userId => async (dispatch, getState) => {
     const countryService = getState().app.countryServiceInstance;

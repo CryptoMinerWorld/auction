@@ -9,7 +9,7 @@ import {
     FETCH_USER_GEMS_SUCCEEDED,
     ONLY_WANT_TO_SEE_GEMS_IN_AUCTIONS,
     PAGINATE,
-    SCROLL_GEMS,
+    SCROLL_GEMS, USER_ARTIFACTS_RETRIEVED,
     USER_DETAILS_RETRIEVED,
     USER_GEMS_RETRIEVED,
     USER_HAS_NO_GEMS_IN_WORKSHOP,
@@ -26,6 +26,7 @@ export default function dashboardReducer(
       gemsLoading: true,
       gemsLoadingError: false,
       userGems: [],
+      userArtifacts: null,
       userGemsPage: null,
       userGemsFiltered: [],
       sortBox: true,
@@ -49,6 +50,10 @@ export default function dashboardReducer(
 
     if (action.type === FETCH_USER_COUNTRIES) {
         return {...state, userCountries: action.payload.userCountries};
+    }
+
+    if (action.type === USER_ARTIFACTS_RETRIEVED) {
+        return {...state, userArtifacts: action.payload.userArtifacts};
     }
 
     if (action.type === NO_USER_EXISTS) {
@@ -188,7 +193,8 @@ export default function dashboardReducer(
         return {
             ...state,
             userGems: state.userGems.filter(gem => gem.id !== action.payload),
-            userGemsPage: state.userGemsPage.filter(gem => gem.id !== Number(action.payload)),
+            userGemsFiltered: state.userGems.filter(gem => gem.id !== action.payload),
+            hasMoreGems: state.userGems.length - 1 > pageSize,
         };
     }
 

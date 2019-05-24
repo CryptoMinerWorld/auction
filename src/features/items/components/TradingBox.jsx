@@ -29,6 +29,7 @@ const ColourButton = styled.button`
   color: white;
   text-transform: uppercase;
   cursor: pointer;
+  opacity: ${props => props.disabled ? "0.5" : "1"};
 `;
 
 const TopHighLight = styled.div`
@@ -269,7 +270,7 @@ class TradingBox extends PureComponent {
                                                 && duration
                                                 && duration < 1000
                                                 && startPrice
-                                                && startPrice > endPrice
+                                                && startPrice >= endPrice
                                                 && startPrice < 1001
                                                 && endPrice > 0
                                               )

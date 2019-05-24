@@ -8,6 +8,11 @@
   width: 75px;
 }
 
+
+.gem-selection-card:last-child {
+  margin-bottom: 200px;
+}
+
 @-webkit-keyframes spin {
   to {
     border-top-color: var(--danger);

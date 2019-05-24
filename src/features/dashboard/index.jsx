@@ -12,7 +12,7 @@ import Icon from 'antd/lib/icon';
 import {setError} from '../../app/appActions';
 import {
     addGemsToDashboard,
-    filterUserGemsOnPageLoad,
+    filterUserGemsOnPageLoad, getUserArtifacts,
     getUserCountries,
     getUserCountriesNumber,
     getUserDetails,
@@ -99,11 +99,11 @@ const select = store => {
         userPlots: store.plots.userPlots,
         userGems: store.dashboard.userGems,
         totalGems: store.dashboard && store.dashboard.userGems && store.dashboard.userGems.length,
-        userGemsFiltered: (store.dashboard.userGemsFiltered && store.dashboard.userGemsFiltered.length > 0) ?
+        userGemsFiltered: (store.dashboard.userGemsFiltered && store.dashboard.userGemsFiltered.length >= 0) ?
           store.dashboard.userGemsFiltered :
           store.dashboard.userGems,
         userGemsScrolled: store.dashboard.userGemsScrolled ? store.dashboard.userGemsScrolled :
-          (store.dashboard.userGemsFiltered && store.dashboard.userGemsFiltered.length > 0) ?
+          (store.dashboard.userGemsFiltered && store.dashboard.userGemsFiltered.length >= 0) ?
             store.dashboard.userGemsFiltered.slice(0, store.dashboard.end) :
             store.dashboard.userGems.slice(0, store.dashboard.end),
         hasMoreGems: store.dashboard.hasMoreGems,
@@ -114,6 +114,7 @@ const select = store => {
         userExists: store.auth.existingUser,
         userBalance: store.sale.balance,
         userCountries: store.dashboard.userCountries,
+        userArtifacts: store.dashboard.userArtifacts,
         sortBox: store.dashboard.sortBox,
         currentUserId: store.auth.currentUserId,
         web3: store.app.web3,
@@ -128,6 +129,7 @@ const select = store => {
         silverGoldService: store.app.silverGoldServiceInstance,
         countryService: store.app.countryServiceInstance,
         plotService: store.app.plotServiceInstance,
+        artifactContract: store.app.artifactContractInstance,
     };
     //console.log('dashboard store: ', res);
     return res;
@@ -190,7 +192,7 @@ class Dashboard extends Component {
 
         const {
             preSaleContract, match, data, handleGetUserBalance, handleGetUserGems, gemService, countryService, plotService, handleGetUserPlots,
-            auctionService, silverGoldService, userExists, currentUserId, currentUser, handleShowSignInBox, handleGetUserCountries
+            auctionService, silverGoldService, userExists, currentUserId, currentUser, handleShowSignInBox, handleGetUserCountries, handleGetUserArtifacts, artifactContract
         } = this.props;
 
         if (gemService && auctionService && match && match.params && match.params.userId) {
@@ -199,6 +201,10 @@ class Dashboard extends Component {
 
         if (countryService && match.params.userId) {
             handleGetUserCountries(match.params.userId);
+        }
+
+        if (artifactContract && match.params.userId) {
+            handleGetUserArtifacts(match.params.userId);
         }
 
         // if (preSaleContract && preSaleContract.methods && match.params.userId !== 'false') {
@@ -253,7 +259,7 @@ class Dashboard extends Component {
         const {
             web3, preSaleContract, match,
             handleGetUserGems, gemService, auctionService, silverGoldService, countryService, plotService, handleGetUserPlots, handleGetUserCountries,
-            handleGetUserBalance, currentUserId, userExists, currentUser,
+            handleGetUserBalance, currentUserId, userExists, currentUser, artifactContract, handleGetUserArtifacts,
             handleShowSignInBox
         } = this.props;
 
@@ -308,6 +314,12 @@ class Dashboard extends Component {
         if ((countryService !== prevProps.countryService) || match.params.userId !== prevProps.match.params.userId) {
             handleGetUserCountries(match.params.userId);
         }
+
+
+        if (artifactContract !== prevProps.artifactContract || (match.params.userId !== prevProps.match.params.userId)) {
+            handleGetUserArtifacts(match.params.userId);
+        }
+
     }
 
     populateDashboard = () => {
@@ -359,8 +371,11 @@ class Dashboard extends Component {
             userBalance,
             handleUseCoupon,
             userExists,
-            userCountries
+            userCountries,
+          userArtifacts
         } = this.props;
+
+        console.log("USER ARTIFACTS:", userArtifacts);
 
         const {
             plots, tab, redirectPath, alreadyRedirected, dashboardUser
@@ -453,7 +468,7 @@ class Dashboard extends Component {
                     disabled={false}
                     key="1"
                   >
-                      <PlotDashboard goToGemWorkshop={() => this.setState({tab: 2})}/>
+                      <PlotDashboard userId={match.params.userId} goToGemWorkshop={() => this.setState({tab: 2})}/>
                   </TabPane>
                   <TabPane
                     tab={(
@@ -491,7 +506,8 @@ class Dashboard extends Component {
                                   >
                                       <CardBox>
                                           {loading && [1, 2, 3, 4, 5, 6].map(num => <LoadingCard key={num}/>)}
-                                          {!loading && this.props.userGemsScrolled && this.props.userGemsScrolled.length > 0 ? (
+                                          {!loading && this.props.userGemsScrolled && this.props.userGemsScrolled.length === 0 && <p>No matching gems found</p>}
+                                          {!loading && this.props.userGemsScrolled && this.props.userGemsScrolled.length >= 0 ? (
                                               this.props.userGemsScrolled.map(userGem => {
                                                   //console.log('USER GEM: ', userGem);
                                                   return (
@@ -551,7 +567,7 @@ class Dashboard extends Component {
                     tab={(
                       <span className="h-100 flex aic white o-50">
                 <img src={Artifact} alt="" className="h2 w-auto pr2"/>
-0 Artifacts
+                          {userArtifacts || '..'} Artifacts
               </span>
                     )}
                     disabled
@@ -574,6 +590,7 @@ class Dashboard extends Component {
 }
 
 const actions = {
+    handleGetUserArtifacts: getUserArtifacts,
     handleGetUserPlots: getUserPlots,
     handleGetUserGems: getUserGems,
     handleGetUserDetails: getUserDetails,

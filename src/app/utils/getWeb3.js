@@ -9,15 +9,7 @@ const getWeb3 = new Promise((resolve, reject) => {
     if (ethereum) {
       web3 = new Web3(ethereum);
       try {
-        // Request account access if needed
         await ethereum.enable();
-        //console.log('ENABLED LOG IN', enable);
-        // const web3 = new Web3(process.env.REACT_APP_INFURA_URL);
-          // if (web3) {
-          //     resolve({web3});
-
-          //console.log('resolve INFURA', web3);
-          // Acccounts now exposed
         results = {
           web3
         };
