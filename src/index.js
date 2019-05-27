@@ -12,9 +12,7 @@ import { getCurrentUser } from './features/auth/authActions';
 const client = new ApolloClient({
   // uri: process.env.NODE_ENV === 'development' && 'http://localhost:4000',
 
-  uri: process.env.NODE_ENV === 'development'
-    ? 'http://localhost:4000'
-    : 'https://cryptominerworld-7afd6.appspot.com/',
+  uri: 'https://cryptominerworld-7afd6.appspot.com/',
 
   clientState: {
     defaults: {
@@ -36,11 +34,11 @@ const client = new ApolloClient({
 
 function noop() {}
 
-if (process.env.NODE_ENV !== 'development') {
-    console.log = noop;
-    console.warn = noop;
-    console.error = noop;
-}
+// if (process.env.NODE_ENV !== 'development') {
+    //console.log = noop;
+    //console.warn = noop;
+    //console.error = noop;
+// }
 
 // @notice these are all the actions fired when the app starts up
 store.dispatch(getCurrentUser());
