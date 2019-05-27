@@ -119,7 +119,7 @@ class App extends Component {
         let Web3;
         let web3;
 
-        let bncAssistConfig = {
+        var bncAssistConfig = {
             dappId: "e8432341-1602-487b-ba82-c3e2c46fb47d",      // [String] The API key created by step one above
             networkId: 4  // [Integer] The Ethereum network ID your dapp uses.
         };
@@ -140,7 +140,6 @@ class App extends Component {
         catch(e) {
             console.log(e.message);
         }
-
 
         // if (network !== process.env.REACT_APP_NETWORK_TYPE) {
         //     this.setState({wrongNetwork: true})
