@@ -252,8 +252,6 @@ export class LootPopup extends Component {
           </div>
         );
     }
-
-
 }
 
 export default LootPopup;

@@ -74,7 +74,7 @@ const Sidebar = styled.div`
     display: flex;
     background-color: #383F45;
     font-size: 14px;
-    padding: 5px;
+    padding: 5px 5px 5px 0;
     position: relative;
     color: white
 `;

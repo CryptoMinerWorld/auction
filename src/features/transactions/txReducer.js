@@ -1,4 +1,4 @@
-import {TX_COMPLETED, TX_CONFIRMATIONS, TX_ERROR, TX_STARTED,} from './txConstants';
+import {EVENT_HISTORY_RECEIVED, TX_COMPLETED, TX_CONFIRMATIONS, TX_ERROR, TX_STARTED,} from './txConstants';
 
 export default (state = {}, action) => {
     // if (action.type === RESOLVE_PENDING_TRANSACTIONS) {
@@ -7,10 +7,6 @@ export default (state = {}, action) => {
 
     if (!state.transactions) {
         state.transactions = [];
-    }
-
-    if (!(action.payload && action.payload.hash)) {
-        return {...state};
     }
 
     console.warn('TX REDUCER:::::::::::::');
@@ -81,5 +77,12 @@ export default (state = {}, action) => {
         return {...state};
     }
 
+    if (action.type === EVENT_HISTORY_RECEIVED) {
+        return {
+          ...state,
+            transactionHistory: action.payload.transactionHistory,
+            pendingTransactions: action.payload.pendingTransactions
+        }
+    }
     return state;
 };

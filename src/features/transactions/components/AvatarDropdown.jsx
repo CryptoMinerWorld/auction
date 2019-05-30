@@ -26,121 +26,150 @@ const geodeTypes = {
     '2': 'Goldish silver geode'
 }
 
-const generateMenuItemForTx = tx => {
-    switch (tx.txMethod) {
-        case 'SILVER_SALE':
-            switch (tx.status) {
-                case 'COMPLETED':
-                    return (
-                      <div>
-                          <p>
-                              Silver received: {tx.receipt.events.Unboxed.returnValues.silver + " "}
-                              {tx.receipt.events.Unboxed.returnValues.gold > 0 ?
-                                "Gold received:" + tx.receipt.events.Unboxed.returnValues.gold : ""}
-                          </p>
-                          <p>
-                              Cost: {tx.ether} ETH {tx.points > 0 ? ', ' + tx.points + 'referral' +
-                            ' points' : ''}
-                          </p>
-                      </div>
-                    );
-                case 'PENDING':
-                    return (
-                      <div>
-                          <p>
-                              Cost: {tx.ether} ETH {tx.points > 0 ? ', ' + tx.points + 'referral' +
-                            ' points' : ''}
-                          </p>
-                      </div>
-                    )
-            }
-            break;
-        case 'GEM_UPGRADE':
-            switch (tx.status) {
-                case 'PENDING':
-                case 'COMPLETED':
-                    return (
-                      <div>
-                          <p>
-                              From: grade {gradeConverter(tx.gem.gradeType)}, level {tx.gem.level}
-                          </p>
-                          <p>
-                              To: grade {gradeConverter(tx.gem.gradeType + tx.gradeUp)},
-                              level {tx.gem.level + tx.levelUp}
-                          </p>
-                          <p>Cost: {tx.cost} {tx.levelUp > 0 ? 'silver' : 'gold'}</p>
-                      </div>
-                    );
-            }
-            break;
-        case 'COUPON_USE':
-            switch (tx.status) {
-                case 'COMPLETED':
-                    return (
-                      <div>
-                          <p>
-                              Received: {geodeTypes[tx.receipt.events.CouponConsumed.returnValues.boxType] + " "}
-                          </p>
-                          <p>
-                              {tx.receipt.events.CouponConsumed.returnValues.gold > 0 ?
-                                "Additional Gold received:" + tx.receipt.events.CouponConsumed.returnValues.gold :
-                                ""}
-                          </p>
-                          <p>
-                              {tx.receipt.events.CouponConsumed.returnValues.silver > 0 ?
-                                "Additional Silver received:" + tx.receipt.events.CouponConsumed.returnValues.silver :
-                                ""}
-                          </p>
-                      </div>
-                    );
-                case 'PENDING':
-                    return (
-                      <div>
-                          <p>
-                              Code: {tx.code}
-                          </p>
-                      </div>
-                    )
-            }
-            break;
-        case 'PLOT_SALE':
-            switch (tx.status) {
-                case 'COMPLETED':
-                    console.log('TX::', tx.receipt);
-                    return (
-                      <div>
-                          <p>
-                          </p>
-                          <p>
-                              Cost: {tx.price} ETH
-                          </p>
-                      </div>
-                    );
-                case 'PENDING':
-                    return (
-                      <div>
-                          <p>
-                              Cost: {tx.price} ETH
-                          </p>
-                      </div>
-                    )
-            }
-            break;
-        default:
+// const generateMenuItemForTx = tx => {
+//     switch (tx.txMethod) {
+//         case 'SILVER_SALE':
+//             switch (tx.status) {
+//                 case 'COMPLETED':
+//                     return (
+//                       <div>
+//                           <p>
+//                               Silver received: {tx.receipt.events.Unboxed.returnValues.silver + " "}
+//                               {tx.receipt.events.Unboxed.returnValues.gold > 0 ?
+//                                 "Gold received:" + tx.receipt.events.Unboxed.returnValues.gold : ""}
+//                           </p>
+//                           <p>
+//                               Cost: {tx.ether} ETH {tx.points > 0 ? ', ' + tx.points + 'referral' +
+//                             ' points' : ''}
+//                           </p>
+//                       </div>
+//                     );
+//                 case 'PENDING':
+//                     return (
+//                       <div>
+//                           <p>
+//                               Cost: {tx.ether} ETH {tx.points > 0 ? ', ' + tx.points + 'referral' +
+//                             ' points' : ''}
+//                           </p>
+//                       </div>
+//                     )
+//             }
+//             break;
+//         case 'GEM_UPGRADE':
+//             switch (tx.status) {
+//                 case 'PENDING':
+//                 case 'COMPLETED':
+//                     return (
+//                       <div>
+//                           <p>
+//                               From: grade {gradeConverter(tx.gem.gradeType)}, level {tx.gem.level}
+//                           </p>
+//                           <p>
+//                               To: grade {gradeConverter(tx.gem.gradeType + tx.gradeUp)},
+//                               level {tx.gem.level + tx.levelUp}
+//                           </p>
+//                           <p>Cost: {tx.cost} {tx.levelUp > 0 ? 'silver' : 'gold'}</p>
+//                       </div>
+//                     );
+//             }
+//             break;
+//         case 'COUPON_USE':
+//             switch (tx.status) {
+//                 case 'COMPLETED':
+//                     return (
+//                       <div>
+//                           <p>
+//                               Received: {geodeTypes[tx.receipt.events.CouponConsumed.returnValues.boxType] + " "}
+//                           </p>
+//                           <p>
+//                               {tx.receipt.events.CouponConsumed.returnValues.gold > 0 ?
+//                                 "Additional Gold received:" + tx.receipt.events.CouponConsumed.returnValues.gold :
+//                                 ""}
+//                           </p>
+//                           <p>
+//                               {tx.receipt.events.CouponConsumed.returnValues.silver > 0 ?
+//                                 "Additional Silver received:" + tx.receipt.events.CouponConsumed.returnValues.silver :
+//                                 ""}
+//                           </p>
+//                       </div>
+//                     );
+//                 case 'PENDING':
+//                     return (
+//                       <div>
+//                           <p>
+//                               Code: {tx.code}
+//                           </p>
+//                       </div>
+//                     )
+//             }
+//             break;
+//         case 'PLOT_SALE':
+//             switch (tx.status) {
+//                 case 'COMPLETED':
+//                     console.log('TX::', tx.receipt);
+//                     return (
+//                       <div>
+//                           <p>
+//                           </p>
+//                           <p>
+//                               Cost: {tx.price} ETH
+//                           </p>
+//                       </div>
+//                     );
+//                 case 'PENDING':
+//                     return (
+//                       <div>
+//                           <p>
+//                               Cost: {tx.price} ETH
+//                           </p>
+//                       </div>
+//                     )
+//             }
+//             break;
+//         default:
+//
+//             break;
+//     }
+// };
 
+
+const generateMenuItemForTx = tx => {
+    switch (tx.event) {
+
+        case 'Updated':
+            return (
+              <div>
+                  <p>Plot {tx.returnValues['plotId']} was mined.</p>
+                  <p>From {tx.returnValues['offsetFrom']} to {tx.returnValues['offsetTo']}</p>
+              </div>
+            );
+        case 'Bound':
+            return (
+              <div>
+                  <p>Gem {tx.returnValues['gemId']} was bound to the plot {tx.returnValues['plotId']}</p>
+              </div>
+            );
+        case 'Released':
+            return (
+              <div>
+                  <p>Gem was released from the Plot {tx.returnValues['plotId']}</p>
+              </div>
+            );
+        default:
             break;
     }
 };
 
-const menu = items => (
-  <Menu>
-      {items.length === 0 ? <Menu.Item>No recent transactions</Menu.Item> : ""}
-      {items.map((tx) => (
+const menu = ({transactionHistory, pendingTransactions}) => (
+  <Menu style={{maxHeight: '500px', overflowY: 'auto'}}>
+      {!transactionHistory || !pendingTransactions || (transactionHistory.length === 0 && pendingTransactions.length === 0)
+      && <Menu.Item>No recent transactions</Menu.Item>}
+      {pendingTransactions && pendingTransactions.map((tx) => (
         tx.hash ?
           <Menu.Item className="flex aic" style={{
-              backgroundColor: (tx.status === 'PENDING' && '#fff9bc') ||
-                (tx.status === 'COMPLETED' && '#e4ffe4') || (tx.status === 'FAILED' && '#ffd9d9')
-          }} key={tx.hash}>
+              backgroundColor: '#fff9bc',
+              borderBottom: "1px solid white"
+          }} key={tx.hash+'pending'}>
               <Badge count={tx.unseen ? 1 : 0}>
                   <a
                     href={`https://${process.env.REACT_APP_NETWORK}.io/tx/${tx.hash}`}
@@ -149,9 +178,32 @@ const menu = items => (
                     rel="noopener noreferrer"
                   >
                       <div style={{paddingRight: '30px'}}>
-                          <p>Description: {tx.description}</p>
+                          <p>Pending</p>
+                          <p>{tx.description}</p>
+                      </div>
+
+                      <Icon type="link" style={{fontSize: '24px', position: 'absolute', top: '20px', right: '0px'}}
+                            className="pointer blue"/>
+                  </a>
+              </Badge>
+          </Menu.Item> : ""
+      ))}
+      {transactionHistory && transactionHistory.map((tx) => (
+        tx.transactionHash ?
+          <Menu.Item className="flex aic" style={{
+              backgroundColor: '#e4ffe4',
+              borderBottom: "1px solid white"
+          }} key={tx.transactionHash+tx.event}>
+              <Badge count={tx.unseen ? 1 : 0}>
+                  <a
+                    href={`https://${process.env.REACT_APP_NETWORK}.io/tx/${tx.transactionHash}`}
+                    key={tx.transactionHash}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                      <div style={{paddingRight: '30px'}}>
+                          <p>Event: {tx.event}</p>
                           {generateMenuItemForTx(tx)}
-                          <p>Status: {tx.status}</p>
                       </div>
 
                       <Icon type="link" style={{fontSize: '24px', position: 'absolute', top: '20px', right: '0px'}}
@@ -191,7 +243,7 @@ class AvatarDropdown extends React.Component {
 
     render() {
 
-        const {user, userImage, userName, upperCaseWalletId, transactions, unseen, handleSetTransactionsSeen} = this.props;
+        const {user, userImage, userName, upperCaseWalletId, transactions, unseen, transactionHistory, pendingTransactions, handleSetTransactionsSeen} = this.props;
 
         console.log('USER RENDER:', user);
 
@@ -207,7 +259,7 @@ class AvatarDropdown extends React.Component {
                   //handleSetTransactionsSeen(unseen);
               }}
             >
-                <Dropdown overlay={menu(transactions)} visible={this.state.visibility}>
+                <Dropdown overlay={menu({transactionHistory, pendingTransactions})} visible={this.state.visibility}>
                     <>
                         <Badge count={unseen}>
                             <Avatar src={user.imageURL} className="dib"/>
@@ -234,6 +286,8 @@ const select = store => {
     return {
         transactions: store.tx.transactions || [],
         unseen: store.tx.transactions ? store.tx.transactions.reduce((acc, curTx) => curTx.unseen ? acc + 1 : acc, 0) : 0,
+        transactionHistory: store.tx.transactionHistory,
+        pendingTransactions: store.tx.pendingTransactions,
         //hash: store.tx.txHash,
         //txConfirmations: store.tx.txConfirmations,
         //txReceipt: store.tx.txReceipt,

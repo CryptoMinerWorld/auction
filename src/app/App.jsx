@@ -9,7 +9,6 @@ import ReactGA from 'react-ga';
 import {ApolloConsumer} from 'react-apollo';
 import notification from 'antd/lib/notification';
 import Modal from 'antd/lib/modal';
-import Button from 'antd/lib/button';
 import ErrorBoundary from '../components/ErrorBoundary';
 import Navbar from '../components/Nav';
 import Footer from '../components/Footer';
@@ -41,7 +40,8 @@ import SilverGoldService from "./services/SilverGoldService";
 import CountryService from "./services/CountryService";
 import PlotService from "./services/PlotService";
 import LootPopup from "../components/LootPopup";
-import assist from "bnc-assist/src/js";
+import assist from 'bnc-assist';
+import {getUpdatedTransactionHistory} from "../features/transactions/txActions";
 
 require('antd/lib/notification/style/css');
 require('antd/lib/modal/style/css');
@@ -116,8 +116,7 @@ class App extends Component {
           .catch(error => handleSetError(error));
 
         // @notice loading web3 when component mounts
-        let Web3;
-        let web3;
+        let Web3, web3;
 
         var bncAssistConfig = {
             dappId: "e8432341-1602-487b-ba82-c3e2c46fb47d",      // [String] The API key created by step one above
@@ -137,7 +136,7 @@ class App extends Component {
             }
             web3 = Web3.web3;
         }
-        catch(e) {
+        catch (e) {
             console.log(e.message);
         }
 
@@ -156,7 +155,7 @@ class App extends Component {
         }
 
         // @notice instantiating auction contract
-        const dutchContract =assistInstance.Contract(new web3.eth.Contract(
+        const dutchContract = assistInstance.Contract(new web3.eth.Contract(
           dutchAuctionABI,
           process.env.REACT_APP_DUTCH_AUCTION,
           {
@@ -164,7 +163,7 @@ class App extends Component {
           },
         ))
 
-        const dutchHelperContract =assistInstance.Contract(new web3.eth.Contract(
+        const dutchHelperContract = assistInstance.Contract(new web3.eth.Contract(
           dutchAuctionHelperABI,
           process.env.REACT_APP_DUTCH_AUCTION_HELPER,
           {
@@ -172,16 +171,16 @@ class App extends Component {
           },
         ))
 
-        const presaleContract =assistInstance.Contract(new web3.eth.Contract(presaleABI, process.env.REACT_APP_PRESALE2, {
+        const presaleContract = assistInstance.Contract(new web3.eth.Contract(presaleABI, process.env.REACT_APP_PRESALE2, {
             from: currentAccountId,
         }))
 
         // @notice instantiating gem contract
-        const gemsContract =assistInstance.Contract(new web3.eth.Contract(gemsABI, process.env.REACT_APP_GEM_ERC721, {
+        const gemsContract = assistInstance.Contract(new web3.eth.Contract(gemsABI, process.env.REACT_APP_GEM_ERC721, {
             from: currentAccountId,
         }))
 
-        const theCountrySaleContract =assistInstance.Contract(new web3.eth.Contract(
+        const theCountrySaleContract = assistInstance.Contract(new web3.eth.Contract(
           countrySaleABI,
           process.env.REACT_APP_COUNTRY_SALE,
           {
@@ -189,7 +188,7 @@ class App extends Component {
           },
         ))
 
-        const theCountryContract =assistInstance.Contract(new web3.eth.Contract(
+        const theCountryContract = assistInstance.Contract(new web3.eth.Contract(
           countryABI,
           process.env.REACT_APP_COUNTRY_ERC721,
           {
@@ -197,7 +196,7 @@ class App extends Component {
           },
         ))
 
-        const refPointsTrackerContract =assistInstance.Contract(new web3.eth.Contract(
+        const refPointsTrackerContract = assistInstance.Contract(new web3.eth.Contract(
           refPointsTrackerABI,
           process.env.REACT_APP_REF_POINTS_TRACKER,
           {
@@ -205,7 +204,7 @@ class App extends Component {
           },
         ))
 
-        const goldContract =assistInstance.Contract(new web3.eth.Contract(
+        const goldContract = assistInstance.Contract(new web3.eth.Contract(
           goldABI,
           process.env.REACT_APP_GOLD_ERC721,
           {
@@ -213,7 +212,7 @@ class App extends Component {
           },
         ))
 
-        const silverContract =assistInstance.Contract(new web3.eth.Contract(
+        const silverContract = assistInstance.Contract(new web3.eth.Contract(
           silverABI,
           process.env.REACT_APP_SILVER_ERC721,
           {
@@ -221,7 +220,7 @@ class App extends Component {
           },
         ))
 
-        const workshopContract =assistInstance.Contract(new web3.eth.Contract(
+        const workshopContract = assistInstance.Contract(new web3.eth.Contract(
           workshopABI,
           process.env.REACT_APP_WORKSHOP,
           {
@@ -229,7 +228,7 @@ class App extends Component {
           },
         ))
 
-        const silverSaleContract =assistInstance.Contract(new web3.eth.Contract(
+        const silverSaleContract = assistInstance.Contract(new web3.eth.Contract(
           silverSaleABI,
           process.env.REACT_APP_SILVER_SALE,
           {
@@ -237,7 +236,7 @@ class App extends Component {
           },
         ))
 
-        const silverCouponsContract =assistInstance.Contract(new web3.eth.Contract(
+        const silverCouponsContract = assistInstance.Contract(new web3.eth.Contract(
           silverCouponsABI,
           process.env.REACT_APP_SILVER_COUPONS,
           {
@@ -253,7 +252,7 @@ class App extends Component {
           },
         ))
 
-        const plotContract =assistInstance.Contract(new web3.eth.Contract(
+        const plotContract = assistInstance.Contract(new web3.eth.Contract(
           plotABI,
           process.env.REACT_APP_PLOT_ERC721,
           {
@@ -261,7 +260,7 @@ class App extends Component {
           },
         ))
 
-        const minerContract =assistInstance.Contract(new web3.eth.Contract(
+        const minerContract = assistInstance.Contract(new web3.eth.Contract(
           minerABI,
           process.env.REACT_APP_MINER,
           {
@@ -269,7 +268,7 @@ class App extends Component {
           },
         ))
 
-        const artifactContract =assistInstance.Contract(new web3.eth.Contract(
+        const artifactContract = assistInstance.Contract(new web3.eth.Contract(
           artifactABI,
           process.env.REACT_APP_ARTIFACT_ERC20,
           {
@@ -316,7 +315,7 @@ class App extends Component {
                  plotContract,
                  plotSaleContract,
                  minerContract,
-              artifactContract
+                 artifactContract
              ]) => {
                 client.writeData({
                     data: {
@@ -364,23 +363,24 @@ class App extends Component {
         if (this.props.plotService && this.props.currentUserId && (this.props.plotService !== prevProps.plotService || this.props.currentUserId !== prevProps.currentUserId)) {
             const showLootClosure = this.showLoot;
             const currentUserId = this.props.currentUserId;
-                this.props.plotService.minerContract.events.Updated({
-                    filter: {'_by': currentUserId},
-                    fromBlock: 'latest'
-                })
-                  .on('data', function (event) {
-                      //console.log('DATA EVENT:', event);
-                      if (event.returnValues['_by'] !== currentUserId) {
-                          console.error("_by address is different from current user address.", event.returnValues['_by'], currentUserId);
-                      }
-                      else {
-                          if (event.returnValues['loot'])
-                              showLootClosure(event);
-                      }
-                  })
-                  .on('changed', function (event) {
-                  })
-                  .on('error', console.error);
+            this.props.plotService.minerContract.events.Updated({
+                filter: {'_by': currentUserId},
+                fromBlock: 'latest'
+            })
+              .on('data', function (event) {
+                  //console.log('DATA EVENT:', event);
+                  if (event.returnValues['_by'] !== currentUserId) {
+                      console.error("_by address is different from current user address.", event.returnValues['_by'], currentUserId);
+                  }
+                  else {
+                      if (event.returnValues['loot'])
+                          showLootClosure(event);
+                  }
+              })
+              .on('changed', function (event) {
+              })
+              .on('error', console.error);
+            this.props.handleGetUpdatedTransactionHistory();
         }
 
     }
@@ -457,7 +457,9 @@ class App extends Component {
                         closable={false}
                       >
                       </Modal>
-                      {lootFound && <LootPopup visible={!!lootFound} lootFound={lootFound} onClose={() => {this.setState({lootFound: false})}}/>}
+                      {lootFound && <LootPopup visible={!!lootFound} lootFound={lootFound} onClose={() => {
+                          this.setState({lootFound: false})
+                      }}/>}
                       <StickyHeader>
                           <Navbar/>
                       </StickyHeader>
@@ -477,6 +479,7 @@ const actions = {
     handleClearError: clearError,
     handleSetError: setError,
     handleUpdateWalletId: updateWalletId,
+    handleGetUpdatedTransactionHistory: getUpdatedTransactionHistory,
 };
 
 const EnhancedApp = props => (

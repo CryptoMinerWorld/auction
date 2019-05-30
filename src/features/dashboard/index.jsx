@@ -41,7 +41,9 @@ import Spin from "antd/lib/spin";
 import {getUserBalance} from "../sale/saleActions";
 import PlotDashboard from "../plots";
 import InfiniteScroll from "react-infinite-scroller";
-import {getUserPlots} from "../plots/plotActions";
+import {getUserPlots, refreshUserPlot} from "../plots/plotActions";
+import {setDashboardEventListeners} from "./dashboardEventListener";
+
 
 const {TabPane} = Tabs;
 
@@ -111,6 +113,8 @@ const select = store => {
         loading: store.dashboard.gemsLoading,
         error: store.dashboard.gemsLoadingError,
         currentUser: store.auth.user,
+        transactionHistory: store.tx.transactionHistory,
+        pendingTransactions: store.tx.pendingTransactions,
         userExists: store.auth.existingUser,
         userBalance: store.sale.balance,
         userCountries: store.dashboard.userCountries,
@@ -191,7 +195,8 @@ class Dashboard extends Component {
         this.setState({redirectPath: ''});
 
         const {
-            preSaleContract, match, data, handleGetUserBalance, handleGetUserGems, gemService, countryService, plotService, handleGetUserPlots,
+            pendingTransactions,
+            preSaleContract, match, data, handleGetUserBalance, handleGetUserGems, gemService, countryService, plotService, handleGetUserPlots, handleRefreshUserPlot,
             auctionService, silverGoldService, userExists, currentUserId, currentUser, handleShowSignInBox, handleGetUserCountries, handleGetUserArtifacts, artifactContract
         } = this.props;
 
@@ -207,14 +212,18 @@ class Dashboard extends Component {
             handleGetUserArtifacts(match.params.userId);
         }
 
-        // if (preSaleContract && preSaleContract.methods && match.params.userId !== 'false') {
-        //     getPlotCount(preSaleContract, match.params.userId)
-        //       .then(plots => plots && this.setState({plots}))
-        //       .catch(err => setError(err));
-        // }
-
         if (plotService) {
-            handleGetUserPlots(match.params.userId);
+            console.log("DASHBOARD PROPS PENDING TRANSACTION (1):", pendingTransactions);
+            setDashboardEventListeners({
+                plotService,
+                updatedEventCallback: handleRefreshUserPlot,
+                releasedEventCallback: handleRefreshUserPlot,
+                boundEventCallback: handleRefreshUserPlot,
+                currentUserId
+            });
+            if (currentUserId !== match.params.userId || pendingTransactions) {
+                    handleGetUserPlots();
+            }
         }
 
         if (silverGoldService) {
@@ -257,9 +266,10 @@ class Dashboard extends Component {
         console.log('DASHBOARD PROPS is ', this.props);
         console.log('DASHBOARD STATE is ', this.state);
         const {
+            pendingTransactions,
             web3, preSaleContract, match,
             handleGetUserGems, gemService, auctionService, silverGoldService, countryService, plotService, handleGetUserPlots, handleGetUserCountries,
-            handleGetUserBalance, currentUserId, userExists, currentUser, artifactContract, handleGetUserArtifacts,
+            handleGetUserBalance, currentUserId, userExists, currentUser, artifactContract, handleGetUserArtifacts, handleRefreshUserPlot,
             handleShowSignInBox
         } = this.props;
 
@@ -303,8 +313,60 @@ class Dashboard extends Component {
         //       });
         // }
 
-        if ((plotService !== prevProps.plotService) || match.params.userId !== prevProps.match.params.userId ) {
-            handleGetUserPlots(match.params.userId);
+        if (plotService && pendingTransactions &&
+          (plotService !== prevProps.plotService ||
+            match.params.userId !== prevProps.match.params.userId ||
+            pendingTransactions !== prevProps.pendingTransactions)) {
+            (currentUserId !== match.params.userId || pendingTransactions) && handleGetUserPlots(match.params.userId);
+            setDashboardEventListeners({
+                plotService,
+                updatedEventCallback: handleRefreshUserPlot,
+                releasedEventCallback: handleRefreshUserPlot,
+                boundEventCallback: handleRefreshUserPlot,
+                currentUserId,
+            })
+            // plotService.minerContract.events.Updated({
+            //     filter: {'_by': currentUserId},
+            //     fromBlock: 'latest'
+            // })
+            //   .on('data', function (event) {
+            //       console.log(">> Updated event fired");
+            //       const eventParams = event.returnValues;
+            //       handleGetUserPlots();
+            //   })
+            //   .on('changed', function (event) {
+            //       console.log('CHANGED EVENT:', event);
+            //   })
+            //   .on('error', console.error);
+            //
+            // plotService.minerContract.events.Released({
+            //     filter: {'_by': currentUserId},
+            //     fromBlock: 'latest'
+            // })
+            //   .on('data', function (event) {
+            //       console.log(">> Released event fired");
+            //       const eventParams = event.returnValues;
+            //       handleGetUserPlots();
+            //   })
+            //   .on('changed', function (event) {
+            //       console.log('CHANGED EVENT:', event);
+            //   })
+            //   .on('error', console.error);
+            //
+            // plotService.minerContract.events.Bound({
+            //     filter: {'_by': currentUserId},
+            //     fromBlock: 'latest'
+            // })
+            //   .on('data', function (event) {
+            //       console.log("BOUND EVENT fired");
+            //       const eventParams = event.returnValues;
+            //       handleGetUserPlots();
+            //   })
+            //   .on('changed', function (event) {
+            //       console.log('CHANGED EVENT:', event);
+            //   })
+            //   .on('error', console.error);
+            console.log("Events are set");
         }
 
         if ((silverGoldService !== prevProps.silverGoldService) || match.params.userId !== prevProps.match.params.userId) {
@@ -590,6 +652,7 @@ class Dashboard extends Component {
 }
 
 const actions = {
+    handleRefreshUserPlot: refreshUserPlot,
     handleGetUserArtifacts: getUserArtifacts,
     handleGetUserPlots: getUserPlots,
     handleGetUserGems: getUserGems,

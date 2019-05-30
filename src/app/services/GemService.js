@@ -274,7 +274,7 @@ export const getGemImage = async (gemProperties, tokenId) => {
     // if no - use type-level-grade formula
     //const sourceImage = `${type}-${level}-${gradeType}-4500.png`;
 
-    console.log('GET GEM IMAGE: ', type, level);
+    //console.log('GET GEM IMAGE: ', type, level);
 
     if (type && gradeType && level) {
         let url;

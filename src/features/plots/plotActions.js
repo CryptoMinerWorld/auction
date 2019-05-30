@@ -6,22 +6,46 @@ import {
     NEW_PLOT,
     NO_GEM,
     PROCESSED,
-    PROCESSING,
+    PROCESSING, REFRESH_USER_PLOT,
     STUCK,
     UNBINDING_GEM,
     USER_PLOTS_RECEIVED
 } from "./plotConstants";
 import {db} from '../../app/utils/firebase';
+import {addPendingTransaction} from "../transactions/txActions";
 
 export const getUserPlots = ownerId => async (dispatch, getState) => {
     console.warn("GETTING USER PLOTS>>>");
-    let userId = ownerId || getState().auth.currentUserId;
+    const currentUserId = getState().auth.currentUserId;
+    let userId = ownerId || currentUserId;
     const plotService = getState().app.plotServiceInstance;
+    const pendingTransactions = getState().tx.pendingTransactions;
     const {userPlots, gemMiningIds} = await plotService.getOwnerPlots(userId);
+
+    ownerId === currentUserId && pendingTransactions && pendingTransactions.forEach((tx) => {
+        console.log("PLOT PENDING TX:", tx);
+        if (tx.type === BINDING_GEM || tx.type === UNBINDING_GEM || tx.type === PROCESSING) {
+            if (tx.body && tx.body.plot) {
+                const pendingPlotIndex = userPlots.findIndex(plot => plot.id === tx.body.plot);
+                userPlots[pendingPlotIndex].miningState = tx.type;
+                if (tx.body.gem) {
+                    gemMiningIds.push(tx.body.gem.toString());
+                }
+            }
+        }
+    });
+
     dispatch({
         type: USER_PLOTS_RECEIVED,
         payload: {userPlots, gemMiningIds}
     });
+}
+
+export const refreshUserPlot = plot => async (dispatch, getState) => {
+    dispatch({
+        type: REFRESH_USER_PLOT,
+        payload: plot
+    })
 }
 
 export const bindGem = (plot, gem, updatePlotCallback, transactionStartCallback) => async (dispatch, getState) => {
@@ -31,12 +55,25 @@ export const bindGem = (plot, gem, updatePlotCallback, transactionStartCallback)
     const web3 = getState().app.web3;
     const result = getState().app.plotServiceInstance.bindGem(plot.id, gem.id, currentUser)
       .on('transactionHash', (hash) => {
+          addPendingTransaction({
+              hash: hash,
+              userId: currentUser,
+              type: BINDING_GEM,
+              description: `Binding gem ${gem.id} to plot ${plot.id}`,
+              body: {
+                  plot: plot.id,
+                  gem: gem.id,
+              }
+          });
+          dispatch({
+              type: REFRESH_USER_PLOT,
+              payload: {id: plot.id, miningState: BINDING_GEM}
+          })
           transactionStartCallback();
           dispatch({
               type: GEM_BINDING,
               payload: {gemId: gem.id, state: 1}
           })
-
           //web3.eth.getBlock("pending").then((block) => console.log("PENDING:", block));
       })
       .on('receipt', async (receipt) => {
@@ -49,7 +86,7 @@ export const bindGem = (plot, gem, updatePlotCallback, transactionStartCallback)
               type: GEM_BINDING,
               payload: {gemId: gem.id, state: 1}
           })
-          updatePlotCallback();
+          //updatePlotCallback();
 
           // if (!bound) {
           //     newMiningState = NO_GEM;
@@ -87,9 +124,9 @@ export const bindGem = (plot, gem, updatePlotCallback, transactionStartCallback)
       .on('error', (err) => {
           dispatch({
               type: GEM_BINDING,
-              payload: {gemId: gem.id, state: 1}
+              payload: {gemId: gem.id, state: 0}
           });
-          updatePlotCallback();
+          //updatePlotCallback();
       });
 }
 
@@ -99,12 +136,30 @@ export const releaseGem = (plot, updatePlotCallback, transactionStartCallback) =
     const web3 = getState().app.web3;
     const result = getState().app.plotServiceInstance.releaseGem(plot.id)
       .on('transactionHash', (hash) => {
+          addPendingTransaction({
+              hash: hash,
+              userId: currentUser,
+              type: UNBINDING_GEM,
+              description: `Releasing gem ${plot.gemMines.id} from plot ${plot.id}`,
+              body: {
+                  plot: plot.id,
+                  gem: plot.gemMines.id,
+              }
+          });
+          dispatch({
+              type: REFRESH_USER_PLOT,
+              payload: {id: plot.id, miningState: UNBINDING_GEM}
+          })
           transactionStartCallback();
           //updatePlotCallback({...plot, miningState: UNBINDING_GEM});
       })
       .on('receipt', async (receipt) => {
           console.log("RELEASE RECEIPT:", receipt);
-          updatePlotCallback();
+          dispatch({
+              type: GEM_BINDING,
+              payload: {gemId: plot.gemMines.id, state: 0}
+          });
+          //updatePlotCallback();
           // const offset = receipt.events.Updated ? Number(receipt.events.Updated.returnValues['offsetTo']) : plot.currentPercentage;
           // const released = !!receipt.events.Released;
           // let newMiningState;
@@ -131,7 +186,7 @@ export const releaseGem = (plot, updatePlotCallback, transactionStartCallback) =
           // }
       })
       .on('error', (err) => {
-          updatePlotCallback();
+          //updatePlotCallback();
       });
 }
 
@@ -140,14 +195,27 @@ export const processBlocks = (plot, updatePlotCallback) => async (dispatch, getS
     const previousState = plot.miningState;
     const result = getState().app.plotServiceInstance.processBlocks(plot.id, currentUser)
       .on('transactionHash', (hash) => {
+          addPendingTransaction({
+              hash: hash,
+              userId: currentUser,
+              type: PROCESSING,
+              description: `Processing plot ${plot.id}`,
+              body: {
+                  plot: plot.id,
+              }
+          });
+          dispatch({
+              type: REFRESH_USER_PLOT,
+              payload: {id: plot.id, miningState: PROCESSING}
+          })
           //updatePlotCallback({...plot, miningState: PROCESSING});
       })
       .on('receipt', (receipt) => {
-          updatePlotCallback();
+          //updatePlotCallback();
           //updatePlotCallback({...plot, processedBlocks: plot.currentPercentage, miningState: previousState});
       })
       .on('error', (err) => {
-          updatePlotCallback({...plot});
+          //updatePlotCallback({...plot});
       });
 }
 
@@ -155,6 +223,7 @@ export const calculateMiningStatus = (plot) => {
     // const timeLeftInHours = t => Math.floor((t % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     // const timeLeftInMinutes = t => Math.floor((t % (1000 * 60 * 60)) / (1000 * 60));
     // const timeLeftInDays = t => Math.floor(t / (1000 * 60 * 60 * 24));
+
     if (!plot.gemMines && plot.currentPercentage < 100 && !plot.state) {
         return plot.currentPercentage > 0 ? NO_GEM : NEW_PLOT;
     }

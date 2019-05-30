@@ -3,3 +3,7 @@ export const TX_STARTED = 'TX_STARTED';
 export const TX_CONFIRMATIONS = 'TX_CONFIRMATIONS';
 export const TX_COMPLETED = 'TX_COMPLETED';
 export const TX_ERROR = 'TX_ERROR';
+export const TX_PENDING = 'PENDING';
+export const TX_CONFIRMED = 'CONFIRMED';
+export const TX_FAILED = 'FAILED';
+export const EVENT_HISTORY_RECEIVED = 'EVENT_HISTORY_RECEIVED';

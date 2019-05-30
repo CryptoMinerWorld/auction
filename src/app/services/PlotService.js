@@ -29,7 +29,6 @@ export default class PlotService {
         const plotsUserOwns = await this.plotContract.methods
           .getPackedCollection(ownerId).call();
         let gemMiningIds = [];
-        console.log("PLOTS:", plotsUserOwns);
         const userPlots = await Promise.all(plotsUserOwns.map(async plot => {
 
                 const packed96uint = new BigNumber(plot);
@@ -39,7 +38,7 @@ export default class PlotService {
                   .dividedToIntegerBy(new BigNumber(2).pow(8))
                   .modulo(new BigNumber(2).pow(64)));
                 const plotState = packed96uint.modulo(new BigNumber(2).pow(8)).toNumber();
-                console.log('PLOT STATE: ', plotState);
+                // console.log('PLOT STATE: ', plotState);
                 let currentEvaluatedPercentage = 0;
                 let gemMinesId = null;
                 if (plotState) {
@@ -69,6 +68,7 @@ export default class PlotService {
         return {userPlots, gemMiningIds};
     }
 
+
     getBoundGemId = async (plotId) => {
         return await this.minerContract.methods.getBoundGemId(plotId).call();
     }
@@ -92,7 +92,7 @@ export default class PlotService {
     }
 
     getPlotState = async (plotId) => {
-        return await this.plotContract.methods.getState(plotId).call().toNumber() !== 0;
+        return await this.plotContract.methods.getState(plotId).call();
     }
 }
 

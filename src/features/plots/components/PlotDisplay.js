@@ -11,7 +11,17 @@ import Slider from "react-slick";
 import {compose} from "redux";
 import connect from "react-redux/es/connect/connect";
 import {calculateMiningStatus, getUserPlots, processBlocks, releaseGem} from "../plotActions";
-import {CANT_MINE, MINED, MINING, NEW_PLOT, NOT_MINING, STUCK} from "./../plotConstants";
+import {
+    BINDING_GEM,
+    CANT_MINE,
+    MINED,
+    MINING,
+    NEW_PLOT,
+    NOT_MINING,
+    PROCESSING,
+    STUCK,
+    UNBINDING_GEM
+} from "./../plotConstants";
 import {NO_GEM, PROCESSED} from "../plotConstants";
 
 // import "../../../app/css/slick.min.css";
@@ -24,9 +34,9 @@ const select = store => {
         if (!plot) return;
         if (plot.gemMinesId) {
             plot.gemMines = gems.find((gem) => gem.id.toString() === plot.gemMinesId);
-            console.log(`GEM on PLOT`, plot);
+            // console.log(`GEM on PLOT`, plot);
         }
-        plot.miningState = calculateMiningStatus(plot);
+        if (!plot.miningState) plot.miningState = calculateMiningStatus(plot);
     });
 
     return {
@@ -185,19 +195,20 @@ class PlotDisplay extends Component {
             this.state.tierFilterOptions.length > 0 && this.state.plotFilterOptions.forEach((option) => {
                 switch (option) {
                     case MINING:
-                        if (plot.miningState === MINING) filterPassed = true;
+                        if (plot.miningState === MINING || plot.miningState === BINDING_GEM || plot.miningState === PROCESSING)
+                            filterPassed = true;
                         break;
                     case STUCK:
                         if (plot.miningState === STUCK || plot.miningState === MINED) filterPassed = true;
                         break;
                     case NO_GEM:
-                        if (plot.miningState === NO_GEM) filterPassed = true;
+                        if (plot.miningState === NO_GEM || plot.miningState === UNBINDING_GEM) filterPassed = true;
                         break;
                     case PROCESSED:
                         if (plot.miningState === PROCESSED) filterPassed = true;
                         break;
                     case NEW_PLOT:
-                        if (plot.miningState === NEW_PLOT) filterPassed = true;
+                        if (plot.miningState === NEW_PLOT ) filterPassed = true;
                         break;
                     default:
                         filterPassed = false;
@@ -253,9 +264,7 @@ class PlotDisplay extends Component {
             case "start":
                 break;
             case "stop":
-                this.props.handleReleaseGem(plot, () => {
-                    this.props.handleGetUserPlots();
-                }, () => this.setState({showSidebarPopup: false}));
+                this.props.handleReleaseGem(plot, () => {}, () => this.setState({showSidebarPopup: false}));
                 break;
             case "upgrade":
         }
@@ -420,10 +429,8 @@ class PlotDisplay extends Component {
                             }}
                             showAnotherPopup={(type) => this.setState({showSidebarPopup: type})}
                             stopMining={(plot) => {
-                                this.props.handleReleaseGem(plot, () => {
-                                    this.setState({showSidebarPopup: false});
-                                    handleGetUserPlots();
-                                });
+                                this.props.handleReleaseGem(plot, () =>
+                                    handleGetUserPlots(), () => this.setState({showSidebarPopup: false}));
                             }}
                             optionalData={this.state.optionalPopupData}
                             updatePlot={handleGetUserPlots}
