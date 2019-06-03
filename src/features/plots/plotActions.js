@@ -12,7 +12,8 @@ import {
     USER_PLOTS_RECEIVED
 } from "./plotConstants";
 import {db} from '../../app/utils/firebase';
-import {addPendingTransaction} from "../transactions/txActions";
+import {addPendingTransaction, getUpdatedTransactionHistory} from "../transactions/txActions";
+import {TRANSACTION_RESOLVED} from "../transactions/txConstants";
 
 export const getUserPlots = ownerId => async (dispatch, getState) => {
     console.warn("GETTING USER PLOTS>>>");
@@ -53,8 +54,10 @@ export const bindGem = (plot, gem, updatePlotCallback, transactionStartCallback)
     const currentUser = getState().auth.currentUserId;
     const initialMiningState = plot.miningState;
     const web3 = getState().app.web3;
+    let txHash;
     const result = getState().app.plotServiceInstance.bindGem(plot.id, gem.id, currentUser)
       .on('transactionHash', (hash) => {
+          txHash = hash;
           addPendingTransaction({
               hash: hash,
               userId: currentUser,
@@ -64,7 +67,7 @@ export const bindGem = (plot, gem, updatePlotCallback, transactionStartCallback)
                   plot: plot.id,
                   gem: gem.id,
               }
-          });
+          })(dispatch, getState);
           dispatch({
               type: REFRESH_USER_PLOT,
               payload: {id: plot.id, miningState: BINDING_GEM}
@@ -78,50 +81,20 @@ export const bindGem = (plot, gem, updatePlotCallback, transactionStartCallback)
       })
       .on('receipt', async (receipt) => {
           console.log("BIND RECEIPT:", receipt);
-          //const offset = receipt.events.Updated ? Number(receipt.events.Updated.returnValues['offsetTo']) :
-          // plot.currentPercentage;
-          //const bound = !!receipt.events.Bound;
-          //let newMiningState;
+
           dispatch({
               type: GEM_BINDING,
               payload: {gemId: gem.id, state: 1}
           })
-          //updatePlotCallback();
-
-          // if (!bound) {
-          //     newMiningState = NO_GEM;
-          //     dispatch({
-          //         type: GEM_CHANGE_LOCK_STATE,
-          //         payload: {gemId: gem.id},
-          //     });
-          //     updatePlotCallback({
-          //         ...plot,
-          //         miningState: newMiningState,
-          //         currentPercentage: offset,
-          //         processedBlocks: offset
-          //     });
-          // } else {
-          //     if (offset >= 100) {
-          //         newMiningState = PROCESSED;
-          //     } else {
-          //         if (offset < plot.layerEndPercentages[gem.level - 1]) {
-          //             newMiningState = MINING;
-          //         }
-          //         else {
-          //             newMiningState = STUCK;
-          //         }
-          //     }
-          //     updatePlotCallback({
-          //         ...plot,
-          //         miningState: newMiningState,
-          //         currentPercentage: offset,
-          //         processedBlocks: offset,
-          //         gemMines: gem,
-          //         gemMinesId: gem.id
-          //     });
-          // }
       })
       .on('error', (err) => {
+          if (txHash) {
+              // dispatch({
+              //     type: REFRESH_USER_PLOT,
+              //     payload: {id: plot.id, miningState: initialMiningState}
+              // })
+              getUpdatedTransactionHistory()(dispatch, getState);
+          }
           dispatch({
               type: GEM_BINDING,
               payload: {gemId: gem.id, state: 0}
@@ -134,8 +107,10 @@ export const releaseGem = (plot, updatePlotCallback, transactionStartCallback) =
     console.log(`RELEASE GEM ON PLOT ${plot.id}`);
     const currentUser = getState().auth.currentUserId;
     const web3 = getState().app.web3;
+    let txHash;
     const result = getState().app.plotServiceInstance.releaseGem(plot.id)
       .on('transactionHash', (hash) => {
+          txHash = hash;
           addPendingTransaction({
               hash: hash,
               userId: currentUser,
@@ -145,7 +120,7 @@ export const releaseGem = (plot, updatePlotCallback, transactionStartCallback) =
                   plot: plot.id,
                   gem: plot.gemMines.id,
               }
-          });
+          })(dispatch, getState);
           dispatch({
               type: REFRESH_USER_PLOT,
               payload: {id: plot.id, miningState: UNBINDING_GEM}
@@ -159,33 +134,11 @@ export const releaseGem = (plot, updatePlotCallback, transactionStartCallback) =
               type: GEM_BINDING,
               payload: {gemId: plot.gemMines.id, state: 0}
           });
-          //updatePlotCallback();
-          // const offset = receipt.events.Updated ? Number(receipt.events.Updated.returnValues['offsetTo']) : plot.currentPercentage;
-          // const released = !!receipt.events.Released;
-          // let newMiningState;
-          // if (!released) {
-          //     dispatch({
-          //         type: GEM_CHANGE_LOCK_STATE,
-          //         payload: {gemId: plot.gemMines.id}
-          //     });
-          //     updatePlotCallback({...plot});
-          // } else {
-          //     if (offset >= 100) {
-          //         newMiningState = PROCESSED;
-          //     } else {
-          //         newMiningState = NO_GEM;
-          //     }
-          //     updatePlotCallback({
-          //         ...plot,
-          //         miningState: newMiningState,
-          //         currentPercentage: offset,
-          //         processedBlocks: offset,
-          //         gemMines: null,
-          //         gemMinesId: null
-          //     });
-          // }
       })
       .on('error', (err) => {
+          if (txHash) {
+              getUpdatedTransactionHistory()(dispatch, getState);
+          }
           //updatePlotCallback();
       });
 }
@@ -193,8 +146,10 @@ export const releaseGem = (plot, updatePlotCallback, transactionStartCallback) =
 export const processBlocks = (plot, updatePlotCallback) => async (dispatch, getState) => {
     const currentUser = getState().auth.currentUserId;
     const previousState = plot.miningState;
+    let txHash;
     const result = getState().app.plotServiceInstance.processBlocks(plot.id, currentUser)
       .on('transactionHash', (hash) => {
+          hash = txHash;
           addPendingTransaction({
               hash: hash,
               userId: currentUser,
@@ -203,7 +158,7 @@ export const processBlocks = (plot, updatePlotCallback) => async (dispatch, getS
               body: {
                   plot: plot.id,
               }
-          });
+          })(dispatch, getState);
           dispatch({
               type: REFRESH_USER_PLOT,
               payload: {id: plot.id, miningState: PROCESSING}
@@ -215,6 +170,9 @@ export const processBlocks = (plot, updatePlotCallback) => async (dispatch, getS
           //updatePlotCallback({...plot, processedBlocks: plot.currentPercentage, miningState: previousState});
       })
       .on('error', (err) => {
+          if (txHash) {
+              getUpdatedTransactionHistory()(dispatch, getState);
+          }
           //updatePlotCallback({...plot});
       });
 }
