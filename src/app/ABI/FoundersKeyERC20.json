@@ -1,5 +1,5 @@
 {
-  "contractName": "ArtifactERC20",
+  "contractName": "FoundersKeyERC20",
   "abi": [
     {
       "constant": true,
@@ -618,10 +618,10 @@
     }
   ],
   "schemaVersion": "3.0.9",
-  "updatedAt": "2019-05-31T07:46:17.104Z",
+  "updatedAt": "2019-05-31T07:53:56.332Z",
   "devdoc": {
     "author": "Basil Gorin",
-    "details": "Artifact ERC20 is mintable and burnable entity,     meaning it can be created or destroyed by the authorized addressesAn address authorized can mint/burn its own tokens (own balance) as well     as tokens owned by another address (additional permission level required)",
+    "details": "Founder's Chest Key is mintable and burnable entity,     meaning it can be created or destroyed by the authorized addressesAn address authorized can mint/burn its own tokens (own balance) as well     as tokens owned by another address (additional permission level required)",
     "methods": {
       "allowance(address,address)": {
         "details": "A function to check an amount of tokens owner approved     to transfer on its behalf by some other address called \"spender\"",
@@ -744,7 +744,7 @@
         }
       }
     },
-    "title": "Artifact ERC20 Token"
+    "title": "Founder's Chest Key ERC20 Token"
   },
   "userdoc": {
     "methods": {
@@ -770,6 +770,6 @@
         "notice": "Transfers some tokens on behalf of address `_from' (token owner)     to some other address `_to`"
       }
     },
-    "notice": "Artifact ERC20 is a transferable fungible entity (ERC20 token)     to be exchanged into Artifact ERC721 later in the gameArtifact ERC20 is a part of the mining process. Artifacts may by found     in plots of land (see PlotERC721) only when mining"
+    "notice": "Founder's Chest Key is a transferable fungible entity (ERC20 token)     used to open Founder's Chest found in AntarcticaFounder's Chest Key is a part of the mining process and Chest System.     Keys may by found in plots of land (see PlotERC721) in Antarctica only when mining"
   }
 }

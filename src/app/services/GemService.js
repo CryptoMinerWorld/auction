@@ -86,33 +86,40 @@ export default class GemService {
     }
 
     unpackGem = async ([high256, low256]) => {
-        const color = high256.dividedToIntegerBy(new BigNumber(2).pow(184)).modulo(0x100).toNumber();
+        const plotId = high256.dividedToIntegerBy(new BigNumber(2).pow(232)).modulo(new BigNumber(2).pow(24)).toNumber();
+        const color = high256.dividedToIntegerBy(new BigNumber(2).pow(224)).modulo(0x100).toNumber();
         const level = high256
-          .dividedToIntegerBy(new BigNumber(2).pow(144))
+          .dividedToIntegerBy(new BigNumber(2).pow(216))
           .modulo(0x100)
           .toNumber();
+        const levelModifiedTime = high256
+          .dividedToIntegerBy(new BigNumber(2).pow(184))
+          .modulo(0x100000000).toNumber();
         const gradeType = high256
-          .dividedToIntegerBy(new BigNumber(2).pow(80 + 24))
+          .dividedToIntegerBy(new BigNumber(2).pow(152 + 24))
           .modulo(0x100)
           .toNumber();
         const gradeValue = high256
-          .dividedToIntegerBy(new BigNumber(2).pow(80))
-          .modulo(0x1000000).toNumber();
-        const gradeModifiedTime = await transform(high256
-          .dividedToIntegerBy(new BigNumber(2).pow(112))
-          .modulo(new BigNumber(2).pow(32)).toNumber(), this.web3);
-        const levelModifiedTime = await transform(high256
           .dividedToIntegerBy(new BigNumber(2).pow(152))
-          .modulo(0x100000000).toNumber(), this.web3);
+          .modulo(0x1000000).toNumber();
+        const gradeModifiedTime = high256
+          .dividedToIntegerBy(new BigNumber(2).pow(112))
+          .modulo(new BigNumber(2).pow(32)).toNumber();
+        const age = high256
+          .dividedToIntegerBy(new BigNumber(2).pow(88))
+          .modulo(new BigNumber(2).pow(32)).toNumber();
+        const ageModifiedTime = high256
+          .dividedToIntegerBy(new BigNumber(2).pow(56))
+          .modulo(new BigNumber(2).pow(32)).toNumber();
+        const state = high256
+          .dividedToIntegerBy(new BigNumber(2).pow(32))
+          .modulo(new BigNumber(2).pow(24)).toNumber();
 
         const owner = '0x' + low256.modulo(new BigNumber(2).pow(160)).toString(16).padStart(40, "0");
+        const creationTime = low256.dividedToIntegerBy(new BigNumber(2).pow(224)).modulo(0x100000000).toNumber();
 
-        console.log('unpack gem owner: ', owner);
-
-        const creationTime = await transform(low256
-          .dividedToIntegerBy(new BigNumber(2).pow(224)).modulo(0x100000000).toNumber(), this.web3);
-
-        console.log(333333333, levelModifiedTime.timestamp, gradeModifiedTime.timestamp, creationTime.timestamp, Date.now());
+        //console.log(333333333, levelModifiedTime.timestamp, gradeModifiedTime.timestamp, creationTime.timestamp,
+        // Date.now());
 
         return {
             color,
@@ -120,7 +127,10 @@ export default class GemService {
             gradeType,
             gradeValue,
             owner,
-            creationTime: Math.max(creationTime.timestamp, gradeModifiedTime.timestamp, levelModifiedTime.timestamp)
+            state,
+            age,
+            plotId,
+            creationTime: Math.max(creationTime, gradeModifiedTime, levelModifiedTime)
         }
     }
 
@@ -149,20 +159,19 @@ export default class GemService {
     }
 
     getOwnerGems = async (ownerId) => {
-
         const notAuctionGemsUserOwns = await this.contract.methods.getPackedCollection(ownerId).call();
         return notAuctionGemsUserOwns.map(notAuctionGem => {
             const packed80uint = new BigNumber(notAuctionGem);
-            const gemId = packed80uint.dividedToIntegerBy(new BigNumber(2).pow(48)).toNumber();
-            const gemPackedProperties = packed80uint.modulo(new BigNumber(2).pow(48));
+            const gemId = packed80uint.dividedToIntegerBy(new BigNumber(2).pow(56)).toNumber();
+            const gemPackedProperties = packed80uint.dividedToIntegerBy(new BigNumber(2).pow(8)).modulo(new BigNumber(2).pow(48));
+            const gemState = packed80uint.modulo(new BigNumber(2).pow(8)).toNumber();
             const gemProperties = unpackGemProperties(gemPackedProperties);
             return {
                 ...gemProperties,
                 id: gemId,
+                state: gemState,
                 owner: ownerId,
                 auctionIsLive: false, //await this.getGemAuctionIsLive(gemId),
-                //story: await getGemStory(gemProperties, gemId),
-                //image: await getGemImage(gemProperties, gemId),
                 name: calculateGemName(gemProperties.color, gemId),
                 rate: calculateMiningRate(gemProperties.gradeType, gemProperties.gradeValue),
                 //restingEnergyMinutes: calculateGemRestingEnergy(gemCreationTime)

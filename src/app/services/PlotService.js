@@ -81,6 +81,8 @@ export default class PlotService {
     }
 
     releaseGem = (plotId) => {
+        // console.log("Release gem. Miner contract:", this.minerContract);
+        // return this.minerContract.release(plotId).send();
         return this.minerContract.methods.release(plotId).send();
     }
 

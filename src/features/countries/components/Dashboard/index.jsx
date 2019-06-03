@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import CountryDisplay from './CountryDisplay';
 import {graphql} from 'react-apollo';
 import {MAP_COUNTRY_DATA} from "../../queries";
+import {getAvailableCountryPlots} from "../../../plotsale/plotSaleActions";
+import {COUNTRY_PLOTS_DATA} from "../../../plotsale/country_plots_data";
 
 // const statechart = {
 //   initial: 'noMetamask',
@@ -51,15 +53,26 @@ class CountryDashboard extends Component {
         userCountryIdList: [],
     };
 
-    componentDidMount() {
-        const {
-        } = this.props;
+    state = {userCountries: []};
 
-        // if (!countries || countries.length === 0) {
-        //   transition('NO_COUNTRIES');
-        // } else {
-        //   transition('COUNTRIES');
-        // }
+    componentDidMount() {
+        const {userCountryIdList, data} = this.props;
+
+        let userCountries = [];
+        if (data && data.mapCountries && userCountryIdList.length > 0) {
+            userCountries = data.mapCountries.filter((country =>
+                userCountryIdList.includes(country.countryId)
+            ));
+            userCountries.forEach( async (country) => {
+                const availablePlots = await getAvailableCountryPlots(country.countryId);
+                country.plotsBought = COUNTRY_PLOTS_DATA[country - 1] - availablePlots;
+                //country.plotsMined = 0;
+                country.plotsAvailable = availablePlots;
+                country.totalPlots = country.plots;
+                country.lastPrice = country.price;
+            })
+            this.setState({userCountries});
+        }
     }
 
     componentDidUpdate(prevProps) {
@@ -84,21 +97,8 @@ class CountryDashboard extends Component {
     }
 
     render() {
-        const {userCountryIdList, userId, data} = this.props;
-
-        let userCountries = [];
-        if (data && data.mapCountries && userCountryIdList.length > 0) {
-            userCountries = data.mapCountries.filter((country =>
-                userCountryIdList.includes(country.countryId)
-            ))
-            userCountries.forEach((country) => {
-                country.plotsBought = 0;
-                country.plotsMined = 0;
-                country.plotsAvailable = country.plots;
-                country.totalPlots = country.plots;
-                country.lastPrice = country.price;
-            })
-        }
+        const {userId} = this.props;
+        const {userCountries} = this.state;
 
         return (
           <div className="pa0">
