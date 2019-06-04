@@ -30,11 +30,9 @@ export default class CountryService {
           .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
           .join('');
 
-        console.log('LOWER CASE ID:::', userIdToLowerCase);
-
         const userPackedCountriesList = await this.countryContract.methods.getPackedCollection(userIdToLowerCase).call();
         return userPackedCountriesList.map((packedCountry) =>
-            new BigNumber(packedCountry).dividedToIntegerBy(new BigNumber(2).pow(32)).modulo(0x100).toNumber()
+            new BigNumber(packedCountry).dividedToIntegerBy(new BigNumber(2).pow(24)).modulo(0x100).toNumber()
         )
     }
 

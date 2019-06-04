@@ -120,7 +120,7 @@ class App extends Component {
 
         var bncAssistConfig = {
             dappId: "e8432341-1602-487b-ba82-c3e2c46fb47d",      // [String] The API key created by step one above
-            networkId: 3  // [Integer] The Ethereum network ID your dapp uses.
+            networkId: 4  // [Integer] The Ethereum network ID your dapp uses.
         };
 
         let assistInstance = assist.init(bncAssistConfig);
@@ -176,7 +176,7 @@ class App extends Component {
         }))
 
         // @notice instantiating gem contract
-        const gemsContract = assistInstance.Contract(new web3.eth.Contract(gemsABI, process.env.GemERC721, {
+        const gemsContract = assistInstance.Contract(new web3.eth.Contract(gemsABI, process.env.REACT_APP_GemERC721, {
             from: currentAccountId,
         }))
 
@@ -190,7 +190,7 @@ class App extends Component {
 
         const theCountryContract = assistInstance.Contract(new web3.eth.Contract(
           countryABI,
-          process.env.CountryERC721,
+          process.env.REACT_APP_CountryERC721,
           {
               from: currentAccountId,
           },
@@ -198,7 +198,7 @@ class App extends Component {
 
         const refPointsTrackerContract = assistInstance.Contract(new web3.eth.Contract(
           refPointsTrackerABI,
-          process.env.RefPointsTracker,
+          process.env.REACT_APP_RefPointsTracker,
           {
               from: currentAccountId,
           },
@@ -206,7 +206,7 @@ class App extends Component {
 
         const goldContract = assistInstance.Contract(new web3.eth.Contract(
           goldABI,
-          process.env.GoldERC20,
+          process.env.REACT_APP_GoldERC20,
           {
               from: currentAccountId,
           },
@@ -214,7 +214,7 @@ class App extends Component {
 
         const silverContract = assistInstance.Contract(new web3.eth.Contract(
           silverABI,
-          process.env.SilverERC20,
+          process.env.REACT_APP_SilverERC20,
           {
               from: currentAccountId,
           },
@@ -254,7 +254,7 @@ class App extends Component {
 
         const plotContract = assistInstance.Contract(new web3.eth.Contract(
           plotABI,
-          process.env.PlotERC721,
+          process.env.REACT_APP_PlotERC721,
           {
               from: currentAccountId,
           },
@@ -270,7 +270,7 @@ class App extends Component {
 
         const artifactContract = assistInstance.Contract(new web3.eth.Contract(
           artifactABI,
-          process.env.ArtifactERC20,
+          process.env.REACT_APP_ArtifactERC20,
           {
               from: currentAccountId,
           },

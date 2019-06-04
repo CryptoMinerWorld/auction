@@ -161,14 +161,16 @@ export default class GemService {
     getOwnerGems = async (ownerId) => {
         const notAuctionGemsUserOwns = await this.contract.methods.getPackedCollection(ownerId).call();
         return notAuctionGemsUserOwns.map(notAuctionGem => {
-            const packed80uint = new BigNumber(notAuctionGem);
-            const gemId = packed80uint.dividedToIntegerBy(new BigNumber(2).pow(56)).toNumber();
-            const gemPackedProperties = packed80uint.dividedToIntegerBy(new BigNumber(2).pow(8)).modulo(new BigNumber(2).pow(48));
-            const gemState = packed80uint.modulo(new BigNumber(2).pow(8)).toNumber();
+            const packed112uint = new BigNumber(notAuctionGem);
+            const gemId = packed112uint.dividedToIntegerBy(new BigNumber(2).pow(88)).toNumber();
+            const gemPackedProperties = packed112uint.dividedToIntegerBy(new BigNumber(2).pow(40)).modulo(new BigNumber(2).pow(48));
+            const gemEnergeticAge = packed112uint.dividedToIntegerBy(new BigNumber(2).pow(8)).modulo(new BigNumber(2).pow(40));
+            const gemState = packed112uint.modulo(new BigNumber(2).pow(8)).toNumber();
             const gemProperties = unpackGemProperties(gemPackedProperties);
             return {
                 ...gemProperties,
                 id: gemId,
+                energeticAge: gemEnergeticAge,
                 state: gemState,
                 owner: ownerId,
                 auctionIsLive: false, //await this.getGemAuctionIsLive(gemId),

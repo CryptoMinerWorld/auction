@@ -60,7 +60,6 @@ export default class SilverGoldService {
     }
 
     useCoupon = (couponCode) => {
-        console.log('use coupon');
         return this.silverCouponsContract.methods.useCoupon(couponCode)
           .send();
     }

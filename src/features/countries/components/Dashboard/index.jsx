@@ -77,7 +77,7 @@ class CountryDashboard extends Component {
 
     componentDidUpdate(prevProps) {
         const {data, userCountryIdList, userCountries, transition} = this.props;
-        console.log('COUNTRY DASHBOARD PROPS', this.props);
+        console.log('COUNTRY DASHBOARD PROPS', this.props, this.state);
 
         // if (data && (userCountryIdList !== prevProps.userCountryIdList || prevProps.data.mapCountries !== data.mapCountries)) {
         //     let userCountries = [];
