@@ -8,12 +8,12 @@ import React from "react";
 import {transactionResolved} from "../../transactions/txActions";
 import {getUserPlots, refreshUserPlot} from "../../plots/plotActions";
 import {
-    addGemsToDashboard,
+    addGemsToDashboard, applyFilterOption, applySort, deselectAllFilters,
     filterUserGemsOnPageLoad,
     getUserArtifacts, getUserCountries,
     getUserDetails,
     getUserGems,
-    scrollGems, useCoupon
+    scrollGems, setDefaultFilters, useCoupon
 } from "../dashboardActions";
 import {preLoadAuctionPage} from "../../market/marketActions";
 import {getUserBalance} from "../../sale/saleActions";
@@ -25,101 +25,71 @@ import {gradeConverter, type} from "../../plots/components/propertyPaneStyles";
 const select = store => ({
     userGems: store.dashboard.userGems,
     totalGems: store.dashboard && store.dashboard.userGems && store.dashboard.userGems.length,
-    userGemsFiltered: (store.dashboard.userGemsFiltered && store.dashboard.userGemsFiltered.length >= 0) ?
-      store.dashboard.userGemsFiltered :
-      store.dashboard.userGems,
-    userGemsScrolled: store.dashboard.userGemsScrolled ? store.dashboard.userGemsScrolled :
-      (store.dashboard.userGemsFiltered && store.dashboard.userGemsFiltered.length >= 0) ?
-        store.dashboard.userGemsFiltered.slice(0, store.dashboard.end) :
-        store.dashboard.userGems.slice(0, store.dashboard.end),
-    hasMoreGems: store.dashboard.hasMoreGems,
     loading: store.dashboard.gemsLoading,
+    unselectedFilters: store.dashboard.unselectedGemWorkshopFilters,
+    selectedSorting: store.dashboard.selectedGemWorkshopSorting,
 });
-
-const defaultFiltersUnselected = {
-    types: ["Per", "Aqu", "Dia", "Eme", "Pea", "Top", "Tur"],
-    levels: [],
-    grades: [],
-};
-
-const deselectAllFilters = {
-    types: ["Ame", "Gar", "Opa", "Sap", "Rub", "Per", "Aqu", "Dia", "Eme", "Pea", "Top", "Tur"],
-    levels: ["lvl_1", "lvl_2", "lvl_3", "lvl_4", "lvl_5"],
-    grades: ["D", "C", "B", "A", "AA", "AAA"],
-}
 
 class GemDashboard extends React.Component {
 
     state = {
-        allGems: this.props.userGems,
-        scrolledGems: this.props.userGems.slice(0, 16),
-        hasMoreGems: this.props.userGems.length > 16,
-        unselectedFilters: {
-            types: ["Per", "Aqu", "Dia", "Eme", "Pea", "Top", "Tur"],
-            levels: [],
-            grades: [],
-        },
-        filterIsClean: false,
-        selectedSort: ""
-    };
+        scrolledGems: [],
+        allGems: [],
+        hasMoreGems: false,
+    }
+
+    componentDidMount() {
+        const {userGems} = this.props;
+        console.log("User gems:", userGems);
+        const filteredGems = this.filterGems(userGems);
+        this.sortGems(filteredGems);
+        this.setState({
+            allGems: filteredGems,
+            scrolledGems: filteredGems.slice(0, 16),
+            hasMoreGems: filteredGems.length > 16,
+        }, () => console.log("Did mount:", this.state, this.props))
+    }
+
+    componentDidUpdate(prevProps) {
+        const {unselectedFilters, selectedSorting, userGems} = this.props;
+        if (unselectedFilters !== prevProps.unselectedFilters) {
+            const filteredGems = this.filterGems(userGems);
+            this.sortGems(filteredGems);
+            this.setState({
+                allGems: filteredGems,
+                scrolledGems: filteredGems.slice(0, 16),
+                hasMoreGems: filteredGems.length > 16,
+            })
+        }
+        if (unselectedFilters === prevProps.unselectedFilters && selectedSorting !== prevProps.selectedSorting) {
+            this.sortGems(this.state.allGems);
+            this.setState({
+                allGems: this.state.allGems,
+                scrolledGems: this.state.allGems.slice(0, 16),
+                hasMoreGems: this.state.hasMoreGems,
+            })
+        }
+    }
 
     loadMore(page) {
-        this.props.handleScroll(page, 18);
-        console.log("Load more ", page);
-    }
-
-    setDefaultFilters = () => {
-        const newFilters = defaultFiltersUnselected;
-        const filteredGems = this.props.userGems.filter((gem) =>
-          !newFilters.grades.includes(gradeConverter(Number(gem.gradeType))) && !newFilters.levels.includes("lvl_" + gem.level) && !newFilters.types.includes(type(gem.color)));
+        const scrollTo = Math.min(page*18, this.state.allGems.length);
         this.setState({
-            allGems: filteredGems,
-            unselectedFilters: newFilters,
-            scrolledGems: filteredGems.slice(0, 16),
-            hasMoreGems: filteredGems.length > 16
-        }, () => this.sortGems(this.state.selectedSort))
+            hasMoreGems: scrollTo < this.state.allGems.length,
+            scrolledGems: this.state.allGems.slice(0, scrollTo)
+        })
     }
 
-    deselectAllFilters = () => {
-        const newFilters = {...deselectAllFilters};
-        this.setState({
-            allGems: [],
-            unselectedFilters: newFilters,
-            scrolledGems: [],
-            hasMoreGems: false
-        });
+    filterGems = (gems) => {
+        const unselectedFilters = this.props.unselectedFilters;
+        return gems.filter((gem) =>
+          !unselectedFilters.grades.includes(gradeConverter(Number(gem.gradeType))) &&
+          !unselectedFilters.levels.includes("lvl_" + gem.level) &&
+          !unselectedFilters.types.includes(type(gem.color)) &&
+          !unselectedFilters.states.includes(resolveGemFilterState(gem)));
     }
 
-    filterIsClean = () => {
-        return this.state.unselectedFilters.grades.length === deselectAllFilters.grades.length &&
-          this.state.unselectedFilters.levels.length === deselectAllFilters.levels.length &&
-          this.state.unselectedFilters.types.length === deselectAllFilters.types.length;
-    }
-
-    addFilterOption = (filterOption, optionType) => {
-        let newFilters;
-        if (this.filterIsClean()) {
-            newFilters = {...defaultFiltersUnselected};
-            newFilters[optionType] = deselectAllFilters[optionType].filter(e => e !== filterOption);
-            console.log("NEW FILTERS:", newFilters);
-        } else {
-            newFilters = {...this.state.unselectedFilters};
-            newFilters[optionType] = this.state.unselectedFilters[optionType].includes(filterOption) ?
-              this.state.unselectedFilters[optionType].filter(e => e !== filterOption) :
-              this.state.unselectedFilters[optionType].concat(filterOption);
-        }
-        const filteredGems = this.props.userGems.filter((gem) =>
-          !newFilters.grades.includes(gradeConverter(Number(gem.gradeType))) && !newFilters.levels.includes("lvl_" + gem.level) && !newFilters.types.includes(type(gem.color)));
-        this.setState({
-            allGems: filteredGems,
-            unselectedFilters: newFilters,
-            scrolledGems: filteredGems.slice(0, 16),
-            hasMoreGems: filteredGems.length > 16
-        }, () => this.sortGems(this.state.selectedSort))
-    };
-
-    sortGems = (sortOption, sortDirection) => {
-        if (sortOption === this.state.selectedSort && sortDirection === this.state.selectedSortDirection) return;
+    sortGems = (gems) => {
+        const {sortOption, sortDirection} = this.props.selectedSorting;
         let sortingFunction;
         switch (sortOption) {
             case "mrb":
@@ -134,40 +104,31 @@ class GemDashboard extends React.Component {
             case "REA":
                 sortingFunction = (p1, p2) => +p1.level - p2.level;
                 break;
-
         }
         const directionSign = sortDirection === "up" ? 1 : -1;
-        const sortedGems = this.state.allGems.sort((p1, p2) => {
+        gems.sort((p1, p2) => {
             return directionSign*sortingFunction(p1, p2);
-        });
-        this.setState({
-            allGems: sortedGems,
-            selectedSort: sortOption,
-            scrolledGems: sortedGems.slice(0, 16),
-            hasMoreGems: sortedGems.length > 16
         });
     }
 
-
     render() {
-        const {hasMoreGems, userGemsScrolled, handlePreLoadAuctionPage, loading} = this.props;
-        const {unselectedFilters, selectedSort} = this.state;
+        const {handlePreLoadAuctionPage, loading, handleApplySort, unselectedFilters, selectedSorting,
+            handleApplyFilterOption, handleDeselectAllFilters, handleSetDefaultFilters} = this.props;
+        const {scrolledGems, hasMoreGems} = this.state;
 
         return (
         <Grid className="ph3">
             <Primary>
                 <div className="flex jcb aic">
-                    {/*<GemSortBox/>*/}
-                    {/*{sortBox && <SortBox/>}*/}
                     <GemDashboardFilters unselectedFilters={unselectedFilters}
-                                         toggleFilter={(option, optionType) => {
-                                             this.addFilterOption(option, optionType)
+                                         applyFilter={(option, optionType) => {
+                                             handleApplyFilterOption(option, optionType)
                                          }}
-                                         clearFilters={() => this.deselectAllFilters()}
-                                         setDefaultFilters={() => this.setDefaultFilters()}
-                                         selectedSort={selectedSort}
-                                         toggleSort={(sortOption, sortDirection) => {
-                                             this.sortGems(sortOption, sortDirection)
+                                         clearFilters={() => handleDeselectAllFilters()}
+                                         setDefaultFilters={() => handleSetDefaultFilters()}
+                                         selectedSort={selectedSorting}
+                                         applySort={(sortOption, sortDirection) => {
+                                             handleApplySort(sortOption, sortDirection);
                                          }}
                     />
                 </div>
@@ -184,10 +145,10 @@ class GemDashboard extends React.Component {
                     >
                         <CardBox>
                             {loading && [1, 2, 3, 4, 5, 6].map(num => <LoadingCard key={num}/>)}
-                            {!loading && userGemsScrolled && userGemsScrolled.length === 0 &&
+                            {!loading && scrolledGems && scrolledGems.length === 0 &&
                             <p>No matching gems found</p>}
-                            {!loading && userGemsScrolled && userGemsScrolled.length >= 0 ? (
-                                userGemsScrolled.map(userGem => {
+                            {!loading && scrolledGems && scrolledGems.length >= 0 ? (
+                                scrolledGems.map(userGem => {
                                     //console.log('USER GEM: ', userGem);
                                     return (
                                       <Link
@@ -211,6 +172,10 @@ class GemDashboard extends React.Component {
 }
 
 const actions = {
+    handleApplySort: applySort,
+    handleApplyFilterOption: applyFilterOption,
+    handleDeselectAllFilters: deselectAllFilters,
+    handleSetDefaultFilters: setDefaultFilters,
     handleScroll: scrollGems,
     handlePreLoadAuctionPage: preLoadAuctionPage,
 };
@@ -222,6 +187,12 @@ export default compose(
     actions,
   ),
 )(GemDashboard);
+
+const resolveGemFilterState = (gem) => {
+    //todo: return actual gem state: idle, mining, auction, stuck;
+    return "none";
+}
+
 
 const Grid = styled.article`
   display: grid;
