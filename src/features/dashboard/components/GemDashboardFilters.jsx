@@ -12,7 +12,7 @@ import {
     typePaneColors,
     typePaneOutlineColors
 } from "./propertyPaneStyles";
-import {CutEdgesButton} from "./CutEdgesButton";
+import {CutEdgesButton} from "../../../components/CutEdgesButton";
 import styled from "styled-components";
 
 const transitionRules = {

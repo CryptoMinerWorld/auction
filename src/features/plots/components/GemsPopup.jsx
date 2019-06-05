@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import styled from "styled-components";
 import actionButtonImage from "../../../app/images/noTextGemButton.png";
 import octagonImage from "../../../app/images/octagonOutline.png";
-import {CutEdgesButton} from "./CutEdgesButton";
+import {CutEdgesButton} from "../../../components/CutEdgesButton";
 import {CANT_MINE, MINED, MINING, STUCK} from "../plotConstants";
 
 const setMiningFilters = {

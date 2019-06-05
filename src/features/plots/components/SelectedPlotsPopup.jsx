@@ -3,7 +3,7 @@ import styled from "styled-components";
 import actionButtonImage from "../../../app/images/noTextGemButton.png";
 import octagonImage from "../../../app/images/octagonOutline.png";
 import indiaImage from "../../../app/images/flags/in.png";
-import {CutEdgesButton} from "./CutEdgesButton";
+import {CutEdgesButton} from "../../../components/CutEdgesButton";
 import {MINED, MINING, NEW_PLOT, NO_GEM, NOT_MINING} from "../plotConstants";
 import {getCountryData} from "../plotActions";
 import buyNowImage from "../../../app/images/thickAndWidePinkButton.png";

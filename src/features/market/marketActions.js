@@ -9,7 +9,11 @@ import {
     MARKETPLACE_FILTER_FAILED,
     CHANGE_FILTER_GEM_VALUES,
     CHANGE_FILTER_VALUES,
-    PAGINATE_MARKET, FETCH_AUCTIONS_PAGE_IMAGES,
+    PAGINATE_MARKET,
+    FETCH_AUCTIONS_PAGE_IMAGES,
+    SET_DEFAULT_GEM_MARKET_FILTERS,
+    DESELECT_ALL_GEM_MARKET_FILTERS,
+    APPLY_GEM_MARKET_FILTER_OPTION, APPLY_GEM_MARKET_SORTING,
 } from './marketConstants';
 import { AUCTION_DETAILS_RECEIVED } from '../items/itemConstants';
 import { db } from '../../app/utils/firebase';
@@ -17,9 +21,11 @@ import { updateDBwithNewPrice } from './helpers';
 import { setError } from '../../app/appActions';
 import {getGemImage} from "../market/helpers";
 import {
+    APPLY_GEM_WORKSHOP_FILTER_OPTION, APPLY_GEM_WORKSHOP_SORTING,
+    DESELECT_ALL_GEM_WORKSHOP_FILTERS,
     FETCH_GEMS_PAGE_IMAGES,
     FETCH_USER_GEMS_BEGUN,
-    FETCH_USER_GEMS_SUCCEEDED,
+    FETCH_USER_GEMS_SUCCEEDED, SET_DEFAULT_GEM_WORKSHOP_FILTERS,
     USER_GEMS_RETRIEVED
 } from "../dashboard/dashboardConstants";
 import BigNumber from "bignumber.js";
@@ -201,4 +207,38 @@ export function paginate(pageNumber, pagePerView) {
 export function preLoadAuctionPage(auction) {
     console.log('>>>>>>>>>>> PRELOAD <<<<<<<<<<<', auction);
   return dispatch => dispatch({ type: AUCTION_DETAILS_RECEIVED, payload: {gem:auction} });
+}
+
+
+
+export const setDefaultFilters = () => {
+    return {
+        type: SET_DEFAULT_GEM_MARKET_FILTERS,
+    }
+}
+
+export const deselectAllFilters = () => {
+    return {
+        type: DESELECT_ALL_GEM_MARKET_FILTERS,
+    }
+}
+
+export const applyFilterOption = (filterOption, optionType) => {
+    return {
+        type: APPLY_GEM_MARKET_FILTER_OPTION,
+        payload: {filterOption, optionType}
+    }
+};
+
+export const applySort = (newSortOption, newSortDirection) => (dispatch, getState) => {
+    const {sortOption, sortDirection} = getState().market.selectedGemMarketSorting;
+    if (newSortOption === sortOption && newSortDirection === sortDirection) return;
+
+    dispatch({
+        type: APPLY_GEM_MARKET_SORTING,
+        payload: {
+            sortOption: newSortOption,
+            sortDirection: newSortDirection,
+        }
+    })
 }

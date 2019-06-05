@@ -4,7 +4,7 @@ import React from "react";
 import actionButtonImage from "../../../app/images/thickAndWidePinkButton.png";
 // import actionButtonImage from "../../../app/images/noTextGemButton.png";
 import octagonImage from "../../../app/images/octagonOutline.png";
-import {CutEdgesButton} from "./CutEdgesButton";
+import {CutEdgesButton} from "../../../components/CutEdgesButton";
 import {CANT_MINE, MINING, NEW_PLOT, NO_GEM, NOT_MINING, PROCESSED, STUCK} from "../plotConstants";
 
 const setNoGemsFilters = {

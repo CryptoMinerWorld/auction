@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Tilt from 'react-tilt';
 import Loading from "../../../components/Loading";
 import {getGemImage} from "../../../app/services/GemService";
-import {CutEdgesButton} from "./CutEdgesButton";
+import {CutEdgesButton} from "../../../components/CutEdgesButton";
 import {
     gradeConverter,
     gradeOutlineColor,

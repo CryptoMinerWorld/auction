@@ -1,74 +1,35 @@
 import React from 'react';
-import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {Link} from 'react-router-dom';
 import {compose} from 'recompose';
-import Pagination from 'antd/lib/pagination';
 import {getAuctions, getImagesForGems, paginate, preLoadAuctionPage,} from './marketActions';
-import Cards from './components/Card';
-import SortBox from './components/SortBox';
-import LoadingCard from './components/LoadingCard';
-import gemKid from '../../app/images/gemKid.png';
-import Filters from './components/Filters';
-import GemFilters from './components/GemFilters';
+import Plot from "../../app/images/dashboard/Plot.png";
+import Gem from "../../app/images/dashboard/gems.png";
+import Artifact from "../../app/images/dashboard/Artifacts.png";
+import Keys from "../../app/images/dashboard/Keys.png";
+import Tabs from "antd/lib/tabs";
+import GemMarket from "./components/GemMarket";
 
+const {TabPane} = Tabs;
 
+require('antd/lib/tabs/style/css');
+require('antd/lib/notification/style/css');
 require('antd/lib/pagination/style/css');
 require('antd/lib/slider/style/css');
 
-const RightAside = styled.aside`
-  grid-column: 5;
-`;
-
-const Grid = styled.article`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  grid-column-gap: 20px;
-`;
-
-
-const CardBox = styled.section`
-  display: grid;
-  width: 100%;
-  grid-template-columns: repeat(auto-fill, minMax(280px, 1fr));
-  grid-column-gap: 20px;
-  grid-row-gap: 20px;
-`;
-
-
-const Primary = styled.section`
-  grid-column: 1/5;
-`;
-
-const Card = styled.aside`
-  clip-path: polygon(5% 0%, 95% 0%, 100% 5%, 100% 95%, 95% 100%, 5% 100%, 0% 95%, 0% 5%);
-`;
 
 const select = store => {
     console.log(' ************* STORE ************* ', store);
     return ({
         auctions: store.market.auctions,
-        auctionsFiltered: (store.market.auctionsFiltered && store.market.auctionsFiltered.length > 0) ?
-          store.market.auctionsFiltered :
-          store.market.auctions,
-        loading: store.market.auctions ? store.market.auctionsLoading : true,
         error: store.marketActions.error,
         totalGems: store.market.auctions && store.market.auctions.length,
-        //store.market.paginated ? store.market.paginated
-        paginated:
-          (store.market.auctionsFiltered && store.market.auctionsFiltered.length > 0) ?
-            store.market.auctionsFiltered.slice(store.marketActions.start, store.marketActions.end) :
-            store.market.auctions.slice(store.marketActions.start, store.marketActions.end),
-        pageNumber: store.marketActions.page,
-        needToLoadImages: store.market.updateImages,
         dutchContract: store.app.dutchContractInstance,
         gemContractAddress: store.app.gemsContractInstance && store.app.gemsContractInstance.options.address,
         gemService: store.app.gemServiceInstance,
         auctionService: store.app.auctionServiceInstance,
     });
 }
-
 
 class Marketplace extends React.Component {
 
@@ -77,102 +38,93 @@ class Marketplace extends React.Component {
     }
 
     state = {
-        imagesLoadingStarted: false
+        tab: 1
     }
 
     componentDidMount() {
         const {auctionService, handleGetAuctions, handlePagination} = this.props;
         if (auctionService) {
             handleGetAuctions();
-            handlePagination(1, 15);
         }
     }
 
     componentDidUpdate(prevProps) {
-        console.log('PROPS: ', this.props);
-        const {auctionService, handleGetAuctions, handlePagination, needToLoadImages, pageNumber, paginated, handleGetImagesForGems} = this.props;
-        const {imagesLoadingStarted} = this.state;
-
-        if (!needToLoadImages && imagesLoadingStarted) {
-            this.setState({imagesLoadingStarted: false});
-        }
-
+        const {auctionService, handleGetAuctions} = this.props;
         if (auctionService && (auctionService !== prevProps.auctionService)) {
             handleGetAuctions();
-            handlePagination(1, 15);
-        }
-
-        if (!imagesLoadingStarted && auctionService && paginated && (paginated.length > 0) && (needToLoadImages || pageNumber !== prevProps.pageNumber)) {
-            this.setState({imagesLoadingStarted: true});
-            handleGetImagesForGems(paginated);
         }
     }
 
     render() {
         console.warn('RENDER PROPS: ', this.props);
-        const {
-            loading,
-            paginated,
-            handlePagination,
-            pageNumber,
-            totalGems,
-            handlePreLoadAuctionPage,
-          auctionsFiltered,
-        } = this.props;
-
-        console.log('AUCTIONS FILTERED LENGTH:', auctionsFiltered.length);
-        console.log('PAGINATED:', paginated);
+        const {auctionsFiltered} = this.props;
+        const {tab} = this.state;
 
         return (
-          <div className="bg-off-black white pa4 " data-testid="market-page">
-              <div className="flex aic jcs ">
-                  <img src={gemKid} className="h3 w-auto pr3 dn dib-ns" alt="gem auctions"/>
+          <div className="bg-off-black white market-card-container" data-testid="market-page">
+              <div className="flex aic jcc">
                   <h1 className="white f1 b o-90" data-testid="header">
-                      Gem Auctions
+                      Gem Market
                   </h1>
               </div>
-              <Grid>
-                  <Primary>
-                      <SortBox/>
-                      <CardBox>
-                          {loading && [1, 2, 3, 4, 5, 6].map(num => <LoadingCard key={num}/>)}
-                          {!loading && (
-                            paginated && paginated.length > 0 ? (
-                                paginated.map(auction => (
-                                  <Link
-                                    to={`/gem/${auction.id}`}
-                                    key={auction.id}
-                                    onClick={() => handlePreLoadAuctionPage(auction)}
-                                  >
-                                      <Cards auction={auction}/>
-                                  </Link>
-                                ))
-                              )
-                          :
-                            <Card className="bg-dark-gray h5 flex x wrap">
-                                <p className="f4 tc">No Auctions Available.</p>
-                            </Card>)
-                          }
-                      </CardBox>
-                      <div className="w-100 tc pv4">
-                          <Pagination
-                            current={pageNumber}
-                            pageSize={15}
-                            total={auctionsFiltered.length}
-                            hideOnSinglePage
-                            onChange={(page, pageSize) => {
-                                window.scrollTo(0, 0);
-                                handlePagination(page, pageSize);
-                            }}
-                          />
-                      </div>
-                  </Primary>
-
-                  <RightAside className="dn dib-l">
-                      <Filters/>
-                      <GemFilters/>
-                  </RightAside>
-              </Grid>
+              <Tabs
+                activeKey={`${tab}`}
+                animated
+                className="bg-off-black white"
+                type="card"
+              >
+                  <TabPane
+                    tab={(
+                      <span
+                        tabIndex={-1}
+                        role="button"
+                        onKeyPress={() => this.setState({tab: 1})}
+                        className="h-100 flex aic"
+                        onClick={() => this.setState({tab: 1})}
+                      >
+                          <img src={Gem} alt="Gems" className="h2 w-auto pr2"/>
+                          Gem
+                      </span>
+                    )}
+                    key="1"
+                  >
+                      <GemMarket/>
+                  </TabPane>
+                  <TabPane tab={(
+                    <span
+                      tabIndex={-2}
+                      onKeyPress={() => this.setState({tab: 2})}
+                      role="button"
+                      onClick={() => this.setState({tab: 2})}
+                      className="h-100 flex aic white "><img src={Plot} alt="" className="h2 w-auto pr2"/>
+                        Plot
+                      </span>
+                  )}
+                           disabled={true}
+                           key="2"
+                  >
+                  </TabPane>
+                  <TabPane
+                    tab={(
+                      <span className="h-100 flex aic white o-50">
+                          <img src={Artifact} alt="" className="h2 w-auto pr2"/>
+                          Artifact
+                      </span>
+                    )}
+                    disabled
+                    key="3"
+                  />
+                  <TabPane
+                    tab={(
+                      <span className="h-100 flex aic white o-50">
+                          <img src={Keys} alt="" className="h2 w-auto pr2"/>
+                          Key
+                      </span>
+                    )}
+                    disabled
+                    key="4"
+                  />
+              </Tabs>
           </div>
         )
     }

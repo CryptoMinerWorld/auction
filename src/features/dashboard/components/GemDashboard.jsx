@@ -176,7 +176,6 @@ const actions = {
     handleApplyFilterOption: applyFilterOption,
     handleDeselectAllFilters: deselectAllFilters,
     handleSetDefaultFilters: setDefaultFilters,
-    handleScroll: scrollGems,
     handlePreLoadAuctionPage: preLoadAuctionPage,
 };
 
