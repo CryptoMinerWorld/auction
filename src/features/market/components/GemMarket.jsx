@@ -37,9 +37,11 @@ class GemMarket extends React.Component {
     componentDidMount() {
         const {auctions} = this.props;
         console.log("AUCTIONS 1:", auctions, auctions.length);
-        const filteredGems = this.filterGems(auctions);
+        const [filteredGems, minPrice, maxPrice] = this.filterGems(auctions);
         this.sortGems(filteredGems);
         this.setState({
+            minPrice: minPrice,
+            maxPrice: maxPrice,
             allGems: filteredGems,
             scrolledGems: filteredGems.slice(0, 16),
             hasMoreGems: filteredGems.length > 16,
@@ -50,6 +52,7 @@ class GemMarket extends React.Component {
         const {unselectedFilters, selectedSorting, auctions} = this.props;
         console.log("AUCTIONS 2:", auctions, auctions.length);
         if (unselectedFilters !== prevProps.unselectedFilters || auctions !== prevProps.auctions) {
+            console.log("new unselectedFilters", unselectedFilters);
             const [filteredGems, minPrice, maxPrice] = this.filterGems(auctions);
             console.log("Filtered gems", filteredGems);
             this.sortGems(filteredGems);
@@ -89,10 +92,10 @@ class GemMarket extends React.Component {
               return !unselectedFilters.grades.includes(gradeConverter(Number(gem.gradeType))) &&
                 !unselectedFilters.levels.includes("lvl_" + gem.level) &&
                 !unselectedFilters.types.includes(type(gem.color)) &&
-                Number(unselectedFilters.prices[0]).toFixed(2) <= gem.currentPrice.toFixed(2) &&
-                Number(unselectedFilters.prices[1]).toFixed(2) >= gem.currentPrice.toFixed(2);
+                (!isNaN(unselectedFilters.prices[0]) && Number(unselectedFilters.prices[0]).toFixed(2) <= gem.currentPrice.toFixed(2)) &&
+                (!isNaN(unselectedFilters.prices[1]) && Number(unselectedFilters.prices[1]).toFixed(2) >= gem.currentPrice.toFixed(2));
           });
-        return [filteredGems, minPrice, maxPrice];
+        return [filteredGems || [], minPrice, maxPrice];
 
     }
 

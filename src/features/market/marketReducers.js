@@ -43,10 +43,11 @@ export const marketReducer = (
             newFilters = {...unselectedFilters};
             switch (optionType) {
                 case "min-price":
-                    unselectedFilters.prices[0] = filterOption;
+                    console.log("filter option:", filterOption);
+                    newFilters.prices = [filterOption, unselectedFilters.prices[1]];
                     break;
                 case "max-price":
-                    unselectedFilters.prices[1] = filterOption;
+                    newFilters.prices = [unselectedFilters.prices[0], filterOption];
                     break;
                 default:
                     newFilters[optionType] = unselectedFilters[optionType].includes(filterOption) ?
@@ -67,6 +68,7 @@ export const marketReducer = (
     }
 
     if (action.type === SET_DEFAULT_GEM_MARKET_FILTERS) {
+        console.log("DEFAULT_GEM_MARKET_FILTERS");
         return {...state, unselectedGemMarketFilters: defaultFiltersUnselected}
     }
 

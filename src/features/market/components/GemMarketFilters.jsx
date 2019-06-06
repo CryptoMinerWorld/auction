@@ -206,8 +206,14 @@ const Prices = ({unselectedFilters, toggleFilter, maxPrice, minPrice}) => (
                           content={"∧"}
                           style={"margin: 2px 0px"}
                           onClick={() => {
-                              unselectedFilters.prices[0] < unselectedFilters.prices[1] &&
-                              toggleFilter(unselectedFilters.prices[0].toFixed(2) > minPrice ? (+unselectedFilters.prices[0] + 0.01).toFixed(2) : (+minPrice + 0.01).toFixed(2), 'min-price')
+                              const newLowPrice = ((isNaN(unselectedFilters.prices[0]) || Number(unselectedFilters.prices[0]) < minPrice) ?
+                                +minPrice + 0.01 : Number(unselectedFilters.prices[0]) + 0.01).toFixed(2);
+                              if (isNaN(unselectedFilters.prices[1])) {
+                                  console.log("new low, price high:", newLowPrice, unselectedFilters.prices[1]);
+                                  toggleFilter(newLowPrice < maxPrice ? newLowPrice : maxPrice, 'min-price')
+                              } else {
+                                  toggleFilter(newLowPrice < Number(unselectedFilters.prices[1]) ? newLowPrice : unselectedFilters.prices[1], 'min-price')
+                              }
                           }}
           />
           <CutEdgesButton outlineColor={"#E8848E"}
@@ -220,23 +226,23 @@ const Prices = ({unselectedFilters, toggleFilter, maxPrice, minPrice}) => (
                           content={"∨"}
                           style={"margin: 2px 0px"}
                           onClick={() => {
-                              unselectedFilters.prices[0] > 0 &&
-                              toggleFilter(unselectedFilters.prices[0].toFixed(2) > minPrice ?
-                                Math.max(+unselectedFilters.prices[0] - 0.01, 0).toFixed(2) :
-                                Math.max(+minPrice - 0.01, 0).toFixed(2), 'min-price')
+                              const newLowPrice = (isNaN(unselectedFilters.prices[0]) ? minPrice : Number(unselectedFilters.prices[0]) - 0.01).toFixed(2);
+                              toggleFilter(newLowPrice > minPrice ? newLowPrice : minPrice, 'min-price')
                           }}
           />
       </Arrows>
       <Price>
           <span>Low</span>
           <PriceInput
+            id={"low-price-input"}
             type="text"
             placeholder="0"
             className="db"
             style={{color: "#F06F7F"}}
-            value={unselectedFilters.prices[0] > minPrice ? unselectedFilters.prices[0] : minPrice}
-            onChange={e => { !isNaN(e.target.value) &&
-                toggleFilter(Number(e.target.value), 'min-price')
+            value={document.activeElement.id === "low-price-input" ?
+              unselectedFilters.prices[0] :
+              (isNaN(unselectedFilters.prices[0]) || unselectedFilters.prices[0] < minPrice) ? minPrice : unselectedFilters.prices[0]}
+            onChange={e => {toggleFilter(e.target.value, 'min-price')
             }}
           />
       </Price>
@@ -246,13 +252,14 @@ const Prices = ({unselectedFilters, toggleFilter, maxPrice, minPrice}) => (
       <Price>
           <span>High</span>
           <PriceInput
+            id={"high-price-input"}
             type="text"
             className="db"
             style={{color: "#9AE791"}}
-            value={unselectedFilters.prices[1] < maxPrice ? unselectedFilters.prices[1] : maxPrice}
-            onChange={e => { !isNaN(e.target.value) &&
-            toggleFilter(Number(e.target.value), 'max-price')
-            }}
+            value={document.activeElement.id === "high-price-input" ?
+              unselectedFilters.prices[1] :
+              (isNaN(unselectedFilters.prices[1]) || unselectedFilters.prices[1] > maxPrice) ? maxPrice : unselectedFilters.prices[1]}
+            onChange={e => {toggleFilter(e.target.value, 'max-price')}}
           />
       </Price>
       <Arrows>
@@ -266,9 +273,8 @@ const Prices = ({unselectedFilters, toggleFilter, maxPrice, minPrice}) => (
                           content={"∧"}
                           style={"margin: 2px 0px"}
                           onClick={() => {
-                              toggleFilter(unselectedFilters.prices[1].toFixed(2) < maxPrice ?
-                                (+unselectedFilters.prices[1] + 0.01).toFixed(2) :
-                                (+maxPrice + 0.01).toFixed(2), 'max-price')
+                              const newHighPrice = (isNaN(unselectedFilters.prices[1]) ? maxPrice : Number(unselectedFilters.prices[1]) + 0.01).toFixed(2);
+                              toggleFilter(newHighPrice < maxPrice ? newHighPrice : maxPrice, 'max-price')
                           }}
           />
           <CutEdgesButton outlineColor={"#9AE791"}
@@ -281,10 +287,14 @@ const Prices = ({unselectedFilters, toggleFilter, maxPrice, minPrice}) => (
                           content={"∨"}
                           style={"margin: 2px 0px"}
                           onClick={() => {
-                              unselectedFilters.prices[1] > unselectedFilters.prices[0] &&
-                              toggleFilter(unselectedFilters.prices[1].toFixed(2) < maxPrice ?
-                                (+unselectedFilters.prices[1] - 0.01).toFixed(2) :
-                                (+maxPrice - 0.01).toFixed(2), 'max-price')
+                              const newHighPrice = ((isNaN(unselectedFilters.prices[1]) || Number(unselectedFilters.prices[1]) > maxPrice)
+                                ? +maxPrice - 0.01 : Number(unselectedFilters.prices[1]) - 0.01).toFixed(2);
+                              if (isNaN(unselectedFilters.prices[0])) {
+                                  toggleFilter(newHighPrice > minPrice ? newHighPrice : minPrice, 'max-price')
+                              } else {
+                                  console.log("new high", newHighPrice);
+                                  toggleFilter(newHighPrice > Number(unselectedFilters.prices[0]) ? newHighPrice : unselectedFilters.prices[0], 'max-price')
+                              }
                           }}
           />
       </Arrows>
