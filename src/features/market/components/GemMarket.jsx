@@ -206,9 +206,10 @@ export default compose(
 
 const FixedFiltersColumn = styled.div`
     width: 240px;
-    position: fixed;
-    top: 150px;
-    left: 0;
+    float: left;
+    //position: fixed;
+    //top: 150px;
+    //left: 0;
 `;
 
 const Card = styled.aside`

@@ -9,17 +9,16 @@ import Artifact from "../../app/images/dashboard/Artifacts.png";
 import Keys from "../../app/images/dashboard/Keys.png";
 import Tabs from "antd/lib/tabs";
 import GemMarket from "./components/GemMarket";
+import styled from 'styled-components';
+import stripeImage from "../../app/images/stripe.png";
 
 const {TabPane} = Tabs;
-
 require('antd/lib/tabs/style/css');
 require('antd/lib/notification/style/css');
 require('antd/lib/pagination/style/css');
 require('antd/lib/slider/style/css');
 
-
 const select = store => {
-    console.log(' ************* STORE ************* ', store);
     return ({
         auctions: store.market.auctions,
         error: store.marketActions.error,
@@ -56,22 +55,24 @@ class Marketplace extends React.Component {
     }
 
     render() {
-        console.warn('RENDER PROPS: ', this.props);
-        const {auctionsFiltered} = this.props;
         const {tab} = this.state;
 
         return (
-          <div className="bg-off-black white market-card-container" data-testid="market-page">
-              <div className="flex aic jcc">
+          <div className="bg-off-black white market-card-container relative"
+          style={{paddingTop: "72px"}}>
+              <MarketHeader>
                   <h1 className="white f1 b o-90" data-testid="header">
                       Gem Market
                   </h1>
-              </div>
+              </MarketHeader>
               <Tabs
                 activeKey={`${tab}`}
                 animated
-                className="bg-off-black white"
+                className="bg-transparent white"
                 type="card"
+                style={{
+                    zIndex: 2
+                }}
               >
                   <TabPane
                     tab={(
@@ -157,3 +158,20 @@ Marketplace.propTypes = {
 Marketplace.defaultProps = {
     pageNumber: 1,
 };
+
+const MarketHeader = styled.div`
+    background-image: url(${stripeImage});
+    background-position: center center;
+    text-align: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 112px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;

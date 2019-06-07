@@ -7,6 +7,7 @@ import {CutEdgesButton} from "../../../components/CutEdgesButton";
 import {MINED, MINING, NEW_PLOT, NO_GEM, NOT_MINING} from "../plotConstants";
 import {getCountryData} from "../plotActions";
 import buyNowImage from "../../../app/images/thickAndWidePinkButton.png";
+import {blocksToMinutes, getTimeLeftMinutes} from "../../../app/services/PlotService";
 
 const PopupContainer = styled.div`
             display: flex;
@@ -159,7 +160,7 @@ const TierIndicator = styled.div`
 
 const LimitLine = styled.div`
             width: 55px;
-            height: 3px;
+            height: 4px;
             font-weight: bold;
             background-color: red;
             position: absolute;
@@ -172,8 +173,8 @@ const LimitLine = styled.div`
                 display: block;
                 content: "${props => props.block}%";
                 position: absolute;
-                left: 58px;
-                top: -10px;
+                left: 16px;
+                top: 5px;
                 color: red;
             };  
         `;
@@ -187,14 +188,14 @@ const CurrentLevel = styled.div`
             background-color: rgba(53, 53, 53, 0.72);
             position: absolute;
             top: 30px;
-            border-bottom: 3px solid black;
+            border-bottom: 4px solid black;
          
             &:before {
                 display: block;
                 content: "${props => props.block}%";
                 position: absolute;
-                left: 58px;
-                bottom: -10px;
+                left: 16px;
+                bottom: -22px;
                 color: white;
             };        
         `;
@@ -308,6 +309,33 @@ const TierLevel = styled.div`
 }
   };
             }
+            
+            &:after {
+                display: block;
+                content: "${props => props.time}";
+                position: absolute;
+                right: -35px;
+                line-height: 10px;
+                width: 30px;
+                top: ${props =>
+  165 * props.blocks / 100 - 10 + "px"
+  };  
+                color: ${props => {
+    switch (props.tier) {
+        case 0:
+            return "#C99E85";
+        case 1:
+            return "#BA8D83";
+        case 2:
+            return "#AEAEB7";
+        case 3:
+            return "#7A766C";
+        case 4:
+            return "#968181";
+    }
+}
+  };
+            }
         `;
 
 export class PlotsPopup extends Component {
@@ -339,16 +367,17 @@ export class PlotsPopup extends Component {
         }
         const countryId = plot.countryId;
         console.log("SELECTED PLOT:", plot);
+        const timePerTier = plot.gemMines ? blocksToMinutes(plot) : ["", "", "", "", ""];
 
         return (
           <PopupContainer>
               <ProgressStats>
                   <div style={{fontWeight: "bold", marginBottom: "7px"}}>Progress Stats</div>
-                  <TierLevel tier={0} blocks={plot.layerPercentages[0]}/>
-                  <TierLevel tier={1} blocks={plot.layerPercentages[1]}/>
-                  <TierLevel tier={2} blocks={plot.layerPercentages[2]}/>
-                  <TierLevel tier={3} blocks={plot.layerPercentages[3]}/>
-                  <TierLevel tier={4} blocks={plot.layerPercentages[4]}/>
+                  <TierLevel tier={0} blocks={plot.layerPercentages[0]} time={timePerTier[0]}/>
+                  <TierLevel tier={1} blocks={plot.layerPercentages[1]} time={timePerTier[1]}/>
+                  <TierLevel tier={2} blocks={plot.layerPercentages[2]} time={timePerTier[2]}/>
+                  <TierLevel tier={3} blocks={plot.layerPercentages[3]} time={timePerTier[3]}/>
+                  <TierLevel tier={4} blocks={plot.layerPercentages[4]} time={timePerTier[4]}/>
                   {plot.gemMines && <LimitLine block={limitLine}/>}
                   <CurrentLevel block={plot.currentPercentage}/>
               </ProgressStats>
@@ -361,7 +390,7 @@ export class PlotsPopup extends Component {
                           {plot.gemMines &&
                           <div style={{color: "#AEAEB7"}}>Gem Can Mine: {limitLine - plot.currentPercentage} More
                               Blocks</div>}
-                          {plot.gemMines && false && <div>Time Gem Can Mine: 2 days 15 hours</div>}
+                          {plot.gemMines && false && <div>Time Gem Can Mine: {getTimeLeftMinutes(plot)/60} hours</div>}
                           {plot.gemMines &&
                           <div style={{color: "#AEAEB7"}}>Can Gem Finish: {limitLine === 100 ? "Yes" : "No"}</div>}
                           <div>Blocks Processed: {plot.processedBlocks}</div>

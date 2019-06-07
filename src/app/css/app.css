@@ -67,7 +67,6 @@ dt:after {
 
 .market-card-container > .ant-tabs-card > .ant-tabs-content {
   height: auto;
-  margin-top: -16px;
 }
 
 .market-card-container > .ant-tabs-card > .ant-tabs-content > .ant-tabs-tabpane {

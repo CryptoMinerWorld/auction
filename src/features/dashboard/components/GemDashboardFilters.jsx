@@ -21,9 +21,8 @@ const transitionRules = {
 
 const GemFiltersContainer = styled.div`
               bottom: -11px;
-              background-color: rgb(42, 50, 56);
-              padding: 10px 0px 0;
               width: 100%;
+              margin: 5px 0;
 `;
 
 const GradesTypesLevelsContainer = styled.div`
@@ -32,11 +31,15 @@ const GradesTypesLevelsContainer = styled.div`
         flex-direction: row;
         justify-content: space-evenly;
         flex-wrap: wrap;
+        padding: 8px;
+        background-color: #24292F;
+        clip-path: polygon(1% 0, 99% 0, 100% 10%, 100% 90%,99% 100%,1% 100%, 0 90%, 0 10%);
+        -webkit-clip-path: polygon(1% 0, 99% 0, 100% 10%, 100% 90%,99% 100%,1% 100%, 0 90%, 0 10%);
         
         @media(max-width: 1800px) {
             justify-content: center;
             max-width: 640px;
-        }
+        
 `;
 
 const GradeAndLevelBox = styled.div`
@@ -68,7 +71,7 @@ const TypeBox = styled.div`
 `;
 
 const StateBox = styled.div`
-    
+
     @media(max-width: 599px) {
         margin: 1px 3px;
         min-width: 50px;
@@ -107,6 +110,7 @@ const Grades = styled.div`
     display: flex;
     order: 3;
     
+    
     @media(max-width: 1800px) {
         order: 2;
     }
@@ -133,7 +137,12 @@ class GemDashboardFilters extends Component {
                   <GemStates unselectedFilters={unselectedFilters} toggleFilter={applyFilter}/>
                   <SortOptions selectedSort={selectedSort} toggleSort={applySort}/>
                   <GradesTypesLevels unselectedFilters={unselectedFilters} toggleFilter={applyFilter}/>
-                  <div style={{display: "flex", flexDirection: "column", justifyContent: "center", width: "110px"}}>
+                  <div style={{display: "flex", flexDirection: "column", justifyContent: "center", width: "110px",
+                      padding: "8px",
+                      backgroundColor: "#24292F",
+                      clipPath: "polygon(10% 0, 90% 0, 100% 10%, 100% 90%,90% 100%, 10% 100%, 0 90%, 0% 10%)",
+                      WebkitClipPath: "polygon(10% 0, 90% 0, 100% 10%, 100% 90%,90% 100%, 10% 100%, 0 90%, 0% 10%)"
+                  }}>
                       {/*Actions*/}
                       <div style={{margin: "3px 3px", fontWeight: "normal"}}>
                           <CutEdgesButton outlineColor={"orange"}
@@ -165,7 +174,12 @@ class GemDashboardFilters extends Component {
 export default GemDashboardFilters;
 
 const GemStates = ({unselectedFilters, toggleFilter}) => (
-  <div style={{display: "flex", flexWrap: "wrap", maxWidth: "200px", alignItems: "center", alignContent: "center"}}>
+  <div style={{display: "flex", flexWrap: "wrap", maxWidth: "200px", alignItems: "center", alignContent: "center",
+      padding: "8px",
+      backgroundColor: "#24292F",
+      clipPath: "polygon(8% 0, 92% 0, 100% 10%, 100% 90%,92% 100%, 8% 100%, 0 90%, 0% 10%)",
+      WebkitClipPath: "polygon(8% 0, 92% 0, 100% 10%, 100% 90%,92% 100%, 8% 100%, 0 90%, 0% 10%)"
+  }}>
       <StateBox onClick={() => toggleFilter("idle", "states")}>
           <CutEdgesButton outlineColor={() => !unselectedFilters.states.includes("idle") ? "#79D7B9" : "black"}
                           backgroundColor={() => !unselectedFilters.states.includes("idle") ? "#204F3E" : "black"}
@@ -266,14 +280,16 @@ const SortOptions = ({selectedSort, toggleSort}) => {
 
     return (
       <div style={{
-          backgroundColor: "#2A3238",
           display: "flex",
-          padding: "5px",
           fontWeight: "normal",
           borderRadius: "5px",
           minWidth: "270px",
           alignItems: "center",
-          width: "270px"
+          width: "270px",
+          padding: "8px",
+          backgroundColor: "#24292F",
+          clipPath: "polygon(5% 0, 95% 0, 100% 10%, 100% 90%,95% 100%, 5% 100%, 0 90%, 0% 10%)",
+          WebkitClipPath: "polygon(5% 0, 95% 0, 100% 10%, 100% 90%,95% 100%, 5% 100%, 0 90%, 0% 10%)"
       }}>
           <div className="flex col" style={{flex: 2, margin: "0px 2px"}}>
               <CutEdgesButton outlineColor={selectedSort.sortOption === "acq" ? acquiredOutlineColor : "transparent"}

@@ -20,7 +20,7 @@ import styled from "styled-components";
 
 
 const GemFiltersContainer = styled.div`
-              padding: 10px 0px 0;
+              margin-top: -10px;
               width: 100%;
 `;
 

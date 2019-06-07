@@ -23,6 +23,7 @@ import {
     UNBINDING_GEM
 } from "./../plotConstants";
 import {NO_GEM, PROCESSED} from "../plotConstants";
+import {getTimeLeft, getTimeLeftMinutes} from "../../../app/services/PlotService";
 
 // import "../../../app/css/slick.min.css";
 // import "../../../app/css/slick-theme.min.css";
@@ -34,7 +35,6 @@ const select = store => {
         if (!plot) return;
         if (plot.gemMinesId) {
             plot.gemMines = gems.find((gem) => gem.id.toString() === plot.gemMinesId);
-            // console.log(`GEM on PLOT`, plot);
         }
         if (!plot.miningState) plot.miningState = calculateMiningStatus(plot);
     });
@@ -350,7 +350,18 @@ class PlotDisplay extends Component {
                                                     );
                                                 }}>
                                   <div style={miningStatus}>{plot.miningState}</div>
-                                  <div style={miningStatus}>{plot.currentPercentage} Blocks</div>
+                                  {plot.miningState === MINING &&
+                                    <div style={miningStatus}>{getTimeLeftMinutes(plot)}</div>
+                                  }
+                                  {(plot.miningState === NO_GEM || plot.miningState === NEW_PLOT) &&
+                                    <div style={miningStatus}>{plot.currentPercentage} Blocks</div>
+                                  }
+                                  {(plot.miningState !== MINING && plot.miningState !== NO_GEM && plot.miningState !== NEW_PLOT && plot.miningState !== PROCESSING) &&
+                                    <div style={miningStatus}>&nbsp;</div>
+                                  }
+                                  {(plot.miningState === PROCESSING) &&
+                                    <div style={miningStatus}>{plot.currentPercentage - plot.processedBlocks}</div>
+                                  }
                                   <PlotBar plot={plot} onGemClick={(e) => {
                                       e.stopPropagation();
                                       if (!isOwner) return;
