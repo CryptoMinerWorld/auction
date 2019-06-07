@@ -164,13 +164,14 @@ export default class GemService {
             const packed112uint = new BigNumber(notAuctionGem);
             const gemId = packed112uint.dividedToIntegerBy(new BigNumber(2).pow(88)).toNumber();
             const gemPackedProperties = packed112uint.dividedToIntegerBy(new BigNumber(2).pow(40)).modulo(new BigNumber(2).pow(48));
-            const gemEnergeticAge = packed112uint.dividedToIntegerBy(new BigNumber(2).pow(8)).modulo(new BigNumber(2).pow(40));
+            const gemEnergeticAge = packed112uint.dividedToIntegerBy(new BigNumber(2).pow(8)).modulo(new BigNumber(2).pow(32));
             const gemState = packed112uint.modulo(new BigNumber(2).pow(8)).toNumber();
             const gemProperties = unpackGemProperties(gemPackedProperties);
             return {
                 ...gemProperties,
                 id: gemId,
                 energeticAge: gemEnergeticAge,
+                restingEnergy: calculateGemRestingEnergy(gemEnergeticAge),
                 state: gemState,
                 owner: ownerId,
                 auctionIsLive: false, //await this.getGemAuctionIsLive(gemId),
@@ -355,11 +356,10 @@ export const calculateGemName = (color, tokenId) => {
 };
 
 
-export const calculateGemRestingEnergy = (creationTimestamp) => {
-
+export const calculateGemRestingEnergy = (energeticAge) => {
     const linearThreshold = 37193;
-    const ageSeconds = ((Date.now() / 1000) | 0) - creationTimestamp;
-    const ageMinutes = Math.floor(ageSeconds / 60);
+    //const ageSeconds = ((Date.now() / 1000) | 0) - energeticAge;
+    const ageMinutes = energeticAge; //Math.floor(ageSeconds / 60);
     return Math.floor(
       -7e-6 * Math.pow(Math.min(ageMinutes, linearThreshold), 2) +
       0.5406 * Math.min(ageMinutes, linearThreshold)

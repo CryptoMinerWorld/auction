@@ -155,38 +155,42 @@ class App extends Component {
         }
 
         // @notice instantiating auction contract
-        const dutchContract = assistInstance.Contract(new web3.eth.Contract(
-          dutchAuctionABI,
-          process.env.REACT_APP_DUTCH_AUCTION,
-          {
-              from: currentAccountId,
-          },
-        ))
+        const dutchContract = {};
+        // assistInstance.Contract(new web3.eth.Contract(
+        //   dutchAuctionABI,
+        //   process.env.REACT_APP_DUTCH_AUCTION,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ))
 
-        const dutchHelperContract = assistInstance.Contract(new web3.eth.Contract(
-          dutchAuctionHelperABI,
-          process.env.REACT_APP_DUTCH_AUCTION_HELPER,
-          {
-              from: currentAccountId,
-          },
-        ))
+        const dutchHelperContract = {};
+        // assistInstance.Contract(new web3.eth.Contract(
+        //   dutchAuctionHelperABI,
+        //   process.env.REACT_APP_DUTCH_AUCTION_HELPER,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ))
 
-        const presaleContract = assistInstance.Contract(new web3.eth.Contract(presaleABI, process.env.REACT_APP_PRESALE2, {
-            from: currentAccountId,
-        }))
+        const presaleContract = {};
+        // assistInstance.Contract(new web3.eth.Contract(presaleABI, process.env.REACT_APP_PRESALE2, {
+        //     from: currentAccountId,
+        // }))
 
         // @notice instantiating gem contract
         const gemsContract = assistInstance.Contract(new web3.eth.Contract(gemsABI, process.env.REACT_APP_GemERC721, {
             from: currentAccountId,
         }))
 
-        const theCountrySaleContract = assistInstance.Contract(new web3.eth.Contract(
-          countrySaleABI,
-          process.env.REACT_APP_COUNTRY_SALE,
-          {
-              from: currentAccountId,
-          },
-        ))
+        const theCountrySaleContract = {};
+        // assistInstance.Contract(new web3.eth.Contract(
+        //   countrySaleABI,
+        //   process.env.REACT_APP_COUNTRY_SALE,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ))
 
         const theCountryContract = assistInstance.Contract(new web3.eth.Contract(
           countryABI,
@@ -228,29 +232,32 @@ class App extends Component {
           },
         ))
 
-        const silverSaleContract = assistInstance.Contract(new web3.eth.Contract(
-          silverSaleABI,
-          process.env.REACT_APP_SILVER_SALE,
-          {
-              from: currentAccountId,
-          },
-        ))
+        const silverSaleContract = {};
+        // assistInstance.Contract(new web3.eth.Contract(
+        //   silverSaleABI,
+        //   process.env.REACT_APP_SILVER_SALE,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ))
 
-        const silverCouponsContract = assistInstance.Contract(new web3.eth.Contract(
-          silverCouponsABI,
-          process.env.REACT_APP_SILVER_COUPONS,
-          {
-              from: currentAccountId,
-          },
-        ))
+        const silverCouponsContract = {};
+        // assistInstance.Contract(new web3.eth.Contract(
+        //   silverCouponsABI,
+        //   process.env.REACT_APP_SILVER_COUPONS,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ))
 
-        const plotSaleContract = assistInstance.Contract(new web3.eth.Contract(
-          plotSaleABI,
-          process.env.REACT_APP_PLOT_SALE,
-          {
-              from: currentAccountId,
-          },
-        ))
+        const plotSaleContract = {};
+        // assistInstance.Contract(new web3.eth.Contract(
+        //   plotSaleABI,
+        //   process.env.REACT_APP_PLOT_SALE,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ))
 
         const plotContract = assistInstance.Contract(new web3.eth.Contract(
           plotABI,

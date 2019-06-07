@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import gem1 from '../app/images/icons/gem1.png';
 import gem2 from '../app/images/icons/gem2.png';
 import gem3 from '../app/images/icons/gem3.png';
@@ -34,9 +35,7 @@ class Gembox extends PureComponent {
     } = this.props;
     return (
       <div className="flex jcc">
-        <Nugget quality="level" value={level} gem={gem2} market={market} />
-        <Nugget quality="grade" value={this.gradeConverter(grade)} gem={gem1} market={market} />
-        <Nugget quality="rate" value={rate} gem={gem3} market={market} />
+
       </div>
     );
   }
@@ -65,6 +64,23 @@ Gem.defaultProps = {
   image: 1,
   amount: 1,
 };
+
+const GradeBox = styled.div`
+    flex: 1;
+    background-color:;
+`;
+
+const LevelBox = styled.div`
+    flex: 1;
+`;
+
+const RateBox = styled.div`
+    flex: 2;
+`;
+
+const EnergyBox = styled.div`
+    flex: 2;
+`;
 
 const Nugget = ({
   quality, value, gem, market,
