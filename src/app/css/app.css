@@ -65,6 +65,31 @@ dt:after {
   content: ' ..................................................................................';
 }
 
+.market-card-container > .ant-tabs-card > .ant-tabs-content {
+  height: auto;
+}
+
+.market-card-container > .ant-tabs-card > .ant-tabs-content > .ant-tabs-tabpane {
+  background: var(--off-black);
+  /* padding: 16px; */
+}
+
+.market-card-container > .ant-tabs-card > .ant-tabs-bar {
+  border-color: transparent;
+}
+
+.market-card-container > .ant-tabs-card > .ant-tabs-bar .ant-tabs-tab {
+  border-color: transparent !important;
+  background: transparent !important;
+  color: white !important;
+}
+
+.market-card-container > .ant-tabs-card > .ant-tabs-bar .ant-tabs-tab-active {
+  border-color: var(--off-black) !important;
+  background: var(--off-black) !important;
+  color: white !important;
+}
+
 .card-container > .ant-tabs-card > .ant-tabs-content {
   height: auto;
   margin-top: -16px;

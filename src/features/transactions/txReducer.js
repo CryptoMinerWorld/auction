@@ -1,4 +1,11 @@
-import {EVENT_HISTORY_RECEIVED, TX_COMPLETED, TX_CONFIRMATIONS, TX_ERROR, TX_STARTED,} from './txConstants';
+import {
+    EVENT_HISTORY_RECEIVED,
+    NEW_PENDING_TRANSACTION, TRANSACTION_RESOLVED,
+    TX_COMPLETED,
+    TX_CONFIRMATIONS,
+    TX_ERROR,
+    TX_STARTED,
+} from './txConstants';
 
 export default (state = {}, action) => {
     // if (action.type === RESOLVE_PENDING_TRANSACTIONS) {
@@ -81,7 +88,23 @@ export default (state = {}, action) => {
         return {
           ...state,
             transactionHistory: action.payload.transactionHistory,
-            pendingTransactions: action.payload.pendingTransactions
+            pendingTransactions: action.payload.pendingTransactions,
+            failedTransactions: action.payload.resolvedFailedTransactions,
+        }
+    }
+
+    if (action.type === TRANSACTION_RESOLVED) {
+        return {
+            ...state,
+            pendingTransactions: state.pendingTransactions.filter(tx => tx.hash !== action.payload.transactionHash),
+            transactionHistory: [action.payload].concat(state.transactionHistory)
+        }
+    }
+
+    if (action.type === NEW_PENDING_TRANSACTION) {
+        return {
+          ...state,
+            pendingTransactions: [action.payload].concat(state.pendingTransactions),
         }
     }
     return state;

@@ -123,3 +123,63 @@ export const unpackPlotProperties = (packed64PlotProperties) => {
     }
 }
 
+const MINUTES_TO_MINE = [30, 240, 720, 1440, 2880];
+
+const blocksToEnergy = (tier, n) => {
+    // calculate based on the tier number and return
+    // array bounds keep tier index to be valid
+    return MINUTES_TO_MINE[tier] * n;
+}
+
+export const blocksToMinutes = (plot) => {
+    let blocksMinutes = [];
+    const rate = miningRate(plot.gemMines.gradeType, plot.gemMines.gradeValue);
+    for (let tier = 0; tier < 5; tier++) {
+        const minutes = 10e8 * blocksToEnergy(tier, Math.min(Math.max(plot.layerEndPercentages[tier] - plot.currentPercentage, 0), plot.layerPercentages[tier]))/rate;
+        blocksMinutes.push(convertMinutesToTimeString(minutes));
+    }
+    return blocksMinutes;
+}
+
+export const getTimeLeftMinutes = (plot) => {
+    let energyLeft = 0;
+    for (let tier = 0; tier < 5; tier++) {
+        if (plot.gemMines.level - 1 < tier) break;
+        console.log(`tier ${tier} blocks left:`,
+          Math.min(Math.max(plot.layerEndPercentages[tier] - plot.currentPercentage, 0), plot.layerPercentages[tier]));
+        energyLeft += blocksToEnergy(tier, Math.min(Math.max(plot.layerEndPercentages[tier] - plot.currentPercentage, 0), plot.layerPercentages[tier]));
+    }
+    const minutes = 10e8 * energyLeft / miningRate(plot.gemMines.gradeType, plot.gemMines.gradeValue);
+    return convertMinutesToTimeString(minutes);
+}
+
+const convertMinutesToTimeString = (minutes) => {
+    const minutesLeft = calculateTimeLeftInMinutes(minutes);
+    const hoursLeft = calculateTimeLeftInHours(minutes);
+    const daysLeft = calculateTimeLeftInDays(minutes);
+    return daysLeft > 0 ? (daysLeft + "d " + hoursLeft + "h") : (hoursLeft > 0 ? hoursLeft + "h " + minutesLeft + "m" : (minutesLeft + "m"));
+}
+
+const calculateTimeLeftInDays = t => Math.floor(t / (60 * 24));
+const calculateTimeLeftInHours = t => Math.floor((t % (60 * 24))/ 60);
+const calculateTimeLeftInMinutes = t => Math.floor(t % 60);
+
+const miningRate = (gradeType, gradeValue) => {
+
+    // for grades D, C, B: e = [1, 2, 3]
+    console.log("GRADETYPE, GRADE VALUE:", gradeType, gradeValue);
+
+    switch (gradeType - 1) {
+        case 0:
+        case 1:
+        case 2:
+            return 100000000 + 10000000 * (gradeType - 1) + 5 * gradeValue;
+        case 3:
+            return 140000000 + 15 * gradeValue;
+        case 4:
+            return 200000000 + 20 * gradeValue;
+        case 5:
+            return 400000000 + 100 * gradeValue;
+    }
+    return 100000000;
+}

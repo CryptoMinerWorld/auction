@@ -1,5 +1,5 @@
 import {
-    EVENT_HISTORY_RECEIVED,
+    EVENT_HISTORY_RECEIVED, NEW_PENDING_TRANSACTION, TRANSACTION_RESOLVED,
     TX_COMPLETED,
     TX_CONFIRMED,
     TX_ERROR,
@@ -47,13 +47,20 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
     // const resolvedStoredTransactions = [];
     const resolvedStoredTransactionHashes = [];
     const pendingTransactions = [];
+    const resolvedFailedTransactions = [];
     const resolvedStoredTransactions = await Promise.all(storedPendingTransactionDocs.docs.map(async (pendingTxDoc) => {
         const storedTx = pendingTxDoc.data();
         console.log("STORED TRANSACTION:", storedTx);
         const receipt = await web3.eth.getTransactionReceipt(storedTx.hash);
         console.log("TRANSACTION RECEIPT:", receipt);
         if (receipt) {
-            resolvedStoredTransactionHashes.push(receipt.transactionHash);
+
+            if (!receipt.status) {
+                resolvedFailedTransactions.push(storedTx);
+            }
+            else {
+                resolvedStoredTransactionHashes.push(receipt.transactionHash);
+            }
             const txUpdatedStored = await db
               .doc(`transactions/${storedTx.hash}`)
               .update({
@@ -74,6 +81,7 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
         }
     }));
     console.log("RESOLVED STORED TRANSACTIONS HASHES", resolvedStoredTransactionHashes);
+    console.log("RESOLVED STORED TRANSACTIONS HASHES LENGTH", resolvedStoredTransactionHashes.length);
     console.log("RESOLVED STORED TRANSACTIONS", resolvedStoredTransactions);
     console.log("PENDING TRANSACTIONS", pendingTransactions);
 
@@ -90,51 +98,57 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
 
     console.log("MINER EVENT LOGS:", minerEventLogs);
 
-    let transactionHistory = [];
-    if (resolvedStoredTransactionHashes.length > 0) {
-        for (let i = minerEventLogs.length - 1; i >= 0; i--) {
-            console.log("MINER EVENT", minerEventLogs[i]);
-            const eventType = minerEventLogs[i].event;
-            const unseen = resolvedStoredTransactionHashes.includes(minerEventLogs.transactionHash);
-            transactionHistory.push({
-                event: minerEventLogs[i].event,
-                unseen: unseen,
-                returnValues: minerEventLogs[i].returnValues,
-                blockNumber: minerEventLogs[i].blockNumber,
-                transactionHash: minerEventLogs[i].transactionHash,
-            })
-        }
-    }
-    else {
-        transactionHistory = minerEventLogs.reverse();
-    }
+    let transactionHistory = minerEventLogs.reverse();
+    resolvedStoredTransactionHashes.forEach(hash => {
+        const resolvedTx = transactionHistory.find(tx => tx.transactionHash === hash);
+          if (resolvedTx) resolvedTx.unseen = true;
+    })
 
     dispatch({
         type: EVENT_HISTORY_RECEIVED,
-        payload: {transactionHistory, pendingTransactions},
+        payload: {transactionHistory, pendingTransactions, resolvedFailedTransactions},
     })
 }
 
-export const addPendingTransaction = async (transaction) => {
+export const transactionResolved = (event) => async (dispatch, getState) => {
+    const txUpdatedStored = await db
+      .doc(`transactions/${event.transactionHash}`)
+      .update({
+          status: TX_CONFIRMED
+      });
+    dispatch({
+        type: TRANSACTION_RESOLVED,
+        payload: event
+    })
+}
+
+export const addPendingTransaction = (transaction) => async (dispatch, getState) => {
+
+    const newTx = {
+        hash: transaction.hash,
+        userId: transaction.userId,
+        type: transaction.type,
+        status: TX_PENDING,
+        description: transaction.description,
+        body: transaction.body,
+    }
     try {
         const txStored = await db
           .doc(`transactions/${transaction.hash}`)
-          .set({
-              hash: transaction.hash,
-              userId: transaction.userId,
-              type: transaction.type,
-              status: TX_PENDING,
-              description: transaction.description,
-              body: transaction.body,
-          })
+          .set(newTx);
 
-        console.log("NEW TRANSACTION STORED:", txStored);
+        dispatch({
+            type: NEW_PENDING_TRANSACTION,
+            payload: newTx
+        })
+
         //todo: payload: txStored?
         return txStored;
     }
     catch (e) {
         console.error(e);
     }
+
 }
 
 export const setTransactionsSeen = (unseenCount) => async (dispatch, getState) => {

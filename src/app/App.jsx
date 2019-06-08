@@ -118,31 +118,34 @@ class App extends Component {
         // @notice loading web3 when component mounts
         let Web3, web3;
 
-        var bncAssistConfig = {
+
+        //const network = await web3.eth.net.getNetworkType();
+
+        try {
+            Web3 = await getWeb3;
+        } catch (err) {
+            return;
+        }
+        web3 = Web3.web3;
+
+
+        // if (network !== process.env.REACT_APP_NETWORK_TYPE) {
+        //     this.setState({wrongNetwork: true})
+        // }
+
+        let bncAssistConfig = {
             dappId: "e8432341-1602-487b-ba82-c3e2c46fb47d",      // [String] The API key created by step one above
             networkId: 3  // [Integer] The Ethereum network ID your dapp uses.
         };
 
         let assistInstance = assist.init(bncAssistConfig);
 
-        //const network = await web3.eth.net.getNetworkType();
-
         try {
             await assistInstance.onboard();
-            try {
-                Web3 = await getWeb3;
-            } catch (err) {
-                return;
-            }
-            web3 = Web3.web3;
         }
         catch (e) {
             console.log(e.message);
         }
-
-        // if (network !== process.env.REACT_APP_NETWORK_TYPE) {
-        //     this.setState({wrongNetwork: true})
-        // }
 
         const currentAccountId = await web3.eth.getAccounts().then(accounts => accounts[0]);
 

@@ -1,12 +1,13 @@
 import {
+    APPLY_GEM_WORKSHOP_FILTER_OPTION, APPLY_GEM_WORKSHOP_SORTING,
     AUCTION_DETAILS_RECEIVED,
-    DASHBOARD_WAS_FILTERED,
+    DASHBOARD_WAS_FILTERED, DESELECT_ALL_GEM_WORKSHOP_FILTERS,
     FETCH_USER_COUNTRIES,
     FETCH_USER_GEMS_BEGUN,
     ONLY_WANT_TO_SEE_GEMS_IN_AUCTIONS,
     PAGINATE,
     RERENDER_SORT_BOX,
-    SCROLL_GEMS,
+    SCROLL_GEMS, SET_DEFAULT_GEM_WORKSHOP_FILTERS,
     SORT_BOX_RERENDERED, USER_ARTIFACTS_RETRIEVED,
     USER_GEMS_RETRIEVED,
     WANT_TO_SEE_ALL_GEMS,
@@ -15,6 +16,7 @@ import {db} from '../../app/utils/firebase';
 import {completedTx, ErrorTx, startTx} from "../transactions/txActions";
 import {parseTransactionHashFromError} from "../transactions/helpers";
 import {getUserBalance} from "../sale/saleActions";
+import {gradeConverter, type} from "../plots/components/propertyPaneStyles";
 
 
 export const getUserGems = ownerId => async (dispatch, getState) => {
@@ -167,21 +169,46 @@ export const getGemsForDashboardFilter = selection => ({
     payload: selection,
 });
 
-export const rerenderSortBox = () => dispatch => dispatch({type: RERENDER_SORT_BOX});
-export const sortBoxReredendered = () => dispatch => dispatch({type: SORT_BOX_RERENDERED});
-
-export function paginate(pageNumber, pagePerView) {
-    return dispatch => dispatch({type: PAGINATE, payload: [pageNumber, pagePerView]});
-}
-
 export function scrollGems(pageNumber, gemsNumber) {
     return dispatch => dispatch({type: SCROLL_GEMS, payload: [pageNumber, gemsNumber]});
 }
 
 export const addGemsToDashboard = gems => {
-
     return {
         type: 'DASHBOARD_GEMS_READY',
         payload: gems,
     }
+}
+
+
+export const setDefaultFilters = () => {
+    return {
+        type: SET_DEFAULT_GEM_WORKSHOP_FILTERS,
+    }
+}
+
+export const deselectAllFilters = () => {
+    return {
+        type: DESELECT_ALL_GEM_WORKSHOP_FILTERS,
+    }
+}
+
+export const applyFilterOption = (filterOption, optionType) => {
+    return {
+        type: APPLY_GEM_WORKSHOP_FILTER_OPTION,
+        payload: {filterOption, optionType}
+    }
+};
+
+export const applySort = (newSortOption, newSortDirection) => (dispatch, getState) => {
+    const {sortOption, sortDirection} = getState().dashboard.selectedGemWorkshopSorting;
+    if (newSortOption === sortOption && newSortDirection === sortDirection) return;
+
+    dispatch({
+        type: APPLY_GEM_WORKSHOP_SORTING,
+        payload: {
+            sortOption: newSortOption,
+            sortDirection: newSortDirection,
+        }
+    })
 }

@@ -11,6 +11,7 @@ import {gradeConverter} from "../../market/helpers";
 import Icon from "antd/lib/icon";
 import img from '../../../app/images/Profile-Image-Logo-60x60.png';
 import {setTransactionsSeen} from "../txActions";
+import styled from "styled-components";
 
 require('antd/lib/dropdown/style/css');
 require('antd/lib/badge/style/css');
@@ -132,15 +133,32 @@ const geodeTypes = {
 //     }
 // };
 
+const LootRow = styled.div`
+    margin: 1px 0;
+    text-align: left;
+    font-size: 10px;
+`;
 
 const generateMenuItemForTx = tx => {
     switch (tx.event) {
 
         case 'Updated':
+            const lootArray = tx.returnValues['loot'] || [0, 0, 0, 0, 0, 0, 0, 0, 0];
+            const lootEmpty = !(lootArray.find(el => Number(el) > 0));
             return (
               <div>
                   <p>Plot {tx.returnValues['plotId']} was mined.</p>
                   <p>From {tx.returnValues['offsetFrom']} to {tx.returnValues['offsetTo']}</p>
+                  {!lootEmpty && <div>Loot found:</div>}
+                  {Number(lootArray[0]) > 0 && <LootRow>{lootArray[0]} Level 1 Gem{Number(lootArray[0]) > 1 ? "s" : ""}</LootRow>}
+                  {Number(lootArray[1]) > 0 && <LootRow>{lootArray[1]} Level 2 Gem{Number(lootArray[1]) > 1 ? "s" : ""}</LootRow>}
+                  {Number(lootArray[2]) > 0 && <LootRow>{lootArray[2]} Level 3 Gem{Number(lootArray[2]) > 1 ? "s" : ""}</LootRow>}
+                  {Number(lootArray[3]) > 0 && <LootRow>{lootArray[3]} Level 4 Gem{Number(lootArray[3]) > 1 ? "s" : ""}</LootRow>}
+                  {Number(lootArray[4]) > 0 && <LootRow>{lootArray[4]} Level 5 Gem{Number(lootArray[4]) > 1 ? "s" : ""}</LootRow>}
+                  {Number(lootArray[5]) > 0 && <LootRow>{lootArray[5]} Piece{Number(lootArray[5]) > 1 ? "s" : ""} of Silver</LootRow>}
+                  {Number(lootArray[6]) > 0 && <LootRow>{lootArray[6]} Piece{Number(lootArray[6]) > 1 ? "s" : ""} of Gold</LootRow>}
+                  {Number(lootArray[7]) > 0 && <LootRow>{lootArray[7]} Artifacts</LootRow>}
+                  {Number(lootArray[8]) > 0 && <LootRow>{lootArray[8]} Key{Number(lootArray[8]) > 1 ? "s" : ""}</LootRow>}
               </div>
             );
         case 'Bound':
@@ -160,10 +178,35 @@ const generateMenuItemForTx = tx => {
     }
 };
 
-const menu = ({transactionHistory, pendingTransactions}) => (
+const menu = ({transactionHistory, pendingTransactions, failedTransactions}) => (
   <Menu style={{maxHeight: '500px', overflowY: 'auto'}}>
-      {!transactionHistory || !pendingTransactions || (transactionHistory.length === 0 && pendingTransactions.length === 0)
+      {!transactionHistory || !pendingTransactions || !failedTransactions ||
+      (failedTransactions.length === 0 &&transactionHistory.length === 0 && pendingTransactions.length === 0)
       && <Menu.Item>No recent transactions</Menu.Item>}
+      {failedTransactions && failedTransactions.map((tx) => (
+        tx.hash ?
+          <Menu.Item className="flex aic" style={{
+              backgroundColor: '#ffd9d9',
+              borderBottom: "1px solid white"
+          }} key={tx.hash+'failed'}>
+              <Badge count={1}>
+                  <a
+                    href={`https://${process.env.REACT_APP_NETWORK}.io/tx/${tx.hash}`}
+                    key={tx.hash}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                      <div style={{paddingRight: '30px'}}>
+                          <p>Failed</p>
+                          <p>{tx.description}</p>
+                      </div>
+
+                      <Icon type="link" style={{fontSize: '24px', position: 'absolute', top: '20px', right: '0px'}}
+                            className="pointer blue"/>
+                  </a>
+              </Badge>
+          </Menu.Item> : ""
+      ))}
       {pendingTransactions && pendingTransactions.map((tx) => (
         tx.hash ?
           <Menu.Item className="flex aic" style={{
@@ -192,7 +235,7 @@ const menu = ({transactionHistory, pendingTransactions}) => (
         tx.transactionHash ?
           <Menu.Item className="flex aic" style={{
               backgroundColor: '#e4ffe4',
-              borderBottom: "1px solid white"
+              borderBottom: "1px solid white",
           }} key={tx.transactionHash+tx.event}>
               <Badge count={tx.unseen ? 1 : 0}>
                   <a
@@ -225,27 +268,13 @@ const menu = ({transactionHistory, pendingTransactions}) => (
  */
 class AvatarDropdown extends React.Component {
 
-
     state = {
         visibility: false,
     };
 
-    // const [visibility, setVisibility] = useState(false);
-    // const [penidngTxs, setTxs] = useState([]);
-    // useEffect(() => {
-    //     const unsubscribe = fetchAnyPendingTransactions(upperCaseWalletId, setTxs);
-    //     // console.log('listening');
-    //     return () => unsubscribe();
-    // }, []);
-    // // console.log('walletId', walletId);
-    // // console.log('penidngTxs', penidngTxs);
-    //
-
     render() {
-
-        const {user, userImage, userName, upperCaseWalletId, transactions, unseen, transactionHistory, pendingTransactions, handleSetTransactionsSeen} = this.props;
-
-        console.log('USER RENDER:', user);
+        const {user, failedTransactions, transactionHistory, pendingTransactions} = this.props;
+        const unseen = (transactionHistory ? transactionHistory.findIndex(tx => !tx.unseen) : 0) + (failedTransactions ? failedTransactions.length : 0);
 
         return (
           user && (
@@ -255,11 +284,9 @@ class AvatarDropdown extends React.Component {
               onMouseEnter={() => this.setState({visibility: true})}
               onMouseLeave={() => {
                   this.setState({visibility: false})
-                  //todo transactions notifications
-                  //handleSetTransactionsSeen(unseen);
               }}
             >
-                <Dropdown overlay={menu({transactionHistory, pendingTransactions})} visible={this.state.visibility}>
+                <Dropdown overlay={menu({transactionHistory, pendingTransactions, failedTransactions})} visible={this.state.visibility}>
                     <>
                         <Badge count={unseen}>
                             <Avatar src={user.imageURL} className="dib"/>
@@ -288,6 +315,7 @@ const select = store => {
         unseen: store.tx.transactions ? store.tx.transactions.reduce((acc, curTx) => curTx.unseen ? acc + 1 : acc, 0) : 0,
         transactionHistory: store.tx.transactionHistory,
         pendingTransactions: store.tx.pendingTransactions,
+        failedTransactions: store.tx.failedTransactions,
         //hash: store.tx.txHash,
         //txConfirmations: store.tx.txConfirmations,
         //txReceipt: store.tx.txReceipt,

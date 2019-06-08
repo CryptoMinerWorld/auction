@@ -18,7 +18,6 @@ class PlotDashboard extends Component {
         console.warn("USER PLOTS::", userPlots);
         console.warn("USER GEMS::", userGems);
 
-
         return (
           <div className="plots" style={{padding: "20px 0px 30px 0"}}>
               <PlotDisplay userId={this.props.userId} goToGemWorkshop={this.props.goToGemWorkshop}/>

@@ -1,5 +1,6 @@
 import {
-    DASHBOARD_WAS_FILTERED,
+    APPLY_GEM_WORKSHOP_FILTER_OPTION, APPLY_GEM_WORKSHOP_SORTING,
+    DASHBOARD_WAS_FILTERED, DESELECT_ALL_GEM_WORKSHOP_FILTERS,
     FETCH_USER_COUNTRIES,
     FETCH_USER_DETAILS_BEGUN,
     FETCH_USER_DETAILS_FAILED,
@@ -9,7 +10,7 @@ import {
     FETCH_USER_GEMS_SUCCEEDED,
     ONLY_WANT_TO_SEE_GEMS_IN_AUCTIONS,
     PAGINATE,
-    SCROLL_GEMS, USER_ARTIFACTS_RETRIEVED,
+    SCROLL_GEMS, SET_DEFAULT_GEM_WORKSHOP_FILTERS, USER_ARTIFACTS_RETRIEVED,
     USER_DETAILS_RETRIEVED,
     USER_GEMS_RETRIEVED,
     USER_HAS_NO_GEMS_IN_WORKSHOP,
@@ -33,7 +34,9 @@ export default function dashboardReducer(
       paginate: [],
       start: 0,
       end: pageSize,
-      hasMoreGems: false
+      hasMoreGems: false,
+      unselectedGemWorkshopFilters: defaultFiltersUnselected,
+      selectedGemWorkshopSorting: defaultSorting,
   },
   action,
 ) {
@@ -178,16 +181,16 @@ export default function dashboardReducer(
             userGemsPage: null,
         };
     }
-
-    if (action.type === SCROLL_GEMS) {
-        const scrollTo = Math.min(action.payload[0] * action.payload[1], state.userGemsFiltered.length);
-        return {
-            ...state,
-            end: scrollTo,
-            hasMoreGems: scrollTo < state.userGemsFiltered.length,
-            userGemsScrolled: state.userGemsFiltered.slice(0, scrollTo)
-        };
-    }
+    //
+    // if (action.type === SCROLL_GEMS) {
+    //     const scrollTo = Math.min(action.payload[0] * action.payload[1], state.userGemsFiltered.length);
+    //     return {
+    //         ...state,
+    //         end: scrollTo,
+    //         hasMoreGems: scrollTo < state.userGemsFiltered.length,
+    //         userGemsScrolled: state.userGemsFiltered.slice(0, scrollTo)
+    //     };
+    // }
 
     if (action.type === 'GEM_GIFTED') {
         return {
@@ -220,5 +223,65 @@ export default function dashboardReducer(
         return {...state, userGems: newFilter};
     }
 
+    if (action.type === APPLY_GEM_WORKSHOP_FILTER_OPTION) {
+        const {filterOption, optionType} = action.payload;
+        let newFilters;
+        const unselectedFilters = state.unselectedGemWorkshopFilters;
+        if (filterIsClean(unselectedFilters)) {
+            newFilters = {...defaultFiltersUnselected};
+            newFilters[optionType] = allFiltersDeselected[optionType].filter(e => e !== filterOption);
+            console.log("NEW FILTERS:", newFilters);
+        } else {
+            newFilters = {...unselectedFilters};
+            newFilters[optionType] = unselectedFilters[optionType].includes(filterOption) ?
+              unselectedFilters[optionType].filter(e => e !== filterOption) :
+              unselectedFilters[optionType].concat(filterOption);
+        }
+
+        return {
+          ...state, unselectedGemWorkshopFilters: newFilters
+        }
+    }
+
+    if (action.type === APPLY_GEM_WORKSHOP_SORTING) {
+        return {
+          ...state, selectedGemWorkshopSorting: action.payload
+        }
+    }
+
+    if (action.type === SET_DEFAULT_GEM_WORKSHOP_FILTERS) {
+        return {...state, unselectedGemWorkshopFilters: defaultFiltersUnselected}
+    }
+
+    if (action.type === DESELECT_ALL_GEM_WORKSHOP_FILTERS) {
+        return {...state, unselectedGemWorkshopFilters: allFiltersDeselected}
+    }
+
     return state;
+}
+
+const defaultFiltersUnselected = {
+    types: ["Per", "Aqu", "Dia", "Eme", "Top", "Tur"],
+    levels: [],
+    grades: [],
+    states: [],
+};
+
+const allFiltersDeselected = {
+    types: ["Ame", "Gar", "Opa", "Sap", "Rub", "Per", "Aqu", "Dia", "Eme", "Pea", "Top", "Tur"],
+    levels: ["lvl_1", "lvl_2", "lvl_3", "lvl_4", "lvl_5"],
+    grades: ["D", "C", "B", "A", "AA", "AAA"],
+    states: ["mining", "auction", "idle", "stuck"]
+}
+
+const defaultSorting = {
+    sortOption: "acq",
+    sortDirection: "up",
+}
+
+const filterIsClean = (unselectedFilters) => {
+    return unselectedFilters.grades.length === allFiltersDeselected.grades.length &&
+      unselectedFilters.levels.length === allFiltersDeselected.levels.length &&
+      unselectedFilters.types.length === allFiltersDeselected.types.length &&
+      unselectedFilters.states.length === allFiltersDeselected.states.length;
 }

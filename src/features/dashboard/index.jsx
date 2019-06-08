@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Pagination from 'antd/lib/pagination';
 import {connect} from 'react-redux';
 import {compose} from 'redux';
 import {Link, Redirect, withRouter} from 'react-router-dom';
@@ -9,10 +8,10 @@ import notification from 'antd/lib/notification';
 import Tabs from 'antd/lib/tabs';
 import {Spring} from 'react-spring';
 import Icon from 'antd/lib/icon';
-import {setError} from '../../app/appActions';
 import {
     addGemsToDashboard,
-    filterUserGemsOnPageLoad, getUserArtifacts,
+    filterUserGemsOnPageLoad,
+    getUserArtifacts,
     getUserCountries,
     getUserCountriesNumber,
     getUserDetails,
@@ -20,13 +19,10 @@ import {
     scrollGems,
     useCoupon,
 } from './dashboardActions';
-import GemSortBox from './components/GemSortBox';
 import Cards from './components/GemCard';
 import LoadingCard from '../market/components/LoadingCard';
 import NoCard from './components/NoCard';
 import {preLoadAuctionPage} from '../market/marketActions';
-import SortBox from './components/SortBox';
-import {getPlotCount,} from './helpers';
 import CountryDashboard from '../countries/components/Dashboard';
 import Gold from '../../app/images/dashboard/Gold.png';
 import Silver from '../../app/images/dashboard/Silver.png';
@@ -43,6 +39,8 @@ import PlotDashboard from "../plots";
 import InfiniteScroll from "react-infinite-scroller";
 import {getUserPlots, refreshUserPlot} from "../plots/plotActions";
 import {setDashboardEventListeners} from "./dashboardEventListener";
+import {transactionResolved} from "../transactions/txActions";
+import GemDashboard from "./components/GemDashboard";
 
 
 const {TabPane} = Tabs;
@@ -52,25 +50,7 @@ require('antd/lib/notification/style/css');
 require('antd/lib/pagination/style/css');
 require('antd/lib/slider/style/css');
 
-const Grid = styled.article`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-  grid-column-gap: 20px;
-`;
 
-const CardBox = styled.section`
-  display: grid;
-  width: 100%;
-  grid-template-columns: repeat(auto-fill, minMax(280px, 1fr));
-  grid-column-gap: 20px;
-  grid-row-gap: 20px;
-  padding-bottom: 20px;
-`;
-
-const Primary = styled.section`
-  grid-column-start: span 5;
-  width: 100%;
-`;
 
 const RedeemCoupon = styled.div`
     @media(min-width: 900px) {
@@ -90,10 +70,6 @@ const SilverGoldBalance = styled.div`
     }
 `;
 
-const infiniteScrollContainer = {
-    display: "flex",
-    overflow: "hidden",
-}
 
 const select = store => {
     console.log('-------------> dashboard store <---------------', store);
@@ -197,6 +173,7 @@ class Dashboard extends Component {
         const {
             pendingTransactions,
             preSaleContract, match, data, handleGetUserBalance, handleGetUserGems, gemService, countryService, plotService, handleGetUserPlots, handleRefreshUserPlot,
+            handleTransactionResolved,
             auctionService, silverGoldService, userExists, currentUserId, currentUser, handleShowSignInBox, handleGetUserCountries, handleGetUserArtifacts, artifactContract
         } = this.props;
 
@@ -214,15 +191,16 @@ class Dashboard extends Component {
 
         if (plotService) {
             console.log("DASHBOARD PROPS PENDING TRANSACTION (1):", pendingTransactions);
-            setDashboardEventListeners({
+            handleRefreshUserPlot && handleTransactionResolved && currentUserId && setDashboardEventListeners({
                 plotService,
                 updatedEventCallback: handleRefreshUserPlot,
                 releasedEventCallback: handleRefreshUserPlot,
                 boundEventCallback: handleRefreshUserPlot,
-                currentUserId
+                currentUserId,
+                transactionResolved: handleTransactionResolved
             });
             if (currentUserId !== match.params.userId || pendingTransactions) {
-                    handleGetUserPlots();
+                handleGetUserPlots();
             }
         }
 
@@ -270,7 +248,7 @@ class Dashboard extends Component {
             web3, preSaleContract, match,
             handleGetUserGems, gemService, auctionService, silverGoldService, countryService, plotService, handleGetUserPlots, handleGetUserCountries,
             handleGetUserBalance, currentUserId, userExists, currentUser, artifactContract, handleGetUserArtifacts, handleRefreshUserPlot,
-            handleShowSignInBox
+            handleShowSignInBox, handleTransactionResolved
         } = this.props;
 
         if ((userExists !== prevProps.userExists) || (match.params.userId !== prevProps.match.params.userId)) {
@@ -303,17 +281,7 @@ class Dashboard extends Component {
             handleGetUserGems(match.params.userId);
         }
 
-        // if (preSaleContract !== prevProps.preSaleContract && match.params.userId !== 'false') {
-        //     getPlotCount(preSaleContract, match.params.userId)
-        //       .then(plots => {
-        //           this.setState({plots})
-        //       })
-        //       .catch(err => {
-        //           setError(err)
-        //       });
-        // }
-
-        if (plotService && pendingTransactions &&
+        if (plotService && pendingTransactions && handleRefreshUserPlot && handleTransactionResolved && currentUserId &&
           (plotService !== prevProps.plotService ||
             match.params.userId !== prevProps.match.params.userId ||
             pendingTransactions !== prevProps.pendingTransactions)) {
@@ -324,64 +292,19 @@ class Dashboard extends Component {
                 releasedEventCallback: handleRefreshUserPlot,
                 boundEventCallback: handleRefreshUserPlot,
                 currentUserId,
+                transactionResolved: handleTransactionResolved
             })
-            // plotService.minerContract.events.Updated({
-            //     filter: {'_by': currentUserId},
-            //     fromBlock: 'latest'
-            // })
-            //   .on('data', function (event) {
-            //       console.log(">> Updated event fired");
-            //       const eventParams = event.returnValues;
-            //       handleGetUserPlots();
-            //   })
-            //   .on('changed', function (event) {
-            //       console.log('CHANGED EVENT:', event);
-            //   })
-            //   .on('error', console.error);
-            //
-            // plotService.minerContract.events.Released({
-            //     filter: {'_by': currentUserId},
-            //     fromBlock: 'latest'
-            // })
-            //   .on('data', function (event) {
-            //       console.log(">> Released event fired");
-            //       const eventParams = event.returnValues;
-            //       handleGetUserPlots();
-            //   })
-            //   .on('changed', function (event) {
-            //       console.log('CHANGED EVENT:', event);
-            //   })
-            //   .on('error', console.error);
-            //
-            // plotService.minerContract.events.Bound({
-            //     filter: {'_by': currentUserId},
-            //     fromBlock: 'latest'
-            // })
-            //   .on('data', function (event) {
-            //       console.log("BOUND EVENT fired");
-            //       const eventParams = event.returnValues;
-            //       handleGetUserPlots();
-            //   })
-            //   .on('changed', function (event) {
-            //       console.log('CHANGED EVENT:', event);
-            //   })
-            //   .on('error', console.error);
             console.log("Events are set");
         }
-
         if ((silverGoldService !== prevProps.silverGoldService) || match.params.userId !== prevProps.match.params.userId) {
             handleGetUserBalance(match.params.userId);
         }
-
         if ((countryService !== prevProps.countryService) || match.params.userId !== prevProps.match.params.userId) {
             handleGetUserCountries(match.params.userId);
         }
-
-
         if (artifactContract !== prevProps.artifactContract || (match.params.userId !== prevProps.match.params.userId)) {
             handleGetUserArtifacts(match.params.userId);
         }
-
     }
 
     populateDashboard = () => {
@@ -414,11 +337,6 @@ class Dashboard extends Component {
         history.push('/market');
     };
 
-    loadMore(page) {
-        this.props.handleScroll(page, 18);
-        console.log("Load more ", page);
-    }
-
     redirect = redirectPath => this.setState({redirectPath});
 
     render() {
@@ -434,10 +352,8 @@ class Dashboard extends Component {
             handleUseCoupon,
             userExists,
             userCountries,
-          userArtifacts
+            userArtifacts
         } = this.props;
-
-        console.log("USER ARTIFACTS:", userArtifacts);
 
         const {
             plots, tab, redirectPath, alreadyRedirected, dashboardUser
@@ -549,47 +465,7 @@ class Dashboard extends Component {
                     )}
                     key="2"
                   >
-                      <Grid className="ph3">
-                          <Primary>
-                              <div className="flex jcb aic">
-                                  <GemSortBox/>
-                                  {sortBox && <SortBox/>}
-                              </div>
-                              {/*<><><><><><><><><><><><><><><>*/}
-                              <div style={infiniteScrollContainer}>
-                                  <InfiniteScroll
-                                    pageStart={0}
-                                    loadMore={(page) => this.loadMore(page)}
-                                    hasMore={this.props.hasMoreGems}
-                                    loader={<div key={0}>Loading ...</div>}
-                                    style={{width: "100%"}}
-                                    treshold={200}
-                                    useWindow={true}
-                                  >
-                                      <CardBox>
-                                          {loading && [1, 2, 3, 4, 5, 6].map(num => <LoadingCard key={num}/>)}
-                                          {!loading && this.props.userGemsScrolled && this.props.userGemsScrolled.length === 0 && <p>No matching gems found</p>}
-                                          {!loading && this.props.userGemsScrolled && this.props.userGemsScrolled.length >= 0 ? (
-                                              this.props.userGemsScrolled.map(userGem => {
-                                                  //console.log('USER GEM: ', userGem);
-                                                  return (
-                                                    <Link
-                                                      to={`/gem/${userGem.id}`}
-                                                      key={userGem.id}
-                                                      onClick={() => handlePreLoadAuctionPage(userGem)}
-                                                    >
-                                                        <Cards auction={userGem}/>
-                                                    </Link>
-                                                  )
-                                              })
-                                            ) :
-                                            !loading ? <NoCard/> : ""
-                                          }
-                                      </CardBox>
-                                  </InfiniteScroll>
-                              </div>
-                          </Primary>
-                      </Grid>
+                      <GemDashboard/>
                   </TabPane>
                   <TabPane
                     tab={(
@@ -652,6 +528,7 @@ class Dashboard extends Component {
 }
 
 const actions = {
+    handleTransactionResolved: transactionResolved,
     handleRefreshUserPlot: refreshUserPlot,
     handleGetUserArtifacts: getUserArtifacts,
     handleGetUserPlots: getUserPlots,
