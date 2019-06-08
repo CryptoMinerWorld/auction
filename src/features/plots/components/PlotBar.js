@@ -24,7 +24,6 @@ class PlotBar extends Component {
         const {plot} = this.props;
         const barHeight = (this.state.windowHeight && this.state.windowHeight < 730) ? 300 : 450;
         const inAntarctica = plot.countryId === 0;
-
         return (
           <div style={{
               position: "relative",
@@ -121,7 +120,7 @@ const MaxDepthLevel = ({topOffset}) => {
 const Hat = styled.div`
     width: 44px;
     height: 44px;
-    background-color: #664330;
+    background-color: ${props => props.inAntarctica ? "#E3F8FD" : "#664330"};
     transform: rotateX(79deg) rotateZ(45deg);
     position: absolute;
     top: -5px;
@@ -137,12 +136,12 @@ const Layer = ({tier, height, heightEmptied, inAntarctica}) => {
     let backgroundColorLeft, backgroundColorRight;
     switch (tier) {
         case 0:
-            backgroundColorLeft = "#492F1D";
-            backgroundColorRight = "#563621";
+            backgroundColorLeft = inAntarctica ? "#AAE1F2" : "#492F1D";
+            backgroundColorRight = inAntarctica ? "#C2EBF7" : "#563621";
             break;
         case 1:
-            backgroundColorLeft = "#492518";
-            backgroundColorRight = "#592E21";
+            backgroundColorLeft = inAntarctica ? "#4C88C3" : "#492518";
+            backgroundColorRight = inAntarctica ? "#78A7D5" : "#592E21";
             break;
         case 2:
             backgroundColorLeft = "#49484F";

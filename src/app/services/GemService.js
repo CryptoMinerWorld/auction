@@ -164,7 +164,7 @@ export default class GemService {
             const packed112uint = new BigNumber(notAuctionGem);
             const gemId = packed112uint.dividedToIntegerBy(new BigNumber(2).pow(88)).toNumber();
             const gemPackedProperties = packed112uint.dividedToIntegerBy(new BigNumber(2).pow(40)).modulo(new BigNumber(2).pow(48));
-            const gemEnergeticAge = packed112uint.dividedToIntegerBy(new BigNumber(2).pow(8)).modulo(new BigNumber(2).pow(32));
+            const gemEnergeticAge = packed112uint.dividedToIntegerBy(new BigNumber(2).pow(8)).modulo(new BigNumber(2).pow(32)).toNumber();
             const gemState = packed112uint.modulo(new BigNumber(2).pow(8)).toNumber();
             const gemProperties = unpackGemProperties(gemPackedProperties);
             return {
@@ -321,7 +321,7 @@ export const calculateMiningRate = (gradeType, gradeValue) => ({
     4: 40 + (3 * gradeValue) / 200000,
     5: 100 + gradeValue / 40000,
     6: 300 + gradeValue / 10000,
-}[gradeType]);
+}[gradeType].toFixed(1));
 
 export const calculateGradeType = (gradeType) => ({
     1: 'D',
