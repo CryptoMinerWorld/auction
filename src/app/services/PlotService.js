@@ -75,7 +75,7 @@ export default class PlotService {
 
     bindGem = (plotId, gemId, currentUser) => {
         console.log("BIND GEM:",currentUser);
-        return this.minerContract.methods.bind(plotId, gemId, 0).send({
+        return this.minerContract.methods.bind(plotId, gemId).send({
             from: currentUser,
         });
     }
@@ -133,9 +133,10 @@ const blocksToEnergy = (tier, n) => {
 
 export const blocksToMinutes = (plot) => {
     let blocksMinutes = [];
-    const rate = miningRate(plot.gemMines.gradeType, plot.gemMines.gradeValue);
+    // const rate = miningRate(plot.gemMines.gradeType, plot.gemMines.gradeValue);
+    const rate = plot.gemMines.rate;
     for (let tier = 0; tier < 5; tier++) {
-        const minutes = 10e8 * blocksToEnergy(tier, Math.min(Math.max(plot.layerEndPercentages[tier] - plot.currentPercentage, 0), plot.layerPercentages[tier]))/rate;
+        const minutes = 100*blocksToEnergy(tier, Math.min(Math.max(plot.layerEndPercentages[tier] - plot.currentPercentage, 0), plot.layerPercentages[tier]))/rate;
         blocksMinutes.push(convertMinutesToTimeString(minutes));
     }
     return blocksMinutes;
@@ -145,11 +146,9 @@ export const getTimeLeftMinutes = (plot) => {
     let energyLeft = 0;
     for (let tier = 0; tier < 5; tier++) {
         if (plot.gemMines.level - 1 < tier) break;
-        console.log(`tier ${tier} blocks left:`,
-          Math.min(Math.max(plot.layerEndPercentages[tier] - plot.currentPercentage, 0), plot.layerPercentages[tier]));
         energyLeft += blocksToEnergy(tier, Math.min(Math.max(plot.layerEndPercentages[tier] - plot.currentPercentage, 0), plot.layerPercentages[tier]));
     }
-    const minutes = 10e8 * energyLeft / miningRate(plot.gemMines.gradeType, plot.gemMines.gradeValue);
+    const minutes = 100 * energyLeft / plot.gemMines.rate;
     return convertMinutesToTimeString(minutes);
 }
 

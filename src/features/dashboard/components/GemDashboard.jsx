@@ -102,7 +102,7 @@ class GemDashboard extends React.Component {
                 sortingFunction = (p1, p2) => +p1.level - p2.level;
                 break;
             case "REA":
-                sortingFunction = (p1, p2) => +p1.level - p2.level;
+                sortingFunction = (p1, p2) => (+p1.restingEnergy || 0) - (+p2.restingEnergy || 0);
                 break;
         }
         const directionSign = sortDirection === "up" ? 1 : -1;

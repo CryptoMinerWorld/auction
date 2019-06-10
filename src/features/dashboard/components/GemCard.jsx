@@ -85,21 +85,4 @@ class Cards extends Component {
     }
 }
 
-
-
-Cards.propTypes = {
-    auction: PropTypes.shape({
-        id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-        minPrice: PropTypes.number,
-        maxPrice: PropTypes.number,
-        price: PropTypes.number,
-        image: PropTypes.string,
-        owner: PropTypes.string,
-        grade: PropTypes.number,
-        quality: PropTypes.number,
-        rate: PropTypes.number,
-    }).isRequired,
-}
-;
-
 export default Cards;

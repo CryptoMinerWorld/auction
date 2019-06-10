@@ -22,26 +22,37 @@ import styled from "styled-components";
 const GemFiltersContainer = styled.div`
               margin-top: -10px;
               width: 100%;
+              
+      @media(max-width: 800px) {
+            position: fixed;
+            z-index: 2;
+            bottom: 0;
+            left: 0;
+            background-color: black;
+            overflow-x: scroll;
+            margin: 0;
+      }            
 `;
 
-const GradesTypesLevelsContainer = styled.div`
-        align-items: center;
-        display: flex;
+const GemFiltersFlexWrapper = styled.div`
+    display: flex;
+    color: white;
+    flex-direction: column;
+    -webkit-clip-path: polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%);
+    clip-path: polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%); 
+
+    @media(max-width: 800px) {
+        padding: 5px 0;
+        float: left;
         flex-direction: row;
-        justify-content: space-evenly;
-        flex-wrap: wrap;
-        
-        @media(max-width: 1800px) {
-            justify-content: center;
-            max-width: 640px;
-        }
+    }
 `;
+
 
 const GradeAndLevelBox = styled.div`
 
     @media(max-width: 599px) {
-        font-size: 16px;
-        margin: 2px 1px; 
+        margin: 2px 2px; 
     }
 
     font-size: 22px;
@@ -72,7 +83,44 @@ const FilterGroupsContainer = styled.div`
     flex-direction: column;
     margin: 10px 0;
     clip-path: polygon(0 0,95% 0,100% 10%,100% 90%,95% 100%,0 100%);
+    -webkit-clip-path: polygon(0 0,95% 0,100% 10%,100% 90%,95% 100%,0 100%);    
+    
+    @media(max-width: 800px) {
+        margin: 0 10px;
+    }
+`;
+const ActionsFilterGroupsContainer = styled.div`
+    padding: 8px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: #383F45;
+    margin: 10px 0;
+    clip-path: polygon(0 0, 95% 0,100% 10%,100% 90%,95% 100%,0 100%);
     -webkit-clip-path: polygon(0 0,95% 0,100% 10%,100% 90%,95% 100%,0 100%);
+
+    @media(max-width: 800px) {
+        margin: 0 10px;
+        flex-direction: column;
+        width: 120px;
+        justify-content: center;
+    }
+`;
+
+
+const GradesLevelsTypesFilterGroupContainer = styled.div`
+    padding: 8px;
+    background-color: #383F45;
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0;
+    clip-path: polygon(0 0,95% 0,100% 3%,100% 97%,95% 100%,0 100%);
+    -webkit-clip-path: polygon(0 0,95% 0,100% 3%,100% 97%,95% 100%,0 100%);
+    
+    @media(max-width: 800px) {
+        flex-direction: row;
+        margin: 0 10px;
+    }
 `;
 
 class GemMarketFilters extends Component {
@@ -83,14 +131,7 @@ class GemMarketFilters extends Component {
 
         return (
           <GemFiltersContainer>
-              <div
-                className="flex col white"
-                style={{
-                    WebkitClipPath:
-                      'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)',
-                    clipPath:
-                      'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)',
-                }}>
+              <GemFiltersFlexWrapper>
                   <FilterGroupsContainer>
                       <SortOptions selectedSort={selectedSort} toggleSort={applySort}/>
                   </FilterGroupsContainer>
@@ -98,13 +139,12 @@ class GemMarketFilters extends Component {
                       <Prices unselectedFilters={unselectedFilters} toggleFilter={applyFilter} maxPrice={maxPrice}
                               minPrice={minPrice}/>
                   </FilterGroupsContainer>
-                  <FilterGroupsContainer style={{clipPath: "polygon(0 0,95% 0,100% 3%,100% 97%,95% 100%,0 100%)"}}>
+                  <GradesLevelsTypesFilterGroupContainer>
                       <Grades unselectedFilters={unselectedFilters} toggleFilter={applyFilter}/>
                       <Levels unselectedFilters={unselectedFilters} toggleFilter={applyFilter}/>
                       <Types unselectedFilters={unselectedFilters} toggleFilter={applyFilter}/>
-                  </FilterGroupsContainer>
-                  <FilterGroupsContainer
-                    style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
+                  </GradesLevelsTypesFilterGroupContainer>
+                  <ActionsFilterGroupsContainer>
                       <div style={{margin: "3px 3px", fontWeight: "normal", width: "100px"}}>
                           <CutEdgesButton outlineColor={"orange"}
                                           backgroundColor={"black"}
@@ -125,8 +165,8 @@ class GemMarketFilters extends Component {
                                           content={"Default"}
                                           onClick={() => setDefaultFilters()}/>
                       </div>
-                  </FilterGroupsContainer>
-              </div>
+                  </ActionsFilterGroupsContainer>
+              </GemFiltersFlexWrapper>
           </GemFiltersContainer>
         )
     }
@@ -134,8 +174,43 @@ class GemMarketFilters extends Component {
 
 export default GemMarketFilters;
 
+const GradesContainer = styled.div`
+    display: flex;
+    flex-wrap: wrap; 
+    margin: 5px 0;
+    
+    @media(max-width: 800px) {
+        width: 390px;
+        order: 1;
+        margin-right: 10px;
+    }
+`;
+
+const LevelsContainer = styled.div`
+    display: flex;
+    flex-wrap: wrap; 
+    margin: 5px 0;
+    
+    @media(max-width: 800px) {
+        width: 390px;
+        order: 3;
+        margin-left: 10px;
+    }
+`;
+
+const TypesContainer = styled.div`
+    display: flex;
+    flex-wrap: wrap; 
+    margin: 5px 0;
+    
+    @media(max-width: 800px) {
+        width: 390px;
+        order: 2;
+    }
+`;
+
 const Grades = ({unselectedFilters, toggleFilter}) => (
-  <div style={{display: "flex", flexWrap: "wrap", margin: "5px 0"}}>
+  <GradesContainer>
       {[1, 2, 3, 4, 5, 6].map((grade) => {
             const gradeType = gradeConverter(grade);
             return (
@@ -152,11 +227,11 @@ const Grades = ({unselectedFilters, toggleFilter}) => (
               </GradeAndLevelBox>)
         }
       )}
-  </div>
+  </GradesContainer>
 )
 
 const Levels = ({unselectedFilters, toggleFilter}) => (
-  <div style={{display: "flex", flexWrap: "wrap", margin: "5px 0"}}>
+  <LevelsContainer>
       {[1, 2, 3, 4, 5].map((level =>
           <GradeAndLevelBox key={level}
                             onClick={() => toggleFilter("lvl_" + level, "levels")}>
@@ -170,11 +245,11 @@ const Levels = ({unselectedFilters, toggleFilter}) => (
                 content={level}/>
           </GradeAndLevelBox>
       ))}
-  </div>
+  </LevelsContainer>
 )
 
 const Types = ({unselectedFilters, toggleFilter}) => (
-  <div style={{display: "flex", flexWrap: "wrap", margin: "5px 0"}}>
+  <TypesContainer>
       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((typeColor) => {
           const color = typePaneOutlineColors(typeColor);
           const typeName = type(typeColor);
@@ -190,11 +265,20 @@ const Types = ({unselectedFilters, toggleFilter}) => (
                                 content={typeName}/>
             </TypeBox>)
       })}
-  </div>
+  </TypesContainer>
 )
 
+const PricesContainer = styled.div`
+    display: flex;
+    justify-content: space-between;
+    
+    @media(max-width: 800px) {
+        width: 240px;
+    }
+`;
+
 const Prices = ({unselectedFilters, toggleFilter, maxPrice, minPrice}) => (
-  <div style={{display: "flex", justifyContent: "space-between"}}>
+  <PricesContainer>
       <Arrows>
           <CutEdgesButton outlineColor={"#E8848E"}
                           backgroundColor={"#542329"}
@@ -242,7 +326,8 @@ const Prices = ({unselectedFilters, toggleFilter, maxPrice, minPrice}) => (
             value={document.activeElement.id === "low-price-input" ?
               unselectedFilters.prices[0] :
               (isNaN(unselectedFilters.prices[0]) || unselectedFilters.prices[0] < minPrice) ? minPrice : unselectedFilters.prices[0]}
-            onChange={e => {toggleFilter(e.target.value, 'min-price')
+            onChange={e => {
+                toggleFilter(e.target.value, 'min-price')
             }}
           />
       </Price>
@@ -259,7 +344,9 @@ const Prices = ({unselectedFilters, toggleFilter, maxPrice, minPrice}) => (
             value={document.activeElement.id === "high-price-input" ?
               unselectedFilters.prices[1] :
               (isNaN(unselectedFilters.prices[1]) || unselectedFilters.prices[1] > maxPrice) ? maxPrice : unselectedFilters.prices[1]}
-            onChange={e => {toggleFilter(e.target.value, 'max-price')}}
+            onChange={e => {
+                toggleFilter(e.target.value, 'max-price')
+            }}
           />
       </Price>
       <Arrows>
@@ -298,7 +385,7 @@ const Prices = ({unselectedFilters, toggleFilter, maxPrice, minPrice}) => (
                           }}
           />
       </Arrows>
-  </div>
+  </PricesContainer>
 )
 
 
@@ -327,16 +414,23 @@ const PriceInput = styled.input`
     text-align: right;
 `;
 
+const SortOptionsContainer = styled.div`
+      display: flex;
+      font-weight: bold;
+      font-size: 18px;
+      align-items: center;
+      width: 224px;
+      
+      @media(max-width: 800px) {
+        width: 215px;
+        font-size: 14px;
+      }
+`;
+
 
 const SortOptions = ({selectedSort, toggleSort}) => {
     return (
-      <div style={{
-          display: "flex",
-          fontWeight: "bold",
-          borderRadius: "5px",
-          alignItems: "center",
-          width: "224px"
-      }}>
+      <SortOptionsContainer>
           <div className="flex col" style={{flex: 2, margin: "0px 4px"}}>
               <CutEdgesButton outlineColor={selectedSort.sortOption === "price" ? acquiredOutlineColor : "transparent"}
                               backgroundColor={selectedSort.sortOption === "price" ? acquiredPaneColor : "black"}
@@ -344,7 +438,6 @@ const SortOptions = ({selectedSort, toggleSort}) => {
                               edgeSizes={[5, 10]}
                               outlineWidth={2}
                               height={32}
-                              fontSize={18}
                               content={"Price"}
                               onClick={() => toggleSort("price", selectedSort.sortDirection)}
                               otherStyles={"margin: 2px 0;"}/>
@@ -354,7 +447,6 @@ const SortOptions = ({selectedSort, toggleSort}) => {
                               edgeSizes={[5, 10]}
                               outlineWidth={2}
                               height={32}
-                              fontSize={18}
                               content={"MRB"}
                               onClick={() => toggleSort("mrb", selectedSort.sortDirection)}
                               otherStyles={"margin: 2px 0;"}/>
@@ -367,7 +459,6 @@ const SortOptions = ({selectedSort, toggleSort}) => {
                 edgeSizes={[5, 10]}
                 outlineWidth={2}
                 height={32}
-                fontSize={18}
                 content={"REA"}
                 onClick={() => toggleSort("REA", selectedSort.sortDirection)}
                 otherStyles={"margin: 2px 0;"}/>
@@ -377,7 +468,6 @@ const SortOptions = ({selectedSort, toggleSort}) => {
                               edgeSizes={[5, 10]}
                               outlineWidth={2}
                               height={32}
-                              fontSize={18}
                               content={"Level"}
                               onClick={() => toggleSort("level", selectedSort.sortDirection)}
                               otherStyles={"margin: 2px 0;"}/>
@@ -389,7 +479,6 @@ const SortOptions = ({selectedSort, toggleSort}) => {
                               edgeSizes={15}
                               outlineWidth={1}
                               height={30}
-                              fontSize={18}
                               content={"∧"}
                               style={"margin: 2px 0px"}
                               onClick={() => toggleSort(selectedSort.sortOption, "up")}/>
@@ -399,11 +488,10 @@ const SortOptions = ({selectedSort, toggleSort}) => {
                               edgeSizes={15}
                               outlineWidth={1}
                               height={30}
-                              fontSize={18}
                               content={"∨"}
                               style={"margin: 2px 0px"}
                               onClick={() => toggleSort(selectedSort.sortOption, "down")}/>
           </div>
-      </div>
+      </SortOptionsContainer>
     )
 }

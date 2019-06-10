@@ -117,7 +117,7 @@ export const getOwnerDataByOwnerId = async ownerId => {
 export const createAuction = (payload, turnLoaderOff, history) => (dispatch, getState) => {
     const {auth, app} = getState();
     const currentAccount = auth.currentUserId;
-    const {gemsContractInstance} = app;
+    const {dutchContractInstance} = app;
 
     const {
         tokenId, duration, startPrice, endPrice,
@@ -125,7 +125,7 @@ export const createAuction = (payload, turnLoaderOff, history) => (dispatch, get
 
     console.log('payload_auction', payload);
 
-    createAuctionHelper(tokenId, duration, startPrice, endPrice, gemsContractInstance, currentAccount)
+    createAuctionHelper(tokenId, duration, startPrice, endPrice, dutchContractInstance, currentAccount)
       .then(({deadline, minPrice, maxPrice}) => {
           // console.log('deadline, minPrice, maxPrice ', deadline, minPrice, maxPrice);
           // db.collection('stones')

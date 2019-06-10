@@ -1,6 +1,20 @@
 {
-  "contractName": "DutchAuctionHelper",
+  "contractName": "TokenHelper",
   "abi": [
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "HELPER_UID",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
     {
       "constant": true,
       "inputs": [
@@ -50,190 +64,35 @@
       "payable": false,
       "stateMutability": "view",
       "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "auction",
-          "type": "address"
-        },
-        {
-          "name": "token",
-          "type": "address"
-        },
-        {
-          "name": "owner",
-          "type": "address"
-        }
-      ],
-      "name": "getCountryCollectionByOwner",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint224[]"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "auction",
-          "type": "address"
-        },
-        {
-          "name": "token",
-          "type": "address"
-        }
-      ],
-      "name": "getAllCountries",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint224[]"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "auction",
-          "type": "address"
-        },
-        {
-          "name": "token",
-          "type": "address"
-        },
-        {
-          "name": "tokenId",
-          "type": "uint32"
-        }
-      ],
-      "name": "getTokenSaleStatus",
-      "outputs": [
-        {
-          "name": "t0",
-          "type": "uint32"
-        },
-        {
-          "name": "t1",
-          "type": "uint32"
-        },
-        {
-          "name": "t",
-          "type": "uint32"
-        },
-        {
-          "name": "p0",
-          "type": "uint128"
-        },
-        {
-          "name": "p1",
-          "type": "uint128"
-        },
-        {
-          "name": "p",
-          "type": "uint128"
-        },
-        {
-          "name": "owner",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "auction",
-          "type": "address"
-        },
-        {
-          "name": "token",
-          "type": "address"
-        },
-        {
-          "name": "tokenId",
-          "type": "uint32"
-        }
-      ],
-      "name": "getSaleStatusPacked",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint184"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "_t0",
-          "type": "uint32"
-        },
-        {
-          "name": "_t1",
-          "type": "uint32"
-        },
-        {
-          "name": "_t",
-          "type": "uint32"
-        },
-        {
-          "name": "_p0",
-          "type": "uint128"
-        },
-        {
-          "name": "_p1",
-          "type": "uint128"
-        }
-      ],
-      "name": "price",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint128"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "pure",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "p",
-          "type": "uint128"
-        }
-      ],
-      "name": "ceil1000000000",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint128"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "pure",
-      "type": "function"
     }
   ],
-  "schemaVersion": "2.0.0",
-  "updatedAt": "2019-03-05T12:07:29.321Z"
+  "schemaVersion": "3.0.9",
+  "updatedAt": "2019-06-10T01:45:18.151Z",
+  "devdoc": {
+    "author": "Basil Gorin",
+    "methods": {
+      "getAllGems(address,address)": {
+        "details": "Similarly to `GemERC721.getPackedCollection`, returns packed collection     of all the tokens being sold currently on the auction",
+        "params": {
+          "auction": "DutchAuction instance, providing `owner(address, uint32) => address` interface",
+          "token": "GemERC721 instance, providing `getPackedCollection(owner) => uint200` interface"
+        },
+        "return": "packed tokens collection structure, containing:     index 3i - 200 low bits       gem ID (24 bits)       gem color (8 bits)       gem level (8 bits)       gem grade (32 bits)       gem plots mined (24 bits)       gem blocks mined (32 bits)       gem energetic age (32 bits)       gem state (8 low bits)     index 3i + 1 – 256 bits       auction start time, t0, 32 bits       auction end time, t1, 32 bits       starting price, p0, 96 bits       final price, p1, 96 bits     index 3i + 2       current price, p, 96 bits       token owner, 160 bits"
+      },
+      "getGemCollectionByOwner(address,address,address)": {
+        "details": "Similarly to `GemERC721.getPackedCollection`, returns packed collection     of tokens for a particular owner",
+        "params": {
+          "auction": "DutchAuction instance, providing `owner(address, uint256) => address` interface",
+          "owner": "address to query tokens for",
+          "token": "GemERC721 instance, providing `getPackedCollection(owner) => uint200` interface"
+        },
+        "return": "packed tokens collection structure, containing:     index 3i - 200 low bits       gem ID (24 bits)       gem color (8 bits)       gem level (8 bits)       gem grade (32 bits)       gem plots mined (24 bits)       gem blocks mined (32 bits)       gem energetic age (32 bits)       gem state (8 low bits)     index 3i + 1 – 256 bits       auction start time, t0, 32 bits       auction end time, t1, 32 bits       starting price, p0, 96 bits       final price, p1, 96 bits     index 3i + 2       current price, p, 96 bits       token owner, 160 bits"
+      }
+    },
+    "title": "Token Helper"
+  },
+  "userdoc": {
+    "methods": {},
+    "notice": "Token Helper provides several convenient read-only methods to optimize     work with ERC721 and ERC20 tokens"
+  }
 }

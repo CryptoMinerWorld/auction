@@ -34,6 +34,7 @@ import PlotSale from './ABI/PlotSale';
 import Plot from './ABI/PlotERC721';
 import Artifact from './ABI/ArtifactERC20';
 import Miner from './ABI/Miner';
+import BalanceProxy from './ABI/BalanceProxy';
 import GemService from "./services/GemService";
 import AuctionService from "./services/AuctionService";
 import SilverGoldService from "./services/SilverGoldService";
@@ -76,6 +77,7 @@ const plotSaleABI = PlotSale.abi;
 const plotABI = Plot.abi;
 const minerABI = Miner.abi;
 const artifactABI = Artifact.abi;
+const balanceABI = BalanceProxy.abi;
 
 const StickyHeader = styled.div`
   position: -webkit-sticky; /* Safari */
@@ -158,23 +160,21 @@ class App extends Component {
         }
 
         // @notice instantiating auction contract
-        const dutchContract = {};
-        // assistInstance.Contract(new web3.eth.Contract(
-        //   dutchAuctionABI,
-        //   process.env.REACT_APP_DUTCH_AUCTION,
-        //   {
-        //       from: currentAccountId,
-        //   },
-        // ))
+        const dutchContract = assistInstance.Contract(new web3.eth.Contract(
+          dutchAuctionABI,
+          process.env.REACT_APP_DUTCH_AUCTION,
+          {
+              from: currentAccountId,
+          },
+        ))
 
-        const dutchHelperContract = {};
-        // assistInstance.Contract(new web3.eth.Contract(
-        //   dutchAuctionHelperABI,
-        //   process.env.REACT_APP_DUTCH_AUCTION_HELPER,
-        //   {
-        //       from: currentAccountId,
-        //   },
-        // ))
+        const dutchHelperContract = assistInstance.Contract(new web3.eth.Contract(
+          dutchAuctionHelperABI,
+          process.env.REACT_APP_DUTCH_AUCTION_HELPER,
+          {
+              from: currentAccountId,
+          },
+        ))
 
         const presaleContract = {};
         // assistInstance.Contract(new web3.eth.Contract(presaleABI, process.env.REACT_APP_PRESALE2, {
@@ -234,6 +234,11 @@ class App extends Component {
               from: currentAccountId,
           },
         ))
+
+        const balanceContract = new web3.eth.Contract(
+          balanceABI,
+          process.env.REACT_APP_BALANCE_PROXY
+        );
 
         const silverSaleContract = {};
         // assistInstance.Contract(new web3.eth.Contract(
@@ -305,7 +310,8 @@ class App extends Component {
             plotContract,
             plotSaleContract,
             minerContract,
-            artifactContract
+            artifactContract,
+          balanceContract
         ])
           .then(
             ([
@@ -325,7 +331,8 @@ class App extends Component {
                  plotContract,
                  plotSaleContract,
                  minerContract,
-                 artifactContract
+                 artifactContract,
+              balanceContract
              ]) => {
                 client.writeData({
                     data: {
@@ -335,7 +342,7 @@ class App extends Component {
 
                 const gemService = new GemService(gemsContractInstance, web3, dutchAuctionContractInstance);
                 const auctionService = new AuctionService(dutchAuctionContractInstance, dutchAuctionHelperContractInstance, gemsContractInstance);
-                const silverGoldService = new SilverGoldService(silverSaleContract, silverContract, goldContract, refPointsTrackerContract, silverCouponsContract);
+                const silverGoldService = new SilverGoldService(balanceContract, refPointsTrackerContract, silverCouponsContract);
                 const countryService = new CountryService(null, countryContract);
                 const plotService = new PlotService(plotContract, plotSaleContract, minerContract);
 

@@ -136,7 +136,7 @@ class TradingBox extends PureComponent {
             plotMined = this.props.userPlots.find(plot => plot && plot.gemMinesId === this.props.gem.id);
         }
         const unprocessed = gemMines && plotMined && (plotMined.processedBlocks < plotMined.currentPercentage);
-
+        console.log("UNprocessed:", unprocessed);
         return (
           <>
               {showUpgrade && useMetal && (

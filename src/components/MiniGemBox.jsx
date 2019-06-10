@@ -43,6 +43,15 @@ class Gembox extends PureComponent {
 
 export default Gembox;
 
+const formatRestingEnergy = (energy) => {
+    return calculateEnergyInWeeks(energy) + "-" + calculateEnergyInDays(energy) + "-" + calculateEnergyInHours(energy)
+};
+
+const calculateEnergyInWeeks = t => Math.floor(t / (60 * 24 * 7))
+const calculateEnergyInDays = t => Math.floor((t % (60 *24 * 7)) / (60 * 24));
+const calculateEnergyInHours = t => Math.floor((t % (60 * 24)) / 60);
+
+
 export const Gem = ({ quality, image, amount }) => (
   <div className="flex">
     <img src={image} alt={quality} className="h2 w-auto" />

@@ -91,7 +91,7 @@ class GemSelectionCard extends Component {
                                           outlineWidth={1}
                                           height={32}
                                           fontSize={11}
-                                          content={auction.rate.toFixed(2) + "%"}/>
+                                          content={auction.rate + "%"}/>
                       </div>
                   </div>
               </div>

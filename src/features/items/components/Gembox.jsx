@@ -186,7 +186,7 @@ class Gembox extends PureComponent {
               }
               {!mobileHeader
               && gem.gradeType >= 4
-              && gem.restingEnergyMinutes > 0 && (
+              && gem.restingEnergy > 0 && (
                 <div
                   className="w-100"
                   style={{
@@ -206,7 +206,7 @@ class Gembox extends PureComponent {
                           style={{width: '25rem'}}
                         >
                             {moment
-                              .duration(gem.restingEnergyMinutes, 'minutes')
+                              .duration(gem.restingEnergy, 'minutes')
                               .format('w [weeks], d [days], h [hours], m [minutes]')}
                         </p>
                     </div>
@@ -256,7 +256,7 @@ export const Gem = ({quality, image, amount}) => (
         style={{gridRow: 2, gridColumn: 2}}
         className={`ttu f5 mt2 o-50 black tc pt1 b ${quality === 'grade' && 'pr2'}`}
       >
-          {quality === 'rate' ? `+${amount && amount.toFixed(2)}%` : amount}
+          {quality === 'rate' ? `+${amount}%` : amount}
       </p>
   </Feature>
 );

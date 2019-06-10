@@ -23,33 +23,7 @@ export default class GemService {
         }
     }
 
-    getGemOwner = async (tokenId) => {
-        return (await this.contract.methods
-          .ownerOf(tokenId)
-          .call())
-    }
-
-    getGemCreationTime = async (tokenId) => {
-        const blockNumber = await this.contract.methods
-          .getCreationTime(tokenId)
-          .call();
-
-        const {timestamp} = await transform(blockNumber, this.web3);
-        return timestamp;
-    }
-
     getGem = async (tokenId) => {
-        // const [gemProperties, gemOwner, gemCreationTime] = await Promise.all(
-        //   [
-        //       this.getGemProperties(tokenId),
-        //       this.getGemOwner(tokenId),
-        //       this.getGemCreationTime(tokenId)
-        //   ]);
-
-        //console.log(1111111111, gemProperties, gemOwner, gemCreationTime);
-
-        console.log('GEM WILL BE UNPACKED: ');
-
         try {
             const gem = await this.getPackedGem(tokenId);
             console.log('GEM UNPACKED: ', gem);
@@ -62,7 +36,7 @@ export default class GemService {
                 image: await getGemImage(gem, tokenId),
                 name: calculateGemName(gem.color, tokenId),
                 rate: calculateMiningRate(gem.gradeType, gem.gradeValue),
-                restingEnergyMinutes: calculateGemRestingEnergy(gem.creationTime)
+                restingEnergy: gem.gradeType >= 4 ? calculateGemRestingEnergy(gem.age, gem.modifiedTime) : 0
             }
             console.log('FINAL GEM:', finalGem);
             return finalGem;
@@ -92,34 +66,30 @@ export default class GemService {
           .dividedToIntegerBy(new BigNumber(2).pow(216))
           .modulo(0x100)
           .toNumber();
-        const levelModifiedTime = high256
-          .dividedToIntegerBy(new BigNumber(2).pow(184))
-          .modulo(0x100000000).toNumber();
         const gradeType = high256
-          .dividedToIntegerBy(new BigNumber(2).pow(152 + 24))
+          .dividedToIntegerBy(new BigNumber(2).pow(184 + 24))
           .modulo(0x100)
           .toNumber();
         const gradeValue = high256
-          .dividedToIntegerBy(new BigNumber(2).pow(152))
+          .dividedToIntegerBy(new BigNumber(2).pow(184))
           .modulo(0x1000000).toNumber();
-        const gradeModifiedTime = high256
-          .dividedToIntegerBy(new BigNumber(2).pow(112))
+        const plotsMined = high256
+          .dividedToIntegerBy(new BigNumber(2).pow(128))
+          .modulo(new BigNumber(2).pow(24)).toNumber();
+        const blocksMined = high256
+          .dividedToIntegerBy(new BigNumber(2).pow(96))
           .modulo(new BigNumber(2).pow(32)).toNumber();
         const age = high256
-          .dividedToIntegerBy(new BigNumber(2).pow(88))
-          .modulo(new BigNumber(2).pow(32)).toNumber();
-        const ageModifiedTime = high256
-          .dividedToIntegerBy(new BigNumber(2).pow(56))
+          .dividedToIntegerBy(new BigNumber(2).pow(64))
           .modulo(new BigNumber(2).pow(32)).toNumber();
         const state = high256
           .dividedToIntegerBy(new BigNumber(2).pow(32))
-          .modulo(new BigNumber(2).pow(24)).toNumber();
+          .modulo(new BigNumber(2).pow(32)).toNumber();
+        const stateModifiedTime = high256.modulo(new BigNumber(2).pow(32)).toNumber();
 
         const owner = '0x' + low256.modulo(new BigNumber(2).pow(160)).toString(16).padStart(40, "0");
         const creationTime = low256.dividedToIntegerBy(new BigNumber(2).pow(224)).modulo(0x100000000).toNumber();
-
-        //console.log(333333333, levelModifiedTime.timestamp, gradeModifiedTime.timestamp, creationTime.timestamp,
-        // Date.now());
+        const ownedTime = low256.dividedToIntegerBy(new BigNumber(2).pow(160)).modulo(new BigNumber(2).pow(32)).toNumber();
 
         return {
             color,
@@ -127,10 +97,13 @@ export default class GemService {
             gradeType,
             gradeValue,
             owner,
+            ownedTime,
             state,
             age,
+            blocksMined,
+            plotsMined,
             plotId,
-            creationTime: Math.max(creationTime, gradeModifiedTime, levelModifiedTime)
+            modifiedTime: Math.max(creationTime, stateModifiedTime)
         }
     }
 
@@ -161,18 +134,23 @@ export default class GemService {
     getOwnerGems = async (ownerId) => {
         const notAuctionGemsUserOwns = await this.contract.methods.getPackedCollection(ownerId).call();
         return notAuctionGemsUserOwns.map(notAuctionGem => {
-            const packed112uint = new BigNumber(notAuctionGem);
-            const gemId = packed112uint.dividedToIntegerBy(new BigNumber(2).pow(88)).toNumber();
-            const gemPackedProperties = packed112uint.dividedToIntegerBy(new BigNumber(2).pow(40)).modulo(new BigNumber(2).pow(48));
-            const gemEnergeticAge = packed112uint.dividedToIntegerBy(new BigNumber(2).pow(8)).modulo(new BigNumber(2).pow(32)).toNumber();
-            const gemState = packed112uint.modulo(new BigNumber(2).pow(8)).toNumber();
+            const packed200uint = new BigNumber(notAuctionGem);
+            const gemId = packed200uint.dividedToIntegerBy(new BigNumber(2).pow(176)).toNumber();
+            const gemPackedProperties = packed200uint.dividedToIntegerBy(new BigNumber(2).pow(128)).modulo(new BigNumber(2).pow(48));
+            const gemPlotsMined = packed200uint.dividedToIntegerBy(new BigNumber(2).pow(104)).modulo(new BigNumber(2).pow(24));
+            const gemBlocksMined = packed200uint.dividedToIntegerBy(new BigNumber(2).pow(72)).modulo(new BigNumber(2).pow(32));
+            const gemAge = packed200uint.dividedToIntegerBy(new BigNumber(2).pow(40)).modulo(new BigNumber(2).pow(32)).toNumber();
+            const gemModifiedTime = packed200uint.dividedToIntegerBy(0x100).modulo(new BigNumber(2).pow(32)).toNumber();
+            const gemState = packed200uint.modulo(new BigNumber(2).pow(8)).toNumber();
             const gemProperties = unpackGemProperties(gemPackedProperties);
             return {
                 ...gemProperties,
                 id: gemId,
-                energeticAge: gemEnergeticAge,
-                restingEnergy: calculateGemRestingEnergy(gemEnergeticAge),
+                age: gemAge,
+                restingEnergy: gemProperties.gradeType >= 4 ? calculateGemRestingEnergy(gemAge, gemModifiedTime) : 0,
                 state: gemState,
+                blocksMined: gemBlocksMined,
+                plotsMined: gemPlotsMined,
                 owner: ownerId,
                 auctionIsLive: false, //await this.getGemAuctionIsLive(gemId),
                 name: calculateGemName(gemProperties.color, gemId),
@@ -356,21 +334,12 @@ export const calculateGemName = (color, tokenId) => {
 };
 
 
-export const calculateGemRestingEnergy = (energeticAge) => {
+export const calculateGemRestingEnergy = (age, modifiedTime) => {
     const linearThreshold = 37193;
-    //const ageSeconds = ((Date.now() / 1000) | 0) - energeticAge;
-    const ageMinutes = energeticAge; //Math.floor(ageSeconds / 60);
+    const ageMinutes = ((Date.now() / 1000) - modifiedTime)/60 + age;
     return Math.floor(
       -7e-6 * Math.pow(Math.min(ageMinutes, linearThreshold), 2) +
       0.5406 * Math.min(ageMinutes, linearThreshold)
       + 0.0199 * Math.max(ageMinutes - linearThreshold, 0),
     );
 }
-
-
-const transform = (result, web3) => web3.eth.getBlock(result, (err, results) => {
-    if (err) {
-        return err;
-    }
-    return results;
-});

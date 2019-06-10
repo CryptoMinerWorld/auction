@@ -30,7 +30,7 @@ export class SelectedGemsPopup extends Component {
                   <Col flex={1} style={{alignItems: "flex-start"}}>
                       <div>{gem.name}</div>
                       <MiningStatus miningState={plot.miningState}>Status: {plot.miningState}</MiningStatus>
-                      <div style={{color: "#B37DDC"}}>Mining Rate Bonus: {plot.gemMines.rate.toFixed(2)}%</div>
+                      <div style={{color: "#B37DDC"}}>Mining Rate Bonus: {plot.gemMines.rate}%</div>
                       {/*<div style={{color: "#8759AE"}}>MRB + Artifact: {plot.gemMines.rate.toFixed(2) + 20}% (+20)</div>*/}
                       <div style={{color: "#98C7FF"}}>Grade: {calculateGradeType(gem.gradeType)}</div>
                       <div style={{color: "#D02B35"}}>Level (Age): {gem.level /*todo kid*/}</div>

@@ -144,7 +144,7 @@ class DescriptionBox extends PureComponent {
                         bgColour="bg-dark-purple"
                         gem={gem3}
                         category="mining rate Bonus"
-                        amount={`+${rate.toFixed(2)}%`}
+                        amount={`+${rate}%`}
                         description="This is the percentage of how much faster a Gem mines compared to the base speed. +100% is twice as fast as base, +400% is five times faster. All Mining Rate Bonuses are tied to Grades. Grades give you a general sense of how how fast a Gem mines but Mining Rate Bonuses tells you exactly how much fast it is."
                       />
                     </ReactCSSTransitionGroup>

@@ -65,6 +65,7 @@ export default class UpgradeComponent extends React.Component {
     }
 
     render() {
+        console.log("Thi props:", this.props);
         const {metal, metalAvailable, handleUpgradeGem, gem, hidePopup} = this.props;
         const confirmButton = {
             position: 'absolute',
