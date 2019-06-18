@@ -191,13 +191,16 @@ class Dashboard extends Component {
 
         if (plotService) {
             console.log("DASHBOARD PROPS PENDING TRANSACTION (1):", pendingTransactions);
-            handleRefreshUserPlot && handleTransactionResolved && currentUserId && setDashboardEventListeners({
+            handleRefreshUserPlot && gemService && currentUserId && setDashboardEventListeners({
                 plotService,
+                gemService,
                 updatedEventCallback: handleRefreshUserPlot,
                 releasedEventCallback: handleRefreshUserPlot,
                 boundEventCallback: handleRefreshUserPlot,
+                issuedEventCallback: handleGetUserPlots,
+                reloadGemsCallback: handleGetUserGems,
+                changeGemCallback: () => handleGetUserGems(currentUserId),
                 currentUserId,
-                transactionResolved: handleTransactionResolved
             });
             if (currentUserId !== match.params.userId || pendingTransactions) {
                 handleGetUserPlots();
@@ -281,18 +284,21 @@ class Dashboard extends Component {
             handleGetUserGems(match.params.userId);
         }
 
-        if (plotService && pendingTransactions && handleRefreshUserPlot && handleTransactionResolved && currentUserId &&
+        if (plotService && pendingTransactions && handleRefreshUserPlot && currentUserId &&
           (plotService !== prevProps.plotService ||
             match.params.userId !== prevProps.match.params.userId ||
             pendingTransactions !== prevProps.pendingTransactions)) {
             (currentUserId !== match.params.userId || pendingTransactions) && handleGetUserPlots(match.params.userId);
             setDashboardEventListeners({
                 plotService,
+                gemService,
                 updatedEventCallback: handleRefreshUserPlot,
                 releasedEventCallback: handleRefreshUserPlot,
                 boundEventCallback: handleRefreshUserPlot,
-                currentUserId,
-                transactionResolved: handleTransactionResolved
+                reloadGemsCallback: handleGetUserGems,
+                changeGemCallback: () => handleGetUserGems(currentUserId),
+                issuedEventCallback: handleGetUserPlots,
+                currentUserId
             })
             console.log("Events are set");
         }

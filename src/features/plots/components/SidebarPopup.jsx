@@ -7,6 +7,7 @@ import SelectedGemsPopup from "./SelectedGemsPopup";
 import GemsPopup from "./GemsPopup";
 import FilterPopup from "./FilterPopup";
 import GemSelectionPopup from "./GemSelectionPopup";
+import ProcessAllPopup from "./ProcessAllPopup";
 
 const OctagonLayoutOuter = styled.div`
             max-width: 900px;
@@ -193,6 +194,8 @@ export class SidebarPopup extends Component {
                 return <PlotActionPopup>Please confirm the transaction to stop mining</PlotActionPopup>
             case "coming-soon":
                 return <PlotActionPopup>Artifacts are coming soon</PlotActionPopup>
+            case "process-all":
+                return <ProcessAllPopup plots={this.props.plots} processPlots={this.props.processPlots}/>
         }
     }
 
@@ -214,6 +217,8 @@ export class SidebarPopup extends Component {
                 return "Stop mining";
             case "coming-soon":
                 return "Coming Soon";
+            case "process-all":
+                return "Plots Processing";
             default:
                 return "";
         }

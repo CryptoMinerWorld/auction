@@ -1,6 +1,6 @@
 import {BigNumber} from "bignumber.js";
 import store from "../store";
-import {calculateGemName, calculateMiningRate, unpackGemProperties} from "./GemService";
+import {calculateGemName, calculateGemRestingEnergy, calculateMiningRate, unpackGemProperties} from "./GemService";
 import {GWeiToEth, weiToEth} from "../../features/market/helpers";
 import {getUserDetails} from "../../features/dashboard/dashboardActions";
 
@@ -26,23 +26,25 @@ export default class AuctionService {
               .getAllGems(this.auctionContract.options.address, this.gemContract.options.address).call();
         };
 
+        console.log(':::::',packedAuctions);
+
         const auctionUserGems = packedAuctions.map(async (packedGem, index, initialList) => {
             if (index % 3 === 0) {
                 //console.log('PACKED GEM:', packedGem);
                 let auctionGem = parseAuctionGem(packedGem);
                 let auctionData = parseAuctionData(initialList[index+1], initialList[index+2]);
 
-                console.log('USER ADDRESS:', auctionGem.owner);
+                console.log("Gems data:", auctionGem, auctionData);
+                console.log('USER ADDRESS:', auctionData.owner);
                 const userDetails = await getUserDetails(auctionData.owner);
                 console.log('USER DETAILS:', userDetails);
                 auctionGem.userName = userDetails.name;
                 auctionGem.userImage = userDetails.imageURL;
                 //result.push(auctionGem);
-                return auctionGem;
+                return {...auctionGem, ...auctionData};
             }
             return null;
         });
-            console.log('>>>>>>>>> AUCTION GEMS: ', auctionUserGems, ownerId);
             return (await Promise.all(auctionUserGems)).filter(gem => gem);
     }
 
@@ -77,16 +79,16 @@ export default class AuctionService {
         const tokenSaleStatusArray = await this.getTokenSaleStatus(tokenId);
         console.log('TOKEN SALE STATUS ARRAY:', tokenSaleStatusArray);
         const gemAuctionData = {};
-        if (tokenSaleStatusArray['0'] === "0") {
+        if (tokenSaleStatusArray['t0'] === "0") {
             gemAuctionData.auctionIsLive = false;
         }
         else {
-            gemAuctionData.owner = tokenSaleStatusArray['6']; //await this.getPreviousOwner(tokenId);
+            gemAuctionData.owner = tokenSaleStatusArray['owner'];
             gemAuctionData.auctionIsLive = true;
-            gemAuctionData.deadline = Number(tokenSaleStatusArray['1']);
-            gemAuctionData.maxPrice = weiToEth(Number(tokenSaleStatusArray['3']));
-            gemAuctionData.minPrice = weiToEth(Number(tokenSaleStatusArray['4']));
-            gemAuctionData.currentPrice = weiToEth(Number(tokenSaleStatusArray['5']));
+            gemAuctionData.deadline = Number(tokenSaleStatusArray['t1']);
+            gemAuctionData.maxPrice = weiToEth(Number(tokenSaleStatusArray['p0']));
+            gemAuctionData.minPrice = weiToEth(Number(tokenSaleStatusArray['p1']));
+            gemAuctionData.currentPrice = weiToEth(Number(tokenSaleStatusArray['p']));
         }
         return gemAuctionData;
     }
@@ -105,113 +107,41 @@ export const parseAuctionData = (firstPartPacked, secondPartPacked) => {
     const firstPart256uint = new BigNumber(firstPartPacked);
     const secondPart256uint = new BigNumber(secondPartPacked);
     const gem = {};
-    gem.deadline = firstPart256uint.dividedToIntegerBy(new BigNumber(2).pow(96)).modulo(new BigNumber(2).pow(96)).toNumber();
-    gem.maxPrice = GWeiToEth(firstPart256uint.dividedToIntegerBy(new BigNumber(2).pow(96)).modulo(new BigNumber(2).pow(96)).toNumber());
-    gem.minPrice = GWeiToEth(firstPart256uint.modulo(new BigNumber(2).pow(96)).toNumber());
-    gem.currentPrice = GWeiToEth(secondPart256uint.dividedToIntegerBy(new BigNumber(2).pow(160)).toNumber());
+    gem.deadline = firstPart256uint.dividedToIntegerBy(new BigNumber(2).pow(96*2)).modulo(new BigNumber(2).pow(32)).toNumber();
+    gem.maxPrice = weiToEth(firstPart256uint.dividedToIntegerBy(new BigNumber(2).pow(96)).modulo(new BigNumber(2).pow(96)).toNumber());
+    gem.minPrice = weiToEth(firstPart256uint.modulo(new BigNumber(2).pow(96)).toNumber());
+    gem.currentPrice = weiToEth(secondPart256uint.dividedToIntegerBy(new BigNumber(2).pow(160)).toNumber());
     gem.owner = '0x'+secondPart256uint.modulo(new BigNumber(2).pow(160)).toString(16).padStart(40, '0');
     return gem;
 }
 
-export const
-  parseAuctionGem = (auctionGem) => {
-      const packed200uint = new BigNumber(auctionGem);
 
-      // *  index 3i - 200 low bits
-      // *        gem ID (24 bits)
-      // *        gem color (8 bits)
-      // *        gem level (8 bits)
-      // *        gem grade (32 bits)
-      // *        gem plots mined (24 bits)
-      // *        gem blocks mined (32 bits)
-      // *        gem energetic age (32 bits)
-      // *        gem state (8 low bits)
-
-
-      const gem = {};
-      gem.auctionIsLive = true;
-      gem.id = packed200uint.dividedToIntegerBy(new BigNumber(2).pow(8 + 32 * 2 + 24 + 32 + 8*2)).toNumber();
-      const gemPackedProperties = packed200uint.dividedToIntegerBy(new BigNumber(2).pow(8 + 32 * 2 + 24 )).modulo(new BigNumber(2).pow(48));
-      const gemProperties = unpackGemProperties(gemPackedProperties);
-      gem.state = packed200uint.modulo(0x100);
-      gem.energeticAge = packed200uint.dividedToIntegerBy(0x100).modulo(new BigNumber(2).pow(32)).toNumber();
-      gem.blocksMined = packed200uint.dividedToIntegerBy(new BigNumber(2).pow(8 + 32)).modulo(new BigNumber(2).pow(32));
-      gem.plotsMined = packed200uint.dividedToIntegerBy(new BigNumber(2).pow(8 + 32 + 32)).modulo(new BigNumber(2).pow(24)).toNumber();
-
+// same packing as in gemERC732 getPackedCollection (see GemService.getOwnerGems());
+export const parseAuctionGem = (auctionGem) => {
+      const packed256uint = new BigNumber(auctionGem);
+      const gemModifiedTime = packed256uint.dividedToIntegerBy(new BigNumber(2).pow(224)).modulo(new BigNumber(2).pow(32)).toNumber();
+      const gemAge = packed256uint.dividedToIntegerBy(new BigNumber(2).pow(64)).modulo(new BigNumber(2).pow(32)).toNumber();
+      const gradeType = packed256uint.dividedToIntegerBy(new BigNumber(2).pow(184)).modulo(new BigNumber(2).pow(8)).toNumber();
+      const gradeValue = packed256uint.dividedToIntegerBy(new BigNumber(2).pow(160)).modulo(new BigNumber(2).pow(24)).toNumber();
+      const level = packed256uint.dividedToIntegerBy(new BigNumber(2).pow(152)).modulo(new BigNumber(2).pow(8)).toNumber();
+      const color = packed256uint.dividedToIntegerBy(new BigNumber(2).pow(24)).modulo(new BigNumber(2).pow(8)).toNumber();
+      const id = packed256uint.modulo(new BigNumber(2).pow(24)).toNumber();
       return {
-          ...gem,
-          ...gemProperties,
-          name: calculateGemName(gemProperties.color, gem.id),
-          rate: calculateMiningRate(gemProperties.gradeType, gemProperties.gradeValue)
+          gradeType,
+          gradeValue,
+          level,
+          color,
+          id,
+          age: gemAge,
+          restingEnergy: gradeType >= 4 ? calculateGemRestingEnergy(gemAge, gemModifiedTime) : 0,
+          state: packed256uint.dividedToIntegerBy(new BigNumber(2).pow(32)).modulo(new BigNumber(2).pow(32)).toNumber(),
+          blocksMined: packed256uint.dividedToIntegerBy(new BigNumber(2).pow(96)).modulo(new BigNumber(2).pow(32)).toNumber(),
+          plotsMined: packed256uint.dividedToIntegerBy(new BigNumber(2).pow(128)).modulo(new BigNumber(2).pow(24)).toNumber(),
+          auctionIsLive: true,
+          name: calculateGemName(color, id),
+          rate: calculateMiningRate(gradeType, gradeValue),
+          //restingEnergyMinutes: calculateGemRestingEnergy(gemCreationTime)
       }
   }
-
-export const
-  createAuctionHelper = async (
-    _tokenId,
-    _duration,
-    _startPriceInWei,
-    _endPriceInWei,
-    _contract,
-    _currentAccount,
-  ) => {
-      // construct auction parameters
-      const token = Number(_tokenId);
-      const tokenId = new BigNumber(token);
-      const t0 = Math.round(new Date().getTime() / 1000) || 0;
-      const t1 = t0 + _duration;
-      const p0 = _startPriceInWei;
-      const p1 = _endPriceInWei;
-      const two = new BigNumber(2);
-
-      // converts BigNumber representing Solidity uint256 into String representing Solidity bytes
-      const toBytes = (uint256) => {
-          let s = uint256.toString(16);
-          const len = s.length;
-          // 256 bits must occupy exactly 64 hex digits
-          if (len > 64) {
-              s = s.substr(0, 64);
-          }
-          for (let i = 0; i < 64 - len; i += 1) {
-              s = `0${s}`;
-          }
-          return `0x${s}`;
-      };
-
-      // convert auction parameters to bytecode for smart contract
-      const data = toBytes(
-        two
-          .pow(224)
-          .times(tokenId)
-          .plus(two.pow(192).times(t0))
-          .plus(two.pow(160).times(t1))
-          .plus(two.pow(80).times(p0))
-          .plus(p1),
-      );
-
-      // submit the auction
-      await _contract.methods
-        .safeTransferFrom(_currentAccount, process.env.REACT_APP_DUTCH_AUCTION, token, data)
-        .send()
-        .on('transactionHash', hash => store.dispatch(
-          startTx({
-              hash,
-              currentUser: _currentAccount,
-              method: 'gem',
-              tokenId: token,
-          }),
-        ))
-        .on('receipt', receipt => store.dispatch(completedTx(receipt)))
-        .on('error', error => store.dispatch(ErrorTx(error)));
-
-      const auctionDetails = {
-          deadline: t1,
-          maxPrice: _startPriceInWei,
-          minPrice: _endPriceInWei,
-      };
-
-      return auctionDetails;
-  };
-
 
 

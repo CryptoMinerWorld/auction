@@ -1,6 +1,6 @@
 import {
     APPLY_GEM_WORKSHOP_FILTER_OPTION, APPLY_GEM_WORKSHOP_SORTING,
-    AUCTION_DETAILS_RECEIVED,
+    AUCTION_DETAILS_RECEIVED, COUPON_USE,
     DASHBOARD_WAS_FILTERED, DESELECT_ALL_GEM_WORKSHOP_FILTERS,
     FETCH_USER_COUNTRIES,
     FETCH_USER_GEMS_BEGUN,
@@ -13,10 +13,11 @@ import {
     WANT_TO_SEE_ALL_GEMS,
 } from './dashboardConstants';
 import {db} from '../../app/utils/firebase';
-import {completedTx, ErrorTx, startTx} from "../transactions/txActions";
+import {addPendingTransaction, completedTx, ErrorTx, startTx} from "../transactions/txActions";
 import {parseTransactionHashFromError} from "../transactions/helpers";
 import {getUserBalance} from "../sale/saleActions";
 import {gradeConverter, type} from "../plots/components/propertyPaneStyles";
+import {GEM_UPGRADE} from "../items/itemConstants";
 
 
 export const getUserGems = ownerId => async (dispatch, getState) => {
@@ -37,14 +38,8 @@ export const getUserGems = ownerId => async (dispatch, getState) => {
             gemService.getOwnerGems(userIdToLowerCase),
             auctionService.getAuctionOwnerGems(userIdToLowerCase)
         ]);
-
-        console.log('222222 FETCH!');
-
-        //dispatch({type: FETCH_USER_GEMS_SUCCEEDED});
         console.warn('AUCTIONOWNERGEMS: ', auctionOwnerGems);
         console.warn('NOTAUCTIONGEMS:', notAuctionOwnerGems);
-
-
         dispatch({type: USER_GEMS_RETRIEVED, payload: auctionOwnerGems.concat(notAuctionOwnerGems)});
     }
     catch (e) {
@@ -90,45 +85,27 @@ export const useCoupon = (couponCode, hidePopup) => async (dispatch, getState) =
     const currentUser = getState().auth.currentUserId;
     //console.log('Service:::', silverGoldService);
     if (!silverGoldService) return;
+    let txHash;
     return silverGoldService.useCoupon(couponCode)
       .on('transactionHash', (hash) => {
           hidePopup();
-          dispatch(
-            startTx({
-                hash,
-                description: 'Submitting coupon code',
-                txMethod: 'COUPON_USE',
-                code: couponCode,
-            }),
-          );
+          txHash = hash;
+          addPendingTransaction({
+              hash: hash,
+              userId: currentUser,
+              type: COUPON_USE,
+              description: `Submitting coupon code`,
+              body: {
+                  code: couponCode
+              }
+          })(dispatch, getState);
       })
       .on('receipt', async (receipt) => {
           console.log('111RECEIPT: ', receipt);
           getUserBalance(currentUser)(dispatch, getState);
-          dispatch(completedTx({
-              receipt,
-              txMethod: 'COUPON_USE',
-              description: 'Coupon accepted',
-              hash: receipt.transactionHash,
-              code: couponCode
-          }));
       })
       .on('error', (err) => {
           hidePopup();
-          //setLoading(false);
-          dispatch(ErrorTx({
-              txMethod: 'COUPON_USE',
-              description: 'Coupon submitting failed',
-              error: err,
-              hash: parseTransactionHashFromError(err.message)
-          }));
-          // dispatch({
-          //   type: MODAL_GONE,
-          // });
-          // dispatch({
-          //   type: FETCH_DATA_FAILED,
-          //   payload: JSON.stringify(err),
-          // });
       });
 }
 

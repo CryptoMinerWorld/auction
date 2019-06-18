@@ -1,5 +1,7 @@
 import {
-    EVENT_HISTORY_RECEIVED, NEW_PENDING_TRANSACTION, TRANSACTION_RESOLVED,
+    EVENT_HISTORY_RECEIVED,
+    NEW_PENDING_TRANSACTION,
+    TRANSACTION_RESOLVED,
     TX_COMPLETED,
     TX_CONFIRMED,
     TX_ERROR,
@@ -10,6 +12,7 @@ import {
 
 import {setError} from '../../app/appActions';
 import {db} from "../../app/utils/firebase";
+import {plotSale} from "../plotsale/plotSaleReducer";
 
 export const startTx = tx => ({type: TX_STARTED, payload: tx});
 export const completedTx = tx => ({type: TX_COMPLETED, payload: tx});
@@ -32,8 +35,16 @@ export const resolveTXStatus = async (pendingTransactions, dbWrite, dbDelete, qu
 };
 
 export const getUpdatedTransactionHistory = () => async (dispatch, getState) => {
+    console.log("~~~~~~ get updated TRANSACTION history ~~~~~~");
     const web3 = getState().app.web3;
     const minerContract = getState().app.plotServiceInstance.minerContract;
+    const auctionContract = getState().app.dutchContractInstance;
+    console.log("~~~~~~ get updated TRANSACTION history 2 ~~~~~~");
+    const gemContract = getState().app.gemsContractInstance;
+    console.log("~~~~~~ get updated TRANSACTION history 3 ~~~~~~");
+    // const plotSaleContract = getState().plotServiceInstance.plotSaleContract;
+    console.log("~~~~~~ get updated TRANSACTION history 4 ~~~~~~");
+
     const currentUserId = getState().auth.currentUserId;
     const storedPendingTransactionDocs = await db.collection('transactions')
       .where('userId', '==', currentUserId)
@@ -54,7 +65,6 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
         const receipt = await web3.eth.getTransactionReceipt(storedTx.hash);
         console.log("TRANSACTION RECEIPT:", receipt);
         if (receipt) {
-
             if (!receipt.status) {
                 resolvedFailedTransactions.push(storedTx);
             }
@@ -89,25 +99,81 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
     console.log("LATEST BLOCK:", latestBlock);
 
     //todo: change empirical amount of blocks for fromBlock parameter
-    const minerEventLogs = await minerContract.getPastEvents({
-        event: "allEvents",
-        filter: {'_by': currentUserId},
-        fromBlock: latestBlock - 10000,
-        toBlock: 'latest',
-    });
+    const [minerEventLogs, auctionEventLogs, gemEventLogs, plotSaleEventLogs] = await Promise.all([
+        minerContract.getPastEvents({
+            event: "allEvents",
+            filter: {'_by': currentUserId},
+            fromBlock: latestBlock - 15000,
+            toBlock: 'latest',
+        }),
+        auctionContract.getPastEvents({
+            event: "allEvents",
+            filter: {'_by': currentUserId, '_from': currentUserId},
+            fromBlock: latestBlock - 15000,
+            toBlock: 'latest',
+        }),
+        gemContract.getPastEvents({
+            event: "allEvents",
+            filter: {'_by': currentUserId, '_to': currentUserId, '_from': currentUserId},
+            fromBlock: latestBlock - 15000,
+            toBlock: 'latest',
+        }),
+        []
+        // plotSaleContract.getPastEvents({
+        //   event: "allEvents",
+        //   filter: {'_by': currentUserId, 'owner': currentUserId},
+        //   fromBlock: latestBlock - 7000,
+        //   toBlock: 'latest',
+        // }),
+    ])
 
     console.log("MINER EVENT LOGS:", minerEventLogs);
+    console.log("Auction EVENT LOGS:", auctionEventLogs);
+    console.log("Gem EVENT LOGS:", gemEventLogs);
+    console.log("Plot Sale EVENT LOGS:", plotSaleEventLogs);
 
-    let transactionHistory = minerEventLogs.reverse();
-    resolvedStoredTransactionHashes.forEach(hash => {
-        const resolvedTx = transactionHistory.find(tx => tx.transactionHash === hash);
-          if (resolvedTx) resolvedTx.unseen = true;
+    let transactionHistory = groupEventLogsByTransaction(minerEventLogs, auctionEventLogs, gemEventLogs, plotSaleEventLogs);
+    resolvedStoredTransactions.forEach(storedTx => {
+        if (storedTx.status === TX_CONFIRMED) {
+            const resolvedTx = transactionHistory.find(tx => tx.transactionHash === storedTx.transactionHash);
+            if (resolvedTx) {
+                resolvedTx.unseen = true;
+            }
+        }
     })
-
     dispatch({
         type: EVENT_HISTORY_RECEIVED,
         payload: {transactionHistory, pendingTransactions, resolvedFailedTransactions},
     })
+}
+
+const groupEventLogsByTransaction = (minerEventLogs, auctionEventLogs, gemEventLogs, plotSaleEventLogs) => {
+    const transactions = [];
+    let currentTransaction = null;
+    let previousTxHash = null;
+
+    [minerEventLogs, auctionEventLogs, gemEventLogs, plotSaleEventLogs].forEach((eventLogs, type) => {
+        for (let i = eventLogs.length - 1; i >= 0; i--) {
+            if (previousTxHash !== eventLogs[i].transactionHash) {
+                previousTxHash = eventLogs[i].transactionHash;
+                currentTransaction && transactions.push(resolveTransactionDescription(currentTransaction, type));
+                currentTransaction = {
+                    events: [],
+                    transactionHash: eventLogs[i].transactionHash,
+                    blockNumber: eventLogs[i].blockNumber
+                };
+            }
+            currentTransaction.events.push(eventLogs[i]);
+        }
+        currentTransaction && transactions.push(resolveTransactionDescription(currentTransaction, type));
+        previousTxHash = null;
+        currentTransaction = null;
+    })
+    return transactions.sort((tx1, tx2) => tx2.blockNumber - tx1.blockNumber);
+}
+
+const resolveTransactionDescription = (tx, type) => {
+    return tx;
 }
 
 export const transactionResolved = (event) => async (dispatch, getState) => {

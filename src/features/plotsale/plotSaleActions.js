@@ -1,4 +1,4 @@
-import {completedTx, ErrorTx, startTx} from "../transactions/txActions";
+import {addPendingTransaction, completedTx, ErrorTx, startTx} from "../transactions/txActions";
 import {parseTransactionHashFromError} from "../transactions/helpers";
 import {getUserBalance} from "../sale/saleActions";
 import {COUNTRY_PLOTS_DATA} from "./country_plots_data";
@@ -6,6 +6,7 @@ import {ZERO_ADDRESS} from "../../app/reduxConstants";
 import {weiToEth} from "../sale/helpers";
 import {CHEST_VALUE_RECEIVED} from "../sale/saleConstants";
 import {PLOT_SALE_CHEST_VALUES_RECEIVED} from "./plotSaleReducer";
+import {BINDING_GEM, PLOT_SALE} from "../plots/plotConstants";
 const REACT_APP_WORLD_CHEST="0x2281f7Dc57011dA1668eA9460BB40340dB89e29e";
 const REACT_APP_MONTHLY_CHEST="0x5446c218245a9440Ac3B03eda826260a9198C7a9";
 
@@ -63,74 +64,50 @@ export const buyPlots = (countryId, totalAmount, amountExceeded, referrer, hideP
     }
 
     if (totalAmount > amountExceeded) {
+        let txHash;
         const txResult = plotService.buyPlots(countryId, totalAmount - amountExceeded, priceInEthNotExceeded, referrer || ZERO_ADDRESS)
           .on('transactionHash', (hash) => {
-              dispatch(
-                startTx({
-                    hash,
-                    description: 'Buying ' + (totalAmount - amountExceeded) + ' plots',
-                    currentUser,
-                    txMethod: 'PLOT_SALE',
-                    price: priceInEthNotExceeded,
-                }),
-              );
+              txHash = hash;
+              addPendingTransaction({
+                  hash: hash,
+                  userId: currentUser,
+                  type: PLOT_SALE,
+                  description: `Buying ${totalAmount - amountExceeded} plots`,
+                  body: {
+                      countryId: countryId,
+                      count: totalAmount - amountExceeded,
+                  }
+              })(dispatch, getState);
           })
           .on('receipt', async (receipt) => {
               hidePopup();
-              console.log('111RECEIPT: ', receipt);
-              //getUserBalance(currentUser)(dispatch, getState);
-              dispatch(completedTx({
-                  receipt,
-                  txMethod: 'PLOT_SALE',
-                  description: 'Plots bought',
-                  hash: receipt.transactionHash,
-              }));
           })
           .on('error', (err) => {
-              //setLoading(false);
               hidePopup();
-              dispatch(ErrorTx({
-                  txMethod: 'PLOT_SALE',
-                  description: 'Could not buy plots',
-                  error: err,
-                  hash: parseTransactionHashFromError(err.message)
-              }));
           });
     }
 
     if (randomCountry && amountExceeded > 0) {
+        let txHash;
         const txResult = plotService.buyPlots(randomCountry, amountExceeded, priceInEthExceeded, referrer || ZERO_ADDRESS)
           .on('transactionHash', (hash) => {
-              dispatch(
-                startTx({
-                    hash,
-                    description: 'Buying ' + amountExceeded + ' plots',
-                    currentUser,
-                    txMethod: 'PLOT_SALE',
-                    price: priceInEthExceeded,
-                }),
-              );
+              txHash = hash;
+              addPendingTransaction({
+                  hash: hash,
+                  userId: currentUser,
+                  type: PLOT_SALE,
+                  description: `Buying ${amountExceeded} plots`,
+                  body: {
+                      countryId: countryId,
+                      count: amountExceeded,
+                  }
+              })(dispatch, getState);
+              hidePopup();
           })
           .on('receipt', async (receipt) => {
-              hidePopup();
-              console.log('111RECEIPT: ', receipt);
-              //getUserBalance(currentUser)(dispatch, getState);
-              dispatch(completedTx({
-                  receipt,
-                  txMethod: 'PLOT_SALE',
-                  description: 'Plots bought',
-                  hash: receipt.transactionHash,
-              }));
           })
           .on('error', (err) => {
-              //setLoading(false);
               hidePopup();
-              dispatch(ErrorTx({
-                  txMethod: 'PLOT_SALE',
-                  description: 'Could not buy plots',
-                  error: err,
-                  hash: parseTransactionHashFromError(err.message)
-              }));
           });
     }
 };

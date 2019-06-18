@@ -1,19 +1,26 @@
 import {
-    BINDING_GEM, GEM_BINDING,
+    BINDING_GEM, BULK_PROCESSING, GEM_BINDING,
     GEM_CHANGE_LOCK_STATE,
     MINED,
     MINING,
     NEW_PLOT,
     NO_GEM,
     PROCESSED,
-    PROCESSING, REFRESH_USER_PLOT,
+    PROCESSING, REFRESH_USER_PLOT, REFRESH_USER_PLOTS,
     STUCK,
     UNBINDING_GEM,
     USER_PLOTS_RECEIVED
 } from "./plotConstants";
 import {db} from '../../app/utils/firebase';
-import {addPendingTransaction, getUpdatedTransactionHistory} from "../transactions/txActions";
+import {
+    addPendingTransaction,
+    completedTx,
+    ErrorTx,
+    getUpdatedTransactionHistory,
+    startTx
+} from "../transactions/txActions";
 import {TRANSACTION_RESOLVED} from "../transactions/txConstants";
+import {parseTransactionHashFromError} from "../transactions/helpers";
 
 export const getUserPlots = ownerId => async (dispatch, getState) => {
     console.warn("GETTING USER PLOTS>>>");
@@ -32,6 +39,14 @@ export const getUserPlots = ownerId => async (dispatch, getState) => {
                 if (tx.body.gem) {
                     gemMiningIds.push(tx.body.gem.toString());
                 }
+            }
+        }
+        if (tx.type === BULK_PROCESSING) {
+            if (tx.body && tx.body.plotIds) {
+                tx.body.plotIds.forEach(id => {
+                    const pendingPlotIndex = userPlots.findIndex(plot => plot.id === id);
+                    userPlots[pendingPlotIndex].miningState = PROCESSING;
+                })
             }
         }
     });
@@ -143,13 +158,45 @@ export const releaseGem = (plot, updatePlotCallback, transactionStartCallback) =
       });
 }
 
+export const processPlots = (plotIds) => async (dispatch, getState) => {
+    console.log("process plots ids:", plotIds);
+    const currentUser = getState().auth.currentUserId;
+    let txHash;
+        getState().app.plotServiceInstance.processPlots(plotIds)
+          .on('transactionHash', (hash) => {
+              txHash = hash;
+              addPendingTransaction({
+                  hash: hash,
+                  userId: currentUser,
+                  type: BULK_PROCESSING,
+                  description: `Bulk processing`,
+                  body: {
+                      plotIds,
+                  }
+              })(dispatch, getState);
+              dispatch({
+                  type: REFRESH_USER_PLOTS,
+                  payload: {ids: plotIds, miningState: PROCESSING}
+              })
+          })
+          .on('receipt', (receipt) => {
+              //updatePlotCallback();
+              //updatePlotCallback({...plot, processedBlocks: plot.currentPercentage, miningState: previousState});
+          })
+          .on('error', (err) => {
+              if (txHash) {
+                  getUpdatedTransactionHistory()(dispatch, getState);
+              }
+          });
+}
+
 export const processBlocks = (plot, updatePlotCallback) => async (dispatch, getState) => {
     const currentUser = getState().auth.currentUserId;
     const previousState = plot.miningState;
     let txHash;
     const result = getState().app.plotServiceInstance.processBlocks(plot.id, currentUser)
       .on('transactionHash', (hash) => {
-          hash = txHash;
+          txHash = hash;
           addPendingTransaction({
               hash: hash,
               userId: currentUser,

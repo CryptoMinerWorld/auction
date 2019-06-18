@@ -32,8 +32,9 @@ const GemFiltersContainer = styled.div`
             bottom: 0;
             left: 0;
             background-color: black;
-            overflow-x: scroll;
             margin: 0;
+            height: ${props => props.mobileFiltersDisplayed ? "auto" : "3px"}
+            border-top: 1px solid white;
       }
 `;
 
@@ -48,6 +49,7 @@ const GemFiltersFlexWrapper = styled.div`
     @media(max-width: 800px) {
         padding: 5px 0;
         float: left;
+        overflow-x: scroll;
     }
 `;
 
@@ -154,14 +156,69 @@ const Grades = styled.div`
     }
 `;
 
+const OpenCloseMobileFiltersButton = styled.div`
+    
+    @media(max-width: 800px) {
+        position: absolute;
+        z-index: 3;
+        
+        left:0;
+        right:0;
+        margin:0 auto;
+        
+        border: 1px solid white;
+        ${props => props.mobileFiltersDisplayed ?
+        `
+            top: -20px;
+            height: 20px;
+            width: 22px;
+            &:after {
+                display: block;
+                position: absolute;
+                width: 20px;
+                height: 19px;
+                content: 'v';
+                left: 0;
+                right: 0;
+                color: white;
+                background-color: black;
+                text-align: center;
+                font-size: 16px;
+            }
+        `
+        :
+        `
+            top: -25px;
+            height: 25px;
+            width: 100px;
+            &:after {
+                    display: block
+                    position: absolute;
+                    width: 98px;
+                    height: 24px;
+                    content: 'Filter/Sort';
+                    left: 0;
+                    right: 0;
+                    color: white;
+                    background-color: black;
+                    text-align: center;
+                    font-size: 16px;
+                }
+        `
+        }
+    }
+}
+`;
+
 class GemDashboardFilters extends Component {
 
     render() {
         const unselectedFilters = this.props.unselectedFilters || {};
-        const {applyFilter, selectedSort, applySort, clearFilters, setDefaultFilters} = this.props;
+        const {applyFilter, selectedSort, applySort, clearFilters, setDefaultFilters, mobileFiltersDisplayed, toggleMobileFilters} = this.props;
 
         return (
-          <GemFiltersContainer>
+          <GemFiltersContainer mobileFiltersDisplayed={mobileFiltersDisplayed}>
+              <OpenCloseMobileFiltersButton mobileFiltersDisplayed={mobileFiltersDisplayed} onClick={() => toggleMobileFilters()}/>
               <GemFiltersFlexWrapper>
                   <GemStates unselectedFilters={unselectedFilters} toggleFilter={applyFilter}/>
                   <SortOptions selectedSort={selectedSort} toggleSort={applySort}/>

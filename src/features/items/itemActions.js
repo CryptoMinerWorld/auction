@@ -1,55 +1,51 @@
-import {AUCTION_DETAILS_RECEIVED, CLEAR_GEM_PAGE, NEW_AUCTION_CREATED} from './itemConstants';
+import {
+    AUCTION_DETAILS_RECEIVED,
+    AUCTION_END, AUCTION_START,
+    BUYING_GEM,
+    CLEAR_GEM_PAGE, GEM_GIFTING,
+    GEM_UPGRADE,
+    NEW_AUCTION_CREATED
+} from './itemConstants';
 import {FETCH_DATA_BEGUN, FETCH_DATA_SUCCEEDED,} from '../../app/reduxConstants';
 import {db} from '../../app/utils/firebase';
 import {createAuctionHelper, removeAuctionHelper} from './helpers';
 import {setError} from '../../app/appActions';
-import {completedTx, ErrorTx, startTx} from '../transactions/txActions';
+import {
+    addPendingTransaction,
+    completedTx,
+    ErrorTx,
+    getUpdatedTransactionHistory,
+    startTx
+} from '../transactions/txActions';
 import store from '../../app/store';
 import {gradeConverter} from "../market/helpers";
 import {parseTransactionHashFromError} from "../transactions/helpers";
 import {getUserBalance} from "../sale/saleActions";
 import {utils} from "web3";
-import {USER_PLOTS_RECEIVED} from "../plots/plotConstants";
+import {UNBINDING_GEM, USER_PLOTS_RECEIVED} from "../plots/plotConstants";
+import {BigNumber} from "bignumber.js";
 
 
 export const getGemData = tokenId => async (dispatch, getState) => {
     dispatch({type: FETCH_DATA_BEGUN});
-
-    console.log('----11111---------GEM--------11111----');
     try {
         const gemService = getState().app.gemServiceInstance;
         const auctionService = getState().app.auctionServiceInstance;
-
-        console.log('-----22222--------GEM--------22222-----');
-
         const gemData = gemService.getGem(tokenId);
-
-        console.log('------33333--------GEM-------33333------', gemData);
-
         const auctionData = auctionService.getGemAuctionData(tokenId);
-
-        console.log('------44444--------GEM-------44444------', auctionData);
-
         const gem = {...(await gemData), ...(await auctionData)};
-
-        console.log('------------------GEM-----------------', gem);
-
         dispatch({type: FETCH_DATA_SUCCEEDED});
         dispatch({
             type: AUCTION_DETAILS_RECEIVED,
             payload: {gem},
         });
-
     }
     catch (e) {
-        console.log('GET GEM DATA ERROR: ', e);
         setError(e);
     }
 }
 
 export const getOwnerDataByOwnerId = async ownerId => {
-    console.log('OWNER_ID: ', ownerId);
-
     try {
         const userIdToLowerCase = ownerId
           .split('')
@@ -64,111 +60,70 @@ export const getOwnerDataByOwnerId = async ownerId => {
         setError(err);
     }
 }
-// export const getAuctionDetails = tokenId => async (dispatch, getState) => {
-//     dispatch({type: FETCH_DATA_BEGUN});
-//     console.log('getAuctionDetails:::::::::::::::1');
-//     try {
-//         const gemDetails = (await db.collection('stones')
-//             .where('id', '==', Number(tokenId))
-//             .get()
-//         ).docs[0].data();
-//         console.log('getAuctionDetails:::::::::::::::', gemDetails);
-//         const gemContract = getState().app.gemsContractInstance;
-//
-//         console.log('getAuctionDetails:::::::::::::::2');
-//
-//         const gemQualities = await getGemQualities(gemContract, tokenId);
-//         gemDetails.color = gemQualities[0];
-//         gemDetails.level = gemQualities[1];
-//         gemDetails.gradeType = gemQualities[2];
-//         gemDetails.gradeValue = gemQualities[3];
-//         gemDetails.id = tokenId;
-//         gemDetails.rate = calcMiningRate(gemDetails.gradeType, gemDetails.gradeValue);
-//         gemDetails.auctionIsLive = false;
-//         //gemDetails.userName = store.getState().auth.user.name;
-//         //gemDetails.userImage = store.getState().auth.user.imageURL;
-//
-//         let gemImage = await getGemImage(gemDetails.color, gemDetails.gradeType, gemDetails.level, gemDetails.id);
-//         let gemStory = await getGemStory(gemDetails.color, gemDetails.level, gemDetails.id);
-//         //await Promise.all(gemImage, gemStory);
-//         console.log("IMAGE::", gemImage);
-//         console.log("STORY!!!!:", gemStory);
-//         gemDetails.gemImage = gemImage;
-//         gemDetails.story = gemStory;
-//
-//         console.log(222222222, gemDetails);
-//
-//         // if (!gemDetails[0].gemImage) {
-//         //   return;
-//         // }
-//
-//         dispatch({type: FETCH_DATA_SUCCEEDED});
-//         dispatch({
-//             type: AUCTION_DETAILS_RECEIVED,
-//             payload: gemDetails,
-//         });
-//
-//     } catch (error) {
-//         setError(error)
-//     }
-//
-// };
 
-export const createAuction = (payload, turnLoaderOff, history) => (dispatch, getState) => {
+export const createAuction = (payload, turnLoaderOff, history) => async (dispatch, getState) => {
     const {auth, app} = getState();
     const currentAccount = auth.currentUserId;
-    const {dutchContractInstance} = app;
+    const {gemsContractInstance} = app;
 
     const {
         tokenId, duration, startPrice, endPrice,
     } = payload;
 
-    console.log('payload_auction', payload);
+        // construct auction parameters
+        const token = new BigNumber(tokenId);
+        const t0 = Math.round(new Date().getTime() / 1000) || 0;
+        const t1 = t0 + _duration;
+        const p0 = startPrice;
+        const p1 = endPrice;
+        const two = new BigNumber(2);
 
-    createAuctionHelper(tokenId, duration, startPrice, endPrice, dutchContractInstance, currentAccount)
-      .then(({deadline, minPrice, maxPrice}) => {
-          // console.log('deadline, minPrice, maxPrice ', deadline, minPrice, maxPrice);
-          // db.collection('stones')
-          //   .where('id', '==', tokenId)
-          //   .get()
-          //   .then(async (coll) => {
-          //       const document = await coll.docs.map(doc => doc)[0];
-          //       await db.doc(`stones/${document.id}`).update({
-          //           auctionIsLive: true,
-          //           deadline,
-          //           minPrice,
-          //           maxPrice,
-          //           currentPrice: maxPrice,
-          //       });
-          //
-          //       const completeGemInfo = {
-          //           ...document.data(),
-          //           auctionIsLive: true,
-          //           deadline,
-          //           minPrice,
-          //           maxPrice,
-          //           currentPrice: maxPrice,
-          //       };
-          //
-          //       return dispatch({
-          //           type: NEW_AUCTION_CREATED,
-          //           payload: completeGemInfo,
-          //       });
-          //   })
-          //   .then(() => {
-          //       // getUserGemsOnce(currentAccount)
-          //       turnLoaderOff();
-          //       history.push(`/profile/${currentAccount}`);
-          //   })
-          //   .catch((err) => {
-          //       console.log('err putting gem in auction', err);
-          //       setError(err);
-          //   });
-      })
-      .catch((err) => {
-          turnLoaderOff();
-          setError(err);
-      });
+        // converts BigNumber representing Solidity uint256 into String representing Solidity bytes
+        const toBytes = (uint256) => {
+            let s = uint256.toString(16);
+            const len = s.length;
+            // 256 bits must occupy exactly 64 hex digits
+            if (len > 64) {
+                s = s.substr(0, 64);
+            }
+            for (let i = 0; i < 64 - len; i += 1) {
+                s = `0${s}`;
+            }
+            return `0x${s}`;
+        };
+
+        // convert auction parameters to bytecode for smart contract
+        const data = toBytes(
+          two
+            .pow(224)
+            .times(t0)
+            .plus(two.pow(192).times(t1))
+            .plus(two.pow(96).times(p0))
+            .plus(p1),
+        );
+        let txHash;
+        return gemsContractInstance.methods
+          .safeTransferFrom(currentAccount, process.env.REACT_APP_DUTCH_AUCTION, token, data)
+          .send()
+          .on('transactionHash', hash => {
+              txHash = hash;
+              addPendingTransaction({
+                  hash: hash,
+                  userId: currentAccount,
+                  type: AUCTION_START,
+                  description: `Adding gem ${token} to auction`,
+                  body: {
+                      gem: token,
+                  }
+              })(dispatch, getState);
+          })
+          .on('receipt', receipt => {
+          })
+          .on('error', err => {
+              if (txHash) {
+                  getUpdatedTransactionHistory()(dispatch, getState);
+              }
+          });
 };
 
 // @notice removes a gem from an auction
@@ -180,54 +135,30 @@ export const removeFromAuction = (tokenId, history, turnLoaderOff) => async (
     const currentUser = getState().auth.currentUserId;
     // eslint-disable-next-line
     const gemContractAddress = getState().app.gemsContractInstance.options.address;
-
+    let txHash;
     removeAuctionHelper(dutchContract, tokenId, gemContractAddress)
       .send({
           from: currentUser,
       })
       .on('transactionHash', (hash) => {
-          store.dispatch(
-            startTx({
-                hash,
-                currentUser,
-                txMethod: 'AUCTION_END',
-                tokenId,
-                description: 'Removing gem from auction'
-            }),
-          );
+          txHash = hash;
+          addPendingTransaction({
+              hash: hash,
+              userId: currentUser,
+              type: AUCTION_END,
+              description: `Removing gem ${tokenId} from auction`,
+              body: {
+                  gem: tokenId,
+              }
+          })(dispatch, getState);
       })
       .on('receipt', (receipt) => {
-          store.dispatch(completedTx({
-              receipt,
-              hash: receipt.transactionHash,
-              txMethod: 'AUCTION_END',
-          }));
-          // db.collection('stones')
-          //   .where('id', '==', Number(tokenId))
-          //   .get()
-          //   .then(async (coll) => {
-          //       // eslint-disable-next-line
-          //       for (const doc of coll.docs) {
-          //           // coll.docs.map(async (doc) => {
-          //           // eslint-disable-next-line
-          //           await db.doc(`stones/${doc.id}`).update({
-          //               auctionIsLive: false,
-          //           });
-          //
-          //           // getUserGemsOnce(currentUser)
-          //           history.push(`/profile/${currentUser}`);
-          //       }
-          //   });
+
       })
       .on('error', (err) => {
-          store.dispatch(ErrorTx({
-              txMethod: 'AUCTION_END',
-              error: err,
-              hash: parseTransactionHashFromError(err.message)
-          }));
-          console.error(error, 'error removing gem from auction');
-          setError(error, 'Error removing gem from auction');
-          turnLoaderOff();
+          if (txHash) {
+              getUpdatedTransactionHistory()(dispatch, getState);
+          }
       });
 };
 
@@ -238,63 +169,67 @@ export const handleBuyNow = (gem, _from, history, setLoading) => (dispatch, getS
     // eslint-disable-next-line
     const gemContractAddress = getState().app.gemsContractInstance.options.address;
     const currentUser = getState().app.currentAccount;
-
-
-
+    let txHash;
     return dutchAuctionContractInstance.methods
       .buy(gemContractAddress, gem.id)
       .send({
           value:  Number(utils.toWei(priceInEth.toString(), 'ether'))
       })
       .on('transactionHash', (hash) => {
-          store.dispatch(
-            startTx({
-                hash,
-                currentUser,
-                txMethod: 'GEM_BUY',
-                tokenId: gem.id,
-                description: 'Buying gem on auction'
-            }),
-          );
+          txHash = hash;
+          addPendingTransaction({
+              hash: hash,
+              userId: currentUser,
+              type: BUYING_GEM,
+              description: `Buying gem ${gem.id} for ${priceInEth} ETH`,
+              body: {
+                  gem: gem.id,
+              }
+          })(dispatch, getState);
       })
       .on('receipt', (receipt) => {
-          store.dispatch(completedTx({
-              receipt,
-              hash: receipt.transactionHash,
-              txMethod: 'GEM_BUY',
-             }));
-          //dispatch(updateGemOwnership(_tokenId, _from, history, priceInWei));
           setLoading(false);
       })
       .on('error', (err) => {
           setLoading(false);
-          store.dispatch(ErrorTx({
-              txMethod: 'GEM_BUY',
-              error: err,
-              hash: parseTransactionHashFromError(err.message)
-          }));
-          // dispatch({
-          //   type: MODAL_GONE,
-          // });
-          // dispatch({
-          //   type: FETCH_DATA_FAILED,
-          //   payload: JSON.stringify(err),
-          // });
+          if (txHash) {
+              getUpdatedTransactionHistory()(dispatch, getState);
+          }
       });
 };
 
-export const getRestingEnergy = timestamp => {
-    const ageSeconds = (Date.now() / 1000 || 0) - timestamp;
-    const ageMinutes = Math.floor(ageSeconds / 60);
-    return Math.floor(
-      // eslint-disable-next-line
-      -7e-6 * Math.pow(ageMinutes, 2) + 0.5406 * ageMinutes,
-    );
-};
+//
+// export function clearGemPageOnExit() {
+//     return dispatch => dispatch({type: CLEAR_GEM_PAGE});
+// }
 
-
-export function clearGemPageOnExit() {
-    return dispatch => dispatch({type: CLEAR_GEM_PAGE});
+export const giftGem = (gemId, addressTo) => (dispatch, getState) => {
+    const gemsContract = getState().app.gemsContractInstance;
+    const from = getState().app.currentAccount;
+        const to = addressTo;
+        const tokenId = gemId;
+        let txHash;
+        gemsContract.methods
+          .safeTransferFrom(from, to, tokenId)
+          .send()
+          .on('transactionHash', hash => {
+              txHash = hash;
+              addPendingTransaction({
+                  hash: hash,
+                  userId: currentUser,
+                  type: GEM_GIFTING,
+                  description: `Gifting the gem ${gemId}`,
+                  body: {
+                      gem: gemId,
+                      to: addressTo
+                  }
+              })(dispatch, getState)
+          })
+          .on('error', (error) => {
+              if (txHash) {
+                  getUpdatedTransactionHistory()(dispatch, getState);
+              }
+          });
 }
 
 export const upgradeGem = (gem, levelUp, gradeUp, hidePopup, cost) => (dispatch, getState) => {
@@ -315,53 +250,33 @@ export const upgradeGem = (gem, levelUp, gradeUp, hidePopup, cost) => (dispatch,
         key = 'upgradingGrade';
         gem[key] = true;
     }
+    let txHash;
     return workshopContractInstance.methods
       .upgrade(gem.id, levelUp, gradeUp, silver, gold)
       .send()
       .on('transactionHash', (hash) => {
-          console.log('transactionHash: ', hash);
+          txHash = hash;
+          addPendingTransaction({
+              hash: hash,
+              userId: currentUser,
+              type: GEM_UPGRADE,
+              description: `Upgrading gem ${gem.id}`,
+              body: {
+                  gem: gem,
+                  levelUp,
+                  gradeUp,
+              }
+          })(dispatch, getState);
           hidePopup();
-          store.dispatch(
-            startTx({
-                hash,
-                currentUser,
-                txMethod: 'GEM_UPGRADE',
-                gem,
-                levelUp,
-                gradeUp,
-                cost,
-                description: `Upgrading gem ${gem.name}`,
-            }),
-          );
       })
       .on('receipt', async (receipt) => {
-          console.log('TX receipt: ', receipt);
-          store.dispatch(completedTx({
-              receipt,
-              hash: receipt.transactionHash,
-              txMethod: 'GEM_UPGRADE',
-          }));
-          console.log('COMPLETED_TX dispatched');
-          const newGemData = await gemService.getGem(gem.id);
 
-          console.log('NEW GEM DATA: ', newGemData);
-          console.log('GEM DATA + NEW DATA:', {...gem, ...newGemData});
-          gem[key] = false;
-          dispatch({
-              type: AUCTION_DETAILS_RECEIVED,
-              payload: {gem: {...gem, ...newGemData}}
-          });
-          getUserBalance(currentUser)(dispatch, getState);
-          //setLoading(false);
       })
       .on('error', (err) => {
-          console.log('TX error', err);
           gem[key] = false;
           hidePopup();
-          store.dispatch(ErrorTx({
-              txMethod: 'GEM_UPGRADE',
-              error: err,
-              hash: parseTransactionHashFromError(err.message)
-          }));
+          if (txHash) {
+              getUpdatedTransactionHistory()(dispatch, getState);
+          }
       });
 };

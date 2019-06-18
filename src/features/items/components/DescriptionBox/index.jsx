@@ -82,7 +82,7 @@ class DescriptionBox extends PureComponent {
                 </div>
                 <div className="flex aic jcb center">
                   <Link
-                    to={gem.owner && `/profile/${gem.owner}`}
+                    to={gem.owner && `/profile/${gem.owner}` || ''}
                     className="flex aic bg-white-10 w5-ns w-auto black h-auto pa1"
                     style={{
                       WebkitClipPath:

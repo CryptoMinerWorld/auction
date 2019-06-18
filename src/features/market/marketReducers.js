@@ -80,7 +80,7 @@ export const marketReducer = (
 };
 
 const defaultFiltersUnselected = {
-    types: ["Per", "Aqu", "Dia", "Eme", "Top", "Tur"],
+    types: ["Per", "Aqu", "Dia", "Top", "Tur"],
     levels: [],
     grades: [],
     prices: [0, 1000],

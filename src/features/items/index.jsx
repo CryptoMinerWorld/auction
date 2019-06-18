@@ -15,46 +15,37 @@ import FAQ from './components/FAQ';
 import MailingList from '../../components/MailingList';
 import './animations.css';
 import {OverlapOnDesktopView, RockOverlay, TopHighlight} from './styledComponents';
-import {
-    clearGemPageOnExit,
-    getAuctionDetails,
-    getGemData,
-    getOwnerDataByOwnerId,
-    getRestingEnergy,
-    upgradeGem
-} from './itemActions';
-import {calculateGemName} from './selectors';
+import {clearGemPageOnExit, getAuctionDetails, getGemData, getOwnerDataByOwnerId} from './itemActions';
 import StatsBox from './components/StatsBox';
 import {showConfirm} from '../../components/Modal';
 import MobileHeader from './components/MobileHeader';
 import {setError} from '../../app/appActions';
 import {fetchLatestRestingEnergy} from './helpers';
-import UpgradeComponent from './components/UpgradeComponent';
 import {getAvailableGold, getAvailableSilver} from "../dashboard/helpers";
 import {getUserBalance} from "../sale/saleActions";
-import {getUserPlots, processBlocks} from "../plots/plotActions";
+import {setItemEventListeners} from "./itemEventListener";
 
 const select = store => {
     console.warn('GEM PAGE STORE: ', store);
     return {
 
         gem: store.auction.gem,
-          //ownerData: store.auction.ownerData,
-      details: store.auction,
-      //gemName: store.auction && calculateGemName(store.auction.color, store.auction.id),
-      gemImage: store.auction && store.auction.gemImage,
-      error: store.app.error,
-      currentAccount: store.auth.currentUserId,
-      releaseConfetti: store.app.releaseConfetti,
-      provider: store.auth.web3 && !!store.auth.web3.currentProvider,
-      gemContract: store.app.gemsContractInstance,
-      web3: store.app.web3,
-      dutchContract: store.app.dutchContractInstance,
-      gemService: store.app.gemServiceInstance,
-      auctionService: store.app.auctionServiceInstance,
-      gemContractAddress: store.app.gemsContractInstance && store.app.gemsContractInstance.options.address,
-      silverContract: store.app.silverContractInstance,
-      goldContract: store.app.goldContractInstance,
+        //ownerData: store.auction.ownerData,
+        details: store.auction,
+        //gemName: store.auction && calculateGemName(store.auction.color, store.auction.id),
+        gemImage: store.auction && store.auction.gemImage,
+        error: store.app.error,
+        currentAccount: store.auth.currentUserId,
+        releaseConfetti: store.app.releaseConfetti,
+        provider: store.auth.web3 && !!store.auth.web3.currentProvider,
+        gemContract: store.app.gemsContractInstance,
+        web3: store.app.web3,
+        dutchContract: store.app.dutchContractInstance,
+        gemService: store.app.gemServiceInstance,
+        auctionService: store.app.auctionServiceInstance,
+        gemContractAddress: store.app.gemsContractInstance && store.app.gemsContractInstance.options.address,
+        silverContract: store.app.silverContractInstance,
+        goldContract: store.app.goldContractInstance,
         userBalance: store.sale.balance,
         silverGoldService: store.app.silverGoldServiceInstance,
     }
@@ -74,6 +65,12 @@ class Auction extends PureComponent {
         } = this.props;
 
         if (match && match.params && match.params.gemId && gemService) {
+            setItemEventListeners({
+                gemService,
+                gemChangedCallback: handleGetGemData,
+                tokenId: match.params.gemId,
+                transactionResolved: () => {}
+            });
             handleGetGemData(match.params.gemId);
         }
 
@@ -93,8 +90,6 @@ class Auction extends PureComponent {
         if (silverGoldService && currentAccount) {
             handleGetUserBalance(currentAccount);
         }
-
-
     }
 
     async componentDidUpdate(prevProps) {
@@ -110,7 +105,13 @@ class Auction extends PureComponent {
             this.setState({ownerData});
         }
 
-        if (gemService && auctionService && (gemService !== prevProps.gemService || auctionService !== prevProps.auctionService))  {
+        if (gemService && auctionService && (gemService !== prevProps.gemService || auctionService !== prevProps.auctionService)) {
+            setItemEventListeners({
+                gemService,
+                gemChangedCallback: handleGetGemData,
+                tokenId: match.params.gemId,
+                transactionResolved: () => {}
+            });
             handleGetGemData(match.params.gemId);
         }
 
@@ -175,7 +176,7 @@ class Auction extends PureComponent {
                                   transitionLeaveTimeout={5000}
                                 >
                                     <DisplayBoxStateMachine
-                                      gem = {gem}
+                                      gem={gem}
                                       handleBuyNow={buyNow}
                                       showConfirm={showConfirm}
                                       provider={provider}
@@ -195,8 +196,8 @@ class Auction extends PureComponent {
                       <div className="mw9 center relative-l">
                           {gem && (
                             <DescriptionBox
-                              gem = {gem}
-                              ownerData = {ownerData}
+                              gem={gem}
+                              ownerData={ownerData}
                               userName={details.userName}
                               userImage={details.userImage}
                               shareUrl={socialShareUrl}
@@ -223,7 +224,6 @@ const actions = {
 
     //handleGetAuctionDetails: getAuctionDetails,
     showConfirm,
-    handleClearGemPage: clearGemPageOnExit,
     handleSetError: setError,
 
 };
@@ -314,7 +314,6 @@ const DisplayBoxStateMachine = (props) => {
         .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
         .join('');
 
-
     console.log('Owner lower case:', ownerLowerCase);
 
     let state = 'viewer';
@@ -336,6 +335,6 @@ const DisplayBoxStateMachine = (props) => {
     return {
         owner: <TradingBox {...props} role={"owner"}/>,
         buyer: <AuctionBox {...props} role={"buyer"}/>,
-        viewer: <StatsBox {...props} role={"viewer"}  />,
+        viewer: <StatsBox {...props} role={"viewer"}/>,
     }[state];
 };

@@ -82,9 +82,9 @@ export const getUserBalance = (userId) => async (dispatch, getState) => {
         payload: {
             balance:
               {
-                  referralPoints: balance[0],
-                  silverAvailable: Math.floor(balance[1]*ONE_UNIT) ,
-                  goldAvailable: Math.floor(balance[2]*ONE_UNIT)
+                  referralPoints: balances.points,
+                  silverAvailable: Math.floor(balances.silver*ONE_UNIT) ,
+                  goldAvailable: Math.floor(balances.gold*ONE_UNIT)
               }
         }
     })

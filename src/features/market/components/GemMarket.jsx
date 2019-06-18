@@ -54,7 +54,7 @@ class GemMarket extends React.Component {
         if (unselectedFilters !== prevProps.unselectedFilters || auctions !== prevProps.auctions) {
             console.log("new unselectedFilters", unselectedFilters);
             const [filteredGems, minPrice, maxPrice] = this.filterGems(auctions);
-            console.log("Filtered gems", filteredGems);
+            console.log("Filtered gems", filteredGems, minPrice, maxPrice);
             this.sortGems(filteredGems);
             this.setState({
                 minPrice: minPrice,
@@ -92,8 +92,8 @@ class GemMarket extends React.Component {
               return !unselectedFilters.grades.includes(gradeConverter(Number(gem.gradeType))) &&
                 !unselectedFilters.levels.includes("lvl_" + gem.level) &&
                 !unselectedFilters.types.includes(type(gem.color)) &&
-                (!isNaN(unselectedFilters.prices[0]) && Number(unselectedFilters.prices[0]).toFixed(2) <= gem.currentPrice.toFixed(2)) &&
-                (!isNaN(unselectedFilters.prices[1]) && Number(unselectedFilters.prices[1]).toFixed(2) >= gem.currentPrice.toFixed(2));
+                (!isNaN(unselectedFilters.prices[0]) && Number(unselectedFilters.prices[0]) <= gem.currentPrice) &&
+                (!isNaN(unselectedFilters.prices[1]) && Number(unselectedFilters.prices[1]) >= gem.currentPrice);
           });
         return [filteredGems || [], minPrice, maxPrice];
 

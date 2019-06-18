@@ -136,7 +136,7 @@ class PlotSidebar extends Component {
     }
 
     shouldComponentUpdate(props, state) {
-        return state.selectedTab !== this.state.selectedTab || props.plotSelected !== this.props.plotSelected;
+        return state.selectedTab !== this.state.selectedTab || props.plotSelected !== this.props.plotSelected || props.isOwner !== this.props.isOwner;
     }
 
     componentDidUpdate(prevProps) {
@@ -146,10 +146,10 @@ class PlotSidebar extends Component {
     }
 
     render() {
-        const {plotSelected} = this.props;
+        const {plotSelected, isOwner} = this.props;
         const {selectedTab} = this.state;
-        const disableSidebarIcons = (selectedTab === "selected") && !plotSelected;
-        const disableSidebarGemIcon = (selectedTab === "selected") && (!plotSelected || (plotSelected && !plotSelected.gemMines));
+        const disableSidebarIcons = ((selectedTab === "selected") && !plotSelected) || !isOwner;
+        const disableSidebarGemIcon = ((selectedTab === "selected") && (!plotSelected || (plotSelected && !plotSelected.gemMines))) || !isOwner;
         return (
           <Sidebar>
               <SidebarTabs>
@@ -171,7 +171,7 @@ class PlotSidebar extends Component {
               </SidebarSection>
               <SidebarSection mobileFlex={3} mobileDirection={"column"}>
                   <BuyButton><a style={{width: "100%", color: "white"}} href={'/plots'}>BUY PLOTS</a></BuyButton>
-                  {/*<BuyButton>PROCESS ALL</BuyButton>*/}
+                  <BuyButton onClick={() => this.props.showSidebarPopup("process-all")}>PROCESS ALL</BuyButton>
               </SidebarSection>
               <SidebarSection mobileFlex={1} mobileDirection={"row"}>
                   <SidebarIcon icon={filterIcon} onClick={() => this.props.showSidebarPopup("filter")}/>

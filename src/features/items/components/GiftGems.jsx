@@ -14,8 +14,16 @@ import { OxToLowerCase } from '../../../app/utils/helpers';
 import button from '../../../app/images/pinkBuyNowButton.png';
 import { ReactComponent as RightArrow } from '../../../app/images/svg/arrow-right-circle.svg';
 import { setError } from '../../../app/appActions';
-import { startTx, completedTx, ErrorTx } from '../../transactions/txActions';
+import {
+    startTx,
+    completedTx,
+    ErrorTx,
+    addPendingTransaction,
+    getUpdatedTransactionHistory
+} from '../../transactions/txActions';
 import reduxStore from '../../../app/store';
+import {giftGem} from "../itemActions";
+import {GEM_GIFTING} from "../itemConstants";
 
 const ColourButton = styled.button`
   background-image: url(${button});
@@ -116,48 +124,29 @@ class GiftGems extends Component {
     const to = walletId;
     const from = currentAccountId;
     const tokenId = match.params.gemId;
-
+    let txHash;
     gemsContract.methods
       .safeTransferFrom(from, to, tokenId)
       .send()
-      .on('transactionHash', hash => reduxStore.dispatch(
-        startTx({
-          hash,
-          currentUser: from,
-          method: 'gem',
-          tokenId,
-        }),
-      ));
-
-    await gemsContract.events
-      .Transfer()
-      .on('data', async (event) => {
-        const { returnValues } = event;
-        const { _from, _to, _tokenId } = returnValues;
-        // eslint-disable-next-line
-        if (_to === to && _from === from && _tokenId === tokenId) {
-          await this.transferOwnershipOnDatabase(_from, _to, _tokenId);
-          reduxStore.dispatch(completedTx(event));
-          transition('SUCCESS', { from });
-        }
-      })
-      .on('error', (error) => {
-        reduxStore.dispatch(ErrorTx(error));
-        transition('ERROR', { error });
-      });
-  };
-
-  transferOwnershipOnDatabase = async (from, to, tokenId) => {
-    const { transition } = this.props;
-    db.doc(`users/${OxToLowerCase(to)}`)
-      .get()
-      .then(doc => [doc.data().name, doc.data().imageURL])
-      .then(([name, image]) => db.doc(`stones/${tokenId}`).update({
-        owner: OxToLowerCase(to),
-        userName: name,
-        userImage: image,
-      }))
-      .catch(error => transition('ERROR', { error }));
+      .on('transactionHash', hash => {
+              txHash = hash;
+              addPendingTransaction({
+                  hash: hash,
+                  userId: from,
+                  type: GEM_GIFTING,
+                  description: `Gifting the gem ${tokenId}`,
+                  body: {
+                      gem: tokenId,
+                      to: to
+                  }
+              })(reduxStore.dispatch, reduxStore.getState)
+          })
+          .on('error', (error) => {
+              if (txHash) {
+                  getUpdatedTransactionHistory()(reduxStore.dispatch, reduxStore.getState);
+              }
+              transition('ERROR', { error });
+          });
   };
 
   redirectToMarket = () => {
@@ -311,10 +300,10 @@ Transferring...
   }
 }
 
-const actions = dispatch => ({
-  handleRemoveGemFromDashboard: tokenId => dispatch({ type: 'GEM_GIFTED', payload: Number(tokenId) }),
+const actions = {
+    handleGiftGem: giftGem,
   setError,
-});
+};
 
 const select = store => ({
   web3: store.app.web3,

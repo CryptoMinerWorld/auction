@@ -40,7 +40,7 @@ const select = store => {
     });
 
     return {
-        plots: plots && plots.filter(plot => plot),
+        plots: plots,
         gems: store.dashboard.userGems,
         gemMiningIds: store.plots.gemMinesId,
         plotService: store.app.plotServiceInstance,
@@ -320,6 +320,8 @@ class PlotDisplay extends Component {
         const startStopButton = {}
 
         const isOwner = filteredPlots && (filteredPlots.length > 0) && filteredPlots[0].owner === currentAccount;
+        console.log("is onwer:", isOwner);
+
 
         return (
           <div style={{
@@ -346,8 +348,11 @@ class PlotDisplay extends Component {
                                                 selected={plotSelected && plotSelected.id === plot.id}
                                                 //clipPath={PlotDisplay.generateRandomClipPath()}
                                                 onClick={() => {
-                                                    this.setState({plotSelected: plotSelected && plotSelected.id === plot.id ? null : plot}
-                                                    );
+                                                    if (plotSelected && plotSelected.id === plot.id) {
+                                                        this.showSidebarPopup("plots-selected")
+                                                    } else {
+                                                        this.setState({plotSelected: plot});
+                                                    }
                                                 }}>
                                   <div style={miningStatus}>{plot.miningState}</div>
                                   {plot.miningState === MINING &&
@@ -360,7 +365,7 @@ class PlotDisplay extends Component {
                                     <div style={miningStatus}>&nbsp;</div>
                                   }
                                   {(plot.miningState === PROCESSING) &&
-                                    <div style={miningStatus}>{plot.currentPercentage - plot.processedBlocks}</div>
+                                    <div style={miningStatus}>{plot.currentPercentage - plot.processedBlocks} Blocks</div>
                                   }
                                   <PlotBar plot={plot} onGemClick={(e) => {
                                       e.stopPropagation();
@@ -403,10 +408,7 @@ class PlotDisplay extends Component {
               <PlotSidebar
                 showSidebarPopup={(type) => this.showSidebarPopup(type)}
                 plotSelected={plotSelected}
-                nextPage={() => {
-                }}
-                prevPage={() => {
-                }}
+                isOwner={isOwner}
               />
               {/*{this.state.showSidebarFilters ?*/}
               {/*<PlotFilter*/}

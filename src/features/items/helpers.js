@@ -180,57 +180,6 @@ export function removeAuctionHelper(dutchContract, tokenId, gemContract) {
     return dutchContract.methods.remove(gemContract, tokenId);
 }
 
-export const createAuctionHelper = async (
-  _tokenId,
-  _duration,
-  _startPriceInWei,
-  _endPriceInWei,
-  _contract,
-  _currentAccount,
-) => {
-    // construct auction parameters
-    const token = Number(_tokenId);
-    const tokenId = new BigNumber(token);
-    const t0 = Math.round(new Date().getTime() / 1000) || 0;
-    const t1 = t0 + _duration;
-    const p0 = _startPriceInWei;
-    const p1 = _endPriceInWei;
-    const two = new BigNumber(2);
-
-    console.log("Start auction:", _contract);
-    // submit the auction
-    await _contract.methods
-      .addWith(process.env.REACT_APP_GEM_ERC721, _tokenId, t0, t1, p0, p1)
-      .send()
-      .on('transactionHash', hash => store.dispatch(
-        startTx({
-            hash,
-            currentUser: _currentAccount,
-            method: 'AUCTION_START',
-            tokenId: token,
-            description: 'Adding gem on auction'
-        }),
-      ))
-      .on('receipt', receipt => store.dispatch(completedTx({
-          receipt,
-          hash: receipt.transactionHash,
-          txMethod: 'AUCTION_START',
-      })))
-      .on('error', err => store.dispatch(ErrorTx({
-          txMethod: 'AUCTION_START',
-          error: err,
-          hash: parseTransactionHashFromError(err.message)
-      })));
-
-    const auctionDetails = {
-        deadline: t1,
-        maxPrice: _startPriceInWei,
-        minPrice: _endPriceInWei,
-    };
-
-    return auctionDetails;
-};
-
 
 const transform = (result, web3) => web3.eth.getBlock(result, (err, results) => {
     if (err) {

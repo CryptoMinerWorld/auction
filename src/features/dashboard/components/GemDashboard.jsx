@@ -6,7 +6,7 @@ import Cards from "./GemCard";
 import NoCard from "./NoCard";
 import React from "react";
 import {transactionResolved} from "../../transactions/txActions";
-import {getUserPlots, refreshUserPlot} from "../../plots/plotActions";
+import {calculateMiningStatus, getUserPlots, refreshUserPlot} from "../../plots/plotActions";
 import {
     addGemsToDashboard, applyFilterOption, applySort, deselectAllFilters,
     filterUserGemsOnPageLoad,
@@ -21,14 +21,37 @@ import {compose} from "redux";
 import connect from "react-redux/es/connect/connect";
 import styled from "styled-components";
 import {gradeConverter, type} from "../../plots/components/propertyPaneStyles";
+import {MINING, STUCK} from "../../plots/plotConstants";
 
-const select = store => ({
-    userGems: store.dashboard.userGems,
-    totalGems: store.dashboard && store.dashboard.userGems && store.dashboard.userGems.length,
-    loading: store.dashboard.gemsLoading,
-    unselectedFilters: store.dashboard.unselectedGemWorkshopFilters,
-    selectedSorting: store.dashboard.selectedGemWorkshopSorting,
-});
+const select = store => {
+    const gems = store.dashboard.userGems;
+    const plots = store.plots.userPlots;
+    gems && gems.forEach((gem) => {
+        if (gem.auctionIsLive) return;
+        if (gem.state) {
+            const plotMined = plots.find((plot) => gem.id.toString() === plot.gemMinesId);
+            if (plotMined) {
+                gem.plotMined = plotMined;
+                if (plotMined.currentPercentage < 100) {
+                    const blocksLeft = plotMined.layerEndPercentages[gem.level - 1] - plotMined.currentPercentage;
+                    if (blocksLeft === 0) {
+                        gem.miningState = STUCK;
+                    } else {
+                        gem.miningState = MINING;
+                    }
+                }
+            }
+        }
+    });
+
+    return {
+        userGems: gems,
+        totalGems: gems && gems.length || 0,
+        loading: store.dashboard.gemsLoading,
+        unselectedFilters: store.dashboard.unselectedGemWorkshopFilters,
+        selectedSorting: store.dashboard.selectedGemWorkshopSorting,
+    }
+};
 
 class GemDashboard extends React.Component {
 
@@ -36,6 +59,7 @@ class GemDashboard extends React.Component {
         scrolledGems: [],
         allGems: [],
         hasMoreGems: false,
+        mobileFiltersDisplayed: false,
     }
 
     componentDidMount() {
@@ -99,7 +123,7 @@ class GemDashboard extends React.Component {
                 sortingFunction = (p1, p2) => +p1.level - p2.level;
                 break;
             case "acq":
-                sortingFunction = (p1, p2) => +p1.level - p2.level;
+                sortingFunction = (p1, p2) => +p1.ownershipModified - p2.ownershipModified;
                 break;
             case "REA":
                 sortingFunction = (p1, p2) => (+p1.restingEnergy || 0) - (+p2.restingEnergy || 0);
@@ -114,7 +138,7 @@ class GemDashboard extends React.Component {
     render() {
         const {handlePreLoadAuctionPage, loading, handleApplySort, unselectedFilters, selectedSorting,
             handleApplyFilterOption, handleDeselectAllFilters, handleSetDefaultFilters} = this.props;
-        const {scrolledGems, hasMoreGems} = this.state;
+        const {scrolledGems, hasMoreGems, mobileFiltersDisplayed} = this.state;
 
         return (
         <Grid className="ph3">
@@ -130,6 +154,8 @@ class GemDashboard extends React.Component {
                                          applySort={(sortOption, sortDirection) => {
                                              handleApplySort(sortOption, sortDirection);
                                          }}
+                                         mobileFiltersDisplayed={mobileFiltersDisplayed}
+                                         toggleMobileFilters={() => this.setState({mobileFiltersDisplayed: !this.state.mobileFiltersDisplayed})}
                     />
                 </div>
                 {/*<><><><><><><><><><><><><><><>*/}
@@ -188,8 +214,12 @@ export default compose(
 )(GemDashboard);
 
 const resolveGemFilterState = (gem) => {
+    if (gem.auctionIsLive) return "auction";
+    if (!gem.state) return "idle";
+    if (gem.miningState === STUCK) return "stuck";
+    if (gem.miningState === MINING) return "mining";
     //todo: return actual gem state: idle, mining, auction, stuck;
-    return "none";
+    return "idle";
 }
 
 

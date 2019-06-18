@@ -1,5 +1,5 @@
 // @ts-check
-import React from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import Menu from 'antd/lib/menu';
 import Dropdown from 'antd/lib/dropdown';
@@ -12,6 +12,7 @@ import Icon from "antd/lib/icon";
 import img from '../../../app/images/Profile-Image-Logo-60x60.png';
 import {setTransactionsSeen} from "../txActions";
 import styled from "styled-components";
+import {TX_CONFIRMED, TX_FAILED, TX_PENDING} from "../txConstants";
 
 require('antd/lib/dropdown/style/css');
 require('antd/lib/badge/style/css');
@@ -178,84 +179,183 @@ const generateMenuItemForTx = tx => {
     }
 };
 
+const DropdownContainer = styled.div`
+    min-width: 320px;
+    max-height: 500px;
+    overflow: hidden auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    background-color: #f3f1ed;
+    margin-top: 20px;
+`;
+
+const TxRecordContainer = styled.div`
+    position: relative;
+    background-color: #e0e0e0;
+    margin: 22px 2px;
+    padding: 5px 10px;
+    
+    &:hover {
+        background-color: #d0d0d0;
+        &:after {
+            background-color: #d0d0d0;
+        }
+        &:before {
+            background-color: #d0d0d0;
+        }
+    }
+   
+    &:before {
+        width: 100%;
+        display: block;
+        height: 20px;
+        clip-path: polygon(5% 0, 95% 0, 100% 100%, 0 100%);
+        top: -20px;
+        left: 0;
+        right: 0;
+        position: absolute;
+        background-color: #e0e0e0;
+        content: "";
+    }
+    
+    &:after {
+        width: 100%;
+        display: block;
+        height: 20px;
+        clip-path: polygon(0 0, 100% 0, 95% 100%, 5% 100%);
+        bottom: -20px
+        left: 0;
+        right: 0;    
+        position: absolute;
+        background-color: #e0e0e0;
+        content: "show events";
+        font-size: 10px;
+        color: grey;
+        text-align: center;
+    }
+`;
+
+const TxHeader = styled.div`
+`;
+
+const TxStatus = styled.div`
+    background-color: ${props => {
+        switch(props.status) {
+            case TX_PENDING:
+                return "#fdcd14";
+            case TX_CONFIRMED:
+                return "green";
+            case TX_FAILED:
+                return "red";
+        }
+    }};
+    color: ${props => {
+    switch(props.status) {
+        case TX_PENDING:
+            return "black";
+        case TX_CONFIRMED:
+            return "white";
+        case TX_FAILED:
+            return "white";
+    }
+}};
+    margin: 2px 0;
+    padding: 2px 5px;
+    font-size: 10px;
+    border-radius: 3px;
+    width: 65px;
+    text-align: center;
+    
+`;
+
+const TxDescription = styled.div`
+`;
+
+const TxContractEvents = styled.div`
+    display: ${props => props.expanded ? "block" : "none"};
+    min-height: 30px;
+    background-color: black;
+`
+
+const TxConfirmedRecord = ({tx}) => {
+
+    const [expanded, setExpanded] = useState(false);
+
+    return (
+      <TxRecordContainer style={{cursor: "pointer"}} onClick={() => setExpanded(!expanded)}>
+        <Badge count={tx.unseen ? 1 : 0}>
+            <TxHeader>TX_HEADER</TxHeader>
+        </Badge>
+        <TxStatus status={TX_CONFIRMED}>Confirmed</TxStatus>
+        <TxDescription>{tx.description}</TxDescription>
+        <TxContractEvents expanded={expanded}>
+            {tx.events && tx.events.map((event) => {
+                return <div style={{width: '100%', color: "white"}}>{event['event']}</div>
+            })}
+        </TxContractEvents>
+        <a
+          href={`https://${process.env.REACT_APP_NETWORK}.io/tx/${tx.transactionHash}`}
+          key={tx.transactionHash}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+            <Icon type="link" style={{fontSize: '24px', position: 'absolute', top: '20px', right: '0px'}}
+                  className="pointer blue"/>
+        </a>
+    </TxRecordContainer>)
+}
+
 const menu = ({transactionHistory, pendingTransactions, failedTransactions}) => (
-  <Menu style={{maxHeight: '500px', overflowY: 'auto'}}>
+
+  <DropdownContainer>
+
       {!transactionHistory || !pendingTransactions || !failedTransactions ||
       (failedTransactions.length === 0 &&transactionHistory.length === 0 && pendingTransactions.length === 0)
-      && <Menu.Item>No recent transactions</Menu.Item>}
+      && <div>No recent transactions</div>}
       {failedTransactions && failedTransactions.map((tx) => (
         tx.hash ?
-          <Menu.Item className="flex aic" style={{
-              backgroundColor: '#ffd9d9',
-              borderBottom: "1px solid white"
-          }} key={tx.hash+'failed'}>
+          <TxRecordContainer key={tx.hash+'failed'}>
               <Badge count={1}>
-                  <a
-                    href={`https://${process.env.REACT_APP_NETWORK}.io/tx/${tx.hash}`}
-                    key={tx.hash}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                      <div style={{paddingRight: '30px'}}>
-                          <p>Failed</p>
-                          <p>{tx.description}</p>
-                      </div>
-
-                      <Icon type="link" style={{fontSize: '24px', position: 'absolute', top: '20px', right: '0px'}}
-                            className="pointer blue"/>
-                  </a>
+                  <TxHeader>TX_HEADER</TxHeader>
               </Badge>
-          </Menu.Item> : ""
+              <TxStatus status={TX_FAILED}>Failed</TxStatus>
+              <TxDescription>{tx.description}</TxDescription>
+              <a
+                href={`https://${process.env.REACT_APP_NETWORK}.io/tx/${tx.hash}`}
+                key={tx.hash}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                  <Icon type="link" style={{fontSize: '24px', position: 'absolute', top: '20px', right: '0px'}}
+                        className="pointer blue"/>
+              </a>
+          </TxRecordContainer> : ""
       ))}
       {pendingTransactions && pendingTransactions.map((tx) => (
         tx.hash ?
-          <Menu.Item className="flex aic" style={{
-              backgroundColor: '#fff9bc',
-              borderBottom: "1px solid white"
-          }} key={tx.hash+'pending'}>
-              <Badge count={tx.unseen ? 1 : 0}>
-                  <a
-                    href={`https://${process.env.REACT_APP_NETWORK}.io/tx/${tx.hash}`}
-                    key={tx.hash}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                      <div style={{paddingRight: '30px'}}>
-                          <p>Pending</p>
-                          <p>{tx.description}</p>
-                      </div>
-
-                      <Icon type="link" style={{fontSize: '24px', position: 'absolute', top: '20px', right: '0px'}}
-                            className="pointer blue"/>
-                  </a>
+          <TxRecordContainer key={tx.hash+'pending'}>
+              <Badge count={tx.unseen ? 1 : 0}>>
+                  <TxHeader>TX_HEADER</TxHeader>
               </Badge>
-          </Menu.Item> : ""
+              <TxStatus status={TX_PENDING}>Pending</TxStatus>
+              <TxDescription>{tx.description}</TxDescription>
+              <a
+                href={`https://${process.env.REACT_APP_NETWORK}.io/tx/${tx.hash}`}
+                key={tx.hash}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                  <Icon type="link" style={{fontSize: '24px', position: 'absolute', top: '20px', right: '0px'}}
+                        className="pointer blue"/>
+              </a>
+          </TxRecordContainer> : ""
       ))}
       {transactionHistory && transactionHistory.map((tx) => (
         tx.transactionHash ?
-          <Menu.Item className="flex aic" style={{
-              backgroundColor: '#e4ffe4',
-              borderBottom: "1px solid white",
-          }} key={tx.transactionHash+tx.event}>
-              <Badge count={tx.unseen ? 1 : 0}>
-                  <a
-                    href={`https://${process.env.REACT_APP_NETWORK}.io/tx/${tx.transactionHash}`}
-                    key={tx.transactionHash}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                      <div style={{paddingRight: '30px'}}>
-                          <p>Event: {tx.event}</p>
-                          {generateMenuItemForTx(tx)}
-                      </div>
-
-                      <Icon type="link" style={{fontSize: '24px', position: 'absolute', top: '20px', right: '0px'}}
-                            className="pointer blue"/>
-                  </a>
-              </Badge>
-          </Menu.Item> : ""
+          <TxConfirmedRecord tx={tx}/> : ""
       ))}
-  </Menu>
+  </DropdownContainer>
 );
 
 /**
@@ -286,7 +386,7 @@ class AvatarDropdown extends React.Component {
                   this.setState({visibility: false})
               }}
             >
-                <Dropdown overlay={menu({transactionHistory, pendingTransactions, failedTransactions})} visible={this.state.visibility}>
+                <Dropdown overlay={menu({transactionHistory, pendingTransactions, failedTransactions})} visible={true || this.state.visibility}>
                     <>
                         <Badge count={unseen}>
                             <Avatar src={user.imageURL} className="dib"/>

@@ -21,7 +21,7 @@ export default class SilverGoldService {
     getUserBalance = async (userId) => {
         const tokensToFetchBalancesOf = [process.env.REACT_APP_SILVER_ERC721, process.env.REACT_APP_GOLD_ERC721, process.env.REACT_APP_REF_POINTS_TRACKER];
         //do not change .methods.balancesOf to just .balancesOf when switching to assist.js
-        const balances = await this.balanceContract.methods.balanceOf(tokensToFetchBalancesOf, userId).call();
+        const balances = await this.balanceContract.methods.balancesOf(tokensToFetchBalancesOf, userId).call();
         return {
             silver: balances[0],
             gold: balances[1],

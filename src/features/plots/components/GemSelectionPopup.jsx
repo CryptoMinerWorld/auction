@@ -27,7 +27,7 @@ const select = store => {
     }
 }
 const defaultFiltersUnselected = {
-    types: ["Per", "Aqu", "Dia", "Eme", "Pea", "Top", "Tur"],
+    types: ["Per", "Aqu", "Dia", "Top", "Tur"],
     levels: [],
     grades: [],
 };

@@ -134,27 +134,33 @@ export default class GemService {
     getOwnerGems = async (ownerId) => {
         const notAuctionGemsUserOwns = await this.contract.methods.getPackedCollection(ownerId).call();
         return notAuctionGemsUserOwns.map(notAuctionGem => {
-            const packed200uint = new BigNumber(notAuctionGem);
-            const gemId = packed200uint.dividedToIntegerBy(new BigNumber(2).pow(176)).toNumber();
-            const gemPackedProperties = packed200uint.dividedToIntegerBy(new BigNumber(2).pow(128)).modulo(new BigNumber(2).pow(48));
-            const gemPlotsMined = packed200uint.dividedToIntegerBy(new BigNumber(2).pow(104)).modulo(new BigNumber(2).pow(24));
-            const gemBlocksMined = packed200uint.dividedToIntegerBy(new BigNumber(2).pow(72)).modulo(new BigNumber(2).pow(32));
-            const gemAge = packed200uint.dividedToIntegerBy(new BigNumber(2).pow(40)).modulo(new BigNumber(2).pow(32)).toNumber();
-            const gemModifiedTime = packed200uint.dividedToIntegerBy(0x100).modulo(new BigNumber(2).pow(32)).toNumber();
-            const gemState = packed200uint.modulo(new BigNumber(2).pow(8)).toNumber();
-            const gemProperties = unpackGemProperties(gemPackedProperties);
+            const packed256uint = new BigNumber(notAuctionGem);
+
+            const gemModifiedTime = packed256uint.dividedToIntegerBy(new BigNumber(2).pow(224)).modulo(new BigNumber(2).pow(32)).toNumber();
+            const ownershipModifiedTime = packed256uint.dividedToIntegerBy(new BigNumber(2).pow(192)).modulo(new BigNumber(2).pow(32)).toNumber();
+            const gemAge = packed256uint.dividedToIntegerBy(new BigNumber(2).pow(64)).modulo(new BigNumber(2).pow(32)).toNumber();
+            const gradeType = packed256uint.dividedToIntegerBy(new BigNumber(2).pow(184)).modulo(new BigNumber(2).pow(8)).toNumber();
+            const gradeValue = packed256uint.dividedToIntegerBy(new BigNumber(2).pow(160)).modulo(new BigNumber(2).pow(24)).toNumber();
+            const level = packed256uint.dividedToIntegerBy(new BigNumber(2).pow(152)).modulo(new BigNumber(2).pow(8)).toNumber();
+            const color = packed256uint.dividedToIntegerBy(new BigNumber(2).pow(24)).modulo(new BigNumber(2).pow(8)).toNumber();
+            const id = packed256uint.modulo(new BigNumber(2).pow(24)).toNumber();
+
             return {
-                ...gemProperties,
-                id: gemId,
+                gradeType,
+                gradeValue,
+                level,
+                color,
+                id,
                 age: gemAge,
-                restingEnergy: gemProperties.gradeType >= 4 ? calculateGemRestingEnergy(gemAge, gemModifiedTime) : 0,
-                state: gemState,
-                blocksMined: gemBlocksMined,
-                plotsMined: gemPlotsMined,
+                restingEnergy: gradeType >= 4 ? calculateGemRestingEnergy(gemAge, gemModifiedTime) : 0,
+                state: packed256uint.dividedToIntegerBy(new BigNumber(2).pow(32)).modulo(new BigNumber(2).pow(32)).toNumber(),
+                blocksMined: packed256uint.dividedToIntegerBy(new BigNumber(2).pow(96)).modulo(new BigNumber(2).pow(32)).toNumber(),
+                plotsMined: packed256uint.dividedToIntegerBy(new BigNumber(2).pow(128)).modulo(new BigNumber(2).pow(24)).toNumber(),
                 owner: ownerId,
-                auctionIsLive: false, //await this.getGemAuctionIsLive(gemId),
-                name: calculateGemName(gemProperties.color, gemId),
-                rate: calculateMiningRate(gemProperties.gradeType, gemProperties.gradeValue),
+                ownershipModified: ownershipModifiedTime,
+                auctionIsLive: false,
+                name: calculateGemName(color, id),
+                rate: calculateMiningRate(gradeType, gradeValue),
                 //restingEnergyMinutes: calculateGemRestingEnergy(gemCreationTime)
             }
         })
@@ -336,7 +342,7 @@ export const calculateGemName = (color, tokenId) => {
 
 export const calculateGemRestingEnergy = (age, modifiedTime) => {
     const linearThreshold = 37193;
-    const ageMinutes = ((Date.now() / 1000) - modifiedTime)/60 + age;
+    const ageMinutes = ((Date.now() / 1000) - modifiedTime) / 60 + age;
     return Math.floor(
       -7e-6 * Math.pow(Math.min(ageMinutes, linearThreshold), 2) +
       0.5406 * Math.min(ageMinutes, linearThreshold)

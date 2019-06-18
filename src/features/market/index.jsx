@@ -11,6 +11,8 @@ import Tabs from "antd/lib/tabs";
 import GemMarket from "./components/GemMarket";
 import styled from 'styled-components';
 import stripeImage from "../../app/images/stripe.png";
+import {setItemEventListeners} from "../items/itemEventListener";
+import {setMarketEventListeners} from "./marketEventListener";
 
 const {TabPane} = Tabs;
 require('antd/lib/tabs/style/css');
@@ -43,6 +45,11 @@ class Marketplace extends React.Component {
     componentDidMount() {
         const {auctionService, handleGetAuctions, handlePagination} = this.props;
         if (auctionService) {
+            setMarketEventListeners({
+                auctionService,
+                marketChangedCallback: handleGetAuctions,
+                transactionResolved: () => {}
+            });
             handleGetAuctions();
         }
     }
@@ -50,6 +57,11 @@ class Marketplace extends React.Component {
     componentDidUpdate(prevProps) {
         const {auctionService, handleGetAuctions} = this.props;
         if (auctionService && (auctionService !== prevProps.auctionService)) {
+            setMarketEventListeners({
+                auctionService,
+                marketChangedCallback: handleGetAuctions,
+                transactionResolved: () => {}
+            });
             handleGetAuctions();
         }
     }

@@ -42,7 +42,8 @@ import CountryService from "./services/CountryService";
 import PlotService from "./services/PlotService";
 import LootPopup from "../components/LootPopup";
 import assist from 'bnc-assist';
-import {getUpdatedTransactionHistory} from "../features/transactions/txActions";
+import {getUpdatedTransactionHistory, transactionResolved} from "../features/transactions/txActions";
+import {setAppEventListeners} from "./appEventListeners";
 
 require('antd/lib/notification/style/css');
 require('antd/lib/modal/style/css');
@@ -88,9 +89,13 @@ const StickyHeader = styled.div`
 
 const select = store => ({
     plotService: store.app.plotServiceInstance,
+    auctionService: store.app.auctionServiceInstance,
+    gemService: store.app.gemServiceInstance,
+    silverGoldService: store.app.silverGoldServiceInstance,
     visible: store.app.modalVisible,
     error: store.app.error,
     currentUserId: store.auth.currentUserId,
+    transactionHistory: store.tx.transactionHistory,
 });
 
 class App extends Component {
@@ -258,14 +263,13 @@ class App extends Component {
         //   },
         // ))
 
-        const plotSaleContract = {};
-        // assistInstance.Contract(new web3.eth.Contract(
-        //   plotSaleABI,
-        //   process.env.REACT_APP_PLOT_SALE,
-        //   {
-        //       from: currentAccountId,
-        //   },
-        // ))
+        const plotSaleContract = assistInstance.Contract(new web3.eth.Contract(
+          plotSaleABI,
+          process.env.REACT_APP_PLOT_SALE,
+          {
+              from: currentAccountId,
+          },
+        ))
 
         const plotContract = assistInstance.Contract(new web3.eth.Contract(
           plotABI,
@@ -311,7 +315,7 @@ class App extends Component {
             plotSaleContract,
             minerContract,
             artifactContract,
-          balanceContract
+            balanceContract
         ])
           .then(
             ([
@@ -332,7 +336,7 @@ class App extends Component {
                  plotSaleContract,
                  minerContract,
                  artifactContract,
-              balanceContract
+                 balanceContract
              ]) => {
                 client.writeData({
                     data: {
@@ -376,41 +380,61 @@ class App extends Component {
     }
 
     componentDidUpdate(prevProps) {
-
-        if (this.props.plotService && this.props.currentUserId && (this.props.plotService !== prevProps.plotService || this.props.currentUserId !== prevProps.currentUserId)) {
+        const {plotService, gemService, auctionService, silverGoldService, currentUserId, handleTransactionResolved} = this.props;
+        console.log(">>>>>> APP UPDATED <<<<<", this.props);
+        if (plotService && gemService && auctionService && silverGoldService && currentUserId &&
+        (plotService !== prevProps.plotService || currentUserId !== prevProps.currentUserId || gemService !== prevProps.gemService ||
+          auctionService !== prevProps.auctionService || silverGoldService !== prevProps.silverGoldService)) {
             const showLootClosure = this.showLoot;
-            const currentUserId = this.props.currentUserId;
-            this.props.plotService.minerContract.events.Updated({
-                filter: {'_by': currentUserId},
-                fromBlock: 'latest'
-            })
-              .on('data', function (event) {
-                  //console.log('DATA EVENT:', event);
-                  if (event.returnValues['_by'] !== currentUserId) {
-                      console.error("_by address is different from current user address.", event.returnValues['_by'], currentUserId);
-                  }
-                  else {
-                      if (event.returnValues['loot'])
-                          showLootClosure(event);
-                  }
-              })
-              .on('changed', function (event) {
-              })
-              .on('error', console.error);
+            setAppEventListeners({
+                plotService,
+                gemService,
+                auctionService,
+                silverGoldService,
+                currentUserId,
+                transactionResolved: (event) => handleTransactionResolved(event),
+                updatedEventCallback: (event) => showLootClosure(event),
+            });
             this.props.handleGetUpdatedTransactionHistory();
         }
-
+        if (this.props.transactionHistory !== prevProps.transactionHistory) {
+            let lootToShowArray = [];
+            this.props.transactionHistory.forEach((tx) => {
+                if (tx.unseen) {
+                    console.log("Unseen tx:", tx);
+                    const updatedTransactionEvent = this.props.transactionHistory.find((eventTx) =>
+                      (eventTx.transactionHash === tx.transactionHash) && eventTx.event === "Updated");
+                    updatedTransactionEvent && lootToShowArray.push(updatedTransactionEvent);
+                }
+            });
+            (lootToShowArray.length > 0) && this.showLoot(lootToShowArray);
+        }
     }
 
     clearLoot = () => {
         this.setState({lootFound: null});
     }
 
-    showLoot = async (eventUpdate) => {
+    showLoot = (eventUpdateArray) => {
+        console.log("Show loot", eventUpdateArray);
+        let lootEventsArray;
+        if (Array.isArray(eventUpdateArray)) {
+            lootEventsArray = eventUpdateArray;
+        }
+        else {
+            lootEventsArray = [eventUpdateArray];
+        }
         let lootFound = this.state.lootFound;
-        if (lootFound) {
-            //console.log("LOOT IS ALREADY NOT EMPTY", lootFound);
-            let lootArray = lootFound['loot'] || [0, 0, 0, 0, 0, 0, 0, 0, 0]; //9 types of loot
+        if (!lootFound) {
+            lootFound = {};
+            lootFound['loot'] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+            lootFound['plotState'] = 1;
+            lootFound['blocksProcessed'] = 0;
+            lootFound['plotsProcessed'] = 0;
+        }
+        console.log("LOOT IS ALREADY NOT EMPTY", lootFound);
+        let lootArray = lootFound['loot'] || [0, 0, 0, 0, 0, 0, 0, 0, 0]; //9 types of loot
+        lootEventsArray.forEach(async eventUpdate => {
             const newLootFound = eventUpdate.returnValues;
             const newLootArray = newLootFound['loot'];
             if (newLootArray) {
@@ -421,13 +445,9 @@ class App extends Component {
             lootFound['blocksProcessed'] += (Number(newLootFound['offsetTo']) - Number(newLootFound['offsetFrom']));
             lootFound['plotsProcessed']++;
             lootFound['loot'] = lootArray;
-            lootFound['plotState'] = lootFound['plotState'] || await this.props.plotService.getPlotState(eventUpdate.returnValues['plotId']);
-        } else {
-            lootFound = eventUpdate.returnValues;
-            lootFound['plotState'] = await this.props.plotService.getPlotState(eventUpdate.returnValues['plotId']);
-            lootFound['blocksProcessed'] = (Number(lootFound['offsetTo']) - Number(lootFound['offsetFrom']));
-            lootFound['plotsProcessed'] = 1;
-        }
+            lootFound['plotState'] = 1; //lootFound['plotState'] || await
+            // this.props.plotService.getPlotState(eventUpdate.returnValues['plotId']);
+        })
         this.setState({
             lootFound: lootFound
         })
@@ -492,6 +512,7 @@ class App extends Component {
 }
 
 const actions = {
+    handleTransactionResolved: transactionResolved,
     handleSendContractsToRedux: sendContractsToRedux,
     handleClearError: clearError,
     handleSetError: setError,

@@ -6,28 +6,6 @@ import actionButtonImage from "../../../app/images/noTextGemButton.png";
 import searchIcon from "../../../app/images/search.png";
 
 
-const countries = [
-    {name: "Argentina1", plotsAvailable: 8888, totalPlots: 9999},
-    {name: "Argentina2", plotsAvailable: 8888, totalPlots: 9999},
-    {name: "Argentina3", plotsAvailable: 8888, totalPlots: 9999},
-    {name: "Argentina4", plotsAvailable: 8888, totalPlots: 9999},
-    {name: "Argentina5", plotsAvailable: 8888, totalPlots: 9999},
-    {name: "Argentina6", plotsAvailable: 8888, totalPlots: 9999},
-    {name: "Argentina7", plotsAvailable: 8888, totalPlots: 9999},
-    {name: "Argentina8", plotsAvailable: 8888, totalPlots: 9999},
-    {name: "Argentina9", plotsAvailable: 8888, totalPlots: 9999},
-    {name: "Argentina0", plotsAvailable: 8888, totalPlots: 9999},
-    {name: "Argentin1a", plotsAvailable: 8888, totalPlots: 9999},
-    {name: "Argentin2a", plotsAvailable: 8888, totalPlots: 9999},
-    {name: "Argentin3a", plotsAvailable: 8888, totalPlots: 9999},
-    {name: "Argentin4a", plotsAvailable: 8888, totalPlots: 9999},
-    {name: "Argentin5a", plotsAvailable: 8888, totalPlots: 9999},
-    {name: "Argentin6a", plotsAvailable: 8888, totalPlots: 9999},
-    {name: "Argentin7a", plotsAvailable: 8888, totalPlots: 9999},
-    {name: "Argentin8a", plotsAvailable: 8888, totalPlots: 9999},
-    {name: "Argentin9a", plotsAvailable: 8888, totalPlots: 9999},
-]
-
 const BuyFormContainer = styled.div`
     width: 100%;
     min-width: 320px;

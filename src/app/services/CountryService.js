@@ -32,7 +32,7 @@ export default class CountryService {
 
         const userPackedCountriesList = await this.countryContract.methods.getPackedCollection(userIdToLowerCase).call();
         return userPackedCountriesList.map((packedCountry) =>
-            new BigNumber(packedCountry).dividedToIntegerBy(new BigNumber(2).pow(24)).modulo(0x100).toNumber()
+            new BigNumber(packedCountry).modulo(0x100).toNumber()
         )
     }
 

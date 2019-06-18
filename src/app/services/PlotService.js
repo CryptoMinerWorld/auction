@@ -19,7 +19,7 @@ export default class PlotService {
         const priceInWei = Number(utils.toWei(priceInEth.toFixed(2), 'ether'));
         console.log("BUYING PLOTS IN COUNTRY ID:", countryId);
         return this.plotSaleContract.methods
-          .buy(countryId, plotsNumber, referrer)
+          .buy(countryId, plotsNumber)
           .send({
               value: priceInWei,
           });
@@ -32,12 +32,12 @@ export default class PlotService {
         const userPlots = await Promise.all(plotsUserOwns.map(async plot => {
 
                 const packed96uint = new BigNumber(plot);
-                const plotId = packed96uint.dividedToIntegerBy(new BigNumber(2).pow(72)).toNumber();
-                const plotCountryId = packed96uint.dividedToIntegerBy(new BigNumber(2).pow(88)).toNumber();
+                const plotId = packed96uint.modulo(new BigNumber(2).pow(24)).toNumber();
+                const plotCountryId = packed96uint.dividedToIntegerBy(new BigNumber(2).pow(16)).modulo(new BigNumber(2).pow(8)).toNumber();
                 const plotTiers = unpackPlotProperties(packed96uint
-                  .dividedToIntegerBy(new BigNumber(2).pow(8))
+                  .dividedToIntegerBy(new BigNumber(2).pow(32))
                   .modulo(new BigNumber(2).pow(64)));
-                const plotState = packed96uint.modulo(new BigNumber(2).pow(8)).toNumber();
+                const plotState = packed96uint.dividedToIntegerBy(new BigNumber(2).pow(24)).modulo(new BigNumber(2).pow(8)).toNumber();
                 // console.log('PLOT STATE: ', plotState);
                 let currentEvaluatedPercentage = 0;
                 let gemMinesId = null;
@@ -93,6 +93,10 @@ export default class PlotService {
         });
     }
 
+    processPlots = (plotIds) => {
+        return this.minerContract.methods.bulkUpdate(plotIds).send();
+    }
+
     getPlotState = async (plotId) => {
         return await this.plotContract.methods.getState(plotId).call();
     }
@@ -134,9 +138,12 @@ const blocksToEnergy = (tier, n) => {
 export const blocksToMinutes = (plot) => {
     let blocksMinutes = [];
     // const rate = miningRate(plot.gemMines.gradeType, plot.gemMines.gradeValue);
-    const rate = plot.gemMines.rate;
+    const rate = Number(plot.gemMines.rate);
+
     for (let tier = 0; tier < 5; tier++) {
-        const minutes = 100*blocksToEnergy(tier, Math.min(Math.max(plot.layerEndPercentages[tier] - plot.currentPercentage, 0), plot.layerPercentages[tier]))/rate;
+        const minutes = 100*blocksToEnergy(tier, Math.min(Math.max(plot.layerEndPercentages[tier] - plot.currentPercentage, 0), plot.layerPercentages[tier]))/(100 + rate);
+        console.log("Minutes:", minutes);
+        console.log("n:", Math.min(Math.max(plot.layerEndPercentages[tier] - plot.currentPercentage, 0), plot.layerPercentages[tier]));
         blocksMinutes.push(convertMinutesToTimeString(minutes));
     }
     return blocksMinutes;
@@ -148,7 +155,7 @@ export const getTimeLeftMinutes = (plot) => {
         if (plot.gemMines.level - 1 < tier) break;
         energyLeft += blocksToEnergy(tier, Math.min(Math.max(plot.layerEndPercentages[tier] - plot.currentPercentage, 0), plot.layerPercentages[tier]));
     }
-    const minutes = 100 * energyLeft / plot.gemMines.rate;
+    const minutes = 100 * energyLeft / (100 + Number(plot.gemMines.rate));
     return convertMinutesToTimeString(minutes);
 }
 

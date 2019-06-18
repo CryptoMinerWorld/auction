@@ -1,5 +1,6 @@
 export const USER_PLOTS_RECEIVED = 'USER_PLOTS_RECEIVED';
 export const REFRESH_USER_PLOT = 'REFRESH_USER_PLOT';
+export const REFRESH_USER_PLOTS = 'REFRESH_USER_PLOTS';
 export const GEM_CHANGE_LOCK_STATE = 'GEM_CHANGE_LOCK_STATE';
 export const GEM_BINDING = 'GEM_BINDING';
 export const APPLY_PLOT_FILTER = 'APPLY_PLOT_FILTER';
@@ -17,3 +18,5 @@ export const NEW_PLOT = 'New Plot';
 export const NO_GEM = 'No Gem';
 export const STUCK = 'Stuck';
 export const PROCESSING = 'Processing';
+export const BULK_PROCESSING = 'Bulk Processing';
+export const PLOT_SALE = 'PLOT_SALE';
