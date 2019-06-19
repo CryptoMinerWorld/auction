@@ -5,7 +5,6 @@ import {Link, withRouter} from "react-router-dom";
 import Cards from "./GemCard";
 import NoCard from "./NoCard";
 import React from "react";
-import {transactionResolved} from "../../transactions/txActions";
 import {calculateMiningStatus, getUserPlots, refreshUserPlot} from "../../plots/plotActions";
 import {
     addGemsToDashboard, applyFilterOption, applySort, deselectAllFilters,
@@ -29,7 +28,7 @@ const select = store => {
     gems && gems.forEach((gem) => {
         if (gem.auctionIsLive) return;
         if (gem.state) {
-            const plotMined = plots.find((plot) => gem.id.toString() === plot.gemMinesId);
+            const plotMined = plots && plots.find((plot) => gem.id.toString() === plot.gemMinesId);
             if (plotMined) {
                 gem.plotMined = plotMined;
                 if (plotMined.currentPercentage < 100) {

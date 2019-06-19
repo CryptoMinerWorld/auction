@@ -1,13 +1,11 @@
 // @ts-check
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
-import Menu from 'antd/lib/menu';
 import Dropdown from 'antd/lib/dropdown';
 import Badge from 'antd/lib/badge';
 import Avatar from 'antd/lib/avatar';
 // import { NavLink } from 'react-router-dom';
 import connect from "react-redux/es/connect/connect";
-import {gradeConverter} from "../../market/helpers";
 import Icon from "antd/lib/icon";
 import img from '../../../app/images/Profile-Image-Logo-60x60.png';
 import {setTransactionsSeen} from "../txActions";
@@ -151,15 +149,23 @@ const generateMenuItemForTx = tx => {
                   <p>Plot {tx.returnValues['plotId']} was mined.</p>
                   <p>From {tx.returnValues['offsetFrom']} to {tx.returnValues['offsetTo']}</p>
                   {!lootEmpty && <div>Loot found:</div>}
-                  {Number(lootArray[0]) > 0 && <LootRow>{lootArray[0]} Level 1 Gem{Number(lootArray[0]) > 1 ? "s" : ""}</LootRow>}
-                  {Number(lootArray[1]) > 0 && <LootRow>{lootArray[1]} Level 2 Gem{Number(lootArray[1]) > 1 ? "s" : ""}</LootRow>}
-                  {Number(lootArray[2]) > 0 && <LootRow>{lootArray[2]} Level 3 Gem{Number(lootArray[2]) > 1 ? "s" : ""}</LootRow>}
-                  {Number(lootArray[3]) > 0 && <LootRow>{lootArray[3]} Level 4 Gem{Number(lootArray[3]) > 1 ? "s" : ""}</LootRow>}
-                  {Number(lootArray[4]) > 0 && <LootRow>{lootArray[4]} Level 5 Gem{Number(lootArray[4]) > 1 ? "s" : ""}</LootRow>}
-                  {Number(lootArray[5]) > 0 && <LootRow>{lootArray[5]} Piece{Number(lootArray[5]) > 1 ? "s" : ""} of Silver</LootRow>}
-                  {Number(lootArray[6]) > 0 && <LootRow>{lootArray[6]} Piece{Number(lootArray[6]) > 1 ? "s" : ""} of Gold</LootRow>}
+                  {Number(lootArray[0]) > 0 &&
+                  <LootRow>{lootArray[0]} Level 1 Gem{Number(lootArray[0]) > 1 ? "s" : ""}</LootRow>}
+                  {Number(lootArray[1]) > 0 &&
+                  <LootRow>{lootArray[1]} Level 2 Gem{Number(lootArray[1]) > 1 ? "s" : ""}</LootRow>}
+                  {Number(lootArray[2]) > 0 &&
+                  <LootRow>{lootArray[2]} Level 3 Gem{Number(lootArray[2]) > 1 ? "s" : ""}</LootRow>}
+                  {Number(lootArray[3]) > 0 &&
+                  <LootRow>{lootArray[3]} Level 4 Gem{Number(lootArray[3]) > 1 ? "s" : ""}</LootRow>}
+                  {Number(lootArray[4]) > 0 &&
+                  <LootRow>{lootArray[4]} Level 5 Gem{Number(lootArray[4]) > 1 ? "s" : ""}</LootRow>}
+                  {Number(lootArray[5]) > 0 &&
+                  <LootRow>{lootArray[5]} Piece{Number(lootArray[5]) > 1 ? "s" : ""} of Silver</LootRow>}
+                  {Number(lootArray[6]) > 0 &&
+                  <LootRow>{lootArray[6]} Piece{Number(lootArray[6]) > 1 ? "s" : ""} of Gold</LootRow>}
                   {Number(lootArray[7]) > 0 && <LootRow>{lootArray[7]} Artifacts</LootRow>}
-                  {Number(lootArray[8]) > 0 && <LootRow>{lootArray[8]} Key{Number(lootArray[8]) > 1 ? "s" : ""}</LootRow>}
+                  {Number(lootArray[8]) > 0 &&
+                  <LootRow>{lootArray[8]} Key{Number(lootArray[8]) > 1 ? "s" : ""}</LootRow>}
               </div>
             );
         case 'Bound':
@@ -186,23 +192,23 @@ const DropdownContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    background-color: #f3f1ed;
+    background-color: white;
     margin-top: 20px;
 `;
 
 const TxRecordContainer = styled.div`
     position: relative;
-    background-color: #e0e0e0;
+    background-color: #ececec;
     margin: 22px 2px;
-    padding: 5px 10px;
+    padding: 5px 0px;
     
     &:hover {
-        background-color: #d0d0d0;
+        background-color: #e0e0e0;
         &:after {
-            background-color: #d0d0d0;
+            background-color: #e0e0e0;
         }
         &:before {
-            background-color: #d0d0d0;
+            background-color: #e0e0e0;
         }
     }
    
@@ -215,7 +221,7 @@ const TxRecordContainer = styled.div`
         left: 0;
         right: 0;
         position: absolute;
-        background-color: #e0e0e0;
+        background-color: #ececec;
         content: "";
     }
     
@@ -228,7 +234,7 @@ const TxRecordContainer = styled.div`
         left: 0;
         right: 0;    
         position: absolute;
-        background-color: #e0e0e0;
+        background-color: #ececec;
         content: "show events";
         font-size: 10px;
         color: grey;
@@ -241,17 +247,17 @@ const TxHeader = styled.div`
 
 const TxStatus = styled.div`
     background-color: ${props => {
-        switch(props.status) {
-            case TX_PENDING:
-                return "#fdcd14";
-            case TX_CONFIRMED:
-                return "green";
-            case TX_FAILED:
-                return "red";
-        }
-    }};
+    switch (props.status) {
+        case TX_PENDING:
+            return "#fdcd14";
+        case TX_CONFIRMED:
+            return "green";
+        case TX_FAILED:
+            return "red";
+    }
+}};
     color: ${props => {
-    switch(props.status) {
+    switch (props.status) {
         case TX_PENDING:
             return "black";
         case TX_CONFIRMED:
@@ -272,10 +278,19 @@ const TxStatus = styled.div`
 const TxDescription = styled.div`
 `;
 
+const TxInfo = styled.div`
+    padding: 5px 10px 0;
+    margin-top: -12px;  
+`;
+
 const TxContractEvents = styled.div`
     display: ${props => props.expanded ? "block" : "none"};
     min-height: 30px;
-    background-color: black;
+    background-color: #e0e0e0;
+    color: #333333;
+    padding: 2px 10px;
+    border-radius: 2px;
+    font-size: 13px;
 `
 
 const TxConfirmedRecord = ({tx}) => {
@@ -284,26 +299,28 @@ const TxConfirmedRecord = ({tx}) => {
 
     return (
       <TxRecordContainer style={{cursor: "pointer"}} onClick={() => setExpanded(!expanded)}>
-        <Badge count={tx.unseen ? 1 : 0}>
-            <TxHeader>TX_HEADER</TxHeader>
-        </Badge>
-        <TxStatus status={TX_CONFIRMED}>Confirmed</TxStatus>
-        <TxDescription>{tx.description}</TxDescription>
-        <TxContractEvents expanded={expanded}>
-            {tx.events && tx.events.map((event) => {
-                return <div style={{width: '100%', color: "white"}}>{event['event']}</div>
-            })}
-        </TxContractEvents>
-        <a
-          href={`https://${process.env.REACT_APP_NETWORK}.io/tx/${tx.transactionHash}`}
-          key={tx.transactionHash}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-            <Icon type="link" style={{fontSize: '24px', position: 'absolute', top: '20px', right: '0px'}}
-                  className="pointer blue"/>
-        </a>
-    </TxRecordContainer>)
+          <TxInfo>
+              <Badge count={tx.unseen ? 1 : 0}>
+                  <TxHeader>{tx.type}</TxHeader>
+              </Badge>
+              <TxStatus status={TX_CONFIRMED}>Confirmed</TxStatus>
+              <TxDescription>{tx.description}</TxDescription>
+          </TxInfo>
+          <TxContractEvents expanded={expanded}>
+              {tx.events && tx.events.map((event) => {
+                  return <div style={{width: '100%'}}>{event['event']}</div>
+              })}
+          </TxContractEvents>
+          <a
+            href={`https://${process.env.REACT_APP_NETWORK}.io/tx/${tx.transactionHash}`}
+            key={tx.transactionHash}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+              <Icon type="link" style={{fontSize: '24px', position: 'absolute', top: '20px', right: '0px'}}
+                    className="pointer blue"/>
+          </a>
+      </TxRecordContainer>)
 }
 
 const menu = ({transactionHistory, pendingTransactions, failedTransactions}) => (
@@ -311,16 +328,18 @@ const menu = ({transactionHistory, pendingTransactions, failedTransactions}) => 
   <DropdownContainer>
 
       {!transactionHistory || !pendingTransactions || !failedTransactions ||
-      (failedTransactions.length === 0 &&transactionHistory.length === 0 && pendingTransactions.length === 0)
+      (failedTransactions.length === 0 && transactionHistory.length === 0 && pendingTransactions.length === 0)
       && <div>No recent transactions</div>}
       {failedTransactions && failedTransactions.map((tx) => (
         tx.hash ?
-          <TxRecordContainer key={tx.hash+'failed'}>
-              <Badge count={1}>
-                  <TxHeader>TX_HEADER</TxHeader>
-              </Badge>
-              <TxStatus status={TX_FAILED}>Failed</TxStatus>
-              <TxDescription>{tx.description}</TxDescription>
+          <TxRecordContainer key={tx.hash + 'failed'}>
+              <TxInfo>
+                  <Badge count={1}>
+                      <TxHeader>{tx.type}</TxHeader>
+                  </Badge>
+                  <TxStatus status={TX_FAILED}>Failed</TxStatus>
+                  <TxDescription>{tx.description}</TxDescription>
+              </TxInfo>
               <a
                 href={`https://${process.env.REACT_APP_NETWORK}.io/tx/${tx.hash}`}
                 key={tx.hash}
@@ -334,12 +353,14 @@ const menu = ({transactionHistory, pendingTransactions, failedTransactions}) => 
       ))}
       {pendingTransactions && pendingTransactions.map((tx) => (
         tx.hash ?
-          <TxRecordContainer key={tx.hash+'pending'}>
-              <Badge count={tx.unseen ? 1 : 0}>>
-                  <TxHeader>TX_HEADER</TxHeader>
-              </Badge>
-              <TxStatus status={TX_PENDING}>Pending</TxStatus>
-              <TxDescription>{tx.description}</TxDescription>
+          <TxRecordContainer key={tx.hash + 'pending'}>
+              <TxInfo>
+                  <Badge count={tx.unseen ? 1 : 0}>
+                      <TxHeader>{tx.type}</TxHeader>
+                  </Badge>
+                  <TxStatus status={TX_PENDING}>Pending</TxStatus>
+                  <TxDescription>{tx.description}</TxDescription>
+              </TxInfo>
               <a
                 href={`https://${process.env.REACT_APP_NETWORK}.io/tx/${tx.hash}`}
                 key={tx.hash}
@@ -374,7 +395,7 @@ class AvatarDropdown extends React.Component {
 
     render() {
         const {user, failedTransactions, transactionHistory, pendingTransactions} = this.props;
-        const unseen = (transactionHistory ? transactionHistory.findIndex(tx => !tx.unseen) : 0) + (failedTransactions ? failedTransactions.length : 0);
+        const unseen = +(transactionHistory ? transactionHistory.findIndex(tx => !tx.unseen) : 0) + +(failedTransactions ? failedTransactions.length : 0);
 
         return (
           user && (
@@ -386,7 +407,8 @@ class AvatarDropdown extends React.Component {
                   this.setState({visibility: false})
               }}
             >
-                <Dropdown overlay={menu({transactionHistory, pendingTransactions, failedTransactions})} visible={true || this.state.visibility}>
+                <Dropdown overlay={menu({transactionHistory, pendingTransactions, failedTransactions})}
+                          visible={true || this.state.visibility}>
                     <>
                         <Badge count={unseen}>
                             <Avatar src={user.imageURL} className="dib"/>

@@ -12,7 +12,6 @@ import {
 
 import {setError} from '../../app/appActions';
 import {db} from "../../app/utils/firebase";
-import {plotSale} from "../plotsale/plotSaleReducer";
 
 export const startTx = tx => ({type: TX_STARTED, payload: tx});
 export const completedTx = tx => ({type: TX_COMPLETED, payload: tx});
@@ -34,6 +33,29 @@ export const resolveTXStatus = async (pendingTransactions, dbWrite, dbDelete, qu
     }
 };
 
+const auctionEventWhitelist = [
+    'ItemAdded',
+    'ItemRemoved',
+    'ItemBought',
+];
+
+const minerEventWhitelist = [
+    'Bound',
+    'Updated',
+    'Released',
+    'RestingEnergyConsumed',
+]
+
+const gemEventWhitelist = [
+    'LevelUp',
+    'Upgraded',
+]
+
+const plotSaleEventWhitelist = [
+    'PlotIssued',
+    //todo: CouponConsumed event
+]
+
 export const getUpdatedTransactionHistory = () => async (dispatch, getState) => {
     console.log("~~~~~~ get updated TRANSACTION history ~~~~~~");
     const web3 = getState().app.web3;
@@ -42,7 +64,7 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
     console.log("~~~~~~ get updated TRANSACTION history 2 ~~~~~~");
     const gemContract = getState().app.gemsContractInstance;
     console.log("~~~~~~ get updated TRANSACTION history 3 ~~~~~~");
-    // const plotSaleContract = getState().plotServiceInstance.plotSaleContract;
+    const plotSaleContract = getState().app.plotServiceInstance.plotSaleContract;
     console.log("~~~~~~ get updated TRANSACTION history 4 ~~~~~~");
 
     const currentUserId = getState().auth.currentUserId;
@@ -98,41 +120,83 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
     const latestBlock = await web3.eth.getBlockNumber();
     console.log("LATEST BLOCK:", latestBlock);
 
+    console.log("CURRENT USER ID", currentUserId);
+
     //todo: change empirical amount of blocks for fromBlock parameter
-    const [minerEventLogs, auctionEventLogs, gemEventLogs, plotSaleEventLogs] = await Promise.all([
-        minerContract.getPastEvents({
-            event: "allEvents",
-            filter: {'_by': currentUserId},
-            fromBlock: latestBlock - 15000,
-            toBlock: 'latest',
-        }),
-        auctionContract.getPastEvents({
-            event: "allEvents",
-            filter: {'_by': currentUserId, '_from': currentUserId},
-            fromBlock: latestBlock - 15000,
-            toBlock: 'latest',
-        }),
-        gemContract.getPastEvents({
-            event: "allEvents",
-            filter: {'_by': currentUserId, '_to': currentUserId, '_from': currentUserId},
-            fromBlock: latestBlock - 15000,
-            toBlock: 'latest',
-        }),
-        []
+    const allEventLogsArray = [
+        (await Promise.all(minerEventWhitelist.map(async event => {
+            return minerContract.getPastEvents(event,
+              {
+                  filter: {'_by': currentUserId},
+                  fromBlock: latestBlock - 15000,
+                  toBlock: 'latest',
+              })
+        }))).flat(),
+        (await Promise.all(auctionEventWhitelist.map(async event => {
+            return auctionContract.getPastEvents(event,
+              {
+                  filter: {'_by': currentUserId, '_from': currentUserId},
+                  fromBlock: latestBlock - 15000,
+                  toBlock: 'latest',
+              })
+        }))).flat(),
+        (await Promise.all(gemEventWhitelist.map(async event => {
+            return gemContract.getPastEvents(event,
+              {
+                  filter: {'_by': currentUserId},
+                  fromBlock: latestBlock - 15000,
+                  toBlock: 'latest',
+              })
+        }))).flat(),
+        (await Promise.all(plotSaleEventWhitelist.map(async event => {
+            return plotSaleContract.getPastEvents(event,
+              {
+                  filter: {'_by': currentUserId},
+                  fromBlock: latestBlock - 15000,
+                  toBlock: 'latest',
+              })
+        }))).flat(),
+        await plotSaleContract.getPastEvents('CountryBalanceUpdated',
+          {
+              filter: {'owner': currentUserId},
+              fromBlock: latestBlock - 15000,
+              toBlock: 'latest',
+          }),
+        await gemContract.getPastEvents('Transfer',
+          {
+              filter: {'_to': currentUserId},
+              fromBlock: latestBlock - 15000,
+              toBlock: 'latest',
+          }),
+        await gemContract.getPastEvents('Transfer',
+          {
+              filter: {'_from': currentUserId},
+              fromBlock: latestBlock - 15000,
+              toBlock: 'latest',
+          }),
+        await auctionContract.getPastEvents('ItemBought',
+          {
+              filter: {'_from': currentUserId},
+              fromBlock: latestBlock - 15000,
+              toBlock: 'latest',
+          }),
         // plotSaleContract.getPastEvents({
         //   event: "allEvents",
         //   filter: {'_by': currentUserId, 'owner': currentUserId},
         //   fromBlock: latestBlock - 7000,
         //   toBlock: 'latest',
         // }),
-    ])
+    ].flat();
+    allEventLogsArray.sort((e1, e2) => e2.blockNumber !== e1.blockNumber ? e2.blockNumber - e1.blockNumber : e2.transactionIndex - e1.transactionIndex);
 
-    console.log("MINER EVENT LOGS:", minerEventLogs);
-    console.log("Auction EVENT LOGS:", auctionEventLogs);
-    console.log("Gem EVENT LOGS:", gemEventLogs);
-    console.log("Plot Sale EVENT LOGS:", plotSaleEventLogs);
+    console.log("ALL EVENTS LOGS ARRAY", allEventLogsArray);
 
-    let transactionHistory = groupEventLogsByTransaction(minerEventLogs, auctionEventLogs, gemEventLogs, plotSaleEventLogs);
+    // console.log("MINER EVENT LOGS:", minerEventLogs);
+    // console.log("Auction EVENT LOGS:", auctionEventLogs);
+    // console.log("Gem EVENT LOGS:", gemEventLogs);
+    // console.log("Plot Sale EVENT LOGS:", plotSaleEventLogs);
+
+    let transactionHistory = groupEventLogsByTransaction(allEventLogsArray, currentUserId);
     resolvedStoredTransactions.forEach(storedTx => {
         if (storedTx.status === TX_CONFIRMED) {
             const resolvedTx = transactionHistory.find(tx => tx.transactionHash === storedTx.transactionHash);
@@ -147,32 +211,83 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
     })
 }
 
-const groupEventLogsByTransaction = (minerEventLogs, auctionEventLogs, gemEventLogs, plotSaleEventLogs) => {
+const groupEventLogsByTransaction = (sortedEventLogs, currentUserId) => {
     const transactions = [];
     let currentTransaction = null;
     let previousTxHash = null;
 
-    [minerEventLogs, auctionEventLogs, gemEventLogs, plotSaleEventLogs].forEach((eventLogs, type) => {
-        for (let i = eventLogs.length - 1; i >= 0; i--) {
-            if (previousTxHash !== eventLogs[i].transactionHash) {
-                previousTxHash = eventLogs[i].transactionHash;
-                currentTransaction && transactions.push(resolveTransactionDescription(currentTransaction, type));
-                currentTransaction = {
-                    events: [],
-                    transactionHash: eventLogs[i].transactionHash,
-                    blockNumber: eventLogs[i].blockNumber
-                };
-            }
-            currentTransaction.events.push(eventLogs[i]);
+    for (let i = 0; i < sortedEventLogs.length; i++) {
+        if (previousTxHash !== sortedEventLogs[i].transactionHash) {
+            previousTxHash = sortedEventLogs[i].transactionHash;
+            currentTransaction && transactions.push(resolveTransactionDescription(currentTransaction, currentUserId));
+            currentTransaction = {
+                events: [],
+                transactionHash: sortedEventLogs[i].transactionHash,
+                blockNumber: sortedEventLogs[i].blockNumber
+            };
         }
-        currentTransaction && transactions.push(resolveTransactionDescription(currentTransaction, type));
-        previousTxHash = null;
-        currentTransaction = null;
-    })
-    return transactions.sort((tx1, tx2) => tx2.blockNumber - tx1.blockNumber);
+        currentTransaction.events.push(sortedEventLogs[i]);
+    }
+    currentTransaction && transactions.push(resolveTransactionDescription(currentTransaction, currentUserId));
+    return transactions;
 }
 
-const resolveTransactionDescription = (tx, type) => {
+const resolveTransactionDescription = (tx, currentUserId) => {
+    if (tx.events.find(e => e.event === "Bound")) {
+        tx.type = 'Gem bound';
+        return tx;
+    }
+    if (tx.events.find(e => e.event === "Released")) {
+        tx.type = 'Gem released';
+        return tx;
+    }
+    if (tx.events.find(e => e.event === "RestingEnergyConsumed") && !tx.events.find(e => e.event === "Bound")) {
+        tx.type = 'Gem used its energy';
+        return tx;
+    }
+    if (tx.events.find(e => e.event === "Updated")) {
+        if (tx.events.length > 1) {
+            tx.type = 'Plots are processed';
+        }
+        else {
+            tx.type = 'Plot is processed';
+        }
+        return tx;
+    }
+    if (tx.events.find(e => e.event === "ItemAdded")) {
+        tx.type = 'Auction started';
+        return tx;
+    }
+    if (tx.events.find(e => e.event === "ItemRemoved")) {
+        tx.type = 'Auction removed';
+        return tx;
+    }
+    if (tx.events.find(e => e.event === "ItemBought")) {
+        const event = tx.events.find(event => event.event === "ItemBought");
+        if (event.returnValues['_to'] === currentUserId) {
+            tx.type = 'Gem purchased'
+        } else {
+            tx.type = 'Your gem purchased'
+        }
+        return tx;
+    }
+    if (tx.events.find(e => e.event === "LevelUp")) {
+        tx.type = 'Gem Leveled up';
+        return tx;
+    }
+    if (tx.events.find(e => e.event === "Upgraded")) {
+        tx.type = 'Gem upgraded';
+        return tx;
+    }
+    if (tx.events.find(e => e.event === "PlotIssued")) {
+        tx.type = 'Plots purchased';
+        return tx;
+    }
+    if (tx.events.find(e => e.event === "CountryBalanceUpdated")) {
+        tx.type = 'Plots purchased in your country';
+        return tx;
+    }
+
     return tx;
 }
 
@@ -182,14 +297,30 @@ export const transactionResolved = (event) => async (dispatch, getState) => {
       .update({
           status: TX_CONFIRMED
       });
-    dispatch({
-        type: TRANSACTION_RESOLVED,
-        payload: event
-    })
+    const transactionHistory = getState().tx.transactionHistory;
+    let resolvedTx = transactionHistory && transactionHistory.find(tx => tx.transactionHash === event.transactionHash);
+    if (resolvedTx) {
+        resolvedTx.events.push(event);
+        resolvedTx.unseen = true;
+    }
+    else {
+        resolvedTx = resolveTransactionDescription({
+            events: [],
+            transactionHash: event.transactionHash,
+            blockNumber: event.blockNumber,
+        });
+        resolvedTx.events.push(event);
+        resolvedTx.unseen = true;
+        //todo: bug is possible: firing updated event before bound/released will set tx type as 'plot processed'
+        //todo: instead of bound/released
+        dispatch({
+            type: TRANSACTION_RESOLVED,
+            payload: resolveTransactionDescription(resolvedTx)
+        })
+    }
 }
 
 export const addPendingTransaction = (transaction) => async (dispatch, getState) => {
-
     const newTx = {
         hash: transaction.hash,
         userId: transaction.userId,

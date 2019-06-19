@@ -9,22 +9,29 @@ export const setDashboardEventListeners = ({
                                                issuedEventCallback,
                                                reloadGemsCallback,
                                                changeGemCallback,
-                                               currentUserId
+                                               currentUserId,
                                            }) => {
     console.warn("!!!!!!!!!!!! SETTING UP EVENT LISTENERS !!!!!!!!!!!");
+
+    const caughtEventIds = [];
+
     plotService.minerContract.events.Updated({
         filter: {'_by': currentUserId},
         fromBlock: 'latest'
     })
       .on('data', async function (event) {
-          console.warn("> >> >>> updated event");
-          const eventParams = event.returnValues;
-          updatedEventCallback({
-              id: Number(eventParams['plotId']),
-              processedBlocks: eventParams['offsetTo'],
+          console.warn("> >> >>> updated event", event);
+          if (!caughtEventIds.includes(event['id'])) {
+              caughtEventIds.push(event['id']);
+              console.warn('event pushed');
+              const eventParams = event.returnValues;
+              updatedEventCallback({
+                  id: Number(eventParams['plotId']),
+                  processedBlocks: eventParams['offsetTo'],
 //              gemMinesId: await plotService.getBoundGemId(eventParams['plotId']),
 //              gemMines: null,
-          });
+              });
+          }
       })
       .on('changed', function (event) {
           console.log('CHANGED EVENT:', event);
@@ -36,14 +43,17 @@ export const setDashboardEventListeners = ({
         fromBlock: 'latest'
     })
       .on('data', function (event) {
-          const eventParams = event.returnValues;
-          releasedEventCallback({
-              id: Number(eventParams['plotId']),
-              miningState: NO_GEM,
-              gemMines: null,
-              gemMinesId: null,
-              state: 0
-          });
+          if (!caughtEventIds.includes(event['id'])) {
+              caughtEventIds.push(event['id']);
+              const eventParams = event.returnValues;
+              releasedEventCallback({
+                  id: Number(eventParams['plotId']),
+                  miningState: NO_GEM,
+                  gemMines: null,
+                  gemMinesId: null,
+                  state: 0
+              });
+          }
           //reloadGemsCallback(currentUserId);
       })
       .on('changed', function (event) {
@@ -57,14 +67,17 @@ export const setDashboardEventListeners = ({
     })
       .on('data', function (event) {
           console.warn(">>> >> > bound event");
-          const eventParams = event.returnValues;
-          boundEventCallback({
-              id: Number(eventParams['plotId']),
-              miningState: MINING,
-              gemMinesId: eventParams['gemId'],
-              state: 1
-          });
-          //reloadGemsCallback(currentUserId);
+          if (!caughtEventIds.includes(event['id'])) {
+              caughtEventIds.push(event['id']);
+              const eventParams = event.returnValues;
+              boundEventCallback({
+                  id: Number(eventParams['plotId']),
+                  miningState: MINING,
+                  gemMinesId: eventParams['gemId'],
+                  state: 1
+              });
+              reloadGemsCallback(currentUserId);
+          }
       })
       .on('changed', function (event) {
           console.log('CHANGED EVENT:', event);
@@ -76,7 +89,10 @@ export const setDashboardEventListeners = ({
         fromBlock: 'latest'
     })
       .on('data', function (event) {
-          issuedEventCallback();
+          if (!caughtEventIds.includes(event['id'])) {
+              caughtEventIds.push(event['id']);
+              issuedEventCallback();
+          }
       })
       .on('changed', function (event) {
           console.log('CHANGED EVENT:', event);
@@ -88,7 +104,10 @@ export const setDashboardEventListeners = ({
         fromBlock: 'latest'
     })
       .on('data', function (event) {
-          //reloadGemsCallback(currentUserId);
+          if (!caughtEventIds.includes(event['id'])) {
+              caughtEventIds.push(event['id']);
+              reloadGemsCallback(currentUserId);
+          }
       })
       .on('changed', function (event) {
           console.log('CHANGED EVENT:', event);
@@ -114,8 +133,11 @@ export const setDashboardEventListeners = ({
         fromBlock: 'latest'
     })
       .on('data', function (event) {
-          const params = event.returnValues;
-          changeGemCallback({id: params['_tokenId'], level: params['_to']});
+          if (!caughtEventIds.includes(event['id'])) {
+              caughtEventIds.push(event['id']);
+              const params = event.returnValues;
+              changeGemCallback({id: params['_tokenId'], level: params['_to']});
+          }
       })
       .on('changed', function (event) {
           console.log('CHANGED EVENT:', event);
@@ -127,8 +149,11 @@ export const setDashboardEventListeners = ({
         fromBlock: 'latest'
     })
       .on('data', function (event) {
-          const params = event.returnValues;
-          changeGemCallback({id: params['_tokenId'], grade: params['_to']});
+          if (!caughtEventIds.includes(event['id'])) {
+              caughtEventIds.push(event['id']);
+              const params = event.returnValues;
+              changeGemCallback({id: params['_tokenId'], grade: params['_to']});
+          }
       })
       .on('changed', function (event) {
           console.log('CHANGED EVENT:', event);

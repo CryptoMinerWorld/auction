@@ -73,7 +73,7 @@ export const createAuction = (payload, turnLoaderOff, history) => async (dispatc
         // construct auction parameters
         const token = new BigNumber(tokenId);
         const t0 = Math.round(new Date().getTime() / 1000) || 0;
-        const t1 = t0 + _duration;
+        const t1 = t0 + duration;
         const p0 = startPrice;
         const p1 = endPrice;
         const two = new BigNumber(2);
@@ -113,7 +113,7 @@ export const createAuction = (payload, turnLoaderOff, history) => async (dispatc
                   type: AUCTION_START,
                   description: `Adding gem ${token} to auction`,
                   body: {
-                      gem: token,
+                      gem: tokenId,
                   }
               })(dispatch, getState);
           })

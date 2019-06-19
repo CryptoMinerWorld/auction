@@ -6,18 +6,25 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
     // --- Plot workshop transaction event listeners starts ---
     // --------------------------------------------------------
 
+    const caughtEventIds = [];
+
     plotService.minerContract.events.Updated({
         filter: {'_by': currentUserId},
         fromBlock: 'latest'
     })
       .on('data', function (event) {
+          console.warn("<< << << updated app event");
           if (event.returnValues['_by'] !== currentUserId) {
               console.error("_by address is different from current user address.", event.returnValues['_by'], currentUserId);
           }
           else {
-              transactionResolved(event);
-              if (event.returnValues['loot'])
-                  updatedEventCallback(event);
+              if (!caughtEventIds.includes(event['id'])) {
+                  caughtEventIds.push(event['id']);
+                  console.warn('event pushed');
+                  transactionResolved(event);
+                  if (event.returnValues['loot'])
+                      updatedEventCallback(event);
+              }
           }
       })
       .on('changed', function (event) {
@@ -29,7 +36,10 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
         fromBlock: 'latest'
     })
       .on('data', function (event) {
-          transactionResolved(event);
+          if (!caughtEventIds.includes(event['id'])) {
+              caughtEventIds.push(event['id']);
+              transactionResolved(event);
+          }
       })
       .on('changed', function (event) {
           console.log('CHANGED EVENT:', event);
@@ -41,7 +51,10 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
         fromBlock: 'latest'
     })
       .on('data', function (event) {
-          transactionResolved(event);
+          if (!caughtEventIds.includes(event['id'])) {
+              caughtEventIds.push(event['id']);
+              transactionResolved(event);
+          }
       })
       .on('changed', function (event) {
           console.log('CHANGED EVENT:', event);
@@ -53,7 +66,10 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
         fromBlock: 'latest'
     })
       .on('data', function (event) {
-          transactionResolved(event);
+          if (!caughtEventIds.includes(event['id'])) {
+              caughtEventIds.push(event['id']);
+              transactionResolved(event);
+          }
       })
       .on('changed', function (event) {
           console.log('CHANGED EVENT:', event);
@@ -69,7 +85,10 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
         fromBlock: 'latest'
     })
       .on('data', function (event) {
-          transactionResolved(event)
+          if (!caughtEventIds.includes(event['id'])) {
+              caughtEventIds.push(event['id']);
+              transactionResolved(event)
+          }
       })
       .on('changed', function (event) {
           console.log('CHANGED EVENT:', event);
@@ -81,7 +100,10 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
         fromBlock: 'latest'
     })
       .on('data', function (event) {
-          transactionResolved(event)
+          if (!caughtEventIds.includes(event['id'])) {
+              caughtEventIds.push(event['id']);
+              transactionResolved(event)
+          }
       })
       .on('changed', function (event) {
           console.log('CHANGED EVENT:', event);
@@ -97,7 +119,10 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
         fromBlock: 'latest'
     })
       .on('data', function (event) {
-          transactionResolved(event)
+          if (!caughtEventIds.includes(event['id'])) {
+              caughtEventIds.push(event['id']);
+              transactionResolved(event)
+          }
       })
       .on('changed', function (event) {
           console.log('CHANGED EVENT:', event);
@@ -110,7 +135,10 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
         fromBlock: 'latest'
     })
       .on('data', function (event) {
-          transactionResolved(event)
+          if (!caughtEventIds.includes(event['id'])) {
+              caughtEventIds.push(event['id']);
+              transactionResolved(event)
+          }
       })
       .on('changed', function (event) {
           console.log('CHANGED EVENT:', event);
@@ -122,7 +150,10 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
         fromBlock: 'latest'
     })
       .on('data', function (event) {
-          transactionResolved(event)
+          if (!caughtEventIds.includes(event['id'])) {
+              caughtEventIds.push(event['id']);
+              transactionResolved(event)
+          }
       })
       .on('changed', function (event) {
           console.log('CHANGED EVENT:', event);
@@ -139,7 +170,10 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
         fromBlock: 'latest'
     })
       .on('data', function (event) {
-          transactionResolved(event)
+          if (!caughtEventIds.includes(event['id'])) {
+              caughtEventIds.push(event['id']);
+              transactionResolved(event)
+          }
       })
       .on('changed', function (event) {
           console.log('CHANGED EVENT:', event);
@@ -151,7 +185,10 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
         fromBlock: 'latest'
     })
       .on('data', function (event) {
-          transactionResolved(event)
+          if (!caughtEventIds.includes(event['id'])) {
+              caughtEventIds.push(event['id']);
+              transactionResolved(event)
+          }
       })
       .on('changed', function (event) {
           console.log('CHANGED EVENT:', event);
@@ -167,7 +204,10 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
         fromBlock: 'latest'
     })
       .on('data', function (event) {
-          transactionResolved(event);
+          if (!caughtEventIds.includes(event['id'])) {
+              caughtEventIds.push(event['id']);
+              transactionResolved(event);
+          }
       })
       .on('changed', function (event) {
           console.log('CHANGED EVENT:', event);
@@ -183,7 +223,10 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
         fromBlock: 'latest'
     })
       .on('data', function (event) {
-          transactionResolved(event)
+          if (!caughtEventIds.includes(event['id'])) {
+              caughtEventIds.push(event['id']);
+              transactionResolved(event)
+          }
       })
       .on('changed', function (event) {
           console.log('CHANGED EVENT:', event);
@@ -195,7 +238,10 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
         fromBlock: 'latest'
     })
       .on('data', function (event) {
-          transactionResolved(event)
+          if (!caughtEventIds.includes(event['id'])) {
+              caughtEventIds.push(event['id']);
+              transactionResolved(event)
+          }
       })
       .on('changed', function (event) {
           console.log('CHANGED EVENT:', event);
@@ -207,7 +253,10 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
         fromBlock: 'latest'
     })
       .on('data', function (event) {
-          transactionResolved(event);
+          if (!caughtEventIds.includes(event['id'])) {
+              caughtEventIds.push(event['id']);
+              transactionResolved(event);
+          }
       })
       .on('changed', function (event) {
           console.log('CHANGED EVENT:', event);

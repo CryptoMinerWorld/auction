@@ -196,8 +196,8 @@ class BuyForm extends Component {
                             numberOfPlots <= selectedCountry.availablePlots ?
                               <BuyInfo>Buy {numberOfPlots} plots in {selectedCountry.name}</BuyInfo>
                               :
-                              <BuyInfo>Buy {selectedCountry.availablePlots} plots in {selectedCountry.name}
-                                  and {(numberOfPlots - selectedCountry.availablePlots)} plots in random countries</BuyInfo>
+                              <BuyInfo>{`Buy ${selectedCountry.availablePlots} plots in ${selectedCountry.name} ` +
+                                  `and ${(numberOfPlots - selectedCountry.availablePlots)} plots in random countries`}</BuyInfo>
                             : <BuyInfo>Buy {numberOfPlots} plots in random countries</BuyInfo>
                       }
                   </Col>
