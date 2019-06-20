@@ -270,7 +270,7 @@ export const upgradeGem = (gem, levelUp, gradeUp, hidePopup, cost) => (dispatch,
           hidePopup();
       })
       .on('receipt', async (receipt) => {
-
+        console.warn("RECEIPT UPGRADE:", receipt);
       })
       .on('error', (err) => {
           gem[key] = false;

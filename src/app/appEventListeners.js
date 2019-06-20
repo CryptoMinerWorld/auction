@@ -266,19 +266,21 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
     // --------------------------------------------------------
     // --- Silver sale transaction event listeners starts ---
     // --------------------------------------------------------
-    // todo: uncomment when sale contract wired;
-    // silverGoldService.contract.events.Upgraded({
-    //     filter: {'_owner': currentUserId},
-    //     fromBlock: 'latest'
-    // })
-    //   .on('data', function (event) {
-    //       const params = event.returnValues;
-    //       changeGemCallback({id: params['_tokenId'], grade: params['_to']});
-    //   })
-    //   .on('changed', function (event) {
-    //       console.log('CHANGED EVENT:', event);
-    //   })
-    //   .on('error', console.error);
+
+    silverGoldService.saleContract.events.Unboxed({
+        filter: {'_by': currentUserId},
+        fromBlock: 'latest'
+    })
+      .on('data', function (event) {
+          if (!caughtEventIds.includes(event['id'])) {
+              caughtEventIds.push(event['id']);
+              transactionResolved(event)
+          }
+      })
+      .on('changed', function (event) {
+          console.log('CHANGED EVENT:', event);
+      })
+      .on('error', console.error);
 
     console.log('App Event Listeners set');
 

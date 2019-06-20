@@ -1,9 +1,16 @@
-import {completedTx, ErrorTx, startTx} from "../transactions/txActions";
+import {
+    addPendingTransaction,
+    completedTx,
+    ErrorTx,
+    getUpdatedTransactionHistory,
+    startTx
+} from "../transactions/txActions";
 import {parseTransactionHashFromError} from "../transactions/helpers";
 import {BigNumber} from "bignumber.js";
 import {CHEST_VALUE_RECEIVED, SALE_STATE_RECEIVED, USER_BALANCE_RECEIVED} from "./saleConstants";
 import {utils} from "web3";
 import {weiToEth} from "./helpers";
+import {AUCTION_START} from "../items/itemConstants";
 
 
 export const ONE_UNIT = 0.001;
@@ -13,47 +20,26 @@ export const buyGeode = (type, amount, etherUsed, referralPointsUsed, referrer, 
     const silverGoldService = getState().app.silverGoldServiceInstance;
     const currentUser = getState().auth.currentUserId;
     console.log('SILVER gold service:', silverGoldService);
-
+    let txHash;
     const txResult = silverGoldService.buyGeode(type, amount, etherUsed, referralPointsUsed, referrer)
       .on('transactionHash', (hash) => {
           hidePopup();
-          dispatch(
-            startTx({
-                hash,
-                description: 'Buying ' + type,
-                currentUser,
-                txMethod: 'SILVER_SALE',
-                points: referralPointsUsed,
-                ether: etherUsed,
-                //todo insert ref points referrer and referral got
-            }),
-          );
+          txHash = hash;
+          addPendingTransaction({
+              hash: hash,
+              userId: currentUser,
+              type: 'Silver Sale',
+              description: `Buying ${type}. Ether used: ${etherUsed}`,
+              body: {}
+          })(dispatch, getState);
       })
       .on('receipt', async (receipt) => {
-          console.log('111RECEIPT: ', receipt);
           getUserBalance(currentUser)(dispatch, getState);
-          dispatch(completedTx({
-              receipt,
-              txMethod: 'SILVER_SALE',
-              description: 'Silver received',
-              hash: receipt.transactionHash,
-          }));
       })
       .on('error', (err) => {
-          //setLoading(false);
-          dispatch(ErrorTx({
-              txMethod: 'SILVER_SALE',
-              description: 'Silver sale failed',
-              error: err,
-              hash: parseTransactionHashFromError(err.message)
-          }));
-          // dispatch({
-          //   type: MODAL_GONE,
-          // });
-          // dispatch({
-          //   type: FETCH_DATA_FAILED,
-          //   payload: JSON.stringify(err),
-          // });
+          if (txHash) {
+              getUpdatedTransactionHistory()(dispatch, getState);
+          }
       });
 
     console.log('TX RESULT AWAITED:', txResult);
@@ -63,9 +49,7 @@ export const buyGeode = (type, amount, etherUsed, referralPointsUsed, referrer, 
 export const getChestValue = () => async (dispatch, getState) => {
     const preSaleContract = getState().app.presaleContractInstance;
     const web3 = getState().app.web3;
-    const chestAddress = await preSaleContract.methods
-      .chestVault().call();
-    const chestValue = weiToEth(await web3.eth.getBalance(chestAddress));
+    const chestValue = weiToEth(await web3.eth.getBalance(process.env.REACT_APP_FOUNDERS_CHEST));
     dispatch({
         type: CHEST_VALUE_RECEIVED,
         payload: chestValue

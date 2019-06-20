@@ -408,7 +408,7 @@ class AvatarDropdown extends React.Component {
               }}
             >
                 <Dropdown overlay={menu({transactionHistory, pendingTransactions, failedTransactions})}
-                          visible={true || this.state.visibility}>
+                          visible={this.state.visibility}>
                     <>
                         <Badge count={unseen}>
                             <Avatar src={user.imageURL} className="dib"/>

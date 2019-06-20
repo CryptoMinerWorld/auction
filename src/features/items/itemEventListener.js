@@ -1,6 +1,6 @@
 import {MINING, NO_GEM} from "../plots/plotConstants";
 
-export const setItemEventListeners = ({gemService, gemChangedCallback, tokenId, transactionResolved}) => {
+export const setItemEventListeners = ({gemService, gemChangedCallback, tokenId}) => {
     console.log("SETTING UP EVENT LISTENERS");
     gemService.contract.events.LevelUp({
         filter: {'_tokenId': tokenId},

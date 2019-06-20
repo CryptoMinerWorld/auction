@@ -245,14 +245,13 @@ class App extends Component {
           process.env.REACT_APP_BALANCE_PROXY
         );
 
-        const silverSaleContract = {};
-        // assistInstance.Contract(new web3.eth.Contract(
-        //   silverSaleABI,
-        //   process.env.REACT_APP_SILVER_SALE,
-        //   {
-        //       from: currentAccountId,
-        //   },
-        // ))
+        const silverSaleContract = assistInstance.Contract(new web3.eth.Contract(
+          silverSaleABI,
+          process.env.REACT_APP_SILVER_SALE,
+          {
+              from: currentAccountId,
+          },
+        ))
 
         const silverCouponsContract = {};
         // assistInstance.Contract(new web3.eth.Contract(
@@ -346,7 +345,7 @@ class App extends Component {
 
                 const gemService = new GemService(gemsContractInstance, web3, dutchAuctionContractInstance);
                 const auctionService = new AuctionService(dutchAuctionContractInstance, dutchAuctionHelperContractInstance, gemsContractInstance);
-                const silverGoldService = new SilverGoldService(balanceContract, refPointsTrackerContract, silverCouponsContract);
+                const silverGoldService = new SilverGoldService(silverSaleContract, balanceContract, refPointsTrackerContract);
                 const countryService = new CountryService(null, countryContract);
                 const plotService = new PlotService(plotContract, plotSaleContract, minerContract);
 

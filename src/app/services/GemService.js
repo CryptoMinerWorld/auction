@@ -103,6 +103,8 @@ export default class GemService {
             blocksMined,
             plotsMined,
             plotId,
+            creationTime,
+            stateModifiedTime,
             modifiedTime: Math.max(creationTime, stateModifiedTime)
         }
     }

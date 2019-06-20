@@ -66,6 +66,7 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
     console.log("~~~~~~ get updated TRANSACTION history 3 ~~~~~~");
     const plotSaleContract = getState().app.plotServiceInstance.plotSaleContract;
     console.log("~~~~~~ get updated TRANSACTION history 4 ~~~~~~");
+    const saleContract = getState().app.silverGoldServiceInstance.saleContract;
 
     const currentUserId = getState().auth.currentUserId;
     const storedPendingTransactionDocs = await db.collection('transactions')
@@ -180,6 +181,12 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
               fromBlock: latestBlock - 15000,
               toBlock: 'latest',
           }),
+        await saleContract.getPastEvents('Unboxed',
+          {
+              filter: {'_by': currentUserId},
+              fromBlock: latestBlock - 15000,
+              toBlock: 'latest'
+          })
         // plotSaleContract.getPastEvents({
         //   event: "allEvents",
         //   filter: {'_by': currentUserId, 'owner': currentUserId},
@@ -285,6 +292,13 @@ const resolveTransactionDescription = (tx, currentUserId) => {
     }
     if (tx.events.find(e => e.event === "CountryBalanceUpdated")) {
         tx.type = 'Plots purchased in your country';
+        return tx;
+    }
+    if (tx.events.find(e => e.event === "Unboxed")) {
+        const event = tx.events.find(e => e.event === "Unboxed");
+        tx.type = 'Silver bought';
+        tx.description = `Silver received: ${event.returnValues.silver} ` +
+          `${event.returnValues.gold > 0 ? "Gold received: " + event.returnValues.gold : ""}`;
         return tx;
     }
 

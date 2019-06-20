@@ -31,6 +31,8 @@ import tableSilverGoldDropRates from '../../app/images/sale/tableSilverGoldDropR
 import upArrow from '../../app/images/sale/upMagentaArrow.png';
 import downArrow from '../../app/images/sale/downMagentaArrow.png';
 import foundersChest from '../../app/images/sale/foundersChest.png';
+import {transactionResolved} from "../transactions/txActions";
+import {setSaleEventListeners} from "./saleEventListener";
 
 
 const select = store => ({
@@ -92,17 +94,7 @@ class Sale extends Component {
         }
 
         if (silverGoldService) {
-            silverGoldService.saleContract.events.SaleStateChanged({
-                fromBlock: 'latest'
-            })
-              .on('data', function (event) {
-                  handleUpdateSaleState(event);
-                  console.log('DATA EVENT:', event); // same results as the optional callback above
-              })
-              .on('changed', function (event) {
-                  // remove event from local database
-              })
-              .on('error', console.error);
+            setSaleEventListeners({silverGoldService, handleUpdateSaleState, currentUserId, handleGetUserBalance});
             handleGetSaleState();
             if (currentUserId) {
                 handleGetUserBalance(currentUserId);
@@ -125,19 +117,7 @@ class Sale extends Component {
         }
 
         if (silverGoldService && (prevProps.silverGoldService !== silverGoldService)) {
-
-            silverGoldService.saleContract.events.SaleStateChanged({
-                fromBlock: 'latest'
-            })
-              .on('data', function (event) {
-                  handleUpdateSaleState(event);
-                  console.log('DATA EVENT:', event); // same results as the optional callback above
-              })
-              .on('changed', function (event) {
-                  // remove event from local database
-              })
-              .on('error', console.error);
-
+            setSaleEventListeners({silverGoldService, handleUpdateSaleState, currentUserId, handleGetUserBalance});
             handleGetSaleState();
         }
 
@@ -701,6 +681,7 @@ class Sale extends Component {
 }
 
 const actions = {
+    handleTransactionResolved: transactionResolved,
     handleConfirmBuy: buyGeode,
     handleGetBoxesAvailable: getBoxesAvailableData,
     handleUpdateSaleState: updateSaleState,
