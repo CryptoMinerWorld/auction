@@ -262,37 +262,41 @@ class App extends Component {
         //   },
         // ))
 
-        const plotSaleContract = assistInstance.Contract(new web3.eth.Contract(
-          plotSaleABI,
-          process.env.REACT_APP_PLOT_SALE,
-          {
-              from: currentAccountId,
-          },
-        ))
+        const plotSaleContract = {};
+        // assistInstance.Contract(new web3.eth.Contract(
+        //   plotSaleABI,
+        //   process.env.REACT_APP_PLOT_SALE,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ))
 
-        const plotContract = assistInstance.Contract(new web3.eth.Contract(
-          plotABI,
-          process.env.REACT_APP_PLOT_ERC721,
-          {
-              from: currentAccountId,
-          },
-        ))
+        const plotContract = {};
+        // assistInstance.Contract(new web3.eth.Contract(
+        //   plotABI,
+        //   process.env.REACT_APP_PLOT_ERC721,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ))
 
-        const minerContract = assistInstance.Contract(new web3.eth.Contract(
-          minerABI,
-          process.env.REACT_APP_MINER,
-          {
-              from: currentAccountId,
-          },
-        ))
+        const minerContract = {};
+        // assistInstance.Contract(new web3.eth.Contract(
+        //   minerABI,
+        //   process.env.REACT_APP_MINER,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ))
 
-        const artifactContract = assistInstance.Contract(new web3.eth.Contract(
-          artifactABI,
-          process.env.REACT_APP_ARTIFACT_ERC20,
-          {
-              from: currentAccountId,
-          },
-        ))
+        const artifactContract = {};
+        // assistInstance.Contract(new web3.eth.Contract(
+        //   artifactABI,
+        //   process.env.REACT_APP_ARTIFACT_ERC20,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ))
 
         //const silverCouponsContract = {};
 
@@ -347,7 +351,7 @@ class App extends Component {
                 const auctionService = new AuctionService(dutchAuctionContractInstance, dutchAuctionHelperContractInstance, gemsContractInstance);
                 const silverGoldService = new SilverGoldService(silverSaleContract, balanceContract, refPointsTrackerContract);
                 const countryService = new CountryService(null, countryContract);
-                const plotService = new PlotService(plotContract, plotSaleContract, minerContract);
+                const plotService = {}; //new PlotService(plotContract, plotSaleContract, minerContract);
 
                 handleSendContractsToRedux(
                   dutchAuctionContractInstance,

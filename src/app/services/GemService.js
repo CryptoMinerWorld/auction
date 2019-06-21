@@ -60,6 +60,9 @@ export default class GemService {
     }
 
     unpackGem = async ([high256, low256]) => {
+
+        console.warn("High, low::", high256, low256);
+
         const plotId = high256.dividedToIntegerBy(new BigNumber(2).pow(232)).modulo(new BigNumber(2).pow(24)).toNumber();
         const color = high256.dividedToIntegerBy(new BigNumber(2).pow(224)).modulo(0x100).toNumber();
         const level = high256
@@ -100,8 +103,8 @@ export default class GemService {
             ownedTime,
             state,
             age,
-            blocksMined,
-            plotsMined,
+            blocksMined: 0,
+            plotsMined :0,
             plotId,
             creationTime,
             stateModifiedTime,
@@ -156,8 +159,10 @@ export default class GemService {
                 age: gemAge,
                 restingEnergy: gradeType >= 4 ? calculateGemRestingEnergy(gemAge, gemModifiedTime) : 0,
                 state: packed256uint.dividedToIntegerBy(new BigNumber(2).pow(32)).modulo(new BigNumber(2).pow(32)).toNumber(),
-                blocksMined: packed256uint.dividedToIntegerBy(new BigNumber(2).pow(96)).modulo(new BigNumber(2).pow(32)).toNumber(),
-                plotsMined: packed256uint.dividedToIntegerBy(new BigNumber(2).pow(128)).modulo(new BigNumber(2).pow(24)).toNumber(),
+                blocksMined: 0,//packed256uint.dividedToIntegerBy(new BigNumber(2).pow(96)).modulo(new
+                // BigNumber(2).pow(32)).toNumber(),
+                plotsMined: 0, //packed256uint.dividedToIntegerBy(new BigNumber(2).pow(128)).modulo(new
+                // BigNumber(2).pow(24)).toNumber(),
                 owner: ownerId,
                 ownershipModified: ownershipModifiedTime,
                 auctionIsLive: false,

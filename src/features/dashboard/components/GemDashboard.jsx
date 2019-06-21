@@ -75,7 +75,7 @@ class GemDashboard extends React.Component {
 
     componentDidUpdate(prevProps) {
         const {unselectedFilters, selectedSorting, userGems} = this.props;
-        if (unselectedFilters !== prevProps.unselectedFilters) {
+        if (unselectedFilters !== prevProps.unselectedFilters || userGems !== prevProps.userGems) {
             const filteredGems = this.filterGems(userGems);
             this.sortGems(filteredGems);
             this.setState({
@@ -122,7 +122,7 @@ class GemDashboard extends React.Component {
                 sortingFunction = (p1, p2) => +p1.level - p2.level;
                 break;
             case "acq":
-                sortingFunction = (p1, p2) => +p1.ownershipModified - p2.ownershipModified;
+                sortingFunction = (p1, p2) => +p2.ownershipModified - p1.ownershipModified;
                 break;
             case "REA":
                 sortingFunction = (p1, p2) => (+p1.restingEnergy || 0) - (+p2.restingEnergy || 0);

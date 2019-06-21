@@ -1,29 +1,20 @@
 import {
     AUCTION_DETAILS_RECEIVED,
-    AUCTION_END, AUCTION_START,
+    AUCTION_END,
+    AUCTION_START,
     BUYING_GEM,
-    CLEAR_GEM_PAGE, GEM_GIFTING,
-    GEM_UPGRADE,
-    NEW_AUCTION_CREATED
+    GEM_GIFTING,
+    GEM_LEVEL_UP,
+    GEM_UPGRADE
 } from './itemConstants';
 import {FETCH_DATA_BEGUN, FETCH_DATA_SUCCEEDED,} from '../../app/reduxConstants';
 import {db} from '../../app/utils/firebase';
 import {createAuctionHelper, removeAuctionHelper} from './helpers';
 import {setError} from '../../app/appActions';
-import {
-    addPendingTransaction,
-    completedTx,
-    ErrorTx,
-    getUpdatedTransactionHistory,
-    startTx
-} from '../transactions/txActions';
-import store from '../../app/store';
-import {gradeConverter} from "../market/helpers";
-import {parseTransactionHashFromError} from "../transactions/helpers";
-import {getUserBalance} from "../sale/saleActions";
+import {addPendingTransaction, getUpdatedTransactionHistory} from '../transactions/txActions';
 import {utils} from "web3";
-import {UNBINDING_GEM, USER_PLOTS_RECEIVED} from "../plots/plotConstants";
 import {BigNumber} from "bignumber.js";
+import {PROCESSING} from "../plots/plotConstants";
 
 
 export const getGemData = tokenId => async (dispatch, getState) => {
@@ -31,9 +22,13 @@ export const getGemData = tokenId => async (dispatch, getState) => {
     try {
         const gemService = getState().app.gemServiceInstance;
         const auctionService = getState().app.auctionServiceInstance;
+        const pendingTransactions = getState().tx.pendingTransactions;
+        const currentUserId = getState().auth.currentUserId;
         const gemData = gemService.getGem(tokenId);
         const auctionData = auctionService.getGemAuctionData(tokenId);
         const gem = {...(await gemData), ...(await auctionData)};
+        const tx = (currentUserId.toLowerCase() === gem.owner.toLowerCase()) && pendingTransactions && findItemPendingTx(tokenId, pendingTransactions);
+        gem.txType = tx && tx.type;
         dispatch({type: FETCH_DATA_SUCCEEDED});
         dispatch({
             type: AUCTION_DETAILS_RECEIVED,
@@ -43,6 +38,17 @@ export const getGemData = tokenId => async (dispatch, getState) => {
     catch (e) {
         setError(e);
     }
+}
+
+const findItemPendingTx = (gemId, pendingTransactions) => {
+        return pendingTransactions && pendingTransactions.find((tx) => {
+        if (tx.type === GEM_UPGRADE || tx.type === GEM_LEVEL_UP || tx.type === GEM_GIFTING
+          || tx.type === AUCTION_START || tx.type === AUCTION_END || tx.type === BUYING_GEM || tx.type === PROCESSING) {
+            if (tx.body && tx.body.gemId.toString() === gemId.toString()) {
+                return true;
+            }
+        }
+    });
 }
 
 export const getOwnerDataByOwnerId = async ownerId => {
@@ -61,7 +67,7 @@ export const getOwnerDataByOwnerId = async ownerId => {
     }
 }
 
-export const createAuction = (payload, turnLoaderOff, history) => async (dispatch, getState) => {
+export const createAuction = (payload, createCallback, history) => async (dispatch, getState) => {
     const {auth, app} = getState();
     const currentAccount = auth.currentUserId;
     const {gemsContractInstance} = app;
@@ -113,7 +119,7 @@ export const createAuction = (payload, turnLoaderOff, history) => async (dispatc
                   type: AUCTION_START,
                   description: `Adding gem ${token} to auction`,
                   body: {
-                      gem: tokenId,
+                      gemId: tokenId,
                   }
               })(dispatch, getState);
           })
@@ -148,7 +154,7 @@ export const removeFromAuction = (tokenId, history, turnLoaderOff) => async (
               type: AUCTION_END,
               description: `Removing gem ${tokenId} from auction`,
               body: {
-                  gem: tokenId,
+                  gemId: tokenId,
               }
           })(dispatch, getState);
       })
@@ -183,7 +189,7 @@ export const handleBuyNow = (gem, _from, history, setLoading) => (dispatch, getS
               type: BUYING_GEM,
               description: `Buying gem ${gem.id} for ${priceInEth} ETH`,
               body: {
-                  gem: gem.id,
+                  gemId: gem.id,
               }
           })(dispatch, getState);
       })
@@ -220,7 +226,7 @@ export const giftGem = (gemId, addressTo) => (dispatch, getState) => {
                   type: GEM_GIFTING,
                   description: `Gifting the gem ${gemId}`,
                   body: {
-                      gem: gemId,
+                      gemId: gemId,
                       to: addressTo
                   }
               })(dispatch, getState)
@@ -259,10 +265,12 @@ export const upgradeGem = (gem, levelUp, gradeUp, hidePopup, cost) => (dispatch,
           addPendingTransaction({
               hash: hash,
               userId: currentUser,
-              type: GEM_UPGRADE,
+              type: gradeUp > 0 ? GEM_UPGRADE : GEM_LEVEL_UP,
               description: `Upgrading gem ${gem.id}`,
               body: {
-                  gem: gem,
+                  gemId: gem.id,
+                  levelFrom: gem.level,
+                  gradeFrom: gem.gradeType,
                   levelUp,
                   gradeUp,
               }

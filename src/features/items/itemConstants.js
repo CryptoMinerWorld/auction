@@ -8,3 +8,4 @@ export const GEM_UPGRADE = 'GEM_UPGRADE';
 export const AUCTION_END = 'AUCTION_END';
 export const AUCTION_START = 'AUCTION_START';
 export const GEM_GIFTING = 'GEM_GIFTING';
+export const GEM_LEVEL_UP = 'GEM_LEVEL_UP';

@@ -19,6 +19,7 @@ import gradeMiningBackground from '../../../app/images/sale/gradeMiningUpgradeBG
 import energyBackground from '../../../app/images/sale/energyBG.png';
 import buyNowImage from "../../../app/images/thickAndWidePinkButton.png";
 import {PROCESSING} from "../../plots/plotConstants";
+import {GEM_LEVEL_UP, GEM_UPGRADE} from "../itemConstants";
 
 momentDurationFormatSetup(moment);
 
@@ -81,8 +82,8 @@ class Gembox extends PureComponent {
                     >
                         <Nugget quality="level" value={gem.level} gemImage={gemOrange}/>
 
-                        {gem.upgradingLevel && <div style={{marginTop: '25px'}}>Gem level upgrading isn't finished</div>}
-                        {handleUseMetals && !gem.upgradingLevel && gem.level < 5 && !unprocessed && (
+                        {gem.txType && gem.txType === GEM_LEVEL_UP && <div style={{marginTop: '25px'}}>Gem level upgrading isn't finished</div>}
+                        {handleUseMetals && !(gem.txType && gem.txType === GEM_LEVEL_UP) && gem.level < 5 && !unprocessed && (
                               <div
                                 style={{
                                     backgroundImage: `url(${useSilverButton})`,
@@ -134,8 +135,8 @@ class Gembox extends PureComponent {
                             <Nugget quality="grade" value={this.gradeConverter(gem.gradeType)} gemImage={gemBlue}/>
                             <Nugget quality="rate" value={gem.rate} gemImage={gemPurple}/>
                         </div>
-                        {gem.upgradingGrade && <div>Gem grade upgrading isn't finished</div>}
-                        {handleUseMetals && !gem.upgradingGrade && !unprocessed && (
+                        {gem.txType && gem.txType === GEM_UPGRADE && <div>Gem grade upgrading isn't finished</div>}
+                        {handleUseMetals && !(gem.txType && gem.txType === GEM_UPGRADE) && !unprocessed && (
                             <div
                               style={{
                                   backgroundImage: `url(${useGoldButton})`,

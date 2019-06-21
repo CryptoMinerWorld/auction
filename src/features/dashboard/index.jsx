@@ -159,7 +159,7 @@ class Dashboard extends Component {
 
     state = {
         dashboardUser: null,
-        tab: 1,
+        tab: 2,
         redirectPath: '',
         alreadyRedirected: false,
     };
@@ -186,7 +186,7 @@ class Dashboard extends Component {
         }
 
         if (artifactContract && match.params.userId) {
-            handleGetUserArtifacts(match.params.userId);
+            //handleGetUserArtifacts(match.params.userId);
         }
 
         if (plotService) {
@@ -203,7 +203,7 @@ class Dashboard extends Component {
                 currentUserId,
             });
             if (currentUserId !== match.params.userId || pendingTransactions) {
-                handleGetUserPlots();
+                //handleGetUserPlots();
             }
         }
 
@@ -232,13 +232,6 @@ class Dashboard extends Component {
             else {
                 handleShowSignInBox();
             }
-        }
-
-        //data.refetch();
-        const country = window.location.hash.length;
-
-        if (country > 0) {
-            this.setState({tab: 2});
         }
     }
 
@@ -301,7 +294,7 @@ class Dashboard extends Component {
         }
 
         if (plotService && pendingTransactions && handleRefreshUserPlot && currentUserId && pendingTransactions !== prevProps.pendingTransactions) {
-            currentUserId === match.params.userId && handleGetUserPlots(match.params.userId);
+        //    currentUserId === match.params.userId && handleGetUserPlots(match.params.userId);
         }
 
         if ((silverGoldService !== prevProps.silverGoldService) || match.params.userId !== prevProps.match.params.userId) {
@@ -311,7 +304,7 @@ class Dashboard extends Component {
             handleGetUserCountries(match.params.userId);
         }
         if (artifactContract !== prevProps.artifactContract || (match.params.userId !== prevProps.match.params.userId)) {
-            handleGetUserArtifacts(match.params.userId);
+            //handleGetUserArtifacts(match.params.userId);
         }
     }
 
@@ -436,26 +429,26 @@ class Dashboard extends Component {
                 )}
                 type="card"
               >
-                  <TabPane
-                    tab={(
+                  {/*<TabPane*/}
+                    {/*tab={(*/}
 
-                      <span
-                        tabIndex={-2}
-                        onKeyPress={() => this.setState({tab: 1})}
-                        role="button"
-                        onClick={() => this.setState({tab: 1})}
-                        className="h-100 flex aic white ">
-                <img src={Plot} alt="" className="h2 w-auto pr2"/>
-                          {userPlots && userPlots.length || ".."}
-                          {' '}
-                          Plots
-              </span>
-                    )}
-                    disabled={false}
-                    key="1"
-                  >
-                      <PlotDashboard userId={match.params.userId} goToGemWorkshop={() => this.setState({tab: 2})}/>
-                  </TabPane>
+                      {/*<span*/}
+                        {/*tabIndex={-2}*/}
+                        {/*onKeyPress={() => this.setState({tab: 1})}*/}
+                        {/*role="button"*/}
+                        {/*onClick={() => this.setState({tab: 1})}*/}
+                        {/*className="h-100 flex aic white ">*/}
+                {/*<img src={Plot} alt="" className="h2 w-auto pr2"/>*/}
+                          {/*{userPlots ? userPlots.length : ".."}*/}
+                          {/*{' '}*/}
+                          {/*Plots*/}
+              {/*</span>*/}
+                    {/*)}*/}
+                    {/*disabled={false}*/}
+                    {/*key="1"*/}
+                  {/*>*/}
+                      {/*<PlotDashboard userId={match.params.userId} goToGemWorkshop={() => this.setState({tab: 2})}/>*/}
+                  {/*</TabPane>*/}
                   <TabPane
                     tab={(
                       <span
@@ -513,7 +506,7 @@ class Dashboard extends Component {
                     tab={(
                       <span className="h-100 flex aic white o-50">
                 <img src={Artifact} alt="" className="h2 w-auto pr2"/>
-                          {userArtifacts || '..'} Artifacts
+                          0 Artifacts
               </span>
                     )}
                     disabled

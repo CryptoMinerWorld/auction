@@ -11,7 +11,6 @@ import Tabs from "antd/lib/tabs";
 import GemMarket from "./components/GemMarket";
 import styled from 'styled-components';
 import stripeImage from "../../app/images/stripe.png";
-import {setItemEventListeners} from "../items/itemEventListener";
 import {setMarketEventListeners} from "./marketEventListener";
 
 const {TabPane} = Tabs;
@@ -48,7 +47,8 @@ class Marketplace extends React.Component {
             setMarketEventListeners({
                 auctionService,
                 marketChangedCallback: handleGetAuctions,
-                transactionResolved: () => {}
+                transactionResolved: () => {
+                }
             });
             handleGetAuctions();
         }
@@ -60,7 +60,8 @@ class Marketplace extends React.Component {
             setMarketEventListeners({
                 auctionService,
                 marketChangedCallback: handleGetAuctions,
-                transactionResolved: () => {}
+                transactionResolved: () => {
+                }
             });
             handleGetAuctions();
         }
@@ -71,7 +72,7 @@ class Marketplace extends React.Component {
 
         return (
           <div className="bg-off-black white market-card-container relative"
-          style={{paddingTop: "72px"}}>
+               style={{paddingTop: "72px"}}>
               <MarketHeader>
                   <h1 className="white f1 b o-90" data-testid="header">
                       Gem Market
@@ -103,20 +104,20 @@ class Marketplace extends React.Component {
                   >
                       <GemMarket/>
                   </TabPane>
-                  <TabPane tab={(
-                    <span
-                      tabIndex={-2}
-                      onKeyPress={() => this.setState({tab: 2})}
-                      role="button"
-                      onClick={() => this.setState({tab: 2})}
-                      className="h-100 flex aic white "><img src={Plot} alt="" className="h2 w-auto pr2"/>
-                        Plot
-                      </span>
-                  )}
-                           disabled={true}
-                           key="2"
-                  >
-                  </TabPane>
+                  {/*<TabPane tab={(*/}
+                    {/*<span*/}
+                      {/*tabIndex={-2}*/}
+                      {/*onKeyPress={() => this.setState({tab: 2})}*/}
+                      {/*role="button"*/}
+                      {/*onClick={() => this.setState({tab: 2})}*/}
+                      {/*className="h-100 flex aic white "><img src={Plot} alt="" className="h2 w-auto pr2"/>*/}
+                        {/*Plot*/}
+                      {/*</span>*/}
+                  {/*)}*/}
+                           {/*disabled*/}
+                           {/*key="2"*/}
+                  {/*>*/}
+                  {/*</TabPane>*/}
                   <TabPane
                     tab={(
                       <span className="h-100 flex aic white o-50">

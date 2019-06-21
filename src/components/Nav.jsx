@@ -108,20 +108,20 @@ const Navbar = ({
               >
                   Gem Market
               </NavLink>
-              <NavLink
-                exact
-                to="/plots"
-                activeStyle={{
-                    borderBottom: '2px solid purple',
-                }}
-                className="link dim dark-gray f6 f5-l dib mr3 mr4-l b"
-                data-testid="mapLink"
-                style={{
-                    color: 'purple',
-                }}
-              >
-                  Plots of Land
-              </NavLink>
+              {/*<NavLink*/}
+                {/*exact*/}
+                {/*to="/plots"*/}
+                {/*activeStyle={{*/}
+                    {/*borderBottom: '2px solid purple',*/}
+                {/*}}*/}
+                {/*className="link dim dark-gray f6 f5-l dib mr3 mr4-l b"*/}
+                {/*data-testid="mapLink"*/}
+                {/*style={{*/}
+                    {/*color: 'purple',*/}
+                {/*}}*/}
+              {/*>*/}
+                  {/*Plots of Land*/}
+              {/*</NavLink>*/}
               <NavLink
                 exact
                 to="/S_and_G_Sale"

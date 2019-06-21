@@ -125,18 +125,18 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
 
     //todo: change empirical amount of blocks for fromBlock parameter
     const allEventLogsArray = [
-        (await Promise.all(minerEventWhitelist.map(async event => {
-            return minerContract.getPastEvents(event,
-              {
-                  filter: {'_by': currentUserId},
-                  fromBlock: latestBlock - 15000,
-                  toBlock: 'latest',
-              })
-        }))).flat(),
+        // (await Promise.all(minerEventWhitelist.map(async event => {
+        //     return minerContract.getPastEvents(event,
+        //       {
+        //           filter: {'_by': currentUserId},
+        //           fromBlock: latestBlock - 15000,
+        //           toBlock: 'latest',
+        //       })
+        // }))).flat(),
         (await Promise.all(auctionEventWhitelist.map(async event => {
             return auctionContract.getPastEvents(event,
               {
-                  filter: {'_by': currentUserId, '_from': currentUserId},
+                  filter: {'_by': currentUserId},
                   fromBlock: latestBlock - 15000,
                   toBlock: 'latest',
               })
@@ -144,25 +144,25 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
         (await Promise.all(gemEventWhitelist.map(async event => {
             return gemContract.getPastEvents(event,
               {
-                  filter: {'_by': currentUserId},
+                  filter: {'_owner': currentUserId},
                   fromBlock: latestBlock - 15000,
                   toBlock: 'latest',
               })
         }))).flat(),
-        (await Promise.all(plotSaleEventWhitelist.map(async event => {
-            return plotSaleContract.getPastEvents(event,
-              {
-                  filter: {'_by': currentUserId},
-                  fromBlock: latestBlock - 15000,
-                  toBlock: 'latest',
-              })
-        }))).flat(),
-        await plotSaleContract.getPastEvents('CountryBalanceUpdated',
-          {
-              filter: {'owner': currentUserId},
-              fromBlock: latestBlock - 15000,
-              toBlock: 'latest',
-          }),
+        // (await Promise.all(plotSaleEventWhitelist.map(async event => {
+        //     return plotSaleContract.getPastEvents(event,
+        //       {
+        //           filter: {'_by': currentUserId},
+        //           fromBlock: latestBlock - 15000,
+        //           toBlock: 'latest',
+        //       })
+        // }))).flat(),
+        // await plotSaleContract.getPastEvents('CountryBalanceUpdated',
+        //   {
+        //       filter: {'owner': currentUserId},
+        //       fromBlock: latestBlock - 15000,
+        //       toBlock: 'latest',
+        //   }),
         await gemContract.getPastEvents('Transfer',
           {
               filter: {'_to': currentUserId},
@@ -183,7 +183,7 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
           }),
         await saleContract.getPastEvents('Unboxed',
           {
-              filter: {'_by': currentUserId},
+              filter: {'by': currentUserId},
               fromBlock: latestBlock - 15000,
               toBlock: 'latest'
           })
@@ -240,27 +240,27 @@ const groupEventLogsByTransaction = (sortedEventLogs, currentUserId) => {
 }
 
 const resolveTransactionDescription = (tx, currentUserId) => {
-    if (tx.events.find(e => e.event === "Bound")) {
-        tx.type = 'Gem bound';
-        return tx;
-    }
-    if (tx.events.find(e => e.event === "Released")) {
-        tx.type = 'Gem released';
-        return tx;
-    }
-    if (tx.events.find(e => e.event === "RestingEnergyConsumed") && !tx.events.find(e => e.event === "Bound")) {
-        tx.type = 'Gem used its energy';
-        return tx;
-    }
-    if (tx.events.find(e => e.event === "Updated")) {
-        if (tx.events.length > 1) {
-            tx.type = 'Plots are processed';
-        }
-        else {
-            tx.type = 'Plot is processed';
-        }
-        return tx;
-    }
+    // if (tx.events.find(e => e.event === "Bound")) {
+    //     tx.type = 'Gem bound';
+    //     return tx;
+    // }
+    // if (tx.events.find(e => e.event === "Released")) {
+    //     tx.type = 'Gem released';
+    //     return tx;
+    // }
+    // if (tx.events.find(e => e.event === "RestingEnergyConsumed") && !tx.events.find(e => e.event === "Bound")) {
+    //     tx.type = 'Gem used its energy';
+    //     return tx;
+    // }
+    // if (tx.events.find(e => e.event === "Updated")) {
+    //     if (tx.events.length > 1) {
+    //         tx.type = 'Plots are processed';
+    //     }
+    //     else {
+    //         tx.type = 'Plot is processed';
+    //     }
+    //     return tx;
+    // }
     if (tx.events.find(e => e.event === "ItemAdded")) {
         tx.type = 'Auction started';
         return tx;
@@ -286,14 +286,25 @@ const resolveTransactionDescription = (tx, currentUserId) => {
         tx.type = 'Gem upgraded';
         return tx;
     }
-    if (tx.events.find(e => e.event === "PlotIssued")) {
-        tx.type = 'Plots purchased';
+    if (tx.events.find(e => e.event === "Transfer")) {
+        const event = tx.events.find(event => event.event === "Transfer");
+        if (event.returnValues['_to'] === currentUserId) {
+            tx.type = `Gem #${event.returnValues['_tokenId']} acquired`
+        } else {
+            if (event.returnValues['_from'] === currentUserId) {
+                tx.type = `Gem #${event.returnValues['_tokenId']} transferred`
+            }
+        }
         return tx;
     }
-    if (tx.events.find(e => e.event === "CountryBalanceUpdated")) {
-        tx.type = 'Plots purchased in your country';
-        return tx;
-    }
+    // if (tx.events.find(e => e.event === "PlotIssued")) {
+    //     tx.type = 'Plots purchased';
+    //     return tx;
+    // }
+    // if (tx.events.find(e => e.event === "CountryBalanceUpdated")) {
+    //     tx.type = 'Plots purchased in your country';
+    //     return tx;
+    // }
     if (tx.events.find(e => e.event === "Unboxed")) {
         const event = tx.events.find(e => e.event === "Unboxed");
         tx.type = 'Silver bought';

@@ -298,7 +298,7 @@ const TxConfirmedRecord = ({tx}) => {
     const [expanded, setExpanded] = useState(false);
 
     return (
-      <TxRecordContainer style={{cursor: "pointer"}} onClick={() => setExpanded(!expanded)}>
+      <TxRecordContainer key={tx.hash} style={{cursor: "pointer"}} onClick={() => setExpanded(!expanded)}>
           <TxInfo>
               <Badge count={tx.unseen ? 1 : 0}>
                   <TxHeader>{tx.type}</TxHeader>
@@ -395,7 +395,7 @@ class AvatarDropdown extends React.Component {
 
     render() {
         const {user, failedTransactions, transactionHistory, pendingTransactions} = this.props;
-        const unseen = +(transactionHistory ? transactionHistory.findIndex(tx => !tx.unseen) : 0) + +(failedTransactions ? failedTransactions.length : 0);
+        const unseen = ((transactionHistory && transactionHistory.length > 0 )? Math.min(transactionHistory.findIndex(tx => !tx.unseen), transactionHistory.length): 0) + +(failedTransactions ? failedTransactions.length : 0);
 
         return (
           user && (

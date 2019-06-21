@@ -15,89 +15,89 @@ export const setDashboardEventListeners = ({
 
     const caughtEventIds = [];
 
-    plotService.minerContract.events.Updated({
-        filter: {'_by': currentUserId},
-        fromBlock: 'latest'
-    })
-      .on('data', async function (event) {
-          console.warn("> >> >>> updated event", event);
-          if (!caughtEventIds.includes(event['id'])) {
-              caughtEventIds.push(event['id']);
-              console.warn('event pushed');
-              const eventParams = event.returnValues;
-              updatedEventCallback({
-                  id: Number(eventParams['plotId']),
-                  processedBlocks: eventParams['offsetTo'],
-//              gemMinesId: await plotService.getBoundGemId(eventParams['plotId']),
-//              gemMines: null,
-              });
-          }
-      })
-      .on('changed', function (event) {
-          console.log('CHANGED EVENT:', event);
-      })
-      .on('error', console.error);
-
-    plotService.minerContract.events.Released({
-        filter: {'_by': currentUserId},
-        fromBlock: 'latest'
-    })
-      .on('data', function (event) {
-          if (!caughtEventIds.includes(event['id'])) {
-              caughtEventIds.push(event['id']);
-              const eventParams = event.returnValues;
-              releasedEventCallback({
-                  id: Number(eventParams['plotId']),
-                  miningState: NO_GEM,
-                  gemMines: null,
-                  gemMinesId: null,
-                  state: 0
-              });
-          }
-          //reloadGemsCallback(currentUserId);
-      })
-      .on('changed', function (event) {
-          console.log('CHANGED EVENT:', event);
-      })
-      .on('error', console.error);
-
-    plotService.minerContract.events.Bound({
-        filter: {'_by': currentUserId},
-        fromBlock: 'latest'
-    })
-      .on('data', function (event) {
-          console.warn(">>> >> > bound event");
-          if (!caughtEventIds.includes(event['id'])) {
-              caughtEventIds.push(event['id']);
-              const eventParams = event.returnValues;
-              boundEventCallback({
-                  id: Number(eventParams['plotId']),
-                  miningState: MINING,
-                  gemMinesId: eventParams['gemId'],
-                  state: 1
-              });
-              reloadGemsCallback(currentUserId);
-          }
-      })
-      .on('changed', function (event) {
-          console.log('CHANGED EVENT:', event);
-      })
-      .on('error', console.error);
-
-    plotService.plotSaleContract.events.PlotIssued({
-        filter: {'_by': currentUserId},
-        fromBlock: 'latest'
-    })
-      .on('data', function (event) {
-          if (!caughtEventIds.includes(event['id'])) {
-              caughtEventIds.push(event['id']);
-              issuedEventCallback();
-          }
-      })
-      .on('changed', function (event) {
-          console.log('CHANGED EVENT:', event);
-      })
-      .on('error', console.error);
+//     plotService.minerContract.events.Updated({
+//         filter: {'_by': currentUserId},
+//         fromBlock: 'latest'
+//     })
+//       .on('data', async function (event) {
+//           console.warn("> >> >>> updated event", event);
+//           if (!caughtEventIds.includes(event['id'])) {
+//               caughtEventIds.push(event['id']);
+//               console.warn('event pushed');
+//               const eventParams = event.returnValues;
+//               updatedEventCallback({
+//                   id: Number(eventParams['plotId']),
+//                   processedBlocks: eventParams['offsetTo'],
+// //              gemMinesId: await plotService.getBoundGemId(eventParams['plotId']),
+// //              gemMines: null,
+//               });
+//           }
+//       })
+//       .on('changed', function (event) {
+//           console.log('CHANGED EVENT:', event);
+//       })
+//       .on('error', console.error);
+//
+//     plotService.minerContract.events.Released({
+//         filter: {'_by': currentUserId},
+//         fromBlock: 'latest'
+//     })
+//       .on('data', function (event) {
+//           if (!caughtEventIds.includes(event['id'])) {
+//               caughtEventIds.push(event['id']);
+//               const eventParams = event.returnValues;
+//               releasedEventCallback({
+//                   id: Number(eventParams['plotId']),
+//                   miningState: NO_GEM,
+//                   gemMines: null,
+//                   gemMinesId: null,
+//                   state: 0
+//               });
+//           }
+//           //reloadGemsCallback(currentUserId);
+//       })
+//       .on('changed', function (event) {
+//           console.log('CHANGED EVENT:', event);
+//       })
+//       .on('error', console.error);
+//
+//     plotService.minerContract.events.Bound({
+//         filter: {'_by': currentUserId},
+//         fromBlock: 'latest'
+//     })
+//       .on('data', function (event) {
+//           console.warn(">>> >> > bound event");
+//           if (!caughtEventIds.includes(event['id'])) {
+//               caughtEventIds.push(event['id']);
+//               const eventParams = event.returnValues;
+//               boundEventCallback({
+//                   id: Number(eventParams['plotId']),
+//                   miningState: MINING,
+//                   gemMinesId: eventParams['gemId'],
+//                   state: 1
+//               });
+//               reloadGemsCallback(currentUserId);
+//           }
+//       })
+//       .on('changed', function (event) {
+//           console.log('CHANGED EVENT:', event);
+//       })
+//       .on('error', console.error);
+//
+//     plotService.plotSaleContract.events.PlotIssued({
+//         filter: {'_by': currentUserId},
+//         fromBlock: 'latest'
+//     })
+//       .on('data', function (event) {
+//           if (!caughtEventIds.includes(event['id'])) {
+//               caughtEventIds.push(event['id']);
+//               issuedEventCallback();
+//           }
+//       })
+//       .on('changed', function (event) {
+//           console.log('CHANGED EVENT:', event);
+//       })
+//       .on('error', console.error);
 
     gemService.auctionContract.events.ItemRemoved({
         filter: {'_by': currentUserId},
@@ -159,6 +159,5 @@ export const setDashboardEventListeners = ({
           console.log('CHANGED EVENT:', event);
       })
       .on('error', console.error);
-
 
 }

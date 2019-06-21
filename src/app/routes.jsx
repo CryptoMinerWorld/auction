@@ -16,10 +16,10 @@ const Dashboard = Loadable({
     loader: () => import('../features/dashboard/index'),
     loading: Loading,
 });
-const Map = Loadable({
-    loader: () => import('../features/plotsale/index'),
-    loading: Loading,
-});
+// const Map = Loadable({
+//     loader: () => import('../features/plotsale/index'),
+//     loading: Loading,
+// });
 const Marketplace = Loadable({
     loader: () => import('../features/market'),
     loading: Loading,
@@ -39,7 +39,7 @@ const Routes = props => (
         console.warn('----------> Dashboard route starts <---------');
         return (<Dashboard {...props} />)}}/>
       <Route path="/gem/:gemId" render={() => <Items {...props} />}/>
-      <Route path="/plots" render={() => <Map {...props} />}/>
+      {/*<Route path="/plots" render={() => <Map {...props} />}/>*/}
   </Fragment>
 );
 

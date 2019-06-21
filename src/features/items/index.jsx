@@ -48,6 +48,7 @@ const select = store => {
         goldContract: store.app.goldContractInstance,
         userBalance: store.sale.balance,
         silverGoldService: store.app.silverGoldServiceInstance,
+        pendingTransactions: store.tx.pendingTransactions,
     }
 };
 
@@ -61,7 +62,7 @@ class Auction extends PureComponent {
 
     async componentDidMount() {
         const {
-            match, handleGetUserBalance, silverGoldService, gemService, handleGetGemData, dutchContract, gemContractAddress, currentAccount
+            match, handleGetUserBalance, silverGoldService, gemService, handleGetGemData, dutchContract, gemContractAddress, currentAccount, pendingTransactions
         } = this.props;
 
         if (match && match.params && match.params.gemId && gemService) {
@@ -71,7 +72,9 @@ class Auction extends PureComponent {
                 tokenId: match.params.gemId,
                 transactionResolved: () => {}
             });
-            handleGetGemData(match.params.gemId);
+            if (pendingTransactions) {
+                handleGetGemData(match.params.gemId);
+            }
         }
 
         //todo: improve priceInterval (only if auction is live ?)
@@ -97,7 +100,7 @@ class Auction extends PureComponent {
         console.log('componentDidUpdateProps: ', this.props);
         console.log('componentDidUpdateState: ', this.state);
 
-        const {gemContract, match, userBalance, silverGoldService, handleGetUserBalance, currentAccount, handleGetGemData, gemService, auctionService} = this.props;
+        const {gemContract, match, userBalance, silverGoldService, handleGetUserBalance, currentAccount, handleGetGemData, gemService, auctionService, pendingTransactions} = this.props;
         const {restingEnergyMinutes} = this.state;
 
         if (this.props.gem && !this.state.ownerData) {
@@ -112,6 +115,10 @@ class Auction extends PureComponent {
                 tokenId: match.params.gemId,
                 transactionResolved: () => {}
             });
+        }
+
+        if (gemService && auctionService && pendingTransactions &&
+          (gemService !== prevProps.gemService || auctionService !== prevProps.auctionService || pendingTransactions !== prevProps.pendingTransactions)) {
             handleGetGemData(match.params.gemId);
         }
 

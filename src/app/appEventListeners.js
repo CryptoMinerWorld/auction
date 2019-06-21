@@ -1,114 +1,113 @@
 export const setAppEventListeners = ({plotService, gemService, auctionService, silverGoldService, currentUserId, transactionResolved, updatedEventCallback}) => {
 
     console.log("set app event listeners start");
+    const caughtEventIds = [];
 
     // --------------------------------------------------------
     // --- Plot workshop transaction event listeners starts ---
     // --------------------------------------------------------
 
-    const caughtEventIds = [];
-
-    plotService.minerContract.events.Updated({
-        filter: {'_by': currentUserId},
-        fromBlock: 'latest'
-    })
-      .on('data', function (event) {
-          console.warn("<< << << updated app event");
-          if (event.returnValues['_by'] !== currentUserId) {
-              console.error("_by address is different from current user address.", event.returnValues['_by'], currentUserId);
-          }
-          else {
-              if (!caughtEventIds.includes(event['id'])) {
-                  caughtEventIds.push(event['id']);
-                  console.warn('event pushed');
-                  transactionResolved(event);
-                  if (event.returnValues['loot'])
-                      updatedEventCallback(event);
-              }
-          }
-      })
-      .on('changed', function (event) {
-      })
-      .on('error', console.error);
-
-    plotService.minerContract.events.Released({
-        filter: {'_by': currentUserId},
-        fromBlock: 'latest'
-    })
-      .on('data', function (event) {
-          if (!caughtEventIds.includes(event['id'])) {
-              caughtEventIds.push(event['id']);
-              transactionResolved(event);
-          }
-      })
-      .on('changed', function (event) {
-          console.log('CHANGED EVENT:', event);
-      })
-      .on('error', console.error);
-
-    plotService.minerContract.events.Bound({
-        filter: {'_by': currentUserId},
-        fromBlock: 'latest'
-    })
-      .on('data', function (event) {
-          if (!caughtEventIds.includes(event['id'])) {
-              caughtEventIds.push(event['id']);
-              transactionResolved(event);
-          }
-      })
-      .on('changed', function (event) {
-          console.log('CHANGED EVENT:', event);
-      })
-      .on('error', console.error);
-
-    plotService.minerContract.events.RestingEnergyConsumed({
-        filter: {'_by': currentUserId},
-        fromBlock: 'latest'
-    })
-      .on('data', function (event) {
-          if (!caughtEventIds.includes(event['id'])) {
-              caughtEventIds.push(event['id']);
-              transactionResolved(event);
-          }
-      })
-      .on('changed', function (event) {
-          console.log('CHANGED EVENT:', event);
-      })
-      .on('error', console.error);
+    // plotService.minerContract.events.Updated({
+    //     filter: {'_by': currentUserId},
+    //     fromBlock: 'latest'
+    // })
+    //   .on('data', function (event) {
+    //       console.warn("<< << << updated app event");
+    //       if (event.returnValues['_by'] !== currentUserId) {
+    //           console.error("_by address is different from current user address.", event.returnValues['_by'], currentUserId);
+    //       }
+    //       else {
+    //           if (!caughtEventIds.includes(event['id'])) {
+    //               caughtEventIds.push(event['id']);
+    //               console.warn('event pushed');
+    //               transactionResolved(event);
+    //               if (event.returnValues['loot'])
+    //                   updatedEventCallback(event);
+    //           }
+    //       }
+    //   })
+    //   .on('changed', function (event) {
+    //   })
+    //   .on('error', console.error);
+    //
+    // plotService.minerContract.events.Released({
+    //     filter: {'_by': currentUserId},
+    //     fromBlock: 'latest'
+    // })
+    //   .on('data', function (event) {
+    //       if (!caughtEventIds.includes(event['id'])) {
+    //           caughtEventIds.push(event['id']);
+    //           transactionResolved(event);
+    //       }
+    //   })
+    //   .on('changed', function (event) {
+    //       console.log('CHANGED EVENT:', event);
+    //   })
+    //   .on('error', console.error);
+    //
+    // plotService.minerContract.events.Bound({
+    //     filter: {'_by': currentUserId},
+    //     fromBlock: 'latest'
+    // })
+    //   .on('data', function (event) {
+    //       if (!caughtEventIds.includes(event['id'])) {
+    //           caughtEventIds.push(event['id']);
+    //           transactionResolved(event);
+    //       }
+    //   })
+    //   .on('changed', function (event) {
+    //       console.log('CHANGED EVENT:', event);
+    //   })
+    //   .on('error', console.error);
+    //
+    // plotService.minerContract.events.RestingEnergyConsumed({
+    //     filter: {'_by': currentUserId},
+    //     fromBlock: 'latest'
+    // })
+    //   .on('data', function (event) {
+    //       if (!caughtEventIds.includes(event['id'])) {
+    //           caughtEventIds.push(event['id']);
+    //           transactionResolved(event);
+    //       }
+    //   })
+    //   .on('changed', function (event) {
+    //       console.log('CHANGED EVENT:', event);
+    //   })
+    //   .on('error', console.error);
 
     // --------------------------------------------------------
     // --- Plot sale transaction event listeners starts ---
     // --------------------------------------------------------
 
-    plotService.plotSaleContract.events.PlotIssued({
-        filter: {'_by': currentUserId},
-        fromBlock: 'latest'
-    })
-      .on('data', function (event) {
-          if (!caughtEventIds.includes(event['id'])) {
-              caughtEventIds.push(event['id']);
-              transactionResolved(event)
-          }
-      })
-      .on('changed', function (event) {
-          console.log('CHANGED EVENT:', event);
-      })
-      .on('error', console.error);
-
-    plotService.plotSaleContract.events.CouponConsumed({
-        filter: {'_by': currentUserId},
-        fromBlock: 'latest'
-    })
-      .on('data', function (event) {
-          if (!caughtEventIds.includes(event['id'])) {
-              caughtEventIds.push(event['id']);
-              transactionResolved(event)
-          }
-      })
-      .on('changed', function (event) {
-          console.log('CHANGED EVENT:', event);
-      })
-      .on('error', console.error);
+    // plotService.plotSaleContract.events.PlotIssued({
+    //     filter: {'_by': currentUserId},
+    //     fromBlock: 'latest'
+    // })
+    //   .on('data', function (event) {
+    //       if (!caughtEventIds.includes(event['id'])) {
+    //           caughtEventIds.push(event['id']);
+    //           transactionResolved(event)
+    //       }
+    //   })
+    //   .on('changed', function (event) {
+    //       console.log('CHANGED EVENT:', event);
+    //   })
+    //   .on('error', console.error);
+    //
+    // plotService.plotSaleContract.events.CouponConsumed({
+    //     filter: {'_by': currentUserId},
+    //     fromBlock: 'latest'
+    // })
+    //   .on('data', function (event) {
+    //       if (!caughtEventIds.includes(event['id'])) {
+    //           caughtEventIds.push(event['id']);
+    //           transactionResolved(event)
+    //       }
+    //   })
+    //   .on('changed', function (event) {
+    //       console.log('CHANGED EVENT:', event);
+    //   })
+    //   .on('error', console.error);
 
     // --------------------------------------------------------
     // --- Gem market transaction event listeners starts ---
@@ -166,7 +165,7 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
     // --------------------------------------------------------
 
     gemService.contract.events.LevelUp({
-        filter: {'_by': currentUserId},
+        filter: {'_owner': currentUserId},
         fromBlock: 'latest'
     })
       .on('data', function (event) {
@@ -181,7 +180,7 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
       .on('error', console.error);
 
     gemService.contract.events.Upgraded({
-        filter: {'_by': currentUserId},
+        filter: {'_owner': currentUserId},
         fromBlock: 'latest'
     })
       .on('data', function (event) {
@@ -206,7 +205,7 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
       .on('data', function (event) {
           if (!caughtEventIds.includes(event['id'])) {
               caughtEventIds.push(event['id']);
-              transactionResolved(event);
+              transactionResolved(event, currentUserId);
           }
       })
       .on('changed', function (event) {
@@ -218,20 +217,20 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
     // -- Notify user about some other users transaction events ---
     // ------------------------------------------------------------
 
-    plotService.plotSaleContract.events.CountryBalanceUpdated({
-        filter: {'owner': currentUserId},
-        fromBlock: 'latest'
-    })
-      .on('data', function (event) {
-          if (!caughtEventIds.includes(event['id'])) {
-              caughtEventIds.push(event['id']);
-              transactionResolved(event)
-          }
-      })
-      .on('changed', function (event) {
-          console.log('CHANGED EVENT:', event);
-      })
-      .on('error', console.error);
+    // plotService.plotSaleContract.events.CountryBalanceUpdated({
+    //     filter: {'owner': currentUserId},
+    //     fromBlock: 'latest'
+    // })
+    //   .on('data', function (event) {
+    //       if (!caughtEventIds.includes(event['id'])) {
+    //           caughtEventIds.push(event['id']);
+    //           transactionResolved(event)
+    //       }
+    //   })
+    //   .on('changed', function (event) {
+    //       console.log('CHANGED EVENT:', event);
+    //   })
+    //   .on('error', console.error);
 
     gemService.auctionContract.events.ItemBought({
         filter: {'_from': currentUserId},
@@ -240,7 +239,7 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
       .on('data', function (event) {
           if (!caughtEventIds.includes(event['id'])) {
               caughtEventIds.push(event['id']);
-              transactionResolved(event)
+              transactionResolved(event, currentUserId)
           }
       })
       .on('changed', function (event) {
@@ -255,7 +254,7 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
       .on('data', function (event) {
           if (!caughtEventIds.includes(event['id'])) {
               caughtEventIds.push(event['id']);
-              transactionResolved(event);
+              transactionResolved(event ,currentUserId);
           }
       })
       .on('changed', function (event) {
@@ -264,7 +263,7 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
       .on('error', console.error);
 
     // --------------------------------------------------------
-    // --- Silver sale transaction event listeners starts ---
+    // ---- Silver sale transaction event listeners starts ----
     // --------------------------------------------------------
 
     silverGoldService.saleContract.events.Unboxed({
