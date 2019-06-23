@@ -114,7 +114,7 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
     // --------------------------------------------------------
 
     gemService.auctionContract.events.ItemRemoved({
-        filter: {'_by': currentUserId},
+        filter: {'_to': currentUserId},
         fromBlock: 'latest'
     })
       .on('data', function (event) {
@@ -130,7 +130,7 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
 
 
     gemService.auctionContract.events.ItemAdded({
-        filter: {'_by': currentUserId},
+        filter: {'_from': currentUserId},
         fromBlock: 'latest'
     })
       .on('data', function (event) {
@@ -145,7 +145,7 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
       .on('error', console.error);
 
     gemService.auctionContract.events.ItemBought({
-        filter: {'_by': currentUserId},
+        filter: {'_to': currentUserId},
         fromBlock: 'latest'
     })
       .on('data', function (event) {

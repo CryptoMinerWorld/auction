@@ -280,14 +280,17 @@ const GemStates = ({unselectedFilters, toggleFilter}) => (
                           height={30}
                           content={"Idle"}/>
       </StateBox>
-      <StateBox onClick={() => toggleFilter("mining", "states")}>
+      <StateBox>
+         {/*onClick={() => toggleFilter("mining", "states")}>*/}
           <CutEdgesButton outlineColor={() => !unselectedFilters.states.includes("mining") ? "#98C7FF" : "black"}
                           backgroundColor={() => !unselectedFilters.states.includes("mining") ? "#004056" : "black"}
                           fontColor={"#98C7FF"}
                           edgeSizes={[10, 20]}
                           outlineWidth={2}
                           height={30}
-                          content={"Mining"}/>
+                          content={"Mining"}
+                          otherStyles={"cursor: not-allowed;"}
+          />
       </StateBox>
       <StateBox onClick={() => toggleFilter("auction", "states")}>
           <CutEdgesButton outlineColor={() => !unselectedFilters.states.includes("auction") ? "#F0D978" : "black"}
@@ -298,14 +301,17 @@ const GemStates = ({unselectedFilters, toggleFilter}) => (
                           height={30}
                           content={"In Auction"}/>
       </StateBox>
-      <StateBox onClick={() => toggleFilter("stuck", "states")}>
+      <StateBox>
+        {/*onClick={() => toggleFilter("stuck", "states")}>*/}
           <CutEdgesButton outlineColor={() => !unselectedFilters.states.includes("stuck") ? "#EF6E7E" : "black"}
                           backgroundColor={() => !unselectedFilters.states.includes("stuck") ? "#700E23" : "black"}
                           fontColor={"#EF6E7E"}
                           edgeSizes={[10, 20]}
                           outlineWidth={2}
                           height={30}
-                          content={"Stuck"}/>
+                          content={"Stuck"}
+                          otherStyles={"cursor: not-allowed;"}
+          />
       </StateBox>
   </GemStatesContainer>
 )

@@ -100,7 +100,7 @@ export const setDashboardEventListeners = ({
 //       .on('error', console.error);
 
     gemService.auctionContract.events.ItemRemoved({
-        filter: {'_by': currentUserId},
+        filter: {'_to': currentUserId},
         fromBlock: 'latest'
     })
       .on('data', function (event) {
@@ -116,7 +116,7 @@ export const setDashboardEventListeners = ({
 
 
     gemService.auctionContract.events.ItemAdded({
-        filter: {'_by': currentUserId},
+        filter: {'_from': currentUserId},
         fromBlock: 'latest'
     })
       .on('data', function (event) {
@@ -129,7 +129,7 @@ export const setDashboardEventListeners = ({
 
 
     gemService.contract.events.LevelUp({
-        filter: {'_by': currentUserId},
+        filter: {'_owner': currentUserId},
         fromBlock: 'latest'
     })
       .on('data', function (event) {
@@ -145,7 +145,7 @@ export const setDashboardEventListeners = ({
       .on('error', console.error);
 
     gemService.contract.events.Upgraded({
-        filter: {'_by': currentUserId},
+        filter: {'_owner': currentUserId},
         fromBlock: 'latest'
     })
       .on('data', function (event) {

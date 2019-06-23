@@ -264,7 +264,7 @@ const defaultFiltersUnselected = {
     types: ["Per", "Aqu", "Dia", "Top", "Tur"],
     levels: [],
     grades: [],
-    states: [],
+    states: ["mining", "stuck"],
 };
 
 const allFiltersDeselected = {

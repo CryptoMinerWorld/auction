@@ -28,7 +28,6 @@ import {setItemEventListeners} from "./itemEventListener";
 const select = store => {
     console.warn('GEM PAGE STORE: ', store);
     return {
-
         gem: store.auction.gem,
         //ownerData: store.auction.ownerData,
         details: store.auction,

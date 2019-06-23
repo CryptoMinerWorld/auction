@@ -33,22 +33,11 @@ export const resolveTXStatus = async (pendingTransactions, dbWrite, dbDelete, qu
     }
 };
 
-const auctionEventWhitelist = [
-    'ItemAdded',
-    'ItemRemoved',
-    'ItemBought',
-];
-
 const minerEventWhitelist = [
     'Bound',
     'Updated',
     'Released',
     'RestingEnergyConsumed',
-]
-
-const gemEventWhitelist = [
-    'LevelUp',
-    'Upgraded',
 ]
 
 const plotSaleEventWhitelist = [
@@ -133,22 +122,37 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
         //           toBlock: 'latest',
         //       })
         // }))).flat(),
-        (await Promise.all(auctionEventWhitelist.map(async event => {
-            return auctionContract.getPastEvents(event,
-              {
-                  filter: {'_by': currentUserId},
-                  fromBlock: latestBlock - 15000,
-                  toBlock: 'latest',
-              })
-        }))).flat(),
-        (await Promise.all(gemEventWhitelist.map(async event => {
-            return gemContract.getPastEvents(event,
-              {
-                  filter: {'_owner': currentUserId},
-                  fromBlock: latestBlock - 15000,
-                  toBlock: 'latest',
-              })
-        }))).flat(),
+
+        await auctionContract.getPastEvents('ItemAdded',
+          {
+              filter: {'_from': currentUserId},
+              fromBlock: latestBlock - 15000,
+              toBlock: 'latest',
+          }),
+        await auctionContract.getPastEvents('ItemRemoved',
+          {
+              filter: {'_to': currentUserId},
+              fromBlock: latestBlock - 15000,
+              toBlock: 'latest',
+          }),
+        await auctionContract.getPastEvents('ItemBought',
+          {
+              filter: {'_to': currentUserId},
+              fromBlock: latestBlock - 15000,
+              toBlock: 'latest',
+          }),
+        await gemContract.getPastEvents('Upgraded',
+          {
+              filter: {'_owner': currentUserId},
+              fromBlock: latestBlock - 15000,
+              toBlock: 'latest',
+          }),
+        await gemContract.getPastEvents('LevelUp',
+          {
+              filter: {'_owner': currentUserId},
+              fromBlock: latestBlock - 15000,
+              toBlock: 'latest',
+          }),
         // (await Promise.all(plotSaleEventWhitelist.map(async event => {
         //     return plotSaleContract.getPastEvents(event,
         //       {
