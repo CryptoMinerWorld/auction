@@ -15,6 +15,7 @@ import GiftGems from './GiftGems';
 import button from '../../../app/images/pinkBuyNowButton.png';
 import UpgradeComponent from "./UpgradeComponent";
 import {getUserPlots, processBlocks} from "../../plots/plotActions";
+import {AUCTION_END, AUCTION_START} from "../itemConstants";
 
 const ColourButton = styled.button`
   background-image: url(${button});
@@ -204,7 +205,7 @@ class TradingBox extends PureComponent {
                                           data-testid="removeGemButton"
                                           className="b"
                                         >
-                                            {formSubmitted ? (
+                                            {gem.txType && gem.txType === AUCTION_END  ? (
                                               <span>
                           <Icon type="loading" theme="outlined"/>
                                                   {' '}
@@ -287,7 +288,7 @@ class TradingBox extends PureComponent {
                                           }}
                                           data-testid="createAuctionButton"
                                         >
-                                            {formSubmitted ? (
+                                            {gem.txType && gem.txType === AUCTION_START ? (
                                               <span>
                           <Icon type="loading" theme="outlined"/>
                                                   {' '}

@@ -96,7 +96,7 @@ export default (state = {}, action) => {
     if (action.type === TRANSACTION_RESOLVED) {
         return {
             ...state,
-            pendingTransactions: state.pendingTransactions.filter(tx => tx.hash !== action.payload.transactionHash),
+            pendingTransactions: state.pendingTransactions ? state.pendingTransactions.filter(tx => tx.hash !== action.payload.transactionHash) : [],
             transactionHistory: [action.payload].concat(state.transactionHistory)
         }
     }

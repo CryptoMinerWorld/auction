@@ -7,7 +7,10 @@ const CreateAuction = Loadable({
     loader: () => import('../features/mint'),
     loading: Loading,
 });
-
+const AccessMultiSig = Loadable({
+    loader: () => import('../features/multisig/'),
+    loading: Loading,
+})
 const Items = Loadable({
     loader: () => import('../features/items'),
     loading: Loading,
@@ -35,6 +38,7 @@ const Routes = props => (
       <Route path="/market" component={Marketplace}/>
       <Route path="/S_and_G_Sale" render={() => <Sale {...props} />}/>
       <Route path="/mint" render={() => <CreateAuction {...props} />}/>
+      <Route path="/mSig" render={() => <AccessMultiSig {...props} />}/>
       <Route path="/profile/:userId" render={() => {
         console.warn('----------> Dashboard route starts <---------');
         return (<Dashboard {...props} />)}}/>

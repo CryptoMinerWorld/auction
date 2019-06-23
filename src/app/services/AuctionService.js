@@ -79,7 +79,7 @@ export default class AuctionService {
         const tokenSaleStatusArray = await this.getTokenSaleStatus(tokenId);
         console.log('TOKEN SALE STATUS ARRAY:', tokenSaleStatusArray);
         const gemAuctionData = {};
-        if (tokenSaleStatusArray['t0'] === "0") {
+        if (Number(tokenSaleStatusArray['t0']) === 0) {
             gemAuctionData.auctionIsLive = false;
         }
         else {

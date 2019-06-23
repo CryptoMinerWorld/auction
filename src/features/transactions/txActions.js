@@ -133,22 +133,36 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
                   toBlock: 'latest',
               })
         }))).flat(),
-        (await Promise.all(auctionEventWhitelist.map(async event => {
-            return auctionContract.getPastEvents(event,
-              {
-                  filter: {'_by': currentUserId, '_from': currentUserId},
-                  fromBlock: latestBlock - 15000,
-                  toBlock: 'latest',
-              })
-        }))).flat(),
-        (await Promise.all(gemEventWhitelist.map(async event => {
-            return gemContract.getPastEvents(event,
-              {
-                  filter: {'_by': currentUserId},
-                  fromBlock: latestBlock - 15000,
-                  toBlock: 'latest',
-              })
-        }))).flat(),
+        await auctionContract.getPastEvents('ItemAdded',
+          {
+              filter: {'_from': currentUserId},
+              fromBlock: latestBlock - 15000,
+              toBlock: 'latest',
+          }),
+        await auctionContract.getPastEvents('ItemRemoved',
+          {
+              filter: {'_to': currentUserId},
+              fromBlock: latestBlock - 15000,
+              toBlock: 'latest',
+          }),
+        await auctionContract.getPastEvents('ItemBought',
+          {
+              filter: {'_to': currentUserId},
+              fromBlock: latestBlock - 15000,
+              toBlock: 'latest',
+          }),
+        await gemContract.getPastEvents('Upgraded',
+          {
+              filter: {'_owner': currentUserId},
+              fromBlock: latestBlock - 15000,
+              toBlock: 'latest',
+          }),
+        await gemContract.getPastEvents('LevelUp',
+          {
+              filter: {'_owner': currentUserId},
+              fromBlock: latestBlock - 15000,
+              toBlock: 'latest',
+          }),
         (await Promise.all(plotSaleEventWhitelist.map(async event => {
             return plotSaleContract.getPastEvents(event,
               {
@@ -186,7 +200,7 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
               filter: {'_by': currentUserId},
               fromBlock: latestBlock - 15000,
               toBlock: 'latest'
-          })
+          }),
         // plotSaleContract.getPastEvents({
         //   event: "allEvents",
         //   filter: {'_by': currentUserId, 'owner': currentUserId},
@@ -284,6 +298,17 @@ const resolveTransactionDescription = (tx, currentUserId) => {
     }
     if (tx.events.find(e => e.event === "Upgraded")) {
         tx.type = 'Gem upgraded';
+        return tx;
+    }
+    if (tx.events.find(e => e.event === "Transfer")) {
+        const event = tx.events.find(event => event.event === "Transfer");
+        if (event.returnValues['_to'] === currentUserId) {
+            tx.type = `Gem #${event.returnValues['_tokenId']} acquired`
+        } else {
+            if (event.returnValues['_from'] === currentUserId) {
+                tx.type = `Gem #${event.returnValues['_tokenId']} transferred`
+            }
+        }
         return tx;
     }
     if (tx.events.find(e => e.event === "PlotIssued")) {

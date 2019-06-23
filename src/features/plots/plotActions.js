@@ -203,6 +203,7 @@ export const processBlocks = (plot, updatePlotCallback) => async (dispatch, getS
               type: PROCESSING,
               description: `Processing plot ${plot.id}`,
               body: {
+                  gemId: plot.gemMinesId,
                   plot: plot.id,
               }
           })(dispatch, getState);

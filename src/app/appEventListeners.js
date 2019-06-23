@@ -115,7 +115,7 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
     // --------------------------------------------------------
 
     gemService.auctionContract.events.ItemRemoved({
-        filter: {'_by': currentUserId},
+        filter: {'_to': currentUserId},
         fromBlock: 'latest'
     })
       .on('data', function (event) {
@@ -131,7 +131,7 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
 
 
     gemService.auctionContract.events.ItemAdded({
-        filter: {'_by': currentUserId},
+        filter: {'_from': currentUserId},
         fromBlock: 'latest'
     })
       .on('data', function (event) {
@@ -146,7 +146,7 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
       .on('error', console.error);
 
     gemService.auctionContract.events.ItemBought({
-        filter: {'_by': currentUserId},
+        filter: {'_to': currentUserId},
         fromBlock: 'latest'
     })
       .on('data', function (event) {
@@ -160,13 +160,12 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
       })
       .on('error', console.error);
 
-
     // --------------------------------------------------------
     // --- Gem page transaction event listeners starts ---
     // --------------------------------------------------------
 
     gemService.contract.events.LevelUp({
-        filter: {'_by': currentUserId},
+        filter: {'_owner': currentUserId},
         fromBlock: 'latest'
     })
       .on('data', function (event) {
@@ -181,7 +180,7 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
       .on('error', console.error);
 
     gemService.contract.events.Upgraded({
-        filter: {'_by': currentUserId},
+        filter: {'_owner': currentUserId},
         fromBlock: 'latest'
     })
       .on('data', function (event) {
@@ -206,7 +205,7 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
       .on('data', function (event) {
           if (!caughtEventIds.includes(event['id'])) {
               caughtEventIds.push(event['id']);
-              transactionResolved(event);
+              transactionResolved(event, currentUserId);
           }
       })
       .on('changed', function (event) {
@@ -240,7 +239,7 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
       .on('data', function (event) {
           if (!caughtEventIds.includes(event['id'])) {
               caughtEventIds.push(event['id']);
-              transactionResolved(event)
+              transactionResolved(event, currentUserId)
           }
       })
       .on('changed', function (event) {
@@ -255,7 +254,7 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
       .on('data', function (event) {
           if (!caughtEventIds.includes(event['id'])) {
               caughtEventIds.push(event['id']);
-              transactionResolved(event);
+              transactionResolved(event, currentUserId);
           }
       })
       .on('changed', function (event) {
