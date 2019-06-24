@@ -15,6 +15,7 @@ import {
 } from "../marketActions";
 import {compose} from "redux";
 import connect from "react-redux/es/connect/connect";
+import GemDashboardFilters from "../../dashboard/components/GemDashboardFilters";
 
 const select = store => ({
     auctions: store.market.auctions,
@@ -32,6 +33,7 @@ class GemMarket extends React.Component {
         hasMoreGems: false,
         minPrice: 0,
         maxPrice: 100,
+        mobileFiltersDisplayed: false,
     }
 
     componentDidMount() {
@@ -127,7 +129,7 @@ class GemMarket extends React.Component {
             handlePreLoadAuctionPage, loading, handleApplySort, unselectedFilters, selectedSorting,
             handleApplyFilterOption, handleDeselectAllFilters, handleSetDefaultFilters
         } = this.props;
-        const {scrolledGems, hasMoreGems, minPrice, maxPrice} = this.state;
+        const {scrolledGems, hasMoreGems, minPrice, maxPrice, mobileFiltersDisplayed} = this.state;
 
         console.log("SCROLED GEMS:", scrolledGems, scrolledGems.length);
 
@@ -144,6 +146,8 @@ class GemMarket extends React.Component {
                                     applySort={(sortOption, sortDirection) => {
                                         handleApplySort(sortOption, sortDirection);
                                     }}
+                                    mobileFiltersDisplayed={mobileFiltersDisplayed}
+                                    toggleMobileFilters={() => this.setState({mobileFiltersDisplayed: !this.state.mobileFiltersDisplayed})}
                                     minPrice={minPrice}
                                     maxPrice={maxPrice}
                   />

@@ -220,11 +220,12 @@ export class GemSelectionPopup extends Component {
                         {scrolledGems && scrolledGems.length > 0 ? (
                           scrolledGems.map(userGem => {
                               const available = !userGem.auctionIsLive && gemMiningIds && !gemMiningIds.includes(userGem.id.toString());
-                              //console.log('USER GEM: ', userGem);
-                              return (
+                              const applicable = selectedPlot.layerEndPercentages[userGem.level - 1] > selectedPlot.currentPercentage;
+                              console.log('USER GEM, SELECTED PLOT:', userGem, selectedPlot);
+                              if (available) return (
                                 //<div></div>
-                                <GemSelectionCard auction={userGem} key={userGem.id} available={available}
-                                    onClick={() => {available && handleBindGem(selectedPlot, userGem, updatePlot, transactionStartCallback)}}
+                                <GemSelectionCard auction={userGem} key={userGem.id} available={applicable}
+                                    onClick={() => {applicable && handleBindGem(selectedPlot, userGem, updatePlot, transactionStartCallback)}}
                                 />
                               )
                           })

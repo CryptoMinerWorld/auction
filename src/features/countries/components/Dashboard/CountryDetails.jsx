@@ -35,7 +35,7 @@ const CountryDetails = ({
           </div>
           <div className="">
             <dd className="f6 f5-ns b ml0">Plots Remaining</dd>
-            <dd className="f3 f2-ns b ml0 w-100">{totalPlots && totalPlots}</dd>
+            <dd className="f3 f2-ns b ml0 w-100">{plotsAvailable}</dd>
           </div>
           <div className="">
             <dd className="f6 f5-ns b ml0">Return on Investment</dd>
@@ -53,10 +53,10 @@ const CountryDetails = ({
             <dt>Plots Sold</dt>
             <dd className="pl2">{plotsBought}</dd>
           </span>
-          <span className="flex">
-            <dt>Plots Mined</dt>
-            <dd className="pl2">{plotsMined}</dd>
-          </span>
+          {/*<span className="flex">*/}
+            {/*<dt>Plots Mined</dt>*/}
+            {/*<dd className="pl2">{plotsMined}</dd>*/}
+          {/*</span>*/}
 
           <span className="flex">
             <dt>Plots Available for Auction</dt>

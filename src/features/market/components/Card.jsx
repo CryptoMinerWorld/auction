@@ -100,6 +100,7 @@ class Cards extends React.Component {
                         level={auction.level}
                         grade={auction.gradeType}
                         rate={auction.rate}
+                        restingEnergy={auction.restingEnergy}
                         market
                       />
                       <div className="flex aic o-70 mb2 w-100">

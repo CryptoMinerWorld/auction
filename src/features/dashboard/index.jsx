@@ -41,6 +41,7 @@ import {getUserPlots, refreshUserPlot} from "../plots/plotActions";
 import {setDashboardEventListeners} from "./dashboardEventListener";
 import {transactionResolved} from "../transactions/txActions";
 import GemDashboard from "./components/GemDashboard";
+import {getAvailableCountryPlots} from "../plotsale/plotSaleActions";
 
 
 const {TabPane} = Tabs;
@@ -232,13 +233,6 @@ class Dashboard extends Component {
             else {
                 handleShowSignInBox();
             }
-        }
-
-        //data.refetch();
-        const country = window.location.hash.length;
-
-        if (country > 0) {
-            this.setState({tab: 2});
         }
     }
 
@@ -506,6 +500,7 @@ class Dashboard extends Component {
                       <CountryDashboard
                         userCountryIdList={userCountries}
                         userId={match.params.userId}
+                        handleGetAvailableCountryPlots={this.props.handleGetAvailableCountryPlots}
                       />
                   </TabPane>
 
@@ -549,6 +544,7 @@ const actions = {
     handleUseCoupon: useCoupon,
     handleShowSignInBox: () => ({type: 'SHOW_SIGN_IN_BOX'}),
     handleGetUserCountries: getUserCountries,
+    handleGetAvailableCountryPlots: getAvailableCountryPlots,
 };
 
 export default compose(

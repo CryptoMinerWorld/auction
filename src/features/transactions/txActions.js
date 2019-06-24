@@ -285,6 +285,7 @@ const resolveTransactionDescription = (tx, currentUserId) => {
     }
     if (tx.events.find(e => e.event === "ItemBought")) {
         const event = tx.events.find(event => event.event === "ItemBought");
+        console.log("TO & Current:", event.returnValues['_to'], currentUserId);
         if (event.returnValues['_to'] === currentUserId) {
             tx.type = 'Gem purchased'
         } else {
