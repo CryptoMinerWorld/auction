@@ -197,7 +197,6 @@ export default compose(
 )(Msig);
 
 const Container = styled.div`
-    
     h3, h4 {
         color: white
     }
@@ -207,15 +206,13 @@ const Container = styled.div`
         margin: 5px 10px;
         padding: 5px;
         border-radius: 10px;
-        
     }
     
     div {
         color: #eeeeee
     }    
-    
+      
     input, button {
         color: #333333
-    }
-    
-`
+    }  
+`;

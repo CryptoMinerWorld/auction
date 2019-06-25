@@ -58,37 +58,33 @@ class Auction extends PureComponent {
         currentPrice: '',
         goldAvailable: 0,
         silverAvailable: 0,
+        eventSubscriptions: [],
     };
+
+    clearSubscriptions = () => {
+        this.state.eventSubscriptions.forEach((subscription) => {
+            console.log("subscription unsubscribe:", subscription);
+            subscription.unsubscribe();
+        })
+    }
 
     async componentDidMount() {
         const {
-            match, handleGetUserBalance, silverGoldService, gemService, handleGetGemData, dutchContract, gemContractAddress, currentAccount, pendingTransactions
+            match, handleGetUserBalance, silverGoldService, gemService, handleGetGemData, currentAccount, pendingTransactions
         } = this.props;
 
         if (match && match.params && match.params.gemId && gemService) {
-            setItemEventListeners({
+            const eventSubscriptions = setItemEventListeners({
                 gemService,
                 gemChangedCallback: handleGetGemData,
                 tokenId: match.params.gemId,
                 transactionResolved: () => {}
             });
+            this.setState({eventSubscriptions});
             if (pendingTransactions) {
                 handleGetGemData(match.params.gemId);
             }
         }
-
-        //todo: improve priceInterval (only if auction is live ?)
-        this.Priceinterval = setInterval(() => {
-            if (dutchContract && gemContractAddress) {
-                dutchContract.methods
-                  .getCurrentPrice(gemContractAddress, match.params.gemId)
-                  .call()
-                  .then((currentPrice) => {
-                      this.setState({currentPrice: Number(currentPrice)});
-                  })
-                  .catch(error => console.warn(error));
-            }
-        }, 60000);
 
         if (silverGoldService && currentAccount) {
             handleGetUserBalance(currentAccount);
@@ -100,7 +96,7 @@ class Auction extends PureComponent {
         console.log('componentDidUpdateProps: ', this.props);
         console.log('componentDidUpdateState: ', this.state);
 
-        const {gemContract, match, userBalance, silverGoldService, handleGetUserBalance, currentAccount, handleGetGemData, gemService, auctionService, pendingTransactions} = this.props;
+        const {gemContract, gem, match, userBalance, silverGoldService, handleGetUserBalance, currentAccount, handleGetGemData, gemService, auctionService, pendingTransactions} = this.props;
         const {restingEnergyMinutes} = this.state;
 
         if (this.props.gem && !this.state.ownerData) {
@@ -109,12 +105,13 @@ class Auction extends PureComponent {
         }
 
         if (gemService && auctionService && (gemService !== prevProps.gemService || auctionService !== prevProps.auctionService)) {
-            setItemEventListeners({
+            const eventSubscriptions = setItemEventListeners({
                 gemService,
                 gemChangedCallback: handleGetGemData,
                 tokenId: match.params.gemId,
                 transactionResolved: () => {}
             });
+            this.setState({eventSubscriptions});
         }
 
         if (gemService && auctionService && pendingTransactions &&
@@ -126,6 +123,19 @@ class Auction extends PureComponent {
             handleGetUserBalance(currentAccount);
         }
 
+        // if (gem && gem !== prevProps.gem) {
+        //     this.Priceinterval = setInterval(() => {
+        //         if (auctionService.auctionContract && auctionService.gemContract && gem) {
+        //             auctionService.auctionContract.methods
+        //               .getCurrentPrice(match.params.gemId)
+        //               .call()
+        //               .then((currentPrice) => {
+        //                   this.setState({currentPrice: Number(currentPrice)});
+        //               })
+        //               .catch(error => console.warn(error));
+        //         }
+        //     }, 60000);
+        // }
     }
 
     componentWillUnmount() {
@@ -133,6 +143,7 @@ class Auction extends PureComponent {
         // if (match && match.params && match.params.gemId) {
         //     handleClearGemPage(match.params.gemId);
         // }
+        this.clearSubscriptions();
         clearInterval(this.Priceinterval);
     }
 

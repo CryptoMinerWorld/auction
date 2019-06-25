@@ -43,11 +43,16 @@ export default class PlotService {
                 let gemMinesId = null;
                 if (plotState) {
                     try {
-                        currentEvaluatedPercentage = await this.minerContract.methods.evaluate(plotId).call();
                         gemMinesId = await this.getBoundGemId(plotId);
                     }
                     catch (e) {
-
+                        console.error("Could not get gem mines", e);
+                    }
+                    try {
+                        currentEvaluatedPercentage = await this.minerContract.methods.evaluate(plotId).call();
+                    }
+                    catch (e) {
+                        console.error("Could not evaluate current percentage", e);
                     }
                 }
                 if (gemMinesId) gemMiningIds.push(gemMinesId);
@@ -63,14 +68,13 @@ export default class PlotService {
                 }
 
         }));
-        //todo store gem ids that are currently mining plots.
         console.log("OWNER PLOTS: ", userPlots);
         return {userPlots, gemMiningIds};
     }
 
 
     getBoundGemId = async (plotId) => {
-        return await this.minerContract.methods.getBoundGemId(plotId).call();
+        return (await this.minerContract.methods.getPlotBinding(plotId).call())[0];
     }
 
     bindGem = (plotId, gemId, currentUser) => {
@@ -127,7 +131,7 @@ export const unpackPlotProperties = (packed64PlotProperties) => {
     }
 }
 
-const MINUTES_TO_MINE = [30, 240, 720, 1440, 2880];
+const MINUTES_TO_MINE = [90, 720, 2160, 4320, 8640];
 
 const blocksToEnergy = (tier, n) => {
     // calculate based on the tier number and return
@@ -169,23 +173,3 @@ const convertMinutesToTimeString = (minutes) => {
 const calculateTimeLeftInDays = t => Math.floor(t / (60 * 24));
 const calculateTimeLeftInHours = t => Math.floor((t % (60 * 24))/ 60);
 const calculateTimeLeftInMinutes = t => Math.floor(t % 60);
-
-const miningRate = (gradeType, gradeValue) => {
-
-    // for grades D, C, B: e = [1, 2, 3]
-    console.log("GRADETYPE, GRADE VALUE:", gradeType, gradeValue);
-
-    switch (gradeType - 1) {
-        case 0:
-        case 1:
-        case 2:
-            return 100000000 + 10000000 * (gradeType - 1) + 5 * gradeValue;
-        case 3:
-            return 140000000 + 15 * gradeValue;
-        case 4:
-            return 200000000 + 20 * gradeValue;
-        case 5:
-            return 400000000 + 100 * gradeValue;
-    }
-    return 100000000;
-}

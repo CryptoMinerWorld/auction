@@ -14,7 +14,7 @@ import ProgressMeter from './ProgressMeter';
 import GiftGems from './GiftGems';
 import button from '../../../app/images/pinkBuyNowButton.png';
 import UpgradeComponent from "./UpgradeComponent";
-import {getUserPlots, processBlocks} from "../../plots/plotActions";
+import {getUserPlots, processBlocks, releaseGem} from "../../plots/plotActions";
 import {AUCTION_END, AUCTION_START} from "../itemConstants";
 
 const ColourButton = styled.button`
@@ -109,7 +109,7 @@ class TradingBox extends PureComponent {
 
     componentDidUpdate(prevProps) {
         console.log('PROPS:', this.props);
-        if (this.props.plotService && this.props.plotService !== prevProps.plotService) {
+        if (this.props.plotService && (this.props.plotService !== prevProps.plotService) || (this.props.gem.state !== prevProps.gem.state)) {
             this.props.role === 'owner' && this.props.handleGetUserPlots(this.props.currentAccount);
         }
     }
@@ -120,6 +120,7 @@ class TradingBox extends PureComponent {
             handleCreateAuction,
             handleRemoveGemFromAuction,
             handleProcessBlocks,
+          handleReleaseGem,
           handleGetUserPlots,
             history,
             userBalance,
@@ -135,6 +136,7 @@ class TradingBox extends PureComponent {
         if (this.props.gemMiningIds && this.props.userPlots && this.props.gemMiningIds.includes(this.props.gem.id)) {
             gemMines = true;
             plotMined = this.props.userPlots.find(plot => plot && plot.gemMinesId === this.props.gem.id);
+            if (plotMined) plotMined.gemMines = gem;
         }
         const unprocessed = gemMines && plotMined && (plotMined.processedBlocks < plotMined.currentPercentage);
         console.log("UNprocessed:", unprocessed);
@@ -190,8 +192,9 @@ class TradingBox extends PureComponent {
                             plotMined={plotMined}
                             gemMines={gemMines}
                             handleProcessBlocks={(plot) => handleProcessBlocks(plot, () => handleGetUserPlots(currentAccount))}
+                            handleReleaseGem={(plot) => handleReleaseGem(plot)}
                           />
-
+                          {gemMines && <div style={{textAlign: "center", fontWeight: "bold", fontSize: "16px"}}>{`Gem is mining plot #${plotMined.id}`}</div>}
                           {gem.auctionIsLive ? (
                             <div className="pa5 flex jcc col">
                                 <div className="flex jcc">
@@ -224,7 +227,7 @@ class TradingBox extends PureComponent {
                                   maxPrice={gem.maxPrice}
                                 />
                             </div>
-                          ) : (
+                          ) : (!gemMines && Number(gem.state) === 0) && (
                             <div className="pa5 flex jcc col">
                                 <div>
                                     <div>Auction duration:</div>
@@ -303,7 +306,7 @@ class TradingBox extends PureComponent {
                                         </ColourButton>
                                     </div>
                                 </div>
-                                <GiftGems gemName={gem.name} sourceImage={gem.image}/>
+                                {!gemMines && Number(gem.state) === 0 && <GiftGems gemName={gem.name} sourceImage={gem.image}/>}
                             </div>
                           )}
                       </div>
@@ -320,6 +323,7 @@ const actions = {
     handleUpgradeGem: upgradeGem,
     handleGetUserPlots: getUserPlots,
     handleProcessBlocks: processBlocks,
+    handleReleaseGem: releaseGem,
 };
 
 export default compose(

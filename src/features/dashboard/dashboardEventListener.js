@@ -66,7 +66,7 @@ export const setDashboardEventListeners = ({
         fromBlock: 'latest'
     })
       .on('data', function (event) {
-          console.warn(">>> >> > bound event");
+          console.warn(">>> >> > bound event", event['id'], caughtEventIds);
           if (!caughtEventIds.includes(event['id'])) {
               caughtEventIds.push(event['id']);
               const eventParams = event.returnValues;
@@ -129,7 +129,7 @@ export const setDashboardEventListeners = ({
 
 
     gemService.contract.events.LevelUp({
-        filter: {'_by': currentUserId},
+        filter: {'_owner': currentUserId},
         fromBlock: 'latest'
     })
       .on('data', function (event) {
@@ -145,7 +145,7 @@ export const setDashboardEventListeners = ({
       .on('error', console.error);
 
     gemService.contract.events.Upgraded({
-        filter: {'_by': currentUserId},
+        filter: {'_owner': currentUserId},
         fromBlock: 'latest'
     })
       .on('data', function (event) {

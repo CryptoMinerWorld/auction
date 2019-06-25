@@ -13,7 +13,13 @@ import {
     WANT_TO_SEE_ALL_GEMS,
 } from './dashboardConstants';
 import {db} from '../../app/utils/firebase';
-import {addPendingTransaction, completedTx, ErrorTx, startTx} from "../transactions/txActions";
+import {
+    addPendingTransaction,
+    completedTx,
+    ErrorTx,
+    getUpdatedTransactionHistory,
+    startTx
+} from "../transactions/txActions";
 import {parseTransactionHashFromError} from "../transactions/helpers";
 import {getUserBalance} from "../sale/saleActions";
 import {gradeConverter, type} from "../plots/components/propertyPaneStyles";
@@ -105,7 +111,9 @@ export const useCoupon = (couponCode, hidePopup) => async (dispatch, getState) =
           getUserBalance(currentUser)(dispatch, getState);
       })
       .on('error', (err) => {
-          hidePopup();
+          if (txHash) {
+              getUpdatedTransactionHistory()(dispatch, getState);
+          }
       });
 }
 

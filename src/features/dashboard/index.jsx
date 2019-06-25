@@ -195,7 +195,7 @@ class Dashboard extends Component {
             handleRefreshUserPlot && gemService && currentUserId && setDashboardEventListeners({
                 plotService,
                 gemService,
-                updatedEventCallback: handleRefreshUserPlot,
+                updatedEventCallback: (plot) => {handleRefreshUserPlot(plot); handleGetUserBalance(currentUserId)},
                 releasedEventCallback: handleRefreshUserPlot,
                 boundEventCallback: handleRefreshUserPlot,
                 issuedEventCallback: handleGetUserPlots,
@@ -283,7 +283,7 @@ class Dashboard extends Component {
                 setDashboardEventListeners({
                     plotService,
                     gemService,
-                    updatedEventCallback: handleRefreshUserPlot,
+                    updatedEventCallback: (plot) => {handleRefreshUserPlot(plot); handleGetUserBalance(currentUserId)},
                     releasedEventCallback: handleRefreshUserPlot,
                     boundEventCallback: handleRefreshUserPlot,
                     reloadGemsCallback: handleGetUserGems,

@@ -147,6 +147,10 @@ export default class GemService {
             const color = packed256uint.dividedToIntegerBy(new BigNumber(2).pow(24)).modulo(new BigNumber(2).pow(8)).toNumber();
             const id = packed256uint.modulo(new BigNumber(2).pow(24)).toNumber();
 
+            const baseRate = calculateMiningRate(gradeType, gradeValue);
+            const rate = (new Date()).getMonth() === color ? baseRate / 20 * 21 : baseRate;
+
+
             return {
                 gradeType,
                 gradeValue,
@@ -162,7 +166,8 @@ export default class GemService {
                 ownershipModified: ownershipModifiedTime,
                 auctionIsLive: false,
                 name: calculateGemName(color, id),
-                rate: calculateMiningRate(gradeType, gradeValue),
+                rate
+
                 //restingEnergyMinutes: calculateGemRestingEnergy(gemCreationTime)
             }
         })
@@ -301,13 +306,20 @@ export const getGemImage = async (gemProperties, tokenId) => {
 };
 
 export const calculateMiningRate = (gradeType, gradeValue) => ({
-    1: gradeValue / 200000,
-    2: 10 + gradeValue / 200000,
-    3: 20 + gradeValue / 200000,
-    4: 40 + (3 * gradeValue) / 200000,
-    5: 100 + gradeValue / 40000,
-    6: 300 + gradeValue / 10000,
-}[gradeType].toFixed(1));
+    1: gradeValue / 40000,
+    2: 200 + gradeValue / 20000,
+    3: 330 + 9 * gradeValue / 100000,
+    4: 720 + (9 * gradeValue) / 50000,
+    5: 2500 + 6 * gradeValue / 10000,
+    6: 5000 + 13 * gradeValue / 10000,
+    //
+    // 1: gradeValue / 200000,
+    // 2: 10 + gradeValue / 200000,
+    // 3: 20 + gradeValue / 200000,
+    // 4: 40 + (3 * gradeValue) / 200000,
+    // 5: 100 + gradeValue / 40000,
+    // 6: 300 + gradeValue / 10000,
+}[gradeType].toFixed(0) - 100);
 
 export const calculateGradeType = (gradeType) => ({
     1: 'D',

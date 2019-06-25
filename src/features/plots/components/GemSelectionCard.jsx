@@ -5,6 +5,7 @@ import Loading from "../../../components/Loading";
 import {getGemImage} from "../../../app/services/GemService";
 import {CutEdgesButton} from "../../../components/CutEdgesButton";
 import {
+    energyOutlineColor,
     gradeConverter,
     gradeOutlineColor,
     gradePaneColors,
@@ -23,6 +24,14 @@ const transitionRules = {
     //transitionDelay: 'display 2s'
 }
 
+const formatRestingEnergy = (energy) => {
+    return calculateEnergyInDays(energy) + "-" + calculateEnergyInHours(energy) + "-" + calculateEnergyInMinutes(energy)
+};
+
+const calculateEnergyInWeeks = t => Math.floor(t / (60 * 24 * 7))
+const calculateEnergyInDays = t => Math.floor((t % (60 *24 * 7)) / (60 * 24));
+const calculateEnergyInHours = t => Math.floor((t % (60 * 24)) / 60);
+const calculateEnergyInMinutes = t => Math.floor(t % 60);
 
 class GemSelectionCard extends Component {
 
@@ -41,6 +50,9 @@ class GemSelectionCard extends Component {
                       'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)',
                 }}>
                   <GemName>{auction.id}</GemName>
+                  {auction.restingEnergy && auction.restingEnergy > 0 ?
+                    <GemEnergy>{formatRestingEnergy(auction.restingEnergy)}</GemEnergy> : ""
+                  }
                   <figure className="ma0 pa0">
                       <div className="w-100" style={{position: 'relative', display: 'block', paddingTop: '100%'}}>
                           <div style={{
@@ -126,4 +138,16 @@ const GemName = styled.div`
     color: #656565;
     text-align: right;
     padding-right: 5px;
+`;
+
+const GemEnergy = styled.div`
+    position: absolute;
+    top: 1px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    font-size: 11px;
+    color: ${energyOutlineColor};
+    text-align: left;
+    padding-left: 5px;
 `;

@@ -4,7 +4,7 @@ import actionButtonImage from "../../../app/images/noTextGemButton.png";
 import octagonImage from "../../../app/images/octagonOutline.png";
 import indiaImage from "../../../app/images/flags/in.png";
 import {CutEdgesButton} from "../../../components/CutEdgesButton";
-import {MINED, MINING, NEW_PLOT, NO_GEM, NOT_MINING} from "../plotConstants";
+import {MINED, MINING, NEW_PLOT, NO_GEM, NOT_MINING, STUCK} from "../plotConstants";
 import {getCountryData} from "../plotActions";
 import buyNowImage from "../../../app/images/thickAndWidePinkButton.png";
 import {blocksToMinutes, getTimeLeftMinutes} from "../../../app/services/PlotService";
@@ -255,7 +255,7 @@ const ProgressStats = styled.div`
             background-color: #24292F;
             padding: 5px;
             margin-top: -12px;
-            z-index: 30;
+            z-index: 31;
             border-radius: 10px;
             margin-right: 15px;
             flex: 3;
@@ -398,7 +398,8 @@ export class PlotsPopup extends Component {
                       </Col>
                       <Row flex={3} style={{alignItems: "center"}}>
                           <GemMiningImageBlock onClick={() => {
-                              plot.gemMines ? this.props.showAnotherPopup("gems-selected") : this.props.showAnotherPopup("plot-action-start")}}>
+                              plot.gemMines ? this.props.showAnotherPopup("gems-selected") :
+                              (plot.miningState === NO_GEM || plot.miningState === NEW_PLOT) && this.props.showAnotherPopup("plot-action-start")}}>
                               {plot.gemMines ?
                               <GemMiningImage src={plot.gemMines.image}/> : <span>Select a gem</span>}
                           </GemMiningImageBlock>
@@ -410,14 +411,15 @@ export class PlotsPopup extends Component {
                   </PlotsInfo>
                   <PlotsInfo>
                       <Col flex={1}>
-                          <ShowButton disabled={plot.miningState !== NEW_PLOT || plot.miningState !== NO_GEM} content={"Start"}
+                          <ShowButton disabled={plot.miningState !== NEW_PLOT && plot.miningState !== NO_GEM} content={"Start"}
                           onClick={() => !plot.gemMines && this.props.showAnotherPopup("plot-action-start")}/>
                           <ShowButton disabled={true} content={"Sell"}/>
                       </Col>
                       <Col flex={1}>
-                          <ShowButton disabled={plot.miningState !== MINED || plot.miningState !== MINING || plot.miningState !== STUCK}
+                          <ShowButton disabled={plot.miningState !== MINED && plot.miningState !== MINING && plot.miningState !== STUCK}
                                       content={"Stop"}
-                          onClick={() => plot.gemMines && this.props.stopMining(plot)}/>
+                          onClick={() => this.props.stopMining(plot)}/>
+                          {/*plot.gemMines &&*/}
                           <ShowButton disabled={true} content={"Gift"}/>
                       </Col>
                   </PlotsInfo>

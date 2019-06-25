@@ -18,7 +18,7 @@ import levelBackground from '../../../app/images/sale/levelUpgradeBG.png';
 import gradeMiningBackground from '../../../app/images/sale/gradeMiningUpgradeBG.png';
 import energyBackground from '../../../app/images/sale/energyBG.png';
 import buyNowImage from "../../../app/images/thickAndWidePinkButton.png";
-import {PROCESSING} from "../../plots/plotConstants";
+import {PROCESSING, UNBINDING_GEM} from "../../plots/plotConstants";
 import {GEM_LEVEL_UP, GEM_UPGRADE} from "../itemConstants";
 
 momentDurationFormatSetup(moment);
@@ -54,7 +54,7 @@ class Gembox extends PureComponent {
 
     render() {
         const {
-            gem, styling, mobileHeader, handleUseMetals, currentAccount, role, plotMined, handleProcessBlocks, gemMines,
+            gem, styling, mobileHeader, handleUseMetals, currentAccount, role, plotMined, handleReleaseGem, gemMines,
         } = this.props;
 
         console.log('CURRENT ACCOUNT:', currentAccount);
@@ -62,7 +62,8 @@ class Gembox extends PureComponent {
         const unprocessed = gemMines && plotMined && (plotMined.processedBlocks < plotMined.currentPercentage);
 
         return (
-          <div className={styling}>
+          (gem.state && !plotMined) ? <LoadingText></LoadingText> :
+            <div className={styling}>
               <div className="flex tc row" style={{alignItems: 'center', justifyContent: 'space-around'}}>
                   {(!gem.auctionIsLive && role === 'owner') ?
                     <div style={{
@@ -82,37 +83,38 @@ class Gembox extends PureComponent {
                     >
                         <Nugget quality="level" value={gem.level} gemImage={gemOrange}/>
 
-                        {gem.txType && gem.txType === GEM_LEVEL_UP && <div style={{marginTop: '25px'}}>Gem level upgrading isn't finished</div>}
-                        {handleUseMetals && !(gem.txType && gem.txType === GEM_LEVEL_UP) && gem.level < 5 && !unprocessed && (
+                        {gem.txType && gem.txType === GEM_LEVEL_UP &&
+                        <div style={{marginTop: '25px'}}>Gem level upgrading isn't finished</div>}
+                        {handleUseMetals && !(gem.txType && gem.txType === GEM_LEVEL_UP) && gem.level < 5 && !unprocessed && Number(gem.state) === 0 && (
                           <div
-                                style={{
-                                    backgroundImage: `url(${useSilverButton})`,
-                                    padding: '10px',
-                                    cursor: 'pointer',
-                                    width: '95%',
-                                    margin: '16px auto',
-                                    height: '4.5rem',
-                                    backgroundSize: 'cover',
-                                }}
-                                onClick={() => {
-                                    handleUseMetals('silver');
-                                }}
-                              ></div>)}
-                        {(gem.level === 5 || unprocessed) &&
-                              <div
-                                style={{
-                                    backgroundImage: `url(${silverButton})`,
-                                    padding: '13px 10px 10px 10px',
-                                    width: '95%',
-                                    margin: '16px auto',
-                                    height: '4.5rem',
-                                    backgroundSize: 'cover',
-                                    fontSize: '25px',
-                                    fontWeight: 'bold',
-                                    color: '#5d5d5d'
-                                }}>
-                                  {gem.level === 5 ? "MAX LEVEL" : "MINING"}
-                              </div>}
+                            style={{
+                                backgroundImage: `url(${useSilverButton})`,
+                                padding: '10px',
+                                cursor: 'pointer',
+                                width: '95%',
+                                margin: '16px auto',
+                                height: '4.5rem',
+                                backgroundSize: 'cover',
+                            }}
+                            onClick={() => {
+                                handleUseMetals('silver');
+                            }}
+                          ></div>)}
+                        {(gem.level === 5 || Number(gem.state) !== 0) &&
+                        <div
+                          style={{
+                              backgroundImage: `url(${silverButton})`,
+                              padding: '13px 10px 10px 10px',
+                              width: '95%',
+                              margin: '16px auto',
+                              height: '4.5rem',
+                              backgroundSize: 'cover',
+                              fontSize: '25px',
+                              fontWeight: 'bold',
+                              color: '#5d5d5d'
+                          }}>
+                            {gem.level === 5 ? "MAX LEVEL" : "MINING"}
+                        </div>}
                     </div> : <Nugget quality="level" value={gem.level} gemImage={gemOrange}/>}
 
                   {(!gem.auctionIsLive && role === "owner") ?
@@ -136,22 +138,22 @@ class Gembox extends PureComponent {
                             <Nugget quality="rate" value={gem.rate} gemImage={gemPurple}/>
                         </div>
                         {gem.txType && gem.txType === GEM_UPGRADE && <div>Gem grade upgrading isn't finished</div>}
-                        {handleUseMetals && !(gem.txType && gem.txType === GEM_UPGRADE) && !unprocessed && (
+                        {handleUseMetals && !(gem.txType && gem.txType === GEM_UPGRADE) && !unprocessed && Number(gem.state) === 0 && (
                           <div
-                              style={{
-                                  backgroundImage: `url(${useGoldButton})`,
-                                  width: '93%',
-                                  padding: '0px',
-                                  margin: '9px 4px',
-                                  cursor: 'pointer',
-                                  backgroundSize: 'cover',
-                                  height: '5rem',
-                              }}
-                              onClick={() => {
-                                  handleUseMetals('gold');
-                              }}
-                            ></div>)}
-                        {unprocessed &&
+                            style={{
+                                backgroundImage: `url(${useGoldButton})`,
+                                width: '93%',
+                                padding: '0px',
+                                margin: '9px 4px',
+                                cursor: 'pointer',
+                                backgroundSize: 'cover',
+                                height: '5rem',
+                            }}
+                            onClick={() => {
+                                handleUseMetals('gold');
+                            }}
+                          ></div>)}
+                        {(unprocessed || Number(gem.state) !== 0) &&
                         <div
                           style={{
                               backgroundImage: `url(${goldButton})`,
@@ -172,20 +174,34 @@ class Gembox extends PureComponent {
                     </React.Fragment>
                   }
               </div>
-              {unprocessed && role === "owner" &&
+              {Number(gem.state) !== 0 && role === "owner" &&
               <div>
                   <div style={{fontSize: "18px", textAlign: 'center'}}>
-                  Gem has mined blocks that are still unprocessed. To upgrade gem please process mined blocks first.
-                      </div>
-                  {plotMined.miningState === PROCESSING ?
-                    <div style={{textAlign: 'center'}}>Processing...</div> :
-                    <ProcessButton onClick={() => handleProcessBlocks(plotMined)}>
-                        Process
+                      Stop mining to allow you to, upgrade your gem, sell it on the market, or gift it to a friend
+                  </div>
+                  {plotMined && plotMined.miningState === UNBINDING_GEM ?
+                    <div style={{textAlign: 'center'}}>Going home...</div> :
+                    <ProcessButton onClick={() => handleReleaseGem(plotMined)}>
+                        Stop
                     </ProcessButton>
                   }
               </div>
               }
+              {/*{unprocessed && role === "owner" &&*/}
+              {/*<div>*/}
+                  {/*<div style={{fontSize: "18px", textAlign: 'center'}}>*/}
+                      {/*Gem has mined blocks that are still unprocessed. To upgrade gem please process mined blocks first.*/}
+                  {/*</div>*/}
+                  {/*{plotMined.miningState === PROCESSING ?*/}
+                    {/*<div style={{textAlign: 'center'}}>Processing...</div> :*/}
+                    {/*<ProcessButton onClick={() => handleProcessBlocks(plotMined)}>*/}
+                        {/*Process*/}
+                    {/*</ProcessButton>*/}
+                  {/*}*/}
+              {/*</div>*/}
+              {/*}*/}
               {!mobileHeader
+              && !gemMines
               && gem.gradeType >= 4
               && gem.restingEnergy > 0 && (
                 <div
@@ -237,6 +253,11 @@ const ProcessButton = styled.div`
     padding: 10px;
 `;
 
+const LoadingText = styled.div`
+    text-align: center;
+    font-size: 26px;
+    font-weight: bold;
+`;
 
 const Feature = styled.div`
   display: grid;

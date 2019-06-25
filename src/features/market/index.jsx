@@ -106,14 +106,11 @@ class Marketplace extends React.Component {
                   <TabPane tab={(
                     <span
                       tabIndex={-2}
-                      onKeyPress={() => this.setState({tab: 2})}
-                      role="button"
-                      onClick={() => this.setState({tab: 2})}
-                      className="h-100 flex aic white "><img src={Plot} alt="" className="h2 w-auto pr2"/>
+                      className="h-100 flex aic white o-50"><img src={Plot} alt="" className="h2 w-auto pr2"/>
                         Plot
                       </span>
                   )}
-                           disabled={true}
+                           disabled
                            key="2"
                   >
                   </TabPane>

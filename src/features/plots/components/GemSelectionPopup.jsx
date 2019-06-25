@@ -45,7 +45,7 @@ export class GemSelectionPopup extends Component {
         scrolledGems: this.props.userGems.slice(0, 16),
         hasMoreGems: this.props.userGems.length > 16,
         unselectedFilters: {
-            types: ["Per", "Aqu", "Dia", "Eme", "Pea", "Top", "Tur"],
+            types: ["Per", "Aqu", "Dia", "Top", "Tur"],
             levels: [],
             grades: [],
         },
@@ -221,7 +221,7 @@ export class GemSelectionPopup extends Component {
                           scrolledGems.map(userGem => {
                               const available = !userGem.auctionIsLive && gemMiningIds && !gemMiningIds.includes(userGem.id.toString());
                               const applicable = selectedPlot.layerEndPercentages[userGem.level - 1] > selectedPlot.currentPercentage;
-                              console.log('USER GEM, SELECTED PLOT:', userGem, selectedPlot);
+                              console.log('USER GEM, SELECTED PLOT:', userGem.id, selectedPlot, userGem);
                               if (available) return (
                                 //<div></div>
                                 <GemSelectionCard auction={userGem} key={userGem.id} available={applicable}

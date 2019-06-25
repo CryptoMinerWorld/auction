@@ -7,6 +7,7 @@ import MiniGemBox from '../../../components/MiniGemBox';
 import { calculateGemName } from '../helpers';
 import Loading from "../../../components/Loading";
 import {getGemImage} from "../../../app/services/GemService";
+import {MINING, STUCK} from "../../plots/plotConstants";
 require('antd/lib/progress/style/css');
 
 const transitionRules = {
@@ -67,17 +68,17 @@ class Cards extends Component {
                   </figure>
                   <Progress
                     strokeLinecap="square"
-                    percent={calculatePercentage(auction.minPrice, auction.maxPrice, auction.currentPrice)}
+                    percent={calculateStatePercentage(auction)}
                     status="active"
                     showInfo={false}
-                    strokeColor="#ffc584"
+                    strokeColor={calculateStrokeColor(auction)}
                     className="o-50"
                   />
                   <div className="tc">
                       <big className="db b f3">{calculateGemName(auction.color, auction.id)}</big>
                   </div>
-                  <div className="flex pa3 pb0 w-100 jcc">
-                      <MiniGemBox level={auction.level} grade={auction.gradeType} rate={auction.rate} restingEnergy={auction.restingEnergy} market/>
+                  <div className="flex pb0 w-100 jcc" style={{padding: "4px 0 15px 0"}}>
+                      <MiniGemBox level={auction.level} grade={auction.gradeType} rate={auction.rate} restingEnergy={!auction.state && auction.restingEnergy} market/>
                   </div>
               </div>
           </Tilt>
@@ -86,3 +87,17 @@ class Cards extends Component {
 }
 
 export default Cards;
+
+const calculateStatePercentage = (gem) => {
+    if (gem.auctionIsLive) return calculatePercentage(gem.minPrice, gem.maxPrice, gem.currentPrice);
+    if (!gem.state) return 100;
+    if (gem.miningState === STUCK) return gem.plotMined ? gem.plotMined.currentPercentage : 100;
+    if (gem.miningState === MINING) return gem.plotMined ? gem.plotMined.currentPercentage : 100;
+}
+
+const calculateStrokeColor = (gem) => {
+    if (gem.auctionIsLive) return "#443807";
+    if (!gem.state) return "#204F3E";
+    if (gem.miningState === STUCK) return "#700E23";
+    if (gem.miningState === MINING) return "#004056";
+}

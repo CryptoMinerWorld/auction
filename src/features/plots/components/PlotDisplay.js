@@ -13,7 +13,7 @@ import connect from "react-redux/es/connect/connect";
 import {calculateMiningStatus, getUserPlots, processBlocks, releaseGem} from "../plotActions";
 import {
     BINDING_GEM,
-    CANT_MINE,
+    CANT_MINE, GEM_BINDING,
     MINED,
     MINING,
     NEW_PLOT,
@@ -36,7 +36,9 @@ const select = store => {
         if (plot.gemMinesId) {
             plot.gemMines = gems.find((gem) => gem.id.toString() === plot.gemMinesId);
         }
-        if (!plot.miningState) plot.miningState = calculateMiningStatus(plot);
+        if (!plot.miningState || (plot.miningState !== BINDING_GEM && plot.miningState !== UNBINDING_GEM && plot.miningState !== PROCESSING)) {
+            plot.miningState = calculateMiningStatus(plot);
+        }
     });
 
     return {

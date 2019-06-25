@@ -1,4 +1,10 @@
-import {addPendingTransaction, completedTx, ErrorTx, startTx} from "../transactions/txActions";
+import {
+    addPendingTransaction,
+    completedTx,
+    ErrorTx,
+    getUpdatedTransactionHistory,
+    startTx
+} from "../transactions/txActions";
 import {parseTransactionHashFromError} from "../transactions/helpers";
 import {getUserBalance} from "../sale/saleActions";
 import {COUNTRY_PLOTS_DATA} from "./country_plots_data";
@@ -83,7 +89,9 @@ export const buyPlots = (countryId, totalAmount, amountExceeded, referrer, hideP
               hidePopup();
           })
           .on('error', (err) => {
-              hidePopup();
+              if (txHash) {
+                  getUpdatedTransactionHistory()(dispatch, getState);
+              }
           });
     }
 
@@ -107,7 +115,9 @@ export const buyPlots = (countryId, totalAmount, amountExceeded, referrer, hideP
           .on('receipt', async (receipt) => {
           })
           .on('error', (err) => {
-              hidePopup();
+              if (txHash) {
+                  getUpdatedTransactionHistory()(dispatch, getState);
+              }
           });
     }
 };

@@ -211,9 +211,16 @@ export default compose(
 const FixedFiltersColumn = styled.div`
     width: 240px;
     float: left;
+    z-index: 2;
+    position: relative;
     //position: fixed;
     //top: 150px;
     //left: 0;
+    
+     @media(max-width: 800px) {
+        width: 0;
+    }
+    
 `;
 
 const Card = styled.aside`
@@ -221,11 +228,18 @@ const Card = styled.aside`
 `;
 
 const Grid = styled.article`
-  width: calc(100% - 260px);
-  margin-left: 260px;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  grid-column-gap: 20px;
+    width: calc(100% - 260px);
+    margin-left: 260px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-column-gap: 20px;
+  
+    @media(max-width: 800px) {
+        width: 100%;
+        margin-left: 0;
+        padding: 0 5px;
+        min-height: 210px;
+    }
 `;
 
 

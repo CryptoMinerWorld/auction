@@ -3,9 +3,11 @@ import styled from "styled-components";
 import buyNowImage from "../../../app/images/pinkBuyNowButton.png";
 import stubIcon from "./../../../app/images/icons/gem1.png";
 import artifactIcon from "../../../app/images/artifactIcon.png";
-import filterIcon from "../../../app/images/filterIcon.png";
-import gemIcon from "../../../app/images/gemIcon.png";
-import plotIcon from "../../../app/images/plotIcon.png";
+import filterIcon from "../../../app/images/filterIconNew.png";
+import gemIcon from "../../../app/images/singleGemIconNew.png";
+import gemsIcon from "../../../app/images/gemIconNew.png"
+import plotsIcon from "../../../app/images/plotIconNew.png";
+import plotIcon from "../../../app/images/singlePlotIconNew.png";
 import {Link} from "react-router-dom";
 
 const SidebarSection = styled.div`
@@ -93,7 +95,9 @@ const SidebarIcon = styled.div`
             padding: 29px 20px;
         }
     }
-
+    
+    margin: 3px 0;
+    background-size: contain;
     background-image: url(${props => props.icon});
     background-position: center center;
     text-align: center;
@@ -102,7 +106,7 @@ const SidebarIcon = styled.div`
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    padding: 50px 40px;
+    padding: 45px 45px;
     cursor: pointer;
     color: white;
     font-size: 16px;     
@@ -148,8 +152,9 @@ class PlotSidebar extends Component {
     render() {
         const {plotSelected, isOwner} = this.props;
         const {selectedTab} = this.state;
-        const disableSidebarIcons = ((selectedTab === "selected") && !plotSelected) || !isOwner;
-        const disableSidebarGemIcon = ((selectedTab === "selected") && (!plotSelected || (plotSelected && !plotSelected.gemMines))) || !isOwner;
+        const selectedIsActive = selectedTab === "selected";
+        const disableSidebarIcons = ((selectedIsActive) && !plotSelected) || !isOwner;
+        const disableSidebarGemIcon = ((selectedIsActive) && (!plotSelected || (plotSelected && !plotSelected.gemMines))) || !isOwner;
         return (
           <Sidebar>
               <SidebarTabs>
@@ -158,13 +163,13 @@ class PlotSidebar extends Component {
                       ALL
                   </SidebarTab>
                   <SidebarTab onClick={() => this.setState({selectedTab: "selected"})}
-                              selected={selectedTab === "selected"}>
+                              selected={selectedIsActive}>
                       Selected
                   </SidebarTab>
               </SidebarTabs>
               <SidebarSection selectedTab={selectedTab} mobileFlex={4} mobileDirection={"row"}>
-                  <SidebarIcon disabled={disableSidebarIcons} icon={plotIcon} onClick={() => !disableSidebarIcons && this.props.showSidebarPopup("plots-"+selectedTab)}/>
-                  <SidebarIcon disabled={disableSidebarGemIcon} icon={gemIcon} onClick={() => !disableSidebarGemIcon && this.props.showSidebarPopup("gems-"+selectedTab)}/>
+                  <SidebarIcon disabled={disableSidebarIcons} icon={selectedIsActive ? plotIcon : plotsIcon} onClick={() => !disableSidebarIcons && this.props.showSidebarPopup("plots-"+selectedTab)}/>
+                  <SidebarIcon disabled={disableSidebarGemIcon} icon={selectedIsActive ? gemIcon : gemsIcon} onClick={() => !disableSidebarGemIcon && this.props.showSidebarPopup("gems-"+selectedTab)}/>
                   <SidebarIcon disabled={true} icon={artifactIcon} style={{margin: "10px 0"}}
                                onClick={() => this.props.showSidebarPopup("coming-soon")}
                   />

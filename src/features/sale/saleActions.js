@@ -59,8 +59,7 @@ export const getChestValue = () => async (dispatch, getState) => {
 export const getUserBalance = (userId) => async (dispatch, getState) => {
 
     const silverGoldService = getState().app.silverGoldServiceInstance;
-    const balance = await silverGoldService.getUserBalance(userId);
-
+    const balances = await silverGoldService.getUserBalance(userId);
     dispatch({
         type: USER_BALANCE_RECEIVED,
         payload: {

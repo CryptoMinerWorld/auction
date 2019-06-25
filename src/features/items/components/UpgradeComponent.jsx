@@ -123,8 +123,6 @@ export default class UpgradeComponent extends React.Component {
                     minHeight: metal === 'silver' ? '310px' : '352px',
                     padding: '10px 40px',
                 }}>
-                  {!gem.state &&
-                  <>
                   <div style={{flex: '1', display: 'flex', justifyContent: 'center', fontWeight: 'bold', alignItems: 'center', minWidth: '160px'}}>
                       {metal === 'silver' ?
                         (<span style={{fontSize: '110px'}}>{this.state.level}</span>) : ""
@@ -237,12 +235,6 @@ export default class UpgradeComponent extends React.Component {
                           }
                       CONFIRM
                   </div>
-                  </>}
-                  {gem.state &&
-                  <div>
-                      Gem is mining. Updating it now may
-                  </div>
-                  }
               </div>
 
         );

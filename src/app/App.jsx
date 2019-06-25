@@ -142,7 +142,11 @@ class App extends Component {
 
         let bncAssistConfig = {
             dappId: "e8432341-1602-487b-ba82-c3e2c46fb47d",      // [String] The API key created by step one above
-            networkId: 3  // [Integer] The Ethereum network ID your dapp uses.
+            networkId: 3,
+            web3,
+            style: {
+                dark: true
+            }// [Integer] The Ethereum network ID your dapp uses.
         };
 
         let assistInstance = assist.init(bncAssistConfig);
@@ -165,7 +169,7 @@ class App extends Component {
         }
 
         // @notice instantiating auction contract
-        const dutchContract = assistInstance.Contract(new web3.eth.Contract(
+        const dutchContract = (new web3.eth.Contract(
           dutchAuctionABI,
           process.env.REACT_APP_DUTCH_AUCTION,
           {
@@ -173,7 +177,7 @@ class App extends Component {
           },
         ))
 
-        const dutchHelperContract = assistInstance.Contract(new web3.eth.Contract(
+        const dutchHelperContract = (new web3.eth.Contract(
           dutchAuctionHelperABI,
           process.env.REACT_APP_DUTCH_AUCTION_HELPER,
           {
@@ -182,17 +186,19 @@ class App extends Component {
         ))
 
         const presaleContract = {};
-        // assistInstance.Contract(new web3.eth.Contract(presaleABI, process.env.REACT_APP_PRESALE2, {
+        // (new web3.eth.Contract(presaleABI, process.env.REACT_APP_PRESALE2, {
         //     from: currentAccountId,
         // }))
 
         // @notice instantiating gem contract
-        const gemsContract = assistInstance.Contract(new web3.eth.Contract(gemsABI, process.env.REACT_APP_GEM_ERC721, {
+        const gemsContract = await (new web3.eth.Contract(gemsABI, process.env.REACT_APP_GEM_ERC721, {
             from: currentAccountId,
         }))
 
+        console.log("gemsContract,", gemsContract);
+
         const theCountrySaleContract = {};
-        // assistInstance.Contract(new web3.eth.Contract(
+        // (new web3.eth.Contract(
         //   countrySaleABI,
         //   process.env.REACT_APP_COUNTRY_SALE,
         //   {
@@ -200,7 +206,7 @@ class App extends Component {
         //   },
         // ))
 
-        const theCountryContract = assistInstance.Contract(new web3.eth.Contract(
+        const theCountryContract = (new web3.eth.Contract(
           countryABI,
           process.env.REACT_APP_COUNTRY_ERC721,
           {
@@ -208,7 +214,7 @@ class App extends Component {
           },
         ))
 
-        const refPointsTrackerContract = assistInstance.Contract(new web3.eth.Contract(
+        const refPointsTrackerContract = (new web3.eth.Contract(
           refPointsTrackerABI,
           process.env.REACT_APP_REF_POINTS_TRACKER,
           {
@@ -216,7 +222,7 @@ class App extends Component {
           },
         ))
 
-        const goldContract = assistInstance.Contract(new web3.eth.Contract(
+        const goldContract = (new web3.eth.Contract(
           goldABI,
           process.env.REACT_APP_GOLD_ERC20,
           {
@@ -224,7 +230,7 @@ class App extends Component {
           },
         ))
 
-        const silverContract = assistInstance.Contract(new web3.eth.Contract(
+        const silverContract = (new web3.eth.Contract(
           silverABI,
           process.env.REACT_APP_SILVER_ERC20,
           {
@@ -232,7 +238,7 @@ class App extends Component {
           },
         ))
 
-        const workshopContract = assistInstance.Contract(new web3.eth.Contract(
+        const workshopContract = (new web3.eth.Contract(
           workshopABI,
           process.env.REACT_APP_WORKSHOP,
           {
@@ -245,7 +251,7 @@ class App extends Component {
           process.env.REACT_APP_BALANCE_PROXY
         );
 
-        const silverSaleContract = assistInstance.Contract(new web3.eth.Contract(
+        const silverSaleContract = (new web3.eth.Contract(
           silverSaleABI,
           process.env.REACT_APP_SILVER_SALE,
           {
@@ -262,7 +268,7 @@ class App extends Component {
         //   },
         // ))
 
-        const plotSaleContract = assistInstance.Contract(new web3.eth.Contract(
+        const plotSaleContract = (new web3.eth.Contract(
           plotSaleABI,
           process.env.REACT_APP_PLOT_SALE,
           {
@@ -270,7 +276,7 @@ class App extends Component {
           },
         ))
 
-        const plotContract = assistInstance.Contract(new web3.eth.Contract(
+        const plotContract = (new web3.eth.Contract(
           plotABI,
           process.env.REACT_APP_PLOT_ERC721,
           {
@@ -278,7 +284,7 @@ class App extends Component {
           },
         ))
 
-        const minerContract = assistInstance.Contract(new web3.eth.Contract(
+        const minerContract = (new web3.eth.Contract(
           minerABI,
           process.env.REACT_APP_MINER,
           {
@@ -286,7 +292,7 @@ class App extends Component {
           },
         ))
 
-        const artifactContract = assistInstance.Contract(new web3.eth.Contract(
+        const artifactContract = (new web3.eth.Contract(
           artifactABI,
           process.env.REACT_APP_ARTIFACT_ERC20,
           {
