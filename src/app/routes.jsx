@@ -34,17 +34,22 @@ const Sale = Loadable({
     loading: Loading,
 });
 
+const Stub = Loadable({
+    loader: () => import('../features/stub'),
+    loading: Loading,
+})
+
 const Routes = props => (
   <Fragment>
-      <Route exact path="/" component={Marketplace}/>
-      <Route path="/market" component={Marketplace}/>
-      <Route path="/S_and_G_Sale" render={() => <Sale {...props} />}/>
-      <Route path="/mint" render={() => <CreateAuction {...props} />}/>
-      <Route path="/mSig" render={() => <AccessMultiSig {...props} />}/>
+      <Route exact path="/" component={Stub}/>
+      <Route path="/market" component={Stub}/>
+      <Route path="/S_and_G_Sale" render={() => <Stub/>}/>
+      <Route path="/mint" render={() => <Stub />}/>
+      <Route path="/mSig" render={() => <Stub />}/>
       <Route path="/profile/:userId" render={() => {
         console.warn('----------> Dashboard route starts <---------');
-        return (<Dashboard {...props} />)}}/>
-      <Route path="/gem/:gemId" render={() => <Items {...props} />}/>
+        return (<Stub />)}}/>
+      <Route path="/gem/:gemId" render={() => <Stub />}/>
       {/*<Route path="/plots" render={() => <Map {...props} />}/>*/}
   </Fragment>
 );

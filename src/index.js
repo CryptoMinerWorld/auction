@@ -35,9 +35,9 @@ const client = new ApolloClient({
 function noop() {}
 
 // if (process.env.NODE_ENV !== 'development') {
-//     console.log = noop;
-//     console.warn = noop;
-    // console.error = noop;
+    console.log = noop;
+    console.warn = noop;
+    console.error = noop;
 // }
 
 // @notice these are all the actions fired when the app starts up

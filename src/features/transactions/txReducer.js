@@ -16,10 +16,6 @@ export default (state = {}, action) => {
         state.transactions = [];
     }
 
-    console.warn('TX REDUCER:::::::::::::');
-    console.warn('ACTION: ', action);
-    console.warn('STATE: ', state);
-
     if (action.type === TX_STARTED) {
         state.transactions.unshift({
             unseen: true,
