@@ -306,7 +306,7 @@ export const getGemImage = async (gemProperties, tokenId) => {
 };
 
 export const calculateMiningRate = (gradeType, gradeValue) => ({
-    1: gradeValue / 40000,
+    1: 100 + gradeValue / 40000,
     2: 200 + gradeValue / 20000,
     3: 330 + 9 * gradeValue / 100000,
     4: 720 + (9 * gradeValue) / 50000,

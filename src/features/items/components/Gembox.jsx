@@ -85,7 +85,7 @@ class Gembox extends PureComponent {
 
                         {gem.txType && gem.txType === GEM_LEVEL_UP &&
                         <div style={{marginTop: '25px'}}>Gem level upgrading isn't finished</div>}
-                        {handleUseMetals && !(gem.txType && gem.txType === GEM_LEVEL_UP) && gem.level < 5 && !unprocessed && Number(gem.state) === 0 && (
+                        {handleUseMetals && !(gem.txType && gem.txType === GEM_LEVEL_UP) && gem.level < 5 && !unprocessed && Number(gem.state) === 0 &&  !gemMines && (
                           <div
                             style={{
                                 backgroundImage: `url(${useSilverButton})`,
@@ -100,7 +100,7 @@ class Gembox extends PureComponent {
                                 handleUseMetals('silver');
                             }}
                           ></div>)}
-                        {(gem.level === 5 || Number(gem.state) !== 0) &&
+                        {(gem.level === 5 || Number(gem.state) !== 0 || gemMines) &&
                         <div
                           style={{
                               backgroundImage: `url(${silverButton})`,
@@ -138,7 +138,7 @@ class Gembox extends PureComponent {
                             <Nugget quality="rate" value={gem.rate} gemImage={gemPurple}/>
                         </div>
                         {gem.txType && gem.txType === GEM_UPGRADE && <div>Gem grade upgrading isn't finished</div>}
-                        {handleUseMetals && !(gem.txType && gem.txType === GEM_UPGRADE) && !unprocessed && Number(gem.state) === 0 && (
+                        {handleUseMetals && !(gem.txType && gem.txType === GEM_UPGRADE) && !unprocessed && Number(gem.state) === 0 && !gemMines && (
                           <div
                             style={{
                                 backgroundImage: `url(${useGoldButton})`,
@@ -153,7 +153,7 @@ class Gembox extends PureComponent {
                                 handleUseMetals('gold');
                             }}
                           ></div>)}
-                        {(unprocessed || Number(gem.state) !== 0) &&
+                        {(unprocessed || Number(gem.state) !== 0 || gemMines) &&
                         <div
                           style={{
                               backgroundImage: `url(${goldButton})`,
@@ -181,8 +181,8 @@ class Gembox extends PureComponent {
                   </div>
                   {plotMined && plotMined.miningState === UNBINDING_GEM ?
                     <div style={{textAlign: 'center'}}>Going home...</div> :
-                    <ProcessButton onClick={() => handleReleaseGem(plotMined)}>
-                        Stop
+                    <ProcessButton onClick={() => handleReleaseGem(plotMined, () => {return}, () => {return})}>
+                        Stop Mining
                     </ProcessButton>
                   }
               </div>

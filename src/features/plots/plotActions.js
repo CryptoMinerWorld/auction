@@ -140,7 +140,7 @@ export const releaseGem = (plot, updatePlotCallback, transactionStartCallback) =
               type: REFRESH_USER_PLOT,
               payload: {id: plot.id, miningState: UNBINDING_GEM}
           })
-          transactionStartCallback();
+          transactionStartCallback && transactionStartCallback();
           //updatePlotCallback({...plot, miningState: UNBINDING_GEM});
       })
       .on('receipt', async (receipt) => {

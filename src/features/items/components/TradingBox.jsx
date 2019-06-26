@@ -132,6 +132,8 @@ class TradingBox extends PureComponent {
         } = this.state;
 
 
+        console.log("GEM TX TYPE:", gem.txType);
+
         let gemMines, plotMined;
         if (this.props.gemMiningIds && this.props.userPlots && this.props.gemMiningIds.includes(this.props.gem.id)) {
             gemMines = true;
@@ -194,7 +196,7 @@ class TradingBox extends PureComponent {
                             handleProcessBlocks={(plot) => handleProcessBlocks(plot, () => handleGetUserPlots(currentAccount))}
                             handleReleaseGem={(plot) => handleReleaseGem(plot)}
                           />
-                          {gemMines && <div style={{textAlign: "center", fontWeight: "bold", fontSize: "16px"}}>{`Gem is mining plot #${plotMined.id}`}</div>}
+                          {gemMines && plotMined && <div style={{textAlign: "center", fontWeight: "bold", fontSize: "16px"}}>{`Gem is mining plot #${plotMined.id}`}</div>}
                           {gem.auctionIsLive ? (
                             <div className="pa5 flex jcc col">
                                 <div className="flex jcc">
