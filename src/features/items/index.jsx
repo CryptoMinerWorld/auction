@@ -61,7 +61,7 @@ class Auction extends PureComponent {
     };
 
     clearSubscriptions = () => {
-        this.state.eventSubscriptions.forEach((subscription) => {
+        this.state.eventSubscriptions && this.state.eventSubscriptions.forEach((subscription) => {
             console.log("subscription unsubscribe:", subscription);
             subscription.unsubscribe();
         })
@@ -80,6 +80,7 @@ class Auction extends PureComponent {
                 transactionResolved: () => {}
             });
             this.setState({eventSubscriptions});
+
             if (pendingTransactions) {
                 handleGetGemData(match.params.gemId);
             }
