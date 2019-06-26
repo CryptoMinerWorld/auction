@@ -45,6 +45,8 @@ const plotSaleEventWhitelist = [
     //todo: CouponConsumed event
 ]
 
+const numberOfBlocks = Number(process.env.REACT_APP_NUMBER_OF_BLOCKS);
+
 export const getUpdatedTransactionHistory = () => async (dispatch, getState) => {
     console.log("~~~~~~ get updated TRANSACTION history ~~~~~~");
     const web3 = getState().app.web3;
@@ -126,31 +128,31 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
         await auctionContract.getPastEvents('ItemAdded',
           {
               filter: {'_from': currentUserId},
-              fromBlock: latestBlock - 15000,
+              fromBlock: latestBlock - numberOfBlocks,
               toBlock: 'latest',
           }),
         await auctionContract.getPastEvents('ItemRemoved',
           {
               filter: {'_to': currentUserId},
-              fromBlock: latestBlock - 15000,
+              fromBlock: latestBlock - numberOfBlocks,
               toBlock: 'latest',
           }),
         await auctionContract.getPastEvents('ItemBought',
           {
               filter: {'_to': currentUserId},
-              fromBlock: latestBlock - 15000,
+              fromBlock: latestBlock - numberOfBlocks,
               toBlock: 'latest',
           }),
         await gemContract.getPastEvents('Upgraded',
           {
               filter: {'_owner': currentUserId},
-              fromBlock: latestBlock - 15000,
+              fromBlock: latestBlock - numberOfBlocks,
               toBlock: 'latest',
           }),
         await gemContract.getPastEvents('LevelUp',
           {
               filter: {'_owner': currentUserId},
-              fromBlock: latestBlock - 15000,
+              fromBlock: latestBlock - numberOfBlocks,
               toBlock: 'latest',
           }),
         // (await Promise.all(plotSaleEventWhitelist.map(async event => {
@@ -170,25 +172,25 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
         await gemContract.getPastEvents('Transfer',
           {
               filter: {'_to': currentUserId},
-              fromBlock: latestBlock - 15000,
+              fromBlock: latestBlock - numberOfBlocks,
               toBlock: 'latest',
           }),
         await gemContract.getPastEvents('Transfer',
           {
               filter: {'_from': currentUserId},
-              fromBlock: latestBlock - 15000,
+              fromBlock: latestBlock - numberOfBlocks,
               toBlock: 'latest',
           }),
         await auctionContract.getPastEvents('ItemBought',
           {
               filter: {'_from': currentUserId},
-              fromBlock: latestBlock - 15000,
+              fromBlock: latestBlock - numberOfBlocks,
               toBlock: 'latest',
           }),
         await saleContract.getPastEvents('Unboxed',
           {
               filter: {'by': currentUserId},
-              fromBlock: latestBlock - 15000,
+              fromBlock: latestBlock - numberOfBlocks,
               toBlock: 'latest'
           })
         // plotSaleContract.getPastEvents({
