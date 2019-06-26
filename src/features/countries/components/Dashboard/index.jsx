@@ -6,44 +6,6 @@ import {MAP_COUNTRY_DATA} from "../../queries";
 import {getAvailableCountryPlots} from "../../../plotsale/plotSaleActions";
 import {COUNTRY_PLOTS_DATA} from "../../../plotsale/country_plots_data";
 
-// const statechart = {
-//   initial: 'noMetamask',
-//   states: {
-//     noMetamask: {
-//       on: {
-//         COUNTRIES: 'countries',
-//         NO_COUNTRIES: 'noCountries',
-//         NO_ACCOUNT: 'noAccount',
-//         NO_METAMASK: 'noMetamask',
-//       },
-//     },
-//     countries: {
-//       on: {
-//         COUNTRIES: 'countries',
-//         NO_COUNTRIES: 'noCountries',
-//         NO_ACCOUNT: 'noAccount',
-//         NO_METAMASK: 'noMetamask',
-//       },
-//     },
-//     noCountries: {
-//       on: {
-//         COUNTRIES: 'countries',
-//         NO_COUNTRIES: 'noCountries',
-//         NO_ACCOUNT: 'noAccount',
-//         NO_METAMASK: 'noMetamask',
-//       },
-//     },
-//     noAccount: {
-//       on: {
-//         COUNTRIES: 'countries',
-//         NO_COUNTRIES: 'noCountries',
-//         NO_ACCOUNT: 'noAccount',
-//         NO_METAMASK: 'noMetamask',
-//       },
-//     },
-//   },
-// };
-
 class CountryDashboard extends Component {
     static propTypes = {
         userId: PropTypes.string.isRequired,
@@ -60,12 +22,13 @@ class CountryDashboard extends Component {
 
         let userCountries = [];
         if (data && data.mapCountries && userCountryIdList.length > 0) {
+            console.log("data map Countries", data.mapCountries, userCountryIdList);
             userCountries = data.mapCountries.filter((country =>
                 userCountryIdList.includes(country.countryId)
             ));
             userCountries.forEach( async (country) => {
-                const availablePlots = await getAvailableCountryPlots(country.countryId);
-                country.plotsBought = COUNTRY_PLOTS_DATA[country - 1] - availablePlots;
+                const availablePlots = country.plots; //await handleGetAvailableCountryPlots(country.countryId);
+                country.plotsBought = COUNTRY_PLOTS_DATA[country.countryId - 1] - availablePlots;
                 //country.plotsMined = 0;
                 country.plotsAvailable = availablePlots;
                 country.totalPlots = country.plots;
@@ -76,30 +39,34 @@ class CountryDashboard extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        const {data, userCountryIdList, userCountries, transition} = this.props;
+        const {data, userCountryIdList} = this.props;
         console.log('COUNTRY DASHBOARD PROPS', this.props, this.state);
-
-        // if (data && (userCountryIdList !== prevProps.userCountryIdList || prevProps.data.mapCountries !== data.mapCountries)) {
-        //     let userCountries = [];
-        //
-        //     this.setState({
-        //         userCountries: userCountries,
-        //     })
-        // }
-
-        // if (prevProps.countries !== countries) {
-        //   if (!countries || countries.length === 0) {
-        //     transition('NO_COUNTRIES');
-        //   } else {
-        //     transition('COUNTRIES');
-        //   }
-        // }
+        let userCountries = [];
+        if (data && (userCountryIdList !== prevProps.userCountryIdList || prevProps.data.mapCountries !== data.mapCountries)) {
+            let userCountries = [];
+            if (data && data.mapCountries && userCountryIdList.length > 0) {
+                console.log("data map Countries", data.mapCountries, userCountryIdList);
+                userCountries = data.mapCountries.filter((country =>
+                    userCountryIdList.includes(country.countryId)
+                ));
+                userCountries.forEach(async (country) => {
+                    console.log("COUNTRY::", country);
+                    const availablePlots = country.plots;
+                    country.plotsBought = COUNTRY_PLOTS_DATA[country.countryId - 1] - availablePlots;
+                    //country.plotsMined = 0;
+                    country.plotsAvailable = availablePlots;
+                    country.totalPlots = country.plots;
+                    country.lastPrice = country.price;
+                })
+                this.setState({userCountries});
+            }
+        }
     }
 
     render() {
         const {userId} = this.props;
         const {userCountries} = this.state;
-
+        console.log("user Countries: ", userCountries);
         return (
           <div className="pa0">
               <CountryDisplay countries={userCountries} userId={userId}/>
