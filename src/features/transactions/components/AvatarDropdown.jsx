@@ -373,7 +373,7 @@ const menu = ({transactionHistory, pendingTransactions, failedTransactions}) => 
           </TxRecordContainer> : ""
       ))}
       {transactionHistory && transactionHistory.map((tx) => (
-        tx.transactionHash ?
+        (tx && tx.transactionHash) ?
           <TxConfirmedRecord tx={tx}/> : ""
       ))}
   </DropdownContainer>
@@ -395,7 +395,7 @@ class AvatarDropdown extends React.Component {
 
     render() {
         const {user, failedTransactions, transactionHistory, pendingTransactions} = this.props;
-        const unseen = ((transactionHistory && transactionHistory.length > 0 )? Math.min(transactionHistory.findIndex(tx => !tx.unseen), transactionHistory.length): 0) + +(failedTransactions ? failedTransactions.length : 0);
+        const unseen = ((transactionHistory && transactionHistory.length > 0 )? Math.min(transactionHistory.findIndex(tx => tx && !tx.unseen), transactionHistory.length): 0) + +(failedTransactions ? failedTransactions.length : 0);
 
         return (
           user && (

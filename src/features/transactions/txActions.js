@@ -254,6 +254,10 @@ const groupEventLogsByTransaction = (sortedEventLogs, currentUserId) => {
 }
 
 const resolveTransactionDescription = (tx, currentUserId) => {
+
+    if (!tx.events)
+        return tx;
+
     if (tx.events.find(e => e.event === "Bound")) {
         tx.type = 'Gem bound';
         return tx;
@@ -353,11 +357,15 @@ export const transactionResolved = (event) => async (dispatch, getState) => {
         resolvedTx.unseen = true;
         //todo: bug is possible: firing updated event before bound/released will set tx type as 'plot processed'
         //todo: instead of bound/released
+        console.warn("resolvedTx:", resolvedTx);
+        const withDescription = resolveTransactionDescription(resolvedTx);
+        console.warn("With description:", withDescription);
         dispatch({
             type: TRANSACTION_RESOLVED,
-            payload: resolveTransactionDescription(resolvedTx)
+            payload: withDescription
         })
     }
+    return;
 }
 
 export const addPendingTransaction = (transaction) => async (dispatch, getState) => {
