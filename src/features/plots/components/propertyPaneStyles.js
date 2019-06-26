@@ -58,6 +58,8 @@ export const levelOutlineColor = "#FDC88F";
 export const gradeOutlineColor = "#98C7FF";
 export const mrbOutlineColor = "#BE79DB";
 export const mrbPaneColor = "#432056";
+export const energyPaneColor = "#1D513E";
+export const energyOutlineColor = "#71CCAE";
 
 export const type = (color) => ({
     1: 'Gar',

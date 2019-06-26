@@ -4,6 +4,14 @@ import styled from 'styled-components';
 import gem1 from '../app/images/icons/gem1.png';
 import gem2 from '../app/images/icons/gem2.png';
 import gem3 from '../app/images/icons/gem3.png';
+import {CutEdgesButton} from "../components/CutEdgesButton";
+import {
+    energyOutlineColor, energyPaneColor,
+    gradeOutlineColor,
+    gradePaneColors,
+    levelOutlineColor,
+    levelPaneColors, mrbOutlineColor, mrbPaneColor
+} from "../features/plots/components/propertyPaneStyles";
 
 class Gembox extends PureComponent {
   static propTypes = {
@@ -31,11 +39,52 @@ class Gembox extends PureComponent {
 
   render() {
     const {
-      level, grade, rate, market,
+      level, grade, rate, restingEnergy, market,
     } = this.props;
     return (
-      <div className="flex jcc">
-
+      <div className="flex jcv w-100">
+          <CutEdgesButton
+            outlineColor={gradeOutlineColor}
+            backgroundColor={gradePaneColors(grade)}
+            fontColor={gradeOutlineColor}
+            edgeSizes={12}
+            outlineWidth={2}
+            fontSize={18}
+            height={41}
+            content={this.gradeConverter(grade)}
+            otherStyles={"width: 43px; font-weight: bold;"}/>
+          <CutEdgesButton
+            outlineColor={levelOutlineColor}
+            backgroundColor={levelPaneColors(level)}
+            fontColor={levelOutlineColor}
+            edgeSizes={12}
+            outlineWidth={2}
+            fontSize={18}
+            height={41}
+            content={level}
+            otherStyles={"width: 43px; font-weight: bold;"}/>
+          <CutEdgesButton
+            outlineColor={mrbOutlineColor}
+            backgroundColor={mrbPaneColor}
+            fontColor={mrbOutlineColor}
+            edgeSizes={[5, 12]}
+            outlineWidth={2}
+            fontSize={14}
+            height={41}
+            content={rate+"%"}
+            otherStyles={"width: 70px; font-weight: bold;"}/>
+          {restingEnergy && restingEnergy > 0 ?
+          <CutEdgesButton
+            outlineColor={energyOutlineColor}
+            backgroundColor={energyPaneColor}
+            fontColor={energyOutlineColor}
+            edgeSizes={[5, 12]}
+            outlineWidth={2}
+            fontSize={14}
+            height={41}
+            content={formatRestingEnergy(restingEnergy)}
+            otherStyles={"width: 70px; font-weight: bold;"}/> : ''
+          }
       </div>
     );
   }
