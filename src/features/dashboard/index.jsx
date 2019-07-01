@@ -113,7 +113,7 @@ const select = store => {
     };
     //console.log('dashboard store: ', res);
     return res;
-}
+};
 
 class Dashboard extends Component {
 
@@ -429,26 +429,6 @@ class Dashboard extends Component {
                 )}
                 type="card"
               >
-                  {/*<TabPane*/}
-                    {/*tab={(*/}
-
-                      {/*<span*/}
-                        {/*tabIndex={-2}*/}
-                        {/*onKeyPress={() => this.setState({tab: 1})}*/}
-                        {/*role="button"*/}
-                        {/*onClick={() => this.setState({tab: 1})}*/}
-                        {/*className="h-100 flex aic white ">*/}
-                {/*<img src={Plot} alt="" className="h2 w-auto pr2"/>*/}
-                          {/*{userPlots ? userPlots.length : ".."}*/}
-                          {/*{' '}*/}
-                          {/*Plots*/}
-              {/*</span>*/}
-                    {/*)}*/}
-                    {/*disabled={false}*/}
-                    {/*key="1"*/}
-                  {/*>*/}
-                      {/*<PlotDashboard userId={match.params.userId} goToGemWorkshop={() => this.setState({tab: 2})}/>*/}
-                  {/*</TabPane>*/}
                   <TabPane
                     tab={(
                       <span
@@ -467,6 +447,24 @@ class Dashboard extends Component {
                     key="2"
                   >
                       <GemDashboard/>
+                  </TabPane>
+                  <TabPane
+                    tab={(
+
+                      <span
+                        tabIndex={-2}
+                        role="button"
+                        className="h-100 flex aic white o-50">
+                <img src={Plot} alt="" className="h2 w-auto pr2"/>
+                          {userBalance && userBalance.plots}
+                          {' '}
+                          Plots
+              </span>
+                    )}
+                    disabled
+                    key="1"
+                  >
+                      {/*<PlotDashboard userId={match.params.userId} goToGemWorkshop={() => this.setState({tab: 2})}/>*/}
                   </TabPane>
                   <TabPane
                     tab={(

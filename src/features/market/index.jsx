@@ -29,17 +29,17 @@ const select = store => {
         gemService: store.app.gemServiceInstance,
         auctionService: store.app.auctionServiceInstance,
     });
-}
+};
 
 class Marketplace extends React.Component {
 
     static defaultProps = {
         loading: true
-    }
+    };
 
     state = {
         tab: 1
-    }
+    };
 
     componentDidMount() {
         const {auctionService, handleGetAuctions, handlePagination} = this.props;
@@ -104,20 +104,18 @@ class Marketplace extends React.Component {
                   >
                       <GemMarket/>
                   </TabPane>
-                  {/*<TabPane tab={(*/}
-                    {/*<span*/}
-                      {/*tabIndex={-2}*/}
-                      {/*onKeyPress={() => this.setState({tab: 2})}*/}
-                      {/*role="button"*/}
-                      {/*onClick={() => this.setState({tab: 2})}*/}
-                      {/*className="h-100 flex aic white "><img src={Plot} alt="" className="h2 w-auto pr2"/>*/}
-                        {/*Plot*/}
-                      {/*</span>*/}
-                  {/*)}*/}
-                           {/*disabled*/}
-                           {/*key="2"*/}
-                  {/*>*/}
-                  {/*</TabPane>*/}
+                  <TabPane tab={(
+                    <span
+                      tabIndex={-2}
+                      role="button"
+                      className="h-100 flex aic white o-50"><img src={Plot} alt="" className="h2 w-auto pr2"/>
+                        Plot
+                      </span>
+                  )}
+                           disabled
+                           key="2"
+                  >
+                  </TabPane>
                   <TabPane
                     tab={(
                       <span className="h-100 flex aic white o-50">

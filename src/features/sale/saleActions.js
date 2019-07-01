@@ -54,7 +54,7 @@ export const getChestValue = () => async (dispatch, getState) => {
         type: CHEST_VALUE_RECEIVED,
         payload: chestValue
     });
-}
+};
 
 export const getUserBalance = (userId) => async (dispatch, getState) => {
 
@@ -67,11 +67,13 @@ export const getUserBalance = (userId) => async (dispatch, getState) => {
               {
                   referralPoints: balances.points,
                   silverAvailable: Math.floor(balances.silver*ONE_UNIT) ,
-                  goldAvailable: Math.floor(balances.gold*ONE_UNIT)
+                  goldAvailable: Math.floor(balances.gold*ONE_UNIT),
+                  plots: balances.plots,
+                  gems: balances.gems
               }
         }
     })
-}
+};
 
 export const updateSaleState = (event) => (dispatch) => {
 
@@ -82,7 +84,7 @@ export const updateSaleState = (event) => (dispatch) => {
         payload: {saleState},
     });
 
-}
+};
 
 export const getSaleState = () => async (dispatch, getState) => {
     const silverGoldService = getState().app.silverGoldServiceInstance;
@@ -93,7 +95,7 @@ export const getSaleState = () => async (dispatch, getState) => {
         type: SALE_STATE_RECEIVED,
         payload: {saleState},
     });
-}
+};
 
 export const getBoxesAvailableData = () => async (dispatch, getState) => {
 
@@ -117,7 +119,7 @@ export const parseSaleEventData = (rawSaleState) => {
         1: {type: 'rotund'},
         2: {type: 'goldish'},
         3: {type: 'sale'}
-    }
+    };
 
     for (let i = 0; i < 3; i++) {
         console.log(55555555555, saleState[0]);
@@ -138,4 +140,4 @@ export const parseSaleEventData = (rawSaleState) => {
     saleState[3].saleEnd = packedSaleState.dividedToIntegerBy(new BigNumber(2).pow(96).modulo(new BigNumber(2).pow(32))).dividedToIntegerBy(1000,10).toNumber();
 
     return saleState;
-}
+};
