@@ -450,24 +450,6 @@ class Dashboard extends Component {
                   </TabPane>
                   <TabPane
                     tab={(
-
-                      <span
-                        tabIndex={-2}
-                        role="button"
-                        className="h-100 flex aic white o-50">
-                <img src={Plot} alt="" className="h2 w-auto pr2"/>
-                          {userBalance && userBalance.plots}
-                          {' '}
-                          Plots
-              </span>
-                    )}
-                    disabled
-                    key="1"
-                  >
-                      {/*<PlotDashboard userId={match.params.userId} goToGemWorkshop={() => this.setState({tab: 2})}/>*/}
-                  </TabPane>
-                  <TabPane
-                    tab={(
                       <span
                         tabIndex={-2}
                         onKeyPress={() => this.setState({tab: 3})}
@@ -499,7 +481,24 @@ class Dashboard extends Component {
                         userId={match.params.userId}
                       />
                   </TabPane>
+                  <TabPane
+                    tab={(
 
+                      <span
+                        tabIndex={-2}
+                        role="button"
+                        className="h-100 flex aic white o-50">
+                <img src={Plot} alt="" className="h2 w-auto pr2"/>
+                          {userBalance && userBalance.plots}
+                          {' '}
+                          Plots
+              </span>
+                    )}
+                    disabled
+                    key="1"
+                  >
+                      {/*<PlotDashboard userId={match.params.userId} goToGemWorkshop={() => this.setState({tab: 2})}/>*/}
+                  </TabPane>
                   <TabPane
                     tab={(
                       <span className="h-100 flex aic white o-50">
