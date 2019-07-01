@@ -22,15 +22,14 @@ import styled from 'styled-components';
 
 const transitionRules = {
     //transitionDelay: 'display 2s'
-}
+};
 
 const formatRestingEnergy = (energy) => {
     return calculateEnergyInDays(energy) + "-" + calculateEnergyInHours(energy) + "-" + calculateEnergyInMinutes(energy)
 };
 
-const calculateEnergyInWeeks = t => Math.floor(t / (60 * 24 * 7))
-const calculateEnergyInDays = t => Math.floor((t % (60 *24 * 7)) / (60 * 24));
-const calculateEnergyInHours = t => Math.floor((t % (60 * 24)) / 60);
+const calculateEnergyInDays = t => Math.floor(t / (60 * 24));
+const calculateEnergyInHours = t => Math.floor((t % (60 * 24))/ 60);
 const calculateEnergyInMinutes = t => Math.floor(t % 60);
 
 class GemSelectionCard extends Component {
