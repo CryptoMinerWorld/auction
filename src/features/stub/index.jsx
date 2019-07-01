@@ -11,7 +11,7 @@ class Msig extends Component {
         return (
           <Container className="bg-off-black" data-testid="market-page"
                      style={{paddingTop: '0px', padding: '0 20px 20px', color: "white"}}>
-              Sorry, The Game is under update. It is where gems are born
+              Sorry, the game is being updated. This is when Gems are born
           </Container>
         )
     }
