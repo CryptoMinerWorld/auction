@@ -216,7 +216,6 @@ class Auction extends PureComponent {
                                       goldAvailable={goldAvailable}
                                       silverAvailable={silverAvailable}
                                     />
-                                    <ExtraGemInfo/>
                                 </ReactCSSTransitionGroup>
                               )}
                           </div>

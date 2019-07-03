@@ -50,7 +50,7 @@ class CountdownTimer extends PureComponent {
     return (
       <div className="tc pa2" style={gradientAndShape}>
         <p className="b">Lowest price on</p>
-        <time className="measure">{format(new Date(deadline * 1000), 'EEEE do of MMMM, p')}</time>
+        {/*<time className="measure">{format(new Date(deadline * 1000), 'EEEE do of MMMM, p')}</time>*/}
         {timeLeft !== '' && (
           <div className="flex jca pt2">
             <div className="pb2">
