@@ -30,17 +30,17 @@ const select = store => {
         gemService: store.app.gemServiceInstance,
         auctionService: store.app.auctionServiceInstance,
     });
-}
+};
 
 class Marketplace extends React.Component {
 
     static defaultProps = {
         loading: true
-    }
+    };
 
     state = {
         tab: 1
-    }
+    };
 
     componentDidMount() {
         const {auctionService, handleGetAuctions, handlePagination} = this.props;
@@ -74,7 +74,7 @@ class Marketplace extends React.Component {
           style={{paddingTop: "72px"}}>
               <MarketHeader>
                   <h1 className="white f1 b o-90" data-testid="header">
-                      Gem Market
+                      Market
                   </h1>
               </MarketHeader>
               <Tabs

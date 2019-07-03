@@ -13,7 +13,7 @@ export default class PlotService {
     getPlotsMintedByCountryId = async (countryId) => {
         console.log("COUNTRY ID", countryId);
         return await this.plotContract.methods.minted(countryId).call();
-    }
+    };
 
     buyPlots = (countryId, plotsNumber, priceInEth, referrer) => {
         const priceInWei = Number(utils.toWei(priceInEth.toFixed(2), 'ether'));
@@ -23,7 +23,11 @@ export default class PlotService {
           .send({
               value: priceInWei,
           });
-    }
+    };
+
+    getEffectiveRestingEnergyOf = async (gemId) => {
+        return await this.minerContract.methods.restingEnergyOf(gemId).call();
+    };
 
     getOwnerPlots = async (ownerId) => {
         const plotsUserOwns = await this.plotContract.methods
@@ -70,36 +74,36 @@ export default class PlotService {
         }));
         console.log("OWNER PLOTS: ", userPlots);
         return {userPlots, gemMiningIds};
-    }
+    };
 
 
     getBoundGemId = async (plotId) => {
         return (await this.minerContract.methods.getPlotBinding(plotId).call())[0];
-    }
+    };
 
     bindGem = (plotId, gemId, currentUser) => {
         console.log("BIND GEM:",currentUser);
         return this.minerContract.methods.bind(plotId, gemId).send({
             from: currentUser,
         });
-    }
+    };
 
     releaseGem = (plotId) => {
         // console.log("Release gem. Miner contract:", this.minerContract);
         // return this.minerContract.release(plotId).send();
         return this.minerContract.methods.release(plotId).send();
-    }
+    };
 
     processBlocks = (plotId, currentUser) => {
         console.log('UPDATING PLOT:', plotId);
         return this.minerContract.methods.update(plotId).send({
             from: currentUser
         });
-    }
+    };
 
     processPlots = (plotIds) => {
         return this.minerContract.methods.bulkUpdate(plotIds).send();
-    }
+    };
 
     getPlotState = async (plotId) => {
         return await this.plotContract.methods.getState(plotId).call();
@@ -129,7 +133,7 @@ export const unpackPlotProperties = (packed64PlotProperties) => {
         layerPercentages: layerPercentages,
         currentPercentage: currentBlock
     }
-}
+};
 
 const MINUTES_TO_MINE = [90, 720, 2160, 4320, 8640];
 
@@ -137,7 +141,7 @@ const blocksToEnergy = (tier, n) => {
     // calculate based on the tier number and return
     // array bounds keep tier index to be valid
     return MINUTES_TO_MINE[tier] * n;
-}
+};
 
 export const blocksToMinutes = (plot) => {
     let blocksMinutes = [];
@@ -151,7 +155,7 @@ export const blocksToMinutes = (plot) => {
         blocksMinutes.push(convertMinutesToTimeString(minutes));
     }
     return blocksMinutes;
-}
+};
 
 export const getTimeLeftMinutes = (plot) => {
     let energyLeft = 0;
@@ -161,14 +165,14 @@ export const getTimeLeftMinutes = (plot) => {
     }
     const minutes = 100 * energyLeft / (100 + Number(plot.gemMines.rate));
     return convertMinutesToTimeString(minutes);
-}
+};
 
 const convertMinutesToTimeString = (minutes) => {
     const minutesLeft = calculateTimeLeftInMinutes(minutes);
     const hoursLeft = calculateTimeLeftInHours(minutes);
     const daysLeft = calculateTimeLeftInDays(minutes);
     return daysLeft > 0 ? (daysLeft + "d " + hoursLeft + "h") : (hoursLeft > 0 ? hoursLeft + "h " + minutesLeft + "m" : (minutesLeft + "m"));
-}
+};
 
 const calculateTimeLeftInDays = t => Math.floor(t / (60 * 24));
 const calculateTimeLeftInHours = t => Math.floor((t % (60 * 24))/ 60);

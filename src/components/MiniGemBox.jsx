@@ -12,6 +12,7 @@ import {
     levelOutlineColor,
     levelPaneColors, mrbOutlineColor, mrbPaneColor
 } from "../features/plots/components/propertyPaneStyles";
+import {formatRestingEnergy} from "../app/services/GemService";
 
 class Gembox extends PureComponent {
   static propTypes = {
@@ -92,13 +93,7 @@ class Gembox extends PureComponent {
 
 export default Gembox;
 
-const formatRestingEnergy = (energy) => {
-    return calculateEnergyInDays(energy) + "-" + calculateEnergyInHours(energy) + "-" + calculateEnergyInMinutes(energy)
-};
 
-const calculateEnergyInDays = t => Math.floor(t / (60 * 24));
-const calculateEnergyInHours = t => Math.floor((t % (60 * 24))/ 60);
-const calculateEnergyInMinutes = t => Math.floor(t % 60);
 
 export const Gem = ({ quality, image, amount }) => (
   <div className="flex">

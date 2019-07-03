@@ -24,6 +24,7 @@ import {fetchLatestRestingEnergy} from './helpers';
 import {getAvailableGold, getAvailableSilver} from "../dashboard/helpers";
 import {getUserBalance} from "../sale/saleActions";
 import {setItemEventListeners} from "./itemEventListener";
+import {formatRestingEnergy} from "../../app/services/GemService";
 
 const select = store => {
     console.warn('GEM PAGE STORE: ', store);
@@ -47,6 +48,7 @@ const select = store => {
         silverContract: store.app.silverContractInstance,
         goldContract: store.app.goldContractInstance,
         userBalance: store.sale.balance,
+        plotService: store.app.plotServiceInstance,
         silverGoldService: store.app.silverGoldServiceInstance,
         pendingTransactions: store.tx.pendingTransactions,
     }
@@ -66,11 +68,11 @@ class Auction extends PureComponent {
             console.log("subscription unsubscribe:", subscription);
             subscription.unsubscribe();
         })
-    }
+    };
 
     async componentDidMount() {
         const {
-            match, handleGetUserBalance, silverGoldService, gemService, handleGetGemData, currentAccount, pendingTransactions
+            match, handleGetUserBalance, silverGoldService, gemService, handleGetGemData, currentAccount, pendingTransactions, plotService
         } = this.props;
 
         if (match && match.params && match.params.gemId && gemService) {
@@ -89,6 +91,11 @@ class Auction extends PureComponent {
         if (silverGoldService && currentAccount) {
             handleGetUserBalance(currentAccount);
         }
+
+        if (plotService) {
+            //todo: remove this
+            console.log("EFFECTIVE RESTING ENERGY OF:", formatRestingEnergy(await this.props.plotService.getEffectiveRestingEnergyOf(match.params.gemId)));
+        }
     }
 
     async componentDidUpdate(prevProps) {
@@ -96,7 +103,7 @@ class Auction extends PureComponent {
         console.log('componentDidUpdateProps: ', this.props);
         console.log('componentDidUpdateState: ', this.state);
 
-        const {gemContract, gem, match, userBalance, silverGoldService, handleGetUserBalance, currentAccount, handleGetGemData, gemService, auctionService, pendingTransactions} = this.props;
+        const {gemContract, gem, plotService, match, userBalance, silverGoldService, handleGetUserBalance, currentAccount, handleGetGemData, gemService, auctionService, pendingTransactions} = this.props;
         const {restingEnergyMinutes} = this.state;
 
         if (this.props.gem && !this.state.ownerData) {
@@ -121,6 +128,11 @@ class Auction extends PureComponent {
 
         if (silverGoldService && currentAccount && (silverGoldService !== prevProps.silverGoldService || !userBalance || currentAccount !== prevProps.currentAccount)) {
             handleGetUserBalance(currentAccount);
+        }
+
+        if (plotService && plotService !== prevProps.plotService) {
+            //todo: remove this
+            console.log("EFFECTIVE RESTING ENERGY OF:", formatRestingEnergy(await this.props.plotService.getEffectiveRestingEnergyOf(match.params.gemId)));
         }
 
         // if (gem && gem !== prevProps.gem) {
@@ -204,6 +216,7 @@ class Auction extends PureComponent {
                                       goldAvailable={goldAvailable}
                                       silverAvailable={silverAvailable}
                                     />
+                                    <ExtraGemInfo/>
                                 </ReactCSSTransitionGroup>
                               )}
                           </div>

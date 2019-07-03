@@ -44,17 +44,17 @@ const minerEventWhitelist = [
     'Updated',
     'Released',
     'RestingEnergyConsumed',
-]
+];
 
 const gemEventWhitelist = [
     'LevelUp',
     'Upgraded',
-]
+];
 
 const plotSaleEventWhitelist = [
     'PlotIssued',
     //todo: CouponConsumed event
-]
+];
 
 export const getUpdatedTransactionHistory = () => async (dispatch, getState) => {
     console.log("~~~~~~ get updated TRANSACTION history ~~~~~~");
@@ -75,6 +75,9 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
       .get();
 
     console.log("STORED TRANSACTIONS DOCS:", storedPendingTransactionDocs);
+    const receipt = await web3.eth.getTransactionReceipt("0x32d5f7b05ac10c1c644e11ba566b19ce02d406b1c2c66ba4cd978dc0496607b0");  //storedTx.hash);
+    console.log("::TEST:: TRANSACTION RECEIPT:", receipt);
+
 
     let lastBlockNumber;
 
@@ -225,12 +228,12 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
                 resolvedTx.unseen = true;
             }
         }
-    })
+    });
     dispatch({
         type: EVENT_HISTORY_RECEIVED,
         payload: {transactionHistory, pendingTransactions, resolvedFailedTransactions},
     })
-}
+};
 
 const groupEventLogsByTransaction = (sortedEventLogs, currentUserId) => {
     const transactions = [];
@@ -251,7 +254,7 @@ const groupEventLogsByTransaction = (sortedEventLogs, currentUserId) => {
     }
     currentTransaction && transactions.push(resolveTransactionDescription(currentTransaction, currentUserId));
     return transactions;
-}
+};
 
 const resolveTransactionDescription = (tx, currentUserId) => {
 
@@ -333,7 +336,7 @@ const resolveTransactionDescription = (tx, currentUserId) => {
     }
 
     return tx;
-}
+};
 
 export const transactionResolved = (event) => async (dispatch, getState) => {
     const txUpdatedStored = await db
@@ -365,8 +368,8 @@ export const transactionResolved = (event) => async (dispatch, getState) => {
             payload: withDescription
         })
     }
-    return;
-}
+
+};
 
 export const addPendingTransaction = (transaction) => async (dispatch, getState) => {
     const newTx = {
@@ -376,7 +379,7 @@ export const addPendingTransaction = (transaction) => async (dispatch, getState)
         status: TX_PENDING,
         description: transaction.description,
         body: transaction.body,
-    }
+    };
     try {
         const txStored = await db
           .doc(`transactions/${transaction.hash}`)
@@ -385,7 +388,7 @@ export const addPendingTransaction = (transaction) => async (dispatch, getState)
         dispatch({
             type: NEW_PENDING_TRANSACTION,
             payload: newTx
-        })
+        });
 
         //todo: payload: txStored?
         return txStored;
@@ -394,11 +397,11 @@ export const addPendingTransaction = (transaction) => async (dispatch, getState)
         console.error(e);
     }
 
-}
+};
 
 export const setTransactionsSeen = (unseenCount) => async (dispatch, getState) => {
 
     const firstSeen = getState().tx.transactions.findIndex((tx) => (tx.unseen));
     getState().tx.transactions.slice(firstSeen - unseenCount, firstSeen);
 
-}
+};

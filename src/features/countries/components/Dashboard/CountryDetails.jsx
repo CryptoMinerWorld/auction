@@ -53,10 +53,14 @@ const CountryDetails = ({
             <dt>Plots Sold</dt>
             <dd className="pl2">{plotsBought}</dd>
           </span>
-          {/*<span className="flex">*/}
-            {/*<dt>Plots Mined</dt>*/}
-            {/*<dd className="pl2">{plotsMined}</dd>*/}
-          {/*</span>*/}
+          <span className="flex">
+            <dt>Eth Earned</dt>
+            <dd className="pl2">{plotsBought*0.002} ETH</dd>
+          </span>
+          <span className="flex">
+            <dt>Plots Mined</dt>
+            <dd className="pl2">{plotsMined}</dd>
+          </span>
 
           <span className="flex">
             <dt>Plots Available for Auction</dt>

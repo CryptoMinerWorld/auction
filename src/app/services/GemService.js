@@ -21,12 +21,15 @@ export default class GemService {
         catch (err) {
             console.log('ERROR in getGemProperties', err)
         }
-    }
+    };
 
     getGem = async (tokenId) => {
         try {
             const gem = await this.getPackedGem(tokenId);
             console.log('GEM UNPACKED: ', gem);
+
+            const baseRate = calculateMiningRate(gem.gradeType, gem.gradeValue);
+            const rate = (new Date()).getMonth() === gem.color ? baseRate / 20 * 21 : baseRate;
 
             const finalGem = {
                 ...gem,
@@ -35,16 +38,17 @@ export default class GemService {
                 story: await getGemStory(gem, tokenId),
                 image: await getGemImage(gem, tokenId),
                 name: calculateGemName(gem.color, tokenId),
-                rate: calculateMiningRate(gem.gradeType, gem.gradeValue),
+                rate: Math.floor(rate),
                 restingEnergy: gem.gradeType >= 4 ? calculateGemRestingEnergy(gem.age, gem.modifiedTime) : 0
-            }
+            };
+
             console.log('FINAL GEM:', finalGem);
             return finalGem;
         }
         catch (e) {
             console.error('GET GEM ERROR:', e);
         }
-    }
+    };
 
     getPackedGem = async (tokenId) => {
         try {
@@ -57,7 +61,7 @@ export default class GemService {
         catch (err) {
             console.log('ERROR in getPacked', err)
         }
-    }
+    };
 
     unpackGem = async ([high256, low256]) => {
         const plotId = high256.dividedToIntegerBy(new BigNumber(2).pow(232)).modulo(new BigNumber(2).pow(24)).toNumber();
@@ -107,14 +111,14 @@ export default class GemService {
             stateModifiedTime,
             modifiedTime: Math.max(creationTime, stateModifiedTime)
         }
-    }
+    };
 
     getGemAuctionIsLive = async (tokenId) => {
         return !(new BigNumber(
           await (this.auctionContract.methods
             .getTokenSaleStatus(this.contract.options.address, tokenId)
             .call()))).isZero();
-    }
+    };
 
     getImagesForGems = async (gemsToLoadImages) => {
         console.log('GEMS TO LOAD IMAGES: ', gemsToLoadImages);
@@ -131,7 +135,7 @@ export default class GemService {
               }
               //return gem;
           }));
-    }
+    };
 
     getOwnerGems = async (ownerId) => {
         const notAuctionGemsUserOwns = await this.contract.methods.getPackedCollection(ownerId).call();
@@ -150,7 +154,6 @@ export default class GemService {
             const baseRate = calculateMiningRate(gradeType, gradeValue);
             const rate = (new Date()).getMonth() === color ? baseRate / 20 * 21 : baseRate;
 
-
             return {
                 gradeType,
                 gradeValue,
@@ -166,7 +169,7 @@ export default class GemService {
                 ownershipModified: ownershipModifiedTime,
                 auctionIsLive: false,
                 name: calculateGemName(color, id),
-                rate
+                rate: Math.floor(rate)
 
                 //restingEnergyMinutes: calculateGemRestingEnergy(gemCreationTime)
             }
@@ -188,7 +191,7 @@ export const unpackGemProperties = (properties) => {
     const gradeValue = properties.modulo(0x1000000).toNumber();
 
     return {color, level, gradeType, gradeValue}
-}
+};
 
 export const getGemStory = async (gemProperties, tokenId) => {
 
@@ -227,7 +230,7 @@ export const getGemStory = async (gemProperties, tokenId) => {
                 try {
                     const storyDoc = (await db
                       .doc(`gems/${type}`)
-                      .get())
+                      .get());
                     if (storyDoc) {
                         story = storyDoc.data()[lvl] || ""
                     }
@@ -319,7 +322,7 @@ export const calculateMiningRate = (gradeType, gradeValue) => ({
     // 4: 40 + (3 * gradeValue) / 200000,
     // 5: 100 + gradeValue / 40000,
     // 6: 300 + gradeValue / 10000,
-}[gradeType].toFixed(0) - 100);
+}[gradeType] - 100);
 
 export const calculateGradeType = (gradeType) => ({
     1: 'D',
@@ -362,4 +365,12 @@ export const calculateGemRestingEnergy = (age, modifiedTime) => {
       0.5406 * Math.min(ageMinutes, linearThreshold)
       + 0.0199 * Math.max(ageMinutes - linearThreshold, 0),
     );
-}
+};
+
+export const formatRestingEnergy = (energy) => {
+    return calculateEnergyInDays(energy) + "-" + calculateEnergyInHours(energy) + "-" + calculateEnergyInMinutes(energy)
+};
+
+const calculateEnergyInDays = t => Math.floor(t / (60 * 24));
+const calculateEnergyInHours = t => Math.floor((t % (60 * 24))/ 60);
+const calculateEnergyInMinutes = t => Math.floor(t % 60);

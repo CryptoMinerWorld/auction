@@ -24,8 +24,7 @@ export default class AuctionService {
         else {
             packedAuctions = await this.auctionHelperContract.methods
               .getAllGems(this.auctionContract.options.address, this.gemContract.options.address).call();
-        };
-
+        }
         console.log(':::::',packedAuctions);
 
         const auctionUserGems = packedAuctions.map(async (packedGem, index, initialList) => {
@@ -46,33 +45,33 @@ export default class AuctionService {
             return null;
         });
             return (await Promise.all(auctionUserGems)).filter(gem => gem);
-    }
+    };
 
     getTokenSaleStatus = async (tokenId) => {
         return await this.auctionContract.methods
             .getTokenSaleStatus(this.gemContract.options.address, tokenId)
             .call()
 
-    }
+    };
 
     getItem = async (tokenId) => {
         return await (this.auctionContract.methods
             .items(this.gemContract.options.address, tokenId)
             .call()
         );
-    }
+    };
 
     getPreviousOwner = async (tokenId) => {
         return (await this.auctionContract.methods
           .owners(this.gemContract.options.address, tokenId)
           .call())
-    }
+    };
 
     getCurrentPrice = async (tokenId) => {
         return (await this.auctionContract.methods
           .getCurrentPrice(this.gemContract.options.address, tokenId)
           .call())
-    }
+    };
 
     getGemAuctionData = async (tokenId) => {
 
@@ -113,7 +112,7 @@ export const parseAuctionData = (firstPartPacked, secondPartPacked) => {
     gem.currentPrice = weiToEth(secondPart256uint.dividedToIntegerBy(new BigNumber(2).pow(160)).toNumber());
     gem.owner = '0x'+secondPart256uint.modulo(new BigNumber(2).pow(160)).toString(16).padStart(40, '0');
     return gem;
-}
+};
 
 
 // same packing as in gemERC732 getPackedCollection (see GemService.getOwnerGems());
@@ -139,9 +138,9 @@ export const parseAuctionGem = (auctionGem) => {
           plotsMined: packed256uint.dividedToIntegerBy(new BigNumber(2).pow(128)).modulo(new BigNumber(2).pow(24)).toNumber(),
           auctionIsLive: true,
           name: calculateGemName(color, id),
-          rate: calculateMiningRate(gradeType, gradeValue),
+          rate: Math.floor(calculateMiningRate(gradeType, gradeValue)),
           //restingEnergyMinutes: calculateGemRestingEnergy(gemCreationTime)
       }
-  }
+  };
 
 

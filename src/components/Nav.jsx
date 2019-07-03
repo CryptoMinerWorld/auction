@@ -28,7 +28,7 @@ const select = store => {
         existingUser: store.auth.existingUser,
         signInBox: store.auth.signInBox,
         upperCaseWalletId: store.app && store.app.currentAccount,
-    }
+    };
     console.log('NAV store: ', res);
     return res;
 };
@@ -106,7 +106,7 @@ const Navbar = ({
                 }}
                 className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
               >
-                  Gem Market
+                  Market
               </NavLink>
               <NavLink
                 exact

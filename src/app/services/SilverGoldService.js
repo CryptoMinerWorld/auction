@@ -17,15 +17,23 @@ export default class SilverGoldService {
     }
 
     getUserBalance = async (userId) => {
-        const tokensToFetchBalancesOf = [process.env.REACT_APP_SILVER_ERC721, process.env.REACT_APP_GOLD_ERC721, process.env.REACT_APP_REF_POINTS_TRACKER];
+        const tokensToFetchBalancesOf = [
+          process.env.REACT_APP_SILVER_ERC721,
+            process.env.REACT_APP_GOLD_ERC721,
+            process.env.REACT_APP_REF_POINTS_TRACKER,
+            process.env.REACT_APP_GEM_ERC721,
+          process.env.REACT_APP_PLOT_ERC721,
+        ];
         //do not change .methods.balancesOf to just .balancesOf when switching to assist.js
         const balances = await this.balanceContract.methods.balancesOf(tokensToFetchBalancesOf, userId).call();
         return {
             silver: balances[0],
             gold: balances[1],
-            points: balances[2]
+            points: balances[2],
+            gems: balances[3],
+            plots: balances[4]
         }
-    }
+    };
 
     ifReferrerIsValid = async (referrer, referred) => {
         if (!(referrer && referred))  {
@@ -34,17 +42,17 @@ export default class SilverGoldService {
         return await this.refPointsTrackerContract.methods
           .isValid(referrer, referred)
           .call();
-    }
+    };
 
     getBoxesAvailable = async () => {
         return await this.saleContract.methods
           .boxesAvailableArray()
           .call();
-    }
+    };
 
     getSaleState = async () => {
         return await this.saleContract.methods.getState().call();
-    }
+    };
 
     getBoxesPricesArray = async () => {
         return await Promise.all([0,1,2].map(async (boxTypeNumber) =>
@@ -52,12 +60,12 @@ export default class SilverGoldService {
               .getBoxPrice(boxTypeNumber)
               .call(), 'ether'))
         ))
-    }
+    };
 
     useCoupon = (couponCode) => {
         return this.saleContract.methods.useCoupon(couponCode)
           .send();
-    }
+    };
 
     buyGeode = (type, amount, priceInEth, priceInPoints, referrer) => {
 
@@ -91,7 +99,7 @@ export default class SilverGoldService {
                   });
             }
         }
-    }
+    };
 
     getReferralId = (locationSearch) => {
         let params = queryString.parse(locationSearch);

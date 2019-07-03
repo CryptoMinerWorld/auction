@@ -8,17 +8,17 @@ import {CANT_MINE, MINED, MINING, STUCK} from "../plotConstants";
 const setMiningFilters = {
     plotFilterOptions: [MINING],
     tierFilterOptions: ["dirt_filter", "clay_filter", "limestone_filter", "marble_filter", "obsidian_filter"],
-}
+};
 
 const setStuckFilters = {
     plotFilterOptions: [STUCK],
     tierFilterOptions: ["dirt_filter", "clay_filter", "limestone_filter", "marble_filter"],
-}
+};
 
 const setFinishedFilters = {
     plotFilterOptions: [STUCK],
     tierFilterOptions: ["obsidian_filter"],
-}
+};
 
 export class GemsPopup extends Component {
 
@@ -96,7 +96,7 @@ export class GemsPopup extends Component {
                   <PlotsInfo>
                       <Col flex={1}>
                           <ShowButton content={"Go to Gem Workshop"} edgeSizes={[3, 20]} onClick={goToGemWorkshop}/>
-                          <a href={"/market"}><ShowButton content={"Go to Gem Market"} edgeSizes={[3, 20]}/></a>
+                          <a href={"/market"}><ShowButton content={"Go to Market"} edgeSizes={[3, 20]}/></a>
                       </Col>
                   </PlotsInfo>
               </Col>
@@ -153,7 +153,7 @@ const ShowButton = ({content, ...props}) => {
                           content={content}
                           {...props}/>
       </div>)
-}
+};
 
 const PopupContainer = styled.div`
             @media (max-width: 600px) {
