@@ -51,6 +51,10 @@ const GemFiltersFlexWrapper = styled.div`
         float: left;
         overflow-x: scroll;
     }
+    
+    @media(min-width: 1520px) {
+        font-size: .8vw;
+      }
 `;
 
 const GradesTypesLevelsContainer = styled.div`
@@ -80,6 +84,10 @@ const GradeAndLevelBox = styled.div`
     @media(max-width: 599px) {
         font-size: 16px;
         margin: 2px 1px; 
+    }
+    
+    @media(min-width: 1520px) {
+        font-size: .8vw;
     }
 
     font-size: 20px;
@@ -111,9 +119,13 @@ const StateBox = styled.div`
         font-size: 12px;
     }
     
+    @media(min-width: 1520px) {
+        font-size: .8vw;
+    }
+    
     min-width:210px;
     align-items: center;
-    align-contents: center;
+    align-contents: center;   
     font-size: 16px;
     flex: 1;
     min-width: 70px; 
@@ -325,6 +337,10 @@ const GemStatesContainer = styled.div`
         width: 175px;
         margin: 0 10px;
     }
+    
+    @media(min-width: 1520px) {
+        font-size: .8vw;
+    }
 `;
 
 const GradesTypesLevels = ({unselectedFilters, toggleFilter}) => (
@@ -400,6 +416,10 @@ const SortOptionsContainer = styled.div`
         width: 215px;
         font-size: 14px;
         margin: 0 10px;
+      }
+      
+      @media(min-width: 1520px) {
+        font-size: .8vw;
       }
 `;
 
