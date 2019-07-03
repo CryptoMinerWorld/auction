@@ -24,6 +24,20 @@ export const levelPaneColors = (level) => ({
     5: "#492106",
 }[level]);
 
+export const statePaneColors = (state) => ({
+    "idle" : "#204F3E",
+    "mining": "#004056",
+    "auction": "#443807",
+    "stuck": "#700E23"
+}[state]);
+
+export const stateOutlineColors = (state) => ({
+    "idle" : "#79D7B9",
+    "mining": "#98C7FF",
+    "auction": "#F0D978",
+    "stuck": "#EF6E7E"
+}[state]);
+
 export const typePaneColors = (typeColor) => ({
     1: '#EF2318',
     2: '#8312DB',

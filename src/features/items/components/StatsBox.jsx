@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Gembox from './Gembox';
 import {  } from '../../market/helpers';
+import ViewerGembox from "./ViewerGembox";
 
 const TopHighLight = styled.div`
   background: linear-gradient(to right, #e36d2d, #b91a78);
@@ -49,17 +50,8 @@ class StatsBox extends PureComponent {
       >
         <TopHighLight style={tophighlight} />
         <div className="white pa3">
-          <h1 className="tc pb3 b white" style={{ wordBreak: 'break-all' }} data-testid="gemName">
-            {gem.name}
-          </h1>
-
-          <div className="mv3" />
-          <Gembox
-            gem={gem}
-            role={role}
-          />
-
-          {lastSoldFor ? (
+            <ViewerGembox gem={gem}/>
+            {lastSoldFor ? (
             <div className="pa3 pt4 mt3 tc" style={gradientAndShape}>
               <small className="white ttu ">Last Sold For</small>
               <p className="basic" style={{ fontSize: 'xx-large' }}>
