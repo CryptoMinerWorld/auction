@@ -38,7 +38,7 @@ class StatsBox extends PureComponent {
     } = this.props;
 
     return (
-      <OverlapOnDesktopView
+      <div
         className="bg-dark-gray measure-l w-100 shadow-3"
         style={{
           WebkitClipPath:
@@ -70,7 +70,7 @@ class StatsBox extends PureComponent {
             </div>
           ) : null}
         </div>
-      </OverlapOnDesktopView>
+      </div>
     );
   }
 }

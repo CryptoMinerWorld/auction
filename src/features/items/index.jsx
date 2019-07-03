@@ -25,6 +25,8 @@ import {getAvailableGold, getAvailableSilver} from "../dashboard/helpers";
 import {getUserBalance} from "../sale/saleActions";
 import {setItemEventListeners} from "./itemEventListener";
 import {formatRestingEnergy} from "../../app/services/GemService";
+import ExtraGemInfo from "./components/ExtraGemInfo";
+import styled from "styled-components";
 
 const select = store => {
     console.warn('GEM PAGE STORE: ', store);
@@ -80,7 +82,8 @@ class Auction extends PureComponent {
                 gemService,
                 gemChangedCallback: handleGetGemData,
                 tokenId: match.params.gemId,
-                transactionResolved: () => {}
+                transactionResolved: () => {
+                }
             });
             this.setState({eventSubscriptions});
             if (pendingTransactions) {
@@ -116,7 +119,8 @@ class Auction extends PureComponent {
                 gemService,
                 gemChangedCallback: handleGetGemData,
                 tokenId: match.params.gemId,
-                transactionResolved: () => {}
+                transactionResolved: () => {
+                }
             });
             this.setState({eventSubscriptions});
         }
@@ -205,18 +209,24 @@ class Auction extends PureComponent {
                                   transitionEnterTimeout={5000}
                                   transitionLeaveTimeout={5000}
                                 >
-                                    <DisplayBoxStateMachine
-                                      gem={gem}
-                                      handleBuyNow={buyNow}
-                                      showConfirm={showConfirm}
-                                      provider={provider}
-                                      currentAccount={currentAccount}
-                                      userImage={details.userImage}
-                                      lastSoldFor={details && details.lastSoldFor && details.lastSoldFor}
-                                      goldAvailable={goldAvailable}
-                                      silverAvailable={silverAvailable}
-                                    />
-                                    <ExtraGemInfo/>
+                                    <OverlapBoxOnDesktopView>
+                                        <DisplayBoxStateMachine
+                                          gem={gem}
+                                          handleBuyNow={buyNow}
+                                          showConfirm={showConfirm}
+                                          provider={provider}
+                                          currentAccount={currentAccount}
+                                          userImage={details.userImage}
+                                          lastSoldFor={details && details.lastSoldFor && details.lastSoldFor}
+                                          goldAvailable={goldAvailable}
+                                          silverAvailable={silverAvailable}
+                                        />
+                                        <ExtraGemInfo
+                                          creationTime={"0-0-0"}
+                                          totalBlocksProcessed={[0, 0, 0, 0, 0]}
+                                          totalItemsMinedUp={0}
+                                          totalTimeMined={"0-0-0"}/>
+                                    </OverlapBoxOnDesktopView>
                                 </ReactCSSTransitionGroup>
                               )}
                           </div>
@@ -369,3 +379,12 @@ const DisplayBoxStateMachine = (props) => {
         viewer: <StatsBox {...props} role={"viewer"}/>,
     }[state];
 };
+
+const OverlapBoxOnDesktopView = styled.div`
+  @media (min-width: 64em) {
+    position: absolute;
+    top: 2em;
+    left: 5em;
+    z-index: 2;
+  }
+`;

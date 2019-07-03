@@ -65,7 +65,7 @@ const AuctionBox = ({
 }) => {
   const [loading, setLoading] = useState(false);
   return (
-    <OverlapOnDesktopView
+    <div
       className="bg-dark-gray measure-l w-100 shadow-3"
       style={{
         WebkitClipPath:
@@ -117,7 +117,7 @@ const AuctionBox = ({
         </div>
         <ProgressMeter currentPrice={gem.currentPrice} minPrice={gem.minPrice} maxPrice={gem.maxPrice} />
       </div>
-    </OverlapOnDesktopView>
+    </div>
   );
 };
 

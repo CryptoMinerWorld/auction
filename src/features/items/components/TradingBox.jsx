@@ -16,6 +16,8 @@ import button from '../../../app/images/pinkBuyNowButton.png';
 import UpgradeComponent from "./UpgradeComponent";
 import {getUserPlots, processBlocks, releaseGem} from "../../plots/plotActions";
 import {AUCTION_END, AUCTION_START} from "../itemConstants";
+import ExtraGemInfo from "./ExtraGemInfo";
+import OwnerGembox from "./OwnerGembox";
 
 const ColourButton = styled.button`
   background-image: url(${button});
@@ -42,15 +44,6 @@ const tophighlight = {
     background: 'linear-gradient(to right, #e36d2d, #b91a78)',
     height: '4px',
 };
-
-const OverlapOnDesktopView = styled.div`
-  @media (min-width: 64em) {
-    position: absolute;
-    top: 2em;
-    left: 5em;
-    z-index: 2;
-  }
-`;
 
 const fixedOverlayStyle = {
     position: 'fixed',
@@ -172,7 +165,7 @@ class TradingBox extends PureComponent {
                     </div>
                 </div>
               )}
-              <OverlapOnDesktopView
+              <div
                 className="bg-dark-gray measure-l w-100 shadow-3"
                 style={{
                     WebkitClipPath:
@@ -184,11 +177,7 @@ class TradingBox extends PureComponent {
                   <TopHighLight style={tophighlight}/>
                   <div className="white pa3">
                       <div className="flex col jcc ">
-                          <h1 className="tc pb3 b white" style={{wordBreak: 'break-all'}} data-testid="gemName">
-                              {gem.name}
-                          </h1>
-                          <div className="mt3"/>
-                          <Gembox
+                          <OwnerGembox
                             gem={gem}
                             role={role}
                             handleUseMetals={(metalName) => {
@@ -316,7 +305,7 @@ class TradingBox extends PureComponent {
                           )}
                       </div>
                   </div>
-              </OverlapOnDesktopView>
+              </div>
           </>
         );
     }
