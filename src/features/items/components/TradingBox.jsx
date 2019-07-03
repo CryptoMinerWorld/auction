@@ -67,14 +67,14 @@ const fixedOverlayStyle = {
     display: 'flex',
     cursor: 'pointer',
     backgroundColor: 'rgba(0,0,0,0.5)'
-}
+};
 
 const select = store => ({
     userPlots: store.plots.userPlots,
     gemMiningIds: store.plots.gemMiningIds,
     plotService: store.app.plotServiceInstance,
     userBalance: store.sale.balance
-})
+});
 
 
 class TradingBox extends PureComponent {
@@ -103,13 +103,16 @@ class TradingBox extends PureComponent {
     componentDidMount() {
         if (this.props.plotService) {
             console.log('GET USER PLOTS:');
+            //todo: remove this
+            console.log("EFFECTIVE RESTING ENERGY OF:", this.props.plotService.getEffectiveRestingEnergyOf(this.props.gem.id));
             this.props.handleGetUserPlots(this.props.currentAccount);
         }
     }
 
     componentDidUpdate(prevProps) {
-        console.log('PROPS:', this.props);
         if (this.props.plotService && (this.props.plotService !== prevProps.plotService) || (this.props.gem.state !== prevProps.gem.state)) {
+            //todo: remove this
+            console.log("EFFECTIVE RESTING ENERGY OF:", this.props.plotService.getEffectiveRestingEnergyOf(this.props.gem.id));
             this.props.role === 'owner' && this.props.handleGetUserPlots(this.props.currentAccount);
         }
     }
