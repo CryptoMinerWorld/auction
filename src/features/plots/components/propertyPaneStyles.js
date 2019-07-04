@@ -25,17 +25,21 @@ export const levelPaneColors = (level) => ({
 }[level]);
 
 export const statePaneColors = (state) => ({
-    "idle" : "#204F3E",
-    "mining": "#004056",
-    "auction": "#443807",
-    "stuck": "#700E23"
+    "Idle" : "#204F3E",
+    "Getting ready" : "#204F3E",
+    "Mining": "#004056",
+    "Going home": "#004056",
+    "In Auction": "#443807",
+    "Stuck": "#700E23"
 }[state]);
 
 export const stateOutlineColors = (state) => ({
-    "idle" : "#79D7B9",
-    "mining": "#98C7FF",
-    "auction": "#F0D978",
-    "stuck": "#EF6E7E"
+    "Idle" : "#79D7B9",
+    "Getting ready": "#79D7B9",
+    "Mining": "#98C7FF",
+    "Going home": "#98C7FF",
+    "In Auction": "#F0D978",
+    "Stuck": "#EF6E7E"
 }[state]);
 
 export const typePaneColors = (typeColor) => ({

@@ -93,22 +93,22 @@ class TradingBox extends PureComponent {
     turnLoaderOff = () => this.setState({formSubmitted: false});
 
 
-    componentDidMount() {
-        if (this.props.plotService) {
-            console.log('GET USER PLOTS:');
-            //todo: remove this
-            console.log("EFFECTIVE RESTING ENERGY OF:", this.props.plotService.getEffectiveRestingEnergyOf(this.props.gem.id));
-            this.props.handleGetUserPlots(this.props.currentAccount);
-        }
-    }
-
-    componentDidUpdate(prevProps) {
-        if (this.props.plotService && (this.props.plotService !== prevProps.plotService) || (this.props.gem.state !== prevProps.gem.state)) {
-            //todo: remove this
-            console.log("EFFECTIVE RESTING ENERGY OF:", this.props.plotService.getEffectiveRestingEnergyOf(this.props.gem.id));
-            this.props.role === 'owner' && this.props.handleGetUserPlots(this.props.currentAccount);
-        }
-    }
+    // componentDidMount() {
+    //     if (this.props.plotService) {
+    //         console.log('GET USER PLOTS:');
+    //         //todo: remove this
+    //         console.log("EFFECTIVE RESTING ENERGY OF:", this.props.plotService.getEffectiveRestingEnergyOf(this.props.gem.id));
+    //         this.props.handleGetUserPlots(this.props.currentAccount);
+    //     }
+    // }
+    //
+    // componentDidUpdate(prevProps) {
+    //     if (this.props.plotService && (this.props.plotService !== prevProps.plotService) || (this.props.gem.state !== prevProps.gem.state)) {
+    //         //todo: remove this
+    //         console.log("EFFECTIVE RESTING ENERGY OF:", this.props.plotService.getEffectiveRestingEnergyOf(this.props.gem.id));
+    //         this.props.role === 'owner' && this.props.handleGetUserPlots(this.props.currentAccount);
+    //     }
+    // }
 
     render() {
         const {
@@ -127,16 +127,10 @@ class TradingBox extends PureComponent {
             duration, startPrice, endPrice, formSubmitted, showUpgrade, useMetal
         } = this.state;
 
-
         console.log("GEM TX TYPE:", gem.txType);
 
-        let gemMines, plotMined;
-        if (this.props.gemMiningIds && this.props.userPlots && this.props.gemMiningIds.includes(this.props.gem.id)) {
-            gemMines = true;
-            plotMined = this.props.userPlots.find(plot => plot && plot.gemMinesId === this.props.gem.id);
-            if (plotMined) plotMined.gemMines = gem;
-        }
-        const unprocessed = gemMines && plotMined && (plotMined.processedBlocks < plotMined.currentPercentage);
+        //let gemMines, plotMined;
+        const unprocessed = gem.plotMined && (gem.plotMined.processedBlocks < gem.plotMined.currentPercentage);
         console.log("UNprocessed:", unprocessed);
         return (
           <>

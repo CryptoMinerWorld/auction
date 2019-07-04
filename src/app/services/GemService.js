@@ -1,5 +1,7 @@
 import {BigNumber} from 'bignumber.js';
 import {db, storage} from '../../app/utils/firebase';
+import {GETTING_READY, GOING_HOME, IDLE, IN_AUCTION, MINING} from "../../features/items/itemConstants";
+import {BINDING_GEM, STUCK, UNBINDING_GEM} from "../../features/plots/plotConstants";
 
 export default class GemService {
 
@@ -177,6 +179,22 @@ export default class GemService {
     }
 }
 
+export const resolveGemStateName = (gem) => {
+    if (gem.auctionIsLive) return IN_AUCTION;
+    if (gem.txType) {
+        if (gem.txType === BINDING_GEM) return GETTING_READY;
+        if (gem.txType === UNBINDING_GEM) return GOING_HOME;
+    }
+    if (gem.plotBound && Number(gem.state) !== 0) {
+        const blocksLeft = gem.plotBound.layerEndPercentages[gem.level - 1] - gem.plotBound.currentPercentage;
+        if (blocksLeft === 0) {
+            return STUCK;
+        } else {
+            return MINING;
+        }
+    }
+    return IDLE;
+};
 
 export const unpackGemProperties = (properties) => {
     const color = properties.dividedToIntegerBy(0x10000000000).toNumber();

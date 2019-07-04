@@ -29,53 +29,92 @@ export default class PlotService {
         return await this.minerContract.methods.restingEnergyOf(gemId).call();
     };
 
+    unpackPlot = ([high256, low256]) => {
+        const plotTiers = unpackPlotProperties(high256
+          .dividedToIntegerBy(new BigNumber(2).pow(192))
+          .modulo(new BigNumber(2).pow(64)));
+        const plotState = high256.dividedToIntegerBy(new BigNumber(2).pow(32)).modulo(new BigNumber(2).pow(8)).toNumber();
+
+        return {
+          ...plotTiers,
+            plotState
+        }
+    };
+
+    unpackPlotFromCollection = async (packedPlot) => {
+        const packed96uint = new BigNumber(packedPlot);
+        const plotId = packed96uint.modulo(new BigNumber(2).pow(24)).toNumber();
+        const plotCountryId = packed96uint.dividedToIntegerBy(new BigNumber(2).pow(16)).modulo(new BigNumber(2).pow(8)).toNumber();
+        const plotTiers = unpackPlotProperties(packed96uint
+          .dividedToIntegerBy(new BigNumber(2).pow(32))
+          .modulo(new BigNumber(2).pow(64)));
+        const plotState = packed96uint.dividedToIntegerBy(new BigNumber(2).pow(24)).modulo(new BigNumber(2).pow(8)).toNumber();
+        // console.log('PLOT STATE: ', plotState);
+        let currentEvaluatedPercentage = 0;
+        if (plotState) {
+            try {
+                currentEvaluatedPercentage = await this.minerContract.methods.evaluate(plotId).call();
+            }
+            catch (e) {
+                console.error("Could not evaluate current percentage", e);
+            }
+        }
+        plotTiers.processedBlocks = plotTiers.currentPercentage;
+        plotTiers.currentPercentage = Math.max(currentEvaluatedPercentage, plotTiers.currentPercentage);
+        return {
+            ...plotTiers,
+            id: plotId,
+            countryId: plotCountryId,
+            state: plotState,
+        }
+    };
+
     getOwnerPlots = async (ownerId) => {
         const plotsUserOwns = await this.plotContract.methods
           .getPackedCollection(ownerId).call();
         let gemMiningIds = [];
         const userPlots = await Promise.all(plotsUserOwns.map(async plot => {
-
-                const packed96uint = new BigNumber(plot);
-                const plotId = packed96uint.modulo(new BigNumber(2).pow(24)).toNumber();
-                const plotCountryId = packed96uint.dividedToIntegerBy(new BigNumber(2).pow(16)).modulo(new BigNumber(2).pow(8)).toNumber();
-                const plotTiers = unpackPlotProperties(packed96uint
-                  .dividedToIntegerBy(new BigNumber(2).pow(32))
-                  .modulo(new BigNumber(2).pow(64)));
-                const plotState = packed96uint.dividedToIntegerBy(new BigNumber(2).pow(24)).modulo(new BigNumber(2).pow(8)).toNumber();
-                // console.log('PLOT STATE: ', plotState);
-                let currentEvaluatedPercentage = 0;
-                let gemMinesId = null;
-                if (plotState) {
-                    try {
-                        gemMinesId = await this.getBoundGemId(plotId);
-                    }
-                    catch (e) {
-                        console.error("Could not get gem mines", e);
-                    }
-                    try {
-                        currentEvaluatedPercentage = await this.minerContract.methods.evaluate(plotId).call();
-                    }
-                    catch (e) {
-                        console.error("Could not evaluate current percentage", e);
-                    }
+            let gemMinesId = null;
+            const unpackedPlot = this.unpackPlotFromCollection(plot);
+            if (unpackedPlot.plotState) {
+                try {
+                    gemMinesId = await this.getBoundGemId(plotId);
                 }
-                if (gemMinesId) gemMiningIds.push(gemMinesId);
-                plotTiers.processedBlocks = plotTiers.currentPercentage;
-                plotTiers.currentPercentage = Math.max(currentEvaluatedPercentage, plotTiers.currentPercentage);
-                return {
-                    gemMinesId: gemMinesId,
-                    ...plotTiers,
-                    id: plotId,
-                    owner: ownerId,
-                    countryId: plotCountryId,
-                    state: plotState,
+                catch (e) {
+                    console.error("Could not get gem mines", e);
                 }
-
+            }
+            if (gemMinesId) gemMiningIds.push(gemMinesId);
+            unpackedPlot.owner = ownerId;
+            unpackedPlot.gemMinesId = gemMinesId;
+            return unpackedPlot
         }));
         console.log("OWNER PLOTS: ", userPlots);
         return {userPlots, gemMiningIds};
     };
 
+
+    getPlotBoundToGem = async (gemId) => {
+        const plotId = (await this.minerContract.methods.getGemBinding(gemId).call())[0];
+        if (plotId) {
+            const packedPlot = (await this.plotContract.methods.getPacked(plotId).call());
+            const unpackedPlot = await this.unpackPlot([new BigNumber(packedPlot[0]), new BigNumber(packedPlot[1])]);
+            unpackedPlot.gemMinesId = gemId;
+            unpackedPlot.countryId = new BigNumber(plotId).dividedToIntegerBy(new BigNumber(2).pow(16)).modulo(new BigNumber(2).pow(8)).toNumber();
+            let currentEvaluatedPercentage = 0;
+            if (unpackedPlot.plotState) {
+                try {
+                    currentEvaluatedPercentage = await this.minerContract.methods.evaluate(plotId).call();
+                }
+                catch (e) {
+                    console.error("Could not evaluate current percentage", e);
+                }
+            }
+            unpackedPlot.processedBlocks = unpackedPlot.currentPercentage;
+            unpackedPlot.currentPercentage = Math.max(currentEvaluatedPercentage, unpackedPlot.currentPercentage);
+            return unpackedPlot;
+        }
+    };
 
     getBoundGemId = async (plotId) => {
         return (await this.minerContract.methods.getPlotBinding(plotId).call())[0];
