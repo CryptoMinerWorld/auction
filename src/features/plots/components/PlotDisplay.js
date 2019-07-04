@@ -41,6 +41,8 @@ const select = store => {
         }
     });
 
+    console.log("PLOTS:", plots);
+
     return {
         plots: plots,
         gems: store.dashboard.userGems,
@@ -48,7 +50,7 @@ const select = store => {
         plotService: store.app.plotServiceInstance,
         currentAccount: store.auth.currentUserId,
     }
-}
+};
 
 const allTierFilterOptions = ["dirt_filter", "clay_filter", "limestone_filter", "marble_filter", "obsidian_filter"];
 const allPlotFilterOptions = [NEW_PLOT, MINING, STUCK, NO_GEM, PROCESSED];
@@ -68,7 +70,7 @@ class PlotDisplay extends Component {
         showSidebarFilters: false,
         sliderIndex: 0,
         optionalPopupData: null,
-    }
+    };
 
     componentDidMount() {
         this.setState({
@@ -80,6 +82,7 @@ class PlotDisplay extends Component {
     }
 
     componentDidUpdate(prevProps) {
+        console.log("state:", this.state);
         const {plots} = this.props;
         if (plots !== prevProps.plots) {
             console.log("NEW PLOTS GOT");
@@ -161,7 +164,7 @@ class PlotDisplay extends Component {
                         return p1.miningState === MINING ? 1 : -1;
                     }
                     return p1.currentPercentage - p2.currentPercentage;
-                }
+                };
                 break;
             case "time_left":
                 sortingFunction = (p1, p2) => p1.processedBlocks >= 100 ? -1 : p1.currentPercentage - p2.currentPercentage;
@@ -247,6 +250,7 @@ class PlotDisplay extends Component {
     }
 
     calculateAllowedPlotAction(plot) {
+        console.log("PLOT ACTION:", plot);
         switch (plot.miningState) {
             case STUCK:
                 return "upgrade";
@@ -271,18 +275,18 @@ class PlotDisplay extends Component {
             case "upgrade":
         }
         this.showSidebarPopup("plot-action-" + action)
-    }
+    };
 
     showSidebarPopup = (type, optionalData) => {
         this.setState({
             showSidebarPopup: type,
             optionalPopupData: optionalData || null
         })
-    }
+    };
 
     showSidebarFilters = () => {
         this.setState({showSidebarFilters: true})
-    }
+    };
 
     // updatePlot = (modifiedPlot) => {
     //     if (this.state.plotSelected.id === modifiedPlot.id) {
@@ -319,10 +323,10 @@ class PlotDisplay extends Component {
         //console.log("Props: ", this.props);
         const {sortOption, sortOptionDirection, tierFilterOptions, plotFilterOptions, filteredPlots, plotSelected, sliderIndex} = this.state;
         const {handleBindGem, plots, gems, handleGetUserPlots, currentAccount} = this.props;
-        const startStopButton = {}
+        const startStopButton = {};
 
         const isOwner = filteredPlots && (filteredPlots.length > 0) && filteredPlots[0].owner === currentAccount;
-        console.log("is onwer:", isOwner);
+        console.log("is onwer:", isOwner, currentAccount);
 
 
         return (
@@ -342,6 +346,7 @@ class PlotDisplay extends Component {
                   >
                       {filteredPlots.map((plot, index) => {
                             const plotAction = this.calculateAllowedPlotAction(plot);
+                            console.log("PLOT ACTION RETURNED:", plotAction);
                             return (
                               <div key={plot.id} data-index={index}>
                               <PlotBarContainer key={plot.id}
@@ -565,7 +570,7 @@ const PlotActionButton = styled.div`
 const miningStatus = {
     color: "white",
     fontSize: "18px",
-}
+};
 
 const SliderWrapper = styled.div`
             @media(min-width: 600px) {

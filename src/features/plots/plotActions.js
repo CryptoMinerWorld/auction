@@ -55,14 +55,14 @@ export const getUserPlots = ownerId => async (dispatch, getState) => {
         type: USER_PLOTS_RECEIVED,
         payload: {userPlots, gemMiningIds}
     });
-}
+};
 
 export const refreshUserPlot = plot => async (dispatch, getState) => {
     dispatch({
         type: REFRESH_USER_PLOT,
         payload: plot
     })
-}
+};
 
 export const bindGem = (plot, gem, updatePlotCallback, transactionStartCallback) => async (dispatch, getState) => {
     console.log(`BIND GEM ${gem.id} to PLOT ${plot.id}`);
@@ -80,13 +80,13 @@ export const bindGem = (plot, gem, updatePlotCallback, transactionStartCallback)
               description: `Binding gem ${gem.id} to plot ${plot.id}`,
               body: {
                   plot: plot.id,
-                  gem: gem.id,
+                  gemId: gem.id,
               }
           })(dispatch, getState);
           dispatch({
               type: REFRESH_USER_PLOT,
               payload: {id: plot.id, miningState: BINDING_GEM}
-          })
+          });
           transactionStartCallback();
           dispatch({
               type: GEM_BINDING,
@@ -116,7 +116,7 @@ export const bindGem = (plot, gem, updatePlotCallback, transactionStartCallback)
           });
           //updatePlotCallback();
       });
-}
+};
 
 export const releaseGem = (plot, updatePlotCallback, transactionStartCallback) => async (dispatch, getState) => {
     console.log(`RELEASE GEM ON PLOT ${plot.id}`);
@@ -133,13 +133,13 @@ export const releaseGem = (plot, updatePlotCallback, transactionStartCallback) =
               description: `Releasing gem ${plot.gemMines.id} from plot ${plot.id}`,
               body: {
                   plot: plot.id,
-                  gem: plot.gemMines.id,
+                  gemId: plot.gemMines.id,
               }
           })(dispatch, getState);
           dispatch({
               type: REFRESH_USER_PLOT,
               payload: {id: plot.id, miningState: UNBINDING_GEM}
-          })
+          });
           transactionStartCallback && transactionStartCallback();
           //updatePlotCallback({...plot, miningState: UNBINDING_GEM});
       })
@@ -156,7 +156,7 @@ export const releaseGem = (plot, updatePlotCallback, transactionStartCallback) =
           }
           //updatePlotCallback();
       });
-}
+};
 
 export const processPlots = (plotIds) => async (dispatch, getState) => {
     console.log("process plots ids:", plotIds);
@@ -188,7 +188,7 @@ export const processPlots = (plotIds) => async (dispatch, getState) => {
                   getUpdatedTransactionHistory()(dispatch, getState);
               }
           });
-}
+};
 
 export const processBlocks = (plot, updatePlotCallback) => async (dispatch, getState) => {
     const currentUser = getState().auth.currentUserId;
@@ -223,7 +223,7 @@ export const processBlocks = (plot, updatePlotCallback) => async (dispatch, getS
           }
           //updatePlotCallback({...plot});
       });
-}
+};
 
 export const calculateMiningStatus = (plot) => {
     // const timeLeftInHours = t => Math.floor((t % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -250,11 +250,11 @@ export const calculateMiningStatus = (plot) => {
             return MINING;
         }
     }
-}
+};
 
 export const getCountryData = async (countryId) => {
     const country = (await db.collection('countries').where('countryId', '==',
       Number(countryId)).get()).docs[0].data();
     return country;
-}
+};
 

@@ -75,10 +75,10 @@ export default class PlotService {
         let gemMiningIds = [];
         const userPlots = await Promise.all(plotsUserOwns.map(async plot => {
             let gemMinesId = null;
-            const unpackedPlot = this.unpackPlotFromCollection(plot);
+            const unpackedPlot = await this.unpackPlotFromCollection(plot);
             if (unpackedPlot.plotState) {
                 try {
-                    gemMinesId = await this.getBoundGemId(plotId);
+                    gemMinesId = await this.getBoundGemId(unpackedPlot.id);
                 }
                 catch (e) {
                     console.error("Could not get gem mines", e);
