@@ -68,6 +68,7 @@ const GradesTypesLevelsContainer = styled.div`
         clip-path: polygon(1% 0, 99% 0, 100% 10%, 100% 90%,99% 100%,1% 100%, 0 90%, 0 10%);
         -webkit-clip-path: polygon(1% 0, 99% 0, 100% 10%, 100% 90%,99% 100%,1% 100%, 0 90%, 0 10%);
         
+        
         @media(min-width: 801px and max-width: 1800px) {
             justify-content: center;
             max-width: 640px;
@@ -312,7 +313,8 @@ const GemStates = ({unselectedFilters, toggleFilter}) => (
                           edgeSizes={[10, 20]}
                           outlineWidth={2}
                           height={30}
-                          content={"In Auction"}/>
+                          content={"In Auction"}
+                          otherStyles={"white-space: nowrap;"}  />
       </StateBox>
       <StateBox onClick={() => toggleFilter("stuck", "states")}>
           <CutEdgesButton outlineColor={() => !unselectedFilters.states.includes("stuck") ? "#EF6E7E" : "black"}
