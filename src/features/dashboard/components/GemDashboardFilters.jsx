@@ -53,7 +53,7 @@ const GemFiltersFlexWrapper = styled.div`
     }
     
     @media(min-width: 1520px) {
-        font-size: .8vw;
+        font-size: .9vw;
       }
 `;
 
@@ -121,6 +121,10 @@ const StateBox = styled.div`
     
     @media(min-width: 1520px) {
         font-size: .8vw;
+    }
+    
+    @media (min-width: 801px) and (max-width: 1100px) {
+        font-size: 1.3vw;
     }
     
     min-width:210px;
