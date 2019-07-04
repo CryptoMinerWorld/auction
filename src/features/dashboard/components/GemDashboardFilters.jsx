@@ -1,15 +1,4 @@
 import React, {Component} from "react";
-import {
-    gradeConverter,
-    gradeOutlineColor,
-    gradePaneColors,
-    levelOutlineColor,
-    levelPaneColors,
-    type,
-    typePaneColors,
-    typePaneOutlineColors
-} from "./propertyPaneStyles";
-import {CutEdgesButton} from "../../../components/CutEdgesButton";
 import styled from "styled-components";
 import GemStates from "./GemDashboardFilters/GemStates"
 import SortOptions from "./GemDashboardFilters/SortOptions"
@@ -107,7 +96,6 @@ const OpenCloseMobileFiltersButton = styled.div`
         `
     }
     }
-}
 `;
 
 class GemDashboardFilters extends Component {
