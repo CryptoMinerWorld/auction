@@ -2,6 +2,15 @@ import React, {Fragment} from "react"
 import {CutEdgesButton} from "../../../../components/CutEdgesButton";
 import styled from "styled-components";
 
+const AdjustContainer = styled.div`
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: center;
+    align-items: stretch;
+    margin-right: .3vw;
+    flex: 1 1 100%;
+`;
+
 const FilterActionsContainer = styled.div`
     display: flex;
     flex-direction: column; 
@@ -22,26 +31,28 @@ const FilterActionsContainer = styled.div`
 
 const FilterActions = ({clearFilters, setDefaultFilters}) => {
     return (
-        <FilterActionsContainer>
-            <div style={{margin: "3px 3px", fontWeight: "normal"}}>
-                <CutEdgesButton outlineColor={"orange"}
-                                backgroundColor={"black"}
-                                edgeSizes={[7, 20]}
-                                outlineWidth={2}
-                                height={32}
-                                content={"Clear"}
-                                onClick={() => clearFilters()}/>
-            </div>
-            <div style={{margin: "3px 3px", fontWeight: "normal"}}>
-                <CutEdgesButton outlineColor={"aquamarine"}
-                                backgroundColor={"black"}
-                                edgeSizes={[7, 20]}
-                                outlineWidth={2}
-                                height={32}
-                                content={"Default"}
-                                onClick={() => setDefaultFilters()}/>
-            </div>
-        </FilterActionsContainer>
+        <AdjustContainer>
+            <FilterActionsContainer>
+                <div style={{margin: "3px 3px", fontWeight: "normal"}}>
+                    <CutEdgesButton outlineColor={"orange"}
+                                    backgroundColor={"black"}
+                                    edgeSizes={[7, 20]}
+                                    outlineWidth={2}
+                                    height={32}
+                                    content={"Clear"}
+                                    onClick={() => clearFilters()}/>
+                </div>
+                <div style={{margin: "3px 3px", fontWeight: "normal"}}>
+                    <CutEdgesButton outlineColor={"aquamarine"}
+                                    backgroundColor={"black"}
+                                    edgeSizes={[7, 20]}
+                                    outlineWidth={2}
+                                    height={32}
+                                    content={"Default"}
+                                    onClick={() => setDefaultFilters()}/>
+                </div>
+            </FilterActionsContainer>
+        </AdjustContainer>
     );
 };
 

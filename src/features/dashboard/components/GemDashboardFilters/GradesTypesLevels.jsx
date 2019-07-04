@@ -10,6 +10,15 @@ import {CutEdgesButton} from "../../../../components/CutEdgesButton";
 import React from "react";
 import styled from "styled-components";
 
+const AdjustContainer = styled.div`
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: space-between;
+    align-items: stretch;
+    margin-right: .3vw;
+    flex: 5 1 100%;
+`;
+
 const GradesTypesLevelsContainer = styled.div`
         align-items: center;
         display: flex;
@@ -102,6 +111,7 @@ const TypeBox = styled.div`
 
 
 const GradesTypesLevels = ({unselectedFilters, toggleFilter}) => (
+    <AdjustContainer>
     <GradesTypesLevelsContainer>
         <Grades>
             {[1, 2, 3, 4, 5, 6].map((grade) => {
@@ -155,6 +165,7 @@ const GradesTypesLevels = ({unselectedFilters, toggleFilter}) => (
             ))}
         </Levels>
     </GradesTypesLevelsContainer>
+    </AdjustContainer>
 );
 
 export default GradesTypesLevels;

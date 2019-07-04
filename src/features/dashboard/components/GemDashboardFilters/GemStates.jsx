@@ -2,12 +2,22 @@ import {CutEdgesButton} from "../../../../components/CutEdgesButton";
 import React from "react";
 import styled from "styled-components";
 
+const AdjustContainer = styled.div`
+    display: flex;
+    flex-wrap: wrap; 
+    align-items: stretch;
+    margin-right: .3vw;
+    flex: 2 1 100%;
+`;
+
 const GemStatesContainer = styled.div`
     display: flex;
     flex-wrap: wrap; 
     max-width: 200px;
     align-items: center;
     align-content: center;
+    justify-content: space-evenly;
+    
     padding: 8px;
     background-color: #24292F;
     clip-path: polygon(8% 0, 92% 0, 100% 10%, 100% 90%,92% 100%, 8% 100%, 0 90%, 0% 10%);
@@ -23,6 +33,14 @@ const GemStatesContainer = styled.div`
     }
 `;
 
+const AdjustRowContainer = styled.div`
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: space-evenly;
+    align-items: stretch;
+    flex: 0 1 auto;
+`;
+
 const StateBox = styled.div`
 
     @media(max-width: 599px) {
@@ -31,24 +49,35 @@ const StateBox = styled.div`
         font-size: 12px;
     }
     
-    @media(min-width: 1520px) {
-        font-size: .8vw;
+    @media (min-width: 600px) and (max-width: 800px){
+        margin: 1px 3px; 
+        font-size: 2vw;
+        width: 7vw;     
     }
     
     @media (min-width: 801px) and (max-width: 1100px) {
-        font-size: 1.3vw;
+        font-size: 1.7vw;
+        width: 7vw;    
+    
     }
     
-    min-width:210px;
-    align-items: center;
-    align-contents: center;   
+    @media (min-width: 1101px) and (max-width: 1519px) {
+        font-size: 1.5vw;
+        width: 10vw;    
+    }
+    
+    @media(min-width: 1520px) {
+        font-size: 23px;
+        width: 10vw;
+    }
+    
+    
     font-size: 16px;
     flex: 1;
     min-width: 70px; 
     margin: 3px 3px; 
-    font-weight: normal
+    font-weight: normal;
 `;
-
 
 const GemStates = ({unselectedFilters, toggleFilter}) => (
     <GemStatesContainer>
