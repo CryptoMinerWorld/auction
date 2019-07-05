@@ -17,6 +17,13 @@ const AdjustContainer = styled.div`
     margin-right: .3vw;
     margin-left: .3vw;
     flex: 15;
+       
+    @media(min-width: 801px) and (max-width: 1820px) {
+        order: -1;
+        min-width: 800px;
+        flex: 1;
+       
+    }
 `;
 
 const GradesTypesLevelsContainer = styled.div`
@@ -77,7 +84,7 @@ const Types = styled.div`
     margin: 0 10px
     
     @media(min-width: 801px and max-width: 1800px) {
-        order: 3;
+        flex-wrap: nowrap;
     }
     
     @media(max-width: 800px) {
@@ -112,59 +119,59 @@ const TypeBox = styled.div`
 
 const GradesTypesLevels = ({unselectedFilters, toggleFilter}) => (
     <AdjustContainer>
-    <GradesTypesLevelsContainer>
-        <Grades>
-            {[1, 2, 3, 4, 5, 6].map((grade) => {
-                    const gradeType = gradeConverter(grade);
+        <GradesTypesLevelsContainer>
+            <Grades>
+                {[1, 2, 3, 4, 5, 6].map((grade) => {
+                        const gradeType = gradeConverter(grade);
+                        return (
+                            <GradeAndLevelBox key={grade}
+                                              onClick={() => toggleFilter(gradeType, "grades")}>
+                                <CutEdgesButton
+                                    outlineColor={() => !unselectedFilters.grades.includes(gradeType) ? gradeOutlineColor : "transparent"}
+                                    backgroundColor={() => !unselectedFilters.grades.includes(gradeType) ? gradePaneColors(grade) : "black"}
+                                    fontColor={gradeOutlineColor}
+                                    edgeSizes={20}
+                                    outlineWidth={1}
+                                    height={45}
+                                    content={gradeType}/>
+                            </GradeAndLevelBox>)
+                    }
+                )}
+            </Grades>
+            <Types>
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((typeColor) => {
+                    const color = typePaneOutlineColors(typeColor);
+                    const typeName = type(typeColor);
                     return (
-                        <GradeAndLevelBox key={grade}
-                                          onClick={() => toggleFilter(gradeType, "grades")}>
+                        <TypeBox key={typeColor}
+                                 onClick={() => toggleFilter(typeName, "types")}>
                             <CutEdgesButton
-                                outlineColor={() => !unselectedFilters.grades.includes(gradeType) ? gradeOutlineColor : "transparent"}
-                                backgroundColor={() => !unselectedFilters.grades.includes(gradeType) ? gradePaneColors(grade) : "black"}
-                                fontColor={gradeOutlineColor}
+                                outlineColor={() => !unselectedFilters.types.includes(typeName) ? color : "black"}
+                                backgroundColor={() => !unselectedFilters.types.includes(typeName) ? typePaneColors(typeColor) : "black"}
+                                fontColor={color}
+                                edgeSizes={[10, 20]}
+                                outlineWidth={2}
+                                height={30}
+                                content={typeName}/>
+                        </TypeBox>)
+                })}
+            </Types>
+            <Levels>
+                {[1, 2, 3, 4, 5].map((level =>
+                        <GradeAndLevelBox key={level}
+                                          onClick={() => toggleFilter("lvl_" + level, "levels")}>
+                            <CutEdgesButton
+                                outlineColor={() => !unselectedFilters.levels.includes("lvl_" + level) ? levelOutlineColor : "transparent"}
+                                backgroundColor={() => !unselectedFilters.levels.includes("lvl_" + level) ? levelPaneColors(level) : "black"}
+                                fontColor={levelOutlineColor}
                                 edgeSizes={20}
                                 outlineWidth={1}
                                 height={45}
-                                content={gradeType}/>
-                        </GradeAndLevelBox>)
-                }
-            )}
-        </Grades>
-        <Types>
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((typeColor) => {
-                const color = typePaneOutlineColors(typeColor);
-                const typeName = type(typeColor);
-                return (
-                    <TypeBox key={typeColor}
-                             onClick={() => toggleFilter(typeName, "types")}>
-                        <CutEdgesButton
-                            outlineColor={() => !unselectedFilters.types.includes(typeName) ? color : "black"}
-                            backgroundColor={() => !unselectedFilters.types.includes(typeName) ? typePaneColors(typeColor) : "black"}
-                            fontColor={color}
-                            edgeSizes={[10, 20]}
-                            outlineWidth={2}
-                            height={30}
-                            content={typeName}/>
-                    </TypeBox>)
-            })}
-        </Types>
-        <Levels>
-            {[1, 2, 3, 4, 5].map((level =>
-                    <GradeAndLevelBox key={level}
-                                      onClick={() => toggleFilter("lvl_" + level, "levels")}>
-                        <CutEdgesButton
-                            outlineColor={() => !unselectedFilters.levels.includes("lvl_" + level) ? levelOutlineColor : "transparent"}
-                            backgroundColor={() => !unselectedFilters.levels.includes("lvl_" + level) ? levelPaneColors(level) : "black"}
-                            fontColor={levelOutlineColor}
-                            edgeSizes={20}
-                            outlineWidth={1}
-                            height={45}
-                            content={level}/>
-                    </GradeAndLevelBox>
-            ))}
-        </Levels>
-    </GradesTypesLevelsContainer>
+                                content={level}/>
+                        </GradeAndLevelBox>
+                ))}
+            </Levels>
+        </GradesTypesLevelsContainer>
     </AdjustContainer>
 );
 
