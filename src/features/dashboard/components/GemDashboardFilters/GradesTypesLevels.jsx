@@ -115,7 +115,7 @@ const GradeAndLevelBox = styled.div`
     }
     
     @media(min-width: 1520px) {
-        font-size: .8vw;
+        font-size: 1.2rem;
     }
 
     font-size: 20px;
