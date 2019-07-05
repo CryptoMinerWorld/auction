@@ -51,6 +51,7 @@ const GemFiltersFlexWrapper = styled.div`
        
     @media(min-width: 801px) and (max-width: 1820px) {
         flex-wrap: wrap-reverse;
+        justify-content: space-evenly;
     }
 `;
 

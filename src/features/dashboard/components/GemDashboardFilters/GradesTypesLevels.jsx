@@ -19,7 +19,7 @@ const AdjustContainer = styled.div`
     flex: 15;
        
     @media(min-width: 801px) and (max-width: 1820px) {
-        min-width: 800px;
+        min-width: 780px;
         flex: 15;
     }
     
@@ -79,7 +79,7 @@ const Types = styled.div`
     }
     
     @media(min-width: 801px) and (max-width: 1495px) {
-        flex: 0 100%;
+        flex: 0 90%;
     }
 `;
 
@@ -91,7 +91,7 @@ const TypeBox = styled.div`
     }
     
     @media(min-width: 801px) and (max-width: 1820px) {
-        min-width: 50px;
+        min-width: 45px;
         
     }
    

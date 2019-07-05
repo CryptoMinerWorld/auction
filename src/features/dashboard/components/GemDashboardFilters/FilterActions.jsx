@@ -7,7 +7,7 @@ const AdjustContainer = styled.div`
     margin-left: .3vw;
     flex: 1 3;
     @media(min-width: 801px) and (max-width: 1494px) {
-        flex: 1
+        flex: 0
     }
 `;
 
