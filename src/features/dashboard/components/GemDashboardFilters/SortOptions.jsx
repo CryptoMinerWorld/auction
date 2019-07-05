@@ -30,16 +30,7 @@ const SortOptionsContainer = styled.div`
       clip-path: polygon(5% 0, 95% 0, 100% 10%, 100% 90%,95% 100%, 5% 100%, 0 90%, 0% 10%);
       -webkit-clip-path: polygon(5% 0, 95% 0, 100% 10%, 100% 90%,95% 100%, 5% 100%, 0 90%, 0% 10%);
       font-size: 16px;
-      
-      @media(max-width: 800px) {
-        
-        font-size: 14px;
-        margin: 0 10px;
-      }
-      
-      @media(min-width: 1520px) {
-        font-size: .8vw;
-      }
+     
       
       width: 100%;
 `;
@@ -54,20 +45,18 @@ const SortOption = styled.div`
       -ms-flex-direction: column;
       flex-direction: column;
       grid-auto-flow: row;
-      flex: "2 1 150px";
-        margin: "0px 2px"; 
-        min-width: "100px"
       
-      @media(max-width: 800px) {
-        
-        font-size: 14px;
-      }
+    @media (min-width: 801px) and (max-width: 1499px) {
+        font-size: 0.8em;
+        width: 5em;    
+    }
+   
+    
+    @media (min-width: 1500px) {
+        font-size: 1em;
+        width: 6em;    
+    }
       
-      @media(min-width: 1520px) {
-        font-size: .8vw;
-      }
-      
-      width: 100%;
 `;
 
 const SortArrow = styled.div`
@@ -81,8 +70,8 @@ const SortArrow = styled.div`
       flex-direction: column;
       grid-auto-flow: row;
       
-        margin: "0px 2px"; 
-        min-width: "32px"
+        margin: 0px 2px; 
+        width: 4em;
       
       @media(max-width: 800px) {
         
@@ -91,9 +80,10 @@ const SortArrow = styled.div`
       
       @media(min-width: 1520px) {
         font-size: .8vw;
+        
       }
       
-      width: 100%;
+      
 `;
 
 const SortOptions = ({selectedSort, toggleSort}) => {
