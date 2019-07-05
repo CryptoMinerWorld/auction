@@ -38,7 +38,7 @@ const GradesTypesLevelsContainer = styled.div`
         -webkit-clip-path: polygon(1% 0, 99% 0, 100% 10%, 100% 90%,99% 100%,1% 100%, 0 90%, 0 10%);
         width: 100%;
         
-        @media(min-width: 801px and max-width: 1800px) {
+        @media(min-width: 801px) and (max-width: 1800px) {
             justify-content: center;
         }
         
@@ -52,7 +52,7 @@ const Grades = styled.div`
     display: flex;
     order: 3;
    
-    @media(min-width: 801px and max-width: 1800px) {
+    @media(min-width: 801px) and (max-width: 1800px) {
         order: 2;
     }
 `;
@@ -65,7 +65,7 @@ const Types = styled.div`
     flex-wrap: wrap;
     margin: 0 10px
     
-    @media(min-width: 801px and max-width: 1800px) {
+    @media(min-width: 801px) and (max-width: 1800px) {
         flex-wrap: nowrap;
     }
     
@@ -93,7 +93,7 @@ const Levels = styled.div`
     display: flex;
     order: 1;
     
-    @media(min-width: 801px and max-width: 1800px) {
+    @media(min-width: 801px) and (max-width: 1800px) {
         order: 1;
     }
 `;
