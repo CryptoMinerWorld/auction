@@ -67,6 +67,7 @@ const Types = styled.div`
     
     @media(min-width: 801px) and (max-width: 1800px) {
         flex-wrap: nowrap;
+        max-width: 800px;
     }
     
     @media(max-width: 800px) {
@@ -79,6 +80,11 @@ const TypeBox = styled.div`
         margin: 1px 3px;
         min-width: 50px;
         font-size: 12px;
+    }
+    
+    @media(min-width: 801px) and (max-width: 1800px) {
+        min-width: 50px;
+        
     }
    
     font-size: 16px;
