@@ -22,9 +22,9 @@ const SortOptionsContainer = styled.div`
       display: flex;
       font-weight: normal;
       border-radius: 5px;
+      justify-content: center;
       
       
-      align-items: center;
       padding: 8px;
       background-color: #24292F;
       clip-path: polygon(5% 0, 95% 0, 100% 10%, 100% 90%,95% 100%, 5% 100%, 0 90%, 0% 10%);
