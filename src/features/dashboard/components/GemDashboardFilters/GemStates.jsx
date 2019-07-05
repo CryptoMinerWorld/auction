@@ -39,39 +39,22 @@ const AdjustRowContainer = styled.div`
 `;
 
 const StateBox = styled.div`
-
-    @media(max-width: 599px) {
-        margin: 1px 3px;
-        min-width: 50px;
-        font-size: 12px;
+    
+    @media (min-width: 801px) and (max-width: 1499px) {
+        font-size: 0.8em;
+        width: 12em;    
+    }
+   
+    
+    @media (min-width: 1500px) {
+        font-size: 1em;
+        width: 6em;    
     }
     
-    @media (min-width: 600px) and (max-width: 800px){
-        margin: 1px 3px; 
-        font-size: 2vw;
-        width: 7em;     
-    }
-    
-    @media (min-width: 801px) and (max-width: 1100px) {
-        font-size: 1.7vw;
-        width: 7em;    
-    
-    }
-    
-    @media (min-width: 1101px) and (max-width: 1519px) {
-        font-size: 1.5vw;
-        width: 10em;    
-    }
-    
-    @media(min-width: 1520px) {
-        font-size: 23px;
-        width: 10em;
-    }
+  
     
     
-    font-size: 16px;
     flex: 1;
-    min-width: 70px; 
     margin: 3px 3px; 
     font-weight: normal;
 `;
