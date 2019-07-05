@@ -45,17 +45,18 @@ const SortOption = styled.div`
       -ms-flex-direction: column;
       flex-direction: column;
       grid-auto-flow: row;
-      
-    @media (min-width: 801px) and (max-width: 1499px) {
+      align-self: center;
+          
+      @media (min-width: 801px) and (max-width: 1499px) {
         font-size: 0.8em;
         width: 5em;    
-    }
-   
-    
-    @media (min-width: 1500px) {
+      }
+       
+        
+      @media (min-width: 1500px) {
         font-size: 1em;
         width: 6em;    
-    }
+      }
       
 `;
 
@@ -69,6 +70,7 @@ const SortArrow = styled.div`
       -ms-flex-direction: column;
       flex-direction: column;
       grid-auto-flow: row;
+      align-self: center;
       
         margin: 0px 2px; 
         width: 4em;
