@@ -220,6 +220,7 @@ class Auction extends PureComponent {
             error,
             match,
             gem,
+          dataLoaded
         } = this.props;
 
         const {goldAvailable, silverAvailable, ownerData} = this.state;
@@ -266,6 +267,7 @@ class Auction extends PureComponent {
                                           lastSoldFor={details && details.lastSoldFor && details.lastSoldFor}
                                           goldAvailable={goldAvailable}
                                           silverAvailable={silverAvailable}
+                                          dataLoaded={dataLoaded}
                                         />
                                         <ExtraGemInfo
                                           creationTime={"0-0-0"}

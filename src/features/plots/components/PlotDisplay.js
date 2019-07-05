@@ -23,7 +23,7 @@ import {
     UNBINDING_GEM
 } from "./../plotConstants";
 import {NO_GEM, PROCESSED} from "../plotConstants";
-import {getTimeLeft, getTimeLeftMinutes} from "../../../app/services/PlotService";
+import {convertMinutesToTimeString, getTimeLeft, getTimeLeftMinutes} from "../../../app/services/PlotService";
 
 // import "../../../app/css/slick.min.css";
 // import "../../../app/css/slick-theme.min.css";
@@ -250,7 +250,6 @@ class PlotDisplay extends Component {
     }
 
     calculateAllowedPlotAction(plot) {
-        console.log("PLOT ACTION:", plot);
         switch (plot.miningState) {
             case STUCK:
                 return "upgrade";
@@ -346,7 +345,6 @@ class PlotDisplay extends Component {
                   >
                       {filteredPlots.map((plot, index) => {
                             const plotAction = this.calculateAllowedPlotAction(plot);
-                            console.log("PLOT ACTION RETURNED:", plotAction);
                             return (
                               <div key={plot.id} data-index={index}>
                               <PlotBarContainer key={plot.id}
@@ -363,7 +361,7 @@ class PlotDisplay extends Component {
                                                 }}>
                                   <div style={miningStatus}>{plot.miningState}</div>
                                   {plot.miningState === MINING &&
-                                    <div style={miningStatus}>{getTimeLeftMinutes(plot)}</div>
+                                    <div style={miningStatus}>{convertMinutesToTimeString(getTimeLeftMinutes(plot, plot.gemMines))}</div>
                                   }
                                   {(plot.miningState === NO_GEM || plot.miningState === NEW_PLOT) &&
                                     <div style={miningStatus}>{plot.currentPercentage} Blocks</div>

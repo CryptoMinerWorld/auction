@@ -185,8 +185,8 @@ export const resolveGemStateName = (gem) => {
         if (gem.txType === BINDING_GEM) return GETTING_READY;
         if (gem.txType === UNBINDING_GEM) return GOING_HOME;
     }
-    if (gem.plotBound && Number(gem.state) !== 0) {
-        const blocksLeft = gem.plotBound.layerEndPercentages[gem.level - 1] - gem.plotBound.currentPercentage;
+    if (gem.plotMined && Number(gem.state) !== 0) {
+        const blocksLeft = gem.plotMined.layerEndPercentages[gem.level - 1] - gem.plotMined.currentPercentage;
         if (blocksLeft === 0) {
             return STUCK;
         } else {

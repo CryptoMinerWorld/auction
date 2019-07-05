@@ -76,7 +76,7 @@ export default class PlotService {
         const userPlots = await Promise.all(plotsUserOwns.map(async plot => {
             let gemMinesId = null;
             const unpackedPlot = await this.unpackPlotFromCollection(plot);
-            if (unpackedPlot.plotState) {
+            if (unpackedPlot.state) {
                 try {
                     gemMinesId = await this.getBoundGemId(unpackedPlot.id);
                 }
@@ -99,6 +99,7 @@ export default class PlotService {
         if (plotId) {
             const packedPlot = (await this.plotContract.methods.getPacked(plotId).call());
             const unpackedPlot = await this.unpackPlot([new BigNumber(packedPlot[0]), new BigNumber(packedPlot[1])]);
+            unpackedPlot.id = plotId;
             unpackedPlot.gemMinesId = gemId;
             unpackedPlot.countryId = new BigNumber(plotId).dividedToIntegerBy(new BigNumber(2).pow(16)).modulo(new BigNumber(2).pow(8)).toNumber();
             let currentEvaluatedPercentage = 0;
@@ -196,17 +197,16 @@ export const blocksToMinutes = (plot) => {
     return blocksMinutes;
 };
 
-export const getTimeLeftMinutes = (plot) => {
+export const getTimeLeftMinutes = (plot, gem) => {
     let energyLeft = 0;
     for (let tier = 0; tier < 5; tier++) {
-        if (plot.gemMines.level - 1 < tier) break;
+        if (gem.level - 1 < tier) break;
         energyLeft += blocksToEnergy(tier, Math.min(Math.max(plot.layerEndPercentages[tier] - plot.currentPercentage, 0), plot.layerPercentages[tier]));
     }
-    const minutes = 100 * energyLeft / (100 + Number(plot.gemMines.rate));
-    return convertMinutesToTimeString(minutes);
+    return 100 * energyLeft / (100 + Number(gem.rate));
 };
 
-const convertMinutesToTimeString = (minutes) => {
+export const convertMinutesToTimeString = (minutes) => {
     const minutesLeft = calculateTimeLeftInMinutes(minutes);
     const hoursLeft = calculateTimeLeftInHours(minutes);
     const daysLeft = calculateTimeLeftInDays(minutes);

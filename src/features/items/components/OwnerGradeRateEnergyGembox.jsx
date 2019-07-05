@@ -243,14 +243,15 @@ class OwnerGembox extends PureComponent {
                   <div
                     style={{
                         backgroundImage: `url(${goldButton})`,
-                        padding: '13px 10px 10px 10px',
+                        padding: '20px 0px 20px',
                         width: '200px',
-                        margin: '16px auto',
+                        margin: '9px 4px',
                         height: '80px',
                         backgroundSize: 'cover',
                         fontSize: '25px',
                         fontWeight: 'bold',
-                        color: '#5d5d5d'
+                        color: '#5d5d5d',
+                        textAlign: 'center'
                     }}>
                       MINING
                   </div>}

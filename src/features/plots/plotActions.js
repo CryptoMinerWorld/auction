@@ -130,10 +130,10 @@ export const releaseGem = (plot, updatePlotCallback, transactionStartCallback) =
               hash: hash,
               userId: currentUser,
               type: UNBINDING_GEM,
-              description: `Releasing gem ${plot.gemMines.id} from plot ${plot.id}`,
+              description: `Releasing gem ${plot.gemMinesId} from plot ${plot.id}`,
               body: {
                   plot: plot.id,
-                  gemId: plot.gemMines.id,
+                  gemId: plot.gemMinesId,
               }
           })(dispatch, getState);
           dispatch({
@@ -147,7 +147,7 @@ export const releaseGem = (plot, updatePlotCallback, transactionStartCallback) =
           console.log("RELEASE RECEIPT:", receipt);
           dispatch({
               type: GEM_BINDING,
-              payload: {gemId: plot.gemMines.id, state: 0}
+              payload: {gemId: plot.gemMinesId, state: 0}
           });
       })
       .on('error', (err) => {
