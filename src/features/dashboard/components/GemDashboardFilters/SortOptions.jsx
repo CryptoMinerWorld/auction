@@ -77,7 +77,7 @@ const SortArrow = styled.div`
       align-self: center;
       padding-left: 5px;
       margin: 0px 2px; 
-      width: 3.5em;
+      width: 30px;
       
       @media(max-width: 800px) {
         
