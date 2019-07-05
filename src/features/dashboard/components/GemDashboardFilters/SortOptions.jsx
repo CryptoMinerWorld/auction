@@ -47,7 +47,7 @@ const SortOption = styled.div`
       grid-auto-flow: row;
       align-self: center;
           
-      @media (min-width: 801px) and (max-width: 1499px) {
+      @media (max-width: 1499px) {
         font-size: 0.8em;
         width: 5em;    
       }
