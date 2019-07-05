@@ -49,10 +49,11 @@ const SortOption = styled.div`
       flex-direction: column;
       grid-auto-flow: row;
       align-self: center;
+      padding-left: 5px;
           
       @media (max-width: 1499px) {
-        font-size: 0.8em;
-        width: 12em;    
+        font-size: 16px;
+        width: 6em;    
       }
        
         
@@ -74,9 +75,9 @@ const SortArrow = styled.div`
       flex-direction: column;
       grid-auto-flow: row;
       align-self: center;
-      
-        margin: 0px 2px; 
-        width: 4em;
+      padding-left: 5px;
+      margin: 0px 2px; 
+      width: 3.5em;
       
       @media(max-width: 800px) {
         
