@@ -26,11 +26,23 @@ const FilterActionsContainer = styled.div`
     }
 `;
 
+const FilterAction = styled.div`
+    @media (min-width: 1800px) {
+        font-size: 1rem;
+        width: 100%;    
+    }
+    
+    margin: 3px 3px; 
+    font-weight: normal; 
+    width: 4.5em;
+    
+`;
+
 const FilterActions = ({clearFilters, setDefaultFilters}) => {
     return (
         <AdjustContainer>
             <FilterActionsContainer>
-                <div style={{margin: "3px 3px", fontWeight: "normal", width: "4.5em"}}>
+                <FilterAction>
                     <CutEdgesButton outlineColor={"orange"}
                                     backgroundColor={"black"}
                                     edgeSizes={[7, 20]}
@@ -38,8 +50,8 @@ const FilterActions = ({clearFilters, setDefaultFilters}) => {
                                     height={32}
                                     content={"Clear"}
                                     onClick={() => clearFilters()}/>
-                </div>
-                <div style={{margin: "3px 3px", fontWeight: "normal", width: "4.5em"}}>
+                </FilterAction>
+                <FilterAction>
                     <CutEdgesButton outlineColor={"aquamarine"}
                                     backgroundColor={"black"}
                                     edgeSizes={[7, 20]}
@@ -47,7 +59,7 @@ const FilterActions = ({clearFilters, setDefaultFilters}) => {
                                     height={32}
                                     content={"Default"}
                                     onClick={() => setDefaultFilters()}/>
-                </div>
+                </FilterAction>
             </FilterActionsContainer>
         </AdjustContainer>
     );
