@@ -23,7 +23,7 @@ const AdjustContainer = styled.div`
         flex: 15;
     }
     
-    @media(min-width: 801px) and (max-width: 1474px) {
+    @media(min-width: 801px) and (max-width: 1415px) {
         order: 4;
         margin-bottom: 2vh;
         flex: 1;
@@ -72,14 +72,11 @@ const Types = styled.div`
     @media(min-width: 801px) and (max-width: 1820px) {
         flex-wrap: nowrap;
         max-width: 800px;
+        flex: 0 800px;
     }
     
     @media(max-width: 800px) {
         max-width: 390px;
-    }
-    
-    @media(min-width: 801px) and (max-width: 1495px) {
-        flex: 0 90%;
     }
 `;
 
