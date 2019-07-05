@@ -6,6 +6,9 @@ const AdjustContainer = styled.div`
     display: flex;
     margin-right: .3vw;
     flex: 3 3;
+    @media(min-width: 801px) and (max-width: 1494px) {
+        flex: 3;
+    }
 `;
 
 const GemStatesContainer = styled.div`
