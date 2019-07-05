@@ -49,7 +49,7 @@ const SortOption = styled.div`
           
       @media (max-width: 1499px) {
         font-size: 0.8em;
-        width: 5em;    
+        width: 12em;    
       }
        
         
@@ -81,8 +81,12 @@ const SortArrow = styled.div`
       }
       
       @media(min-width: 1520px) {
-        font-size: .8vw;
-        
+        font-size: .8vw; 
+      }
+      
+      @media (max-width: 1499px) {
+        font-size: 0.8em;
+        width: 3em;    
       }
       
       
