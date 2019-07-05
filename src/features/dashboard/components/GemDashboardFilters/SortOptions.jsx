@@ -44,12 +44,63 @@ const SortOptionsContainer = styled.div`
       width: 100%;
 `;
 
+const SortOption = styled.div`
+      display: -ms-flexbox;
+      display: -webkit-box;
+      display: flex;
+      
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+      flex-direction: column;
+      grid-auto-flow: row;
+      flex: "2 1 150px";
+        margin: "0px 2px"; 
+        min-width: "100px"
+      
+      @media(max-width: 800px) {
+        
+        font-size: 14px;
+      }
+      
+      @media(min-width: 1520px) {
+        font-size: .8vw;
+      }
+      
+      width: 100%;
+`;
+
+const SortArrow = styled.div`
+      display: -ms-flexbox;
+      display: -webkit-box;
+      display: flex;
+      
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+      flex-direction: column;
+      grid-auto-flow: row;
+      
+        margin: "0px 2px"; 
+        min-width: "32px"
+      
+      @media(max-width: 800px) {
+        
+        font-size: 14px;
+      }
+      
+      @media(min-width: 1520px) {
+        font-size: .8vw;
+      }
+      
+      width: 100%;
+`;
 
 const SortOptions = ({selectedSort, toggleSort}) => {
     return (
         <AdjustContainer>
             <SortOptionsContainer>
-                <div className="flex col" style={{flex: "2 1 150px", margin: "0px 2px", minWidth: "100px"}}>
+                <SortOption>
                     <CutEdgesButton
                         outlineColor={selectedSort.sortOption === "acq" ? acquiredOutlineColor : "transparent"}
                         backgroundColor={selectedSort.sortOption === "acq" ? acquiredPaneColor : "black"}
@@ -69,8 +120,8 @@ const SortOptions = ({selectedSort, toggleSort}) => {
                                     content={"MRB"}
                                     onClick={() => toggleSort("mrb", selectedSort.sortDirection)}
                                     otherStyles={"margin: 2px 0;"}/>
-                </div>
-                <div className="flex col" style={{flex: "2 1 150px", margin: "0px 2px"}}>
+                </SortOption>
+                <SortOption >
                     <CutEdgesButton
                         outlineColor={selectedSort.sortOption === "REA" ? restingEnergyOutlineColor : "transparent"}
                         backgroundColor={selectedSort.sortOption === "REA" ? restingEnergyPaneColor : "black"}
@@ -90,8 +141,8 @@ const SortOptions = ({selectedSort, toggleSort}) => {
                                     content={"Level"}
                                     onClick={() => toggleSort("level", selectedSort.sortDirection)}
                                     otherStyles={"margin: 2px 0;"}/>
-                </div>
-                <div className="flex col" style={{margin: "1px 2px", width: "32px"}}>
+                </SortOption>
+                <SortArrow>
                     <CutEdgesButton outlineColor={() => selectedSort.sortDirection === "up" ? "#E8848E" : "transparent"}
                                     backgroundColor={() => selectedSort.sortDirection === "up" ? "#542329" : "black"}
                                     fontColor={"#E8848E"}
@@ -99,7 +150,7 @@ const SortOptions = ({selectedSort, toggleSort}) => {
                                     outlineWidth={1}
                                     height={30}
                                     content={"∧"}
-                                    style={"margin: 0px 2px"}
+                                    style={"margin: 3px 2px;"}
                                     onClick={() => toggleSort(selectedSort.sortOption, "up")}/>
                     <CutEdgesButton
                         outlineColor={() => selectedSort.sortDirection === "down" ? "#E8848E" : "transparent"}
@@ -109,9 +160,9 @@ const SortOptions = ({selectedSort, toggleSort}) => {
                         outlineWidth={1}
                         height={30}
                         content={"∨"}
-                        style={"margin: 0px 2px"}
+                        style={"margin: 3px 2px;"}
                         onClick={() => toggleSort(selectedSort.sortOption, "down")}/>
-                </div>
+                </SortArrow>
             </SortOptionsContainer>
         </AdjustContainer>
     )
