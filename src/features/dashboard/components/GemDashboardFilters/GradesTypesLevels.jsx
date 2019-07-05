@@ -19,9 +19,13 @@ const AdjustContainer = styled.div`
     flex: 15;
        
     @media(min-width: 801px) and (max-width: 1820px) {
-        order: -1;
         min-width: 800px;
-        flex: 1;
+        flex: 15;
+    }
+    
+    @media(min-width: 801px) and (max-width: 1338px) {
+        order: 4;
+        margin-bottom: 2vh;
     }
 `;
 
