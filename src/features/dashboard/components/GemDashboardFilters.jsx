@@ -26,7 +26,12 @@ const GemFiltersContainer = styled.div`
 `;
 
 const GemFiltersFlexWrapper = styled.div`
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
     display: flex;
+  
     color: white;
     padding: 5px 10px 0;
     justify-content: space-between;

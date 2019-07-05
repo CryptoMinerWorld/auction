@@ -14,14 +14,13 @@ const AdjustContainer = styled.div`
     display: flex;
     flex-wrap: wrap; 
     justify-content: space-between;
-    align-items: stretch;
     margin-right: .3vw;
-    flex: 5 1 100%;
+    flex: 15;
 `;
 
 const GradesTypesLevelsContainer = styled.div`
-        align-items: center;
         display: flex;
+        align-items: center;
         flex-direction: row;
         justify-content: space-evenly;
         flex-wrap: wrap;
@@ -29,11 +28,11 @@ const GradesTypesLevelsContainer = styled.div`
         background-color: #24292F;
         clip-path: polygon(1% 0, 99% 0, 100% 10%, 100% 90%,99% 100%,1% 100%, 0 90%, 0 10%);
         -webkit-clip-path: polygon(1% 0, 99% 0, 100% 10%, 100% 90%,99% 100%,1% 100%, 0 90%, 0 10%);
-        
+        width: 100%;
         
         @media(min-width: 801px and max-width: 1800px) {
             justify-content: center;
-            max-width: 640px;
+            
         }
         
         @media(max-width: 800px) {

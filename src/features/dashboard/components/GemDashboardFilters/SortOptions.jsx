@@ -9,6 +9,15 @@ import {
 import React from "react";
 import styled from "styled-components";
 
+const AdjustContainer = styled.div`
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: center;
+    align-items: stretch;
+    margin-right: .3vw;
+    flex: 3 3;
+`;
+
 const SortOptionsContainer = styled.div`
       display: flex;
       font-weight: normal;
@@ -23,7 +32,7 @@ const SortOptionsContainer = styled.div`
       font-size: 16px;
       
       @media(max-width: 800px) {
-        width: 215px;
+        
         font-size: 14px;
         margin: 0 10px;
       }
@@ -31,15 +40,8 @@ const SortOptionsContainer = styled.div`
       @media(min-width: 1520px) {
         font-size: .8vw;
       }
-`;
-
-const AdjustContainer = styled.div`
-    display: flex;
-    flex-wrap: wrap; 
-    justify-content: center;
-    align-items: stretch;
-    margin-right: .3vw;
-    flex: 2 1 100%;
+      
+      width: 100%;
 `;
 
 

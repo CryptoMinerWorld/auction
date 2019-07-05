@@ -8,14 +8,14 @@ const AdjustContainer = styled.div`
     justify-content: center;
     align-items: stretch;
     margin-right: .3vw;
-    flex: 1 1 100%;
+    flex: 1 3;
 `;
 
 const FilterActionsContainer = styled.div`
     display: flex;
     flex-direction: column; 
     justify-content: center;
-    width: 110px;
+    width: 100%;
     padding: 8px;
     background-color: #24292F;
     clip-path: polygon(10% 0, 90% 0, 100% 10%, 100% 90%,90% 100%, 10% 100%, 0 90%, 0% 10%);
