@@ -46,9 +46,14 @@ const StateBox = styled.div`
     }
    
     
-    @media (min-width: 1500px) {
+    @media (min-width: 1500px) and (max-width: 2700px) {
         font-size: 1em;
         width: 6em;    
+    }
+    
+    @media (min-width: 2700px) {
+        font-size: 1.2rem;
+        width: 8rem;    
     }
     
   
