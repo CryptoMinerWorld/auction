@@ -20,6 +20,7 @@ import plot16 from '../../app/images/plots/16-30_Plot.png';
 import plot31 from '../../app/images/plots/31-45_Plot.png';
 import plot46 from '../../app/images/plots/46-60_Plot.png';
 import rockBackground from '../../app/images/rockBackground.png';
+import silverImage from "../../app/images/dashboard/Silver.png";
 
 const select = store => ({
     countryService: store.app.countryServiceInstance,
@@ -214,20 +215,7 @@ class PlotSale extends Component {
                         }
                     </BuyFormContainer>
                     <MapArea className="w-60-ns w-100">
-                        <PlotImages>
 
-                            <PlotImage src={plot1} visible={numberOfPlots === 1}/>
-
-                            <PlotImage src={plot2} visible={numberOfPlots >= 2 && numberOfPlots < 16}/>
-
-                            <PlotImage src={plot116} visible={numberOfPlots >= 16 && numberOfPlots < 31}/>
-
-
-                            <PlotImage src={plot131} visible={numberOfPlots >= 16 && numberOfPlots < 31}/>
-
-                            <PlotImage src={plot31} visible={numberOfPlots >= 31 && numberOfPlots < 46}/>
-                            <PlotImage src={plot46} visible={numberOfPlots >= 46}/>
-                        </PlotImages>
                         {mapIsShown &&
                         <MapContainer className="pa3">
                             {countryData && Object.keys(countryData).length > 0 ? (
