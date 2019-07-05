@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 const AdjustContainer = styled.div`
     display: flex;
-    margin-right: .3vw;
+    margin-left: .3vw;
     flex: 1 3;
 `;
 

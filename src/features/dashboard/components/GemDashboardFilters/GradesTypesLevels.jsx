@@ -15,6 +15,7 @@ const AdjustContainer = styled.div`
     flex-wrap: wrap; 
     justify-content: space-between;
     margin-right: .3vw;
+    margin-left: .3vw;
     flex: 15;
 `;
 

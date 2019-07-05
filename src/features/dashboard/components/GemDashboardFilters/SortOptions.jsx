@@ -13,8 +13,8 @@ const AdjustContainer = styled.div`
     display: flex;
     flex-wrap: wrap; 
     justify-content: center;
-    align-items: stretch;
     margin-right: .3vw;
+    margin-left: .3vw;
     flex: 3 3;
 `;
 
