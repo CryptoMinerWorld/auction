@@ -44,7 +44,7 @@ const AdjustRowContainer = styled.div`
 const StateBox = styled.div`
     
     @media (max-width: 1499px) {
-        font-size: 0.8em;
+        font-size: 16px;
         width: 12em;    
     }
    
