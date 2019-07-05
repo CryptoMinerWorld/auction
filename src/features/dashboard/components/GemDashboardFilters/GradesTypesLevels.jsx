@@ -40,7 +40,6 @@ const GradesTypesLevelsContainer = styled.div`
         
         @media(min-width: 801px and max-width: 1800px) {
             justify-content: center;
-            
         }
         
         @media(max-width: 800px) {
@@ -56,23 +55,6 @@ const Grades = styled.div`
     @media(min-width: 801px and max-width: 1800px) {
         order: 2;
     }
-`;
-
-const GradeAndLevelBox = styled.div`
-
-    @media(max-width: 599px) {
-        font-size: 16px;
-        margin: 2px 1px; 
-    }
-    
-    @media(min-width: 1520px) {
-        font-size: .8vw;
-    }
-
-    font-size: 20px;
-    width: 50px;
-    margin: 2px 2px; 
-    font-weight: normal;
 `;
 
 const Types = styled.div`
@@ -92,17 +74,7 @@ const Types = styled.div`
     }
 `;
 
-const Levels = styled.div`
-    display: flex;
-    order: 1;
-    
-    @media(min-width: 801px and max-width: 1800px) {
-        order: 1;
-    }
-`;
-
 const TypeBox = styled.div`
-    
     @media(max-width: 599px) {
         margin: 1px 3px;
         min-width: 50px;
@@ -114,6 +86,33 @@ const TypeBox = styled.div`
     min-width: 70px; 
     margin: 3px 3px; 
     font-weight: normal
+`;
+
+
+const Levels = styled.div`
+    display: flex;
+    order: 1;
+    
+    @media(min-width: 801px and max-width: 1800px) {
+        order: 1;
+    }
+`;
+
+const GradeAndLevelBox = styled.div`
+
+    @media(max-width: 599px) {
+        font-size: 16px;
+        margin: 2px 1px; 
+    }
+    
+    @media(min-width: 1520px) {
+        font-size: .8vw;
+    }
+
+    font-size: 20px;
+    width: 50px;
+    margin: 2px 2px; 
+    font-weight: normal;
 `;
 
 

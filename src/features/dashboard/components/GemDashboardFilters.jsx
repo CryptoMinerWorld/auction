@@ -46,7 +46,12 @@ const GemFiltersFlexWrapper = styled.div`
     
     @media(min-width: 1520px) {
         font-size: .9vw;
-      }
+    }
+    
+       
+    @media(min-width: 801px) and (max-width: 1820px) {
+        flex-wrap: wrap;
+    }
 `;
 
 
