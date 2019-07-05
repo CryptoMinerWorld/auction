@@ -4,9 +4,6 @@ import styled from "styled-components";
 
 const AdjustContainer = styled.div`
     display: flex;
-    flex-wrap: wrap; 
-    justify-content: center;
-    align-items: stretch;
     margin-right: .3vw;
     flex: 1 3;
 `;
@@ -33,7 +30,7 @@ const FilterActions = ({clearFilters, setDefaultFilters}) => {
     return (
         <AdjustContainer>
             <FilterActionsContainer>
-                <div style={{margin: "3px 3px", fontWeight: "normal"}}>
+                <div style={{margin: "3px 3px", fontWeight: "normal", width: "4.5em"}}>
                     <CutEdgesButton outlineColor={"orange"}
                                     backgroundColor={"black"}
                                     edgeSizes={[7, 20]}
@@ -42,7 +39,7 @@ const FilterActions = ({clearFilters, setDefaultFilters}) => {
                                     content={"Clear"}
                                     onClick={() => clearFilters()}/>
                 </div>
-                <div style={{margin: "3px 3px", fontWeight: "normal"}}>
+                <div style={{margin: "3px 3px", fontWeight: "normal", width: "4.5em"}}>
                     <CutEdgesButton outlineColor={"aquamarine"}
                                     backgroundColor={"black"}
                                     edgeSizes={[7, 20]}
