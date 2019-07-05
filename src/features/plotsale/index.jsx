@@ -22,30 +22,31 @@ const select = store => ({
     web3: store.app.web3,
 });
 
-let plot11;
-let plot12;
-let plot116;
-let plot131;
-let plot146;
+let plot1;
+let plot2;
+let plot16;
+let plot31;
+let plot46;
+
 if (window.innerWidth > 800) {
     if (window.innerWidth <= 1280) {
-        plot11 = require('../../app/images/plots/1plot_new_1280w.png')
-        plot12 = require('../../app/images/plots/2-15_new_1280w.png')
-        plot116 = require('../../app/images/plots/16-30_new_1280w.png')
-        plot131 = require('../../app/images/plots/31-45_new_1280w.png')
-        plot146 = require('../../app/images/plots/46-60_new_1280w.png')
+        plot1 = require('../../app/images/plots/1plot_new_1280w.png')
+        plot2 = require('../../app/images/plots/2-15_new_1280w.png')
+        plot16 = require('../../app/images/plots/16-30_new_1280w.png')
+        plot31 = require('../../app/images/plots/31-45_new_1280w.png')
+        plot46 = require('../../app/images/plots/46-60_new_1280w.png')
     } else if (window.innerWidth <= 1920) {
-        plot11 = require('../../app/images/plots/1plot_new_1920w.png')
-        plot12 = require('../../app/images/plots/2-15_new_1920w.png')
-        plot116 = require('../../app/images/plots/16-30_new_1920w.png')
-        plot131 = require('../../app/images/plots/31-45_new_1920w.png')
-        plot146 = require('../../app/images/plots/46-60_new_1920w.png')
+        plot1 = require('../../app/images/plots/1plot_new_1920w.png')
+        plot2 = require('../../app/images/plots/2-15_new_1920w.png')
+        plot16 = require('../../app/images/plots/16-30_new_1920w.png')
+        plot31 = require('../../app/images/plots/31-45_new_1920w.png')
+        plot46 = require('../../app/images/plots/46-60_new_1920w.png')
     } else if (window.innerWidth >= 3500) {
-        plot11 = require('../../app/images/plots/1plot_new_3500w.png')
-        plot12 = require('../../app/images/plots/2-15_new_3500w.png')
-        plot116 = require('../../app/images/plots/16-30_new_3500w.png')
-        plot131 = require('../../app/images/plots/31-45_new_3500w.png')
-        plot146 = require('../../app/images/plots/46-60_new_3500w.png')
+        plot1 = require('../../app/images/plots/1plot_new_3500w.png')
+        plot2 = require('../../app/images/plots/2-15_new_3500w.png')
+        plot16 = require('../../app/images/plots/16-30_new_3500w.png')
+        plot31 = require('../../app/images/plots/31-45_new_3500w.png')
+        plot46 = require('../../app/images/plots/46-60_new_3500w.png')
     }
 }
 
@@ -69,6 +70,7 @@ class PlotSale extends Component {
         mapIsShown: false,
         searchCountryValue: "",
         numberOfPlots: 30,
+        plotImage: plot16
     }
 
     componentDidMount() {
@@ -85,6 +87,8 @@ class PlotSale extends Component {
 
     }
 
+
+
     async componentDidUpdate(prevProps) {
         const {countryService, handleGetChestValues, web3} = this.props;
         if (!countryService) {
@@ -96,6 +100,14 @@ class PlotSale extends Component {
         if (web3 !== prevProps.web3) {
             handleGetChestValues();
         }
+    }
+
+    setBackgroundImage = (numberOfPlots) => {
+        if(numberOfPlots === 1) this.setState({plotImage : plot1})
+        else if(numberOfPlots >= 2 && numberOfPlots < 16) this.setState({plotImage: plot2})
+        else if(numberOfPlots >= 16 && numberOfPlots < 31) this.setState({plotImage: plot16})
+        else if(numberOfPlots >= 31 && numberOfPlots < 46) this.setState({plotImage: plot31})
+        else if(numberOfPlots >= 46) this.setState({plotImage: plot46})
     }
 
     rtdbListen = () => {
@@ -160,7 +172,7 @@ class PlotSale extends Component {
                 backgroundSize: 'contain',
             }}>
                 <div style={{
-                    backgroundImage: 'url(' + plot11 + ')',
+                    backgroundImage: 'url(' + this.state.plotImage + ')',
                     backgroundPosition: 'center center',
                     backgroundSize: 'contain',
                     backgroundRepeat: 'no-repeat'
@@ -194,7 +206,7 @@ class PlotSale extends Component {
                                          })
                                      }}
                                      numberOfPlots={numberOfPlots}
-                                     setNumberOfPlots={(value) => this.setState({numberOfPlots: value})}
+                                     setNumberOfPlots={(value) => {this.setBackgroundImage(value); this.setState({numberOfPlots: value})}}
                                      handleBuy={(callBack) => handleBuy(selection.countryId, numberOfPlots, selection.availablePlots ? Math.max(numberOfPlots - selection.availablePlots, 0) : numberOfPlots, null, callBack)}
                             />
                             {!mapIsShown &&
@@ -320,16 +332,6 @@ const MapContainer = styled.div`
     background-color: rgba(0, 0, 0, 0.6);
     clip-path: polygon(0% 50%, 11% 8%, 22% 0%, 78% 0%, 89% 8%, 100% 50%, 89% 92%, 78% 100%, 22% 100%, 11% 92%);
     -webkit-clip-path: polygon(0% 50%, 11% 8%, 22% 0%, 78% 0%, 89% 8%, 100% 50%, 89% 92%, 78% 100%, 22% 100%, 11% 92%);
-`;
-
-const PlotImage = styled.img`
-    position: absolute;
-    top:0;
-    opacity: ${props => props.visible ? "1" : "0"};
-`;
-
-const PlotImages = styled.div`
-    width: 100%;
 `;
 
 const BuyFormContainer = styled.div`
