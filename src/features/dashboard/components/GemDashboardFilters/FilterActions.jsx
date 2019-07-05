@@ -27,7 +27,7 @@ const FilterActionsContainer = styled.div`
 `;
 
 const FilterAction = styled.div`
-    @media (min-width: 1800px) {
+    @media (min-width: 1820px) {
         font-size: 1rem;
         width: 100%;    
     }
