@@ -44,6 +44,7 @@ const Routes = props => (
         return (<Dashboard {...props} />)}}/>
       <Route path="/gem/:gemId" render={() => <Items {...props} />}/>
       <Route path="/plots" render={() => <Map {...props} />}/>
+      <Route exact path="/plots/:countryId" render={() => <Map {...props} />}/>
   </Fragment>
 );
 
