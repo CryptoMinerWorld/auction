@@ -198,7 +198,9 @@ class Dashboard extends Component {
                 boundEventCallback: handleRefreshUserPlot,
                 issuedEventCallback: handleGetUserPlots,
                 reloadGemsCallback: handleGetUserGems,
-                changeGemCallback: () => handleGetUserGems(currentUserId),
+                changeGemCallback: () => {
+                    handleGetUserGems(currentUserId)
+                },
                 currentUserId,
             });
 
@@ -289,7 +291,9 @@ class Dashboard extends Component {
                 releasedEventCallback: handleRefreshUserPlot,
                 boundEventCallback: handleRefreshUserPlot,
                 reloadGemsCallback: handleGetUserGems,
-                changeGemCallback: () => handleGetUserGems(currentUserId),
+                changeGemCallback: () => {
+                    handleGetUserGems(currentUserId)
+                },
                 issuedEventCallback: handleGetUserPlots,
                 currentUserId
             });

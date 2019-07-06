@@ -36,7 +36,6 @@ const select = store => {
         if (!plot) return;
         if (plot.gemMinesId) {
             plot.gemMines = gems.find((gem) => gem.id.toString() === plot.gemMinesId);
-            console.log("GEMS IMAGE:" + plot.gemMines.image);
         }
         if (!plot.miningState || (plot.miningState !== BINDING_GEM && plot.miningState !== UNBINDING_GEM && plot.miningState !== PROCESSING)) {
             plot.miningState = calculateMiningStatus(plot);

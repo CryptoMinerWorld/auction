@@ -76,7 +76,6 @@ export const updateWalletId = walletId => (dispatch, getState) => {
 
     if (oldAddress !== newAddress) {
         dispatch(checkIfUserExists(walletId));
-        dispatch(getUserGems(walletId));
         dispatch(getUserDetails(walletId));
     }
 };
