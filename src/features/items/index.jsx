@@ -25,6 +25,7 @@ import {setItemEventListeners} from "./itemEventListener";
 import {formatRestingEnergy, resolveGemStateName} from "../../app/services/GemService";
 import ExtraGemInfo from "./components/ExtraGemInfo";
 import styled from "styled-components";
+import Loading from "../../components/Loading";
 
 const select = store => {
 
@@ -94,6 +95,9 @@ class Auction extends PureComponent {
                 const eventSubscriptions = setItemEventListeners({
                     gemService,
                     gemChangedCallback: handleGetGemData,
+                    auctionChangedCallback: handleGetGemAuctionData,
+                    txChangedCallback: handleGetGemTxData,
+                    miningChangedCallback: handleGetGemMiningData,
                     tokenId: match.params.gemId,
                     transactionResolved: () => {}
                 });
@@ -148,6 +152,9 @@ class Auction extends PureComponent {
             const eventSubscriptions = setItemEventListeners({
                 gemService,
                 gemChangedCallback: handleGetGemData,
+                auctionChangedCallback: handleGetGemAuctionData,
+                txChangedCallback: handleGetGemTxData,
+                miningChangedCallback: handleGetGemMiningData,
                 tokenId: match.params.gemId,
                 transactionResolved: () => {}
             });
@@ -155,14 +162,6 @@ class Auction extends PureComponent {
         }
 
         if (gemService && (gemService !== prevProps.gemService)) {
-            const eventSubscriptions = setItemEventListeners({
-                gemService,
-                gemChangedCallback: handleGetGemData,
-                tokenId: match.params.gemId,
-                transactionResolved: () => {
-                }
-            });
-            this.setState({eventSubscriptions});
             handleGetGemData(match.params.gemId);
         }
         if (auctionService && (auctionService !== prevProps.auctionService)) {
@@ -201,12 +200,12 @@ class Auction extends PureComponent {
     }
 
     componentWillUnmount() {
-        // const {match, handleClearGemPage} = this.props;
-        // if (match && match.params && match.params.gemId) {
-        //     handleClearGemPage(match.params.gemId);
-        // }
+        const {match, handleClearGemPage} = this.props;
         this.clearSubscriptions();
-        clearInterval(this.Priceinterval);
+        if (match && match.params && match.params.gemId) {
+            handleClearGemPage(match.params.gemId);
+        }
+        // clearInterval(this.Priceinterval);
     }
 
     render() {
@@ -248,7 +247,7 @@ class Auction extends PureComponent {
                       <div className="relative mw9 center">
                           {gem && <AuctionImage sourceImage={gem.image}/>}
                           <div className="ma3 ma0-ns">
-                              {gem && (
+                              {dataLoaded.gem && gem && (
                                 <ReactCSSTransitionGroup
                                   transitionName="example"
                                   transitionAppear
@@ -277,14 +276,20 @@ class Auction extends PureComponent {
                                     </OverlapBoxOnDesktopView>
                                 </ReactCSSTransitionGroup>
                               )}
+                              {!dataLoaded.gem &&
+                                <div style={{height: '300px'}}>
+                                    <Loading/>
+                                </div>
+                              }
                           </div>
                       </div>
                   </RockOverlay>
                   <div className="bg-off-black">
                       <TopHighlight/>
                       <div className="mw9 center relative-l">
-                          {gem && (
+                          {dataLoaded.gem && gem && (
                             <DescriptionBox
+                              dataLoaded={dataLoaded}
                               gem={gem}
                               ownerData={ownerData}
                               userName={details.userName}
@@ -313,6 +318,7 @@ const actions = {
     handleGetGemMiningData: getGemMiningData,
     handleGetGemTxData: getGemTransactionData,
     handleGetUserBalance: getUserBalance,
+    handleClearGemPage: clearGemPage,
     showConfirm,
     handleSetError: setError,
 

@@ -132,15 +132,17 @@ class TradingBox extends PureComponent {
         let unprocessedBlocks = [0, 0, 0, 0, 0];
         let totalUnprocessedBlocks = 0;
         let minutesGemCanMine = 0;
-        if (gem && gem.plotMined && gem.plotMined.currentPercentage !== gem.plotMined.processedBlocks) {
-            unprocessedBlocks[0] = Math.max(Math.min(gem.plotMined.currentPercentage, gem.plotMined.layerEndPercentages[0]) - Math.max(0, gem.plotMined.processedBlocks),0);
-            totalUnprocessedBlocks = unprocessedBlocks[0];
-            for (let i = 1; i < 5; i++) {
-                unprocessedBlocks[i] = Math.max(Math.min(gem.plotMined.currentPercentage, gem.plotMined.layerEndPercentages[i])
-                  - Math.max(gem.plotMined.layerEndPercentages[i - 1], gem.plotMined.processedBlocks), 0);
-                totalUnprocessedBlocks += unprocessedBlocks[i];
+        if (gem && gem.plotMined) {
+            minutesGemCanMine = getTimeLeftMinutes(gem.plotMined, gem);
+            if (gem.plotMined.currentPercentage !== gem.plotMined.processedBlocks) {
+                unprocessedBlocks[0] = Math.max(Math.min(gem.plotMined.currentPercentage, gem.plotMined.layerEndPercentages[0]) - Math.max(0, gem.plotMined.processedBlocks), 0);
+                totalUnprocessedBlocks = unprocessedBlocks[0];
+                for (let i = 1; i < 5; i++) {
+                    unprocessedBlocks[i] = Math.max(Math.min(gem.plotMined.currentPercentage, gem.plotMined.layerEndPercentages[i])
+                      - Math.max(gem.plotMined.layerEndPercentages[i - 1], gem.plotMined.processedBlocks), 0);
+                    totalUnprocessedBlocks += unprocessedBlocks[i];
+                }
             }
-            minutesGemCanMine = getTimeLeftMinutes(gem.plotMined, gem)/60;
         }
         return (
           <>

@@ -24,6 +24,7 @@ import {
 } from "./../plotConstants";
 import {NO_GEM, PROCESSED} from "../plotConstants";
 import {convertMinutesToTimeString, getTimeLeft, getTimeLeftMinutes} from "../../../app/services/PlotService";
+import {preLoadAuctionPage} from "../../market/marketActions";
 
 // import "../../../app/css/slick.min.css";
 // import "../../../app/css/slick-theme.min.css";
@@ -453,6 +454,7 @@ class PlotDisplay extends Component {
                             optionalData={this.state.optionalPopupData}
                             updatePlot={handleGetUserPlots}
                             goToGemWorkshop={this.props.goToGemWorkshop}
+                            handlePreLoadAuctionPage={this.props.handlePreLoadAuctionPage}
               />
           </div>
         );
@@ -470,7 +472,8 @@ export default compose(
     {
         handleReleaseGem: releaseGem,
         handleProcessBlocks: processBlocks,
-        handleGetUserPlots: getUserPlots
+        handleGetUserPlots: getUserPlots,
+        handlePreLoadAuctionPage: preLoadAuctionPage,
     }
   )
 )(PlotDisplay);

@@ -2,7 +2,7 @@ import {
     AUCTION_DETAILS_RECEIVED,
     AUCTION_END,
     AUCTION_START,
-    BUYING_GEM, GEM_AUCTION_DETAILS_RECEIVED, GEM_DETAILS_RECEIVED,
+    BUYING_GEM, CLEAR_GEM_PAGE, GEM_AUCTION_DETAILS_RECEIVED, GEM_DETAILS_RECEIVED,
     GEM_GIFTING,
     GEM_LEVEL_UP, GEM_MINING_DETAILS_RECEIVED, GEM_TX_DETAILS_RECEIVED,
     GEM_UPGRADE, IN_AUCTION, MINING
@@ -227,10 +227,10 @@ export const handleBuyNow = (gem, _from, history, setLoading) => (dispatch, getS
       });
 };
 
-//
-// export function clearGemPageOnExit() {
-//     return dispatch => dispatch({type: CLEAR_GEM_PAGE});
-// }
+
+export const clearGemPage = () => {
+    return dispatch => dispatch({type: CLEAR_GEM_PAGE});
+};
 
 export const giftGem = (gemId, addressTo) => (dispatch, getState) => {
     const gemsContract = getState().app.gemsContractInstance;

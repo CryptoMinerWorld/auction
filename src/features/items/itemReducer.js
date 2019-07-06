@@ -24,7 +24,16 @@ export default function auctionReducer(state = {
         return action.payload;
     }
     if (action.type === CLEAR_GEM_PAGE) {
-        return null;
+        return {
+            ...state,
+            dataLoaded: {
+                gem: false,
+                auction: false,
+                mining: false,
+                tx: false,
+            },
+            gem: {}
+        }
     }
 
     if (action.type === GEM_DETAILS_RECEIVED) {

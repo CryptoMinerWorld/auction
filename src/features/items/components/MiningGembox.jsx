@@ -1,12 +1,9 @@
 import {CutEdgesButton} from "../../../components/CutEdgesButton";
-import {levelOutlineColor, levelPaneColors} from "../../plots/components/propertyPaneStyles";
 import React, {PureComponent} from 'react';
 import styled from 'styled-components';
 import moment from 'moment-timezone';
 import momentDurationFormatSetup from 'moment-duration-format';
-import useSilverButton from '../../../app/images/sale/silverButtonWithText.png';
-import silverButton from '../../../app/images/sale/silverButtonNoText.png';
-import {GEM_LEVEL_UP} from "../itemConstants";
+import {STUCK} from "../itemConstants";
 import buyNowImage from "../../../app/images/thickAndWidePinkButton.png";
 
 momentDurationFormatSetup(moment);
@@ -15,7 +12,7 @@ class MiningGembox extends PureComponent {
 
     render() {
         const {
-            gem, unprocessedBlocks, minutesGemCanMine, handleProcessBlocks, handleReleaseGem, totalUnprocessedBlocks
+            gem, unprocessedBlocks, minutesGemCanMine, handleProcessBlocks, handleReleaseGem, totalUnprocessedBlocks, stateName
         } = this.props;
 
         return (
@@ -35,13 +32,15 @@ class MiningGembox extends PureComponent {
                           </ProcessButton>
                       </UnprocessedBlocks>
                   </UnprocessedBlocksContainer>
+                  {stateName !== STUCK &&
                   <FlexColumnContainer>
                       <SmallCaption>Time Till Gem gets Stuck</SmallCaption>
                       <TimeCanMineContainer>
                           {moment.duration(minutesGemCanMine, 'minutes')
-                        .format('w [weeks], d [days], h [hours], m [minutes]')}
+                            .format('w [weeks], d [days], h [hours], m [minutes]')}
                       </TimeCanMineContainer>
                   </FlexColumnContainer>
+                  }
                   <FlexColumnCenteredContainer>
                       <CutEdgesButton
                         outlineColor={'#F29886'}
@@ -65,26 +64,30 @@ class MiningGembox extends PureComponent {
 export default MiningGembox;
 
 const UnprocessedBlocksContainer = styled.div`
-    width: 170px;
+    flex: 3;
 `;
 
 const TimeCanMineContainer = styled.div`
-    width: 120px;
+    width: 135px;
     height: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
 `;
 
 const FlexColumnContainer = styled.div`
     display: flex;
     flex-direction: column;
+    flex: 3;
+    align-items: center;
 `;
 
 const FlexColumnCenteredContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
+    padding: 20px 5px 0;
 `;
 
 const ProcessButton = styled.div`

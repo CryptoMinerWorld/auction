@@ -114,7 +114,7 @@ class ViewerGembox extends PureComponent {
                     height={51}
                     content={gem.rate + "%"}
                     otherStyles={"width: 85px; font-weight: bold;"}/>
-                  {gem.restingEnergy && gem.restingEnergy > 0 ?
+                  {Number(gem.state) === 0 && gem.restingEnergy && gem.restingEnergy > 0 ?
                     <CutEdgesButton
                       outlineColor={energyOutlineColor}
                       backgroundColor={energyPaneColor}

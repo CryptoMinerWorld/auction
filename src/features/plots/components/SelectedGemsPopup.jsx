@@ -3,8 +3,9 @@ import styled from "styled-components";
 import actionButtonImage from "../../../app/images/noTextGemButton.png";
 import octagonImage from "../../../app/images/octagonOutline.png";
 import {CutEdgesButton} from "../../../components/CutEdgesButton";
-import {CANT_MINE, MINED, MINING, NEW_PLOT, NO_GEM, NOT_MINING, PROCESSED, STUCK} from "../plotConstants";
-import {calculateGemName, calculateGradeType} from "../../../app/services/GemService";
+import {MINED, MINING, NEW_PLOT, NO_GEM, NOT_MINING, PROCESSED, STUCK} from "../plotConstants";
+import {calculateGradeType} from "../../../app/services/GemService";
+import {Link} from "react-router-dom";
 
 
 export class SelectedGemsPopup extends Component {
@@ -34,7 +35,8 @@ export class SelectedGemsPopup extends Component {
                       {/*<div style={{color: "#8759AE"}}>MRB + Artifact: {plot.gemMines.rate.toFixed(2) + 20}% (+20)</div>*/}
                       <div style={{color: "#98C7FF"}}>Grade: {calculateGradeType(gem.gradeType)}</div>
                       <div style={{color: "#D02B35"}}>Level (Age): {gem.level /*todo kid*/}</div>
-                      {plot.miningState === STUCK && <a href={`/gem/${plot.gemMines.id}`}><ActionButton>UPGRADE GEM</ActionButton></a>}
+                      {plot.miningState === STUCK &&
+                      <a href={`/gem/${plot.gemMines.id}`}><ActionButton>UPGRADE GEM</ActionButton></a>}
                   </Col>
               </PlotsInfo>
               <div style={{display: "flex", flexWrap: "wrap"}}>
@@ -58,10 +60,16 @@ export class SelectedGemsPopup extends Component {
                   <Col flex={1}>
                       <ButtonsBlock>
                           {plot.miningState !== NOT_MINING && <ShowButton content={"Stop Mining"}
-                          onClick={() => this.props.stopMining(plot)}/>}
-                          {gem && <a style={{width: "100%"}} href={`/gem/${gem.id}`}>
+                                                                          onClick={() => this.props.stopMining(plot)}/>}
+                          {gem &&
+                          <Link
+                            style={{width: "100%"}}
+                            to={`/gem/${gem.id}`}
+                            onClick={() => this.props.handlePreLoadAuctionPage(gem)}
+                          >
                               <ShowButton content={"Go to Gem's Page"}/>
-                          </a>}
+                          </Link>
+                          }
                       </ButtonsBlock>
                   </Col>
               </div>
@@ -87,7 +95,7 @@ const ShowButton = ({content, ...props}) => {
                           content={content}
                           {...props}/>
       </div>)
-}
+};
 
 export default SelectedGemsPopup;
 
@@ -99,7 +107,7 @@ const container = {
     flexDirection: "column",
     fontSize: "14px",
     maxWidth: "500px",
-}
+};
 
 const MinedBlocks = styled.div`
             width: 100%;
@@ -284,21 +292,21 @@ const GemMiningImage = styled.img`
 
 const MiningStatus = styled.div`
             color: ${props => {
-                switch (props.miningState) {
-                    case MINING:
-                        return "blue";
-                    case NO_GEM:
-                    case NEW_PLOT:
-                        return "green";
-                    case STUCK:
-                        return "red";
-                    case MINED:
-                    case PROCESSED:
-                        return "#ca86dc";
-                    default:
-                        return "blue";
-                }
-            }};
+    switch (props.miningState) {
+        case MINING:
+            return "blue";
+        case NO_GEM:
+        case NEW_PLOT:
+            return "green";
+        case STUCK:
+            return "red";
+        case MINED:
+        case PROCESSED:
+            return "#ca86dc";
+        default:
+            return "blue";
+    }
+}};
             font-size: 14px;
         `;
 

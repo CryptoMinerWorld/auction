@@ -114,7 +114,7 @@ const select = store => {
     };
     //console.log('dashboard store: ', res);
     return res;
-}
+};
 
 class Dashboard extends Component {
 
@@ -203,8 +203,9 @@ class Dashboard extends Component {
                 changeGemCallback: () => handleGetUserGems(currentUserId),
                 currentUserId,
             });
-            if (currentUserId !== match.params.userId || pendingTransactions) {
-                handleGetUserPlots();
+
+            if (pendingTransactions && currentUserId) {
+                handleGetUserPlots(match.params.userId);
             }
         }
 
@@ -294,8 +295,8 @@ class Dashboard extends Component {
             //(currentUserId !== match.params.userId || pendingTransactions) && handleGetUserPlots(match.params.userId);
         }
 
-        if (plotService && pendingTransactions && handleRefreshUserPlot && currentUserId && pendingTransactions !== prevProps.pendingTransactions) {
-            currentUserId === match.params.userId && handleGetUserPlots(match.params.userId);
+        if (plotService && pendingTransactions && currentUserId && pendingTransactions !== prevProps.pendingTransactions) {
+            handleGetUserPlots(match.params.userId);
         }
 
         if ((silverGoldService !== prevProps.silverGoldService) || match.params.userId !== prevProps.match.params.userId) {

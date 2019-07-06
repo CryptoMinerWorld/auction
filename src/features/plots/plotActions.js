@@ -29,13 +29,14 @@ export const getUserPlots = ownerId => async (dispatch, getState) => {
     const plotService = getState().app.plotServiceInstance;
     const pendingTransactions = getState().tx.pendingTransactions;
     const {userPlots, gemMiningIds} = await plotService.getOwnerPlots(userId);
-
+    console.log("CHECK:" + ownerId + " " + currentUserId + " " + pendingTransactions.length);
     ownerId === currentUserId && pendingTransactions && pendingTransactions.forEach((tx) => {
         console.log("PLOT PENDING TX:", tx);
         if (tx.type === BINDING_GEM || tx.type === UNBINDING_GEM || tx.type === PROCESSING) {
             if (tx.body && tx.body.plot) {
-                const pendingPlotIndex = userPlots.findIndex(plot => plot.id === tx.body.plot);
-                userPlots[pendingPlotIndex].miningState = tx.type;
+                console.warn("TX BODY PLOT", tx.body.plot);
+                const pendingPlotIndex = userPlots.findIndex(plot => Number(plot.id) === Number(tx.body.plot));
+                if (pendingPlotIndex > 0) userPlots[pendingPlotIndex].miningState = tx.type;
                 if (tx.body.gem) {
                     gemMiningIds.push(tx.body.gem.toString());
                 }
@@ -44,8 +45,8 @@ export const getUserPlots = ownerId => async (dispatch, getState) => {
         if (tx.type === BULK_PROCESSING) {
             if (tx.body && tx.body.plotIds) {
                 tx.body.plotIds.forEach(id => {
-                    const pendingPlotIndex = userPlots.findIndex(plot => plot.id === id);
-                    userPlots[pendingPlotIndex].miningState = PROCESSING;
+                    const pendingPlotIndex = userPlots.findIndex(plot => Number(plot.id) === Number(id));
+                    if (pendingPlotIndex > 0) userPlots[pendingPlotIndex].miningState = PROCESSING;
                 })
             }
         }
@@ -193,6 +194,7 @@ export const processPlots = (plotIds) => async (dispatch, getState) => {
 export const processBlocks = (plot, updatePlotCallback) => async (dispatch, getState) => {
     const currentUser = getState().auth.currentUserId;
     const previousState = plot.miningState;
+    console.warn("PLOT:", plot, plot.id);
     let txHash;
     const result = getState().app.plotServiceInstance.processBlocks(plot.id, currentUser)
       .on('transactionHash', (hash) => {

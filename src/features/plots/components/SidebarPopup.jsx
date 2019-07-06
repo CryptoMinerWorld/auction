@@ -147,7 +147,7 @@ const popupStyle = {
     color: "white",
     backgroundColor: 'transparent',
     cursor: "default",
-}
+};
 
 const PlotActionPopup = styled.div`
     width: 300px;
@@ -157,7 +157,7 @@ const PlotActionPopup = styled.div`
     text-align: center;
     justify-content: center;
     align-items: center;
-`
+`;
 
 export class SidebarPopup extends Component {
 
@@ -180,6 +180,7 @@ export class SidebarPopup extends Component {
                 />;
             case "gems-selected":
                 return <SelectedGemsPopup selectedPlot={this.props.selectedPlot} showAnotherPopup={this.props.showAnotherPopup}
+                                          handlePreLoadAuctionPage={this.props.handlePreLoadAuctionPage}
                 stopMining={this.props.stopMining}/>;
             case "filter":
                 return <FilterPopup activeControls={this.props.activeControls} applySort={this.props.applySort}
@@ -189,11 +190,11 @@ export class SidebarPopup extends Component {
                                           transactionStartCallback={this.props.closeCallback}
                                           updatePlot={(modifiedPlot) => {
                                               this.props.updatePlot(modifiedPlot)
-                                          }}/>
+                                          }}/>;
             case "plot-action-stop":
-                return <PlotActionPopup>Please confirm the transaction to stop mining</PlotActionPopup>
+                return <PlotActionPopup>Please confirm the transaction to stop mining</PlotActionPopup>;
             case "coming-soon":
-                return <PlotActionPopup>Artifacts are coming soon</PlotActionPopup>
+                return <PlotActionPopup>Artifacts are coming soon</PlotActionPopup>;
             case "process-all":
                 return <ProcessAllPopup plots={this.props.plots} processPlots={this.props.processPlots}/>
         }
@@ -241,7 +242,7 @@ export class SidebarPopup extends Component {
             alignItems: 'center',
             cursor: 'pointer',
             backgroundColor: 'rgba(101,101,101,0.4)',
-        }
+        };
 
         return (
           <div style={shadowLayerStyle} onClick={() => this.props.closeCallback()}>
