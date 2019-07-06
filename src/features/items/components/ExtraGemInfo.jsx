@@ -89,6 +89,7 @@ const TierIndicator = styled.div`
 
 const ProcessedBlocks = styled.div`
             width: 100%;
+            max-width: 480px;
             display: flex;
             padding: 1%;
             z-index: 30;
@@ -100,7 +101,7 @@ const ProcessedBlocks = styled.div`
 const ExtraGemInfo = ({totalTimeMined, totalItemsMinedUp, creationTime, totalBlocksProcessed}) => {
 
     return (
-      <Container>
+      <Container className="measure-l">
           <Caption>Extra Gem Info</Caption>
           <div>
               <RowLabel>Total Time Mined (D-H-M)</RowLabel>

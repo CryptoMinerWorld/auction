@@ -1,6 +1,5 @@
-import {Component} from "react";
+import React, {Component} from "react";
 import styled from "styled-components";
-import React from "react";
 import PlotsPopup from "./PlotsPopup";
 import SelectedPlotsPopup from "./SelectedPlotsPopup";
 import SelectedGemsPopup from "./SelectedGemsPopup";
@@ -168,31 +167,37 @@ export class SidebarPopup extends Component {
     }
 
     generatePopupContent() {
-        switch(this.props.type) {
+        switch (this.props.type) {
             case "plots-all":
                 return <PlotsPopup plots={this.props.plots} setFilterOptions={this.props.setFilterOptions}/>;
             case "plots-selected":
                 return <SelectedPlotsPopup plot={this.props.selectedPlot} showAnotherPopup={this.props.showAnotherPopup}
-                                           processBlocks={this.props.processBlocks} stopMining={this.props.stopMining}/>;
+                                           processBlocks={this.props.processBlocks}
+                                           stopMining={this.props.stopMining}/>;
             case "gems-all":
-                return <GemsPopup gems={this.props.gems} plots={this.props.plots} goToGemWorkshop={this.props.goToGemWorkshop}
+                return <GemsPopup gems={this.props.gems} plots={this.props.plots}
+                                  goToGemWorkshop={this.props.goToGemWorkshop}
                                   setFilterOptions={this.props.setFilterOptions}
                 />;
             case "gems-selected":
-                return <SelectedGemsPopup selectedPlot={this.props.selectedPlot} showAnotherPopup={this.props.showAnotherPopup}
+                return <SelectedGemsPopup selectedPlot={this.props.selectedPlot}
+                                          showAnotherPopup={this.props.showAnotherPopup}
                                           handlePreLoadAuctionPage={this.props.handlePreLoadAuctionPage}
-                stopMining={this.props.stopMining}/>;
+                                          stopMining={this.props.stopMining}/>;
             case "filter":
                 return <FilterPopup activeControls={this.props.activeControls} applySort={this.props.applySort}
                                     applyFilter={this.props.applyFilter} filterDefault={this.props.filterDefault}/>;
             case "plot-action-start":
                 return <GemSelectionPopup userGems={this.props.userGems} selectedPlot={this.props.selectedPlot}
                                           transactionStartCallback={this.props.closeCallback}
+                                          showConfirmPopupCallback={() => this.props.showAnotherPopup("plot-confirm-start")}
                                           updatePlot={(modifiedPlot) => {
                                               this.props.updatePlot(modifiedPlot)
                                           }}/>;
             case "plot-action-stop":
                 return <PlotActionPopup>Please confirm the transaction to stop mining</PlotActionPopup>;
+            case "plot-confirm-start":
+                return <PlotActionPopup>Please confirm the transaction to start mining</PlotActionPopup>;
             case "coming-soon":
                 return <PlotActionPopup>Artifacts are coming soon</PlotActionPopup>;
             case "process-all":
@@ -201,7 +206,7 @@ export class SidebarPopup extends Component {
     }
 
     static generatePopupHeader(type) {
-        switch(type) {
+        switch (type) {
             case "plots-all":
                 return "All of My Plots Info";
             case "plots-selected":
@@ -212,6 +217,8 @@ export class SidebarPopup extends Component {
                 return "Selected Gem Info";
             case "plot-action-start":
                 return "Available Gem Selection";
+            case "plot-confirm-start":
+                return "Start mining";
             case "filter":
                 return "Sort & Filter Menu";
             case "plot-action-stop":
@@ -246,12 +253,15 @@ export class SidebarPopup extends Component {
 
         return (
           <div style={shadowLayerStyle} onClick={() => this.props.closeCallback()}>
-              <div style={popupStyle} onClick={(e) => {e.stopPropagation()}}>
+              <div style={popupStyle} onClick={(e) => {
+                  e.stopPropagation()
+              }}>
                   <SemiOctagonHeaderOuter>
                       <SemiOctagonHeaderInner>
                           <div style={{
                               fontSize: "20px", color: "#97A8B4", position: "absolute",
-                              top: "-11px", width: "100%", textAlign: "center"}}>
+                              top: "-11px", width: "100%", textAlign: "center"
+                          }}>
                               {SidebarPopup.generatePopupHeader(this.props.type)}
                           </div>
                       </SemiOctagonHeaderInner>

@@ -6,6 +6,7 @@ import {CutEdgesButton} from "../../../components/CutEdgesButton";
 import {MINED, MINING, NEW_PLOT, NO_GEM, NOT_MINING, PROCESSED, STUCK} from "../plotConstants";
 import {calculateGradeType} from "../../../app/services/GemService";
 import {Link} from "react-router-dom";
+import GemImage from "../../../components/GemImage";
 
 
 export class SelectedGemsPopup extends Component {
@@ -19,13 +20,16 @@ export class SelectedGemsPopup extends Component {
 
         const plot = this.props.selectedPlot;
         const gem = plot.gemMines;
+        console.log("gems popup image" + gem.image);
 
         return (
           <div style={container}>
               <PlotsInfo>
                   <Col flex={1}>
                       <GemMiningImageBlock>
-                          <GemMiningImage src={gem.image}/>
+                          <GemMiningImage>
+                              <GemImage gem={gem}/>
+                          </GemMiningImage>
                       </GemMiningImageBlock>
                   </Col>
                   <Col flex={1} style={{alignItems: "flex-start"}}>
@@ -285,7 +289,8 @@ const GemMiningImageBlock = styled.div`
             text-align: center;
         `;
 
-const GemMiningImage = styled.img`
+const GemMiningImage = styled.div`
+            position: relative;
             max-width: 200px;
             max-height: 100%;
         `;

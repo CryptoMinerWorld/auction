@@ -41,7 +41,7 @@ FooterLink.defaultProps = {
   hover: null,
 };
 
-const Footer = () => (
+const Footer = (props) => (
   <div className="bg-footer-black">
     <TopHighlight />
     <RockOverlay className=" center">
@@ -60,10 +60,11 @@ const Footer = () => (
               title="Game Info"
               hover="hover-gold"
             />
-            <FooterLink link="https://cryptominerworld.com/workshop/" title="Workshop" />
+            <FooterLink
+              link={process.env.REACT_APP_BASE_URL + "/profile/" + (props.userWorkshopAddress || "")} title="Workshop" />
 
             <FooterLink
-              link="https://cryptominerworld.com/market/"
+              link={process.env.REACT_APP_BASE_URL + "/market/"}
               title="Market"
               hover="
               hover-light-purple"
@@ -74,10 +75,10 @@ const Footer = () => (
               hover="hover-green"
             />
             <FooterLink link="https://cryptominerworld.com/faq/" title="FAQ" hover="hover-gold" />
-            <FooterLink
-              link="http://www.sophophilia.com/press/sheet.php?p=cryptoMiner_world"
-              title="Press Kit"
-            />
+            {/*<FooterLink*/}
+              {/*link="http://www.sophophilia.com/press/sheet.php?p=cryptoMiner_world"*/}
+              {/*title="Press Kit"*/}
+            {/*/>*/}
           </article>
 
           <div className="flex jcc aic mv5 row-ns col">

@@ -305,7 +305,6 @@ class Auction extends PureComponent {
                           </div>
                       </div>
                   </div>
-                  <MailingList/>
               </div>
           </div>
         );
@@ -440,6 +439,7 @@ const OverlapBoxOnDesktopView = styled.div`
     position: absolute;
     top: 2em;
     left: 5em;
+    min-width: 480px;
     z-index: 2;
   }
 `;

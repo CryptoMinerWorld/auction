@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import {connect} from 'react-redux';
 import {compose} from 'redux';
-import {Link, Redirect, withRouter} from 'react-router-dom';
+import {Redirect, withRouter} from 'react-router-dom';
 import notification from 'antd/lib/notification';
 import Tabs from 'antd/lib/tabs';
 import {Spring} from 'react-spring';
@@ -19,9 +19,6 @@ import {
     scrollGems,
     useCoupon,
 } from './dashboardActions';
-import Cards from './components/GemCard';
-import LoadingCard from '../market/components/LoadingCard';
-import NoCard from './components/NoCard';
 import {preLoadAuctionPage} from '../market/marketActions';
 import CountryDashboard from '../countries/components/Dashboard';
 import Gold from '../../app/images/dashboard/Gold.png';
@@ -36,10 +33,8 @@ import Loading from "../../components/Loading";
 import Spin from "antd/lib/spin";
 import {getUserBalance} from "../sale/saleActions";
 import PlotDashboard from "../plots";
-import InfiniteScroll from "react-infinite-scroller";
 import {getUserPlots, refreshUserPlot} from "../plots/plotActions";
 import {setDashboardEventListeners} from "./dashboardEventListener";
-import {transactionResolved} from "../transactions/txActions";
 import GemDashboard from "./components/GemDashboard";
 import {getAvailableCountryPlots} from "../plotsale/plotSaleActions";
 
@@ -50,7 +45,6 @@ require('antd/lib/tabs/style/css');
 require('antd/lib/notification/style/css');
 require('antd/lib/pagination/style/css');
 require('antd/lib/slider/style/css');
-
 
 
 const RedeemCoupon = styled.div`
@@ -72,49 +66,49 @@ const SilverGoldBalance = styled.div`
 `;
 
 
-const select = store => {
-    console.log('-------------> dashboard store <---------------', store);
-    const res = {
-        userPlots: store.plots.userPlots,
-        userGems: store.dashboard.userGems,
-        totalGems: store.dashboard && store.dashboard.userGems && store.dashboard.userGems.length,
-        userGemsFiltered: (store.dashboard.userGemsFiltered && store.dashboard.userGemsFiltered.length >= 0) ?
-          store.dashboard.userGemsFiltered :
-          store.dashboard.userGems,
-        userGemsScrolled: store.dashboard.userGemsScrolled ? store.dashboard.userGemsScrolled :
-          (store.dashboard.userGemsFiltered && store.dashboard.userGemsFiltered.length >= 0) ?
-            store.dashboard.userGemsFiltered.slice(0, store.dashboard.end) :
-            store.dashboard.userGems.slice(0, store.dashboard.end),
-        hasMoreGems: store.dashboard.hasMoreGems,
-        pageNumber: store.dashboard.page,
-        loading: store.dashboard.gemsLoading,
-        error: store.dashboard.gemsLoadingError,
-        currentUser: store.auth.user,
-        transactionHistory: store.tx.transactionHistory,
-        pendingTransactions: store.tx.pendingTransactions,
-        userExists: store.auth.existingUser,
-        userBalance: store.sale.balance,
-        userCountries: store.dashboard.userCountries,
-        userArtifacts: store.dashboard.userArtifacts,
-        sortBox: store.dashboard.sortBox,
-        currentUserId: store.auth.currentUserId,
-        web3: store.app.web3,
-        preSaleContract: store.app.presaleContractInstance,
-        refPointsContract: store.app.refPointsTrackerContractInstance,
-        goldContract: store.app.goldContractInstance,
-        silverContract: store.app.silverContractInstance,
-        CountrySale: store.app.countrySaleInstance,
-        currentAccount: store.app.currentAccount,
-        gemService: store.app.gemServiceInstance,
-        auctionService: store.app.auctionServiceInstance,
-        silverGoldService: store.app.silverGoldServiceInstance,
-        countryService: store.app.countryServiceInstance,
-        plotService: store.app.plotServiceInstance,
-        artifactContract: store.app.artifactContractInstance,
-    };
-    //console.log('dashboard store: ', res);
-    return res;
-};
+const select = store => ({
+    dataLoaded: {
+        plots: store.plots.plotsLoaded,
+        gems: store.dashboard.gemsLoaded,
+    },
+    dataRefreshed: store.dashboard.dataRefreshed,
+    userPlots: store.plots.userPlots,
+    userGems: store.dashboard.userGems,
+    totalGems: store.dashboard && store.dashboard.userGems && store.dashboard.userGems.length,
+    userGemsFiltered: (store.dashboard.userGemsFiltered && store.dashboard.userGemsFiltered.length >= 0) ?
+      store.dashboard.userGemsFiltered :
+      store.dashboard.userGems,
+    userGemsScrolled: store.dashboard.userGemsScrolled ? store.dashboard.userGemsScrolled :
+      (store.dashboard.userGemsFiltered && store.dashboard.userGemsFiltered.length >= 0) ?
+        store.dashboard.userGemsFiltered.slice(0, store.dashboard.end) :
+        store.dashboard.userGems.slice(0, store.dashboard.end),
+    hasMoreGems: store.dashboard.hasMoreGems,
+    pageNumber: store.dashboard.page,
+    loading: store.dashboard.gemsLoading,
+    error: store.dashboard.gemsLoadingError,
+    currentUser: store.auth.user,
+    transactionHistory: store.tx.transactionHistory,
+    pendingTransactions: store.tx.pendingTransactions,
+    userExists: store.auth.existingUser,
+    userBalance: store.sale.balance,
+    userCountries: store.dashboard.userCountries,
+    userArtifacts: store.dashboard.userArtifacts,
+    sortBox: store.dashboard.sortBox,
+    currentUserId: store.auth.currentUserId,
+    web3: store.app.web3,
+    preSaleContract: store.app.presaleContractInstance,
+    refPointsContract: store.app.refPointsTrackerContractInstance,
+    goldContract: store.app.goldContractInstance,
+    silverContract: store.app.silverContractInstance,
+    CountrySale: store.app.countrySaleInstance,
+    currentAccount: store.app.currentAccount,
+    gemService: store.app.gemServiceInstance,
+    auctionService: store.app.auctionServiceInstance,
+    silverGoldService: store.app.silverGoldServiceInstance,
+    countryService: store.app.countryServiceInstance,
+    plotService: store.app.plotServiceInstance,
+    artifactContract: store.app.artifactContractInstance,
+});
 
 class Dashboard extends Component {
 
@@ -195,7 +189,10 @@ class Dashboard extends Component {
             handleRefreshUserPlot && gemService && currentUserId && setDashboardEventListeners({
                 plotService,
                 gemService,
-                updatedEventCallback: (plot) => {handleRefreshUserPlot(plot); handleGetUserBalance(currentUserId)},
+                updatedEventCallback: (plot) => {
+                    handleRefreshUserPlot(plot);
+                    handleGetUserBalance(currentUserId)
+                },
                 releasedEventCallback: handleRefreshUserPlot,
                 boundEventCallback: handleRefreshUserPlot,
                 issuedEventCallback: handleGetUserPlots,
@@ -280,22 +277,26 @@ class Dashboard extends Component {
         }
 
         if (plotService && handleRefreshUserPlot && currentUserId &&
-          (plotService !== prevProps.plotService || match.params.userId !== prevProps.match.params.userId )) {
-                setDashboardEventListeners({
-                    plotService,
-                    gemService,
-                    updatedEventCallback: (plot) => {handleRefreshUserPlot(plot); handleGetUserBalance(currentUserId)},
-                    releasedEventCallback: handleRefreshUserPlot,
-                    boundEventCallback: handleRefreshUserPlot,
-                    reloadGemsCallback: handleGetUserGems,
-                    changeGemCallback: () => handleGetUserGems(currentUserId),
-                    issuedEventCallback: handleGetUserPlots,
-                    currentUserId
-                });
+          (plotService !== prevProps.plotService || match.params.userId !== prevProps.match.params.userId)) {
+            setDashboardEventListeners({
+                plotService,
+                gemService,
+                updatedEventCallback: (plot) => {
+                    handleRefreshUserPlot(plot);
+                    handleGetUserBalance(currentUserId)
+                },
+                releasedEventCallback: handleRefreshUserPlot,
+                boundEventCallback: handleRefreshUserPlot,
+                reloadGemsCallback: handleGetUserGems,
+                changeGemCallback: () => handleGetUserGems(currentUserId),
+                issuedEventCallback: handleGetUserPlots,
+                currentUserId
+            });
             //(currentUserId !== match.params.userId || pendingTransactions) && handleGetUserPlots(match.params.userId);
         }
 
-        if (plotService && pendingTransactions && currentUserId && pendingTransactions !== prevProps.pendingTransactions) {
+        if (plotService && pendingTransactions && currentUserId && match.params.userId &&
+          (pendingTransactions !== prevProps.pendingTransactions || match.params.userId !== prevProps.match.params.userId)) {
             handleGetUserPlots(match.params.userId);
         }
 
@@ -441,7 +442,7 @@ class Dashboard extends Component {
                         onClick={() => this.setState({tab: 1})}
                         className="h-100 flex aic white ">
                 <img src={Plot} alt="" className="h2 w-auto pr2"/>
-                          {userPlots && userPlots.length || ".."}
+                          {userPlots ? userPlots.length : ".."}
                           {' '}
                           Plots
               </span>
@@ -449,7 +450,8 @@ class Dashboard extends Component {
                     disabled={false}
                     key="1"
                   >
-                      <PlotDashboard userId={match.params.userId} goToGemWorkshop={() => this.setState({tab: 2})}/>
+                      <PlotDashboard userPlots={userPlots} userId={match.params.userId}
+                                     goToGemWorkshop={() => this.setState({tab: 2})}/>
                   </TabPane>
                   <TabPane
                     tab={(

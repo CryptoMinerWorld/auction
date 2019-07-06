@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import CountryDisplay from './CountryDisplay';
 import {graphql} from 'react-apollo';
 import {MAP_COUNTRY_DATA} from "../../queries";
-import {getAvailableCountryPlots} from "../../../plotsale/plotSaleActions";
 import {COUNTRY_PLOTS_DATA} from "../../../plotsale/country_plots_data";
+import Loading from "../../../../components/Loading";
 
 class CountryDashboard extends Component {
     static propTypes = {
@@ -15,7 +15,7 @@ class CountryDashboard extends Component {
         userCountryIdList: [],
     };
 
-    state = {userCountries: []};
+    state = {userCountries: null};
 
     componentDidMount() {
         const {userCountryIdList, data, handleGetAvailableCountryPlots} = this.props;
@@ -26,14 +26,14 @@ class CountryDashboard extends Component {
             userCountries = data.mapCountries.filter((country =>
                 userCountryIdList.includes(country.countryId)
             ));
-            userCountries.forEach( async (country) => {
+            userCountries.forEach(async (country) => {
                 const availablePlots = await handleGetAvailableCountryPlots(country.countryId);
                 country.plotsBought = COUNTRY_PLOTS_DATA[country.countryId - 1] - availablePlots;
                 country.plotsMined = 0;
                 country.plotsAvailable = availablePlots;
                 country.totalPlots = country.plots;
                 country.lastPrice = country.price;
-            })
+            });
             this.setState({userCountries});
         }
     }
@@ -57,7 +57,7 @@ class CountryDashboard extends Component {
                     country.plotsAvailable = availablePlots;
                     country.totalPlots = country.plots;
                     country.lastPrice = country.price;
-                })
+                });
                 this.setState({userCountries});
             }
         }
@@ -68,9 +68,23 @@ class CountryDashboard extends Component {
         const {userCountries} = this.state;
         console.log("user Countries: ", userCountries);
         return (
-          <div className="pa0">
-              <CountryDisplay countries={userCountries} userId={userId}/>
-          </div>
+          userCountries ? (
+              userCountries.length > 0 ?
+                (
+                  <div className="pa0">
+                      <CountryDisplay countries={userCountries} userId={userId}/>
+                  </div>
+                ) :
+                (
+                    <div style={{textAlign: 'center'}}>No countries found</div>
+                )
+            ) :
+            (
+              <div style={{width: '100%', height: "100px", position: 'relative'}}>
+                  <div style={{textAlign: 'center'}}>Countries are loading..</div>
+                  <Loading/>
+              </div>
+            )
         );
     }
 }

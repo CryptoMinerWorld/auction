@@ -64,11 +64,10 @@ class MiningGembox extends PureComponent {
 export default MiningGembox;
 
 const UnprocessedBlocksContainer = styled.div`
-    flex: 3;
+    flex: 3 0 180px;
 `;
 
 const TimeCanMineContainer = styled.div`
-    width: 135px;
     height: 100px;
     display: flex;
     justify-content: center;
@@ -79,7 +78,7 @@ const TimeCanMineContainer = styled.div`
 const FlexColumnContainer = styled.div`
     display: flex;
     flex-direction: column;
-    flex: 3;
+    flex: 3 1 180px;
     align-items: center;
 `;
 
@@ -94,7 +93,7 @@ const ProcessButton = styled.div`
     opacity: ${props => props.disabled ? "0.5" : "1"}
     background-image: url(${buyNowImage});
     background-position: center center;
-    width: 50px;
+    max-width: 50px;
     height: 50px;
     text-align: center;
     background-size: cover;
@@ -106,12 +105,14 @@ const ProcessButton = styled.div`
     cursor: pointer;
     color: white;
     font-size: 10px
+    flex: 1 1 50px;
 `;
 
 const PropertyContainer = styled.div`
     margin: 10px 0;
     display: flex;
     justify-content: space-around;
+    flex-wrap: wrap;
     align-items: stretch;
     align-content: stretch;
     background-color: #2A3035;
@@ -137,7 +138,8 @@ const PropertyContainer = styled.div`
 `;
 
 const TierIndicator = styled.div`
-          width: 50px;
+            flex: 1 1 50px;
+            max-width: 50px;
             height: 48px;
             padding: 11px 0px;
             text-align: center;
@@ -179,12 +181,14 @@ const TierIndicator = styled.div`
 
 const UnprocessedBlocks = styled.div`
             width: 100%;
+            min-height: 100px;
             display: flex;
+            align-items: center;
             flex-wrap: wrap;
             padding: 1%;
             z-index: 30;
             border-radius: 15px;
-            justify-content: space-evenly;
+            justify-content: flex-start;
         `;
 
 const SmallCaption = styled.div`

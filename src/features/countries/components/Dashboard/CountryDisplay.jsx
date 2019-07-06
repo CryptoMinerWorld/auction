@@ -71,7 +71,6 @@ class Countries extends Component {
           )
           }
         </Transition>
-
         <CountryBar countries={countries} selectCountry={this.selectCountry} />
       </div>
     );

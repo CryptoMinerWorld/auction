@@ -24,7 +24,7 @@ const pageSize = 18;
 
 export default function dashboardReducer(
   state = {
-      gemsLoading: true,
+      gemsLoaded: false,
       gemsLoadingError: false,
       userGems: [],
       userArtifacts: null,
@@ -46,7 +46,7 @@ export default function dashboardReducer(
             ...state,
             userGems: action.payload,
             userGemsFiltered: action.payload,
-            gemsLoading: false,
+            gemsLoaded: true,
             hasMoreGems: action.payload.length > pageSize
         };
     }
@@ -79,7 +79,7 @@ export default function dashboardReducer(
         return {
             ...state,
             userGems: action.payload,
-            gemsLoading: false,
+            gemsLoaded: true,
         };
     }
 
@@ -143,15 +143,15 @@ export default function dashboardReducer(
     }
 
     if (action.type === FETCH_USER_GEMS_BEGUN) {
-        return {...state, gemsLoading: true, gemsLoadingError: false};
+        return {...state, gemsLoaded: false, gemsLoadingError: false};
     }
 
     if (action.type === FETCH_USER_GEMS_SUCCEEDED) {
-        return {...state, gemsLoading: false, gemsLoadingError: false};
+        return {...state, gemsLoaded: true, gemsLoadingError: false};
     }
 
     if (action.type === FETCH_USER_GEMS_FAILED) {
-        return {...state, gemsLoading: false, gemsLoadingError: action.payload};
+        return {...state, gemsLoaded: false, gemsLoadingError: action.payload};
     }
 
     if (action.type === FETCH_USER_DETAILS_BEGUN) {
@@ -272,16 +272,16 @@ const allFiltersDeselected = {
     levels: ["lvl_1", "lvl_2", "lvl_3", "lvl_4", "lvl_5"],
     grades: ["D", "C", "B", "A", "AA", "AAA"],
     states: ["mining", "auction", "idle", "stuck"]
-}
+};
 
 const defaultSorting = {
     sortOption: "acq",
     sortDirection: "up",
-}
+};
 
 const filterIsClean = (unselectedFilters) => {
     return unselectedFilters.grades.length === allFiltersDeselected.grades.length &&
       unselectedFilters.levels.length === allFiltersDeselected.levels.length &&
       unselectedFilters.types.length === allFiltersDeselected.types.length &&
       unselectedFilters.states.length === allFiltersDeselected.states.length;
-}
+};

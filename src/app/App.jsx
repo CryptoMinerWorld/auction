@@ -175,7 +175,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         const dutchHelperContract = (new web3.eth.Contract(
           dutchAuctionHelperABI,
@@ -183,7 +183,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         const presaleContract = {};
         // (new web3.eth.Contract(presaleABI, process.env.REACT_APP_PRESALE2, {
@@ -193,7 +193,7 @@ class App extends Component {
         // @notice instantiating gem contract
         const gemsContract = await (new web3.eth.Contract(gemsABI, process.env.REACT_APP_GEM_ERC721, {
             from: currentAccountId,
-        }))
+        }));
 
         console.log("gemsContract,", gemsContract);
 
@@ -212,7 +212,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         const refPointsTrackerContract = (new web3.eth.Contract(
           refPointsTrackerABI,
@@ -220,7 +220,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         const goldContract = (new web3.eth.Contract(
           goldABI,
@@ -228,7 +228,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         const silverContract = (new web3.eth.Contract(
           silverABI,
@@ -236,7 +236,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         const workshopContract = (new web3.eth.Contract(
           workshopABI,
@@ -244,7 +244,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         const balanceContract = new web3.eth.Contract(
           balanceABI,
@@ -257,7 +257,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         const silverCouponsContract = {};
         // assistInstance.Contract(new web3.eth.Contract(
@@ -274,7 +274,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         const plotContract = (new web3.eth.Contract(
           plotABI,
@@ -282,7 +282,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         const minerContract = (new web3.eth.Contract(
           minerABI,
@@ -290,7 +290,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         const artifactContract = (new web3.eth.Contract(
           artifactABI,
@@ -298,7 +298,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         //const silverCouponsContract = {};
 
@@ -418,7 +418,7 @@ class App extends Component {
 
     clearLoot = () => {
         this.setState({lootFound: null});
-    }
+    };
 
     showLoot = (eventUpdateArray) => {
         console.log("Show loot", eventUpdateArray);
@@ -452,11 +452,11 @@ class App extends Component {
             lootFound['loot'] = lootArray;
             lootFound['plotState'] = 1; //lootFound['plotState'] || await
             // this.props.plotService.getPlotState(eventUpdate.returnValues['plotId']);
-        })
+        });
         this.setState({
             lootFound: lootFound
         })
-    }
+    };
 
     errorNotification = (error, title) => {
         const {handleClearError} = this.props;
@@ -468,7 +468,7 @@ class App extends Component {
     };
 
     render() {
-        const {visible, error, errorTitle} = this.props;
+        const {visible, error, errorTitle, currentUserId} = this.props;
         const {font, wrongNetwork, lootFound} = this.state;
         console.warn('----------> APP starts <----------');
         return (
@@ -507,7 +507,7 @@ class App extends Component {
                       </StickyHeader>
                       <Routes/>
 
-                      <Footer/>
+                      <Footer userWorkshopAddress={currentUserId}/>
                   </main>
               </ScrollToTop>
               {/* </React.StrictMode> */}
