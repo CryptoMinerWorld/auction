@@ -26,18 +26,6 @@ const Stats = styled.div`
     margin: 5px 0;
 `;
 
-const NameBox = styled.div`
-    width: 100%;
-    display: flex;
-    justify-content: center;
-`;
-
-const StateBox = styled.div`
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin: 10px 0;
-`;
 
 class ViewerGembox extends PureComponent {
 
@@ -59,30 +47,6 @@ class ViewerGembox extends PureComponent {
 
         return (
           <div className={styling}>
-              <NameBox>
-              <CutEdgesButton outlineColor={color}
-                              backgroundColor={typePaneColors(gem.color)}
-                              fontColor={color}
-                              edgeSizes={[3, 20]}
-                              fontSize={20}
-                              outlineWidth={3}
-                              height={38}
-                              content={gem.name}
-                              otherStyles={"width: 220px; font-weight: bold"}
-              />
-              </NameBox>
-              <StateBox>
-                  <CutEdgesButton outlineColor={stateOutlineColors("idle")}
-                                  backgroundColor={statePaneColors("idle")}
-                                  fontColor={stateOutlineColors("idle")}
-                                  edgeSizes={[5, 20]}
-                                  fontSize={20}
-                                  outlineWidth={3}
-                                  height={34}
-                                  content={"Idle"}
-                                  otherStyles={"width: 220px; font-weight: bold"}
-                  />
-              </StateBox>
               <Stats>
                   <CutEdgesButton
                     outlineColor={levelOutlineColor}

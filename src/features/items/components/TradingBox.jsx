@@ -3,21 +3,31 @@ import styled from 'styled-components';
 import React, {PureComponent} from 'react';
 import Input from 'antd/lib/input';
 import Icon from 'antd/lib/icon';
-// import Button from 'antd/lib/button';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import {compose} from 'redux';
 import {daysToSeconds, ethToWei} from '../../mint/helpers';
 import {createAuction, removeFromAuction, upgradeGem} from '../itemActions';
-import Gembox from './Gembox';
 import ProgressMeter from './ProgressMeter';
 import GiftGems from './GiftGems';
 import button from '../../../app/images/pinkBuyNowButton.png';
 import UpgradeComponent from "./UpgradeComponent";
 import {getUserPlots, processBlocks, releaseGem} from "../../plots/plotActions";
-import {AUCTION_END, AUCTION_START} from "../itemConstants";
-import ExtraGemInfo from "./ExtraGemInfo";
-import OwnerGembox from "./OwnerGembox";
+import {AUCTION_END, AUCTION_START, GETTING_READY, GOING_HOME, IDLE} from "../itemConstants";
+import {CutEdgesButton} from "../../../components/CutEdgesButton";
+import {
+    stateOutlineColors,
+    statePaneColors,
+    typePaneColors,
+    typePaneOutlineColors
+} from "../../plots/components/propertyPaneStyles";
+import OwnerGradeRateEnergyGembox from "./OwnerGradeRateEnergyGembox";
+import OwnerLevelGembox from "./OwnerLevelGembox";
+import ViewerGembox from "./ViewerGembox";
+import {getTimeLeftMinutes} from "../../../app/services/PlotService";
+import MiningGembox from "./MiningGembox";
+import {MINING, STUCK} from "../../plots/plotConstants";
+import Loading from "../../../components/Loading";
 
 const ColourButton = styled.button`
   background-image: url(${button});
@@ -61,6 +71,19 @@ const fixedOverlayStyle = {
     cursor: 'pointer',
     backgroundColor: 'rgba(0,0,0,0.5)'
 };
+
+const NameBox = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: center;
+`;
+
+const StateBox = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+`;
 
 const select = store => ({
     userPlots: store.plots.userPlots,
@@ -116,8 +139,8 @@ class TradingBox extends PureComponent {
             handleCreateAuction,
             handleRemoveGemFromAuction,
             handleProcessBlocks,
-          handleReleaseGem,
-          handleGetUserPlots,
+            handleReleaseGem,
+            handleGetUserPlots,
             history,
             userBalance,
             currentAccount,
@@ -151,11 +174,11 @@ class TradingBox extends PureComponent {
                      onClick={() => this.setState({showUpgrade: false})}
                 >
                     {!unprocessed && <UpgradeComponent metal={useMetal}
-                                                    metalAvailable={useMetal === 'silver' ? +userBalance.silverAvailable : +userBalance.goldAvailable}
-                                                    hidePopup={() =>
-                                                      this.setState({showUpgrade: false})
-                                                    }
-                                                    {...this.props}/>
+                                                       metalAvailable={useMetal === 'silver' ? +userBalance.silverAvailable : +userBalance.goldAvailable}
+                                                       hidePopup={() =>
+                                                         this.setState({showUpgrade: false})
+                                                       }
+                                                       {...this.props}/>
                     }
                     <div
                       // style={position: absolute
@@ -183,51 +206,112 @@ class TradingBox extends PureComponent {
                   <TopHighLight style={tophighlight}/>
                   <div className="white pa3">
                       <div className="flex col jcc ">
-                          <OwnerGembox
+                          <NameBox>
+                              <CutEdgesButton outlineColor={typePaneOutlineColors(gem.color)}
+                                              backgroundColor={typePaneColors(gem.color)}
+                                              fontColor={typePaneOutlineColors(gem.color)}
+                                              edgeSizes={[3, 20]}
+                                              fontSize={20}
+                                              outlineWidth={3}
+                                              height={38}
+                                              content={gem.name}
+                                              otherStyles={"width: 220px; font-weight: bold"}
+                              />
+                          </NameBox>
+                          {gem.stateName ?
+                            <StateBox>
+                                <CutEdgesButton outlineColor={stateOutlineColors(gem.stateName)}
+                                                backgroundColor={statePaneColors(gem.stateName)}
+                                                fontColor={stateOutlineColors(gem.stateName)}
+                                                edgeSizes={[5, 20]}
+                                                fontSize={20}
+                                                outlineWidth={3}
+                                                height={34}
+                                                content={gem.stateName}
+                                                otherStyles={"width: 220px; font-weight: bold"}
+                                />
+                            </StateBox> :
+                            <div style={{position: 'relative', height: '35px'}}>
+                                <Loading/>
+                            </div>
+                          }
+
+                          {gem.auctionIsLive &&
+                          <div className="flex jcc col" style={{padding: "10px 20px"}}>
+                              <div className="flex jcc">
+                                  <div className="w-100 w5-ns h3 center">
+                                      <ColourButton
+                                        type="danger"
+                                        onClick={() => {
+                                            this.setState({formSubmitted: true});
+                                            handleRemoveGemFromAuction(Number(gem.id), history, this.turnLoaderOff);
+                                        }}
+                                        data-testid="removeGemButton"
+                                        className="b"
+                                      >
+                                          {gem.txType && gem.txType === AUCTION_END ? (
+                                            <span>
+                                                    <Icon type="loading" theme="outlined"/>
+                                                {' '}Removing...
+                                                </span>
+                                          ) : (
+                                            '  End Auction'
+                                          )}
+                                      </ColourButton>
+                                  </div>
+                              </div>
+                              <ProgressMeter
+                                currentPrice={gem.currentPrice}
+                                minPrice={gem.minPrice}
+                                maxPrice={gem.maxPrice}
+                              />
+                          </div>
+                          }
+
+                          {/*//todo: Unprocessed Blocks and Time Till Gem gets Stuck IF NOT STUCK (i.e. MINING)*/}
+                          {gem.plotMined &&
+                            <MiningGembox
+                              stateName={gem.stateName}
+                              plotMined={gem.plotMined}
+                              totalUnprocessedBlocks={totalUnprocessedBlocks}
+                              unprocessedBlocks={unprocessedBlocks}
+                              minutesGemCanMine={minutesGemCanMine}
+                              handleProcessBlocks={() => handleProcessBlocks(gem.plotMined)}
+                              handleReleaseGem={() => handleReleaseGem(gem.plotMined)}
+                            />
+                          }
+
+                          {gem.stateName === IDLE && <OwnerLevelGembox
                             gem={gem}
-                            role={role}
                             handleUseMetals={(metalName) => {
                                 this.setState({showUpgrade: true, useMetal: metalName});
                             }}
-                            plotMined={plotMined}
-                            gemMines={gemMines}
-                            handleProcessBlocks={(plot) => handleProcessBlocks(plot, () => handleGetUserPlots(currentAccount))}
-                            handleReleaseGem={(plot) => handleReleaseGem(plot)}
-                          />
-                          {gemMines && plotMined && <div style={{textAlign: "center", fontWeight: "bold", fontSize: "16px"}}>{`Gem is mining plot #${plotMined.id}`}</div>}
-                          {gem.auctionIsLive ? (
-                            <div className="pa5 flex jcc col">
-                                <div className="flex jcc">
-                                    <div className="w-100 w5-ns h3 center mt4">
-                                        <ColourButton
-                                          type="danger"
-                                          onClick={() => {
-                                              this.setState({formSubmitted: true});
-                                              handleRemoveGemFromAuction(Number(gem.id), history, this.turnLoaderOff);
-                                          }}
-                                          data-testid="removeGemButton"
-                                          className="b"
-                                        >
-                                            {gem.txType && gem.txType === AUCTION_END  ? (
-                                              <span>
-                          <Icon type="loading" theme="outlined"/>
-                                                  {' '}
-                                                  Removing...
-                        </span>
-                                            ) : (
-                                              '  End Auction'
-                                            )}
-                                        </ColourButton>
-                                    </div>
-                                </div>
+                            plotMined={gem.plotMined}
+                            gemMines={gem.plotMined}
+                          />}
 
-                                <ProgressMeter
-                                  currentPrice={gem.currentPrice}
-                                  minPrice={gem.minPrice}
-                                  maxPrice={gem.maxPrice}
-                                />
-                            </div>
-                          ) : (!gemMines && Number(gem.state) === 0) && (
+                          {gem.stateName === IDLE && <OwnerGradeRateEnergyGembox
+                            gem={gem}
+                            handleUseMetals={(metalName) => {
+                                this.setState({showUpgrade: true, useMetal: metalName});
+                            }}
+                            plotMined={gem.plotMined}
+                            gemMines={gem.gemMines}
+                          />}
+
+
+                          {gem.plotMined &&
+                          <div style={{fontSize: "18px", textAlign: 'center'}}>
+                              Stop mining to allow you to, upgrade your gem, sell it on the market, or gift it to a
+                              friend
+                          </div>
+                          }
+
+                          {(gem.auctionIsLive || gem.plotMined || gem.stateName === GETTING_READY || gem.stateName === GOING_HOME) &&
+                          <ViewerGembox gem={gem}/>
+                          }
+
+                          {gem.stateName === IDLE  && (
                             <div className="pa5 flex jcc col">
                                 <div>
                                     <div>Auction duration:</div>
@@ -306,7 +390,7 @@ class TradingBox extends PureComponent {
                                         </ColourButton>
                                     </div>
                                 </div>
-                                {!gemMines && Number(gem.state) === 0 && <GiftGems gemName={gem.name} sourceImage={gem.image}/>}
+                                <GiftGems gemName={gem.name} sourceImage={gem.image}/>
                             </div>
                           )}
                       </div>

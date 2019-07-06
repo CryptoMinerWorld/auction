@@ -15,7 +15,14 @@ import FAQ from './components/FAQ';
 import MailingList from '../../components/MailingList';
 import './animations.css';
 import {OverlapOnDesktopView, RockOverlay, TopHighlight} from './styledComponents';
-import {clearGemPageOnExit, getAuctionDetails, getGemData, getOwnerDataByOwnerId} from './itemActions';
+import {
+    clearGemPage,
+    getGemAuctionData,
+    getGemData,
+    getGemMiningData,
+    getGemTransactionData,
+    getOwnerDataByOwnerId
+} from './itemActions';
 import StatsBox from './components/StatsBox';
 import {showConfirm} from '../../components/Modal';
 import MobileHeader from './components/MobileHeader';
@@ -78,6 +85,10 @@ class Auction extends PureComponent {
     };
 
     async componentDidMount() {
+
+        console.log('componentDidMountProps: ', this.props);
+        console.log('componentDidMountState: ', this.state);
+
         const {
             match, handleGetUserBalance, silverGoldService, gemService,
           dataLoaded,
@@ -251,9 +262,9 @@ class Auction extends PureComponent {
                                 <ReactCSSTransitionGroup
                                   transitionName="example"
                                   transitionAppear
-                                  transitionAppearTimeout={5000}
-                                  transitionEnterTimeout={5000}
-                                  transitionLeaveTimeout={5000}
+                                  transitionAppearTimeout={4000}
+                                  transitionEnterTimeout={4000}
+                                  transitionLeaveTimeout={4000}
                                 >
                                     <OverlapBoxOnDesktopView>
                                         <DisplayBoxStateMachine
