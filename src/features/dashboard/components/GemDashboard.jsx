@@ -46,7 +46,7 @@ const select = store => {
     return {
         userGems: gems,
         totalGems: gems && gems.length || 0,
-        loading: store.dashboard.gemsLoading,
+        loading: !store.dashboard.gemsLoaded,
         unselectedFilters: store.dashboard.unselectedGemWorkshopFilters,
         selectedSorting: store.dashboard.selectedGemWorkshopSorting,
     }
@@ -59,7 +59,7 @@ class GemDashboard extends React.Component {
         allGems: [],
         hasMoreGems: false,
         mobileFiltersDisplayed: false,
-    }
+    };
 
     componentDidMount() {
         const {userGems} = this.props;
@@ -109,7 +109,7 @@ class GemDashboard extends React.Component {
           !unselectedFilters.levels.includes("lvl_" + gem.level) &&
           !unselectedFilters.types.includes(type(gem.color)) &&
           !unselectedFilters.states.includes(resolveGemFilterState(gem)));
-    }
+    };
 
     sortGems = (gems) => {
         const {sortOption, sortDirection} = this.props.selectedSorting;
@@ -132,7 +132,7 @@ class GemDashboard extends React.Component {
         gems.sort((p1, p2) => {
             return directionSign*sortingFunction(p1, p2);
         });
-    }
+    };
 
     render() {
         const {handlePreLoadAuctionPage, loading, handleApplySort, unselectedFilters, selectedSorting,
@@ -169,7 +169,7 @@ class GemDashboard extends React.Component {
                       useWindow={true}
                     >
                         <CardBox>
-                            {loading && [1, 2, 3, 4, 5, 6].map(num => <LoadingCard key={num}/>)}
+                            {loading && <LoadingCard/>}
                             {!loading && scrolledGems && scrolledGems.length === 0 &&
                             <p>No matching gems found</p>}
                             {!loading && scrolledGems && scrolledGems.length >= 0 ? (
@@ -219,7 +219,7 @@ const resolveGemFilterState = (gem) => {
     if (gem.miningState === MINING) return "mining";
     //todo: return actual gem state: idle, mining, auction, stuck;
     return "idle";
-}
+};
 
 
 const Grid = styled.article`
@@ -245,4 +245,4 @@ const Primary = styled.section`
 const infiniteScrollContainer = {
     display: "flex",
     overflow: "hidden",
-}
+};

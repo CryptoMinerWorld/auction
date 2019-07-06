@@ -14,12 +14,12 @@ class PlotDashboard extends Component {
     }
 
     render() {
-        const {userGems, userPlots, userCountryIdList, userId, data} = this.props;
+        const {userGems, dataLoaded, userPlots, userCountryIdList, userId, data} = this.props;
 
         return (
           <div className="plots" style={{padding: "20px 0px 30px 0"}}>
               {
-                  userPlots ? (
+                  dataLoaded && userPlots ? (
                     userPlots.length > 0 ?
                       (
                         <PlotDisplay userId={this.props.userId} goToGemWorkshop={this.props.goToGemWorkshop}/>

@@ -37,6 +37,7 @@ import {getUserPlots, refreshUserPlot} from "../plots/plotActions";
 import {setDashboardEventListeners} from "./dashboardEventListener";
 import GemDashboard from "./components/GemDashboard";
 import {getAvailableCountryPlots} from "../plotsale/plotSaleActions";
+import {USER_PLOTS_RELOAD_BEGUN} from "../plots/plotConstants";
 
 
 const {TabPane} = Tabs;
@@ -243,7 +244,7 @@ class Dashboard extends Component {
             web3, preSaleContract, match,
             handleGetUserGems, gemService, auctionService, silverGoldService, countryService, plotService, handleGetUserPlots, handleGetUserCountries,
             handleGetUserBalance, currentUserId, userExists, currentUser, artifactContract, handleGetUserArtifacts, handleRefreshUserPlot,
-            handleShowSignInBox
+            handleShowSignInBox, handlePlotsReloadBegun
         } = this.props;
 
         if ((userExists !== prevProps.userExists) || (match.params.userId !== prevProps.match.params.userId)) {
@@ -295,8 +296,15 @@ class Dashboard extends Component {
             //(currentUserId !== match.params.userId || pendingTransactions) && handleGetUserPlots(match.params.userId);
         }
 
+
         if (plotService && pendingTransactions && currentUserId && match.params.userId &&
-          (pendingTransactions !== prevProps.pendingTransactions || match.params.userId !== prevProps.match.params.userId)) {
+          (pendingTransactions !== prevProps.pendingTransactions)) {
+            handleGetUserPlots(match.params.userId);
+        }
+
+        if (plotService && pendingTransactions && currentUserId && match.params.userId &&
+          (match.params.userId !== prevProps.match.params.userId)) {
+            handlePlotsReloadBegun();
             handleGetUserPlots(match.params.userId);
         }
 
@@ -347,6 +355,7 @@ class Dashboard extends Component {
 
         const {
             loading,
+            dataLoaded,
             sortBox,
             totalGems,
             userPlots,
@@ -442,7 +451,7 @@ class Dashboard extends Component {
                         onClick={() => this.setState({tab: 1})}
                         className="h-100 flex aic white ">
                 <img src={Plot} alt="" className="h2 w-auto pr2"/>
-                          {userPlots ? userPlots.length : ".."}
+                          {(dataLoaded.plots && userPlots) ? userPlots.length : ".."}
                           {' '}
                           Plots
               </span>
@@ -450,7 +459,7 @@ class Dashboard extends Component {
                     disabled={false}
                     key="1"
                   >
-                      <PlotDashboard userPlots={userPlots} userId={match.params.userId}
+                      <PlotDashboard dataLoaded={dataLoaded} userPlots={userPlots} userId={match.params.userId}
                                      goToGemWorkshop={() => this.setState({tab: 2})}/>
                   </TabPane>
                   <TabPane
@@ -534,6 +543,7 @@ class Dashboard extends Component {
 }
 
 const actions = {
+    handlePlotsReloadBegun: () => dispatch => dispatch({type: USER_PLOTS_RELOAD_BEGUN}),
     handleRefreshUserPlot: refreshUserPlot,
     handleGetUserArtifacts: getUserArtifacts,
     handleGetUserPlots: getUserPlots,
