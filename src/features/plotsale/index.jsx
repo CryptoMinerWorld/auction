@@ -30,22 +30,22 @@ let plot46;
 
 if (window.innerWidth > 800) {
     if (window.innerWidth <= 1280) {
-        plot1 = require('../../app/images/plots/1plot_new_1280w.png')
-        plot2 = require('../../app/images/plots/2-15_new_1280w.png')
-        plot16 = require('../../app/images/plots/16-30_new_1280w.png')
-        plot31 = require('../../app/images/plots/31-45_new_1280w.png')
+        plot1 = require('../../app/images/plots/1plot_new_1280w.png');
+        plot2 = require('../../app/images/plots/2-15_new_1280w.png');
+        plot16 = require('../../app/images/plots/16-30_new_1280w.png');
+        plot31 = require('../../app/images/plots/31-45_new_1280w.png');
         plot46 = require('../../app/images/plots/46-60_new_1280w.png')
     } else if (window.innerWidth <= 1920) {
-        plot1 = require('../../app/images/plots/1plot_new_1920w.png')
-        plot2 = require('../../app/images/plots/2-15_new_1920w.png')
-        plot16 = require('../../app/images/plots/16-30_new_1920w.png')
-        plot31 = require('../../app/images/plots/31-45_new_1920w.png')
+        plot1 = require('../../app/images/plots/1plot_new_1920w.png');
+        plot2 = require('../../app/images/plots/2-15_new_1920w.png');
+        plot16 = require('../../app/images/plots/16-30_new_1920w.png');
+        plot31 = require('../../app/images/plots/31-45_new_1920w.png');
         plot46 = require('../../app/images/plots/46-60_new_1920w.png')
     } else if (window.innerWidth >= 3500) {
-        plot1 = require('../../app/images/plots/1plot_new_3500w.png')
-        plot2 = require('../../app/images/plots/2-15_new_3500w.png')
-        plot16 = require('../../app/images/plots/16-30_new_3500w.png')
-        plot31 = require('../../app/images/plots/31-45_new_3500w.png')
+        plot1 = require('../../app/images/plots/1plot_new_3500w.png');
+        plot2 = require('../../app/images/plots/2-15_new_3500w.png');
+        plot16 = require('../../app/images/plots/16-30_new_3500w.png');
+        plot31 = require('../../app/images/plots/31-45_new_3500w.png');
         plot46 = require('../../app/images/plots/46-60_new_3500w.png')
     }
 }
@@ -71,7 +71,7 @@ class PlotSale extends Component {
         searchCountryValue: "",
         numberOfPlots: 30,
         plotImage: plot16
-    }
+    };
 
     componentDidMount() {
         const {countryService, handleGetChestValues, web3} = this.props;
@@ -103,12 +103,12 @@ class PlotSale extends Component {
     }
 
     setBackgroundImage = (numberOfPlots) => {
-        if(numberOfPlots === 1) this.setState({plotImage : plot1})
-        else if(numberOfPlots >= 2 && numberOfPlots < 16) this.setState({plotImage: plot2})
-        else if(numberOfPlots >= 16 && numberOfPlots < 31) this.setState({plotImage: plot16})
-        else if(numberOfPlots >= 31 && numberOfPlots < 46) this.setState({plotImage: plot31})
+        if(numberOfPlots === 1) this.setState({plotImage : plot1});
+        else if(numberOfPlots >= 2 && numberOfPlots < 16) this.setState({plotImage: plot2});
+        else if(numberOfPlots >= 16 && numberOfPlots < 31) this.setState({plotImage: plot16});
+        else if(numberOfPlots >= 31 && numberOfPlots < 46) this.setState({plotImage: plot31});
         else if(numberOfPlots >= 46) this.setState({plotImage: plot46})
-    }
+    };
 
     rtdbListen = () => {
         const countriesMapping = {};
@@ -144,7 +144,7 @@ class PlotSale extends Component {
             });
         });
         //rtdb.ref('/worldMap').off();
-    }
+    };
 
     handleCityClick = (country) => {
         this.setState({
@@ -173,12 +173,11 @@ class PlotSale extends Component {
             }}>
                 <div style={{
                     backgroundImage: 'url(' + this.state.plotImage + ')',
-                    backgroundPosition: 'center center',
-                    backgroundSize: 'contain',
+                    backgroundPosition: '80% 50%',
+                    backgroundSize: 'cover',
                     backgroundRepeat: 'no-repeat'
                 }}>
-                    <div className="flex ais w-100 col-reverse row-ns mw9 center"
-                         style={{padding: "25px 10px 15px", minHeight: "601px"}}>
+                    <BuyPlotsArea className="flex ais w-100 col-reverse row-ns mw9 center">
                         <BuyFormContainer>
                             <BuyForm countryData={searchCountryList}
                                      handleClick={(country) => {
@@ -251,7 +250,7 @@ class PlotSale extends Component {
                             </MapContainer>
                             }
                         </MapArea>
-                    </div>
+                    </BuyPlotsArea>
                 </div>
                 <ChestsBar worldChestValue={worldChestValue} monthlyChestValue={monthlyChestValue}/>
             </div>
@@ -264,7 +263,7 @@ const actions = {
     getAvailableCountryPlots: getAvailableCountryPlots,
     handleBuy: buyPlots,
     handleGetChestValues: getChestValues,
-}
+};
 
 export default compose(
     withRouter,
@@ -273,6 +272,17 @@ export default compose(
         actions,
     ),
 )(PlotSale);
+
+const BuyPlotsArea = styled.div`
+    @media(max-width: 1400px) {
+        padding: 10px 10px 5px; 
+        min-height: 490px
+    }
+    @media(min-width: 1401px) {
+        padding: 25px 10px 15px; 
+        min-height: 606px
+    }
+`;
 
 const PickLocationButton = styled.div`
     height: 57px;
