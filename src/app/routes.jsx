@@ -43,8 +43,7 @@ const Routes = props => (
         console.warn('----------> Dashboard route starts <---------');
         return (<Dashboard {...props} />)}}/>
       <Route path="/gem/:gemId" render={() => <Items {...props} />}/>
-      <Route path="/plots" render={() => <Map {...props} />}/>
-      <Route exact path="/plots/:countryId" render={() => <Map {...props} />}/>
+      <Route path={["/plots", "/plots/:countryId"]} render={() => <Map {...props} />}/>
   </Fragment>
 );
 
