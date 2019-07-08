@@ -26,8 +26,8 @@ import OwnerLevelGembox from "./OwnerLevelGembox";
 import ViewerGembox from "./ViewerGembox";
 import {getTimeLeftMinutes} from "../../../app/services/PlotService";
 import MiningGembox from "./MiningGembox";
-import {MINING, STUCK} from "../../plots/plotConstants";
 import Loading from "../../../components/Loading";
+import {UpgradeWarningPopup} from "./UpgradeWarningPopup";
 
 const ColourButton = styled.button`
   background-image: url(${button});
@@ -108,7 +108,8 @@ class TradingBox extends PureComponent {
         endPrice: '',
         formSubmitted: false,
         showUpgrade: false,
-        useMetal: ''
+        useMetal: '',
+        showUpgradeWarning: true,
     };
 
     handleChange = (value, field) => this.setState({[field]: value});
@@ -147,7 +148,7 @@ class TradingBox extends PureComponent {
             role
         } = this.props;
         const {
-            duration, startPrice, endPrice, formSubmitted, showUpgrade, useMetal
+            duration, startPrice, endPrice, formSubmitted, showUpgrade, useMetal, showUpgradeWarning,
         } = this.state;
 
         //let gemMines, plotMined;
@@ -173,12 +174,20 @@ class TradingBox extends PureComponent {
                 <div style={fixedOverlayStyle}
                      onClick={() => this.setState({showUpgrade: false})}
                 >
-                    {!unprocessed && <UpgradeComponent metal={useMetal}
-                                                       metalAvailable={useMetal === 'silver' ? +userBalance.silverAvailable : +userBalance.goldAvailable}
-                                                       hidePopup={() =>
-                                                         this.setState({showUpgrade: false})
-                                                       }
-                                                       {...this.props}/>
+                    {!unprocessed && !(showUpgradeWarning && useMetal === 'gold' && gem.gradeType >= 4 && gem.restingEnergy > 0) &&
+                    <UpgradeComponent metal={useMetal}
+                                      metalAvailable={useMetal === 'silver' ? +userBalance.silverAvailable : +userBalance.goldAvailable}
+                                      hidePopup={() =>
+                                        this.setState({showUpgrade: false, showUpgradeWarning: true})
+                                      }
+                                      {...this.props}
+                    />
+                    }
+                    {showUpgradeWarning && (useMetal === 'gold') && gem.gradeType >= 4 && gem.restingEnergy >= 60 &&
+                    <UpgradeWarningPopup
+                      useEnergyCallback={() => this.setState({showUpgrade: false})}
+                      upgradeCallback={() => this.setState({showUpgradeWarning: false})}
+                    />
                     }
                     <div
                       // style={position: absolute
@@ -270,15 +279,15 @@ class TradingBox extends PureComponent {
 
                           {/*//todo: Unprocessed Blocks and Time Till Gem gets Stuck IF NOT STUCK (i.e. MINING)*/}
                           {gem.plotMined &&
-                            <MiningGembox
-                              stateName={gem.stateName}
-                              plotMined={gem.plotMined}
-                              totalUnprocessedBlocks={totalUnprocessedBlocks}
-                              unprocessedBlocks={unprocessedBlocks}
-                              minutesGemCanMine={minutesGemCanMine}
-                              handleProcessBlocks={() => handleProcessBlocks(gem.plotMined)}
-                              handleReleaseGem={() => handleReleaseGem(gem.plotMined)}
-                            />
+                          <MiningGembox
+                            stateName={gem.stateName}
+                            plotMined={gem.plotMined}
+                            totalUnprocessedBlocks={totalUnprocessedBlocks}
+                            unprocessedBlocks={unprocessedBlocks}
+                            minutesGemCanMine={minutesGemCanMine}
+                            handleProcessBlocks={() => handleProcessBlocks(gem.plotMined)}
+                            handleReleaseGem={() => handleReleaseGem(gem.plotMined)}
+                          />
                           }
 
                           {gem.stateName === IDLE && <OwnerLevelGembox
@@ -311,7 +320,7 @@ class TradingBox extends PureComponent {
                           <ViewerGembox gem={gem}/>
                           }
 
-                          {gem.stateName === IDLE  && (
+                          {gem.stateName === IDLE && (
                             <div className="pa5 flex jcc col">
                                 <div>
                                     <div>Auction duration:</div>

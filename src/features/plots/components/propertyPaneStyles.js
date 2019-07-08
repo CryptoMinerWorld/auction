@@ -78,6 +78,11 @@ export const mrbOutlineColor = "#BE79DB";
 export const mrbPaneColor = "#432056";
 export const energyPaneColor = "#1D513E";
 export const energyOutlineColor = "#71CCAE";
+export const greenPaneColor = "#204F3E";
+export const greenOutlineColor = "#79D8B9";
+export const redPaneColor = "#C4082D";
+export const redOutlineColor = "#F993A5";
+
 
 export const type = (color) => ({
     1: 'Gar',
