@@ -17,6 +17,10 @@ const AdjustContainer = styled.div`
     margin-right: .3vw;
     margin-left: .3vw;
     flex: 15;
+    
+    @media(max-width: 800px) {
+        min-width: 950px;
+    }
        
     @media(min-width: 801px) and (max-width: 1820px) {
         min-width: 780px;
@@ -46,9 +50,6 @@ const GradesTypesLevelsContainer = styled.div`
             justify-content: center;
         }
         
-        @media(max-width: 800px) {
-            width: 1120px;
-        }
         
 `;
 
@@ -66,8 +67,13 @@ const Types = styled.div`
     order: 2;
     max-width: 500px;
     min-width: 276px;
+    
     flex-wrap: wrap;
     margin: 0 10px
+    
+    @media(max-width: 800px) {
+        width: 336px;
+    }
     
     @media(min-width: 801px) and (max-width: 1820px) {
         flex-wrap: nowrap;
@@ -75,13 +81,10 @@ const Types = styled.div`
         flex: 0 800px;
     }
     
-    @media(max-width: 800px) {
-        max-width: 390px;
-    }
 `;
 
 const TypeBox = styled.div`
-    @media(max-width: 599px) {
+    @media(max-width: 800px) {
         margin: 1px 3px;
         min-width: 50px;
         font-size: 12px;
@@ -111,7 +114,7 @@ const Levels = styled.div`
 
 const GradeAndLevelBox = styled.div`
 
-    @media(max-width: 599px) {
+    @media(max-width: 800px) {
         font-size: 16px;
         margin: 2px 1px; 
     }
