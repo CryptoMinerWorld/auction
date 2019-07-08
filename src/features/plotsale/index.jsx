@@ -30,22 +30,22 @@ let plot46;
 
 if (window.innerWidth > 800) {
     if (window.innerWidth <= 1280) {
-        plot1 = require('../../app/images/plots/1plot_new_1280w.png')
-        plot2 = require('../../app/images/plots/2-15_new_1280w.png')
-        plot16 = require('../../app/images/plots/16-30_new_1280w.png')
-        plot31 = require('../../app/images/plots/31-45_new_1280w.png')
+        plot1 = require('../../app/images/plots/1plot_new_1280w.png');
+        plot2 = require('../../app/images/plots/2-15_new_1280w.png');
+        plot16 = require('../../app/images/plots/16-30_new_1280w.png');
+        plot31 = require('../../app/images/plots/31-45_new_1280w.png');
         plot46 = require('../../app/images/plots/46-60_new_1280w.png')
     } else if (window.innerWidth <= 1920) {
-        plot1 = require('../../app/images/plots/1plot_new_1920w.png')
-        plot2 = require('../../app/images/plots/2-15_new_1920w.png')
-        plot16 = require('../../app/images/plots/16-30_new_1920w.png')
-        plot31 = require('../../app/images/plots/31-45_new_1920w.png')
+        plot1 = require('../../app/images/plots/1plot_new_1920w.png');
+        plot2 = require('../../app/images/plots/2-15_new_1920w.png');
+        plot16 = require('../../app/images/plots/16-30_new_1920w.png');
+        plot31 = require('../../app/images/plots/31-45_new_1920w.png');
         plot46 = require('../../app/images/plots/46-60_new_1920w.png')
     } else if (window.innerWidth >= 3500) {
-        plot1 = require('../../app/images/plots/1plot_new_3500w.png')
-        plot2 = require('../../app/images/plots/2-15_new_3500w.png')
-        plot16 = require('../../app/images/plots/16-30_new_3500w.png')
-        plot31 = require('../../app/images/plots/31-45_new_3500w.png')
+        plot1 = require('../../app/images/plots/1plot_new_3500w.png');
+        plot2 = require('../../app/images/plots/2-15_new_3500w.png');
+        plot16 = require('../../app/images/plots/16-30_new_3500w.png');
+        plot31 = require('../../app/images/plots/31-45_new_3500w.png');
         plot46 = require('../../app/images/plots/46-60_new_3500w.png')
     }
 }
@@ -71,7 +71,7 @@ class PlotSale extends Component {
         searchCountryValue: "",
         numberOfPlots: 30,
         plotImage: plot16
-    }
+    };
 
     componentDidMount() {
         const {countryService, handleGetChestValues, web3} = this.props;
@@ -101,22 +101,21 @@ class PlotSale extends Component {
             handleGetChestValues();
         }
         if(this.props.match.params.countryId && prevState.countryList.length === 0 && this.state.countryList.length > 0) {
-            const selectedCountry = this.state.countryList.find((geography) => geography.countryId === parseInt(this.props.match.params.countryId, 10))
+            const selectedCountry = this.state.countryList.find((geography) => geography.countryId === parseInt(this.props.match.params.countryId, 10));
             if(selectedCountry) this.setState({selection: selectedCountry}, async () => {
                 selectedCountry.availablePlots = await handleGetAvailableCountryPlots(selectedCountry.countryId);
-                this.setState({selection: selectedCountry}, () => console.log(111111111111, this.state));
+                this.setState({selection: selectedCountry});
             });
         }
-
     }
 
     setBackgroundImage = (numberOfPlots) => {
-        if(numberOfPlots === 1) this.setState({plotImage : plot1})
-        else if(numberOfPlots >= 2 && numberOfPlots < 16) this.setState({plotImage: plot2})
-        else if(numberOfPlots >= 16 && numberOfPlots < 31) this.setState({plotImage: plot16})
-        else if(numberOfPlots >= 31 && numberOfPlots < 46) this.setState({plotImage: plot31})
+        if(numberOfPlots === 1) this.setState({plotImage : plot1});
+        else if(numberOfPlots >= 2 && numberOfPlots < 16) this.setState({plotImage: plot2});
+        else if(numberOfPlots >= 16 && numberOfPlots < 31) this.setState({plotImage: plot16});
+        else if(numberOfPlots >= 31 && numberOfPlots < 46) this.setState({plotImage: plot31});
         else if(numberOfPlots >= 46) this.setState({plotImage: plot46})
-    }
+    };
 
     rtdbListen = () => {
         const countriesMapping = {};
@@ -152,7 +151,7 @@ class PlotSale extends Component {
             });
         });
         //rtdb.ref('/worldMap').off();
-    }
+    };
 
     handleCityClick = (country) => {
         this.setState({
@@ -272,7 +271,7 @@ const actions = {
     handleGetAvailableCountryPlots: getAvailableCountryPlots,
     handleBuy: buyPlots,
     handleGetChestValues: getChestValues,
-}
+};
 
 export default compose(
     withRouter,

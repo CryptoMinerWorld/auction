@@ -4,6 +4,7 @@ import Slider, {createSliderWithTooltip} from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import actionButtonImage from "../../../app/images/noTextGemButton.png";
 import searchIcon from "../../../app/images/search.png";
+import Icon from "antd/lib/icon";
 
 
 const BuyFormContainer = styled.div`
@@ -186,18 +187,24 @@ class BuyForm extends Component {
                   <Col style={{flex: 1}}>{selectedCountry.imageLinkMedium &&
                   <SelectedCountryIcon src={selectedCountry.imageLinkMedium}/>}</Col>
                   <Col style={{flex: 2}}>
-                      {!this.state.processBuy &&
+                      {(!this.state.processBuy && countryData && countryData.length > 0) ?
                         <BuyButton onClick={() => {
                             this.setState({processBuy: true});
-                            handleBuy(()=>{this.setState({processBuy: false})});
-                        }}>Buy Now</BuyButton>}
+                            handleBuy(() => {
+                                this.setState({processBuy: false})
+                            });
+                        }}>Buy Now</BuyButton> : (
+                          <div className="flex x h3 w-100">
+                              <Icon type="loading" theme="outlined"/>
+                          </div>
+                        )}
                       {
                           selectedCountry.availablePlots ?
                             numberOfPlots <= selectedCountry.availablePlots ?
                               <BuyInfo>Buy {numberOfPlots} plots in {selectedCountry.name}</BuyInfo>
                               :
                               <BuyInfo>{`Buy ${selectedCountry.availablePlots} plots in ${selectedCountry.name} ` +
-                                  `and ${(numberOfPlots - selectedCountry.availablePlots)} plots in random countries`}</BuyInfo>
+                              `and ${(numberOfPlots - selectedCountry.availablePlots)} plots in random countries`}</BuyInfo>
                             : <BuyInfo>Buy {numberOfPlots} plots in random countries</BuyInfo>
                       }
                   </Col>
@@ -306,7 +313,7 @@ const CountryList = ({countries, selectedCountry, selectCountry, selectHoveredId
           </CountriesTable>
       </CountryFilter>
     )
-}
+};
 
 const SearchIcon = styled.img`
     width: 12px;
@@ -319,7 +326,7 @@ const SearchField = styled.input`
     color: white;
     width: 80px;
     background-color: #5e676d;
-`
+`;
 
 const CountrySearch = ({selectedCountry, searchCountryValue, searchCountry}) => {
     return (
@@ -333,4 +340,4 @@ const CountrySearch = ({selectedCountry, searchCountryValue, searchCountry}) => 
                        placeholder={selectedCountry && selectedCountry.name}/>
       </div>
     )
-}
+};
