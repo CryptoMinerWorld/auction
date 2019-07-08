@@ -143,10 +143,10 @@ class App extends Component {
         let bncAssistConfig = {
             dappId: "e8432341-1602-487b-ba82-c3e2c46fb47d",      // [String] The API key created by step one above
             networkId: 3,
-            web3,
-            style: {
-                dark: true
-            }// [Integer] The Ethereum network ID your dapp uses.
+            // web3,
+            // style: {
+            //     dark: true
+            // }// [Integer] The Ethereum network ID your dapp uses.
         };
 
         let assistInstance = assist.init(bncAssistConfig);
