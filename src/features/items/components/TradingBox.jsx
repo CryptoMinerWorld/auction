@@ -172,7 +172,7 @@ class TradingBox extends PureComponent {
           <>
               {showUpgrade && useMetal && (
                 <div style={fixedOverlayStyle}
-                     onClick={() => this.setState({showUpgrade: false})}
+                     onClick={() => this.setState({showUpgrade: false, showUpgradeWarning: true})}
                 >
                     {!unprocessed && !(showUpgradeWarning && useMetal === 'gold' && gem.gradeType >= 4 && gem.restingEnergy > 0) &&
                     <UpgradeComponent metal={useMetal}
