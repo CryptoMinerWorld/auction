@@ -67,14 +67,14 @@ const fixedOverlayStyle = {
     display: 'flex',
     cursor: 'pointer',
     backgroundColor: 'rgba(0,0,0,0.5)'
-}
+};
 
 const select = store => ({
     userPlots: store.plots.userPlots,
     gemMiningIds: store.plots.gemMiningIds,
     plotService: store.app.plotServiceInstance,
     userBalance: store.sale.balance
-})
+});
 
 
 class TradingBox extends PureComponent {
@@ -142,7 +142,7 @@ class TradingBox extends PureComponent {
           <>
               {showUpgrade && useMetal && (
                 <div style={fixedOverlayStyle}
-                     onClick={() => this.setState({showUpgrade: false})}
+                     onClick={() => this.setState({showUpgrade: false, showUpgradeWarning: true})}
                 >
                     {!unprocessed && <UpgradeComponent metal={useMetal}
                                                     metalAvailable={useMetal === 'silver' ? +userBalance.silverAvailable : +userBalance.goldAvailable}
