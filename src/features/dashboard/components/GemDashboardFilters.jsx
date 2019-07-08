@@ -66,7 +66,6 @@ const OpenCloseMobileFiltersButton = styled.div`
         right:0;
         margin:0 auto;
         
-        border: 1px solid white;
         ${props => props.mobileFiltersDisplayed ?
     `
             height: 20px;
@@ -78,11 +77,12 @@ const OpenCloseMobileFiltersButton = styled.div`
                 height: 19px;
                 content: 'v';
                 left: 48vw;
-                bottom: 114px;
+                bottom: 82px;
                 color: white;
+                border: 1px solid white;
                 background-color: black;
                 text-align: center;
-                font-size: 16px;
+                font-size: 14px;
             }
         `
     :
@@ -99,6 +99,7 @@ const OpenCloseMobileFiltersButton = styled.div`
                     left: 0;
                     right: 0;
                     color: white;
+                    border: 1px solid white;
                     background-color: black;
                     text-align: center;
                     font-size: 16px;
