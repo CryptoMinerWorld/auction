@@ -10,6 +10,16 @@ export default class PlotService {
         this.minerContract = minerContractInstance;
     }
 
+    withdrawCountriesEth = (owner) => {
+        return this.plotSaleContract.methods
+          .withdraw(owner)
+          .send();
+    };
+
+    getTotalNotWithdrawn = async (owner) => {
+        return await this.plotSaleContract.methods.balanceOf(owner).call();
+    };
+
     getPlotsMintedByCountryId = async (countryId) => {
         console.log("COUNTRY ID", countryId);
         return await this.plotContract.methods.minted(countryId).call();

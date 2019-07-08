@@ -30,7 +30,7 @@ CountryCard.propTypes = {
 
 export const CountryBar = ({ countries, selectCountry }) => (
   <div
-    className="overflow-auto bg-off-black mv5 pa0 shadow-2 flex h-100"
+    className="overflow-auto bg-off-black mb5 mt4 pa0 shadow-2 flex h-100"
     style={{ whiteSpace: 'nowrap' }}
   >
     {countries

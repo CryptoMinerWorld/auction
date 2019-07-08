@@ -37,8 +37,8 @@ export const getUserPlots = ownerId => async (dispatch, getState) => {
                 console.warn("TX BODY PLOT", tx.body.plot);
                 const pendingPlotIndex = userPlots.findIndex(plot => Number(plot.id) === Number(tx.body.plot));
                 if (pendingPlotIndex > 0) userPlots[pendingPlotIndex].miningState = tx.type;
-                if (tx.body.gem) {
-                    gemMiningIds.push(tx.body.gem.toString());
+                if (tx.body.gemId) {
+                    gemMiningIds.push(tx.body.gemId.toString());
                 }
             }
         }

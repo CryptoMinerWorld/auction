@@ -1,30 +1,45 @@
 import {
-    APPLY_GEM_WORKSHOP_FILTER_OPTION, APPLY_GEM_WORKSHOP_SORTING,
-    AUCTION_DETAILS_RECEIVED, COUPON_USE,
-    DASHBOARD_WAS_FILTERED, DESELECT_ALL_GEM_WORKSHOP_FILTERS,
+    APPLY_GEM_WORKSHOP_FILTER_OPTION,
+    APPLY_GEM_WORKSHOP_SORTING,
+    AUCTION_DETAILS_RECEIVED, COUNTRY_WITHDRAW,
+    COUPON_USE,
+    DASHBOARD_WAS_FILTERED,
+    DESELECT_ALL_GEM_WORKSHOP_FILTERS,
     FETCH_USER_COUNTRIES,
     FETCH_USER_GEMS_BEGUN,
     ONLY_WANT_TO_SEE_GEMS_IN_AUCTIONS,
-    PAGINATE,
-    RERENDER_SORT_BOX,
-    SCROLL_GEMS, SET_DEFAULT_GEM_WORKSHOP_FILTERS,
-    SORT_BOX_RERENDERED, USER_ARTIFACTS_RETRIEVED,
+    SCROLL_GEMS,
+    SET_DEFAULT_GEM_WORKSHOP_FILTERS,
+    USER_ARTIFACTS_RETRIEVED,
     USER_GEMS_RETRIEVED,
     WANT_TO_SEE_ALL_GEMS,
 } from './dashboardConstants';
 import {db} from '../../app/utils/firebase';
-import {
-    addPendingTransaction,
-    completedTx,
-    ErrorTx,
-    getUpdatedTransactionHistory,
-    startTx
-} from "../transactions/txActions";
-import {parseTransactionHashFromError} from "../transactions/helpers";
+import {addPendingTransaction, getUpdatedTransactionHistory} from "../transactions/txActions";
 import {getUserBalance} from "../sale/saleActions";
-import {gradeConverter, type} from "../plots/components/propertyPaneStyles";
-import {GEM_UPGRADE} from "../items/itemConstants";
 
+export const withdrawCountryEth = () => async (dispatch, getState) => {
+    const plotService = getState().app.plotServiceInstance;
+    const currentUserId = getState().auth.currentUserId;
+    let txHash;
+    plotService.withdrawCountriesEth(currentUserId)
+      .on('transactionHash', (hash) => {
+          txHash = hash;
+          addPendingTransaction({
+              hash: hash,
+              userId: currentUserId,
+              type: COUNTRY_WITHDRAW,
+              description: `Withdrawing countries income`
+          })(dispatch, getState);
+      })
+      .on('receipt', async (receipt) => {
+      })
+      .on('error', (err) => {
+          if (txHash) {
+              getUpdatedTransactionHistory()(dispatch, getState);
+          }
+      });
+};
 
 export const getUserGems = ownerId => async (dispatch, getState) => {
     console.log('11111 FETCH!');
@@ -56,18 +71,25 @@ export const getUserGems = ownerId => async (dispatch, getState) => {
 export const getUserArtifacts = userId => async (dispatch, getState) => {
     const artifactsBalance = await getState().app.artifactContractInstance.methods.balanceOf(userId).call();
     dispatch({type: USER_ARTIFACTS_RETRIEVED, payload: {userArtifacts: artifactsBalance}});
-}
+};
 
 export const getUserCountries = userId => async (dispatch, getState) => {
     const countryService = getState().app.countryServiceInstance;
-    const userCountries = await countryService.getUserCountries(userId);
-    console.log(' ::::::::::::: GET USER COUNTRIES ACTION:', userCountries);
-    dispatch({type: FETCH_USER_COUNTRIES, payload: {userCountries}})
-}
+    const plotService = getState().app.plotServiceInstance;
+    const currentUserId = getState().auth.currentUserId;
+
+    const [userCountries, totalNotWithdrawn] = await Promise.all([
+        await countryService.getUserCountries(userId),
+        (userId.toLowerCase() === currentUserId.toLowerCase()) ? await plotService.getTotalNotWithdrawn(userId) : null
+    ]);
+    dispatch({type: FETCH_USER_COUNTRIES, payload: {userCountries, totalNotWithdrawn}})
+};
 
 export const getUserDetails = async userId => {
 
     const userIdToLowerCase = userId
+
+
       .split('')
       .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
       .join('');
@@ -115,7 +137,7 @@ export const useCoupon = (couponCode, hidePopup) => async (dispatch, getState) =
               getUpdatedTransactionHistory()(dispatch, getState);
           }
       });
-}
+};
 
 export const getGemDetails = tokenId => dispatch => db
   .collection('stones')
@@ -163,20 +185,20 @@ export const addGemsToDashboard = gems => {
         type: 'DASHBOARD_GEMS_READY',
         payload: gems,
     }
-}
+};
 
 
 export const setDefaultFilters = () => {
     return {
         type: SET_DEFAULT_GEM_WORKSHOP_FILTERS,
     }
-}
+};
 
 export const deselectAllFilters = () => {
     return {
         type: DESELECT_ALL_GEM_WORKSHOP_FILTERS,
     }
-}
+};
 
 export const applyFilterOption = (filterOption, optionType) => {
     return {
@@ -196,4 +218,4 @@ export const applySort = (newSortOption, newSortDirection) => (dispatch, getStat
             sortDirection: newSortDirection,
         }
     })
-}
+};

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import moment from 'moment-timezone';
 import momentDurationFormatSetup from 'moment-duration-format';
 import {STUCK} from "../itemConstants";
-import buyNowImage from "../../../app/images/thickAndWidePinkButton.png";
+import squaredPinkButton from "../../../app/images/squaredPinkButton.png";
 
 momentDurationFormatSetup(moment);
 
@@ -91,7 +91,7 @@ const FlexColumnCenteredContainer = styled.div`
 
 const ProcessButton = styled.div`
     opacity: ${props => props.disabled ? "0.5" : "1"}
-    background-image: url(${buyNowImage});
+    background-image: url(${squaredPinkButton});
     background-position: center center;
     max-width: 50px;
     height: 50px;

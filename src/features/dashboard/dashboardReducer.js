@@ -52,7 +52,7 @@ export default function dashboardReducer(
     }
 
     if (action.type === FETCH_USER_COUNTRIES) {
-        return {...state, userCountries: action.payload.userCountries};
+        return {...state, userCountries: action.payload.userCountries, countriesNotWithdrawnEth: action.payload.totalNotWithdrawn};
     }
 
     if (action.type === USER_ARTIFACTS_RETRIEVED) {

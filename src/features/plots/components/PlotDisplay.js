@@ -91,6 +91,12 @@ class PlotDisplay extends Component {
             this.setState({
                 currentTime: new Date().getTime(),
             });
+            if (this.state.plotSelected) {
+                const newSelectedPlot = plots.find(plot => plot.id === this.state.plotSelected.id);
+                newSelectedPlot && this.setState({
+                    plotSelected: newSelectedPlot
+                })
+            }
             this.applyAllFilters();
             //this.sortFiltered(this.props.plots || []);
         }

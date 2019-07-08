@@ -46,7 +46,7 @@ class Countries extends Component {
 
   render() {
     const { index, selected } = this.state;
-    const { countries } = this.props;
+    const { countries, showForOwner } = this.props;
 
     return (
       <div data-testid="countriesExist" id="top" className="pa0 center">
@@ -58,7 +58,9 @@ class Countries extends Component {
         >
           {() => selected && (
           <CountryDetails
+            showForOwner={showForOwner}
             name={countries[index].name}
+            countryId={countries[index].countryId}
             lastBought={countries[index].lastBought}
             totalPlots={countries[index].totalPlots}
             plotsBought={countries[index].plotsBought}

@@ -20,9 +20,11 @@ export class SelectedGemsPopup extends Component {
 
         const plot = this.props.selectedPlot;
         const gem = plot.gemMines;
-        console.log("gems popup image" + gem.image);
+        console.log("GEM:", gem);
+        console.log("PLOT:", plot);
 
         return (
+          gem ?
           <div style={container}>
               <PlotsInfo>
                   <Col flex={1}>
@@ -63,8 +65,10 @@ export class SelectedGemsPopup extends Component {
                   </Col>
                   <Col flex={1}>
                       <ButtonsBlock>
-                          {plot.miningState !== NOT_MINING && <ShowButton content={"Stop Mining"}
-                                                                          onClick={() => this.props.stopMining(plot)}/>}
+                          {plot.miningState === MINING || plot.miningState === STUCK || plot.miningState === MINED || plot.miningState === PROCESSED
+                          && <ShowButton content={"Stop Mining"}
+                                      onClick={() => this.props.stopMining(plot)}/>
+                          }
                           {gem &&
                           <Link
                             style={{width: "100%"}}
@@ -77,7 +81,7 @@ export class SelectedGemsPopup extends Component {
                       </ButtonsBlock>
                   </Col>
               </div>
-          </div>
+          </div> : <div style={container}><div style={{width: "200px", textAlign: 'center'}}>Gem has gone</div></div>
         );
     }
 }

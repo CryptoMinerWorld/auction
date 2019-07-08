@@ -17,7 +17,7 @@ import {
     getUserDetails,
     getUserGems,
     scrollGems,
-    useCoupon,
+    useCoupon, withdrawCountryEth,
 } from './dashboardActions';
 import {preLoadAuctionPage} from '../market/marketActions';
 import CountryDashboard from '../countries/components/Dashboard';
@@ -38,6 +38,7 @@ import {setDashboardEventListeners} from "./dashboardEventListener";
 import GemDashboard from "./components/GemDashboard";
 import {getAvailableCountryPlots} from "../plotsale/plotSaleActions";
 import {USER_PLOTS_RELOAD_BEGUN} from "../plots/plotConstants";
+import {COUNTRY_WITHDRAW} from "./dashboardConstants";
 
 
 const {TabPane} = Tabs;
@@ -85,7 +86,6 @@ const select = store => ({
         store.dashboard.userGems.slice(0, store.dashboard.end),
     hasMoreGems: store.dashboard.hasMoreGems,
     pageNumber: store.dashboard.page,
-    loading: store.dashboard.gemsLoading,
     error: store.dashboard.gemsLoadingError,
     currentUser: store.auth.user,
     transactionHistory: store.tx.transactionHistory,
@@ -93,6 +93,7 @@ const select = store => ({
     userExists: store.auth.existingUser,
     userBalance: store.sale.balance,
     userCountries: store.dashboard.userCountries,
+    countriesNotWithdrawnEth: store.dashboard.countriesNotWithdrawnEth,
     userArtifacts: store.dashboard.userArtifacts,
     sortBox: store.dashboard.sortBox,
     currentUserId: store.auth.currentUserId,
@@ -114,7 +115,6 @@ const select = store => ({
 class Dashboard extends Component {
 
     static propTypes = {
-        loading: PropTypes.bool.isRequired,
         error: PropTypes.bool.isRequired,
         userName: PropTypes.string,
         userImage: PropTypes.string,
@@ -358,8 +358,8 @@ class Dashboard extends Component {
     render() {
 
         const {
-            loading,
             dataLoaded,
+            currentUserId,
             sortBox,
             totalGems,
             userPlots,
@@ -369,7 +369,8 @@ class Dashboard extends Component {
             handleUseCoupon,
             userExists,
             userCountries,
-            userArtifacts
+            userArtifacts,
+          pendingTransactions,
         } = this.props;
 
         const {
@@ -514,8 +515,14 @@ class Dashboard extends Component {
                     key="3"
                   >
                       <CountryDashboard
-                        userCountryIdList={userCountries}
+                        userCountryIdList={[11]}//userCountries}
+                        withdrawEth={() => {
+                            this.props.handleWithdrawCountryEth();
+                        }}
+                        totalNotWithdrawn={this.props.countriesNotWithdrawnEth}
+                        isWithdrawing={pendingTransactions && pendingTransactions.find(tx => tx.type === COUNTRY_WITHDRAW)}
                         userId={match.params.userId}
+                        currentUserId={currentUserId}
                         handleGetAvailableCountryPlots={this.props.handleGetAvailableCountryPlots}
                       />
                   </TabPane>
@@ -562,6 +569,7 @@ const actions = {
     handleShowSignInBox: () => ({type: 'SHOW_SIGN_IN_BOX'}),
     handleGetUserCountries: getUserCountries,
     handleGetAvailableCountryPlots: getAvailableCountryPlots,
+    handleWithdrawCountryEth: withdrawCountryEth,
 };
 
 export default compose(
