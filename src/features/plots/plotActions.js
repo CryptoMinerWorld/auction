@@ -1,26 +1,21 @@
 import {
-    BINDING_GEM, BULK_PROCESSING, GEM_BINDING,
-    GEM_CHANGE_LOCK_STATE,
+    BINDING_GEM,
+    BULK_PROCESSING,
+    GEM_BINDING,
     MINED,
     MINING,
     NEW_PLOT,
     NO_GEM,
     PROCESSED,
-    PROCESSING, REFRESH_USER_PLOT, REFRESH_USER_PLOTS,
+    PROCESSING,
+    REFRESH_USER_PLOT,
+    REFRESH_USER_PLOTS,
     STUCK,
     UNBINDING_GEM,
     USER_PLOTS_RECEIVED
 } from "./plotConstants";
 import {db} from '../../app/utils/firebase';
-import {
-    addPendingTransaction,
-    completedTx,
-    ErrorTx,
-    getUpdatedTransactionHistory,
-    startTx
-} from "../transactions/txActions";
-import {TRANSACTION_RESOLVED} from "../transactions/txConstants";
-import {parseTransactionHashFromError} from "../transactions/helpers";
+import {addPendingTransaction, getUpdatedTransactionHistory} from "../transactions/txActions";
 
 export const getUserPlots = ownerId => async (dispatch, getState) => {
     console.warn("GETTING USER PLOTS>>>");
@@ -163,32 +158,32 @@ export const processPlots = (plotIds) => async (dispatch, getState) => {
     console.log("process plots ids:", plotIds);
     const currentUser = getState().auth.currentUserId;
     let txHash;
-        getState().app.plotServiceInstance.processPlots(plotIds)
-          .on('transactionHash', (hash) => {
-              txHash = hash;
-              addPendingTransaction({
-                  hash: hash,
-                  userId: currentUser,
-                  type: BULK_PROCESSING,
-                  description: `Bulk processing`,
-                  body: {
-                      plotIds,
-                  }
-              })(dispatch, getState);
-              dispatch({
-                  type: REFRESH_USER_PLOTS,
-                  payload: {ids: plotIds, miningState: PROCESSING}
-              })
-          })
-          .on('receipt', (receipt) => {
-              //updatePlotCallback();
-              //updatePlotCallback({...plot, processedBlocks: plot.currentPercentage, miningState: previousState});
-          })
-          .on('error', (err) => {
-              if (txHash) {
-                  getUpdatedTransactionHistory()(dispatch, getState);
+    getState().app.plotServiceInstance.processPlots(plotIds)
+      .on('transactionHash', (hash) => {
+          txHash = hash;
+          addPendingTransaction({
+              hash: hash,
+              userId: currentUser,
+              type: BULK_PROCESSING,
+              description: `Bulk processing`,
+              body: {
+                  plotIds,
               }
-          });
+          })(dispatch, getState);
+          dispatch({
+              type: REFRESH_USER_PLOTS,
+              payload: {ids: plotIds, miningState: PROCESSING}
+          })
+      })
+      .on('receipt', (receipt) => {
+          //updatePlotCallback();
+          //updatePlotCallback({...plot, processedBlocks: plot.currentPercentage, miningState: previousState});
+      })
+      .on('error', (err) => {
+          if (txHash) {
+              getUpdatedTransactionHistory()(dispatch, getState);
+          }
+      });
 };
 
 export const processBlocks = (plot, updatePlotCallback) => async (dispatch, getState) => {
@@ -237,7 +232,7 @@ export const calculateMiningStatus = (plot) => {
     }
 
     if (!plot.gemMines && plot.state) {
-       return PROCESSED;
+        return PROCESSED;
     }
 
     if (plot.currentPercentage >= 100) {
@@ -253,6 +248,25 @@ export const calculateMiningStatus = (plot) => {
         }
     }
 };
+
+export const countTotalUnprocessedBlocks = (plots) => {
+    console.log("COUNT");
+    let totalUnprocessedBlocks = [0, 0, 0, 0, 0];
+    plots.forEach((plot) => {
+        if (plot.currentPercentage > plot.processedBlocks) {
+            totalUnprocessedBlocks[0] += Math.max(Math.min(plot.currentPercentage, plot.layerEndPercentages[0]) - Math.max(0, plot.processedBlocks), 0);
+            console.log("T U S:", totalUnprocessedSum);
+            for (let i = 1; i < 5; i++) {
+                totalUnprocessedBlocks[i] += Math.max(Math.min(plot.currentPercentage, plot.layerEndPercentages[i])
+                  - Math.max(plot.layerEndPercentages[i - 1], plot.processedBlocks), 0);
+                console.log("T U S:", i, totalUnprocessedSum);
+            }
+        }
+    });
+    const totalUnprocessedSum = totalUnprocessedBlocks.reduce((a, b) => a + b);
+    return {totalUnprocessedSum, totalUnprocessedBlocks};
+};
+
 
 export const getCountryData = async (countryId) => {
     const country = (await db.collection('countries').where('countryId', '==',

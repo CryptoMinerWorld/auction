@@ -10,7 +10,13 @@ import plotFinishButton from "../../../app/images/finishButton.png";
 import Slider from "react-slick";
 import {compose} from "redux";
 import connect from "react-redux/es/connect/connect";
-import {calculateMiningStatus, getUserPlots, processBlocks, releaseGem} from "../plotActions";
+import {
+    calculateMiningStatus,
+    countTotalUnprocessedBlocks,
+    getUserPlots,
+    processBlocks,
+    releaseGem
+} from "../plotActions";
 import {
     BINDING_GEM,
     CANT_MINE, GEM_BINDING,
@@ -80,6 +86,7 @@ class PlotDisplay extends Component {
         });
         if (this.props.plots) {
             this.applyAllFilters();
+            this.setState({totalUnprocessedBlocksNumber: countTotalUnprocessedBlocks(this.props.plots).totalUnprocessedSum})
         }
     }
 
@@ -98,6 +105,7 @@ class PlotDisplay extends Component {
                 })
             }
             this.applyAllFilters();
+            this.setState({totalUnprocessedBlocksNumber: countTotalUnprocessedBlocks(plots).totalUnprocessedSum})
             //this.sortFiltered(this.props.plots || []);
         }
     }
@@ -328,7 +336,7 @@ class PlotDisplay extends Component {
     render() {
         //console.log("State: ", this.state);
         //console.log("Props: ", this.props);
-        const {sortOption, sortOptionDirection, tierFilterOptions, plotFilterOptions, filteredPlots, plotSelected, sliderIndex} = this.state;
+        const {sortOption, sortOptionDirection, tierFilterOptions, plotFilterOptions, filteredPlots, plotSelected, sliderIndex, totalUnprocessedBlocksNumber} = this.state;
         const {handleBindGem, plots, gems, handleGetUserPlots, currentAccount} = this.props;
         const startStopButton = {};
 
@@ -422,6 +430,7 @@ class PlotDisplay extends Component {
                 showSidebarPopup={(type) => this.showSidebarPopup(type)}
                 plotSelected={plotSelected}
                 isOwner={isOwner}
+                totalUnprocessedBlocksNumber={totalUnprocessedBlocksNumber}
               />
               {/*{this.state.showSidebarFilters ?*/}
               {/*<PlotFilter*/}
