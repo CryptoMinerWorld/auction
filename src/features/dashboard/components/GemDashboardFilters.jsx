@@ -22,6 +22,7 @@ const GemFiltersContainer = styled.div`
             margin: 0;
             height: ${props => props.mobileFiltersDisplayed ? "auto" : "3px"}
             border-top: 1px solid white;
+            overflow-x: ${props => props.mobileFiltersDisplayed ? "auto" : "initial"}
       }
 `;
 
@@ -41,7 +42,6 @@ const GemFiltersFlexWrapper = styled.div`
     @media(max-width: 800px) {
         padding: 5px 0;
         float: left;
-        overflow-x: scroll;
     }
     
     @media(min-width: 1520px) {
@@ -69,17 +69,16 @@ const OpenCloseMobileFiltersButton = styled.div`
         border: 1px solid white;
         ${props => props.mobileFiltersDisplayed ?
     `
-            top: -20px;
             height: 20px;
             width: 22px;
             &:after {
                 display: block;
-                position: absolute;
-                width: 20px;
+                position: fixed;
+                width: 4vw;
                 height: 19px;
                 content: 'v';
-                left: 0;
-                right: 0;
+                left: 48vw;
+                bottom: 114px;
                 color: white;
                 background-color: black;
                 text-align: center;
