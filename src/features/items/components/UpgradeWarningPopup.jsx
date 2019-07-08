@@ -47,7 +47,7 @@ export const UpgradeWarningPopup = ({
                     fontSize={21}
                     height={55}
                     content={"I want to use Gem's Energy first!"}
-                    otherStyles={"font-weight: bold; margin: 10px 0; width: 380px;"}
+                    otherStyles={"font-weight: bold; margin: 10px 0; min-width: 320px; max-width: 380px;"}
                     onClick={() => useEnergyCallback()}
                   />
                   <CutEdgesButton
@@ -75,11 +75,19 @@ const WarningDescription = styled.div`
     margin-left: 10px;
     line-height: 1.3;
     font-weight: bold;
+    
+    @media(max-width: 500px) {
+        font-size: 12px;
+    }
+    
 `;
 
 const GemKidImage = styled.img`
     width: 160px;
-    height: 100%;
+    flex: 0 0 160px;
+    @media(max-width: 500px) {
+        display: none;
+    }
 `;
 
 const WarningContainer = styled.div`
