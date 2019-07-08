@@ -89,8 +89,8 @@ class PlotSale extends Component {
 
 
 
-    async componentDidUpdate(prevProps) {
-        const {countryService, handleGetChestValues, web3} = this.props;
+    async componentDidUpdate(prevProps, prevState) {
+        const {countryService, handleGetChestValues, web3, handleGetAvailableCountryPlots} = this.props;
         if (!countryService) {
             console.log('No service')
         }
@@ -99,6 +99,13 @@ class PlotSale extends Component {
         }
         if (web3 !== prevProps.web3) {
             handleGetChestValues();
+        }
+        if(this.props.match.params.countryId && prevState.countryList.length === 0 && this.state.countryList.length > 0) {
+            const selectedCountry = this.state.countryList.find((geography) => geography.countryId === parseInt(this.props.match.params.countryId, 10));
+            if(selectedCountry) this.setState({selection: selectedCountry}, async () => {
+                selectedCountry.availablePlots = await handleGetAvailableCountryPlots(selectedCountry.countryId);
+                this.setState({selection: selectedCountry});
+            });
         }
     }
 
@@ -163,7 +170,7 @@ class PlotSale extends Component {
     render() {
 
         const {countryData, zoom, coordinates, countryIdHovered, selection, cart, mapIsShown, searchCountryValue, countryList, searchCountryList, numberOfPlots} = this.state;
-        const {getAvailableCountryPlots, handleBuy, worldChestValue, monthlyChestValue} = this.props;
+        const {handleGetAvailableCountryPlots, handleBuy, worldChestValue, monthlyChestValue} = this.props;
 
         return (
             <div data-testid="mapPage" className="plot-sale bg-off-black white w-100" style={{
@@ -183,7 +190,7 @@ class PlotSale extends Component {
                                      handleClick={(country) => {
                                          this.handleCityClick(country);
                                          this.setState({selection: country}, async () => {
-                                             country.availablePlots = await getAvailableCountryPlots(country.countryId);
+                                             country.availablePlots = await handleGetAvailableCountryPlots(country.countryId);
                                              this.setState({selection: country});
                                          });
                                      }}
@@ -230,7 +237,7 @@ class PlotSale extends Component {
                                         }}
                                         addToCart={(country) => {
                                             this.setState({selection: country}, async () => {
-                                                country.availablePlots = await getAvailableCountryPlots(country.countryId);
+                                                country.availablePlots = await handleGetAvailableCountryPlots(country.countryId);
                                                 this.setState({selection: country});
                                             });
                                         }}
@@ -260,7 +267,7 @@ class PlotSale extends Component {
 }
 
 const actions = {
-    getAvailableCountryPlots: getAvailableCountryPlots,
+    handleGetAvailableCountryPlots: getAvailableCountryPlots,
     handleBuy: buyPlots,
     handleGetChestValues: getChestValues,
 };
