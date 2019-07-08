@@ -34,7 +34,7 @@ export default class UpgradeComponent extends React.Component {
             '4': 7,
             '5': 15,
             '6': 31,
-        } //0,1,2,4,8,16
+        }; //0,1,2,4,8,16
 
         let cost = 0;
         switch(type) {
@@ -46,7 +46,7 @@ export default class UpgradeComponent extends React.Component {
                 break;
         }
         return cost;
-    }
+    };
 
     constructor(props) {
         super(props);
@@ -60,7 +60,7 @@ export default class UpgradeComponent extends React.Component {
             level: props.metal === 'silver' ? props.gem.level + 1 : props.gem.level,
             initialGrade: props.gem.gradeType,
             initialLevel: props.gem.level,
-            loading: false
+            loading: false,
         };
     }
 
@@ -99,13 +99,13 @@ export default class UpgradeComponent extends React.Component {
             ...arrowButton,
             backgroundImage: 'url(' + upArrow + ')',
             backgroundSize: 'cover'
-        }
+        };
 
         const downArrowButton = {
             ...arrowButton,
             backgroundImage: 'url(' + downArrow + ')',
             backgroundSize: 'cover'
-        }
+        };
         //const [loading, setLoading] = useState(false);
 
         return (

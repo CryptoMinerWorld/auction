@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import React, {PureComponent} from 'react';
 import Input from 'antd/lib/input';
 import Icon from 'antd/lib/icon';
-// import Button from 'antd/lib/button';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import {compose} from 'redux';
@@ -16,6 +15,7 @@ import button from '../../../app/images/pinkBuyNowButton.png';
 import UpgradeComponent from "./UpgradeComponent";
 import {getUserPlots, processBlocks} from "../../plots/plotActions";
 import {AUCTION_END, AUCTION_START} from "../itemConstants";
+import {UpgradeWarningPopup} from "./UpgradeWarningPopup";
 
 const ColourButton = styled.button`
   background-image: url(${button});
@@ -92,7 +92,8 @@ class TradingBox extends PureComponent {
         endPrice: '',
         formSubmitted: false,
         showUpgrade: false,
-        useMetal: ''
+        useMetal: '',
+        showUpgradeWarning: true,
     };
 
     handleChange = (value, field) => this.setState({[field]: value});
@@ -127,7 +128,7 @@ class TradingBox extends PureComponent {
             role
         } = this.props;
         const {
-            duration, startPrice, endPrice, formSubmitted, showUpgrade, useMetal
+            duration, startPrice, endPrice, formSubmitted, showUpgrade, useMetal, showUpgradeWarning,
         } = this.state;
 
 
@@ -144,12 +145,20 @@ class TradingBox extends PureComponent {
                 <div style={fixedOverlayStyle}
                      onClick={() => this.setState({showUpgrade: false, showUpgradeWarning: true})}
                 >
-                    {!unprocessed && <UpgradeComponent metal={useMetal}
-                                                    metalAvailable={useMetal === 'silver' ? +userBalance.silverAvailable : +userBalance.goldAvailable}
-                                                    hidePopup={() =>
-                                                      this.setState({showUpgrade: false})
-                                                    }
-                                                    {...this.props}/>
+                    {!unprocessed && !(showUpgradeWarning && useMetal === 'gold' && gem.gradeType >= 4 && gem.restingEnergy > 0) &&
+                    <UpgradeComponent metal={useMetal}
+                                      metalAvailable={useMetal === 'silver' ? +userBalance.silverAvailable : +userBalance.goldAvailable}
+                                      hidePopup={() =>
+                                        this.setState({showUpgrade: false, showUpgradeWarning: true})
+                                      }
+                                      {...this.props}
+                    />
+                    }
+                    {showUpgradeWarning && (useMetal === 'gold') && gem.gradeType >= 4 && gem.restingEnergy >= 60 &&
+                    <UpgradeWarningPopup
+                      useEnergyCallback={() => this.setState({showUpgrade: false})}
+                      upgradeCallback={() => this.setState({showUpgradeWarning: false})}
+                    />
                     }
                     <div
                       // style={position: absolute
