@@ -30,7 +30,7 @@ const GradesContainer = styled.div`
     margin: 5px 0;
     
     @media(max-width: 800px) {
-        width: 390px;
+        width: 445px;
         order: 1;
         margin-right: 10px;
     }
@@ -66,7 +66,7 @@ const TypesContainer = styled.div`
     margin: 5px 0;
     
     @media(max-width: 800px) {
-        width: 445px;
+        width: 390px;
         order: 2;
     }
 `;
