@@ -45,10 +45,10 @@ const Navbar = ({
                 }) => (
   <div className="shadow-1 z-9 bg-white w-100">
       {signInBox && <Auth/>}
-      <nav className="flex wrap jcb aic w-100 border-box pa1 ph4-l bg-white mw9 center">
+      <nav className="flex wrap jcb aic w-100 border-box pa1 pb0 ph4-l bg-white mw9 center">
           <div style={{width: '20%'}} className="flex aic jcb">
               <a
-                className=" mid-gray link dim mb2 mb0-l dib"
+                className=" mid-gray link dim mb0 mb0-l dib"
                 href="https://cryptominerworld.com/"
                 title="Home"
               >
