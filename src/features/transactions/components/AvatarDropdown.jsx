@@ -413,7 +413,7 @@ class AvatarDropdown extends React.Component {
                         <Badge count={unseen}>
                             <Avatar src={user.imageURL} className="dib"/>
                         </Badge>
-                        <p className="dib pl2">
+                        <p className="dib pl2 mb0">
                             {user.name}
                         </p>
                     </>
