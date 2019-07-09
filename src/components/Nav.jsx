@@ -45,7 +45,7 @@ const Navbar = ({
                 }) => (
   <div className="shadow-1 z-9 bg-white w-100">
       {signInBox && <Auth/>}
-      <nav className="flex wrap jcb aic w-100 border-box pa1 pb0 ph4-l bg-white mw9 center">
+      <Nav className="flex wrap jcb aic w-100 border-box ph4-l bg-white mw9 center">
           <div style={{width: '20%'}} className="flex aic jcb">
               <a
                 className=" mid-gray link dim mb0 mb0-l dib"
@@ -54,14 +54,14 @@ const Navbar = ({
               >
                   <img
                     src={img}
-                    className="dib h-auto w3 br-100 pl3 pl0-ns ph2-ns "
+                    className="dib h-auto w-70 br-100 pl3 pl0-ns ph2-ns "
                     alt="CryptoMiner World"
                   />
               </a>
               <Tx auth={existingUser}/>
           </div>
 
-          <div style={{width: '80%'}} className="flex flex-nowrap tc tr-ns nowrap overflow-x-auto">
+          <div style={{width: '80%', height: '28px'}} className="flex flex-nowrap tc tr-ns nowrap overflow-x-auto">
               {/* <a href="https://cryptominerworld.com/" title="Home" className="fl">
           <img src={img} className="dib h2 w-auto br-100 dn-ns mr3" alt="CryptoMiner World" />
         </a> */}
@@ -167,7 +167,7 @@ const Navbar = ({
                   />
               </div>
           </div>
-      </nav>
+      </Nav>
       <BottomHighlight/>
   </div>
 );
@@ -200,3 +200,13 @@ Navbar.defaultProps = {
     existingUser: false,
     upperCaseWalletId: '',
 };
+
+const Nav = styled.nav`
+    @media(max-width: 800px) {
+        padding: 0.25rem;
+        padding-bottom: 0;
+    }
+    @media(min-width: 800px) {
+        padding: 1rem;
+    }
+    `;
