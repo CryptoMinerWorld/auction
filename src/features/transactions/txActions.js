@@ -12,6 +12,7 @@ import {
 
 import {setError} from '../../app/appActions';
 import {db} from "../../app/utils/firebase";
+import {UNBINDING_GEM} from "../plots/plotConstants";
 
 export const startTx = tx => ({type: TX_STARTED, payload: tx});
 export const completedTx = tx => ({type: TX_COMPLETED, payload: tx});
@@ -31,6 +32,66 @@ export const resolveTXStatus = async (pendingTransactions, dbWrite, dbDelete, qu
             setError(err);
         }
     }
+};
+
+
+export const resolveTransactionEvent = (txEventObject) => async (dispatch, getState) => {
+    //todo: handle all tx types and events;
+    /*
+       txEventObject:
+       {
+            categoryCode: String, // event category - List detailed below
+                            txRequest: Function, // Transaction request has been initiated and is awaiting user approval
+                            txSent: Function, // Transaction has been sent to the network
+                            txPending: Function, // Transaction is pending and has been detected in the mempool
+                            txSendFail: Function, // Transaction failed to be sent to the network
+                            txStall: Function, // Transaction was sent but not confirmed in the blockchain after 30 secs
+                            txFailed: Function, // Transaction failed
+                            nsfFail: Function, // User doesn't have enough funds to complete transaction
+                            txRepeat: Function, // Warning to user that they might be repeating a transaction
+                            txAwaitingApproval: Function, // Warning to the user that they have a previous transaction awaiting approval
+                            txConfirmReminder: Function, // A warning to the user that their current transaction is still awaiting approval
+                            txConfirmed: Function, // Transaction is confirmed
+                            txSpeedUp: Function // The user has re-submitted a transaction with a higher gas price
+            eventCode: String, // event type - List detailed below
+            contract: { // if not a contract method transaction, then this is undefined
+                methodName: String, // name of the method that was called
+                parameters: Array, // the parameters the method was called with
+            },
+            inlineCustomMsgs: Object | Boolean, // the inline custom messages passed to the transaction
+            reason: String, // reason for error type notifications
+            transaction: {
+                id: String, // internal unique id for the transaction (remains constant even if transaction hash changes due to speedup or cancel)
+                from: String, // the address the transaction was sent from
+                gas: String, // the gas limit of the transaction
+                gasPrice: String, // the gas price of the transaction
+                to: String, // the address the transaction was sent to
+                value: String // the value of the transaction
+                hash: String // the transaction hash (updated to a new hash if transaction is sped up or cancelled)
+                originalHash: String // if transaction was sped up or cancelled, the original transaction hash
+            },
+            wallet: {
+                address: String, // the account address of the wallet in use
+                  balance: String, // the balance in wei of the wallet in use
+                  minimum: Boolean, // whether the wallet has the minimum balance required (specified in config)
+                  provider: String // the name of the wallet provider
+            }
+        }
+    */
+    if (!txEventObject) return;
+    console.log("TX EVENT OBJECT:", txEventObject);
+    //const txType = txEventObject.inlineCustomMsgs && txEventObject.inlineCustomMsgs.txType;
+    // addPendingTransaction({
+    //     hash: txEventObject.transaction.hash,
+    //     userId: txEventObject.transaction.from,
+    //     type: txType,
+    //     description: `Releasing gem ${plot.gemMinesId} from plot ${plot.id}`,
+    //     body: {
+    //         plot: plot.id,
+    //         gemId: plot.gemMinesId,
+    //     }
+    // })(dispatch, getState);
+
 };
 
 const auctionEventWhitelist = [
@@ -374,7 +435,7 @@ export const transactionResolved = (event) => async (dispatch, getState) => {
 export const addPendingTransaction = (transaction) => async (dispatch, getState) => {
     const newTx = {
         hash: transaction.hash,
-        userId: transaction.userId,
+        userId: transaction.userId.toLowerCase(),
         type: transaction.type,
         status: TX_PENDING,
         description: transaction.description,

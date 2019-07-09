@@ -1,6 +1,7 @@
 import {utils} from "web3";
 import {BigNumber} from "bignumber.js";
 import {getCurrentUser} from "../../features/auth/authActions";
+import {UNBINDING_GEM} from "../../features/plots/plotConstants";
 
 export default class PlotService {
 
@@ -10,9 +11,9 @@ export default class PlotService {
         this.minerContract = minerContractInstance;
     }
 
-    withdrawCountriesEth = (owner) => {
+    withdrawCountriesEth = (ownerId) => {
         return this.plotSaleContract.methods
-          .withdraw(owner)
+          .withdraw(ownerId)
           .send();
     };
 
@@ -139,9 +140,9 @@ export default class PlotService {
     };
 
     releaseGem = (plotId) => {
-        // console.log("Release gem. Miner contract:", this.minerContract);
+        console.log("Release gem. Miner contract:", this.minerContract);
         // return this.minerContract.release(plotId).send();
-        return this.minerContract.methods.release(plotId).send();
+        return this.minerContract.methods.release(plotId).send({}, {messages: {txType: UNBINDING_GEM}});
     };
 
     processBlocks = (plotId, currentUser) => {
