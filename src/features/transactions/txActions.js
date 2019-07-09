@@ -38,12 +38,12 @@ const minerEventWhitelist = [
     'Updated',
     'Released',
     'RestingEnergyConsumed',
-]
+];
 
 const plotSaleEventWhitelist = [
     'PlotIssued',
     //todo: CouponConsumed event
-]
+];
 
 const numberOfBlocks = Number(process.env.REACT_APP_NUMBER_OF_BLOCKS);
 
@@ -217,12 +217,12 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
                 resolvedTx.unseen = true;
             }
         }
-    })
+    });
     dispatch({
         type: EVENT_HISTORY_RECEIVED,
         payload: {transactionHistory, pendingTransactions, resolvedFailedTransactions},
     })
-}
+};
 
 const groupEventLogsByTransaction = (sortedEventLogs, currentUserId) => {
     const transactions = [];
@@ -243,30 +243,12 @@ const groupEventLogsByTransaction = (sortedEventLogs, currentUserId) => {
     }
     currentTransaction && transactions.push(resolveTransactionDescription(currentTransaction, currentUserId));
     return transactions;
-}
+};
 
 const resolveTransactionDescription = (tx, currentUserId) => {
-    // if (tx.events.find(e => e.event === "Bound")) {
-    //     tx.type = 'Gem bound';
-    //     return tx;
-    // }
-    // if (tx.events.find(e => e.event === "Released")) {
-    //     tx.type = 'Gem released';
-    //     return tx;
-    // }
-    // if (tx.events.find(e => e.event === "RestingEnergyConsumed") && !tx.events.find(e => e.event === "Bound")) {
-    //     tx.type = 'Gem used its energy';
-    //     return tx;
-    // }
-    // if (tx.events.find(e => e.event === "Updated")) {
-    //     if (tx.events.length > 1) {
-    //         tx.type = 'Plots are processed';
-    //     }
-    //     else {
-    //         tx.type = 'Plot is processed';
-    //     }
-    //     return tx;
-    // }
+
+    if (tx && tx.events && tx.events.length === 0) return tx;
+
     if (tx.events.find(e => e.event === "ItemAdded")) {
         tx.type = 'Auction started';
         return tx;
@@ -277,10 +259,13 @@ const resolveTransactionDescription = (tx, currentUserId) => {
     }
     if (tx.events.find(e => e.event === "ItemBought")) {
         const event = tx.events.find(event => event.event === "ItemBought");
-        if (event.returnValues['_to'] === currentUserId) {
+        console.log("EVENT:", event, currentUserId);
+        if (event.returnValues['_to'].toLowerCase() === currentUserId.toLowerCase()) {
             tx.type = 'Gem purchased'
         } else {
-            tx.type = 'Your gem purchased'
+            if (event.returnValues['_from'].toLowerCase() === currentUserId.toLowerCase()) {
+                tx.type = 'Your gem purchased'
+            }
         }
         return tx;
     }
@@ -320,9 +305,10 @@ const resolveTransactionDescription = (tx, currentUserId) => {
     }
 
     return tx;
-}
+};
 
 export const transactionResolved = (event) => async (dispatch, getState) => {
+    const currentUserId = getState().auth.currentUserId;
     const txUpdatedStored = await db
       .doc(`transactions/${event.transactionHash}`)
       .update({
@@ -339,17 +325,17 @@ export const transactionResolved = (event) => async (dispatch, getState) => {
             events: [],
             transactionHash: event.transactionHash,
             blockNumber: event.blockNumber,
-        });
+        }, currentUserId);
         resolvedTx.events.push(event);
         resolvedTx.unseen = true;
         //todo: bug is possible: firing updated event before bound/released will set tx type as 'plot processed'
         //todo: instead of bound/released
         dispatch({
             type: TRANSACTION_RESOLVED,
-            payload: resolveTransactionDescription(resolvedTx)
+            payload: resolveTransactionDescription(resolvedTx, currentUserId)
         })
     }
-}
+};
 
 export const addPendingTransaction = (transaction) => async (dispatch, getState) => {
     const newTx = {
@@ -359,7 +345,7 @@ export const addPendingTransaction = (transaction) => async (dispatch, getState)
         status: TX_PENDING,
         description: transaction.description,
         body: transaction.body,
-    }
+    };
     try {
         const txStored = await db
           .doc(`transactions/${transaction.hash}`)
@@ -368,7 +354,7 @@ export const addPendingTransaction = (transaction) => async (dispatch, getState)
         dispatch({
             type: NEW_PENDING_TRANSACTION,
             payload: newTx
-        })
+        });
 
         //todo: payload: txStored?
         return txStored;
@@ -377,11 +363,11 @@ export const addPendingTransaction = (transaction) => async (dispatch, getState)
         console.error(e);
     }
 
-}
+};
 
 export const setTransactionsSeen = (unseenCount) => async (dispatch, getState) => {
 
     const firstSeen = getState().tx.transactions.findIndex((tx) => (tx.unseen));
     getState().tx.transactions.slice(firstSeen - unseenCount, firstSeen);
 
-}
+};

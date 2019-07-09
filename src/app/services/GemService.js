@@ -21,7 +21,7 @@ export default class GemService {
         catch (err) {
             console.log('ERROR in getGemProperties', err)
         }
-    }
+    };
 
     getGem = async (tokenId) => {
         try {
@@ -37,14 +37,14 @@ export default class GemService {
                 name: calculateGemName(gem.color, tokenId),
                 rate: calculateMiningRate(gem.gradeType, gem.gradeValue),
                 restingEnergy: gem.gradeType >= 4 ? calculateGemRestingEnergy(gem.age, gem.modifiedTime) : 0
-            }
+            };
             console.log('FINAL GEM:', finalGem);
             return finalGem;
         }
         catch (e) {
             console.error('GET GEM ERROR:', e);
         }
-    }
+    };
 
     getPackedGem = async (tokenId) => {
         try {
@@ -57,7 +57,7 @@ export default class GemService {
         catch (err) {
             console.log('ERROR in getPacked', err)
         }
-    }
+    };
 
     unpackGem = async ([high256, low256]) => {
 
@@ -110,14 +110,14 @@ export default class GemService {
             stateModifiedTime,
             modifiedTime: Math.max(creationTime, stateModifiedTime)
         }
-    }
+    };
 
     getGemAuctionIsLive = async (tokenId) => {
         return !(new BigNumber(
           await (this.auctionContract.methods
             .getTokenSaleStatus(this.contract.options.address, tokenId)
             .call()))).isZero();
-    }
+    };
 
     getImagesForGems = async (gemsToLoadImages) => {
         console.log('GEMS TO LOAD IMAGES: ', gemsToLoadImages);
@@ -134,7 +134,7 @@ export default class GemService {
               }
               //return gem;
           }));
-    }
+    };
 
     getOwnerGems = async (ownerId) => {
         const notAuctionGemsUserOwns = await this.contract.methods.getPackedCollection(ownerId).call();
@@ -188,7 +188,7 @@ export const unpackGemProperties = (properties) => {
     const gradeValue = properties.modulo(0x1000000).toNumber();
 
     return {color, level, gradeType, gradeValue}
-}
+};
 
 export const getGemStory = async (gemProperties, tokenId) => {
 
@@ -218,25 +218,31 @@ export const getGemStory = async (gemProperties, tokenId) => {
 
     try {
         if (type && lvl) {
+            console.log("HERE0");
             let story = "";
             const docData = (await db
               .doc(`specialStones/${tokenId}`)
               .get()).data();
-
+            console.log("HERE1");
             if (!docData) {
+                console.log("HERE2");
                 try {
                     const storyDoc = (await db
                       .doc(`gems/${type}`)
-                      .get())
+                      .get());
+                    console.log("HERE~!!");
                     if (storyDoc) {
                         story = storyDoc.data()[lvl] || ""
                     }
+                    console.log("HERE THE STORY:", story);
                 }
                 catch (err) {
+                    console.log("HERE3");
                     throw "No default story for this type of gem!";
                 }
             }
             else {
+                console.log("HERE4");
                 story = (await db
                   .doc(`gems/${docData.storyName}`)
                   .get()).data()[lvl];
@@ -355,4 +361,4 @@ export const calculateGemRestingEnergy = (age, modifiedTime) => {
       0.5406 * Math.min(ageMinutes, linearThreshold)
       + 0.0199 * Math.max(ageMinutes - linearThreshold, 0),
     );
-}
+};
