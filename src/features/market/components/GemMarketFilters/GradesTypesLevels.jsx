@@ -66,7 +66,7 @@ const TypesContainer = styled.div`
     margin: 5px 0;
     
     @media(max-width: 800px) {
-        width: 390px;
+        width: 445px;
         order: 2;
     }
 `;
@@ -129,13 +129,14 @@ const GradesTypesLevels = ({unselectedFilters, toggleFilter}) => {
                     return (
                         <TypeBox key={typeColor}
                                  onClick={() => toggleFilter(typeName, "types")}>
-                            <CutEdgesButton outlineColor={() => !unselectedFilters.types.includes(typeName) ? color : "black"}
-                                            backgroundColor={() => !unselectedFilters.types.includes(typeName) ? typePaneColors(typeColor) : "black"}
-                                            fontColor={color}
-                                            edgeSizes={[5, 10]}
-                                            outlineWidth={2}
-                                            height={30}
-                                            content={typeName}/>
+                            <CutEdgesButton
+                                outlineColor={() => !unselectedFilters.types.includes(typeName) ? color : "black"}
+                                backgroundColor={() => !unselectedFilters.types.includes(typeName) ? typePaneColors(typeColor) : "black"}
+                                fontColor={color}
+                                edgeSizes={[5, 10]}
+                                outlineWidth={2}
+                                height={30}
+                                content={typeName}/>
                         </TypeBox>)
                 })}
             </TypesContainer>

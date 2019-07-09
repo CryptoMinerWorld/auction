@@ -124,7 +124,6 @@ class GemMarketFilters extends Component {
                                 minPrice={minPrice}/>
                     </FilterGroupsContainer>
                     <GradesTypesLevels unselectedFilters={unselectedFilters} toggleFilter={applyFilter}/>
-
                     <FilterActions clearFilters={clearFilters} setDefaultFilters={setDefaultFilters}/>
                 </GemFiltersFlexWrapper>
             </GemFiltersContainer>

@@ -26,15 +26,16 @@ const SortOptions = ({selectedSort, toggleSort}) => {
     return (
         <SortOptionsContainer>
             <div className="flex col" style={{flex: 2, margin: "0px 4px"}}>
-                <CutEdgesButton outlineColor={selectedSort.sortOption === "price" ? acquiredOutlineColor : "transparent"}
-                                backgroundColor={selectedSort.sortOption === "price" ? acquiredPaneColor : "black"}
-                                fontColor={acquiredOutlineColor}
-                                edgeSizes={[5, 10]}
-                                outlineWidth={2}
-                                height={32}
-                                content={"Price"}
-                                onClick={() => toggleSort("price", selectedSort.sortDirection)}
-                                otherStyles={"margin: 2px 0;"}/>
+                <CutEdgesButton
+                    outlineColor={selectedSort.sortOption === "price" ? acquiredOutlineColor : "transparent"}
+                    backgroundColor={selectedSort.sortOption === "price" ? acquiredPaneColor : "black"}
+                    fontColor={acquiredOutlineColor}
+                    edgeSizes={[5, 10]}
+                    outlineWidth={2}
+                    height={32}
+                    content={"Price"}
+                    onClick={() => toggleSort("price", selectedSort.sortDirection)}
+                    otherStyles={"margin: 2px 0;"}/>
                 <CutEdgesButton outlineColor={selectedSort.sortOption === "mrb" ? mrbOutlineColor : "transparent"}
                                 backgroundColor={selectedSort.sortOption === "mrb" ? mrbPaneColor : "black"}
                                 fontColor={mrbOutlineColor}
