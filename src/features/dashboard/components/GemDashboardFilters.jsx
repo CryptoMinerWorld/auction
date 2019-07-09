@@ -48,7 +48,6 @@ const GemFiltersFlexWrapper = styled.div`
         font-size: .9vw;
     }
     
-       
     @media(min-width: 801px) and (max-width: 1820px) {
         flex-wrap: wrap-reverse;
         justify-content: space-evenly;
@@ -75,9 +74,9 @@ const OpenCloseMobileFiltersButton = styled.div`
                 position: fixed;
                 width: 4vw;
                 height: 19px;
-                content: 'v';
+                content: 'V';
                 left: 48vw;
-                bottom: 82px;
+                bottom: 102px;
                 color: white;
                 border: 1px solid white;
                 background-color: black;
