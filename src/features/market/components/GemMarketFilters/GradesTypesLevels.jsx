@@ -38,7 +38,7 @@ const GradesContainer = styled.div`
 
 const GradeAndLevelBox = styled.div`
 
-    @media(max-width: 599px) {
+    @media(max-width: 800px) {
         margin: 2px 2px; 
     }
 
@@ -73,7 +73,7 @@ const TypesContainer = styled.div`
 
 const TypeBox = styled.div`
     
-    @media(max-width: 599px) {
+    @media(max-width: 800px) {
         margin: 1px 3px;
         min-width: 50px;
         font-size: 12px;

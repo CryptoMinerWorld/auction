@@ -7,8 +7,8 @@ import FilterActions from "./GemMarketFilters/FilterActions"
 
 
 const GemFiltersContainer = styled.div`
-              margin-top: -10px;
-              width: 100%;
+      margin-top: -10px;
+      width: 100%;
               
       @media(max-width: 800px) {
             position: fixed;
@@ -19,6 +19,7 @@ const GemFiltersContainer = styled.div`
             margin: 0;
             height: ${props => props.mobileFiltersDisplayed ? "auto" : "3px"}
             border-top: 1px solid white;
+            overflow-x: ${props => props.mobileFiltersDisplayed ? "auto" : "initial"}
       }       
 `;
 
@@ -61,26 +62,25 @@ const OpenCloseMobileFiltersButton = styled.div`
         right:0;
         margin:0 auto;
         
-        border: 1px solid white;
         ${props => props.mobileFiltersDisplayed ?
     `
-            top: -20px;
             height: 20px;
             width: 22px;
             &:after {
                 display: block;
-                position: absolute;
-                width: 20px;
+                position: fixed;
+                width: 4vw;
                 height: 19px;
-                content: 'v';
-                left: 0;
-                right: 0;
+                content: 'V';
+                left: 48vw;
+                bottom: 102px;
                 color: white;
+                border: 1px solid white;
                 background-color: black;
                 text-align: center;
-                font-size: 16px;
+                font-size: 14px;
             }
-        `
+    `
     :
     `
             top: -25px;
@@ -95,11 +95,12 @@ const OpenCloseMobileFiltersButton = styled.div`
                     left: 0;
                     right: 0;
                     color: white;
+                    border: 1px solid white;
                     background-color: black;
                     text-align: center;
                     font-size: 16px;
                 }
-        `
+    `
     }
     }
 }

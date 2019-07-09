@@ -13,6 +13,7 @@ const GemFiltersContainer = styled.div`
       width: 100%;
       margin: 5px 0;
       
+      
       @media(max-width: 800px) {
             position: fixed;
             z-index: 2;
