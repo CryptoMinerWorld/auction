@@ -528,7 +528,7 @@ class App extends Component {
             });
             this.props.handleGetUpdatedTransactionHistory();
         }
-        if (this.props.transactionHistory && (this.props.transactionHistory !== prevProps.transactionHistory)) {
+        if (this.props.transactionHistory && (!prevProps.transactionHistory)) {
             let lootToShowArray = [];
             this.props.transactionHistory.forEach((tx) => {
                 if (tx && tx.unseen) {

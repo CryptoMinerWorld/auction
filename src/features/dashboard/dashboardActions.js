@@ -17,6 +17,7 @@ import {
 import {db} from '../../app/utils/firebase';
 import {addPendingTransaction, getUpdatedTransactionHistory} from "../transactions/txActions";
 import {getUserBalance} from "../sale/saleActions";
+import {weiToEth} from "../sale/helpers";
 
 export const withdrawCountryEth = () => async (dispatch, getState) => {
     const plotService = getState().app.plotServiceInstance;
@@ -80,7 +81,7 @@ export const getUserCountries = userId => async (dispatch, getState) => {
 
     const [userCountries, totalNotWithdrawn] = await Promise.all([
         await countryService.getUserCountries(userId),
-        (userId.toLowerCase() === currentUserId.toLowerCase()) ? await plotService.getTotalNotWithdrawn(userId) : null
+        (userId.toLowerCase() === currentUserId.toLowerCase()) ? weiToEth(await plotService.getTotalNotWithdrawn(userId)) : null
     ]);
     dispatch({type: FETCH_USER_COUNTRIES, payload: {userCountries, totalNotWithdrawn}})
 };

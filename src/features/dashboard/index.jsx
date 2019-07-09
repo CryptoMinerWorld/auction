@@ -39,6 +39,7 @@ import GemDashboard from "./components/GemDashboard";
 import {getAvailableCountryPlots} from "../plotsale/plotSaleActions";
 import {USER_PLOTS_RELOAD_BEGUN} from "../plots/plotConstants";
 import {COUNTRY_WITHDRAW} from "./dashboardConstants";
+import {setItemEventListeners} from "../items/itemEventListener";
 
 
 const {TabPane} = Tabs;
@@ -158,6 +159,14 @@ class Dashboard extends Component {
         tab: 1,
         redirectPath: '',
         alreadyRedirected: false,
+        eventSubscriptions: [],
+    };
+
+    clearSubscriptions = () => {
+        this.state.eventSubscriptions.forEach((subscription) => {
+            console.log("subscription unsubscribe:", subscription);
+            subscription.unsubscribe();
+        })
     };
 
     async componentDidMount() {
@@ -187,22 +196,25 @@ class Dashboard extends Component {
 
         if (plotService) {
             console.log("DASHBOARD PROPS PENDING TRANSACTION (1):", pendingTransactions);
-            handleRefreshUserPlot && gemService && currentUserId && setDashboardEventListeners({
-                plotService,
-                gemService,
-                updatedEventCallback: (plot) => {
-                    handleRefreshUserPlot(plot);
-                    handleGetUserBalance(currentUserId)
-                },
-                releasedEventCallback: handleRefreshUserPlot,
-                boundEventCallback: handleRefreshUserPlot,
-                issuedEventCallback: handleGetUserPlots,
-                reloadGemsCallback: handleGetUserGems,
-                changeGemCallback: () => {
-                    handleGetUserGems(currentUserId)
-                },
-                currentUserId,
-            });
+            if (handleRefreshUserPlot && gemService && currentUserId) {
+                setDashboardEventListeners({
+                    plotService,
+                    gemService,
+                    updatedEventCallback: (plot) => {
+                        handleRefreshUserPlot(plot);
+                        handleGetUserBalance(currentUserId)
+                    },
+                    releasedEventCallback: handleRefreshUserPlot,
+                    boundEventCallback: handleRefreshUserPlot,
+                    issuedEventCallback: handleGetUserPlots,
+                    reloadGemsCallback: handleGetUserGems,
+                    countryBalanceUpdatedCallback: handleGetUserCountries,
+                    changeGemCallback: () => {
+                        handleGetUserGems(currentUserId)
+                    },
+                    currentUserId,
+                });
+            }
 
             if (pendingTransactions && currentUserId) {
                 handleGetUserPlots(match.params.userId);
@@ -290,14 +302,14 @@ class Dashboard extends Component {
                 },
                 releasedEventCallback: handleRefreshUserPlot,
                 boundEventCallback: handleRefreshUserPlot,
+                issuedEventCallback: handleGetUserPlots,
                 reloadGemsCallback: handleGetUserGems,
+                countryBalanceUpdatedCallback: handleGetUserCountries,
                 changeGemCallback: () => {
                     handleGetUserGems(currentUserId)
                 },
-                issuedEventCallback: handleGetUserPlots,
-                currentUserId
+                currentUserId,
             });
-            //(currentUserId !== match.params.userId || pendingTransactions) && handleGetUserPlots(match.params.userId);
         }
 
 
