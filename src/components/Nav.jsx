@@ -61,7 +61,7 @@ const Navbar = ({
               <Tx auth={existingUser}/>
           </div>
 
-          <div style={{width: '80%'}} className="tc tr-ns nowrap overflow-x-auto">
+          <div style={{width: '80%'}} className="flex flex-nowrap tc tr-ns nowrap overflow-x-auto">
               {/* <a href="https://cryptominerworld.com/" title="Home" className="fl">
           <img src={img} className="dib h2 w-auto br-100 dn-ns mr3" alt="CryptoMiner World" />
         </a> */}
