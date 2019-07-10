@@ -32,7 +32,7 @@ class GemMarket extends React.Component {
         hasMoreGems: false,
         minPrice: 0,
         maxPrice: 100,
-    }
+    };
 
     componentDidMount() {
         const {auctions} = this.props;
@@ -97,7 +97,7 @@ class GemMarket extends React.Component {
           });
         return [filteredGems || [], minPrice, maxPrice];
 
-    }
+    };
 
     sortGems = (gems) => {
         const {sortOption, sortDirection} = this.props.selectedSorting;
@@ -120,7 +120,7 @@ class GemMarket extends React.Component {
         gems.sort((p1, p2) => {
             return directionSign * sortingFunction(p1, p2);
         });
-    }
+    };
 
     render() {
         const {
@@ -222,6 +222,12 @@ const Grid = styled.article`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-column-gap: 20px;
+  
+  @media(max-width: 800px) {
+    margin-left: 0;
+    width: 100%;
+  }
+  
 `;
 
 
@@ -242,4 +248,4 @@ const Primary = styled.section`
 const infiniteScrollContainer = {
     display: "flex",
     overflow: "hidden",
-}
+};
