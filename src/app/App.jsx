@@ -34,6 +34,7 @@ import PlotSale from './ABI/PlotSale';
 import Plot from './ABI/PlotERC721';
 import Artifact from './ABI/ArtifactERC20';
 import Miner from './ABI/Miner';
+import FoundersPlots from './ABI/FoundersPlots';
 import BalanceProxy from './ABI/BalanceProxy';
 import GemService from "./services/GemService";
 import AuctionService from "./services/AuctionService";
@@ -79,6 +80,7 @@ const plotABI = Plot.abi;
 const minerABI = Miner.abi;
 const artifactABI = Artifact.abi;
 const balanceABI = BalanceProxy.abi;
+const foundersPlotsABI = FoundersPlots.abi;
 
 const StickyHeader = styled.div`
   position: -webkit-sticky; /* Safari */
@@ -171,7 +173,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         const dutchHelperContract = assistInstance.Contract(new web3.eth.Contract(
           dutchAuctionHelperABI,
@@ -179,7 +181,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         const presaleContract = {};
         // assistInstance.Contract(new web3.eth.Contract(presaleABI, process.env.REACT_APP_PRESALE2, {
@@ -189,7 +191,7 @@ class App extends Component {
         // @notice instantiating gem contract
         const gemsContract = assistInstance.Contract(new web3.eth.Contract(gemsABI, process.env.REACT_APP_GEM_ERC721, {
             from: currentAccountId,
-        }))
+        }));
 
         const theCountrySaleContract = {};
         // assistInstance.Contract(new web3.eth.Contract(
@@ -206,7 +208,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         const refPointsTrackerContract = assistInstance.Contract(new web3.eth.Contract(
           refPointsTrackerABI,
@@ -214,7 +216,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         const goldContract = assistInstance.Contract(new web3.eth.Contract(
           goldABI,
@@ -222,7 +224,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         const silverContract = assistInstance.Contract(new web3.eth.Contract(
           silverABI,
@@ -230,7 +232,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         const workshopContract = assistInstance.Contract(new web3.eth.Contract(
           workshopABI,
@@ -238,7 +240,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         const balanceContract = new web3.eth.Contract(
           balanceABI,
@@ -251,7 +253,15 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
+
+        const foundersPlotsContract = assistInstance.Contract(new web3.eth.Contract(
+          foundersPlotsABI,
+          process.env.REACT_APP_FOUNDERS_PLOTS,
+          {
+              from: currentAccountId
+          }
+        ));
 
         const silverCouponsContract = {};
         // assistInstance.Contract(new web3.eth.Contract(
@@ -318,7 +328,8 @@ class App extends Component {
             plotSaleContract,
             minerContract,
             artifactContract,
-            balanceContract
+            balanceContract,
+            foundersPlotsContract
         ])
           .then(
             ([
@@ -339,7 +350,8 @@ class App extends Component {
                  plotSaleContract,
                  minerContract,
                  artifactContract,
-                 balanceContract
+                 balanceContract,
+                    foundersPlotsContract,
              ]) => {
                 client.writeData({
                     data: {
@@ -369,6 +381,7 @@ class App extends Component {
                   silverSaleContract,
                   silverCouponsContract,
                   artifactContract,
+                  foundersPlotsContract,
                   plotService,
                   gemService,
                   auctionService,
@@ -416,7 +429,7 @@ class App extends Component {
 
     clearLoot = () => {
         this.setState({lootFound: null});
-    }
+    };
 
     showLoot = (eventUpdateArray) => {
         console.log("Show loot", eventUpdateArray);
@@ -450,11 +463,11 @@ class App extends Component {
             lootFound['loot'] = lootArray;
             lootFound['plotState'] = 1; //lootFound['plotState'] || await
             // this.props.plotService.getPlotState(eventUpdate.returnValues['plotId']);
-        })
+        });
         this.setState({
             lootFound: lootFound
         })
-    }
+    };
 
     errorNotification = (error, title) => {
         const {handleClearError} = this.props;

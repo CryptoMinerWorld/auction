@@ -21,7 +21,6 @@ export default class SilverGoldService {
           process.env.REACT_APP_SILVER_ERC721,
             process.env.REACT_APP_GOLD_ERC721,
             process.env.REACT_APP_REF_POINTS_TRACKER,
-            process.env.REACT_APP_PLOT_ERC721,
         process.env.REACT_APP_GEM_ERC721];
         //do not change .methods.balancesOf to just .balancesOf when switching to assist.js
         const balances = await this.balanceContract.methods.balancesOf(tokensToFetchBalancesOf, userId).call();
@@ -29,8 +28,8 @@ export default class SilverGoldService {
             silver: balances[0],
             gold: balances[1],
             points: balances[2],
-            plots: balances[3],
-            gems: balances[4]
+            //plots: balances[-],
+            gems: balances[3]
         }
     };
 

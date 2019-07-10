@@ -57,9 +57,15 @@ export const getChestValue = () => async (dispatch, getState) => {
 };
 
 export const getUserBalance = (userId) => async (dispatch, getState) => {
-
     const silverGoldService = getState().app.silverGoldServiceInstance;
-    const balances = await silverGoldService.getUserBalance(userId);
+    const foundersPlotsContract = getState().app.foundersPlotsContractInstance;
+
+    const [balances, foundersPlotsNumber] = await Promise.all([
+        await silverGoldService.getUserBalance(userId),
+        await foundersPlotsContract.methods.geodeBalances(userId).call()
+    ]);
+
+    console.log("BALANCES:", balances, foundersPlotsNumber);
     dispatch({
         type: USER_BALANCE_RECEIVED,
         payload: {
@@ -68,7 +74,7 @@ export const getUserBalance = (userId) => async (dispatch, getState) => {
                   referralPoints: balances.points,
                   silverAvailable: Math.floor(balances.silver*ONE_UNIT) ,
                   goldAvailable: Math.floor(balances.gold*ONE_UNIT),
-                  plots: balances.plots,
+                  plots: foundersPlotsNumber,
                   gems: balances.gems
               }
         }
