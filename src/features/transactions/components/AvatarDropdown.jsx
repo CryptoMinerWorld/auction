@@ -298,7 +298,7 @@ const TxConfirmedRecord = ({tx}) => {
     const [expanded, setExpanded] = useState(false);
 
     return (
-      <TxRecordContainer key={tx.hash} style={{cursor: "pointer"}} onClick={() => setExpanded(!expanded)}>
+      <TxRecordContainer style={{cursor: "pointer"}} onClick={() => setExpanded(!expanded)}>
           <TxInfo>
               <Badge count={tx.unseen ? 1 : 0}>
                   <TxHeader>{tx.type}</TxHeader>
@@ -374,7 +374,7 @@ const menu = ({transactionHistory, pendingTransactions, failedTransactions}) => 
       ))}
       {transactionHistory && transactionHistory.map((tx) => (
         tx.transactionHash ?
-          <TxConfirmedRecord tx={tx}/> : ""
+          <TxConfirmedRecord key={tx.transactionHash+"confirmed"} tx={tx}/> : ""
       ))}
   </DropdownContainer>
 );

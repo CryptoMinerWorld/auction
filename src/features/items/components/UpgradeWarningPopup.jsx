@@ -10,8 +10,8 @@ import {
 } from "../../plots/components/propertyPaneStyles";
 
 export const UpgradeWarningPopup = ({
-  useEnergyCallback, upgradeCallback
-}) => {
+                                        useEnergyCallback, upgradeCallback
+                                    }) => {
 
     return (
       <OctagonLayoutOuter onClick={(e) => {
@@ -31,11 +31,10 @@ export const UpgradeWarningPopup = ({
                       <GemKidImage src={gemKid}/>
                       <WarningDescription>
                           <div>Hey there,</div>
-                          <div>{`You have a Gem with a lot of Resting Energy.
-                          If you Increase your Grade, all its Energy will be erased.
-                          We suggest waiting until after us use all your energy.
-                          But if you really want to Up-Grade.
-                          Then click the appropriate button below
+                          <div>{`Sorry if that warning startled you. I just wanted to make sure I got your attention.
+                          So, it looks like you want to increase your Grade. That is awesome! But i wanted to let you know that the
+                          process is very exhausting for Gems to do, and they drain all of their Resting Energy in the process. It looks like
+                          you have more than 1 hour of Energy. If you want to use it's energy please go ahead and do that before Upping this Gem's Grade.
                           `}</div>
                       </WarningDescription>
                   </div>
@@ -45,10 +44,10 @@ export const UpgradeWarningPopup = ({
                     fontColor={greenOutlineColor}
                     edgeSizes={[4, 20]}
                     outlineWidth={3}
-                    fontSize={20}
+                    fontSize={21}
                     height={55}
-                    content={"Don't waste energy, Don't Up-Grade"}
-                    otherStyles={"font-weight: bold; margin: 10px 0; width: 380px;"}
+                    content={"I want to use Gem's Energy first!"}
+                    otherStyles={"font-weight: bold; margin: 10px 0; min-width: 320px; max-width: 380px;"}
                     onClick={() => useEnergyCallback()}
                   />
                   <CutEdgesButton
@@ -59,7 +58,7 @@ export const UpgradeWarningPopup = ({
                     outlineWidth={3}
                     fontSize={16}
                     height={46}
-                    content={"Waste energy and Up-Grade"}
+                    content={"I don't care, Up-Grade my Gem!"}
                     otherStyles={"width: 280px; font-weight: bold; margin: 10px 0;"}
                     onClick={() => upgradeCallback()}
                   />
@@ -76,11 +75,19 @@ const WarningDescription = styled.div`
     margin-left: 10px;
     line-height: 1.3;
     font-weight: bold;
+    
+    @media(max-width: 500px) {
+        font-size: 12px;
+    }
+    
 `;
 
 const GemKidImage = styled.img`
     width: 160px;
-    height: 100%;
+    flex: 0 0 160px;
+    @media(max-width: 500px) {
+        display: none;
+    }
 `;
 
 const WarningContainer = styled.div`
