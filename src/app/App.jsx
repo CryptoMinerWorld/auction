@@ -174,8 +174,6 @@ class App extends Component {
             });
         }
 
-
-
         const dutchContract =assistInstance.Contract(new web3.eth.Contract(
           dutchAuctionABI,
           process.env.REACT_APP_DUTCH_AUCTION,

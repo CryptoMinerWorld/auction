@@ -10,7 +10,15 @@ import Icon from "antd/lib/icon";
 import img from '../../../app/images/Profile-Image-Logo-60x60.png';
 import {setTransactionsSeen} from "../txActions";
 import styled from "styled-components";
-import {TX_CONFIRMED, TX_FAILED, TX_PENDING} from "../txConstants";
+import {
+    TX_CANCEL,
+    TX_CANCEL_CONFIRMED, TX_CANCELED,
+    TX_CONFIRMED,
+    TX_FAILED,
+    TX_PENDING,
+    TX_SPED_UP,
+    TX_SPEED_UP_CONFIRMED
+} from "../txConstants";
 
 require('antd/lib/dropdown/style/css');
 require('antd/lib/badge/style/css');
@@ -251,8 +259,12 @@ const TxStatus = styled.div`
         case TX_PENDING:
             return "#fdcd14";
         case TX_CONFIRMED:
+        case TX_SPED_UP:
+        case TX_SPEED_UP_CONFIRMED:
+        case TX_CANCEL_CONFIRMED:
             return "green";
         case TX_FAILED:
+        case TX_CANCELED:
             return "red";
     }
 }};
@@ -261,8 +273,12 @@ const TxStatus = styled.div`
         case TX_PENDING:
             return "black";
         case TX_CONFIRMED:
+        case TX_SPED_UP:
+        case TX_SPEED_UP_CONFIRMED:
+        case TX_CANCEL_CONFIRMED:
             return "white";
         case TX_FAILED:
+        case TX_CANCELED:
             return "white";
     }
 }};
@@ -303,7 +319,7 @@ const TxConfirmedRecord = ({tx}) => {
               <Badge count={tx.unseen ? 1 : 0}>
                   <TxHeader>{tx.type}</TxHeader>
               </Badge>
-              <TxStatus status={TX_CONFIRMED}>Confirmed</TxStatus>
+              <TxStatus status={tx.status ? tx.status :TX_CONFIRMED}>{tx.status ? tx.status : 'Confirmed'}</TxStatus>
               <TxDescription>{tx.description}</TxDescription>
           </TxInfo>
           <TxContractEvents expanded={expanded}>
