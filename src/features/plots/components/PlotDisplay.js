@@ -10,7 +10,13 @@ import plotFinishButton from "../../../app/images/finishButton.png";
 import Slider from "react-slick";
 import {compose} from "redux";
 import connect from "react-redux/es/connect/connect";
-import {calculateMiningStatus, getUserPlots, processBlocks, releaseGem} from "../plotActions";
+import {
+    calculateMiningStatus,
+    countTotalUnprocessedBlocks,
+    getUserPlots,
+    processBlocks,
+    releaseGem
+} from "../plotActions";
 import {
     BINDING_GEM,
     CANT_MINE, GEM_BINDING,
@@ -23,7 +29,8 @@ import {
     UNBINDING_GEM
 } from "./../plotConstants";
 import {NO_GEM, PROCESSED} from "../plotConstants";
-import {getTimeLeft, getTimeLeftMinutes} from "../../../app/services/PlotService";
+import {convertMinutesToTimeString, getTimeLeft, getTimeLeftMinutes} from "../../../app/services/PlotService";
+import {preLoadAuctionPage} from "../../market/marketActions";
 
 // import "../../../app/css/slick.min.css";
 // import "../../../app/css/slick-theme.min.css";
@@ -41,6 +48,9 @@ const select = store => {
         }
     });
 
+    console.log("PLOTS:", plots);
+    console.log("SOME GEM:", gems);
+
     return {
         plots: plots,
         gems: store.dashboard.userGems,
@@ -48,7 +58,7 @@ const select = store => {
         plotService: store.app.plotServiceInstance,
         currentAccount: store.auth.currentUserId,
     }
-}
+};
 
 const allTierFilterOptions = ["dirt_filter", "clay_filter", "limestone_filter", "marble_filter", "obsidian_filter"];
 const allPlotFilterOptions = [NEW_PLOT, MINING, STUCK, NO_GEM, PROCESSED];
@@ -68,7 +78,7 @@ class PlotDisplay extends Component {
         showSidebarFilters: false,
         sliderIndex: 0,
         optionalPopupData: null,
-    }
+    };
 
     componentDidMount() {
         this.setState({
@@ -76,17 +86,26 @@ class PlotDisplay extends Component {
         });
         if (this.props.plots) {
             this.applyAllFilters();
+            this.setState({totalUnprocessedBlocksNumber: countTotalUnprocessedBlocks(this.props.plots).totalUnprocessedSum})
         }
     }
 
     componentDidUpdate(prevProps) {
+        console.log("state:", this.state);
         const {plots} = this.props;
         if (plots !== prevProps.plots) {
             console.log("NEW PLOTS GOT");
             this.setState({
                 currentTime: new Date().getTime(),
             });
+            if (this.state.plotSelected) {
+                const newSelectedPlot = plots.find(plot => plot.id === this.state.plotSelected.id);
+                newSelectedPlot && this.setState({
+                    plotSelected: newSelectedPlot
+                })
+            }
             this.applyAllFilters();
+            this.setState({totalUnprocessedBlocksNumber: countTotalUnprocessedBlocks(plots).totalUnprocessedSum})
             //this.sortFiltered(this.props.plots || []);
         }
     }
@@ -161,7 +180,7 @@ class PlotDisplay extends Component {
                         return p1.miningState === MINING ? 1 : -1;
                     }
                     return p1.currentPercentage - p2.currentPercentage;
-                }
+                };
                 break;
             case "time_left":
                 sortingFunction = (p1, p2) => p1.processedBlocks >= 100 ? -1 : p1.currentPercentage - p2.currentPercentage;
@@ -271,18 +290,18 @@ class PlotDisplay extends Component {
             case "upgrade":
         }
         this.showSidebarPopup("plot-action-" + action)
-    }
+    };
 
     showSidebarPopup = (type, optionalData) => {
         this.setState({
             showSidebarPopup: type,
             optionalPopupData: optionalData || null
         })
-    }
+    };
 
     showSidebarFilters = () => {
         this.setState({showSidebarFilters: true})
-    }
+    };
 
     // updatePlot = (modifiedPlot) => {
     //     if (this.state.plotSelected.id === modifiedPlot.id) {
@@ -317,12 +336,12 @@ class PlotDisplay extends Component {
     render() {
         //console.log("State: ", this.state);
         //console.log("Props: ", this.props);
-        const {sortOption, sortOptionDirection, tierFilterOptions, plotFilterOptions, filteredPlots, plotSelected, sliderIndex} = this.state;
+        const {sortOption, sortOptionDirection, tierFilterOptions, plotFilterOptions, filteredPlots, plotSelected, sliderIndex, totalUnprocessedBlocksNumber} = this.state;
         const {handleBindGem, plots, gems, handleGetUserPlots, currentAccount} = this.props;
-        const startStopButton = {}
+        const startStopButton = {};
 
         const isOwner = filteredPlots && (filteredPlots.length > 0) && filteredPlots[0].owner === currentAccount;
-        console.log("is onwer:", isOwner);
+        console.log("is onwer:", isOwner, currentAccount);
 
 
         return (
@@ -358,7 +377,7 @@ class PlotDisplay extends Component {
                                                 }}>
                                   <div style={miningStatus}>{plot.miningState}</div>
                                   {plot.miningState === MINING &&
-                                    <div style={miningStatus}>{getTimeLeftMinutes(plot)}</div>
+                                    <div style={miningStatus}>{convertMinutesToTimeString(getTimeLeftMinutes(plot, plot.gemMines))}</div>
                                   }
                                   {(plot.miningState === NO_GEM || plot.miningState === NEW_PLOT) &&
                                     <div style={miningStatus}>{plot.currentPercentage} Blocks</div>
@@ -411,6 +430,7 @@ class PlotDisplay extends Component {
                 showSidebarPopup={(type) => this.showSidebarPopup(type)}
                 plotSelected={plotSelected}
                 isOwner={isOwner}
+                totalUnprocessedBlocksNumber={totalUnprocessedBlocksNumber}
               />
               {/*{this.state.showSidebarFilters ?*/}
               {/*<PlotFilter*/}
@@ -450,6 +470,7 @@ class PlotDisplay extends Component {
                             optionalData={this.state.optionalPopupData}
                             updatePlot={handleGetUserPlots}
                             goToGemWorkshop={this.props.goToGemWorkshop}
+                            handlePreLoadAuctionPage={this.props.handlePreLoadAuctionPage}
               />
           </div>
         );
@@ -467,7 +488,8 @@ export default compose(
     {
         handleReleaseGem: releaseGem,
         handleProcessBlocks: processBlocks,
-        handleGetUserPlots: getUserPlots
+        handleGetUserPlots: getUserPlots,
+        handlePreLoadAuctionPage: preLoadAuctionPage,
     }
   )
 )(PlotDisplay);
@@ -565,7 +587,7 @@ const PlotActionButton = styled.div`
 const miningStatus = {
     color: "white",
     fontSize: "18px",
-}
+};
 
 const SliderWrapper = styled.div`
             @media(min-width: 600px) {

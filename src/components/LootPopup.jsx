@@ -161,7 +161,7 @@ const popupStyle = {
     color: "white",
     backgroundColor: 'transparent',
     cursor: "default",
-}
+};
 
 const LootMessage = styled.div`
     font-size: 20px;
@@ -188,6 +188,8 @@ export class LootPopup extends Component {
 
         if (lootEmpty) {
             return <LootContainer>
+                {lootFound['plotState'] && <LootMessage>{`After Processing the ${lootFound['blocksProcessed']} Blocks ${' '}
+                of ${lootFound['plotsProcessed']} plots your Gems mined,`}</LootMessage>}
                 <div>Nothing was found</div>
                 <ActionButton onClick={this.props.onClose}>Close</ActionButton>
             </LootContainer>
@@ -210,7 +212,7 @@ export class LootPopup extends Component {
                 <ActionButton onClick={this.props.onClose}>Close</ActionButton>
             </LootContainer>)
         }
-    }
+    };
 
     render() {
         const shadowLayerStyle = {
@@ -226,7 +228,7 @@ export class LootPopup extends Component {
             alignItems: 'center',
             cursor: 'pointer',
             backgroundColor: 'rgba(101,101,101,0.4)',
-        }
+        };
 
         console.log("Loot event:: ", this.props.lootFound);
         const lootFound = this.props.lootFound;

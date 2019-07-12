@@ -2,10 +2,10 @@ import {
     AUCTION_DETAILS_RECEIVED,
     AUCTION_END,
     AUCTION_START,
-    BUYING_GEM,
+    BUYING_GEM, CLEAR_GEM_PAGE, GEM_AUCTION_DETAILS_RECEIVED, GEM_DETAILS_RECEIVED,
     GEM_GIFTING,
-    GEM_LEVEL_UP,
-    GEM_UPGRADE
+    GEM_LEVEL_UP, GEM_MINING_DETAILS_RECEIVED, GEM_TX_DETAILS_RECEIVED,
+    GEM_UPGRADE, IN_AUCTION, MINING
 } from './itemConstants';
 import {FETCH_DATA_BEGUN, FETCH_DATA_SUCCEEDED,} from '../../app/reduxConstants';
 import {db} from '../../app/utils/firebase';
@@ -14,42 +14,65 @@ import {setError} from '../../app/appActions';
 import {addPendingTransaction, getUpdatedTransactionHistory} from '../transactions/txActions';
 import {utils} from "web3";
 import {BigNumber} from "bignumber.js";
-import {PROCESSING} from "../plots/plotConstants";
+import {BINDING_GEM, PROCESSING, UNBINDING_GEM} from "../plots/plotConstants";
 
 
 export const getGemData = tokenId => async (dispatch, getState) => {
-    dispatch({type: FETCH_DATA_BEGUN});
+    // dispatch({type: FETCH_DATA_BEGUN});
     try {
         const gemService = getState().app.gemServiceInstance;
-        const auctionService = getState().app.auctionServiceInstance;
-        const pendingTransactions = getState().tx.pendingTransactions;
-        const currentUserId = getState().auth.currentUserId;
-        const gemData = gemService.getGem(tokenId);
-        const auctionData = auctionService.getGemAuctionData(tokenId);
-        const gem = {...(await gemData), ...(await auctionData)};
-        const tx = (currentUserId.toLowerCase() === gem.owner.toLowerCase()) && pendingTransactions && findItemPendingTx(tokenId, pendingTransactions);
-        gem.txType = tx && tx.type;
-        dispatch({type: FETCH_DATA_SUCCEEDED});
+        const gem = await gemService.getGem(tokenId);
         dispatch({
-            type: AUCTION_DETAILS_RECEIVED,
-            payload: {gem},
+            type: GEM_DETAILS_RECEIVED,
+            payload: gem,
         });
     }
     catch (e) {
         setError(e);
     }
-}
+};
+
+export const getGemAuctionData = tokenId => async (dispatch, getState) => {
+    const auctionService = getState().app.auctionServiceInstance;
+    const auctionData = await auctionService.getGemAuctionData(tokenId);
+
+    dispatch({
+        type: GEM_AUCTION_DETAILS_RECEIVED,
+        payload: auctionData
+    });
+};
+
+export const getGemMiningData = tokenId => async (dispatch, getState) => {
+    const plotService = getState().app.plotServiceInstance;
+    const plotMined = await plotService.getPlotBoundToGem(tokenId);
+    dispatch({
+        type: GEM_MINING_DETAILS_RECEIVED,
+        payload: {plotMined},
+    });
+};
+
+export const getGemTransactionData = gem => async (dispatch, getState) => {
+    const pendingTransactions = getState().tx.pendingTransactions;
+    const currentUserId = getState().auth.currentUserId;
+    const tx = (currentUserId.toLowerCase() === gem.owner.toLowerCase()) && pendingTransactions && findItemPendingTx(gem.id, pendingTransactions);
+
+    dispatch({
+        type: GEM_TX_DETAILS_RECEIVED,
+        payload: {txType: tx && tx.type},
+    });
+};
+
 
 const findItemPendingTx = (gemId, pendingTransactions) => {
     return pendingTransactions && pendingTransactions.find((tx) => {
         if (tx.type === GEM_UPGRADE || tx.type === GEM_LEVEL_UP || tx.type === GEM_GIFTING
-          || tx.type === AUCTION_START || tx.type === AUCTION_END || tx.type === BUYING_GEM || tx.type === PROCESSING) {
-            if (tx.body && tx.body.gemId.toString() === gemId.toString()) {
+          || tx.type === AUCTION_START || tx.type === AUCTION_END || tx.type === BUYING_GEM || tx.type === PROCESSING || tx.type === BINDING_GEM || tx.type === UNBINDING_GEM) {
+            if (tx.body && tx.body.gemId && tx.body.gemId.toString() === gemId.toString()) {
                 return true;
             }
         }
     });
-}
+};
 
 export const getOwnerDataByOwnerId = async ownerId => {
     try {
@@ -65,7 +88,7 @@ export const getOwnerDataByOwnerId = async ownerId => {
     } catch (err) {
         setError(err);
     }
-}
+};
 
 export const createAuction = (payload, createCallback, history) => async (dispatch, getState) => {
     const {auth, app} = getState();
@@ -204,10 +227,10 @@ export const handleBuyNow = (gem, _from, history, setLoading) => (dispatch, getS
       });
 };
 
-//
-// export function clearGemPageOnExit() {
-//     return dispatch => dispatch({type: CLEAR_GEM_PAGE});
-// }
+
+export const clearGemPage = () => {
+    return dispatch => dispatch({type: CLEAR_GEM_PAGE});
+};
 
 export const giftGem = (gemId, addressTo) => (dispatch, getState) => {
     const gemsContract = getState().app.gemsContractInstance;
@@ -236,7 +259,7 @@ export const giftGem = (gemId, addressTo) => (dispatch, getState) => {
               getUpdatedTransactionHistory()(dispatch, getState);
           }
       });
-}
+};
 
 export const upgradeGem = (gem, levelUp, gradeUp, hidePopup, cost) => (dispatch, getState) => {
     console.log(333333333333, 'upgrading...');

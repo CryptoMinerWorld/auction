@@ -24,6 +24,24 @@ export const levelPaneColors = (level) => ({
     5: "#492106",
 }[level]);
 
+export const statePaneColors = (state) => ({
+    "Idle" : "#204F3E",
+    "Getting ready" : "#204F3E",
+    "Mining": "#004056",
+    "Going home": "#004056",
+    "In Auction": "#443807",
+    "Stuck": "#700E23"
+}[state]);
+
+export const stateOutlineColors = (state) => ({
+    "Idle" : "#79D7B9",
+    "Getting ready": "#79D7B9",
+    "Mining": "#98C7FF",
+    "Going home": "#98C7FF",
+    "In Auction": "#F0D978",
+    "Stuck": "#EF6E7E"
+}[state]);
+
 export const typePaneColors = (typeColor) => ({
     1: '#EF2318',
     2: '#8312DB',
@@ -60,6 +78,11 @@ export const mrbOutlineColor = "#BE79DB";
 export const mrbPaneColor = "#432056";
 export const energyPaneColor = "#1D513E";
 export const energyOutlineColor = "#71CCAE";
+export const greenPaneColor = "#204F3E";
+export const greenOutlineColor = "#79D8B9";
+export const redPaneColor = "#C4082D";
+export const redOutlineColor = "#F993A5";
+
 
 export const type = (color) => ({
     1: 'Gar',

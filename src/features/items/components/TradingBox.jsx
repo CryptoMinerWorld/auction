@@ -3,19 +3,31 @@ import styled from 'styled-components';
 import React, {PureComponent} from 'react';
 import Input from 'antd/lib/input';
 import Icon from 'antd/lib/icon';
-// import Button from 'antd/lib/button';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
 import {compose} from 'redux';
 import {daysToSeconds, ethToWei} from '../../mint/helpers';
 import {createAuction, removeFromAuction, upgradeGem} from '../itemActions';
-import Gembox from './Gembox';
 import ProgressMeter from './ProgressMeter';
 import GiftGems from './GiftGems';
 import button from '../../../app/images/pinkBuyNowButton.png';
 import UpgradeComponent from "./UpgradeComponent";
 import {getUserPlots, processBlocks, releaseGem} from "../../plots/plotActions";
-import {AUCTION_END, AUCTION_START} from "../itemConstants";
+import {AUCTION_END, AUCTION_START, GETTING_READY, GOING_HOME, IDLE} from "../itemConstants";
+import {CutEdgesButton} from "../../../components/CutEdgesButton";
+import {
+    stateOutlineColors,
+    statePaneColors,
+    typePaneColors,
+    typePaneOutlineColors
+} from "../../plots/components/propertyPaneStyles";
+import OwnerGradeRateEnergyGembox from "./OwnerGradeRateEnergyGembox";
+import OwnerLevelGembox from "./OwnerLevelGembox";
+import ViewerGembox from "./ViewerGembox";
+import {getTimeLeftMinutes} from "../../../app/services/PlotService";
+import MiningGembox from "./MiningGembox";
+import Loading from "../../../components/Loading";
+import {UpgradeWarningPopup} from "./UpgradeWarningPopup";
 
 const ColourButton = styled.button`
   background-image: url(${button});
@@ -43,15 +55,6 @@ const tophighlight = {
     height: '4px',
 };
 
-const OverlapOnDesktopView = styled.div`
-  @media (min-width: 64em) {
-    position: absolute;
-    top: 2em;
-    left: 5em;
-    z-index: 2;
-  }
-`;
-
 const fixedOverlayStyle = {
     position: 'fixed',
     //width: '35%',
@@ -67,14 +70,27 @@ const fixedOverlayStyle = {
     display: 'flex',
     cursor: 'pointer',
     backgroundColor: 'rgba(0,0,0,0.5)'
-}
+};
+
+const NameBox = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: center;
+`;
+
+const StateBox = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+`;
 
 const select = store => ({
     userPlots: store.plots.userPlots,
     gemMiningIds: store.plots.gemMiningIds,
     plotService: store.app.plotServiceInstance,
     userBalance: store.sale.balance
-})
+});
 
 
 class TradingBox extends PureComponent {
@@ -92,7 +108,8 @@ class TradingBox extends PureComponent {
         endPrice: '',
         formSubmitted: false,
         showUpgrade: false,
-        useMetal: ''
+        useMetal: '',
+        showUpgradeWarning: true,
     };
 
     handleChange = (value, field) => this.setState({[field]: value});
@@ -100,19 +117,22 @@ class TradingBox extends PureComponent {
     turnLoaderOff = () => this.setState({formSubmitted: false});
 
 
-    componentDidMount() {
-        if (this.props.plotService) {
-            console.log('GET USER PLOTS:');
-            this.props.handleGetUserPlots(this.props.currentAccount);
-        }
-    }
-
-    componentDidUpdate(prevProps) {
-        console.log('PROPS:', this.props);
-        if (this.props.plotService && (this.props.plotService !== prevProps.plotService) || (this.props.gem.state !== prevProps.gem.state)) {
-            this.props.role === 'owner' && this.props.handleGetUserPlots(this.props.currentAccount);
-        }
-    }
+    // componentDidMount() {
+    //     if (this.props.plotService) {
+    //         console.log('GET USER PLOTS:');
+    //         //todo: remove this
+    //         console.log("EFFECTIVE RESTING ENERGY OF:", this.props.plotService.getEffectiveRestingEnergyOf(this.props.gem.id));
+    //         this.props.handleGetUserPlots(this.props.currentAccount);
+    //     }
+    // }
+    //
+    // componentDidUpdate(prevProps) {
+    //     if (this.props.plotService && (this.props.plotService !== prevProps.plotService) || (this.props.gem.state !== prevProps.gem.state)) {
+    //         //todo: remove this
+    //         console.log("EFFECTIVE RESTING ENERGY OF:", this.props.plotService.getEffectiveRestingEnergyOf(this.props.gem.id));
+    //         this.props.role === 'owner' && this.props.handleGetUserPlots(this.props.currentAccount);
+    //     }
+    // }
 
     render() {
         const {
@@ -120,40 +140,54 @@ class TradingBox extends PureComponent {
             handleCreateAuction,
             handleRemoveGemFromAuction,
             handleProcessBlocks,
-          handleReleaseGem,
-          handleGetUserPlots,
+            handleReleaseGem,
+            handleGetUserPlots,
             history,
             userBalance,
             currentAccount,
             role
         } = this.props;
         const {
-            duration, startPrice, endPrice, formSubmitted, showUpgrade, useMetal
+            duration, startPrice, endPrice, formSubmitted, showUpgrade, useMetal, showUpgradeWarning,
         } = this.state;
 
-
-        console.log("GEM TX TYPE:", gem.txType);
-
-        let gemMines, plotMined;
-        if (this.props.gemMiningIds && this.props.userPlots && this.props.gemMiningIds.includes(this.props.gem.id)) {
-            gemMines = true;
-            plotMined = this.props.userPlots.find(plot => plot && plot.gemMinesId === this.props.gem.id);
-            if (plotMined) plotMined.gemMines = gem;
+        //let gemMines, plotMined;
+        const unprocessed = gem.plotMined && (gem.plotMined.processedBlocks < gem.plotMined.currentPercentage);
+        let unprocessedBlocks = [0, 0, 0, 0, 0];
+        let totalUnprocessedBlocks = 0;
+        let minutesGemCanMine = 0;
+        if (gem && gem.plotMined) {
+            minutesGemCanMine = getTimeLeftMinutes(gem.plotMined, gem);
+            if (gem.plotMined.currentPercentage !== gem.plotMined.processedBlocks) {
+                unprocessedBlocks[0] = Math.max(Math.min(gem.plotMined.currentPercentage, gem.plotMined.layerEndPercentages[0]) - Math.max(0, gem.plotMined.processedBlocks), 0);
+                totalUnprocessedBlocks = unprocessedBlocks[0];
+                for (let i = 1; i < 5; i++) {
+                    unprocessedBlocks[i] = Math.max(Math.min(gem.plotMined.currentPercentage, gem.plotMined.layerEndPercentages[i])
+                      - Math.max(gem.plotMined.layerEndPercentages[i - 1], gem.plotMined.processedBlocks), 0);
+                    totalUnprocessedBlocks += unprocessedBlocks[i];
+                }
+            }
         }
-        const unprocessed = gemMines && plotMined && (plotMined.processedBlocks < plotMined.currentPercentage);
-        console.log("UNprocessed:", unprocessed);
         return (
           <>
               {showUpgrade && useMetal && (
                 <div style={fixedOverlayStyle}
-                     onClick={() => this.setState({showUpgrade: false})}
+                     onClick={() => this.setState({showUpgrade: false, showUpgradeWarning: true})}
                 >
-                    {!unprocessed && <UpgradeComponent metal={useMetal}
-                                                    metalAvailable={useMetal === 'silver' ? +userBalance.silverAvailable : +userBalance.goldAvailable}
-                                                    hidePopup={() =>
-                                                      this.setState({showUpgrade: false})
-                                                    }
-                                                    {...this.props}/>
+                    {!unprocessed && !(showUpgradeWarning && useMetal === 'gold' && gem.gradeType >= 4 && gem.restingEnergy > 0) &&
+                    <UpgradeComponent metal={useMetal}
+                                      metalAvailable={useMetal === 'silver' ? +userBalance.silverAvailable : +userBalance.goldAvailable}
+                                      hidePopup={() =>
+                                        this.setState({showUpgrade: false, showUpgradeWarning: true})
+                                      }
+                                      {...this.props}
+                    />
+                    }
+                    {showUpgradeWarning && (useMetal === 'gold') && gem.gradeType >= 4 && gem.restingEnergy >= 60 &&
+                    <UpgradeWarningPopup
+                      useEnergyCallback={() => this.setState({showUpgrade: false})}
+                      upgradeCallback={() => this.setState({showUpgradeWarning: false})}
+                    />
                     }
                     <div
                       // style={position: absolute
@@ -169,7 +203,7 @@ class TradingBox extends PureComponent {
                     </div>
                 </div>
               )}
-              <OverlapOnDesktopView
+              <div
                 className="bg-dark-gray measure-l w-100 shadow-3"
                 style={{
                     WebkitClipPath:
@@ -181,55 +215,112 @@ class TradingBox extends PureComponent {
                   <TopHighLight style={tophighlight}/>
                   <div className="white pa3">
                       <div className="flex col jcc ">
-                          <h1 className="tc pb3 b white" style={{wordBreak: 'break-all'}} data-testid="gemName">
-                              {gem.name}
-                          </h1>
-                          <div className="mt3"/>
-                          <Gembox
+                          <NameBox>
+                              <CutEdgesButton outlineColor={typePaneOutlineColors(gem.color)}
+                                              backgroundColor={typePaneColors(gem.color)}
+                                              fontColor={typePaneOutlineColors(gem.color)}
+                                              edgeSizes={[3, 20]}
+                                              fontSize={20}
+                                              outlineWidth={3}
+                                              height={38}
+                                              content={gem.name}
+                                              otherStyles={"width: 220px; font-weight: bold"}
+                              />
+                          </NameBox>
+                          {gem.stateName ?
+                            <StateBox>
+                                <CutEdgesButton outlineColor={stateOutlineColors(gem.stateName)}
+                                                backgroundColor={statePaneColors(gem.stateName)}
+                                                fontColor={stateOutlineColors(gem.stateName)}
+                                                edgeSizes={[5, 20]}
+                                                fontSize={20}
+                                                outlineWidth={3}
+                                                height={34}
+                                                content={gem.stateName}
+                                                otherStyles={"width: 220px; font-weight: bold"}
+                                />
+                            </StateBox> :
+                            <div style={{position: 'relative', height: '35px'}}>
+                                <Loading/>
+                            </div>
+                          }
+
+                          {gem.auctionIsLive &&
+                          <div className="flex jcc col" style={{padding: "10px 20px"}}>
+                              <div className="flex jcc">
+                                  <div className="w-100 w5-ns h3 center">
+                                      <ColourButton
+                                        type="danger"
+                                        onClick={() => {
+                                            this.setState({formSubmitted: true});
+                                            handleRemoveGemFromAuction(Number(gem.id), history, this.turnLoaderOff);
+                                        }}
+                                        data-testid="removeGemButton"
+                                        className="b"
+                                      >
+                                          {gem.txType && gem.txType === AUCTION_END ? (
+                                            <span>
+                                                    <Icon type="loading" theme="outlined"/>
+                                                {' '}Removing...
+                                                </span>
+                                          ) : (
+                                            '  End Auction'
+                                          )}
+                                      </ColourButton>
+                                  </div>
+                              </div>
+                              <ProgressMeter
+                                currentPrice={gem.currentPrice}
+                                minPrice={gem.minPrice}
+                                maxPrice={gem.maxPrice}
+                              />
+                          </div>
+                          }
+
+                          {/*//todo: Unprocessed Blocks and Time Till Gem gets Stuck IF NOT STUCK (i.e. MINING)*/}
+                          {gem.plotMined &&
+                          <MiningGembox
+                            stateName={gem.stateName}
+                            plotMined={gem.plotMined}
+                            totalUnprocessedBlocks={totalUnprocessedBlocks}
+                            unprocessedBlocks={unprocessedBlocks}
+                            minutesGemCanMine={minutesGemCanMine}
+                            handleProcessBlocks={() => handleProcessBlocks(gem.plotMined)}
+                            handleReleaseGem={() => handleReleaseGem(gem.plotMined)}
+                          />
+                          }
+
+                          {gem.stateName === IDLE && <OwnerLevelGembox
                             gem={gem}
-                            role={role}
                             handleUseMetals={(metalName) => {
                                 this.setState({showUpgrade: true, useMetal: metalName});
                             }}
-                            plotMined={plotMined}
-                            gemMines={gemMines}
-                            handleProcessBlocks={(plot) => handleProcessBlocks(plot, () => handleGetUserPlots(currentAccount))}
-                            handleReleaseGem={(plot) => handleReleaseGem(plot)}
-                          />
-                          {gemMines && plotMined && <div style={{textAlign: "center", fontWeight: "bold", fontSize: "16px"}}>{`Gem is mining plot #${plotMined.id}`}</div>}
-                          {gem.auctionIsLive ? (
-                            <div className="pa5 flex jcc col">
-                                <div className="flex jcc">
-                                    <div className="w-100 w5-ns h3 center mt4">
-                                        <ColourButton
-                                          type="danger"
-                                          onClick={() => {
-                                              this.setState({formSubmitted: true});
-                                              handleRemoveGemFromAuction(Number(gem.id), history, this.turnLoaderOff);
-                                          }}
-                                          data-testid="removeGemButton"
-                                          className="b"
-                                        >
-                                            {gem.txType && gem.txType === AUCTION_END  ? (
-                                              <span>
-                          <Icon type="loading" theme="outlined"/>
-                                                  {' '}
-                                                  Removing...
-                        </span>
-                                            ) : (
-                                              '  End Auction'
-                                            )}
-                                        </ColourButton>
-                                    </div>
-                                </div>
+                            plotMined={gem.plotMined}
+                            gemMines={gem.plotMined}
+                          />}
 
-                                <ProgressMeter
-                                  currentPrice={gem.currentPrice}
-                                  minPrice={gem.minPrice}
-                                  maxPrice={gem.maxPrice}
-                                />
-                            </div>
-                          ) : (!gemMines && Number(gem.state) === 0) && (
+                          {gem.stateName === IDLE && <OwnerGradeRateEnergyGembox
+                            gem={gem}
+                            handleUseMetals={(metalName) => {
+                                this.setState({showUpgrade: true, useMetal: metalName});
+                            }}
+                            plotMined={gem.plotMined}
+                            gemMines={gem.gemMines}
+                          />}
+
+
+                          {gem.plotMined &&
+                          <div style={{fontSize: "18px", textAlign: 'center'}}>
+                              Stop mining to allow you to, upgrade your gem, sell it on the market, or gift it to a
+                              friend
+                          </div>
+                          }
+
+                          {(gem.auctionIsLive || gem.plotMined || gem.stateName === GETTING_READY || gem.stateName === GOING_HOME) &&
+                          <ViewerGembox gem={gem}/>
+                          }
+
+                          {gem.stateName === IDLE && (
                             <div className="pa5 flex jcc col">
                                 <div>
                                     <div>Auction duration:</div>
@@ -308,12 +399,12 @@ class TradingBox extends PureComponent {
                                         </ColourButton>
                                     </div>
                                 </div>
-                                {!gemMines && Number(gem.state) === 0 && <GiftGems gemName={gem.name} sourceImage={gem.image}/>}
+                                <GiftGems gemName={gem.name} sourceImage={gem.image}/>
                             </div>
                           )}
                       </div>
                   </div>
-              </OverlapOnDesktopView>
+              </div>
           </>
         );
     }

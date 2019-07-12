@@ -89,7 +89,7 @@ export default class AuctionService {
             gemAuctionData.minPrice = weiToEth(Number(tokenSaleStatusArray['p1']));
             gemAuctionData.currentPrice = weiToEth(Number(tokenSaleStatusArray['p']));
         }
-        return gemAuctionData;
+        return {...gemAuctionData, id: tokenId};
     }
 }
 

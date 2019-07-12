@@ -1,26 +1,21 @@
 import {
-    BINDING_GEM, BULK_PROCESSING, GEM_BINDING,
-    GEM_CHANGE_LOCK_STATE,
+    BINDING_GEM,
+    BULK_PROCESSING,
+    GEM_BINDING,
     MINED,
     MINING,
     NEW_PLOT,
     NO_GEM,
     PROCESSED,
-    PROCESSING, REFRESH_USER_PLOT, REFRESH_USER_PLOTS,
+    PROCESSING,
+    REFRESH_USER_PLOT,
+    REFRESH_USER_PLOTS,
     STUCK,
     UNBINDING_GEM,
     USER_PLOTS_RECEIVED
 } from "./plotConstants";
 import {db} from '../../app/utils/firebase';
-import {
-    addPendingTransaction,
-    completedTx,
-    ErrorTx,
-    getUpdatedTransactionHistory,
-    startTx
-} from "../transactions/txActions";
-import {TRANSACTION_RESOLVED} from "../transactions/txConstants";
-import {parseTransactionHashFromError} from "../transactions/helpers";
+import {addPendingTransaction, getUpdatedTransactionHistory} from "../transactions/txActions";
 
 export const getUserPlots = ownerId => async (dispatch, getState) => {
     console.warn("GETTING USER PLOTS>>>");
@@ -29,23 +24,24 @@ export const getUserPlots = ownerId => async (dispatch, getState) => {
     const plotService = getState().app.plotServiceInstance;
     const pendingTransactions = getState().tx.pendingTransactions;
     const {userPlots, gemMiningIds} = await plotService.getOwnerPlots(userId);
-
+    console.log("CHECK:" + ownerId + " " + currentUserId + " " + pendingTransactions.length);
     ownerId === currentUserId && pendingTransactions && pendingTransactions.forEach((tx) => {
         console.log("PLOT PENDING TX:", tx);
         if (tx.type === BINDING_GEM || tx.type === UNBINDING_GEM || tx.type === PROCESSING) {
             if (tx.body && tx.body.plot) {
-                const pendingPlotIndex = userPlots.findIndex(plot => plot.id === tx.body.plot);
-                userPlots[pendingPlotIndex].miningState = tx.type;
-                if (tx.body.gem) {
-                    gemMiningIds.push(tx.body.gem.toString());
+                console.warn("TX BODY PLOT", tx.body.plot);
+                const pendingPlotIndex = userPlots.findIndex(plot => Number(plot.id) === Number(tx.body.plot));
+                if (pendingPlotIndex > 0) userPlots[pendingPlotIndex].miningState = tx.type;
+                if (tx.body.gemId) {
+                    gemMiningIds.push(tx.body.gemId.toString());
                 }
             }
         }
         if (tx.type === BULK_PROCESSING) {
             if (tx.body && tx.body.plotIds) {
                 tx.body.plotIds.forEach(id => {
-                    const pendingPlotIndex = userPlots.findIndex(plot => plot.id === id);
-                    userPlots[pendingPlotIndex].miningState = PROCESSING;
+                    const pendingPlotIndex = userPlots.findIndex(plot => Number(plot.id) === Number(id));
+                    if (pendingPlotIndex > 0) userPlots[pendingPlotIndex].miningState = PROCESSING;
                 })
             }
         }
@@ -55,14 +51,14 @@ export const getUserPlots = ownerId => async (dispatch, getState) => {
         type: USER_PLOTS_RECEIVED,
         payload: {userPlots, gemMiningIds}
     });
-}
+};
 
 export const refreshUserPlot = plot => async (dispatch, getState) => {
     dispatch({
         type: REFRESH_USER_PLOT,
         payload: plot
     })
-}
+};
 
 export const bindGem = (plot, gem, updatePlotCallback, transactionStartCallback) => async (dispatch, getState) => {
     console.log(`BIND GEM ${gem.id} to PLOT ${plot.id}`);
@@ -80,13 +76,13 @@ export const bindGem = (plot, gem, updatePlotCallback, transactionStartCallback)
               description: `Binding gem ${gem.id} to plot ${plot.id}`,
               body: {
                   plot: plot.id,
-                  gem: gem.id,
+                  gemId: gem.id,
               }
           })(dispatch, getState);
           dispatch({
               type: REFRESH_USER_PLOT,
               payload: {id: plot.id, miningState: BINDING_GEM}
-          })
+          });
           transactionStartCallback();
           dispatch({
               type: GEM_BINDING,
@@ -116,7 +112,7 @@ export const bindGem = (plot, gem, updatePlotCallback, transactionStartCallback)
           });
           //updatePlotCallback();
       });
-}
+};
 
 export const releaseGem = (plot, updatePlotCallback, transactionStartCallback) => async (dispatch, getState) => {
     console.log(`RELEASE GEM ON PLOT ${plot.id}`);
@@ -130,16 +126,16 @@ export const releaseGem = (plot, updatePlotCallback, transactionStartCallback) =
               hash: hash,
               userId: currentUser,
               type: UNBINDING_GEM,
-              description: `Releasing gem ${plot.gemMines.id} from plot ${plot.id}`,
+              description: `Releasing gem ${plot.gemMinesId} from plot ${plot.id}`,
               body: {
                   plot: plot.id,
-                  gem: plot.gemMines.id,
+                  gemId: plot.gemMinesId,
               }
           })(dispatch, getState);
           dispatch({
               type: REFRESH_USER_PLOT,
               payload: {id: plot.id, miningState: UNBINDING_GEM}
-          })
+          });
           transactionStartCallback && transactionStartCallback();
           //updatePlotCallback({...plot, miningState: UNBINDING_GEM});
       })
@@ -147,7 +143,7 @@ export const releaseGem = (plot, updatePlotCallback, transactionStartCallback) =
           console.log("RELEASE RECEIPT:", receipt);
           dispatch({
               type: GEM_BINDING,
-              payload: {gemId: plot.gemMines.id, state: 0}
+              payload: {gemId: plot.gemMinesId, state: 0}
           });
       })
       .on('error', (err) => {
@@ -156,43 +152,44 @@ export const releaseGem = (plot, updatePlotCallback, transactionStartCallback) =
           }
           //updatePlotCallback();
       });
-}
+};
 
 export const processPlots = (plotIds) => async (dispatch, getState) => {
     console.log("process plots ids:", plotIds);
     const currentUser = getState().auth.currentUserId;
     let txHash;
-        getState().app.plotServiceInstance.processPlots(plotIds)
-          .on('transactionHash', (hash) => {
-              txHash = hash;
-              addPendingTransaction({
-                  hash: hash,
-                  userId: currentUser,
-                  type: BULK_PROCESSING,
-                  description: `Bulk processing`,
-                  body: {
-                      plotIds,
-                  }
-              })(dispatch, getState);
-              dispatch({
-                  type: REFRESH_USER_PLOTS,
-                  payload: {ids: plotIds, miningState: PROCESSING}
-              })
-          })
-          .on('receipt', (receipt) => {
-              //updatePlotCallback();
-              //updatePlotCallback({...plot, processedBlocks: plot.currentPercentage, miningState: previousState});
-          })
-          .on('error', (err) => {
-              if (txHash) {
-                  getUpdatedTransactionHistory()(dispatch, getState);
+    getState().app.plotServiceInstance.processPlots(plotIds)
+      .on('transactionHash', (hash) => {
+          txHash = hash;
+          addPendingTransaction({
+              hash: hash,
+              userId: currentUser,
+              type: BULK_PROCESSING,
+              description: `Bulk processing`,
+              body: {
+                  plotIds,
               }
-          });
-}
+          })(dispatch, getState);
+          dispatch({
+              type: REFRESH_USER_PLOTS,
+              payload: {ids: plotIds, miningState: PROCESSING}
+          })
+      })
+      .on('receipt', (receipt) => {
+          //updatePlotCallback();
+          //updatePlotCallback({...plot, processedBlocks: plot.currentPercentage, miningState: previousState});
+      })
+      .on('error', (err) => {
+          if (txHash) {
+              getUpdatedTransactionHistory()(dispatch, getState);
+          }
+      });
+};
 
 export const processBlocks = (plot, updatePlotCallback) => async (dispatch, getState) => {
     const currentUser = getState().auth.currentUserId;
     const previousState = plot.miningState;
+    console.warn("PLOT:", plot, plot.id);
     let txHash;
     const result = getState().app.plotServiceInstance.processBlocks(plot.id, currentUser)
       .on('transactionHash', (hash) => {
@@ -223,7 +220,7 @@ export const processBlocks = (plot, updatePlotCallback) => async (dispatch, getS
           }
           //updatePlotCallback({...plot});
       });
-}
+};
 
 export const calculateMiningStatus = (plot) => {
     // const timeLeftInHours = t => Math.floor((t % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -235,7 +232,7 @@ export const calculateMiningStatus = (plot) => {
     }
 
     if (!plot.gemMines && plot.state) {
-       return PROCESSED;
+        return PROCESSED;
     }
 
     if (plot.currentPercentage >= 100) {
@@ -250,11 +247,30 @@ export const calculateMiningStatus = (plot) => {
             return MINING;
         }
     }
-}
+};
+
+export const countTotalUnprocessedBlocks = (plots) => {
+    console.log("COUNT");
+    let totalUnprocessedBlocks = [0, 0, 0, 0, 0];
+    plots.forEach((plot) => {
+        if (plot.currentPercentage > plot.processedBlocks) {
+            totalUnprocessedBlocks[0] += Math.max(Math.min(plot.currentPercentage, plot.layerEndPercentages[0]) - Math.max(0, plot.processedBlocks), 0);
+            console.log("T U S:", totalUnprocessedSum);
+            for (let i = 1; i < 5; i++) {
+                totalUnprocessedBlocks[i] += Math.max(Math.min(plot.currentPercentage, plot.layerEndPercentages[i])
+                  - Math.max(plot.layerEndPercentages[i - 1], plot.processedBlocks), 0);
+                console.log("T U S:", i, totalUnprocessedSum);
+            }
+        }
+    });
+    const totalUnprocessedSum = totalUnprocessedBlocks.reduce((a, b) => a + b);
+    return {totalUnprocessedSum, totalUnprocessedBlocks};
+};
+
 
 export const getCountryData = async (countryId) => {
     const country = (await db.collection('countries').where('countryId', '==',
       Number(countryId)).get()).docs[0].data();
     return country;
-}
+};
 

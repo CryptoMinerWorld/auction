@@ -25,7 +25,7 @@ const select = store => {
         userGems: store.dashboard.userGems,
         gemMiningIds: store.plots.gemMiningIds,
     }
-}
+};
 const defaultFiltersUnselected = {
     types: ["Per", "Aqu", "Dia", "Top", "Tur"],
     levels: [],
@@ -36,7 +36,7 @@ const deselectAllFilters = {
     types: ["Ame", "Gar", "Opa", "Sap", "Rub", "Per", "Aqu", "Dia", "Eme", "Pea", "Top", "Tur"],
     levels: ["lvl_1", "lvl_2", "lvl_3", "lvl_4", "lvl_5"],
     grades: ["D", "C", "B", "A", "AA", "AAA"],
-}
+};
 
 export class GemSelectionPopup extends Component {
 
@@ -77,7 +77,7 @@ export class GemSelectionPopup extends Component {
             scrolledGems: filteredGems.slice(0, 16),
             hasMoreGems: filteredGems.length > 16
         }, () => this.sortGems(this.state.selectedSort))
-    }
+    };
 
     deselectAllFilters = () => {
         const newFilters = {...deselectAllFilters};
@@ -87,13 +87,13 @@ export class GemSelectionPopup extends Component {
             scrolledGems: [],
             hasMoreGems: false
         });
-    }
+    };
 
     filterIsClean = () => {
         return this.state.unselectedFilters.grades.length === deselectAllFilters.grades.length &&
           this.state.unselectedFilters.levels.length === deselectAllFilters.levels.length &&
           this.state.unselectedFilters.types.length === deselectAllFilters.types.length;
-    }
+    };
 
     addFilterOption = (filterOption, optionType) => {
         let newFilters;
@@ -143,7 +143,7 @@ export class GemSelectionPopup extends Component {
             scrolledGems: sortedGems.slice(0, 16),
             hasMoreGems: sortedGems.length > 16
         });
-    }
+    };
 
     render() {
 
@@ -161,7 +161,7 @@ export class GemSelectionPopup extends Component {
             height: "525px",
             overflow: "hidden auto",
             flexDirection: "column"
-        }
+        };
 
         const PlotsInfo = styled.div`
             background-color: #24292F;
@@ -201,7 +201,8 @@ export class GemSelectionPopup extends Component {
             };
         `;
 
-        const {applyFilter, applySort, prevPage, nextPage, activeControls, userGems, handleBindGem, selectedPlot, gemMiningIds, transactionStartCallback, updatePlot} = this.props;
+        const {handleBindGem, selectedPlot, gemMiningIds, transactionStartCallback,
+            showConfirmPopupCallback, updatePlot} = this.props;
         const {unselectedFilters, selectedSort, scrolledGems} = this.state;
 
         return (
@@ -225,7 +226,12 @@ export class GemSelectionPopup extends Component {
                               if (available) return (
                                 //<div></div>
                                 <GemSelectionCard auction={userGem} key={userGem.id} available={applicable}
-                                    onClick={() => {applicable && handleBindGem(selectedPlot, userGem, updatePlot, transactionStartCallback)}}
+                                    onClick={() => {
+                                        if (applicable) {
+                                            showConfirmPopupCallback();
+                                            handleBindGem(selectedPlot, userGem, updatePlot, transactionStartCallback)
+                                        }
+                                    }}
                                 />
                               )
                           })

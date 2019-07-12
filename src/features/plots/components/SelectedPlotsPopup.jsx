@@ -7,7 +7,7 @@ import {CutEdgesButton} from "../../../components/CutEdgesButton";
 import {MINED, MINING, NEW_PLOT, NO_GEM, NOT_MINING, STUCK} from "../plotConstants";
 import {getCountryData} from "../plotActions";
 import buyNowImage from "../../../app/images/thickAndWidePinkButton.png";
-import {blocksToMinutes, getTimeLeftMinutes} from "../../../app/services/PlotService";
+import {blocksToMinutes, convertMinutesToTimeString, getTimeLeftMinutes} from "../../../app/services/PlotService";
 
 const PopupContainer = styled.div`
             display: flex;
@@ -390,7 +390,7 @@ export class PlotsPopup extends Component {
                           {plot.gemMines &&
                           <div style={{color: "#AEAEB7"}}>Gem Can Mine: {limitLine - plot.currentPercentage} More
                               Blocks</div>}
-                          {plot.gemMines && false && <div>Time Gem Can Mine: {getTimeLeftMinutes(plot)/60} hours</div>}
+                          {plot.gemMines && false && <div>Time Gem Can Mine: {convertMinutesToTimeString(getTimeLeftMinutes(plot, plot.gemMines)/60)} hours</div>}
                           {plot.gemMines &&
                           <div style={{color: "#AEAEB7"}}>Can Gem Finish: {limitLine === 100 ? "Yes" : "No"}</div>}
                           <div>Blocks Processed: {plot.processedBlocks}</div>
@@ -487,6 +487,6 @@ const ShowButton = ({content, disabled, ...props}) => {
                           content={content}
                           {...props}/>
       </ShowButtonWrapper>)
-}
+};
 
 export default PlotsPopup;

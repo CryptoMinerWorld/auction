@@ -13,7 +13,9 @@ import {parseTransactionHashFromError} from "../../transactions/helpers";
 
 const select = store => ({
     unprocessedPlotIds : store.plots.userPlots && store.plots.userPlots.filter(plot => plot.currentPercentage - plot.processedBlocks > 0).map(plot => plot.id)
-})
+});
+
+const plotsPerTx = 10;
 
 export class ProcessAllPopup extends Component {
 
@@ -24,8 +26,8 @@ export class ProcessAllPopup extends Component {
     componentDidMount() {
         const {handleProcessPlots, unprocessedPlotIds} = this.props;
         if (!unprocessedPlotIds) return;
-        for (let i = 0; i < Math.ceil(unprocessedPlotIds.length / 2); i++) {
-            handleProcessPlots(unprocessedPlotIds.slice(i*2, Math.min((i+1)*2, unprocessedPlotIds.length)));
+        for (let i = 0; i < Math.ceil(unprocessedPlotIds.length / plotsPerTx); i++) {
+            handleProcessPlots(unprocessedPlotIds.slice(i*plotsPerTx, Math.min((i+1)*plotsPerTx, unprocessedPlotIds.length)));
         }
     }
 
@@ -43,8 +45,8 @@ export class ProcessAllPopup extends Component {
         return (
           <PopupContainer>
               <div>Unprocessed plots: {unprocessedPlotIds.length}</div>
-              <div>Please confirm {Math.ceil(unprocessedPlotIds.length / 2)} transactions to process all plots</div>
-              <div>2 plots are processed per transaction</div>
+              <div>Please confirm {Math.ceil(unprocessedPlotIds.length / plotsPerTx)} transactions to process all plots</div>
+              <div>{plotsPerTx} plots are processed per transaction</div>
           </PopupContainer>
         );
     }

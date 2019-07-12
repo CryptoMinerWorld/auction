@@ -136,7 +136,7 @@ class GiftGems extends Component {
                   type: GEM_GIFTING,
                   description: `Gifting the gem ${tokenId}`,
                   body: {
-                      gem: tokenId,
+                      gemId: tokenId,
                       to: to
                   }
               })(reduxStore.dispatch, reduxStore.getState)

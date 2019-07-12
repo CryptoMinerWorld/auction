@@ -168,6 +168,132 @@ class App extends Component {
             });
         }
 
+
+        //
+        // const dutchContract =assistInstance.Contract(new web3.eth.Contract(
+        //   dutchAuctionABI,
+        //   process.env.REACT_APP_DUTCH_AUCTION,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ))
+        //
+        // const dutchHelperContract =assistInstance.Contract(new web3.eth.Contract(
+        //   dutchAuctionHelperABI,
+        //   process.env.REACT_APP_DUTCH_AUCTION_HELPER,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ))
+        //
+        // const presaleContract = {};
+        //
+        // // @notice instantiating gem contract
+        // const gemsContract =assistInstance.Contract(new web3.eth.Contract(gemsABI, process.env.REACT_APP_GEM_ERC721, {
+        //     from: currentAccountId,
+        // }))
+        //
+        // const theCountrySaleContract = {};
+        //
+        //
+        // const theCountryContract =assistInstance.Contract(new web3.eth.Contract(
+        //   countryABI,
+        //   process.env.REACT_APP_COUNTRY_ERC721,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ))
+        //
+        // const refPointsTrackerContract =assistInstance.Contract(new web3.eth.Contract(
+        //   refPointsTrackerABI,
+        //   process.env.REACT_APP_REF_POINTS_TRACKER,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ))
+        //
+        // const goldContract =assistInstance.Contract(new web3.eth.Contract(
+        //   goldABI,
+        //   process.env.REACT_APP_GOLD_ERC721,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ))
+        //
+        // const silverContract =assistInstance.Contract(new web3.eth.Contract(
+        //   silverABI,
+        //   process.env.REACT_APP_SILVER_ERC721,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ))
+        //
+        // const workshopContract =assistInstance.Contract(new web3.eth.Contract(
+        //   workshopABI,
+        //   process.env.REACT_APP_WORKSHOP,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ))
+        //
+        // const balanceContract = assistInstance.Contract(new web3.eth.Contract(
+        //   balanceABI,
+        //   process.env.REACT_APP_BALANCE_PROXY
+        // ))
+        //
+        // const silverSaleContract =assistInstance.Contract(new web3.eth.Contract(
+        //   silverSaleABI,
+        //   process.env.REACT_APP_SILVER_SALE,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ))
+        //
+        // const silverCouponsContract = {};
+        // // assistInstance.Contract(new web3.eth.Contract(
+        // //   silverCouponsABI,
+        // //   process.env.REACT_APP_SILVER_COUPONS,
+        // //   {
+        // //       from: currentAccountId,
+        // //   },
+        // // ))
+        //
+        // const plotSaleContract = assistInstance.Contract(new web3.eth.Contract(
+        //   plotSaleABI,
+        //   process.env.REACT_APP_PLOT_SALE,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ))
+        //
+        // const plotContract =assistInstance.Contract(new web3.eth.Contract(
+        //   plotABI,
+        //   process.env.REACT_APP_PLOT_ERC721,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ))
+        //
+        // const minerContract =assistInstance.Contract(new web3.eth.Contract(
+        //   minerABI,
+        //   process.env.REACT_APP_MINER,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ))
+        //
+        // const artifactContract =assistInstance.Contract(new web3.eth.Contract(
+        //   artifactABI,
+        //   process.env.REACT_APP_ARTIFACT_ERC20,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ))
+
+        // <><><><><><><><><><><><><><><><><><><>><><>><><><><><<>><><<><><>
+
+
+
         // @notice instantiating auction contract
         const dutchContract = (new web3.eth.Contract(
           dutchAuctionABI,
@@ -175,7 +301,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         const dutchHelperContract = (new web3.eth.Contract(
           dutchAuctionHelperABI,
@@ -183,7 +309,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         const presaleContract = {};
         // (new web3.eth.Contract(presaleABI, process.env.REACT_APP_PRESALE2, {
@@ -193,7 +319,7 @@ class App extends Component {
         // @notice instantiating gem contract
         const gemsContract = await (new web3.eth.Contract(gemsABI, process.env.REACT_APP_GEM_ERC721, {
             from: currentAccountId,
-        }))
+        }));
 
         console.log("gemsContract,", gemsContract);
 
@@ -212,7 +338,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         const refPointsTrackerContract = (new web3.eth.Contract(
           refPointsTrackerABI,
@@ -220,7 +346,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         const goldContract = (new web3.eth.Contract(
           goldABI,
@@ -228,7 +354,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         const silverContract = (new web3.eth.Contract(
           silverABI,
@@ -236,7 +362,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         const workshopContract = (new web3.eth.Contract(
           workshopABI,
@@ -244,7 +370,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         const balanceContract = new web3.eth.Contract(
           balanceABI,
@@ -257,7 +383,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         const silverCouponsContract = {};
         // assistInstance.Contract(new web3.eth.Contract(
@@ -274,7 +400,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         const plotContract = (new web3.eth.Contract(
           plotABI,
@@ -282,7 +408,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         const minerContract = (new web3.eth.Contract(
           minerABI,
@@ -290,7 +416,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         const artifactContract = (new web3.eth.Contract(
           artifactABI,
@@ -298,7 +424,7 @@ class App extends Component {
           {
               from: currentAccountId,
           },
-        ))
+        ));
 
         //const silverCouponsContract = {};
 
@@ -405,11 +531,13 @@ class App extends Component {
         if (this.props.transactionHistory && (this.props.transactionHistory !== prevProps.transactionHistory)) {
             let lootToShowArray = [];
             this.props.transactionHistory.forEach((tx) => {
-                if (tx.unseen) {
+                if (tx && tx.unseen) {
                     console.log("Unseen tx:", tx);
-                    const updatedTransactionEvent = this.props.transactionHistory.find((eventTx) =>
-                      (eventTx.transactionHash === tx.transactionHash) && eventTx.event === "Updated");
-                    updatedTransactionEvent && lootToShowArray.push(updatedTransactionEvent);
+                    tx.events.forEach((eventTx) => {
+                        if (eventTx.event === "Updated") {
+                            lootToShowArray.push(eventTx);
+                        }
+                    })
                 }
             });
             (lootToShowArray.length > 0) && this.showLoot(lootToShowArray);
@@ -418,7 +546,7 @@ class App extends Component {
 
     clearLoot = () => {
         this.setState({lootFound: null});
-    }
+    };
 
     showLoot = (eventUpdateArray) => {
         console.log("Show loot", eventUpdateArray);
@@ -452,11 +580,11 @@ class App extends Component {
             lootFound['loot'] = lootArray;
             lootFound['plotState'] = 1; //lootFound['plotState'] || await
             // this.props.plotService.getPlotState(eventUpdate.returnValues['plotId']);
-        })
+        });
         this.setState({
             lootFound: lootFound
         })
-    }
+    };
 
     errorNotification = (error, title) => {
         const {handleClearError} = this.props;
@@ -468,7 +596,7 @@ class App extends Component {
     };
 
     render() {
-        const {visible, error, errorTitle} = this.props;
+        const {visible, error, errorTitle, currentUserId} = this.props;
         const {font, wrongNetwork, lootFound} = this.state;
         console.warn('----------> APP starts <----------');
         return (
@@ -507,7 +635,7 @@ class App extends Component {
                       </StickyHeader>
                       <Routes/>
 
-                      <Footer/>
+                      <Footer userWorkshopAddress={currentUserId}/>
                   </main>
               </ScrollToTop>
               {/* </React.StrictMode> */}

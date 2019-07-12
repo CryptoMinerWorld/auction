@@ -131,13 +131,24 @@ const SidebarTab = styled.div`
     cursor: pointer;
 `;
 
+const ProcessAllInfo = styled.div`
+    @media(max-width: 599px) {
+        display: none;
+    }
+`;
+
+const ProcessAllButtonInfo = styled.span`
+    @media(min-width: 600px) {
+        display: none;
+    }
+`;
 
 class PlotSidebar extends Component {
 
     state = {
         showSidebarFilters: false,
         selectedTab: "all",
-    }
+    };
 
     shouldComponentUpdate(props, state) {
         return state.selectedTab !== this.state.selectedTab || props.plotSelected !== this.props.plotSelected || props.isOwner !== this.props.isOwner;
@@ -150,7 +161,7 @@ class PlotSidebar extends Component {
     }
 
     render() {
-        const {plotSelected, isOwner} = this.props;
+        const {plotSelected, isOwner, totalUnprocessedBlocksNumber} = this.props;
         const {selectedTab} = this.state;
         const selectedIsActive = selectedTab === "selected";
         const disableSidebarIcons = ((selectedIsActive) && !plotSelected) || !isOwner;
@@ -176,7 +187,11 @@ class PlotSidebar extends Component {
               </SidebarSection>
               <SidebarSection mobileFlex={3} mobileDirection={"column"}>
                   <BuyButton><a style={{width: "100%", color: "white"}} href={'/plots'}>BUY PLOTS</a></BuyButton>
-                  <BuyButton onClick={() => this.props.showSidebarPopup("process-all")}>PROCESS ALL</BuyButton>
+                  <ProcessAllInfo style={{fontSize: "14px", lineHeight: "1.3"}}>{totalUnprocessedBlocksNumber}</ProcessAllInfo>
+                  <ProcessAllInfo style={{color: "#828689", lineHeight: "1"}}>Unprocessed Blocks</ProcessAllInfo>
+                  <BuyButton onClick={() => this.props.showSidebarPopup("process-all")}>
+                      PROCESS ALL <ProcessAllButtonInfo>({totalUnprocessedBlocksNumber})</ProcessAllButtonInfo>
+                  </BuyButton>
               </SidebarSection>
               <SidebarSection mobileFlex={1} mobileDirection={"row"}>
                   <SidebarIcon icon={filterIcon} onClick={() => this.props.showSidebarPopup("filter")}/>

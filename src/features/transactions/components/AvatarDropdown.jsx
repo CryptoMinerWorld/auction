@@ -18,13 +18,13 @@ require('antd/lib/menu/style/css');
 require('antd/lib/avatar/style/css');
 
 
-const menuItemContainer = {}
+const menuItemContainer = {};
 
 const geodeTypes = {
     '0': 'Small silver geode',
     '1': 'Rotund silver geode',
     '2': 'Goldish silver geode'
-}
+};
 
 // const generateMenuItemForTx = tx => {
 //     switch (tx.txMethod) {
@@ -291,7 +291,7 @@ const TxContractEvents = styled.div`
     padding: 2px 10px;
     border-radius: 2px;
     font-size: 13px;
-`
+`;
 
 const TxConfirmedRecord = ({tx}) => {
 
@@ -307,8 +307,8 @@ const TxConfirmedRecord = ({tx}) => {
               <TxDescription>{tx.description}</TxDescription>
           </TxInfo>
           <TxContractEvents expanded={expanded}>
-              {tx.events && tx.events.map((event) => {
-                  return <div style={{width: '100%'}}>{event['event']}</div>
+              {tx.events && tx.events.map((event, i) => {
+                  return <div style={{width: '100%'}} key={i}>{event['event']}</div>
               })}
           </TxContractEvents>
           <a
@@ -321,7 +321,7 @@ const TxConfirmedRecord = ({tx}) => {
                     className="pointer blue"/>
           </a>
       </TxRecordContainer>)
-}
+};
 
 const menu = ({transactionHistory, pendingTransactions, failedTransactions}) => (
 
@@ -374,7 +374,7 @@ const menu = ({transactionHistory, pendingTransactions, failedTransactions}) => 
       ))}
       {transactionHistory && transactionHistory.map((tx) => (
         (tx && tx.transactionHash) ?
-          <TxConfirmedRecord tx={tx}/> : ""
+          <TxConfirmedRecord tx={tx} key={tx.transactionHash + 'confirmed'}/> : ""
       ))}
   </DropdownContainer>
 );
@@ -450,7 +450,7 @@ const select = store => {
 
 const actions = {
     handleSetTransactionsSeen: setTransactionsSeen,
-}
+};
 
 export default connect(select)(AvatarDropdown);
 

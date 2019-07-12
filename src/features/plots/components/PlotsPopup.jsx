@@ -6,26 +6,27 @@ import actionButtonImage from "../../../app/images/thickAndWidePinkButton.png";
 import octagonImage from "../../../app/images/octagonOutline.png";
 import {CutEdgesButton} from "../../../components/CutEdgesButton";
 import {CANT_MINE, MINING, NEW_PLOT, NO_GEM, NOT_MINING, PROCESSED, STUCK} from "../plotConstants";
+import {countTotalUnprocessedBlocks} from "../plotActions";
 
 const setNoGemsFilters = {
     plotFilterOptions: [NO_GEM],
     tierFilterOptions: ["dirt_filter", "clay_filter", "limestone_filter", "marble_filter", "obsidian_filter"],
-}
+};
 
 const setStuckGemsFilters = {
     plotFilterOptions: [STUCK],
     tierFilterOptions: ["dirt_filter", "clay_filter", "limestone_filter", "marble_filter", "obsidian_filter"],
-}
+};
 
 const setMiningFilters = {
     plotFilterOptions: [MINING],
     tierFilterOptions: ["dirt_filter", "clay_filter", "limestone_filter", "marble_filter", "obsidian_filter"],
-}
+};
 
 const setNewPlotsFilters = {
     plotFilterOptions: [NEW_PLOT],
     tierFilterOptions: ["dirt_filter", "clay_filter", "limestone_filter", "marble_filter", "obsidian_filter"],
-}
+};
 
 export class PlotsPopup extends Component {
 
@@ -44,8 +45,7 @@ export class PlotsPopup extends Component {
         let totalProcessedBlocks = [0, 0, 0, 0, 0];
 
         const {plots, setFilterOptions} = this.props;
-        let totalUnprocessedBlocks = [0, 0, 0, 0, 0];
-        let totalUnprocessedSum = 0;
+        let {totalUnprocessedSum, totalUnprocessedBlocks} = countTotalUnprocessedBlocks(plots);
         plots.forEach((plot) => {
             if (plot.currentPercentage >= 100) {
                 plotsFullyMined++;
@@ -55,15 +55,6 @@ export class PlotsPopup extends Component {
             }
             if (plot.miningState === NO_GEM || plot.miningState === NEW_PLOT || plot.miningState === STUCK) {
                 plotsNotMining++;
-            }
-            if (plot.currentPercentage > plot.processedBlocks) {
-                totalUnprocessedBlocks[0] += Math.max(Math.min(plot.currentPercentage, plot.layerEndPercentages[0]) - Math.max(0, plot.processedBlocks), 0);
-                totalUnprocessedSum += totalUnprocessedBlocks[0];
-                for (let i = 1; i < 5; i++) {
-                    totalUnprocessedBlocks[i] += Math.max(Math.min(plot.currentPercentage, plot.layerEndPercentages[i])
-                      - Math.max(plot.layerEndPercentages[i - 1], plot.processedBlocks), 0);
-                    totalUnprocessedSum += totalUnprocessedBlocks[i];
-                }
             }
             if (plot.processedBlocks > 0) {
                 totalProcessedBlocks[0] += Math.max(Math.min(plot.layerPercentages[0], plot.processedBlocks), 0);
@@ -146,7 +137,7 @@ const container = {
     padding: "0 10px",
     overflowY: "auto",
     maxHeight: "520px",
-}
+};
 
 const UnprocessedBlocks = styled.div`
             display: flex;
@@ -281,6 +272,6 @@ const ShowButton = ({content, ...props}) => {
                           content={content}
                           {...props}/>
       </div>)
-}
+};
 
 export default PlotsPopup;

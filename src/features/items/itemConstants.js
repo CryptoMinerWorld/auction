@@ -1,4 +1,10 @@
 export const AUCTION_DETAILS_RECEIVED = 'AUCTION_DETAILS_RECEIVED';
+
+export const GEM_DETAILS_RECEIVED = 'GEM_DETAILS_RECEIVED';
+export const GEM_AUCTION_DETAILS_RECEIVED = 'GEM_AUCTION_DETAILS_RECEIVED';
+export const GEM_MINING_DETAILS_RECEIVED = 'GEM_MINING_DETAILS_RECEIVED';
+export const GEM_TX_DETAILS_RECEIVED = 'GEM_TX_DETAILS_RECEIVED';
+
 export const NEW_AUCTION_CREATED = 'NEW_AUCTION_CREATED';
 export const OWNERSHIP_TRANSFERRED = 'OWNERSHIP_TRANSFERRED';
 export const CLEAR_GEM_PAGE = 'CLEAR_GEM_PAGE';
@@ -9,3 +15,9 @@ export const AUCTION_END = 'AUCTION_END';
 export const AUCTION_START = 'AUCTION_START';
 export const GEM_GIFTING = 'GEM_GIFTING';
 export const GEM_LEVEL_UP = 'GEM_LEVEL_UP';
+export const IDLE = 'Idle';
+export const IN_AUCTION = 'In Auction';
+export const MINING = 'Mining';
+export const STUCK = 'Stuck';
+export const GOING_HOME = 'Going home';
+export const GETTING_READY = 'Getting ready';
