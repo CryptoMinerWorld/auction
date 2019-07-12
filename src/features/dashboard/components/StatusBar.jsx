@@ -3,41 +3,12 @@ import Spin from "antd/lib/spin";
 import Icon from "antd/lib/icon";
 import Gold from "../../../app/images/dashboard/Gold.png";
 import Silver from "../../../app/images/dashboard/Silver.png";
-import styled from "styled-components";
-
-const Avatar = styled.img`
-    @media(max-width: 800px) {
-        height: 2rem;
-        width: auto;
-    }
-    
-    @media(min-width: 801px) {
-        height: 4rem;
-        width: auto;
-    }
-`;
-
-const SilverGoldBalance = styled.div`
-    @media(min-width: 900px) {
-        position: absolute;
-        right: 0;
-        top: 15px;
-        z-index: 2;
-    }
-`;
-
-const Username = styled.h1`
-    color: #fff !important;
-    margin: 10px 0;
-    @media(max-width: 800px) {
-        margin: 0;
-    }
-`;
+import {Avatar, SilverGoldBalance, Username} from "./status-bar-css"
 
 const StatusBar = ({dashboardUser, userBalance}) => {
     return (
-        <div className="flex aic wrap jcc jcb-ns relative">
-            <div className=" flex aic pt3 pt0-ns">
+        <div className="flex aic wrap jcb relative">
+            <div className=" flex aic pt0-ns">
                 {dashboardUser && dashboardUser.imageURL ?
                     <Avatar src={dashboardUser.imageURL} className="pr3 pl3-ns dib" alt=""/> :
                     <Spin indicator={
@@ -48,15 +19,19 @@ const StatusBar = ({dashboardUser, userBalance}) => {
                     {dashboardUser && dashboardUser.name || "Loading..."}
                 </Username>
             </div>
-            <SilverGoldBalance className="flex col tc">
+            <SilverGoldBalance className="flex col tc b">
                 <div className="flex">
-                    <div className="flex col tc">
+                    <div className="flex col justify-center-ns"
+                         style={{color: "#FFCC1C", lineHeight: "1.3", paddingRight: "10px"}}>
                         <img src={Gold} alt="Gold" className="h3 w-auto ph3"/>
-                        {userBalance && userBalance.goldAvailable}
+                        <span id="gold-label">GOLD</span>
+                        <span>{userBalance && userBalance.goldAvailable}</span>
                     </div>
-                    <div className="flex col tc">
+                    <div className="flex col justify-center-ns"
+                         style={{color: "#C3D6FA", lineHeight: "1.3", paddingRight: "10px"}}>
                         <img src={Silver} alt="Silver" className="h3 w-auto ph3"/>
-                        {userBalance && userBalance.silverAvailable}
+                        <span id="silver-label">SILVER</span>
+                        <span>{userBalance && userBalance.silverAvailable}</span>
                     </div>
                 </div>
             </SilverGoldBalance>
