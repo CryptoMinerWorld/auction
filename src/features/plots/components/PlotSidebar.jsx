@@ -22,11 +22,14 @@ class PlotSidebar extends Component {
     state = {
         showSidebarFilters: false,
         selectedTab: "all",
-        isShown: true
+        isShown: false
     };
 
     shouldComponentUpdate(props, state) {
-        return state.selectedTab !== this.state.selectedTab || props.plotSelected !== this.props.plotSelected || props.isOwner !== this.props.isOwner;
+        return state.selectedTab !== this.state.selectedTab ||
+            props.plotSelected !== this.props.plotSelected ||
+            props.isOwner !== this.props.isOwner ||
+            state.isShown !== this.state.isShown
     }
 
     componentDidUpdate(prevProps) {
@@ -35,20 +38,29 @@ class PlotSidebar extends Component {
         }
     }
 
+
     render() {
         const {plotSelected, isOwner, totalUnprocessedBlocksNumber} = this.props;
         const {selectedTab, isShown} = this.state;
         const isSelectedTabActive = selectedTab === "selected";
         const disableSidebarIcons = ((isSelectedTabActive) && !plotSelected) || !isOwner;
         const disableSidebarGemIcon = ((isSelectedTabActive) && (!plotSelected || (plotSelected && !plotSelected.gemMines))) || !isOwner;
+        const handleAllTabClick = () => selectedTab === "all" && isShown ? this.setState({isShown: false}) : this.setState({
+            selectedTab: "all",
+            isShown: true
+        });
+        const handleSelectedTabClick = () => isSelectedTabActive && isShown ? this.setState({isShown: false}) : this.setState({
+            selectedTab: "selected",
+            isShown: true
+        });
         return (
             <Sidebar>
                 <SidebarTabs>
-                    <SidebarTab onClick={() => this.setState({selectedTab: "all"})}
+                    <SidebarTab onClick={handleAllTabClick}
                                 selected={selectedTab === "all"}>
                         ALL
                     </SidebarTab>
-                    <SidebarTab onClick={() => this.setState({selectedTab: "selected"})}
+                    <SidebarTab onClick={handleSelectedTabClick}
                                 selected={isSelectedTabActive}>
                         Selected
                     </SidebarTab>
