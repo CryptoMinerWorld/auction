@@ -143,13 +143,6 @@ const Navbar = ({
               >
                   World
               </a>
-              <a
-                href="https://cryptominerworld.com/faq/"
-                title="Home"
-                className="dib dn-ns link dim dark-gray f6 f5-l"
-              >
-                  FAQ
-              </a>
               {user && (
                 <AvatarDropdown
                   //to={`/profile/${user.walletId}`}
@@ -157,7 +150,7 @@ const Navbar = ({
                   upperCaseWalletId={upperCaseWalletId}
                 />
               )}
-              <div className="dn dib-ns">
+              <div className="dib">
                   <RippleButton
                     onClick={() => {
                     }}
