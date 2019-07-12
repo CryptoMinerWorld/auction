@@ -1,14 +1,10 @@
 import React, {Component} from "react";
-import styled from "styled-components";
-import buyNowImage from "../../../app/images/pinkBuyNowButton.png";
-import stubIcon from "./../../../app/images/icons/gem1.png";
 import artifactIcon from "../../../app/images/artifactIcon.png";
 import filterIcon from "../../../app/images/filterIconNew.png";
 import gemIcon from "../../../app/images/singleGemIconNew.png";
 import gemsIcon from "../../../app/images/gemIconNew.png"
 import plotsIcon from "../../../app/images/plotIconNew.png";
 import plotIcon from "../../../app/images/singlePlotIconNew.png";
-import {Link} from "react-router-dom";
 import {
     BuyButton,
     ProcessAllButtonInfo,
