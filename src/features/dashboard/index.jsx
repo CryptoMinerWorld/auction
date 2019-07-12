@@ -39,6 +39,7 @@ import GemDashboard from "./components/GemDashboard";
 import {getAvailableCountryPlots} from "../plotsale/plotSaleActions";
 import {USER_PLOTS_RELOAD_BEGUN} from "../plots/plotConstants";
 import {COUNTRY_WITHDRAW} from "./dashboardConstants";
+import StatusBar from "./components/StatusBar";
 
 
 const {TabPane} = Tabs;
@@ -57,16 +58,6 @@ const RedeemCoupon = styled.div`
         display: none !important;
     }
 `;
-
-const SilverGoldBalance = styled.div`
-    @media(min-width: 900px) {
-        position: absolute;
-        right: 0;
-        top: 15px;
-        z-index: 2;
-    }
-`;
-
 
 const select = store => ({
     dataLoaded: {
@@ -383,32 +374,7 @@ class Dashboard extends Component {
 
         return (
           <div className="bg-off-black white card-container" data-testid="profile-page">
-              <div className="flex aic wrap jcc jcb-ns relative">
-                  <div className=" flex aic pt3 pt0-ns">
-                      {dashboardUser && dashboardUser.imageURL ?
-                        <img src={dashboardUser.imageURL} className="h3 w-auto pr3 pl3-ns dib" alt=""/> :
-                        <Spin indicator={
-                            <Icon type="loading" style={{fontSize: 24, color: '#e406a5'}} spin/>}
-                        />
-                      }
-                      <h1 className="white" data-testid="userName" style={{margin: "10px 0"}}>
-                          {dashboardUser && dashboardUser.name || "Loading..."}
-                      </h1>
-                  </div>
-                  <SilverGoldBalance className="flex col tc">
-                      <div className="flex">
-                          <div className="flex col tc">
-                              <img src={Gold} alt="Gold" className="h3 w-auto ph3"/>
-                              {userBalance && userBalance.goldAvailable}
-                          </div>
-                          <div className="flex col tc">
-                              <img src={Silver} alt="Silver" className="h3 w-auto ph3"/>
-                              {userBalance && userBalance.silverAvailable}
-                          </div>
-                      </div>
-                  </SilverGoldBalance>
-              </div>
-
+              <StatusBar dashboardUser={dashboardUser} userBalance={userBalance} />
               <Tabs
                 activeKey={`${tab}`}
                 animated
