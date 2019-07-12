@@ -2,12 +2,19 @@ import styled from "styled-components";
 import buyNowImage from "../../../app/images/pinkBuyNowButton.png";
 
 export const SidebarSection = styled.div`
+    display: flex;
+    align-items: center;
+    color: white;
+    background-color: #2B3035;
+    padding: 4px 0px;
+    
     @media(max-width: 599px) {
         height: 80px;
         margin: 0;
         flex: ${props => props.mobileFlex ? props.mobileFlex : "1"};
         flex-direction: ${props => props.mobileDirection ? props.mobileDirection : "row"};
         justify-content: space-evenly;
+        display: ${props => props.isShown ? "flex" : "none" }
     }
     
     @media(min-width: 600px) {
@@ -16,11 +23,6 @@ export const SidebarSection = styled.div`
         border-radius: ${props => props.selectedTab && props.selectedTab === "selected" ? "0 0 10px 0" : "0 10px 10px 0"};
     }
     
-    display: flex;
-    align-items: center;
-    color: white;
-    background-color: #2B3035;
-    padding: 4px 0px;
 `;
 
 export const BuyButton = styled.div`
