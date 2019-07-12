@@ -181,10 +181,6 @@ class Dashboard extends Component {
             handleGetUserCountries(match.params.userId);
         }
 
-        if (artifactContract && match.params.userId) {
-            handleGetUserArtifacts(match.params.userId);
-        }
-
         if (plotService) {
             console.log("DASHBOARD PROPS PENDING TRANSACTION (1):", pendingTransactions);
             handleRefreshUserPlot && gemService && currentUserId && setDashboardEventListeners({
@@ -300,7 +296,6 @@ class Dashboard extends Component {
             //(currentUserId !== match.params.userId || pendingTransactions) && handleGetUserPlots(match.params.userId);
         }
 
-
         if (plotService && pendingTransactions && currentUserId && match.params.userId &&
           (pendingTransactions !== prevProps.pendingTransactions)) {
             handleGetUserPlots(match.params.userId);
@@ -317,9 +312,6 @@ class Dashboard extends Component {
         }
         if ((countryService !== prevProps.countryService) || match.params.userId !== prevProps.match.params.userId) {
             handleGetUserCountries(match.params.userId);
-        }
-        if (artifactContract !== prevProps.artifactContract || (match.params.userId !== prevProps.match.params.userId)) {
-            handleGetUserArtifacts(match.params.userId);
         }
     }
 
@@ -531,7 +523,7 @@ class Dashboard extends Component {
                     tab={(
                       <span className="h-100 flex aic white o-50">
                 <img src={Artifact} alt="" className="h2 w-auto pr2"/>
-                          {userArtifacts || '..'} Artifacts
+                          {userBalance && userBalance.artifacts || '..'} Artifacts
               </span>
                     )}
                     disabled
@@ -541,7 +533,7 @@ class Dashboard extends Component {
                     tab={(
                       <span className="h-100 flex aic white o-50">
                 <img src={Keys} alt="" className="h2 w-auto pr2"/>
-0 Keys
+                          {userBalance && userBalance.keys || '..'} Keys
               </span>
                     )}
                     disabled

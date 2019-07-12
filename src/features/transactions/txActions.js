@@ -69,15 +69,15 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
     const saleContract = getState().app.silverGoldServiceInstance.saleContract;
 
     const currentUserId = getState().auth.currentUserId;
-    const storedPendingTransactionDocs = await db.collection('transactions')
+    const [storedPendingTransactionDocs, storedPendingTransactionDocsLowerCase] = await Promise.all([
+      await db.collection('transactions')
+      .where('userId', '==', currentUserId.toLowerCase())
+      .where('status', '==', TX_PENDING)
+      .get(),
+        await db.collection('transactions')
       .where('userId', '==', currentUserId)
       .where('status', '==', TX_PENDING)
-      .get();
-
-    console.log("STORED TRANSACTIONS DOCS:", storedPendingTransactionDocs);
-    const receipt = await web3.eth.getTransactionReceipt("0x32d5f7b05ac10c1c644e11ba566b19ce02d406b1c2c66ba4cd978dc0496607b0");  //storedTx.hash);
-    console.log("::TEST:: TRANSACTION RECEIPT:", receipt);
-
+      .get()]);
 
     let lastBlockNumber;
 
@@ -85,7 +85,7 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
     const resolvedStoredTransactionHashes = [];
     const pendingTransactions = [];
     const resolvedFailedTransactions = [];
-    const resolvedStoredTransactions = await Promise.all(storedPendingTransactionDocs.docs.map(async (pendingTxDoc) => {
+    const resolvedStoredTransactions = await Promise.all([...storedPendingTransactionDocs.docs, ...storedPendingTransactionDocsLowerCase.docs].map(async (pendingTxDoc) => {
         const storedTx = pendingTxDoc.data();
         console.log("STORED TRANSACTION:", storedTx);
         const receipt = await web3.eth.getTransactionReceipt(storedTx.hash);
@@ -405,3 +405,15 @@ export const setTransactionsSeen = (unseenCount) => async (dispatch, getState) =
     getState().tx.transactions.slice(firstSeen - unseenCount, firstSeen);
 
 };
+
+
+// DELETING DOCS WITH WHERE CLAUSE
+// let jobskill_query = db.collection('transactions')
+//   .where('userId', '==', currentUserId)
+//   .where('status', '==', TX_PENDING);
+// jobskill_query.get().then(function(querySnapshot) {
+//     querySnapshot.forEach(function(doc) {
+//         console.log('deleting:');
+//         doc.ref.delete();
+//     });
+// });
