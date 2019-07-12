@@ -22,6 +22,7 @@ class PlotSidebar extends Component {
     state = {
         showSidebarFilters: false,
         selectedTab: "all",
+        isShown: true
     };
 
     shouldComponentUpdate(props, state) {
@@ -36,10 +37,10 @@ class PlotSidebar extends Component {
 
     render() {
         const {plotSelected, isOwner, totalUnprocessedBlocksNumber} = this.props;
-        const {selectedTab} = this.state;
-        const selectedIsActive = selectedTab === "selected";
-        const disableSidebarIcons = ((selectedIsActive) && !plotSelected) || !isOwner;
-        const disableSidebarGemIcon = ((selectedIsActive) && (!plotSelected || (plotSelected && !plotSelected.gemMines))) || !isOwner;
+        const {selectedTab, isShown} = this.state;
+        const isSelectedTabActive = selectedTab === "selected";
+        const disableSidebarIcons = ((isSelectedTabActive) && !plotSelected) || !isOwner;
+        const disableSidebarGemIcon = ((isSelectedTabActive) && (!plotSelected || (plotSelected && !plotSelected.gemMines))) || !isOwner;
         return (
             <Sidebar>
                 <SidebarTabs>
@@ -48,20 +49,20 @@ class PlotSidebar extends Component {
                         ALL
                     </SidebarTab>
                     <SidebarTab onClick={() => this.setState({selectedTab: "selected"})}
-                                selected={selectedIsActive}>
+                                selected={isSelectedTabActive}>
                         Selected
                     </SidebarTab>
                 </SidebarTabs>
-                <SidebarSection selectedTab={selectedTab} mobileFlex={4} mobileDirection={"row"}>
-                    <SidebarIcon disabled={disableSidebarIcons} icon={selectedIsActive ? plotIcon : plotsIcon}
+                <SidebarSection selectedTab={selectedTab} mobileFlex={4} mobileDirection={"row"} isShown={isShown}>
+                    <SidebarIcon disabled={disableSidebarIcons} icon={isSelectedTabActive ? plotIcon : plotsIcon}
                                  onClick={() => !disableSidebarIcons && this.props.showSidebarPopup("plots-" + selectedTab)}/>
-                    <SidebarIcon disabled={disableSidebarGemIcon} icon={selectedIsActive ? gemIcon : gemsIcon}
+                    <SidebarIcon disabled={disableSidebarGemIcon} icon={isSelectedTabActive ? gemIcon : gemsIcon}
                                  onClick={() => !disableSidebarGemIcon && this.props.showSidebarPopup("gems-" + selectedTab)}/>
                     <SidebarIcon disabled={true} icon={artifactIcon} style={{margin: "10px 0"}}
                                  onClick={() => this.props.showSidebarPopup("coming-soon")}
                     />
                 </SidebarSection>
-                <SidebarSection mobileFlex={3} mobileDirection={"column"}>
+                <SidebarSection mobileFlex={3} mobileDirection={"column"} isShown={isShown}>
                     <BuyButton><a style={{width: "100%", color: "white"}} href={'/plots'}>BUY PLOTS</a></BuyButton>
                     <ProcessAllInfo
                         style={{fontSize: "14px", lineHeight: "1.3"}}>{totalUnprocessedBlocksNumber}</ProcessAllInfo>
@@ -70,7 +71,7 @@ class PlotSidebar extends Component {
                         PROCESS ALL <ProcessAllButtonInfo>({totalUnprocessedBlocksNumber})</ProcessAllButtonInfo>
                     </BuyButton>
                 </SidebarSection>
-                <SidebarSection mobileFlex={1} mobileDirection={"row"}>
+                <SidebarSection mobileFlex={1} mobileDirection={"row"} isShown={isShown}>
                     <SidebarIcon icon={filterIcon} onClick={() => this.props.showSidebarPopup("filter")}/>
                 </SidebarSection>
             </Sidebar>
