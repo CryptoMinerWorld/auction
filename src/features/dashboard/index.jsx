@@ -17,7 +17,8 @@ import {
     getUserDetails,
     getUserGems,
     scrollGems,
-    useCoupon, withdrawCountryEth,
+    useCoupon,
+    withdrawCountryEth,
 } from './dashboardActions';
 import {preLoadAuctionPage} from '../market/marketActions';
 import CountryDashboard from '../countries/components/Dashboard';
@@ -39,7 +40,6 @@ import GemDashboard from "./components/GemDashboard";
 import {getAvailableCountryPlots} from "../plotsale/plotSaleActions";
 import {USER_PLOTS_RELOAD_BEGUN} from "../plots/plotConstants";
 import {COUNTRY_WITHDRAW} from "./dashboardConstants";
-import {setItemEventListeners} from "../items/itemEventListener";
 
 
 const {TabPane} = Tabs;
@@ -382,7 +382,7 @@ class Dashboard extends Component {
             userExists,
             userCountries,
             userArtifacts,
-          pendingTransactions,
+            pendingTransactions,
         } = this.props;
 
         const {
@@ -543,7 +543,7 @@ class Dashboard extends Component {
                     tab={(
                       <span className="h-100 flex aic white o-50">
                 <img src={Artifact} alt="" className="h2 w-auto pr2"/>
-                          {userArtifacts || '..'} Artifacts
+                          {userBalance && userBalance.artifacts || '..'} Artifacts
               </span>
                     )}
                     disabled
@@ -553,7 +553,7 @@ class Dashboard extends Component {
                     tab={(
                       <span className="h-100 flex aic white o-50">
                 <img src={Keys} alt="" className="h2 w-auto pr2"/>
-0 Keys
+                          {userBalance && userBalance.keys || '..'} Keys
               </span>
                     )}
                     disabled

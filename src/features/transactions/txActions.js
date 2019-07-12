@@ -2,7 +2,9 @@ import {
     EVENT_HISTORY_RECEIVED,
     NEW_PENDING_TRANSACTION,
     TRANSACTION_RESOLVED,
-    TX_CANCEL, TX_CANCEL_CONFIRMED, TX_CANCELED,
+    TX_CANCEL,
+    TX_CANCEL_CONFIRMED,
+    TX_CANCELED,
     TX_COMPLETED,
     TX_CONFIRMED,
     TX_ERROR,
@@ -88,20 +90,23 @@ export const resolveTransactionEvent = (txEventObject) => async (dispatch, getSt
     let tx;
     switch (txEventObject.eventCode) {
         case 'txConfirmed':
-            const storedTx = await db
-              .doc(`transactions/${txEventObject.transaction.hash}`)
-              .get();
-            if (storedTx) {
-                console.log("STORED TX::", storedTx);
-                const storedTx = storedTx.data();
-                switch (storedTx.status) {
+            let storedTxData;
+            try {
+                const storedTx = await db
+                  .doc(`transactions/${txEventObject.transaction.hash}`)
+                  .get();
+                if (storedTx) storedTxData = storedTx.data();
+            }
+            catch (e) {
+                console.error("FUCK:!:", e);
+            }
+            if (storedTxData) {
+                console.log("STORED TX::", storedTxData.toString());
+                //const storedTx = storedTx.data();
+                switch (storedTxData.status) {
                     case TX_SPEED_UP:
                         if (txEventObject.transaction.originalHash) {
-                            const txUpdatedOriginal = await db
-                              .doc(`transactions/${txEventObject.transaction.originalHash}`)
-                              .update({
-                                  status: TX_SPED_UP
-                              });
+                            saveSpedUpOrCanceled(txEventObject.transaction.originalHash, storedTxData, TX_SPED_UP)(dispatch, getState);
                         }
                     {
                         const txUpdated = await db
@@ -113,11 +118,7 @@ export const resolveTransactionEvent = (txEventObject) => async (dispatch, getSt
                         break;
                     case TX_CANCEL:
                         if (txEventObject.transaction.originalHash) {
-                            const txUpdatedOriginal = await db
-                              .doc(`transactions/${txEventObject.transaction.originalHash}`)
-                              .update({
-                                  status: TX_CANCELED
-                              });
+                            saveSpedUpOrCanceled(txEventObject.transaction.originalHash, storedTxData, TX_CANCELED)(dispatch, getState);
                         }
                     {
                         const txUpdated = await db
@@ -216,18 +217,19 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
 
     const [storedPendingTransactionDocs, storedSpeedUpTransactionDocs, storedCancelTransactionDocs] = await Promise.all([
         await db.collection('transactions')
-          .where('userId', '==', currentUserId)
+          .where('userId', '==', currentUserId.toLowerCase())
           .where('status', '==', TX_PENDING)
           .get(),
         await db.collection('transactions')
-          .where('userId', '==', currentUserId)
+          .where('userId', '==', currentUserId.toLowerCase())
           .where('status', '==', TX_SPEED_UP)
           .get(),
         await db.collection('transactions')
-          .where('userId', '==', currentUserId)
+          .where('userId', '==', currentUserId.toLowerCase())
           .where('status', '==', TX_CANCEL)
           .get()
-]);
+    ]);
+
 
     let lastBlockNumber;
 
@@ -240,93 +242,85 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
       [...storedPendingTransactionDocs.docs,
           ...storedSpeedUpTransactionDocs.docs,
           ...storedCancelTransactionDocs.docs].map(async (pendingTxDoc) => {
-        const storedTx = pendingTxDoc.data();
-        console.log("STORED TRANSACTION:", storedTx);
-        const receipt = await web3.eth.getTransactionReceipt(storedTx.hash);
-        console.log("TRANSACTION RECEIPT:", receipt);
-        if (receipt) {
-            if (!receipt.status) {
-                resolvedFailedTransactions.push(storedTx);
-                //todo: what to do if speed up or cancel tx failed?
-            }
-            else {
-                if (storedTx.status === TX_SPEED_UP) {
-                    if (receipt.status) {
-                        const originalHash = storedTx.body && storedTx.body.originalHash;
-                        const txSpedUpStored = await db
-                          .doc(`transactions/${originalHash}`)
-                          .update({
+          const storedTx = pendingTxDoc.data();
+          console.log("STORED TRANSACTION:", storedTx);
+          const receipt = await web3.eth.getTransactionReceipt(storedTx.hash);
+          console.log("TRANSACTION RECEIPT:", receipt);
+          if (receipt) {
+              if (!receipt.status) {
+                  resolvedFailedTransactions.push(storedTx);
+                  //todo: what to do if speed up or cancel tx failed?
+              }
+              else {
+                  if (storedTx.status === TX_SPEED_UP) {
+                      if (receipt.status) {
+                          const originalHash = storedTx.body && storedTx.body.originalHash;
+                          saveSpedUpOrCanceled(originalHash, storedTx, TX_SPED_UP)(dispatch, getState);
+                          inferredResolvedStoredTransactions.push({
+                              transactionHash: originalHash,
                               status: TX_SPED_UP
                           });
-                        inferredResolvedStoredTransactions.push({
-                            transactionHash: originalHash,
-                            status: TX_SPED_UP
+                          resolvedStoredTransactionHashes.push(originalHash);
+                      }
+                      const txUpdatedStored = await db
+                        .doc(`transactions/${storedTx.hash}`)
+                        .update({
+                            status: receipt.status ? TX_SPEED_UP_CONFIRMED : TX_FAILED
                         });
-                        resolvedStoredTransactionHashes.push(originalHash);
-                    }
-                    const txUpdatedStored = await db
-                      .doc(`transactions/${storedTx.hash}`)
-                      .update({
-                          status: receipt.status ? TX_SPEED_UP_CONFIRMED : TX_FAILED
-                      });
-                    resolvedStoredTransactionHashes.push(storedTx.hash);
-                    return {
-                        transactionHash: receipt.transactionHash,
-                        description: storedTx.description,
-                        status: receipt.status ? TX_SPEED_UP_CONFIRMED : TX_FAILED,
-                        type: storedTx.type,
-                        body: storedTx.body,
-                    };
-                }
-                if (storedTx.status === TX_CANCEL) {
-                    if (receipt.status) {
-                        const originalHash = storedTx.body && storedTx.body.originalHash;
-                        const txCanceledStored = await db
-                          .doc(`transactions/${originalHash}`)
-                          .update({
+                      resolvedStoredTransactionHashes.push(storedTx.hash);
+                      return {
+                          transactionHash: receipt.transactionHash,
+                          description: storedTx.description,
+                          status: receipt.status ? TX_SPEED_UP_CONFIRMED : TX_FAILED,
+                          type: storedTx.type,
+                          body: storedTx.body,
+                      };
+                  }
+                  if (storedTx.status === TX_CANCEL) {
+                      if (receipt.status) {
+                          const originalHash = storedTx.body && storedTx.body.originalHash;
+                          saveSpedUpOrCanceled(originalHash, storedTx, TX_CANCELED)(dispatch, getState);
+                          inferredResolvedStoredTransactions.push({
+                              transactionHash: originalHash,
                               status: TX_CANCELED
                           });
-                        inferredResolvedStoredTransactions.push({
-                            transactionHash: originalHash,
-                            status: TX_CANCELED
+                          resolvedStoredTransactionHashes.push(originalHash)
+                      }
+                      const txUpdatedStored = await db
+                        .doc(`transactions/${storedTx.hash}`)
+                        .update({
+                            status: receipt.status ? TX_CANCEL_CONFIRMED : TX_FAILED
                         });
-                        resolvedStoredTransactionHashes.push(originalHash)
-                    }
-                    const txUpdatedStored = await db
-                      .doc(`transactions/${storedTx.hash}`)
-                      .update({
-                          status: receipt.status ? TX_CANCEL_CONFIRMED : TX_FAILED
-                      });
-                    resolvedStoredTransactionHashes.push(storedTx.hash);
-                    return {
-                        transactionHash: receipt.transactionHash,
-                        description: storedTx.description,
-                        status: receipt.status ? TX_CANCEL_CONFIRMED : TX_FAILED,
-                        type: storedTx.type,
-                        body: storedTx.body,
-                    };
-                }
-            }
-            if (storedTx.status === TX_PENDING) {
-                const txUpdatedStored = await db
-                  .doc(`transactions/${storedTx.hash}`)
-                  .update({
-                      status: receipt.status ? TX_CONFIRMED : TX_FAILED
-                  });
-                return {
-                    transactionHash: receipt.transactionHash,
-                    description: storedTx.description,
-                    status: receipt.status ? TX_CONFIRMED : TX_FAILED,
-                    type: storedTx.type,
-                    body: storedTx.body,
-                };
-            }
-        }
-        else {
-            pendingTransactions.push(storedTx);
-            return storedTx;
-        }
-    }));
+                      resolvedStoredTransactionHashes.push(storedTx.hash);
+                      return {
+                          transactionHash: receipt.transactionHash,
+                          description: storedTx.description,
+                          status: receipt.status ? TX_CANCEL_CONFIRMED : TX_FAILED,
+                          type: storedTx.type,
+                          body: storedTx.body,
+                      };
+                  }
+              }
+              if (storedTx.status === TX_PENDING) {
+                  const txUpdatedStored = await db
+                    .doc(`transactions/${storedTx.hash}`)
+                    .update({
+                        status: receipt.status ? TX_CONFIRMED : TX_FAILED
+                    });
+                  return {
+                      transactionHash: receipt.transactionHash,
+                      description: storedTx.description,
+                      status: receipt.status ? TX_CONFIRMED : TX_FAILED,
+                      type: storedTx.type,
+                      body: storedTx.body,
+                  };
+              }
+          }
+          else {
+              pendingTransactions.push(storedTx);
+              return storedTx;
+          }
+      }));
     console.log("RESOLVED STORED TRANSACTIONS HASHES", resolvedStoredTransactionHashes);
     console.log("RESOLVED STORED TRANSACTIONS HASHES LENGTH", resolvedStoredTransactionHashes.length);
     console.log("RESOLVED STORED TRANSACTIONS", resolvedStoredTransactions);
@@ -345,6 +339,7 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
             }
         }
     });
+
 
     const latestBlock = await web3.eth.getBlockNumber();
     console.log("LATEST BLOCK:", latestBlock);
@@ -597,25 +592,27 @@ export const transactionResolved = (event) => async (dispatch, getState) => {
 };
 
 export const saveTransaction = (transaction) => async (dispatch, getState) => {
-    // const newTx = {
-    //     hash: transaction.hash,
-    //     userId: transaction.userId.toLowerCase(),
-    //     type: transaction.type,
-    //     status: transcaction.status
-    //     description: transaction.description,
-    //     body: transaction.body,
-    // };
+    if (!(transaction && transaction.hash && transaction.userId)) {
+        return;
+    }
+    const newTx = {
+        hash: transaction.hash,
+        userId: transaction.userId.toLowerCase(),
+        type: transaction.type || "",
+        status: transaction.status || "",
+        description: transaction.description || "",
+        body: transaction.body || "",
+    };
 
-    console.log("saving transaction:", transaction);
-    transaction.userId = transaction.userId.toLowerCase();
+    console.log("saving transaction:", newTx);
     try {
         const txStored = await db
-          .doc(`transactions/${transaction.hash}`)
-          .set(transaction);
+          .doc(`transactions/${newTx.hash}`)
+          .set(newTx);
         console.log("STORED:::", txStored);
         dispatch({
             type: NEW_PENDING_TRANSACTION,
-            payload: transaction
+            payload: newTx
         });
         return txStored;
     }
@@ -624,9 +621,56 @@ export const saveTransaction = (transaction) => async (dispatch, getState) => {
     }
 };
 
+export const saveSpedUpOrCanceled = (txHash, storedTx, status) => async (dispatch, getState) => {
+    const txUpdatedOriginal = await db
+      .doc(`transactions/${txHash}`)
+      .update({
+          status: status
+      });
+    console.log("_TX_ SPED_UP or CANCELED UPDATED", txHash, status, storedTx);
+    dispatch({
+        type: TRANSACTION_RESOLVED,
+        payload: {
+            transactionHash: txHash,
+            status: status,
+            events: [],
+            unseen: true,
+            type: storedTx ? storedTx.type : status,
+            description: storedTx ? storedTx.description : "",
+        }
+    });
+    const originalTx = await db
+      .doc(`transactions/${txHash}`)
+      .get();
+    if (originalTx) {
+        const originalTxData = originalTx.data();
+        if (originalTxData && originalTxData.body && originalTxData.body.originalHash) {
+            saveSpedUpOrCanceled(originalTxData.body.originalHash, originalTxData, status)(dispatch, getState);
+        }
+    }
+};
+
 export const addPendingTransaction = (transaction) => async (dispatch, getState) => {
     transaction.status = TX_PENDING;
     saveTransaction(transaction)(dispatch, getState);
+};
+
+export const resolveTxManually = (txHash) => async (dispatch, getState) => {
+    const txUpdatedOriginal = await db
+      .doc(`transactions/${txHash}`)
+      .update({
+          status: 'EDITED'
+      });
+    dispatch({
+        type: TRANSACTION_RESOLVED,
+        payload: {
+            transactionHash: txHash,
+            status: 'DELETED',
+            events: [],
+            unseen: true,
+            type: 'DELETED',
+        }
+    });
 };
 
 export const setTransactionsSeen = (unseenCount) => async (dispatch, getState) => {

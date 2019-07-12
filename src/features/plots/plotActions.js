@@ -88,7 +88,6 @@ export const bindGem = (plot, gem, updatePlotCallback, transactionStartCallback)
               type: GEM_BINDING,
               payload: {gemId: gem.id, state: 1}
           })
-          //web3.eth.getBlock("pending").then((block) => console.log("PENDING:", block));
       })
       .on('receipt', async (receipt) => {
           console.log("BIND RECEIPT:", receipt);
@@ -119,7 +118,7 @@ export const releaseGem = (plot, updatePlotCallback, transactionStartCallback) =
     const currentUser = getState().auth.currentUserId;
     const web3 = getState().app.web3;
     let txHash;
-    const result = getState().app.plotServiceInstance.releaseGem(plot.id)
+    const result = getState().app.plotServiceInstance.releaseGem(plot.id, plot.gemMinesId)
       .on('transactionHash', (hash) => {
           txHash = hash;
           addPendingTransaction({
@@ -137,7 +136,6 @@ export const releaseGem = (plot, updatePlotCallback, transactionStartCallback) =
               payload: {id: plot.id, miningState: UNBINDING_GEM}
           });
           transactionStartCallback && transactionStartCallback();
-          //updatePlotCallback({...plot, miningState: UNBINDING_GEM});
       })
       .on('receipt', async (receipt) => {
           console.log("RELEASE RECEIPT:", receipt);

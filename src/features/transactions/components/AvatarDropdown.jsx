@@ -8,7 +8,7 @@ import Avatar from 'antd/lib/avatar';
 import connect from "react-redux/es/connect/connect";
 import Icon from "antd/lib/icon";
 import img from '../../../app/images/Profile-Image-Logo-60x60.png';
-import {setTransactionsSeen} from "../txActions";
+import {resolveTxManually, setTransactionsSeen} from "../txActions";
 import styled from "styled-components";
 import {
     TX_CANCEL,
@@ -16,7 +16,7 @@ import {
     TX_CONFIRMED,
     TX_FAILED,
     TX_PENDING,
-    TX_SPED_UP,
+    TX_SPED_UP, TX_SPEED_UP,
     TX_SPEED_UP_CONFIRMED
 } from "../txConstants";
 
@@ -258,25 +258,34 @@ const TxStatus = styled.div`
     switch (props.status) {
         case TX_PENDING:
             return "#fdcd14";
+        case TX_SPEED_UP:
+            return "#fdcd14";
+        case TX_CANCEL:
+            return "#fdcd14";
         case TX_CONFIRMED:
         case TX_SPED_UP:
         case TX_SPEED_UP_CONFIRMED:
-        case TX_CANCEL_CONFIRMED:
             return "green";
+        case TX_CANCEL_CONFIRMED:
         case TX_FAILED:
         case TX_CANCELED:
             return "red";
+        default:
+            return "#bbbbbb";
     }
 }};
     color: ${props => {
     switch (props.status) {
         case TX_PENDING:
+        case TX_SPEED_UP:
+        case TX_CANCEL:
+        case 'DELETED':
             return "black";
         case TX_CONFIRMED:
         case TX_SPED_UP:
         case TX_SPEED_UP_CONFIRMED:
-        case TX_CANCEL_CONFIRMED:
             return "white";
+        case TX_CANCEL_CONFIRMED:
         case TX_FAILED:
         case TX_CANCELED:
             return "white";
@@ -286,7 +295,27 @@ const TxStatus = styled.div`
     padding: 2px 5px;
     font-size: 10px;
     border-radius: 3px;
-    width: 65px;
+    width: ${props => {
+        switch(props.status) {
+            case TX_PENDING:
+                return "65px";
+            case TX_SPEED_UP:
+                return "100px";
+            case TX_CANCEL:
+                return "100px";
+            case TX_CONFIRMED:
+            case TX_SPED_UP:
+                return "65px";
+            case TX_SPEED_UP_CONFIRMED:
+            case TX_CANCEL_CONFIRMED:
+                return "100px";
+            case TX_FAILED:
+            case TX_CANCELED:
+                return "65px";
+            default:
+                return "65px";
+        }
+    }};
     text-align: center;
     
 `;
@@ -319,7 +348,7 @@ const TxConfirmedRecord = ({tx}) => {
               <Badge count={tx.unseen ? 1 : 0}>
                   <TxHeader>{tx.type}</TxHeader>
               </Badge>
-              <TxStatus status={tx.status ? tx.status :TX_CONFIRMED}>{tx.status ? tx.status : 'Confirmed'}</TxStatus>
+              <TxStatus status={tx.status ? tx.status : TX_CONFIRMED}>{tx.status ? tx.status : 'Confirmed'}</TxStatus>
               <TxDescription>{tx.description}</TxDescription>
           </TxInfo>
           <TxContractEvents expanded={expanded}>
@@ -339,7 +368,7 @@ const TxConfirmedRecord = ({tx}) => {
       </TxRecordContainer>)
 };
 
-const menu = ({transactionHistory, pendingTransactions, failedTransactions}) => (
+const menu = ({transactionHistory, pendingTransactions, failedTransactions, handleResolveTxManually}) => (
 
   <DropdownContainer>
 
@@ -353,7 +382,7 @@ const menu = ({transactionHistory, pendingTransactions, failedTransactions}) => 
                   <Badge count={1}>
                       <TxHeader>{tx.type}</TxHeader>
                   </Badge>
-                  <TxStatus status={TX_FAILED}>Failed</TxStatus>
+                  <TxStatus status={tx.status ? tx.status : TX_FAILED}>Failed</TxStatus>
                   <TxDescription>{tx.description}</TxDescription>
               </TxInfo>
               <a
@@ -370,11 +399,13 @@ const menu = ({transactionHistory, pendingTransactions, failedTransactions}) => 
       {pendingTransactions && pendingTransactions.map((tx) => (
         tx.hash ?
           <TxRecordContainer key={tx.hash + 'pending'}>
+              <span style={{fontSize: '12px', position: 'absolute', right: '5px', top: '-10px', cursor: 'pointer', color: '#bbbbbb'}}
+                    onClick={() => handleResolveTxManually(tx.hash)}>delete</span>
               <TxInfo>
                   <Badge count={tx.unseen ? 1 : 0}>
                       <TxHeader>{tx.type}</TxHeader>
                   </Badge>
-                  <TxStatus status={TX_PENDING}>Pending</TxStatus>
+                  <TxStatus status={tx.status ? tx.status : TX_PENDING}>{tx.status ? tx.status : "pending"}</TxStatus>
                   <TxDescription>{tx.description}</TxDescription>
               </TxInfo>
               <a
@@ -410,7 +441,7 @@ class AvatarDropdown extends React.Component {
     };
 
     render() {
-        const {user, failedTransactions, transactionHistory, pendingTransactions} = this.props;
+        const {user, failedTransactions, transactionHistory, pendingTransactions, handleResolveTxManually} = this.props;
         const unseen = ((transactionHistory && transactionHistory.length > 0 )? Math.min(transactionHistory.findIndex(tx => tx && !tx.unseen), transactionHistory.length): 0) + +(failedTransactions ? failedTransactions.length : 0);
 
         return (
@@ -423,7 +454,7 @@ class AvatarDropdown extends React.Component {
                   this.setState({visibility: false})
               }}
             >
-                <Dropdown overlay={menu({transactionHistory, pendingTransactions, failedTransactions})}
+                <Dropdown overlay={menu({transactionHistory, pendingTransactions, failedTransactions, handleResolveTxManually})}
                           visible={this.state.visibility}>
                     <>
                         <Badge count={unseen}>
@@ -466,9 +497,10 @@ const select = store => {
 
 const actions = {
     handleSetTransactionsSeen: setTransactionsSeen,
+    handleResolveTxManually: resolveTxManually,
 };
 
-export default connect(select)(AvatarDropdown);
+export default connect(select, actions)(AvatarDropdown);
 
 AvatarDropdown.propTypes = {
     // to: PropTypes.string.isRequired,
