@@ -1,6 +1,8 @@
 import {utils} from "web3";
 import {BigNumber} from "bignumber.js";
 import {getCurrentUser} from "../../features/auth/authActions";
+import {BINDING_GEM, BULK_PROCESSING, PROCESSING, UNBINDING_GEM} from "../../features/plots/plotConstants";
+import {COUNTRY_WITHDRAW} from "../../features/dashboard/dashboardConstants";
 
 export default class PlotService {
 
@@ -10,10 +12,10 @@ export default class PlotService {
         this.minerContract = minerContractInstance;
     }
 
-    withdrawCountriesEth = (owner) => {
+    withdrawCountriesEth = (ownerId) => {
         return this.plotSaleContract.methods
-          .withdraw(owner)
-          .send();
+          .withdraw(ownerId)
+          .send({}, {messages: {txType: COUNTRY_WITHDRAW, description: `Withdrawing countries income`}});
     };
 
     getTotalNotWithdrawn = async (owner) => {
@@ -135,24 +137,26 @@ export default class PlotService {
         console.log("BIND GEM:",currentUser);
         return this.minerContract.methods.bind(plotId, gemId).send({
             from: currentUser,
-        });
+        }, {messages: {txType: BINDING_GEM, description: `Binding gem ${gemId} to plot ${plotId}`}});
     };
 
-    releaseGem = (plotId) => {
-        // console.log("Release gem. Miner contract:", this.minerContract);
+    releaseGem = (plotId, gemId) => {
+        console.log("Release gem. Miner contract:", this.minerContract);
         // return this.minerContract.release(plotId).send();
-        return this.minerContract.methods.release(plotId).send();
+        return this.minerContract.methods.release(plotId).send({},
+          {messages: {txType: UNBINDING_GEM, description: `Releasing gem ${gemId} from plot ${plotId}`}});
     };
 
     processBlocks = (plotId, currentUser) => {
         console.log('UPDATING PLOT:', plotId);
         return this.minerContract.methods.update(plotId).send({
             from: currentUser
-        });
+        }, {messages: {txType: PROCESSING, description: `Processing plot ${plotId}`}});
     };
 
     processPlots = (plotIds) => {
-        return this.minerContract.methods.bulkUpdate(plotIds).send();
+        return this.minerContract.methods.bulkUpdate(plotIds).send({},
+          {messages: {txType: BULK_PROCESSING, description: `Bulk processing`}});
     };
 
     getPlotState = async (plotId) => {

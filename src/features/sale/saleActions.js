@@ -69,7 +69,9 @@ export const getUserBalance = (userId) => async (dispatch, getState) => {
                   silverAvailable: Math.floor(balances.silver*ONE_UNIT) ,
                   goldAvailable: Math.floor(balances.gold*ONE_UNIT),
                   gems: balances.gems,
-                  plots: balances.plots
+                  plots: balances.plots,
+                  artifacts: balances.artifacts,
+                  keys: Number(balances.foundersKeys) + Number(balances.chestKeys),
               }
         }
     })

@@ -42,7 +42,11 @@ import CountryService from "./services/CountryService";
 import PlotService from "./services/PlotService";
 import LootPopup from "../components/LootPopup";
 import assist from 'bnc-assist';
-import {getUpdatedTransactionHistory, transactionResolved} from "../features/transactions/txActions";
+import {
+    getUpdatedTransactionHistory,
+    resolveTransactionEvent,
+    transactionResolved
+} from "../features/transactions/txActions";
 import {setAppEventListeners} from "./appEventListeners";
 
 require('antd/lib/notification/style/css');
@@ -143,10 +147,11 @@ class App extends Component {
         let bncAssistConfig = {
             dappId: "e8432341-1602-487b-ba82-c3e2c46fb47d",      // [String] The API key created by step one above
             networkId: 3,
-            // web3,
-            // style: {
-            //     dark: true
-            // }// [Integer] The Ethereum network ID your dapp uses.
+            web3,
+            style: {
+                darkMode: true
+            },
+            handleNotificationEvent: this.props.handleNotificationEvent,
         };
 
         let assistInstance = assist.init(bncAssistConfig);
@@ -160,6 +165,7 @@ class App extends Component {
 
         const currentAccountId = await web3.eth.getAccounts().then(accounts => accounts[0]);
 
+
         // this ensures that the wallet in metamask is always the wallet in the currentAccountId
         // however this is a problem because it means that you cant view someone else profile page
         if (web3.currentProvider.publicConfigStore) {
@@ -168,134 +174,7 @@ class App extends Component {
             });
         }
 
-
-        //
-        // const dutchContract =assistInstance.Contract(new web3.eth.Contract(
-        //   dutchAuctionABI,
-        //   process.env.REACT_APP_DUTCH_AUCTION,
-        //   {
-        //       from: currentAccountId,
-        //   },
-        // ))
-        //
-        // const dutchHelperContract =assistInstance.Contract(new web3.eth.Contract(
-        //   dutchAuctionHelperABI,
-        //   process.env.REACT_APP_DUTCH_AUCTION_HELPER,
-        //   {
-        //       from: currentAccountId,
-        //   },
-        // ))
-        //
-        // const presaleContract = {};
-        //
-        // // @notice instantiating gem contract
-        // const gemsContract =assistInstance.Contract(new web3.eth.Contract(gemsABI, process.env.REACT_APP_GEM_ERC721, {
-        //     from: currentAccountId,
-        // }))
-        //
-        // const theCountrySaleContract = {};
-        //
-        //
-        // const theCountryContract =assistInstance.Contract(new web3.eth.Contract(
-        //   countryABI,
-        //   process.env.REACT_APP_COUNTRY_ERC721,
-        //   {
-        //       from: currentAccountId,
-        //   },
-        // ))
-        //
-        // const refPointsTrackerContract =assistInstance.Contract(new web3.eth.Contract(
-        //   refPointsTrackerABI,
-        //   process.env.REACT_APP_REF_POINTS_TRACKER,
-        //   {
-        //       from: currentAccountId,
-        //   },
-        // ))
-        //
-        // const goldContract =assistInstance.Contract(new web3.eth.Contract(
-        //   goldABI,
-        //   process.env.REACT_APP_GOLD_ERC721,
-        //   {
-        //       from: currentAccountId,
-        //   },
-        // ))
-        //
-        // const silverContract =assistInstance.Contract(new web3.eth.Contract(
-        //   silverABI,
-        //   process.env.REACT_APP_SILVER_ERC721,
-        //   {
-        //       from: currentAccountId,
-        //   },
-        // ))
-        //
-        // const workshopContract =assistInstance.Contract(new web3.eth.Contract(
-        //   workshopABI,
-        //   process.env.REACT_APP_WORKSHOP,
-        //   {
-        //       from: currentAccountId,
-        //   },
-        // ))
-        //
-        // const balanceContract = assistInstance.Contract(new web3.eth.Contract(
-        //   balanceABI,
-        //   process.env.REACT_APP_BALANCE_PROXY
-        // ))
-        //
-        // const silverSaleContract =assistInstance.Contract(new web3.eth.Contract(
-        //   silverSaleABI,
-        //   process.env.REACT_APP_SILVER_SALE,
-        //   {
-        //       from: currentAccountId,
-        //   },
-        // ))
-        //
-        // const silverCouponsContract = {};
-        // // assistInstance.Contract(new web3.eth.Contract(
-        // //   silverCouponsABI,
-        // //   process.env.REACT_APP_SILVER_COUPONS,
-        // //   {
-        // //       from: currentAccountId,
-        // //   },
-        // // ))
-        //
-        // const plotSaleContract = assistInstance.Contract(new web3.eth.Contract(
-        //   plotSaleABI,
-        //   process.env.REACT_APP_PLOT_SALE,
-        //   {
-        //       from: currentAccountId,
-        //   },
-        // ))
-        //
-        // const plotContract =assistInstance.Contract(new web3.eth.Contract(
-        //   plotABI,
-        //   process.env.REACT_APP_PLOT_ERC721,
-        //   {
-        //       from: currentAccountId,
-        //   },
-        // ))
-        //
-        // const minerContract =assistInstance.Contract(new web3.eth.Contract(
-        //   minerABI,
-        //   process.env.REACT_APP_MINER,
-        //   {
-        //       from: currentAccountId,
-        //   },
-        // ))
-        //
-        // const artifactContract =assistInstance.Contract(new web3.eth.Contract(
-        //   artifactABI,
-        //   process.env.REACT_APP_ARTIFACT_ERC20,
-        //   {
-        //       from: currentAccountId,
-        //   },
-        // ))
-
-        // <><><><><><><><><><><><><><><><><><><>><><>><><><><><<>><><<><><>
-
-
-
-        // @notice instantiating auction contract
-        const dutchContract = (new web3.eth.Contract(
+        const dutchContract =assistInstance.Contract(new web3.eth.Contract(
           dutchAuctionABI,
           process.env.REACT_APP_DUTCH_AUCTION,
           {
@@ -303,7 +182,7 @@ class App extends Component {
           },
         ));
 
-        const dutchHelperContract = (new web3.eth.Contract(
+        const dutchHelperContract =assistInstance.Contract(new web3.eth.Contract(
           dutchAuctionHelperABI,
           process.env.REACT_APP_DUTCH_AUCTION_HELPER,
           {
@@ -312,27 +191,16 @@ class App extends Component {
         ));
 
         const presaleContract = {};
-        // (new web3.eth.Contract(presaleABI, process.env.REACT_APP_PRESALE2, {
-        //     from: currentAccountId,
-        // }))
 
         // @notice instantiating gem contract
-        const gemsContract = await (new web3.eth.Contract(gemsABI, process.env.REACT_APP_GEM_ERC721, {
+        const gemsContract =assistInstance.Contract(new web3.eth.Contract(gemsABI, process.env.REACT_APP_GEM_ERC721, {
             from: currentAccountId,
         }));
 
-        console.log("gemsContract,", gemsContract);
-
         const theCountrySaleContract = {};
-        // (new web3.eth.Contract(
-        //   countrySaleABI,
-        //   process.env.REACT_APP_COUNTRY_SALE,
-        //   {
-        //       from: currentAccountId,
-        //   },
-        // ))
 
-        const theCountryContract = (new web3.eth.Contract(
+
+        const theCountryContract =assistInstance.Contract(new web3.eth.Contract(
           countryABI,
           process.env.REACT_APP_COUNTRY_ERC721,
           {
@@ -340,7 +208,7 @@ class App extends Component {
           },
         ));
 
-        const refPointsTrackerContract = (new web3.eth.Contract(
+        const refPointsTrackerContract =assistInstance.Contract(new web3.eth.Contract(
           refPointsTrackerABI,
           process.env.REACT_APP_REF_POINTS_TRACKER,
           {
@@ -348,23 +216,23 @@ class App extends Component {
           },
         ));
 
-        const goldContract = (new web3.eth.Contract(
+        const goldContract =assistInstance.Contract(new web3.eth.Contract(
           goldABI,
-          process.env.REACT_APP_GOLD_ERC20,
+          process.env.REACT_APP_GOLD_ERC721,
           {
               from: currentAccountId,
           },
         ));
 
-        const silverContract = (new web3.eth.Contract(
+        const silverContract =assistInstance.Contract(new web3.eth.Contract(
           silverABI,
-          process.env.REACT_APP_SILVER_ERC20,
+          process.env.REACT_APP_SILVER_ERC721,
           {
               from: currentAccountId,
           },
         ));
 
-        const workshopContract = (new web3.eth.Contract(
+        const workshopContract =assistInstance.Contract(new web3.eth.Contract(
           workshopABI,
           process.env.REACT_APP_WORKSHOP,
           {
@@ -372,12 +240,12 @@ class App extends Component {
           },
         ));
 
-        const balanceContract = new web3.eth.Contract(
+        const balanceContract = assistInstance.Contract(new web3.eth.Contract(
           balanceABI,
           process.env.REACT_APP_BALANCE_PROXY
-        );
+        ));
 
-        const silverSaleContract = (new web3.eth.Contract(
+        const silverSaleContract =assistInstance.Contract(new web3.eth.Contract(
           silverSaleABI,
           process.env.REACT_APP_SILVER_SALE,
           {
@@ -394,7 +262,7 @@ class App extends Component {
         //   },
         // ))
 
-        const plotSaleContract = (new web3.eth.Contract(
+        const plotSaleContract = assistInstance.Contract(new web3.eth.Contract(
           plotSaleABI,
           process.env.REACT_APP_PLOT_SALE,
           {
@@ -402,7 +270,7 @@ class App extends Component {
           },
         ));
 
-        const plotContract = (new web3.eth.Contract(
+        const plotContract =assistInstance.Contract(new web3.eth.Contract(
           plotABI,
           process.env.REACT_APP_PLOT_ERC721,
           {
@@ -410,7 +278,7 @@ class App extends Component {
           },
         ));
 
-        const minerContract = (new web3.eth.Contract(
+        const minerContract =assistInstance.Contract(new web3.eth.Contract(
           minerABI,
           process.env.REACT_APP_MINER,
           {
@@ -418,13 +286,149 @@ class App extends Component {
           },
         ));
 
-        const artifactContract = (new web3.eth.Contract(
+        const artifactContract =assistInstance.Contract(new web3.eth.Contract(
           artifactABI,
           process.env.REACT_APP_ARTIFACT_ERC20,
           {
               from: currentAccountId,
           },
         ));
+
+        // <><><><><><><><><><><><><><><><><><><>><><>><><><><><<>><><<><><>
+
+
+        //
+        // // @notice instantiating auction contract
+        // const dutchContract = (new web3.eth.Contract(
+        //   dutchAuctionABI,
+        //   process.env.REACT_APP_DUTCH_AUCTION,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ));
+        //
+        // const dutchHelperContract = (new web3.eth.Contract(
+        //   dutchAuctionHelperABI,
+        //   process.env.REACT_APP_DUTCH_AUCTION_HELPER,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ));
+        //
+        // const presaleContract = {};
+        // // (new web3.eth.Contract(presaleABI, process.env.REACT_APP_PRESALE2, {
+        // //     from: currentAccountId,
+        // // }))
+        //
+        // // @notice instantiating gem contract
+        // const gemsContract = await (new web3.eth.Contract(gemsABI, process.env.REACT_APP_GEM_ERC721, {
+        //     from: currentAccountId,
+        // }));
+        //
+        // console.log("gemsContract,", gemsContract);
+        //
+        // const theCountrySaleContract = {};
+        // // (new web3.eth.Contract(
+        // //   countrySaleABI,
+        // //   process.env.REACT_APP_COUNTRY_SALE,
+        // //   {
+        // //       from: currentAccountId,
+        // //   },
+        // // ))
+        //
+        // const theCountryContract = (new web3.eth.Contract(
+        //   countryABI,
+        //   process.env.REACT_APP_COUNTRY_ERC721,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ));
+        //
+        // const refPointsTrackerContract = (new web3.eth.Contract(
+        //   refPointsTrackerABI,
+        //   process.env.REACT_APP_REF_POINTS_TRACKER,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ));
+        //
+        // const goldContract = (new web3.eth.Contract(
+        //   goldABI,
+        //   process.env.REACT_APP_GOLD_ERC20,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ));
+        //
+        // const silverContract = (new web3.eth.Contract(
+        //   silverABI,
+        //   process.env.REACT_APP_SILVER_ERC20,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ));
+        //
+        // const workshopContract = (new web3.eth.Contract(
+        //   workshopABI,
+        //   process.env.REACT_APP_WORKSHOP,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ));
+        //
+        // const balanceContract = new web3.eth.Contract(
+        //   balanceABI,
+        //   process.env.REACT_APP_BALANCE_PROXY
+        // );
+        //
+        // const silverSaleContract = (new web3.eth.Contract(
+        //   silverSaleABI,
+        //   process.env.REACT_APP_SILVER_SALE,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ));
+        //
+        // const silverCouponsContract = {};
+        // // assistInstance.Contract(new web3.eth.Contract(
+        // //   silverCouponsABI,
+        // //   process.env.REACT_APP_SILVER_COUPONS,
+        // //   {
+        // //       from: currentAccountId,
+        // //   },
+        // // ))
+        //
+        // const plotSaleContract = (new web3.eth.Contract(
+        //   plotSaleABI,
+        //   process.env.REACT_APP_PLOT_SALE,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ));
+        //
+        // const plotContract = (new web3.eth.Contract(
+        //   plotABI,
+        //   process.env.REACT_APP_PLOT_ERC721,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ));
+        //
+        // const minerContract = (new web3.eth.Contract(
+        //   minerABI,
+        //   process.env.REACT_APP_MINER,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ));
+        //
+        // const artifactContract = (new web3.eth.Contract(
+        //   artifactABI,
+        //   process.env.REACT_APP_ARTIFACT_ERC20,
+        //   {
+        //       from: currentAccountId,
+        //   },
+        // ));
 
         //const silverCouponsContract = {};
 
@@ -528,7 +532,7 @@ class App extends Component {
             });
             this.props.handleGetUpdatedTransactionHistory();
         }
-        if (this.props.transactionHistory && (this.props.transactionHistory !== prevProps.transactionHistory)) {
+        if (this.props.transactionHistory && (!prevProps.transactionHistory)) {
             let lootToShowArray = [];
             this.props.transactionHistory.forEach((tx) => {
                 if (tx && tx.unseen) {
@@ -645,6 +649,7 @@ class App extends Component {
 }
 
 const actions = {
+    handleNotificationEvent: resolveTransactionEvent,
     handleTransactionResolved: transactionResolved,
     handleSendContractsToRedux: sendContractsToRedux,
     handleClearError: clearError,
