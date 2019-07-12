@@ -10,7 +10,7 @@ const StatusBar = ({dashboardUser, userBalance}) => {
         <div className="flex aic wrap jcb relative">
             <div className=" flex aic pt0-ns">
                 {dashboardUser && dashboardUser.imageURL ?
-                    <Avatar src={dashboardUser.imageURL} className="pr3 pl3-ns dib" alt=""/> :
+                    <Avatar src={dashboardUser.imageURL} className="pr3 pl3 dib" alt=""/> :
                     <Spin indicator={
                         <Icon type="loading" style={{fontSize: 24, color: '#e406a5'}} spin/>}
                     />
