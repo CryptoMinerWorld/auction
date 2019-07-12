@@ -1,157 +1,35 @@
 import React, {Component} from "react";
-import styled from "styled-components";
-import buyNowImage from "../../../app/images/pinkBuyNowButton.png";
-import stubIcon from "./../../../app/images/icons/gem1.png";
 import artifactIcon from "../../../app/images/artifactIcon.png";
 import filterIcon from "../../../app/images/filterIconNew.png";
 import gemIcon from "../../../app/images/singleGemIconNew.png";
 import gemsIcon from "../../../app/images/gemIconNew.png"
 import plotsIcon from "../../../app/images/plotIconNew.png";
 import plotIcon from "../../../app/images/singlePlotIconNew.png";
-import {Link} from "react-router-dom";
+import {
+    BuyButton,
+    ProcessAllButtonInfo,
+    ProcessAllInfo,
+    Sidebar,
+    SidebarIcon,
+    SidebarSection,
+    SidebarTab,
+    SidebarTabs
+} from "./plot-sidebar-css"
 
-const SidebarSection = styled.div`
-    @media(max-width: 599px) {
-        height: 80px;
-        margin: 0;
-        flex: ${props => props.mobileFlex ? props.mobileFlex : "1"};
-        flex-direction: ${props => props.mobileDirection ? props.mobileDirection : "row"};
-        justify-content: space-evenly;
-    }
-    
-    @media(min-width: 600px) {
-        margin: 0 0 10px 0px;
-        flex-direction: column;
-        border-radius: ${props => props.selectedTab && props.selectedTab === "selected" ? "0 0 10px 0" : "0 10px 10px 0"};
-    }
-    
-    display: flex;
-    align-items: center;
-    color: white;
-    background-color: #2B3035;
-    padding: 4px 0px;
-`;
-
-const BuyButton = styled.div`
-    @media(max-width: 599px) {
-        font-size: 11px;
-        padding: 0;
-    }
-
-    flex: 4;
-    background-image: url(${buyNowImage});
-    background-position: center center;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    background-size: contain;
-    background-repeat: no-repeat;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    padding: 12px;
-    cursor: pointer;
-    color: white;
-    font-size: 16px
-`;
-
-const Sidebar = styled.div`
-    @media(max-width: 599px) {
-        width: 100%;
-        flex-wrap: wrap;
-        bottom: 0;
-        flex-direction: row;
-        position: fixed;
-        padding: 0px;
-        z-index: 15;
-    }
-    
-    @media(min-width: 600px) {
-        flex-direction: column;    
-        width: 150px;
-        align-items: stretch;
-    }
-
-    display: flex;
-    background-color: #383F45;
-    font-size: 14px;
-    padding: 5px 5px 5px 0;
-    position: relative;
-    color: white
-`;
-
-const SidebarIcon = styled.div`
-
-    @media(max-width: 599px) {
-        padding: 29px 15px;
-        background-size: contain;
-        
-        &:nth-child(2) {
-            padding: 29px 22px;
-        }
-        
-        &:only-child {
-            padding: 29px 20px;
-        }
-    }
-    
-    margin: 3px 0;
-    background-size: contain;
-    background-image: url(${props => props.icon});
-    background-position: center center;
-    text-align: center;
-    background-repeat: no-repeat;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    padding: 45px 45px;
-    cursor: pointer;
-    color: white;
-    font-size: 16px;     
-    opacity: ${props => props.disabled ? "0.25" : "1"};       
-`;
-
-const SidebarTabs = styled.div`
-   @media(max-width: 599px) {
-        width: 100%;
-        font-size: 14px;
-   }
-   display: flex;
-`;
-
-const SidebarTab = styled.div`
-    flex: 1;
-    ${props => props.selected ? 'background-color: #2B3035;' : ''}
-    ${props => props.selected ? 'border-radius: 5px 5px 0 0;' : ''}
-    padding: 5px;
-    text-align: center;
-    font-size: 12px;
-    cursor: pointer;
-`;
-
-const ProcessAllInfo = styled.div`
-    @media(max-width: 599px) {
-        display: none;
-    }
-`;
-
-const ProcessAllButtonInfo = styled.span`
-    @media(min-width: 600px) {
-        display: none;
-    }
-`;
 
 class PlotSidebar extends Component {
 
     state = {
         showSidebarFilters: false,
         selectedTab: "all",
+        isShown: false
     };
 
     shouldComponentUpdate(props, state) {
-        return state.selectedTab !== this.state.selectedTab || props.plotSelected !== this.props.plotSelected || props.isOwner !== this.props.isOwner;
+        return state.selectedTab !== this.state.selectedTab ||
+            props.plotSelected !== this.props.plotSelected ||
+            props.isOwner !== this.props.isOwner ||
+            state.isShown !== this.state.isShown
     }
 
     componentDidUpdate(prevProps) {
@@ -160,43 +38,55 @@ class PlotSidebar extends Component {
         }
     }
 
+
     render() {
         const {plotSelected, isOwner, totalUnprocessedBlocksNumber} = this.props;
-        const {selectedTab} = this.state;
-        const selectedIsActive = selectedTab === "selected";
-        const disableSidebarIcons = ((selectedIsActive) && !plotSelected) || !isOwner;
-        const disableSidebarGemIcon = ((selectedIsActive) && (!plotSelected || (plotSelected && !plotSelected.gemMines))) || !isOwner;
+        const {selectedTab, isShown} = this.state;
+        const isSelectedTabActive = selectedTab === "selected";
+        const disableSidebarIcons = ((isSelectedTabActive) && !plotSelected) || !isOwner;
+        const disableSidebarGemIcon = ((isSelectedTabActive) && (!plotSelected || (plotSelected && !plotSelected.gemMines))) || !isOwner;
+        const handleAllTabClick = () => selectedTab === "all" && isShown ? this.setState({isShown: false}) : this.setState({
+            selectedTab: "all",
+            isShown: true
+        });
+        const handleSelectedTabClick = () => isSelectedTabActive && isShown ? this.setState({isShown: false}) : this.setState({
+            selectedTab: "selected",
+            isShown: true
+        });
         return (
-          <Sidebar>
-              <SidebarTabs>
-                  <SidebarTab onClick={() => this.setState({selectedTab: "all"})}
-                              selected={selectedTab === "all"}>
-                      ALL
-                  </SidebarTab>
-                  <SidebarTab onClick={() => this.setState({selectedTab: "selected"})}
-                              selected={selectedIsActive}>
-                      Selected
-                  </SidebarTab>
-              </SidebarTabs>
-              <SidebarSection selectedTab={selectedTab} mobileFlex={4} mobileDirection={"row"}>
-                  <SidebarIcon disabled={disableSidebarIcons} icon={selectedIsActive ? plotIcon : plotsIcon} onClick={() => !disableSidebarIcons && this.props.showSidebarPopup("plots-"+selectedTab)}/>
-                  <SidebarIcon disabled={disableSidebarGemIcon} icon={selectedIsActive ? gemIcon : gemsIcon} onClick={() => !disableSidebarGemIcon && this.props.showSidebarPopup("gems-"+selectedTab)}/>
-                  <SidebarIcon disabled={true} icon={artifactIcon} style={{margin: "10px 0"}}
-                               onClick={() => this.props.showSidebarPopup("coming-soon")}
-                  />
-              </SidebarSection>
-              <SidebarSection mobileFlex={3} mobileDirection={"column"}>
-                  <BuyButton><a style={{width: "100%", color: "white"}} href={'/plots'}>BUY PLOTS</a></BuyButton>
-                  <ProcessAllInfo style={{fontSize: "14px", lineHeight: "1.3"}}>{totalUnprocessedBlocksNumber}</ProcessAllInfo>
-                  <ProcessAllInfo style={{color: "#828689", lineHeight: "1"}}>Unprocessed Blocks</ProcessAllInfo>
-                  <BuyButton onClick={() => this.props.showSidebarPopup("process-all")}>
-                      PROCESS ALL <ProcessAllButtonInfo>({totalUnprocessedBlocksNumber})</ProcessAllButtonInfo>
-                  </BuyButton>
-              </SidebarSection>
-              <SidebarSection mobileFlex={1} mobileDirection={"row"}>
-                  <SidebarIcon icon={filterIcon} onClick={() => this.props.showSidebarPopup("filter")}/>
-              </SidebarSection>
-          </Sidebar>
+            <Sidebar>
+                <SidebarTabs>
+                    <SidebarTab onClick={handleAllTabClick}
+                                selected={selectedTab === "all"}>
+                        ALL
+                    </SidebarTab>
+                    <SidebarTab onClick={handleSelectedTabClick}
+                                selected={isSelectedTabActive}>
+                        Selected
+                    </SidebarTab>
+                </SidebarTabs>
+                <SidebarSection selectedTab={selectedTab} mobileFlex={4} mobileDirection={"row"} isShown={isShown}>
+                    <SidebarIcon disabled={disableSidebarIcons} icon={isSelectedTabActive ? plotIcon : plotsIcon}
+                                 onClick={() => !disableSidebarIcons && this.props.showSidebarPopup("plots-" + selectedTab)}/>
+                    <SidebarIcon disabled={disableSidebarGemIcon} icon={isSelectedTabActive ? gemIcon : gemsIcon}
+                                 onClick={() => !disableSidebarGemIcon && this.props.showSidebarPopup("gems-" + selectedTab)}/>
+                    <SidebarIcon disabled={true} icon={artifactIcon} style={{margin: "10px 0"}}
+                                 onClick={() => this.props.showSidebarPopup("coming-soon")}
+                    />
+                </SidebarSection>
+                <SidebarSection mobileFlex={3} mobileDirection={"column"} isShown={isShown}>
+                    <BuyButton><a style={{width: "100%", color: "white"}} href={'/plots'}>BUY PLOTS</a></BuyButton>
+                    <ProcessAllInfo
+                        style={{fontSize: "14px", lineHeight: "1.3"}}>{totalUnprocessedBlocksNumber}</ProcessAllInfo>
+                    <ProcessAllInfo style={{color: "#828689", lineHeight: "1"}}>Unprocessed Blocks</ProcessAllInfo>
+                    <BuyButton onClick={() => this.props.showSidebarPopup("process-all")}>
+                        PROCESS ALL <ProcessAllButtonInfo>({totalUnprocessedBlocksNumber})</ProcessAllButtonInfo>
+                    </BuyButton>
+                </SidebarSection>
+                <SidebarSection mobileFlex={1} mobileDirection={"row"} isShown={isShown}>
+                    <SidebarIcon icon={filterIcon} onClick={() => this.props.showSidebarPopup("filter")}/>
+                </SidebarSection>
+            </Sidebar>
         )
     }
 }

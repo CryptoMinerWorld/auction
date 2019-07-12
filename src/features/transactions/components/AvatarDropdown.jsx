@@ -411,11 +411,11 @@ class AvatarDropdown extends React.Component {
                           visible={this.state.visibility}>
                     <>
                         <Badge count={unseen}>
-                            <Avatar src={user.imageURL} className="dib"/>
+                            <Avatar src={user.imageURL} className="dib h-auto v-super" size="small"/>
                         </Badge>
-                        <p className="dib pl2">
+                        <span className="dib pl2 mb0 v-top">
                             {user.name}
-                        </p>
+                        </span>
                     </>
                 </Dropdown>
             </div>

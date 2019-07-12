@@ -4691,6 +4691,10 @@ code,
     vertical-align: bottom;
 }
 
+.v-super {
+    vertical-align: super;
+}
+
 /*
 
    HOVER EFFECTS

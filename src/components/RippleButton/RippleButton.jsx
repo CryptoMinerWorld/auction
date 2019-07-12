@@ -13,6 +13,7 @@ const Button = styled.button`
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  background-color: #FA04BC;
 
   &:hover {
     outline: none;
