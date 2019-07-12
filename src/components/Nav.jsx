@@ -162,8 +162,8 @@ const Navbar = ({
                     onClick={() => {
                     }}
                     href="https://cryptominerworld.com/faq/"
-                    className="ml4 dib bg-black shadow-1 white br2 pa1 ph4"
-                    title="FAQ"
+                    className="ml3 dib shadow-1 white br2 ph3 b"
+                    title="How To Play"
                   />
               </div>
           </div>
