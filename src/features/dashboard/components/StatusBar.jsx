@@ -26,7 +26,13 @@ const SilverGoldBalance = styled.div`
     }
 `;
 
-
+const Username = styled.h1`
+    color: #fff !important;
+    margin: 10px 0;
+    @media(max-width: 800px) {
+        margin: 0;
+    }
+`;
 
 const StatusBar = ({dashboardUser, userBalance}) => {
     return (
@@ -38,9 +44,9 @@ const StatusBar = ({dashboardUser, userBalance}) => {
                         <Icon type="loading" style={{fontSize: 24, color: '#e406a5'}} spin/>}
                     />
                 }
-                <h1 className="white" data-testid="userName" style={{margin: "10px 0"}}>
+                <Username data-testid="userName">
                     {dashboardUser && dashboardUser.name || "Loading..."}
-                </h1>
+                </Username>
             </div>
             <SilverGoldBalance className="flex col tc">
                 <div className="flex">
