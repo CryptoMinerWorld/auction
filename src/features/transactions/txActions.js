@@ -137,9 +137,9 @@ export const resolveTransactionEvent = (txEventObject) => async (dispatch, getSt
             tx = {
                 hash: txEventObject.transaction.hash,
                 userId: txEventObject.transaction.from,
-                type: customData && customData.txType,
+                type: customData && customData.txType ? customData.txType : "",
                 status: TX_SPEED_UP,
-                description: customData && customData.description,
+                description: customData && customData.description ? customData.description : "",
                 body: {
                     originalHash: txEventObject.transaction.originalHash
                 },
@@ -151,9 +151,9 @@ export const resolveTransactionEvent = (txEventObject) => async (dispatch, getSt
             tx = {
                 hash: txEventObject.transaction.hash,
                 userId: txEventObject.transaction.from,
-                type: customData && customData.txType,
+                type: customData && customData.txType ? customData.txType : "",
                 status: TX_CANCEL,
-                description: customData && customData.description,
+                description: customData && customData.description ? customData.description : "",
                 body: {
                     originalHash: txEventObject.transaction.originalHash
                 },
@@ -612,7 +612,7 @@ export const saveTransaction = (transaction) => async (dispatch, getState) => {
         const txStored = await db
           .doc(`transactions/${transaction.hash}`)
           .set(transaction);
-
+        console.log("STORED:::", txStored);
         dispatch({
             type: NEW_PENDING_TRANSACTION,
             payload: transaction
