@@ -158,6 +158,21 @@ const PlotActionPopup = styled.div`
     align-items: center;
 `;
 
+const CloseButton = styled.div`
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 85px;
+    color: #fff;
+    font-weight: bold;
+    z-index: 20;
+    font-size: 20px;
+    
+    @media(min-width: 801px) {
+        display: none;
+    }
+`;
+
 export class SidebarPopup extends Component {
 
     componentDidMount() {
@@ -253,6 +268,7 @@ export class SidebarPopup extends Component {
 
         return (
           <div style={shadowLayerStyle} onClick={() => this.props.closeCallback()}>
+              <CloseButton onClick={() => this.props.closeCallback()}>Close X</CloseButton>
               <div style={popupStyle} onClick={(e) => {
                   e.stopPropagation()
               }}>

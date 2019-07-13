@@ -308,12 +308,6 @@ class Auction extends PureComponent {
                               shareUrl={socialShareUrl}
                             />
                           )}
-
-                          <div className="w-50-l measure-wide-l">
-                              <OverlapOnDesktopView>
-                                  <FAQ/>
-                              </OverlapOnDesktopView>
-                          </div>
                       </div>
                   </div>
               </div>

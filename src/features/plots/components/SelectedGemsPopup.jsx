@@ -65,7 +65,7 @@ export class SelectedGemsPopup extends Component {
                   </Col>
                   <Col flex={1}>
                       <ButtonsBlock>
-                          {plot.miningState === MINING || plot.miningState === STUCK || plot.miningState === MINED || plot.miningState === PROCESSED
+                          {(plot.miningState === MINING || plot.miningState === STUCK || plot.miningState === MINED || plot.miningState === PROCESSED)
                           && <ShowButton content={"Stop Mining"}
                                       onClick={() => this.props.stopMining(plot)}/>
                           }

@@ -16,6 +16,10 @@ service cloud.firestore {
       allow read;
     }
 
+    match /logs/{log} {
+      allow create;
+    }
+
     match /transactions/{hash} {
           allow read, create, update;
     }
