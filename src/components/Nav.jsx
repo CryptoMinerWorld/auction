@@ -61,7 +61,7 @@ const Navbar = ({
               <Tx auth={existingUser}/>
           </div>
 
-          <div style={{width: '80%', height: '28px'}} className="flex flex-nowrap tc tr-ns nowrap overflow-x-auto">
+          <div style={{width: '80%',  }} className="flex aic flex-nowrap tc tr-ns nowrap overflow-x-auto">
               {/* <a href="https://cryptominerworld.com/" title="Home" className="fl">
           <img src={img} className="dib h2 w-auto br-100 dn-ns mr3" alt="CryptoMiner World" />
         </a> */}
@@ -136,13 +136,6 @@ const Navbar = ({
               >
                   Silver and Gold
               </NavLink>
-              <a
-                className="link dim dark-gray f6 f5-l dn dib-ns mr3 mr4-l"
-                href="https://cryptominerworld.com/world/"
-                title="World"
-              >
-                  World
-              </a>
               {user && (
                 <AvatarDropdown
                   //to={`/profile/${user.walletId}`}
@@ -155,7 +148,7 @@ const Navbar = ({
                     onClick={() => {
                     }}
                     href="https://cryptominerworld.com/faq/"
-                    className="ml3 dib shadow-1 white br2 ph3 b"
+                    className="ml3 dib shadow-1 white br2 pa2 ph3 b"
                     title="How To Play"
                   />
               </div>

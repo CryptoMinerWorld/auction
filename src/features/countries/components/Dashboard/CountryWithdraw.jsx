@@ -65,11 +65,11 @@ const WithdrawButton = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 14px 8px;
+    padding: 16px 8px;
     cursor: pointer;
     color: white;
-    width: 160px;
-    font-size: 16px;
+    width: 170px;
+    font-size: 14px;
     margin-right: 10px;
     font-weight: bold;
 `;

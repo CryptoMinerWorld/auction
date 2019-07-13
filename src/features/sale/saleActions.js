@@ -29,7 +29,7 @@ export const buyGeode = (type, amount, etherUsed, referralPointsUsed, referrer, 
               hash: hash,
               userId: currentUser,
               type: 'Silver Sale',
-              description: `Buying ${type}. Ether used: ${etherUsed}`,
+              description: `Buying ${type}`,
               body: {}
           })(dispatch, getState);
       })

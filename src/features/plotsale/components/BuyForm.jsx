@@ -140,8 +140,8 @@ class BuyForm extends Component {
                         toggleMap();
                     }}
                     min={1}
-                    max={60}
-                    defaultValue={30}
+                    max={40}
+                    defaultValue={20}
                     trackStyle={{
                         backgroundColor: "#8C9293",
                         height: 4
@@ -152,10 +152,10 @@ class BuyForm extends Component {
                     }}
                     marks={{
                         1: <SliderMark>1</SliderMark>,
-                        15: <SliderMark>15</SliderMark>,
-                        30: <SliderMark>30</SliderMark>,
-                        45: <SliderMark>45</SliderMark>,
-                        60: <SliderMark>60</SliderMark>,
+                        15: <SliderMark>10</SliderMark>,
+                        30: <SliderMark>20</SliderMark>,
+                        45: <SliderMark>30</SliderMark>,
+                        60: <SliderMark>40</SliderMark>,
                     }}
                     handleStyle={{
                         backgroundColor: "magenta",
@@ -204,8 +204,8 @@ class BuyForm extends Component {
                               <BuyInfo>Buy {numberOfPlots} plots in {selectedCountry.name}</BuyInfo>
                               :
                               <BuyInfo>{`Buy ${selectedCountry.availablePlots} plots in ${selectedCountry.name} ` +
-                              `and ${(numberOfPlots - selectedCountry.availablePlots)} plots in random countries`}</BuyInfo>
-                            : <BuyInfo>Buy {numberOfPlots} plots in random countries</BuyInfo>
+                              `and ${(numberOfPlots - selectedCountry.availablePlots)} plots in random country`}</BuyInfo>
+                            : <BuyInfo>Buy {numberOfPlots} plots in random country</BuyInfo>
                       }
                   </Col>
                   <Col style={{flex: 1}}>{selectedCountry.imageLinkMedium &&

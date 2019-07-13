@@ -1,7 +1,7 @@
 import {utils} from "web3";
 import {BigNumber} from "bignumber.js";
 import {getCurrentUser} from "../../features/auth/authActions";
-import {BINDING_GEM, BULK_PROCESSING, PROCESSING, UNBINDING_GEM} from "../../features/plots/plotConstants";
+import {BINDING_GEM, BULK_PROCESSING, PLOT_SALE, PROCESSING, UNBINDING_GEM} from "../../features/plots/plotConstants";
 import {COUNTRY_WITHDRAW} from "../../features/dashboard/dashboardConstants";
 
 export default class PlotService {
@@ -29,12 +29,11 @@ export default class PlotService {
 
     buyPlots = (countryId, plotsNumber, priceInEth, referrer) => {
         const priceInWei = Number(utils.toWei(priceInEth.toFixed(2), 'ether'));
-        console.log("BUYING PLOTS IN COUNTRY ID:", countryId);
         return this.plotSaleContract.methods
           .buy(countryId, plotsNumber)
           .send({
               value: priceInWei,
-          });
+          }, {messages: {txType: PLOT_SALE, description: `Buying ${plotsNumber} plots`}});
     };
 
     getEffectiveRestingEnergyOf = async (gemId) => {

@@ -110,11 +110,11 @@ class PlotSale extends Component {
     }
 
     setBackgroundImage = (numberOfPlots) => {
-        if(numberOfPlots === 1) this.setState({plotImage : plot1});
-        else if(numberOfPlots >= 2 && numberOfPlots < 16) this.setState({plotImage: plot2});
-        else if(numberOfPlots >= 16 && numberOfPlots < 31) this.setState({plotImage: plot16});
-        else if(numberOfPlots >= 31 && numberOfPlots < 46) this.setState({plotImage: plot31});
-        else if(numberOfPlots >= 46) this.setState({plotImage: plot46})
+        if(numberOfPlots >= 1 && numberOfPlots < 10) this.setState({plotImage : plot1});
+        else if(numberOfPlots >= 10 && numberOfPlots < 20) this.setState({plotImage: plot2});
+        else if(numberOfPlots >= 20 && numberOfPlots < 30) this.setState({plotImage: plot16});
+        else if(numberOfPlots >= 40 && numberOfPlots < 40) this.setState({plotImage: plot31});
+        else if(numberOfPlots >= 40) this.setState({plotImage: plot46})
     };
 
     rtdbListen = () => {

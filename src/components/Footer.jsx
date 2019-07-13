@@ -69,11 +69,11 @@ const Footer = (props) => (
               hover="
               hover-light-purple"
             />
-            <FooterLink
-              link="https://cryptominerworld.com/world/"
-              title="World"
-              hover="hover-green"
-            />
+            {/*<FooterLink*/}
+              {/*link="https://cryptominerworld.com/world/"*/}
+              {/*title="World"*/}
+              {/*hover="hover-green"*/}
+            {/*/>*/}
             <FooterLink link="https://cryptominerworld.com/faq/" title="FAQ" hover="hover-gold" />
             {/*<FooterLink*/}
               {/*link="http://www.sophophilia.com/press/sheet.php?p=cryptoMiner_world"*/}

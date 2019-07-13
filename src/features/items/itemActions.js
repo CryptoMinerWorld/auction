@@ -15,6 +15,7 @@ import {addPendingTransaction, getUpdatedTransactionHistory} from '../transactio
 import {utils} from "web3";
 import {BigNumber} from "bignumber.js";
 import {BINDING_GEM, PROCESSING, UNBINDING_GEM} from "../plots/plotConstants";
+import {gradeConverter} from "../market/helpers";
 
 
 export const getGemData = tokenId => async (dispatch, getState) => {
@@ -133,7 +134,7 @@ export const createAuction = (payload, createCallback, history) => async (dispat
     let txHash;
     return gemsContractInstance.methods
       .safeTransferFrom(currentAccount, process.env.REACT_APP_DUTCH_AUCTION, token, data)
-      .send()
+      .send({}, {messages: {txType: AUCTION_START, description: `Adding gem ${token} to auction`}})
       .on('transactionHash', hash => {
           txHash = hash;
           addPendingTransaction({
@@ -168,7 +169,7 @@ export const removeFromAuction = (tokenId, history, turnLoaderOff) => async (
     removeAuctionHelper(dutchContract, tokenId, gemContractAddress)
       .send({
           from: currentUser,
-      })
+      }, {messages: {txType: AUCTION_END, description: `Removing gem ${tokenId} from auction`}})
       .on('transactionHash', (hash) => {
           txHash = hash;
           addPendingTransaction({
@@ -203,7 +204,7 @@ export const handleBuyNow = (gem, _from, history, setLoading) => (dispatch, getS
       .buy(gemContractAddress, gem.id)
       .send({
           value:  Number(utils.toWei(priceInEth.toString(), 'ether'))
-      })
+      }, {messages: {txType: BUYING_GEM, description: `Buying gem ${gem.id} for ${priceInEth} ETH`}})
       .on('transactionHash', (hash) => {
           txHash = hash;
           addPendingTransaction({
@@ -240,14 +241,14 @@ export const giftGem = (gemId, addressTo) => (dispatch, getState) => {
     let txHash;
     gemsContract.methods
       .safeTransferFrom(from, to, tokenId)
-      .send()
+      .send({}, {messages: {txType: GEM_GIFTING, description: `Gifting gem ${gemId} to ${addressTo}`}})
       .on('transactionHash', hash => {
           txHash = hash;
           addPendingTransaction({
               hash: hash,
               userId: currentUser,
               type: GEM_GIFTING,
-              description: `Gifting the gem ${gemId}`,
+              description: `Gifting gem ${gemId} to ${addressTo}`,
               body: {
                   gemId: gemId,
                   to: addressTo
@@ -282,14 +283,14 @@ export const upgradeGem = (gem, levelUp, gradeUp, hidePopup, cost) => (dispatch,
     let txHash;
     return workshopContractInstance.methods
       .upgrade(gem.id, levelUp, gradeUp, silver, gold)
-      .send()
+      .send({}, {messages: {txType: gradeUp > 0 ? GEM_UPGRADE : GEM_LEVEL_UP, description: `Upgrading gem ${gem.id}`}})
       .on('transactionHash', (hash) => {
           txHash = hash;
           addPendingTransaction({
               hash: hash,
               userId: currentUser,
               type: gradeUp > 0 ? GEM_UPGRADE : GEM_LEVEL_UP,
-              description: `Upgrading gem ${gem.id}`,
+              description: `Upgrading gem ${gem.id}: from ${gem.level} ${gradeConverter(gem.gradeType)} to ${+gem.level + levelUp} ${gradeConverter(+gem.gradeType + gradeUp)}`,
               body: {
                   gemId: gem.id,
                   levelFrom: gem.level,

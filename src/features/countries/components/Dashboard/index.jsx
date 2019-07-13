@@ -18,7 +18,7 @@ class CountryDashboard extends Component {
 
     state = {userCountries: null};
 
-    componentDidMount() {
+    async componentDidMount() {
         const {userCountryIdList, data, handleGetAvailableCountryPlots} = this.props;
         let totalEarned = 0;
         let userCountries = [];
@@ -27,7 +27,7 @@ class CountryDashboard extends Component {
             userCountries = data.mapCountries.filter((country =>
                 userCountryIdList.includes(country.countryId)
             ));
-            userCountries.forEach(async (country) => {
+            await Promise.all(userCountries.map(async (country) => {
                 const availablePlots = await handleGetAvailableCountryPlots(country.countryId);
                 country.plotsBought = COUNTRY_PLOTS_DATA[country.countryId - 1] - availablePlots;
                 country.plotsMined = 0;
@@ -35,12 +35,12 @@ class CountryDashboard extends Component {
                 country.totalPlots = country.plots;
                 country.lastPrice = country.price;
                 totalEarned += country.plotsBought * 0.002;
-            });
+            }));
             this.setState({userCountries, totalEarned});
         }
     }
 
-    componentDidUpdate(prevProps) {
+    async componentDidUpdate(prevProps) {
         const {data, userCountryIdList, handleGetAvailableCountryPlots} = this.props;
         console.log('COUNTRY DASHBOARD PROPS', this.props, this.state);
         let userCountries = [];
@@ -52,7 +52,7 @@ class CountryDashboard extends Component {
                 userCountries = data.mapCountries.filter((country =>
                     userCountryIdList.includes(country.countryId)
                 ));
-                userCountries.forEach(async (country) => {
+                await Promise.all(userCountries.map(async (country) => {
                     console.log("COUNTRY::", country);
                     const availablePlots = await handleGetAvailableCountryPlots(country.countryId);
                     country.plotsBought = COUNTRY_PLOTS_DATA[country.countryId - 1] - availablePlots;
@@ -61,7 +61,7 @@ class CountryDashboard extends Component {
                     country.totalPlots = country.plots;
                     country.lastPrice = country.price;
                     totalEarned += country.plotsBought * 0.002;
-                });
+                }));
                 this.setState({userCountries, totalEarned});
             }
         }
@@ -70,7 +70,9 @@ class CountryDashboard extends Component {
     render() {
         const {userId, totalNotWithdrawn, withdrawEth, isWithdrawing, currentUserId} = this.props;
         const {userCountries, totalEarned} = this.state;
-        console.log("user Countries: ", userCountries);
+        //const totalEarned = userCountries ? userCountries.reduce((acc, country) => +acc + country.plotsBought *
+        // 0.002) : 0;
+        console.log("WITHDRAW:", totalNotWithdrawn, totalEarned, userCountries);
         const isOwner = currentUserId && userId && currentUserId.toLowerCase() === userId.toLowerCase();
         return (
           userCountries ? (
@@ -80,7 +82,7 @@ class CountryDashboard extends Component {
                       {isOwner &&
                       <CountryWithdraw
                         totalNotWithdrawn={parseFloat(totalNotWithdrawn)}
-                        totalWithdrawn={!isNaN(parseFloat(totalNotWithdrawn)) && !isNaN(parseFloat(totalEarned)) ? parseFloat(totalEarned) - parseFloat(totalNotWithdrawn) : null}
+                        totalWithdrawn={!isNaN(parseFloat(totalNotWithdrawn)) && !isNaN(parseFloat(totalEarned)) ? parseFloat(totalEarned) - parseFloat(totalNotWithdrawn) : 0}
                         isWithdrawing={isWithdrawing}
                         withdrawEth={withdrawEth}
                       />}

@@ -33,7 +33,6 @@ const GemFiltersFlexWrapper = styled.div`
     @media(max-width: 800px) {
         padding: 5px 0;
         float: left;
-        overflow-x: scroll;
         flex-direction: row;
     }
 `;

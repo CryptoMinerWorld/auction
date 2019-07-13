@@ -12,11 +12,13 @@ import {resolveTxManually, setTransactionsSeen} from "../txActions";
 import styled from "styled-components";
 import {
     TX_CANCEL,
-    TX_CANCEL_CONFIRMED, TX_CANCELED,
+    TX_CANCEL_CONFIRMED,
+    TX_CANCELED,
     TX_CONFIRMED,
     TX_FAILED,
     TX_PENDING,
-    TX_SPED_UP, TX_SPEED_UP,
+    TX_SPED_UP,
+    TX_SPEED_UP,
     TX_SPEED_UP_CONFIRMED
 } from "../txConstants";
 
@@ -296,26 +298,26 @@ const TxStatus = styled.div`
     font-size: 10px;
     border-radius: 3px;
     width: ${props => {
-        switch(props.status) {
-            case TX_PENDING:
-                return "65px";
-            case TX_SPEED_UP:
-                return "100px";
-            case TX_CANCEL:
-                return "100px";
-            case TX_CONFIRMED:
-            case TX_SPED_UP:
-                return "65px";
-            case TX_SPEED_UP_CONFIRMED:
-            case TX_CANCEL_CONFIRMED:
-                return "100px";
-            case TX_FAILED:
-            case TX_CANCELED:
-                return "65px";
-            default:
-                return "65px";
-        }
-    }};
+    switch (props.status) {
+        case TX_PENDING:
+            return "65px";
+        case TX_SPEED_UP:
+            return "100px";
+        case TX_CANCEL:
+            return "100px";
+        case TX_CONFIRMED:
+        case TX_SPED_UP:
+            return "65px";
+        case TX_SPEED_UP_CONFIRMED:
+        case TX_CANCEL_CONFIRMED:
+            return "100px";
+        case TX_FAILED:
+        case TX_CANCELED:
+            return "65px";
+        default:
+            return "65px";
+    }
+}};
     text-align: center;
     
 `;
@@ -399,7 +401,14 @@ const menu = ({transactionHistory, pendingTransactions, failedTransactions, hand
       {pendingTransactions && pendingTransactions.map((tx) => (
         tx.hash ?
           <TxRecordContainer key={tx.hash + 'pending'}>
-              <span style={{fontSize: '12px', position: 'absolute', right: '5px', top: '-10px', cursor: 'pointer', color: '#bbbbbb'}}
+              <span style={{
+                  fontSize: '12px',
+                  position: 'absolute',
+                  right: '5px',
+                  top: '-10px',
+                  cursor: 'pointer',
+                  color: '#bbbbbb'
+              }}
                     onClick={() => handleResolveTxManually(tx.hash)}>delete</span>
               <TxInfo>
                   <Badge count={tx.unseen ? 1 : 0}>
@@ -442,20 +451,22 @@ class AvatarDropdown extends React.Component {
 
     render() {
         const {user, failedTransactions, transactionHistory, pendingTransactions, handleResolveTxManually} = this.props;
-        const unseen = ((transactionHistory && transactionHistory.length > 0 )? Math.min(transactionHistory.findIndex(tx => tx && !tx.unseen), transactionHistory.length): 0) + +(failedTransactions ? failedTransactions.length : 0);
+        const unseen = ((transactionHistory && transactionHistory.length > 0) ? Math.min(transactionHistory.findIndex(tx => tx && !tx.unseen), transactionHistory.length) : 0) + +(failedTransactions ? failedTransactions.length : 0);
 
         return (
           user && (
             user.name && user.imageURL && user.walletId &&
             <div
               className="dib-ns"
+              style={{paddingTop: '10px'}}
               onMouseEnter={() => this.setState({visibility: true})}
               onMouseLeave={() => {
                   this.setState({visibility: false})
               }}
             >
-                <Dropdown overlay={menu({transactionHistory, pendingTransactions, failedTransactions, handleResolveTxManually})}
-                          visible={this.state.visibility}>
+                <Dropdown
+                  overlay={menu({transactionHistory, pendingTransactions, failedTransactions, handleResolveTxManually})}
+                  visible={this.state.visibility}>
                     <>
                         <Badge count={unseen}>
                             <Avatar src={user.imageURL} className="dib h-auto v-super" size="small"/>
@@ -468,7 +479,8 @@ class AvatarDropdown extends React.Component {
             </div>
             || (user.name === 'Guest' && !user.imageURL && !user.walletId) &&
             //<Dropdown overlay={<></>} visible={this.state.visibility}>
-            <div className="dib-ns">
+            <div className="dib-ns"
+                 style={{paddingTop: '10px'}}>
                 <Avatar src={img} className="dib"/>
                 <p className="dib pl2">Guest</p>
             </div>

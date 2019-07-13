@@ -279,11 +279,11 @@ class Auction extends PureComponent {
                                           silverAvailable={silverAvailable}
                                           dataLoaded={dataLoaded}
                                         />
-                                        <ExtraGemInfo
-                                          creationTime={"0-0-0"}
-                                          totalBlocksProcessed={[0, 0, 0, 0, 0]}
-                                          totalItemsMinedUp={0}
-                                          totalTimeMined={"0-0-0"}/>
+                                        {/*<ExtraGemInfo*/}
+                                          {/*creationTime={"0-0-0"}*/}
+                                          {/*totalBlocksProcessed={[0, 0, 0, 0, 0]}*/}
+                                          {/*totalItemsMinedUp={0}*/}
+                                          {/*totalTimeMined={"0-0-0"}/>*/}
                                     </OverlapBoxOnDesktopView>
                                 </ReactCSSTransitionGroup>
                               )}
