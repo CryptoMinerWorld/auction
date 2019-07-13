@@ -4,11 +4,13 @@ export const Avatar = styled.img`
     @media(max-width: 800px) {
         height: 2rem;
         width: auto;
+        padding: 0 5px;
     }
     
     @media(min-width: 801px) {
         height: 4rem;
         width: auto;
+        padding: 0 1rem;
     }
 `;
 
@@ -44,5 +46,6 @@ export const Username = styled.h1`
     margin: 10px 0;
     @media(max-width: 800px) {
         margin: 0;
+        font-size: 24px;
     }
 `;

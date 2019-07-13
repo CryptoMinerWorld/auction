@@ -237,7 +237,7 @@ class Auction extends PureComponent {
         const socialShareUrl = `${process.env.REACT_APP_BASE_URL}${match.url}`;
         return (
           <div>
-              <MobileHeader/>
+              {/*<MobileHeader/>*/}
               {releaseConfetti && (
                 <div
                   style={{

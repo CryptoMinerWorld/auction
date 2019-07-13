@@ -152,10 +152,10 @@ class BuyForm extends Component {
                     }}
                     marks={{
                         1: <SliderMark>1</SliderMark>,
-                        15: <SliderMark>10</SliderMark>,
-                        30: <SliderMark>20</SliderMark>,
-                        45: <SliderMark>30</SliderMark>,
-                        60: <SliderMark>40</SliderMark>,
+                        10: <SliderMark>10</SliderMark>,
+                        20: <SliderMark>20</SliderMark>,
+                        30: <SliderMark>30</SliderMark>,
+                        40: <SliderMark>40</SliderMark>,
                     }}
                     handleStyle={{
                         backgroundColor: "magenta",

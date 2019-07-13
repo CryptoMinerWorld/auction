@@ -69,7 +69,7 @@ class PlotSale extends Component {
         cart: [],
         mapIsShown: false,
         searchCountryValue: "",
-        numberOfPlots: 30,
+        numberOfPlots: 20,
         plotImage: plot16
     };
 
@@ -113,7 +113,7 @@ class PlotSale extends Component {
         if(numberOfPlots >= 1 && numberOfPlots < 10) this.setState({plotImage : plot1});
         else if(numberOfPlots >= 10 && numberOfPlots < 20) this.setState({plotImage: plot2});
         else if(numberOfPlots >= 20 && numberOfPlots < 30) this.setState({plotImage: plot16});
-        else if(numberOfPlots >= 40 && numberOfPlots < 40) this.setState({plotImage: plot31});
+        else if(numberOfPlots >= 30 && numberOfPlots < 40) this.setState({plotImage: plot31});
         else if(numberOfPlots >= 40) this.setState({plotImage: plot46})
     };
 
