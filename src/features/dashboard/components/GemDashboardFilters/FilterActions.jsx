@@ -24,9 +24,7 @@ const FilterActionsContainer = styled.div`
     font-size: 16px;
     
     @media(max-width: 800px) {
-        width: 100px;
         font-size: 14px;
-        margin: 0 10px;
     }
 `;
 

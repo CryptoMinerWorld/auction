@@ -24,11 +24,6 @@ const GemStatesContainer = styled.div`
     clip-path: polygon(8% 0, 92% 0, 100% 10%, 100% 90%,92% 100%, 8% 100%, 0 90%, 0% 10%);
     -webkit-clip-path: polygon(8% 0, 92% 0, 100% 10%, 100% 90%,92% 100%, 8% 100%, 0 90%, 0% 10%);
     
-    @media(max-width: 800px) {
-        width: 175px;
-        margin: 0 10px;
-    }
-    
     @media(min-width: 1520px) {
         font-size: .8vw;
     }
