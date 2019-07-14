@@ -152,10 +152,12 @@ export const getFounderPlots = (n, callback) => async(dispatch, getState) => {
           })(dispatch, getState);
       })
       .on('receipt', receipt => {
+          callback();
       })
       .on('error', err => {
           if (txHash) {
               getUpdatedTransactionHistory()(dispatch, getState);
           }
+          callback();
       });
 };

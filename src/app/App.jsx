@@ -688,7 +688,6 @@ class App extends Component {
 }
 
 const actions = {
-    handleNotificationEvent: resolveTransactionEvent,
     handleTransactionResolved: transactionResolved,
     handleSendContractsToRedux: sendContractsToRedux,
     handleClearError: clearError,
