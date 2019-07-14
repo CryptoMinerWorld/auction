@@ -164,8 +164,14 @@ class Dashboard extends Component {
             auctionService, silverGoldService, userExists, currentUserId, currentUser, handleShowSignInBox, handleGetUserCountries, handleGetUserArtifacts, artifactContract
         } = this.props;
 
-        if (gemService && auctionService && match && match.params && match.params.userId) {
-            handleGetUserGems(match.params.userId);
+        if (!match.params) return;
+
+        if (gemService && auctionService) {
+            if (match && match.params && match.params.userId) {
+                handleGetUserGems(match.params.userId);
+            } else if (currentUserId) {
+                // handleGetUserGems(match.params.userId);
+            }
         }
 
         if (countryService && match.params.userId) {
@@ -235,6 +241,8 @@ class Dashboard extends Component {
             handleGetUserBalance, currentUserId, userExists, currentUser, artifactContract, handleGetUserArtifacts, handleRefreshUserPlot,
             handleShowSignInBox, handlePlotsReloadBegun
         } = this.props;
+
+        if (!match.params) return;
 
         if ((userExists !== prevProps.userExists) || (match.params.userId !== prevProps.match.params.userId)) {
             if (userExists) {
@@ -362,6 +370,10 @@ class Dashboard extends Component {
         if (redirectPath && !alreadyRedirected) {
             this.setState({alreadyRedirected: true});
             return <Redirect to={`${redirectPath}`}/>;
+        }
+
+        if (!(match.params && match.params.userId) && currentUserId) {
+            return <Redirect to={`/profile/${currentUserId}`} />;
         }
 
         return (

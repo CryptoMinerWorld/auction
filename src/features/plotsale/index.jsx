@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 // import PropTypes from 'prop-types';
 import Icon from 'antd/lib/icon';
-import {db, rtdb} from '../../app/utils/firebase';
+import {rtdb} from '../../app/utils/firebase';
 import Map from './components/Map';
 import geoData from '../../app/maps/world-50m-with-population.json';
 // import countryDatum from './components/countryData';
@@ -45,13 +45,13 @@ if (window.innerWidth > 800) {
         plot16 = require('../../app/images/plots/16-30_new_1280w.png');
         plot31 = require('../../app/images/plots/31-45_new_1280w.png');
         plot46 = require('../../app/images/plots/46-60_new_1280w.png')
-    } else if (window.innerWidth <= 1920) {
+    } else if (window.innerWidth <= 1925) {
         plot1 = require('../../app/images/plots/1plot_new_1920w.png');
         plot2 = require('../../app/images/plots/2-15_new_1920w.png');
         plot16 = require('../../app/images/plots/16-30_new_1920w.png');
         plot31 = require('../../app/images/plots/31-45_new_1920w.png');
         plot46 = require('../../app/images/plots/46-60_new_1920w.png')
-    } else if (window.innerWidth >= 3500) {
+    } else if (window.innerWidth > 1925) {
         plot1 = require('../../app/images/plots/1plot_new_3500w.png');
         plot2 = require('../../app/images/plots/2-15_new_3500w.png');
         plot16 = require('../../app/images/plots/16-30_new_3500w.png');
@@ -110,24 +110,24 @@ class PlotSale extends Component {
         if (web3 !== prevProps.web3) {
             handleGetChestValues();
         }
-        if(this.props.match.params.countryId && prevState.countryList.length === 0 && this.state.countryList.length > 0) {
+        if (this.props.match.params.countryId && prevState.countryList.length === 0 && this.state.countryList.length > 0) {
             const selectedCountry = this.state.countryList.find((geography) => geography.countryId === parseInt(this.props.match.params.countryId, 10));
-            if(selectedCountry) this.setState({selection: selectedCountry}, async () => {
+            if (selectedCountry) this.setState({selection: selectedCountry}, async () => {
                 selectedCountry.availablePlots = await handleGetAvailableCountryPlots(selectedCountry.countryId);
                 this.setState({selection: selectedCountry});
             });
         }
         if (currentUserId && foundersPlotsContract && (currentUserId !== prevProps.currentUserId || foundersPlotsContract !== prevProps.foundersPlotsContract)) {
-                handleGetFounderPlotsBalance(currentUserId);
+            handleGetFounderPlotsBalance(currentUserId);
         }
     }
 
     setBackgroundImage = (numberOfPlots) => {
-        if(numberOfPlots === 1) this.setState({plotImage : plot1});
-        else if(numberOfPlots >= 2 && numberOfPlots < 16) this.setState({plotImage: plot2});
-        else if(numberOfPlots >= 16 && numberOfPlots < 31) this.setState({plotImage: plot16});
-        else if(numberOfPlots >= 31 && numberOfPlots < 46) this.setState({plotImage: plot31});
-        else if(numberOfPlots >= 46) this.setState({plotImage: plot46})
+        if (numberOfPlots === 1) this.setState({plotImage: plot1});
+        else if (numberOfPlots >= 2 && numberOfPlots < 16) this.setState({plotImage: plot2});
+        else if (numberOfPlots >= 16 && numberOfPlots < 31) this.setState({plotImage: plot16});
+        else if (numberOfPlots >= 31 && numberOfPlots < 46) this.setState({plotImage: plot31});
+        else if (numberOfPlots >= 46) this.setState({plotImage: plot46})
     };
 
     rtdbListen = () => {
@@ -136,8 +136,8 @@ class PlotSale extends Component {
             snap && this.setState({
                 countryData: snap.val(),
                 countryList: snap.val().objects.units.geometries
-                    .filter(country => country.properties.countryId !== 200)
-                    .map(country => country.properties)
+                  .filter(country => country.properties.countryId !== 200)
+                  .map(country => country.properties)
             }, () => {
                 this.setState({searchCountryList: this.state.countryList})
             });
@@ -165,99 +165,104 @@ class PlotSale extends Component {
         const {handleGetAvailableCountryPlots, handleBuy, worldChestValue, monthlyChestValue, foundersPlotsBalance, handleGetFounderPlots} = this.props;
 
         return (
-            <div data-testid="mapPage" className="plot-sale bg-off-black white w-100" style={{
-                backgroundImage: 'url(' + rockBackground + ')',
-                backgroundRepeat: 'repeat',
-                backgroundSize: 'contain',
-            }}>
-                <div style={{
-                    backgroundImage: 'url(' + this.state.plotImage + ')',
-                    backgroundPosition: '80% 50%',
-                    backgroundSize: 'cover',
-                    backgroundRepeat: 'no-repeat'
-                }}>
-                    <BuyPlotsArea className="flex ais w-100 col-reverse row-ns mw9 center">
-                        <BuyFormContainer>
-                            <BuyForm countryData={searchCountryList}
-                                     handleClick={(country) => {
-                                         this.handleCityClick(country);
-                                         this.setState({selection: country}, async () => {
-                                             country.availablePlots = await handleGetAvailableCountryPlots(country.countryId);
-                                             this.setState({selection: country});
-                                         });
-                                     }}
-                                     selectHoveredId={(countryId) => {
-                                         this.setState({countryIdHovered: countryId})
-                                     }}
-                                     mapIsShown={mapIsShown}
-                                     toggleMap={() => {
-                                         this.setState({mapIsShown: false})
-                                     }}
-                                     selectedCountry={this.state.selection}
-                                     searchCountryValue={searchCountryValue}
-                                     searchCountry={(val) => {
-                                         console.log("VAL: ", val);
-                                         this.setState({
-                                             searchCountryValue: val,
-                                             searchCountryList: val !== "" ?
-                                                 countryList.filter(country => country.name.toLowerCase().startsWith(val.toLowerCase())) : countryList,
-                                         })
-                                     }}
-                                     numberOfPlots={numberOfPlots}
-                                     setNumberOfPlots={(value) => {this.setBackgroundImage(value); this.setState({numberOfPlots: value})}}
-                                     handleBuy={(callBack) => handleBuy(selection.countryId, numberOfPlots, selection.availablePlots ? Math.max(numberOfPlots - selection.availablePlots, 0) : numberOfPlots, null, callBack)}
-                            />
-                            {!mapIsShown &&
-                            <PickLocationButton content={"Pick Plot's Location"} onClick={() => {
-                                this.setState({mapIsShown: true})
-                            }}>
-                                <PickLocationArrow src={arrowDownActive}/>
-                            </PickLocationButton>
-                            }
-                        </BuyFormContainer>
-                        <MapArea>
-                            {foundersPlotsBalance && (foundersPlotsBalance >= 0) &&
-                            <FounderPlotsArea
-                              founderPlotsBalance={foundersPlotsBalance}
-                              handleGetFounderPlots={handleGetFounderPlots}
-                            />
-                            }
-                            {mapIsShown &&
-                            <MapContainer className="pa3">
-                                {countryData && Object.keys(countryData).length > 0 ? (
-                                    <Map
-                                        data={{
-                                            ...geoData,
-                                            ...countryData,
-                                        }}
-                                        setSelection={() => {
-                                        }}
-                                        addToCart={(country) => {
-                                            this.setState({selection: country}, async () => {
-                                                country.availablePlots = await handleGetAvailableCountryPlots(country.countryId);
-                                                this.setState({selection: country});
-                                            });
-                                        }}
-                                        zoom={zoom}
-                                        coordinates={coordinates}
-                                        handleReset={this.handleReset}
-                                        countryBeingHoveredOnInFilter={countryIdHovered}
-                                        cart={cart}
-                                        removeFromCart={() => {
-                                        }}
-                                    />
-                                ) : (
-                                    <div className="flex x h5 w-100">
-                                        <Icon type="loading" theme="outlined"/>
-                                    </div>
-                                )}
-                            </MapContainer>
-                            }
-                        </MapArea>
-                    </BuyPlotsArea>
-                </div>
-                <ChestsBar worldChestValue={worldChestValue} monthlyChestValue={monthlyChestValue}/>
-            </div>
+          <div data-testid="mapPage" className="plot-sale bg-off-black white w-100" style={{
+              backgroundImage: 'url(' + rockBackground + ')',
+              backgroundRepeat: 'repeat',
+              backgroundSize: 'contain',
+          }}>
+              <div style={{
+                  backgroundImage: 'url(' + this.state.plotImage + ')',
+                  backgroundPosition: '80% 50%',
+                  backgroundSize: 'cover',
+                  backgroundRepeat: 'no-repeat'
+              }}>
+                  <BuyPlotsArea className="flex ais w-100 col-reverse row-ns mw9 center">
+                      <BuyFormContainer>
+                          <BuyForm countryData={searchCountryList}
+                                   handleClick={(country) => {
+                                       this.handleCityClick(country);
+                                       this.setState({selection: country}, async () => {
+                                           country.availablePlots = await handleGetAvailableCountryPlots(country.countryId);
+                                           this.setState({selection: country});
+                                       });
+                                   }}
+                                   selectHoveredId={(countryId) => {
+                                       this.setState({countryIdHovered: countryId})
+                                   }}
+                                   mapIsShown={mapIsShown}
+                                   toggleMap={() => {
+                                       this.setState({mapIsShown: false})
+                                   }}
+                                   selectedCountry={this.state.selection}
+                                   searchCountryValue={searchCountryValue}
+                                   searchCountry={(val) => {
+                                       console.log("VAL: ", val);
+                                       this.setState({
+                                           searchCountryValue: val,
+                                           searchCountryList: val !== "" ?
+                                             countryList.filter(country => country.name.toLowerCase().startsWith(val.toLowerCase())) : countryList,
+                                       })
+                                   }}
+                                   numberOfPlots={numberOfPlots}
+                                   setNumberOfPlots={(value) => {
+                                       this.setBackgroundImage(value);
+                                       this.setState({numberOfPlots: value})
+                                   }}
+                                   handleBuy={(callBack) => handleBuy(selection.countryId, numberOfPlots, selection.availablePlots ? Math.max(numberOfPlots - selection.availablePlots, 0) : numberOfPlots, null, callBack)}
+                          />
+                          {!mapIsShown &&
+                          <PickLocationButton content={"Pick Plot's Location"} onClick={() => {
+                              this.setState({mapIsShown: true})
+                          }}>
+                              <PickLocationArrow src={arrowDownActive}/>
+                          </PickLocationButton>
+                          }
+                      </BuyFormContainer>
+                      <MapArea>
+                          {foundersPlotsBalance && (foundersPlotsBalance >= 0) &&
+                          <FounderPlotsWrapper>
+                              <FounderPlotsArea
+                                founderPlotsBalance={foundersPlotsBalance}
+                                handleGetFounderPlots={handleGetFounderPlots}
+                              />
+                          </FounderPlotsWrapper>
+                          }
+                          {mapIsShown &&
+                          <MapContainer className="pa3">
+                              {countryData && Object.keys(countryData).length > 0 ? (
+                                <Map
+                                  data={{
+                                      ...geoData,
+                                      ...countryData,
+                                  }}
+                                  setSelection={() => {
+                                  }}
+                                  addToCart={(country) => {
+                                      this.setState({selection: country}, async () => {
+                                          country.availablePlots = await handleGetAvailableCountryPlots(country.countryId);
+                                          this.setState({selection: country});
+                                      });
+                                  }}
+                                  zoom={zoom}
+                                  coordinates={coordinates}
+                                  handleReset={this.handleReset}
+                                  countryBeingHoveredOnInFilter={countryIdHovered}
+                                  cart={cart}
+                                  removeFromCart={() => {
+                                  }}
+                                />
+                              ) : (
+                                <div className="flex x h5 w-100">
+                                    <Icon type="loading" theme="outlined"/>
+                                </div>
+                              )}
+                          </MapContainer>
+                          }
+                      </MapArea>
+                  </BuyPlotsArea>
+              </div>
+              <ChestsBar worldChestValue={worldChestValue} monthlyChestValue={monthlyChestValue}/>
+          </div>
 
         );
     }
@@ -272,11 +277,11 @@ const actions = {
 };
 
 export default compose(
-    withRouter,
-    connect(
-        select,
-        actions,
-    ),
+  withRouter,
+  connect(
+    select,
+    actions,
+  ),
 )(PlotSale);
 
 const BuyPlotsArea = styled.div`
@@ -335,11 +340,16 @@ const PickLocationArrow = styled.img`
 
 const MapArea = styled.div`
     position: relative;
-    min-height: 270px;
     width: 60%;
     @media(max-width: 800px) {
         width: 100%;
     }
+`;
+
+const FounderPlotsWrapper = styled.div`
+    min-height: 270px;
+    position: relative;
+    width: 100%;
 `;
 
 const MapContainer = styled.div`

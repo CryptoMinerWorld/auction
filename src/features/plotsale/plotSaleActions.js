@@ -125,12 +125,16 @@ export const buyPlots = (countryId, totalAmount, amountExceeded, referrer, hideP
 
 export const getFounderPlotsNumber = (userId) => async(dispatch, getState) => {
     const foundersPlotsContract = getState().app.foundersPlotsContractInstance;
+    const plotAntarcticaContract = getState().app.plotAntarcticaContractInstance;
     console.log("FOUNDERS PLOTS CONTRACT", foundersPlotsContract, userId);
-    const balance = await foundersPlotsContract.methods.geodeBalances(userId).call();
-    console.log("BALANCE:", balance);
+    const [initialBalance, issuedTokens] = await Promise.all([
+      foundersPlotsContract.methods.geodeBalances(userId).call(),
+      0//plotAntarcticaContract.methods.issuedTokens(userId).call()
+    ]);
+    console.log("balance:", initialBalance - issuedTokens);
     dispatch({
         type: FOUNDERS_PLOTS,
-        payload: {foundersPlotsBalance: balance}
+        payload: {foundersPlotsBalance: initialBalance - issuedTokens}
     })
 };
 
