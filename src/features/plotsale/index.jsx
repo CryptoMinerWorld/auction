@@ -215,7 +215,7 @@ class PlotSale extends Component {
                             </PickLocationButton>
                             }
                         </BuyFormContainer>
-                        <MapArea className="w-60-ns w-100">
+                        <MapArea>
                             {foundersPlotsBalance && (foundersPlotsBalance >= 0) &&
                             <FounderPlotsArea
                               founderPlotsBalance={foundersPlotsBalance}
@@ -334,10 +334,12 @@ const PickLocationArrow = styled.img`
 `;
 
 const MapArea = styled.div`
-    @media(max-width: 800px) {
-        display: none;
-    }
     position: relative;
+    min-height: 270px;
+    width: 60%;
+    @media(max-width: 800px) {
+        width: 100%;
+    }
 `;
 
 const MapContainer = styled.div`
@@ -348,6 +350,10 @@ const MapContainer = styled.div`
     background-color: rgba(0, 0, 0, 0.6);
     clip-path: polygon(0% 50%, 11% 8%, 22% 0%, 78% 0%, 89% 8%, 100% 50%, 89% 92%, 78% 100%, 22% 100%, 11% 92%);
     -webkit-clip-path: polygon(0% 50%, 11% 8%, 22% 0%, 78% 0%, 89% 8%, 100% 50%, 89% 92%, 78% 100%, 22% 100%, 11% 92%);
+    @media(max-width: 800px) {
+        display: none;
+    }
+    z-index: 2;
 `;
 
 const BuyFormContainer = styled.div`
