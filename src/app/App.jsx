@@ -35,6 +35,8 @@ import Plot from './ABI/PlotERC721';
 import Artifact from './ABI/ArtifactERC20';
 import Miner from './ABI/Miner';
 import BalanceProxy from './ABI/BalanceProxy';
+import PlotAntarctica from './ABI/PlotAntarctica';
+import FoundersPlots from './ABI/FoundersPlots';
 import GemService from "./services/GemService";
 import AuctionService from "./services/AuctionService";
 import SilverGoldService from "./services/SilverGoldService";
@@ -83,6 +85,8 @@ const plotABI = Plot.abi;
 const minerABI = Miner.abi;
 const artifactABI = Artifact.abi;
 const balanceABI = BalanceProxy.abi;
+const plotAntarcticaABI = PlotAntarctica.abi;
+const foundersPlotsABI = FoundersPlots.abi;
 
 const StickyHeader = styled.div`
   position: -webkit-sticky; /* Safari */
@@ -431,6 +435,8 @@ class App extends Component {
         //   },
         // ));
 
+
+
         //const silverCouponsContract = {};
 
         Promise.all([
@@ -451,7 +457,9 @@ class App extends Component {
             plotSaleContract,
             minerContract,
             artifactContract,
-            balanceContract
+            balanceContract,
+          plotAntarcticaContract,
+          foundersPlotsContract,
         ])
           .then(
             ([
@@ -472,7 +480,9 @@ class App extends Component {
                  plotSaleContract,
                  minerContract,
                  artifactContract,
-                 balanceContract
+                 balanceContract,
+              plotAntarcticaContract,
+              foundersPlotsContract,
              ]) => {
                 client.writeData({
                     data: {
@@ -502,6 +512,8 @@ class App extends Component {
                   silverSaleContract,
                   silverCouponsContract,
                   artifactContract,
+                  plotAntarcticaContract,
+                  foundersPlotsContract,
                   plotService,
                   gemService,
                   auctionService,

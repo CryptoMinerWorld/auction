@@ -12,14 +12,24 @@ import ChestsBar from "./components/ChestsBar";
 import BuyForm from "./components/BuyForm";
 import arrowDownActive from "../../app/images/arrowDownActive.png";
 import styled from "styled-components";
-import {buyPlots, getAvailableCountryPlots, getChestValues} from "./plotSaleActions";
+import {
+    buyPlots,
+    getAvailableCountryPlots,
+    getChestValues,
+    getFounderPlots,
+    getFounderPlotsNumber
+} from "./plotSaleActions";
 import rockBackground from '../../app/images/rockBackground.png';
+import FounderPlotsArea from "./components/FounderPlotsArea";
 
 const select = store => ({
     countryService: store.app.countryServiceInstance,
     worldChestValue: store.plotSale.worldChestValue,
     monthlyChestValue: store.plotSale.monthlyChestValue,
     web3: store.app.web3,
+    currentUserId: store.auth.currentUserId,
+    foundersPlotsBalance: store.plotSale.foundersPlotsBalance,
+    foundersPlotsContract: store.app.foundersPlotsContractInstance,
 });
 
 let plot1;
@@ -74,7 +84,7 @@ class PlotSale extends Component {
     };
 
     componentDidMount() {
-        const {countryService, handleGetChestValues, web3} = this.props;
+        const {countryService, handleGetChestValues, web3, currentUserId, handleGetFounderPlotsBalance, foundersPlotsContract} = this.props;
         if (!countryService) {
             console.log('No service')
         }
@@ -84,13 +94,13 @@ class PlotSale extends Component {
         if (web3) {
             handleGetChestValues();
         }
-
+        if (currentUserId && foundersPlotsContract) {
+            handleGetFounderPlotsBalance(currentUserId);
+        }
     }
 
-
-
     async componentDidUpdate(prevProps, prevState) {
-        const {countryService, handleGetChestValues, web3, handleGetAvailableCountryPlots} = this.props;
+        const {countryService, handleGetChestValues, web3, handleGetAvailableCountryPlots, currentUserId, handleGetFounderPlotsBalance, foundersPlotsContract} = this.props;
         if (!countryService) {
             console.log('No service')
         }
@@ -107,6 +117,9 @@ class PlotSale extends Component {
                 this.setState({selection: selectedCountry});
             });
         }
+        if (currentUserId && foundersPlotsContract && (currentUserId !== prevProps.currentUserId || foundersPlotsContract !== prevProps.foundersPlotsContract)) {
+                handleGetFounderPlotsBalance(currentUserId);
+        }
     }
 
     setBackgroundImage = (numberOfPlots) => {
@@ -120,27 +133,6 @@ class PlotSale extends Component {
     rtdbListen = () => {
         const countriesMapping = {};
         rtdb.ref('/worldMap').on('value', async snap => {
-
-            // snap && snap.val().objects.units.geometries
-            //       .filter(country => country.properties.countryId !== 200)
-            //       .forEach(async country => {
-            //           const props = country.properties;
-            //           const data = (await db.collection('countries').where('countryId', '==',
-            //             Number(props.countryId)).get());
-            //           if (!data.docs[0]) {
-            //               await db.collection('countries').doc(props['name']).set({
-            //                   countryId: props['countryId'],
-            //                   imageLinkLarge: props['imageLinkLarge'],
-            //                   imageLinkMedium: props['imageLinkMedium'],
-            //                   imageLinkSmall: props['imageLinkSmall'],
-            //                   mapIndex: props['mapIndex'],
-            //                   onSale: false,
-            //                   name: props['name'],
-            //                   id: props['name']
-            //               })
-            //           }
-            //       })
-            //country.properties)
             snap && this.setState({
                 countryData: snap.val(),
                 countryList: snap.val().objects.units.geometries
@@ -170,7 +162,7 @@ class PlotSale extends Component {
     render() {
 
         const {countryData, zoom, coordinates, countryIdHovered, selection, cart, mapIsShown, searchCountryValue, countryList, searchCountryList, numberOfPlots} = this.state;
-        const {handleGetAvailableCountryPlots, handleBuy, worldChestValue, monthlyChestValue} = this.props;
+        const {handleGetAvailableCountryPlots, handleBuy, worldChestValue, monthlyChestValue, foundersPlotsBalance, handleGetFounderPlots} = this.props;
 
         return (
             <div data-testid="mapPage" className="plot-sale bg-off-black white w-100" style={{
@@ -224,7 +216,12 @@ class PlotSale extends Component {
                             }
                         </BuyFormContainer>
                         <MapArea className="w-60-ns w-100">
-
+                            {foundersPlotsBalance && (foundersPlotsBalance >= 0) &&
+                            <FounderPlotsArea
+                              founderPlotsBalance={foundersPlotsBalance}
+                              handleGetFounderPlots={handleGetFounderPlots}
+                            />
+                            }
                             {mapIsShown &&
                             <MapContainer className="pa3">
                                 {countryData && Object.keys(countryData).length > 0 ? (
@@ -270,6 +267,8 @@ const actions = {
     handleGetAvailableCountryPlots: getAvailableCountryPlots,
     handleBuy: buyPlots,
     handleGetChestValues: getChestValues,
+    handleGetFounderPlotsBalance: getFounderPlotsNumber,
+    handleGetFounderPlots: getFounderPlots,
 };
 
 export default compose(

@@ -113,10 +113,6 @@ const BuyInfo = styled.div`
     color: white;
 `;
 
-function log(value) {
-    console.log(value); //eslint-disable-line
-}
-
 class BuyForm extends Component {
 
     state = {processBuy: false};
