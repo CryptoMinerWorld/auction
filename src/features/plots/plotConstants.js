@@ -21,3 +21,4 @@ export const STUCK = 'Stuck';
 export const PROCESSING = 'Processing';
 export const BULK_PROCESSING = 'Bulk Processing';
 export const PLOT_SALE = 'PLOT_SALE';
+export const FOUNDERS_PLOTS = 'FOUNDERS_PLOTS';
