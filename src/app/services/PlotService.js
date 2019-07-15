@@ -104,6 +104,9 @@ export default class PlotService {
         return {userPlots, gemMiningIds};
     };
 
+    // getSaleStartsUtc = async () => {
+    //     return await this.
+    // }
 
     getPlotBoundToGem = async (gemId) => {
         const plotId = (await this.minerContract.methods.getGemBinding(gemId).call())[0];

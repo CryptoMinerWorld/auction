@@ -23,6 +23,7 @@ import rockBackground from '../../app/images/rockBackground.png';
 import FounderPlotsArea from "./components/FounderPlotsArea";
 
 const select = store => ({
+    plotService: store.app.plotServiceInstance,
     countryService: store.app.countryServiceInstance,
     worldChestValue: store.plotSale.worldChestValue,
     monthlyChestValue: store.plotSale.monthlyChestValue,
@@ -80,11 +81,12 @@ class PlotSale extends Component {
         mapIsShown: false,
         searchCountryValue: "",
         numberOfPlots: 20,
-        plotImage: plot16
+        plotImage: plot16,
+        saleStartsUTC: null,
     };
 
     componentDidMount() {
-        const {countryService, handleGetChestValues, web3, currentUserId, handleGetFounderPlotsBalance, foundersPlotsContract} = this.props;
+        const {countryService, handleGetChestValues, web3, currentUserId, handleGetFounderPlotsBalance, foundersPlotsContract, plotService} = this.props;
         if (!countryService) {
             console.log('No service')
         }
@@ -97,6 +99,9 @@ class PlotSale extends Component {
         if (currentUserId && foundersPlotsContract) {
             handleGetFounderPlotsBalance(currentUserId);
         }
+        // if (plotService) {
+        //     const saleStartsUTC = plotService.
+        // }
     }
 
     async componentDidUpdate(prevProps, prevState) {
@@ -216,7 +221,7 @@ class PlotSale extends Component {
                             }
                         </BuyFormContainer>
                         <MapArea>
-                            {foundersPlotsBalance && (foundersPlotsBalance >= 0) &&
+                            {//foundersPlotsBalance && (foundersPlotsBalance >= 0) &&
                             <FounderPlotsArea
                               founderPlotsBalance={foundersPlotsBalance}
                               handleGetFounderPlots={handleGetFounderPlots}
@@ -264,6 +269,7 @@ class PlotSale extends Component {
 }
 
 const actions = {
+
     handleGetAvailableCountryPlots: getAvailableCountryPlots,
     handleBuy: buyPlots,
     handleGetChestValues: getChestValues,

@@ -36,9 +36,11 @@ export default class SilverGoldService {
             points: balances[2],
             gems: balances[3],
             plots: balances[4],
+            artifacts: balances[5],
+            // foundersKeys: balances[5],
+            // chestKeys: balances[5]
             foundersKeys: balances[6],
             chestKeys: balances[7],
-            artifacts: balances[5]
         }
     };
 

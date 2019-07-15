@@ -129,7 +129,7 @@ export const getFounderPlotsNumber = (userId) => async(dispatch, getState) => {
     console.log("FOUNDERS PLOTS CONTRACT", foundersPlotsContract, userId);
     const [initialBalance, issuedTokens] = await Promise.all([
       foundersPlotsContract.methods.geodeBalances(userId).call(),
-      0//plotAntarcticaContract.methods.issuedTokens(userId).call()
+      plotAntarcticaContract.methods.issuedTokens(userId).call()
     ]);
     console.log("balance:", initialBalance - issuedTokens);
     dispatch({
@@ -141,6 +141,7 @@ export const getFounderPlotsNumber = (userId) => async(dispatch, getState) => {
 export const getFounderPlots = (n, callback) => async(dispatch, getState) => {
     const plotAntarcticaContract = getState().app.plotAntarcticaContractInstance;
     const currentUserId = getState().auth.currentUserId;
+    console.log("contract, userId", plotAntarcticaContract, currentUserId);
     let txHash;
     plotAntarcticaContract.methods.get(n).send()
       .on('transactionHash', hash => {

@@ -71,7 +71,7 @@ export const getUserBalance = (userId) => async (dispatch, getState) => {
                   gems: balances.gems,
                   plots: balances.plots,
                   artifacts: balances.artifacts,
-                  keys: Number(balances.foundersKeys) + Number(balances.chestKeys),
+                  keys: +Number(balances.foundersKeys) + Number(balances.chestKeys),
               }
         }
     })

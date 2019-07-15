@@ -299,6 +299,22 @@ class App extends Component {
           },
         ));
 
+        const plotAntarcticaContract = assistInstance.Contract(new web3.eth.Contract(
+          plotAntarcticaABI,
+          process.env.REACT_APP_PLOT_ANTARCTICA,
+          {
+              from: currentAccountId,
+          },
+        ));
+
+        const foundersPlotsContract = assistInstance.Contract(new web3.eth.Contract(
+          foundersPlotsABI,
+          process.env.REACT_APP_FOUNDERS_PLOTS,
+          {
+              from: currentAccountId,
+          },
+        ));
+
         // <><><><><><><><><><><><><><><><><><><>><><>><><><><><<>><><<><><>
 
 
