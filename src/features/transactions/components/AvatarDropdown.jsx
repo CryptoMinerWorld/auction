@@ -384,7 +384,7 @@ const menu = ({transactionHistory, pendingTransactions, failedTransactions, hand
                   <Badge count={1}>
                       <TxHeader>{tx.type}</TxHeader>
                   </Badge>
-                  <TxStatus status={tx.status ? tx.status : TX_FAILED}>Failed</TxStatus>
+                  <TxStatus status={TX_FAILED}>Failed</TxStatus>
                   <TxDescription>{tx.description}</TxDescription>
               </TxInfo>
               <a
