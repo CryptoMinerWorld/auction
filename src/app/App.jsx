@@ -149,7 +149,8 @@ class App extends Component {
             networkId: 3,
             web3,
             style: {
-                darkMode: true
+                darkMode: true,
+                notificationsPosition: {mobile: 'bottom'}
             },
             handleNotificationEvent: this.props.handleNotificationEvent,
         };

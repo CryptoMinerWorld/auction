@@ -38,7 +38,7 @@ import {preLoadAuctionPage} from "../../market/marketActions";
 const select = store => {
     const gems = store.dashboard.userGems;
     const plots = store.plots.userPlots;
-    plots && plots.forEach((plot) => {
+    gems && plots && plots.forEach((plot) => {
         if (!plot) return;
         if (plot.gemMinesId) {
             plot.gemMines = gems.find((gem) => gem.id.toString() === plot.gemMinesId);
