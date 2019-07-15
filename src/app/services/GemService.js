@@ -66,31 +66,35 @@ export default class GemService {
     };
 
     unpackGem = async ([high256, low256]) => {
-        const plotId = high256.dividedToIntegerBy(new BigNumber(2).pow(232)).modulo(new BigNumber(2).pow(24)).toNumber();
-        const color = high256.dividedToIntegerBy(new BigNumber(2).pow(224)).modulo(0x100).toNumber();
+
+        console.warn("High, low::", high256, low256);
+
+        //const plotId = high256.dividedToIntegerBy(new BigNumber(2).pow(232)).modulo(new
+        // BigNumber(2).pow(24)).toNumber();
+        const color = high256.dividedToIntegerBy(new BigNumber(2).pow(248)).modulo(0x100).toNumber();
         const level = high256
-          .dividedToIntegerBy(new BigNumber(2).pow(216))
+          .dividedToIntegerBy(new BigNumber(2).pow(240))
           .modulo(0x100)
           .toNumber();
         const gradeType = high256
-          .dividedToIntegerBy(new BigNumber(2).pow(184 + 24))
+          .dividedToIntegerBy(new BigNumber(2).pow(208 + 24))
           .modulo(0x100)
           .toNumber();
         const gradeValue = high256
-          .dividedToIntegerBy(new BigNumber(2).pow(184))
+          .dividedToIntegerBy(new BigNumber(2).pow(208))
           .modulo(0x1000000).toNumber();
         const plotsMined = high256
-          .dividedToIntegerBy(new BigNumber(2).pow(128))
+          .dividedToIntegerBy(new BigNumber(2).pow(120))
           .modulo(new BigNumber(2).pow(24)).toNumber();
         const blocksMined = high256
-          .dividedToIntegerBy(new BigNumber(2).pow(96))
+          .dividedToIntegerBy(new BigNumber(2).pow(88))
           .modulo(new BigNumber(2).pow(32)).toNumber();
         const age = high256
-          .dividedToIntegerBy(new BigNumber(2).pow(64))
+          .dividedToIntegerBy(new BigNumber(2).pow(56))
           .modulo(new BigNumber(2).pow(32)).toNumber();
         const state = high256
           .dividedToIntegerBy(new BigNumber(2).pow(32))
-          .modulo(new BigNumber(2).pow(32)).toNumber();
+          .modulo(new BigNumber(2).pow(24)).toNumber();
         const stateModifiedTime = high256.modulo(new BigNumber(2).pow(32)).toNumber();
 
         const owner = '0x' + low256.modulo(new BigNumber(2).pow(160)).toString(16).padStart(40, "0");
@@ -106,9 +110,8 @@ export default class GemService {
             ownedTime,
             state,
             age,
-            blocksMined,
-            plotsMined,
-            plotId,
+            blocksMined: 0,
+            plotsMined :0,
             creationTime,
             stateModifiedTime,
             modifiedTime: Math.max(creationTime, stateModifiedTime)
