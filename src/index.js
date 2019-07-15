@@ -48,7 +48,7 @@ async function noop() {}
 
 // if (process.env.NODE_ENV !== 'development') {
 //     console.log = (log) => noop(log, 'log');
-//     console.warn = (log) => noop(log, 'warn');
+    // console.warn = (log) => noop(log, 'warn');
     // console.error = (log) => noop(log, 'error');
 // }
 
