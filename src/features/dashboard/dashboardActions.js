@@ -65,7 +65,7 @@ export const getUserGems = ownerId => async (dispatch, getState) => {
         dispatch({type: USER_GEMS_RETRIEVED, payload: auctionOwnerGems.concat(notAuctionOwnerGems)});
     }
     catch (e) {
-        console.error("Get user gems failed: ", e);
+        console.error("Get user gems failed (dashboardActions): ", e);
     }
 };
 

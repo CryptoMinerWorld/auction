@@ -29,6 +29,8 @@ export const sendContractsToRedux = (
     console.log('App Actions gem service: ');
     console.log('Dispatching:',);
 
+    console.error("DISPATCHING CONTRACTS_ADDED");
+
     dispatch({
         type: CONTRACTS_ADDED, payload: {
             dutchContractInstance: dutchAuctionContractInstance,

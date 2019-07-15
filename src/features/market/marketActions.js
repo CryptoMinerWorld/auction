@@ -47,7 +47,7 @@ export const getAuctions = () => async (dispatch, getState) => {
         dispatch({ type: NEW_AUCTIONS_RECEIVED, payload: auctionGems });
     }
     catch (e) {
-        console.error("Get user gems failed: ", e);
+        console.error("Get user gems failed (market actions): ", e);
         dispatch({type: FETCH_NEW_AUCTIONS_FAILED, payload: e});
     }
 };

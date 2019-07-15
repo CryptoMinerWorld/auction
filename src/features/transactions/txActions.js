@@ -91,6 +91,7 @@ export const resolveTransactionEvent = (txEventObject) => async (dispatch, getSt
     switch (txEventObject.eventCode) {
         case 'txConfirmed':
             let storedTxData;
+            console.error("TX_CONFIRMED. TX EVENT OBJECT IS", txEventObject, "transaction is not there?:", !txEventObject.transaction)
             try {
                 const storedTx = await db
                   .doc(`transactions/${txEventObject.transaction.hash}`)
@@ -117,15 +118,21 @@ export const resolveTransactionEvent = (txEventObject) => async (dispatch, getSt
                     }
                         break;
                     case TX_CANCEL:
-                        if (txEventObject.transaction.originalHash) {
-                            saveSpedUpOrCanceled(txEventObject.transaction.originalHash, storedTxData, TX_CANCELED)(dispatch, getState);
-                        }
+                        try {
+                            if (txEventObject.transaction.originalHash) {
+                                saveSpedUpOrCanceled(txEventObject.transaction.originalHash, storedTxData, TX_CANCELED)(dispatch, getState);
+                            }
+                        } catch (e) {console.error("TX_CANCEL 0:", e)}
                     {
-                        const txUpdated = await db
-                          .doc(`transactions/${txEventObject.transaction.hash}`)
-                          .update({
-                              status: TX_CANCEL_CONFIRMED
-                          });
+                        try {
+                            const txUpdated = await db
+                                .doc(`transactions/${txEventObject.transaction.hash}`)
+                                .update({
+                                    status: TX_CANCEL_CONFIRMED
+                                });
+                        } catch (e) {
+                            console.error("TX_CANCEL:", e);
+                        }
                     }
                         break;
                     default:
@@ -200,7 +207,7 @@ const plotSaleEventWhitelist = [
     'PlotIssued',
     //todo: CouponConsumed event
 ];
-
+//TODO try/catch
 export const getUpdatedTransactionHistory = () => async (dispatch, getState) => {
     console.log("~~~~~~ get updated TRANSACTION history ~~~~~~");
     const web3 = getState().app.web3;
@@ -339,7 +346,6 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
             }
         }
     });
-
 
     const latestBlock = await web3.eth.getBlockNumber();
     console.log("LATEST BLOCK:", latestBlock);

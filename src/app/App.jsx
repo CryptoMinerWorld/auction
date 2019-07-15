@@ -162,7 +162,12 @@ class App extends Component {
                 handleNotificationEvent: this.props.handleNotificationEvent,
             };
 
-            let assistInstance = assist.init(bncAssistConfig);
+            let assistInstance
+            try {
+                assistInstance = assist.init(bncAssistConfig);
+            } catch (e) {
+                console.log("assistInstance", e)
+            }
 
             try {
                 await assistInstance.onboard();
@@ -172,24 +177,27 @@ class App extends Component {
 
             let currentAccountId
             try {
-                const currentAccountIdAwait = await web3.eth.getAccounts().then(accounts => accounts[0]);
+                currentAccountId = await web3.eth.getAccounts().then(accounts => accounts[0]);
             } catch (e) {
-                console.log("currentAccountIdAwait", e)
-            } finally {
+                console.log("currentAccountId", e)
             }
 
 
             // this ensures that the wallet in metamask is always the wallet in the currentAccountId
             // however this is a problem because it means that you cant view someone else profile page
             if (web3.currentProvider.publicConfigStore) {
-                web3.currentProvider.publicConfigStore.on('update', ({selectedAddress}) => {
-                    handleUpdateWalletId(selectedAddress)
-                });
+                try {
+                    web3.currentProvider.publicConfigStore.on('update', ({selectedAddress}) => {
+                        handleUpdateWalletId(selectedAddress)
+                    });
+                } catch (e) {
+                    console.log("web3.currentProvider.publicConfigStore", e)
+                }
             }
 
             let dutchContract
             try {
-                dutchContract = assistInstance.Contract(new web3.eth.Contract(
+                dutchContract = await assistInstance.Contract(await new web3.eth.Contract(
                     dutchAuctionABI,
                     process.env.REACT_APP_DUTCH_AUCTION,
                     {
@@ -202,7 +210,7 @@ class App extends Component {
 
             let dutchHelperContract
             try {
-                dutchHelperContract = assistInstance.Contract(new web3.eth.Contract(
+                dutchHelperContract = await assistInstance.Contract(await new web3.eth.Contract(
                     dutchAuctionHelperABI,
                     process.env.REACT_APP_DUTCH_AUCTION_HELPER,
                     {
@@ -214,23 +222,19 @@ class App extends Component {
 
             }
 
-            const presaleContract = {};
-
             // @notice instantiating gem contract
             let gemsContract
             try {
-                gemsContract = assistInstance.Contract(new web3.eth.Contract(gemsABI, process.env.REACT_APP_GEM_ERC721, {
+                gemsContract = await assistInstance.Contract(await new web3.eth.Contract(gemsABI, process.env.REACT_APP_GEM_ERC721, {
                     from: currentAccountId,
                 }));
             } catch (e) {
                 console.log("gemsContract", e)
             }
 
-            const theCountrySaleContract = {};
-
-    let theCountryContract
+            let theCountryContract
             try {
-                theCountryContract = assistInstance.Contract(new web3.eth.Contract(
+                theCountryContract = await assistInstance.Contract(await new web3.eth.Contract(
                     countryABI,
                     process.env.REACT_APP_COUNTRY_ERC721,
                     {
@@ -243,7 +247,7 @@ class App extends Component {
 
             let refPointsTrackerContract
             try {
-                refPointsTrackerContract = assistInstance.Contract(new web3.eth.Contract(
+                refPointsTrackerContract = await assistInstance.Contract(await new web3.eth.Contract(
                     refPointsTrackerABI,
                     process.env.REACT_APP_REF_POINTS_TRACKER,
                     {
@@ -254,35 +258,10 @@ class App extends Component {
                 console.log("refPointsTrackerContract", e)
             }
 
-            let goldContract
-            try {
-                goldContract = assistInstance.Contract(new web3.eth.Contract(
-                    goldABI,
-                    process.env.REACT_APP_GOLD_ERC721,
-                    {
-                        from: currentAccountId,
-                    },
-                ));
-            } catch (e) {
-                console.log("goldContract", e)
-            }
-
-            let silverContract
-            try {
-                silverContract = assistInstance.Contract(new web3.eth.Contract(
-                    silverABI,
-                    process.env.REACT_APP_SILVER_ERC721,
-                    {
-                        from: currentAccountId,
-                    },
-                ));
-            } catch (e) {
-                console.log("silverContract", e)
-            }
 
             let workshopContract
             try {
-                workshopContract = assistInstance.Contract(new web3.eth.Contract(
+                workshopContract = await assistInstance.Contract(await new web3.eth.Contract(
                     workshopABI,
                     process.env.REACT_APP_WORKSHOP,
                     {
@@ -295,7 +274,7 @@ class App extends Component {
 
             let balanceContract
             try {
-                balanceContract = assistInstance.Contract(new web3.eth.Contract(
+                balanceContract = await assistInstance.Contract(await new web3.eth.Contract(
                     balanceABI,
                     process.env.REACT_APP_BALANCE_PROXY
                 ));
@@ -305,7 +284,7 @@ class App extends Component {
 
             let silverSaleContract
             try {
-                silverSaleContract = assistInstance.Contract(new web3.eth.Contract(
+                silverSaleContract = await assistInstance.Contract(await new web3.eth.Contract(
                     silverSaleABI,
                     process.env.REACT_APP_SILVER_SALE,
                     {
@@ -316,18 +295,10 @@ class App extends Component {
                 console.log("silverSaleContract", e)
             }
 
-            const silverCouponsContract = {};
-            // assistInstance.Contract(new web3.eth.Contract(
-            //   silverCouponsABI,
-            //   process.env.REACT_APP_SILVER_COUPONS,
-            //   {
-            //       from: currentAccountId,
-            //   },
-            // ))
 
             let plotSaleContract
             try {
-                plotSaleContract = assistInstance.Contract(new web3.eth.Contract(
+                plotSaleContract = await assistInstance.Contract(await new web3.eth.Contract(
                     plotSaleABI,
                     process.env.REACT_APP_PLOT_SALE,
                     {
@@ -340,7 +311,7 @@ class App extends Component {
 
             let plotContract
             try {
-                plotContract = assistInstance.Contract(new web3.eth.Contract(
+                plotContract = await assistInstance.Contract(await new web3.eth.Contract(
                     plotABI,
                     process.env.REACT_APP_PLOT_ERC721,
                     {
@@ -353,7 +324,7 @@ class App extends Component {
 
             let minerContract
             try {
-                minerContract = assistInstance.Contract(new web3.eth.Contract(
+                minerContract = await assistInstance.Contract(await new web3.eth.Contract(
                     minerABI,
                     process.env.REACT_APP_MINER,
                     {
@@ -366,7 +337,7 @@ class App extends Component {
 
             let artifactContract
             try {
-                artifactContract = assistInstance.Contract(new web3.eth.Contract(
+                artifactContract = await assistInstance.Contract(await new web3.eth.Contract(
                     artifactABI,
                     process.env.REACT_APP_ARTIFACT_ERC20,
                     {
@@ -379,7 +350,7 @@ class App extends Component {
 
             let plotAntarcticaContract
             try {
-                plotAntarcticaContract = assistInstance.Contract(new web3.eth.Contract(
+                plotAntarcticaContract = await assistInstance.Contract(await new web3.eth.Contract(
                     plotAntarcticaABI,
                     process.env.REACT_APP_PLOT_ANTARCTICA,
                     {
@@ -392,7 +363,7 @@ class App extends Component {
 
             let foundersPlotsContract
             try {
-                foundersPlotsContract = assistInstance.Contract(new web3.eth.Contract(
+                foundersPlotsContract = await assistInstance.Contract(await new web3.eth.Contract(
                     foundersPlotsABI,
                     process.env.REACT_APP_FOUNDERS_PLOTS,
                     {
@@ -538,6 +509,32 @@ class App extends Component {
             //       from: currentAccountId,
             //   },
             // ));
+            //
+            // let plotAntarcticaContract
+            // try {
+            //     plotAntarcticaContract = (await new web3.eth.Contract(
+            //         plotAntarcticaABI,
+            //         process.env.REACT_APP_PLOT_ANTARCTICA,
+            //         {
+            //             from: currentAccountId,
+            //         },
+            //     ));
+            // } catch (e) {
+            //     console.log("plotAntarcticaContract", e)
+            // }
+            //
+            // let foundersPlotsContract
+            // try {
+            //     foundersPlotsContract = (await new web3.eth.Contract(
+            //         foundersPlotsABI,
+            //         process.env.REACT_APP_FOUNDERS_PLOTS,
+            //         {
+            //             from: currentAccountId,
+            //         },
+            //     ));
+            // } catch (e) {
+            //     console.log("foundersPlotsContract", e)
+            // }
 
 
             //const silverCouponsContract = {};
@@ -547,15 +544,10 @@ class App extends Component {
                 dutchHelperContract,
                 gemsContract,
                 currentAccountId,
-                presaleContract,
                 theCountryContract,
-                theCountrySaleContract,
                 refPointsTrackerContract,
-                silverContract,
-                goldContract,
                 workshopContract,
                 silverSaleContract,
-                silverCouponsContract,
                 plotContract,
                 plotSaleContract,
                 minerContract,
@@ -570,15 +562,10 @@ class App extends Component {
                          dutchAuctionHelperContractInstance,
                          gemsContractInstance,
                          currentAccount,
-                         presale,
                          countryContract,
-                         countrySaleContract,
                          refPointsTrackerContract,
-                         silverContract,
-                         goldContract,
                          workshopContract,
                          silverSaleContract,
-                         silverCouponsContract,
                          plotContract,
                          plotSaleContract,
                          minerContract,
@@ -593,27 +580,55 @@ class App extends Component {
                             },
                         });
 
-                        const gemService = new GemService(gemsContractInstance, web3, dutchAuctionContractInstance);
-                        const auctionService = new AuctionService(dutchAuctionContractInstance, dutchAuctionHelperContractInstance, gemsContractInstance);
-                        const silverGoldService = new SilverGoldService(silverSaleContract, balanceContract, refPointsTrackerContract);
-                        const countryService = new CountryService(null, countryContract);
-                        const plotService = new PlotService(plotContract, plotSaleContract, minerContract);
+                        if (!plotContract) {
+                            console.error("NO PLOT CONTRACT");
+                        }
+
+                        console.info([[
+                            dutchAuctionContractInstance,
+                            dutchAuctionHelperContractInstance,
+                            gemsContractInstance,
+                            currentAccount,
+                            countryContract,
+                            refPointsTrackerContract,
+                            workshopContract,
+                            silverSaleContract,
+                            plotContract,
+                            plotSaleContract,
+                            minerContract,
+                            artifactContract,
+                            balanceContract,
+                            plotAntarcticaContract,
+                            foundersPlotsContract,
+                        ]])
+
+                        let gemService, auctionService, silverGoldService, countryService, plotService;
+
+                        try {
+                            gemService = new GemService(gemsContractInstance, web3, dutchAuctionContractInstance);
+                            auctionService = new AuctionService(dutchAuctionContractInstance, dutchAuctionHelperContractInstance, gemsContractInstance);
+                            silverGoldService = new SilverGoldService(silverSaleContract, balanceContract, refPointsTrackerContract);
+                            countryService = new CountryService(null, countryContract);
+                            plotService = new PlotService(plotContract, plotSaleContract, minerContract);
+                        } catch(e) {
+                            console.error("SERVICES AREN'T SET UP");
+                        }
 
                         handleSendContractsToRedux(
                             dutchAuctionContractInstance,
                             dutchAuctionHelperContractInstance,
                             gemsContractInstance,
                             web3,
-                            presale,
+                            {},
                             currentAccount,
                             countryContract,
-                            countrySaleContract,
+                            {},
                             refPointsTrackerContract,
-                            silverContract,
-                            goldContract,
+                            {},
+                            {},
                             workshopContract,
                             silverSaleContract,
-                            silverCouponsContract,
+                            {},
                             artifactContract,
                             plotAntarcticaContract,
                             foundersPlotsContract,
