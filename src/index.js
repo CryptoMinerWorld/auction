@@ -9,6 +9,7 @@ import store from './app/store';
 import { getAuctions } from './features/market/marketActions';
 import { getCurrentUser } from './features/auth/authActions';
 import {db} from "./app/utils/firebase";
+import VConsole from "vconsole/dist/vconsole.min.js"
 
 const client = new ApolloClient({
   // uri: process.env.NODE_ENV === 'development' && 'http://localhost:4000',
@@ -32,6 +33,8 @@ const client = new ApolloClient({
     dataIdFromObject: o => (o._id ? `${o.__typename}:${o._id}` : null),
   }),
 });
+
+var vconsole = new VConsole();
 
 
 async function firebaseLog(log, type) {
