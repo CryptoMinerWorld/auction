@@ -82,10 +82,9 @@ class PlotSale extends Component {
         searchCountryValue: "",
         numberOfPlots: 20,
         plotImage: plot16,
-        saleStartsUTC: null,
     };
 
-    componentDidMount() {
+    async componentDidMount() {
         const {countryService, handleGetChestValues, web3, currentUserId, handleGetFounderPlotsBalance, foundersPlotsContract, plotService} = this.props;
         if (!countryService) {
             console.log('No service')
@@ -99,13 +98,10 @@ class PlotSale extends Component {
         if (currentUserId && foundersPlotsContract) {
             handleGetFounderPlotsBalance(currentUserId);
         }
-        // if (plotService) {
-        //     const saleStartsUTC = plotService.
-        // }
     }
 
     async componentDidUpdate(prevProps, prevState) {
-        const {countryService, handleGetChestValues, web3, handleGetAvailableCountryPlots, currentUserId, handleGetFounderPlotsBalance, foundersPlotsContract} = this.props;
+        const {countryService, handleGetChestValues, web3, handleGetAvailableCountryPlots, currentUserId, handleGetFounderPlotsBalance, foundersPlotsContract, plotService} = this.props;
         if (!countryService) {
             console.log('No service')
         }
@@ -210,7 +206,10 @@ class PlotSale extends Component {
                                      }}
                                      numberOfPlots={numberOfPlots}
                                      setNumberOfPlots={(value) => {this.setBackgroundImage(value); this.setState({numberOfPlots: value})}}
-                                     handleBuy={(callBack) => handleBuy(selection.countryId, numberOfPlots, selection.availablePlots ? Math.max(numberOfPlots - selection.availablePlots, 0) : numberOfPlots, null, callBack)}
+                                     handleBuy={(callBack) => {
+                                         if ((Date.now() >= 1563186600 * 1000)) {
+                                           handleBuy(selection.countryId, numberOfPlots, selection.availablePlots ? Math.max(numberOfPlots - selection.availablePlots, 0) : numberOfPlots, null, callBack)
+                                         }}}
                             />
                             {!mapIsShown &&
                             <PickLocationButton content={"Pick Plot's Location"} onClick={() => {
@@ -224,7 +223,10 @@ class PlotSale extends Component {
                             {//foundersPlotsBalance && (foundersPlotsBalance >= 0) &&
                             <FounderPlotsArea
                               founderPlotsBalance={foundersPlotsBalance}
-                              handleGetFounderPlots={handleGetFounderPlots}
+                              handleGetFounderPlots={(n, callback) => {
+                                  if ((Date.now() >= 1563186600 * 1000)) {
+                                      handleGetFounderPlots(n, callback)
+                              }}}
                             />
                             }
                             {mapIsShown &&
