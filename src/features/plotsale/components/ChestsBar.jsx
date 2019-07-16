@@ -1,6 +1,7 @@
 import React from 'react';
 import worldChest from "./../../../app/images/sale/worldChest.png"
-import monthlyChests from "./../../../app/images/sale/monthlyChests.png"
+import gemstoneChests from "./../../../app/images/sale/gemstoneChests.png"
+import foundersChest from "./../../../app/images/sale/foundersChest.png"
 import styled from 'styled-components';
 
 const ChestBarContainer = styled.div`
@@ -14,7 +15,7 @@ const ChestBarContainer = styled.div`
 
 const ChestBar = styled.div`
     
-    max-width: 1450px;
+    max-width: 1650px;
     width: 100%;
     padding: 0 10px;
     display: flex;
@@ -64,7 +65,7 @@ const ChestImg = styled.img`
         height: auto;
     }
     height: 175px;
-`
+`;
 
 const ChestValue = styled.div`
     @media((min-width: 571px) and (max-width: 1200px)) {
@@ -75,7 +76,7 @@ const ChestValue = styled.div`
     }
     font-size: 26px;
     color: #FF00CD;
-`
+`;
 
 const ChestInfo = styled.div`
     @media((min-width: 571px) and (max-width: 1200px)) {
@@ -86,7 +87,7 @@ const ChestInfo = styled.div`
     }
     font-size: 14px;
     max-width: 290px;
-`
+`;
 
 const ChestTitle = styled.div`
     @media((min-width: 571px) and (max-width: 1200px)) {
@@ -96,7 +97,7 @@ const ChestTitle = styled.div`
         font-size: 16px;
     }
     font-size: 24px;
-`
+`;
 
 const MonthlyChestNumber = styled.div`
     @media((min-width: 571px) and (max-width: 1200px)) {
@@ -106,7 +107,7 @@ const MonthlyChestNumber = styled.div`
         font-size: 16px;
     }
     font-size: 24px;
-`
+`;
 
 const ChestDescription = styled.div`
     padding: 0 0 20px 20px;
@@ -118,7 +119,7 @@ const ChestDescription = styled.div`
     @media(max-width: 570px) {
         padding: 0 0 20px 10px;
     }
-`
+`;
 
 const MonthlyChestDescription = styled.div`
     @media((min-width: 571px) and (max-width: 1200px)) {
@@ -143,7 +144,7 @@ const MonthlyChestInfo = styled.div`
     margin-bottom: 10px;
 `;
 
-const ChestsBar = ({worldChestValue, monthlyChestValue}) => {
+const ChestsBar = ({worldChestValue, monthlyChestValue, foundersChestValue}) => {
     return (
       <ChestBarContainer>
           <FullWidthLine/>
@@ -153,23 +154,37 @@ const ChestsBar = ({worldChestValue, monthlyChestValue}) => {
                   <ChestDescription>
                       <ChestValue>{worldChestValue && worldChestValue.toFixed(2)} ETH</ChestValue>
                       <ChestTitle>In The World Chest!</ChestTitle>
-                      <ChestInfo>Once the last plot of land is bought, one key will be able to open the
-                          World Chest
+                      <ChestInfo>
+                          {`Once the last plot of land is bought, one key will be able to open the World Chest`}
                       </ChestInfo>
                   </ChestDescription>
               </ChestContainer>
               <ChestContainer>
-                  <ChestImg src={monthlyChests}/>
+                  <ChestImg src={gemstoneChests}/>
                   <ChestDescription>
-                      <MonthlyChestNumber><Pink style={{fontSize: "150%"}}>{monthlyChestValue && Math.floor(monthlyChestValue / 10)}</Pink> Monthly Chests so far!</MonthlyChestNumber>
-                      <MonthlyChestInfo><Pink>{monthlyChestValue && 10 - (monthlyChestValue.toFixed(2) % 10)} ETH</Pink> Until the next Chest is found!</MonthlyChestInfo>
+                      <ChestValue>{monthlyChestValue && 10 - (monthlyChestValue.toFixed(2) % 10)} ETH</ChestValue>
+                      <MonthlyChestInfo>
+                          {` Until next Gemstone Chest is found!`}
+                          </MonthlyChestInfo>
                       <MonthlyChestDescription>Every <Pink>10 ETH</Pink> stored, creates a new Chest.</MonthlyChestDescription>
-                      <MonthlyChestDescription><Pink>{monthlyChestValue && monthlyChestValue.toFixed(2)} ETH</Pink> Stored just this month!</MonthlyChestDescription>
+                      <MonthlyChestInfo><Pink
+                        style={{fontSize: "150%"}}>{monthlyChestValue && Math.floor(monthlyChestValue / 10)}</Pink>
+                          {` Gemstone Chests Found so far! `}<Pink>({monthlyChestValue && monthlyChestValue.toFixed(2)} ETH)</Pink>
+                      </MonthlyChestInfo>
+                  </ChestDescription>
+              </ChestContainer>
+              <ChestContainer>
+                  <ChestImg src={foundersChest}/>
+                  <ChestDescription>
+                      <ChestValue>{foundersChestValue && (foundersChestValue.toFixed(2))} ETH</ChestValue>
+                      <ChestTitle>In The Founder's Chest!</ChestTitle>
+                      <MonthlyChestDescription>This Chest will start accepting Founder's Keys
+                          on <Pink>8-15-19</Pink></MonthlyChestDescription>
                   </ChestDescription>
               </ChestContainer>
           </ChestBar>
       </ChestBarContainer>
     )
-}
+};
 
 export default ChestsBar

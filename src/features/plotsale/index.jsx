@@ -27,6 +27,7 @@ const select = store => ({
     countryService: store.app.countryServiceInstance,
     worldChestValue: store.plotSale.worldChestValue,
     monthlyChestValue: store.plotSale.monthlyChestValue,
+    foundersChestValue: store.plotSale.foundersChestValue,
     web3: store.app.web3,
     currentUserId: store.auth.currentUserId,
     foundersPlotsBalance: store.plotSale.foundersPlotsBalance,
@@ -163,7 +164,7 @@ class PlotSale extends Component {
     render() {
 
         const {countryData, zoom, coordinates, countryIdHovered, selection, cart, mapIsShown, searchCountryValue, countryList, searchCountryList, numberOfPlots} = this.state;
-        const {handleGetAvailableCountryPlots, handleBuy, worldChestValue, monthlyChestValue, foundersPlotsBalance, handleGetFounderPlots} = this.props;
+        const {handleGetAvailableCountryPlots, handleBuy, worldChestValue, monthlyChestValue, foundersPlotsBalance, handleGetFounderPlots, foundersChestValue} = this.props;
 
         return (
             <div data-testid="mapPage" className="plot-sale bg-off-black white w-100" style={{
@@ -207,7 +208,7 @@ class PlotSale extends Component {
                                      numberOfPlots={numberOfPlots}
                                      setNumberOfPlots={(value) => {this.setBackgroundImage(value); this.setState({numberOfPlots: value})}}
                                      handleBuy={(callBack) => {
-                                         if ((Date.now() >= 1563186600 * 1000)) {
+                                         if ((Date.now() >= 1550772000 * 1000)) {
                                            handleBuy(selection.countryId, numberOfPlots, selection.availablePlots ? Math.max(numberOfPlots - selection.availablePlots, 0) : numberOfPlots, null, callBack)
                                          }}}
                             />
@@ -220,14 +221,13 @@ class PlotSale extends Component {
                             }
                         </BuyFormContainer>
                         <MapArea>
-                            {//foundersPlotsBalance && (foundersPlotsBalance >= 0) &&
+                            {foundersPlotsBalance && (foundersPlotsBalance > 0) ?
                             <FounderPlotsArea
                               founderPlotsBalance={foundersPlotsBalance}
                               handleGetFounderPlots={(n, callback) => {
-                                  if ((Date.now() >= 1563186600 * 1000)) {
                                       handleGetFounderPlots(n, callback)
-                              }}}
-                            />
+                              }}
+                            /> : ""
                             }
                             {mapIsShown &&
                             <MapContainer className="pa3">
@@ -263,7 +263,7 @@ class PlotSale extends Component {
                         </MapArea>
                     </BuyPlotsArea>
                 </div>
-                <ChestsBar worldChestValue={worldChestValue} monthlyChestValue={monthlyChestValue}/>
+                <ChestsBar worldChestValue={worldChestValue} monthlyChestValue={monthlyChestValue} foundersChestValue={foundersChestValue}/>
             </div>
 
         );
