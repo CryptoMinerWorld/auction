@@ -142,8 +142,10 @@ class App extends Component {
             try {
                 Web3 = await getWeb3;
             } catch (err) {
+                console.error("GET WEB3 ERROR", err);
                 return;
             }
+            console.info("Web3:", Web3);
             web3 = Web3.web3;
 
 
@@ -162,24 +164,24 @@ class App extends Component {
                 handleNotificationEvent: this.props.handleNotificationEvent,
             };
 
-            let assistInstance
+            let assistInstance;
             try {
                 assistInstance = assist.init(bncAssistConfig);
             } catch (e) {
-                console.log("assistInstance", e)
+                console.error("assistInstance", e)
             }
 
             try {
                 await assistInstance.onboard();
             } catch (e) {
-                console.log(e.message);
+                console.error("Onboard error:", e.message);
             }
 
-            let currentAccountId
+            let currentAccountId;
             try {
                 currentAccountId = await web3.eth.getAccounts().then(accounts => accounts[0]);
             } catch (e) {
-                console.log("currentAccountId", e)
+                console.error("currentAccountId", e)
             }
 
 
@@ -191,11 +193,11 @@ class App extends Component {
                         handleUpdateWalletId(selectedAddress)
                     });
                 } catch (e) {
-                    console.log("web3.currentProvider.publicConfigStore", e)
+                    console.error("web3.currentProvider.publicConfigStore", e)
                 }
             }
 
-            let dutchContract
+            let dutchContract;
             try {
                 dutchContract = await assistInstance.Contract(await new web3.eth.Contract(
                     dutchAuctionABI,
@@ -205,10 +207,10 @@ class App extends Component {
                     },
                 ));
             } catch (e) {
-                console.log("dutchContract", e)
+                console.error("dutchContract", e)
             }
 
-            let dutchHelperContract
+            let dutchHelperContract;
             try {
                 dutchHelperContract = await assistInstance.Contract(await new web3.eth.Contract(
                     dutchAuctionHelperABI,
@@ -223,7 +225,7 @@ class App extends Component {
             }
 
             // @notice instantiating gem contract
-            let gemsContract
+            let gemsContract;
             try {
                 gemsContract = await assistInstance.Contract(await new web3.eth.Contract(gemsABI, process.env.REACT_APP_GEM_ERC721, {
                     from: currentAccountId,
@@ -232,7 +234,7 @@ class App extends Component {
                 console.log("gemsContract", e)
             }
 
-            let theCountryContract
+            let theCountryContract;
             try {
                 theCountryContract = await assistInstance.Contract(await new web3.eth.Contract(
                     countryABI,
@@ -245,7 +247,7 @@ class App extends Component {
                 console.log("theCountryContract", 0)
             }
 
-            let refPointsTrackerContract
+            let refPointsTrackerContract;
             try {
                 refPointsTrackerContract = await assistInstance.Contract(await new web3.eth.Contract(
                     refPointsTrackerABI,
@@ -259,7 +261,7 @@ class App extends Component {
             }
 
 
-            let workshopContract
+            let workshopContract;
             try {
                 workshopContract = await assistInstance.Contract(await new web3.eth.Contract(
                     workshopABI,
@@ -272,7 +274,7 @@ class App extends Component {
                 console.log("workshopContract", e)
             }
 
-            let balanceContract
+            let balanceContract;
             try {
                 balanceContract = await assistInstance.Contract(await new web3.eth.Contract(
                     balanceABI,
@@ -282,7 +284,7 @@ class App extends Component {
                 console.log("balanceContract", e)
             }
 
-            let silverSaleContract
+            let silverSaleContract;
             try {
                 silverSaleContract = await assistInstance.Contract(await new web3.eth.Contract(
                     silverSaleABI,
@@ -296,7 +298,7 @@ class App extends Component {
             }
 
 
-            let plotSaleContract
+            let plotSaleContract;
             try {
                 plotSaleContract = await assistInstance.Contract(await new web3.eth.Contract(
                     plotSaleABI,
@@ -309,7 +311,7 @@ class App extends Component {
                 console.log("let plotSaleContract ", e)
             }
 
-            let plotContract
+            let plotContract;
             try {
                 plotContract = await assistInstance.Contract(await new web3.eth.Contract(
                     plotABI,
@@ -322,7 +324,7 @@ class App extends Component {
                 console.log("plotContract", e)
             }
 
-            let minerContract
+            let minerContract;
             try {
                 minerContract = await assistInstance.Contract(await new web3.eth.Contract(
                     minerABI,
@@ -335,7 +337,7 @@ class App extends Component {
                 console.log("minerContract", e)
             }
 
-            let artifactContract
+            let artifactContract;
             try {
                 artifactContract = await assistInstance.Contract(await new web3.eth.Contract(
                     artifactABI,
@@ -348,7 +350,7 @@ class App extends Component {
                 console.log("artifactContract", e)
             }
 
-            let plotAntarcticaContract
+            let plotAntarcticaContract;
             try {
                 plotAntarcticaContract = await assistInstance.Contract(await new web3.eth.Contract(
                     plotAntarcticaABI,
@@ -361,7 +363,7 @@ class App extends Component {
                 console.log("plotAntarcticaContract", e)
             }
 
-            let foundersPlotsContract
+            let foundersPlotsContract;
             try {
                 foundersPlotsContract = await assistInstance.Contract(await new web3.eth.Contract(
                     foundersPlotsABI,
@@ -600,7 +602,7 @@ class App extends Component {
                             balanceContract,
                             plotAntarcticaContract,
                             foundersPlotsContract,
-                        ]])
+                        ]]);
 
                         let gemService, auctionService, silverGoldService, countryService, plotService;
 
@@ -805,9 +807,9 @@ const EnhancedApp = props => (
   <ApolloConsumer>
       {client => (
         <BrowserRouter>
-            <ErrorBoundary>
+            {/*<ErrorBoundary>*/}
                 <App {...props} client={client}/>
-            </ErrorBoundary>
+            {/*</ErrorBoundary>*/}
         </BrowserRouter>
       )}
   </ApolloConsumer>

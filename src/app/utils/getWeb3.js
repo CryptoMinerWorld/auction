@@ -5,8 +5,10 @@ const getWeb3 = new Promise((resolve, reject) => {
     let results;
     let { web3 } = window;
     const { ethereum } = window;
+    console.info("web3:", web3);
+    console.info("ethereum:", ethereum);
     // Modern dapp browsers...
-    if (ethereum) {
+    if (false && ethereum) {
       web3 = new Web3(ethereum);
       try {
         await ethereum.enable();
@@ -20,6 +22,7 @@ const getWeb3 = new Promise((resolve, reject) => {
       }
     } else if (window.web3) {
       // Legacy dapp browsers...
+        console.info("window.web3:", web3);
       web3 = new Web3(web3.currentProvider);
       results = {
         web3,

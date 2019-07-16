@@ -91,7 +91,7 @@ export const resolveTransactionEvent = (txEventObject) => async (dispatch, getSt
     switch (txEventObject.eventCode) {
         case 'txConfirmed':
             let storedTxData;
-            console.error("TX_CONFIRMED. TX EVENT OBJECT IS", txEventObject, "transaction is not there?:", !txEventObject.transaction)
+            console.error("TX_CONFIRMED. TX EVENT OBJECT IS", txEventObject, "transaction is not there?:", !txEventObject.transaction);
             try {
                 const storedTx = await db
                   .doc(`transactions/${txEventObject.transaction.hash}`)
@@ -623,7 +623,7 @@ export const saveTransaction = (transaction) => async (dispatch, getState) => {
         return txStored;
     }
     catch (e) {
-        console.error(e);
+        console.error("Save transaction", e);
     }
 };
 
