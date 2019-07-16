@@ -139,8 +139,10 @@ class App extends Component {
         try {
             Web3 = await getWeb3;
         } catch (err) {
+            console.log("ERROR GETTING WEB3", error);
             return;
         }
+        console.info("Web3:", Web3);
         web3 = Web3.web3;
 
 
@@ -150,7 +152,7 @@ class App extends Component {
 
         let bncAssistConfig = {
             dappId: "e8432341-1602-487b-ba82-c3e2c46fb47d",      // [String] The API key created by step one above
-            networkId: 1,
+            networkId: 3,
             web3,
             style: {
                 darkMode: true,
