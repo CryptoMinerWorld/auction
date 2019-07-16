@@ -5,11 +5,11 @@ import {BINDING_GEM, STUCK, UNBINDING_GEM} from "../../features/plots/plotConsta
 
 export default class GemService {
 
-    constructor(gemContractInstance, web3Instance, auctionContractInstance) {
-        console.log('Gem Service constructor called', gemContractInstance);
-        this.contract = gemContractInstance;
+    constructor(gemContract, web3Instance, auctionContract) {
+        console.log('Gem Service constructor called', gemContract);
+        this.contract = gemContract;
         this.web3 = web3Instance;
-        this.auctionContract = auctionContractInstance;
+        this.auctionContract = auctionContract;
     }
 
     getGemProperties = async (tokenId) => {

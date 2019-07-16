@@ -47,7 +47,7 @@ export const buyGeode = (type, amount, etherUsed, referralPointsUsed, referrer, 
 };
 
 export const getChestValue = () => async (dispatch, getState) => {
-    const preSaleContract = getState().app.presaleContractInstance;
+    const preSaleContract = getState().app.presaleContract;
     const web3 = getState().app.web3;
     const chestValue = weiToEth(await web3.eth.getBalance(process.env.REACT_APP_FOUNDERS_CHEST));
     dispatch({

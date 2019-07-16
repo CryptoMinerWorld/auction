@@ -14,8 +14,8 @@ import store from "../store";
 
 export default class UserService {
 
-    constructor(refPointsTrackerContractInstance) {
-        this.refPointsTrackerContract = refPointsTrackerContractInstance;
+    constructor(refPointsTrackerContract) {
+        this.refPointsTrackerContract = refPointsTrackerContract;
     }
 
     getCurrentUser = () => () => getWeb3

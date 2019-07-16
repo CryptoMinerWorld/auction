@@ -8,12 +8,12 @@ import {BigNumber} from "bignumber.js";
 
 export default class SilverGoldService {
 
-    constructor(silverSaleContractInstance, balanceContractInstance, refPointsTrackerContractInstance) {
-        this.saleContract = silverSaleContractInstance;
-        // this.silverContract = silverContractInstance;
-        // this.goldContract = goldContractInstance;
-        this.balanceContract = balanceContractInstance;
-        this.refPointsTrackerContract = refPointsTrackerContractInstance;
+    constructor(silverSaleContract, balanceContract, refPointsTrackerContract) {
+        this.saleContract = silverSaleContract;
+        // this.silverContract = silverContract;
+        // this.goldContract = goldContract;
+        this.balanceContract = balanceContract;
+        this.refPointsTrackerContract = refPointsTrackerContract;
     }
 
     getUserBalance = async (userId) => {

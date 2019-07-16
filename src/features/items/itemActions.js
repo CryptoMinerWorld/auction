@@ -94,7 +94,7 @@ export const getOwnerDataByOwnerId = async ownerId => {
 export const createAuction = (payload, createCallback, history) => async (dispatch, getState) => {
     const {auth, app} = getState();
     const currentAccount = auth.currentUserId;
-    const {gemsContractInstance} = app;
+    const {gemContract} = app;
 
     const {
         tokenId, duration, startPrice, endPrice,
@@ -132,7 +132,7 @@ export const createAuction = (payload, createCallback, history) => async (dispat
         .plus(p1),
     );
     let txHash;
-    return gemsContractInstance.methods
+    return gemContract.methods
       .safeTransferFrom(currentAccount, process.env.REACT_APP_DUTCH_AUCTION, token, data)
       .send({}, {messages: {txType: AUCTION_START, description: `Adding gem ${token} to auction`}})
       .on('transactionHash', hash => {
@@ -161,10 +161,10 @@ export const removeFromAuction = (tokenId, history, turnLoaderOff) => async (
   dispatch,
   getState,
 ) => {
-    const dutchContract = getState().app.dutchContractInstance;
+    const dutchContract = getState().app.auctionContract;
     const currentUser = getState().auth.currentUserId;
     // eslint-disable-next-line
-    const gemContractAddress = getState().app.gemsContractInstance.options.address;
+    const gemContractAddress = getState().app.gemContract.options.address;
     let txHash;
     removeAuctionHelper(dutchContract, tokenId, gemContractAddress)
       .send({
@@ -194,10 +194,10 @@ export const removeFromAuction = (tokenId, history, turnLoaderOff) => async (
 
 // @notice lets users buy a gem in an active auction
 export const handleBuyNow = (gem, _from, history, setLoading) => (dispatch, getState) => {
-    const dutchAuctionContractInstance = getState().app.dutchContractInstance;
+    const dutchAuctionContractInstance = getState().app.auctionContract;
     const priceInEth = gem.currentPrice;
     // eslint-disable-next-line
-    const gemContractAddress = getState().app.gemsContractInstance.options.address;
+    const gemContractAddress = getState().app.gemContract.options.address;
     const currentUser = getState().app.currentAccount;
     let txHash;
     return dutchAuctionContractInstance.methods
@@ -234,7 +234,7 @@ export const clearGemPage = () => {
 };
 
 export const giftGem = (gemId, addressTo) => (dispatch, getState) => {
-    const gemsContract = getState().app.gemsContractInstance;
+    const gemsContract = getState().app.gemContract;
     const from = getState().app.currentAccount;
     const to = addressTo;
     const tokenId = gemId;
@@ -264,9 +264,9 @@ export const giftGem = (gemId, addressTo) => (dispatch, getState) => {
 
 export const upgradeGem = (gem, levelUp, gradeUp, hidePopup, cost) => (dispatch, getState) => {
     console.log(333333333333, 'upgrading...');
-    const workshopContractInstance = getState().app.workshopContractInstance;
+    const workshopContract = getState().app.workshopContract;
     const gemService = getState().app.gemServiceInstance;
-    console.log('Contract: ', workshopContractInstance);
+    console.log('Contract: ', workshopContract);
     const currentUser = getState().app.currentAccount;
     console.log('TX start');
     let silver = 0, gold = 0 , key;
@@ -281,7 +281,7 @@ export const upgradeGem = (gem, levelUp, gradeUp, hidePopup, cost) => (dispatch,
         gem[key] = true;
     }
     let txHash;
-    return workshopContractInstance.methods
+    return workshopContract.methods
       .upgrade(gem.id, levelUp, gradeUp, silver, gold)
       .send({}, {messages: {txType: gradeUp > 0 ? GEM_UPGRADE : GEM_LEVEL_UP, description: `Upgrading gem ${gem.id}`}})
       .on('transactionHash', (hash) => {

@@ -90,10 +90,10 @@ const select = store => ({
     sortBox: store.dashboard.sortBox,
     currentUserId: store.auth.currentUserId,
     web3: store.app.web3,
-    preSaleContract: store.app.presaleContractInstance,
-    refPointsContract: store.app.refPointsTrackerContractInstance,
-    goldContract: store.app.goldContractInstance,
-    silverContract: store.app.silverContractInstance,
+    preSaleContract: store.app.presaleContract,
+    refPointsContract: store.app.refPointsTrackerContract,
+    goldContract: store.app.goldContract,
+    silverContract: store.app.silverContract,
     CountrySale: store.app.countrySaleInstance,
     currentAccount: store.app.currentAccount,
     gemService: store.app.gemServiceInstance,
@@ -101,7 +101,7 @@ const select = store => ({
     silverGoldService: store.app.silverGoldServiceInstance,
     countryService: store.app.countryServiceInstance,
     plotService: store.app.plotServiceInstance,
-    artifactContract: store.app.artifactContractInstance,
+    artifactContract: store.app.artifactContract,
 });
 
 class Dashboard extends Component {

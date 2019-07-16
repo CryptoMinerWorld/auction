@@ -70,7 +70,7 @@ export const getUserGems = ownerId => async (dispatch, getState) => {
 };
 
 export const getUserArtifacts = userId => async (dispatch, getState) => {
-    const artifactsBalance = await getState().app.artifactContractInstance.methods.balanceOf(userId).call();
+    const artifactsBalance = await getState().app.artifactContract.methods.balanceOf(userId).call();
     dispatch({type: USER_ARTIFACTS_RETRIEVED, payload: {userArtifacts: artifactsBalance}});
 };
 

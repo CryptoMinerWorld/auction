@@ -37,7 +37,7 @@ import {setSaleEventListeners} from "./saleEventListener";
 
 const select = store => ({
     silverGoldService: store.app.silverGoldServiceInstance,
-    presaleContract: store.app.presaleContractInstance,
+    presaleContract: store.app.presaleContract,
     currentUserId: store.auth.currentUserId,
     saleState: store.sale.saleState,
     userBalance: store.sale.balance,
@@ -69,7 +69,7 @@ class Sale extends Component {
             '1': {currentPrice: '...', boxesAvailable: '...'},
             '2': {currentPrice: '...', boxesAvailable: '...'},
         }
-    }
+    };
 
     async componentDidMount() {
         console.log(888888888888, ' PROPS: ', this.props);
@@ -152,7 +152,7 @@ class Sale extends Component {
         const smallScreenGeode = {
             margin: '10px 0',
             borderRadius: '10px',
-        }
+        };
 
         const buyArea = {
             display: 'flex',
@@ -168,7 +168,7 @@ class Sale extends Component {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-        }
+        };
 
         const arrows = {
             display: 'flex',
@@ -199,11 +199,11 @@ class Sale extends Component {
 
         const silverColor = {
             color: '#8ca0b4',
-        }
+        };
 
         const goldColor = {
             color: 'gold',
-        }
+        };
 
         const buyButton = {
             flex: '4',
@@ -257,19 +257,19 @@ class Sale extends Component {
             ...arrowButton,
             backgroundImage: 'url(' + upArrow + ')',
             backgroundSize: 'contain'
-        }
+        };
 
         const downArrowButton = {
             ...arrowButton,
             backgroundImage: 'url(' + downArrow + ')',
             backgroundSize: 'contain'
-        }
+        };
 
         const referralPointsPrices = {
             '0': 20,
             '1': 80,
             '2': 200,
-        }
+        };
 
         const {
             handleConfirmBuy, saleState, userBalance, windowWidth, currentUserId, provider, accountExists,
@@ -287,7 +287,7 @@ class Sale extends Component {
                 'ether': (saleState[index].currentPrice * amount).toFixed(5),
                 'points': (referralPointsPrices[index] * amount)
             }
-        }
+        };
         console.log('SALE STATE PROP:', saleState);
 
         const saleStarted = saleState['3'] && saleState['3'].saleStart * 1000 <= Math.round(new Date().getTime());
@@ -706,7 +706,7 @@ export default compose(
 
 export const subscribeOnSaleEvent = () => {
 
-}
+};
 
 
 export const ConfirmBuyPopup = ({type, amount, price, refPoints, refPointsAvailable, referrer, handleConfirmBuy, hidePopup}) => {
@@ -731,7 +731,7 @@ export const ConfirmBuyPopup = ({type, amount, price, refPoints, refPointsAvaila
         marginTop: '7px',
         marginBottom: '7px',
         fontSize: '16px'
-    }
+    };
 
     const confirmButton2 = {
         //position: 'absolute',
@@ -752,7 +752,7 @@ export const ConfirmBuyPopup = ({type, amount, price, refPoints, refPointsAvaila
         fontWeight: 'bold',
         marginTop: '7px',
         fontSize: '16px'
-    }
+    };
 
 
     return (

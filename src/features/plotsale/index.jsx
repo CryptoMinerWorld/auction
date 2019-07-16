@@ -31,7 +31,7 @@ const select = store => ({
     web3: store.app.web3,
     currentUserId: store.auth.currentUserId,
     foundersPlotsBalance: store.plotSale.foundersPlotsBalance,
-    foundersPlotsContract: store.app.foundersPlotsContractInstance,
+    foundersPlotsContract: store.app.foundersPlotsContract,
 });
 
 let plot1;

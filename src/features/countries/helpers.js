@@ -70,10 +70,10 @@ export const handleResell = (
 export const checkIfCountryIsForSale = countryId => {
   console.log('STORE:', store.getState());
   return store
-    && store.getState().app.countryContractInstance
+    && store.getState().app.countryContract
     && store
       .getState()
-      .app.countryContractInstance.methods.ownerOf(countryId)
+      .app.countryContract.methods.ownerOf(countryId)
       .call({}, (error, address) => {
           if (address) {
               console.log('country already sold', countryId);
@@ -84,4 +84,4 @@ export const checkIfCountryIsForSale = countryId => {
 
           return true;
       });
-}
+};

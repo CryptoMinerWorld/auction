@@ -205,9 +205,9 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
     console.log("~~~~~~ get updated TRANSACTION history ~~~~~~");
     const web3 = getState().app.web3;
     const minerContract = getState().app.plotServiceInstance.minerContract;
-    const auctionContract = getState().app.dutchContractInstance;
+    const auctionContract = getState().app.auctionContract;
     console.log("~~~~~~ get updated TRANSACTION history 2 ~~~~~~");
-    const gemContract = getState().app.gemsContractInstance;
+    const gemContract = getState().app.gemContract;
     console.log("~~~~~~ get updated TRANSACTION history 3 ~~~~~~");
     const plotSaleContract = getState().app.plotServiceInstance.plotSaleContract;
     console.log("~~~~~~ get updated TRANSACTION history 4 ~~~~~~");

@@ -25,8 +25,8 @@ const select = store => {
         auctions: store.market.auctions,
         error: store.marketActions.error,
         totalGems: store.market.auctions && store.market.auctions.length,
-        dutchContract: store.app.dutchContractInstance,
-        gemContractAddress: store.app.gemsContractInstance && store.app.gemsContractInstance.options.address,
+        dutchContract: store.app.auctionContract,
+        gemContractAddress: store.app.gemContract && store.app.gemContract.options.address,
         gemService: store.app.gemServiceInstance,
         auctionService: store.app.auctionServiceInstance,
     });

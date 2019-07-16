@@ -7,10 +7,10 @@ import {getUserDetails} from "../../features/dashboard/dashboardActions";
 
 export default class AuctionService {
 
-    constructor(auctionContractInstance, auctionHelperContractInstance, gemContractInstance) {
-        this.auctionContract = auctionContractInstance;
-        this.auctionHelperContract = auctionHelperContractInstance;
-        this.gemContract = gemContractInstance;
+    constructor(auctionContract, auctionHelperContract, gemContract) {
+        this.auctionContract = auctionContract;
+        this.auctionHelperContract = auctionHelperContract;
+        this.gemContract = gemContract;
     }
 
     getAuctionOwnerGems = async (ownerId) => {
