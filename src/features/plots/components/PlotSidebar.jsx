@@ -75,11 +75,13 @@ class PlotSidebar extends Component {
                     />
                 </SidebarSection>
                 <SidebarSection mobileFlex={3} mobileDirection={"column"} isShown={isShown}>
-                    <BuyButton><a style={{width: "100%", color: "white"}} href={'/plots'}>BUY PLOTS</a></BuyButton>
+                    <BuyButton disabled={disableSidebarIcons}>
+                        {!disableSidebarIcons ? <a style={{width: "100%", color: "white"}} href={'/plots'}>BUY PLOTS</a> : "BUY PLOTS"}
+                        </BuyButton>
                     <ProcessAllInfo
                         style={{fontSize: "14px", lineHeight: "1.3"}}>{totalUnprocessedBlocksNumber}</ProcessAllInfo>
                     <ProcessAllInfo style={{color: "#828689", lineHeight: "1"}}>Unprocessed Blocks</ProcessAllInfo>
-                    <BuyButton onClick={() => this.props.showSidebarPopup("process-all")}>
+                    <BuyButton disabled={disableSidebarIcons} onClick={() => !disableSidebarIcons && this.props.showSidebarPopup("process-all")}>
                         PROCESS ALL <ProcessAllButtonInfo>({totalUnprocessedBlocksNumber})</ProcessAllButtonInfo>
                     </BuyButton>
                 </SidebarSection>

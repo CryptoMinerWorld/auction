@@ -162,14 +162,16 @@ const ChestsBar = ({worldChestValue, monthlyChestValue, foundersChestValue}) => 
               <ChestContainer>
                   <ChestImg src={gemstoneChests}/>
                   <ChestDescription>
-                      <ChestValue>{monthlyChestValue && 10 - (monthlyChestValue.toFixed(2) % 10)} ETH</ChestValue>
+                      <ChestValue>{monthlyChestValue && (monthlyChestValue % 10).toFixed(2)} ETH</ChestValue>
                       <MonthlyChestInfo>
-                          {` Until next Gemstone Chest is found!`}
+                          {`In the current Gemstone Chest`}
                           </MonthlyChestInfo>
-                      <MonthlyChestDescription>Every <Pink>10 ETH</Pink> stored, creates a new Chest.</MonthlyChestDescription>
+                      <MonthlyChestDescription>{`Gemstone Chest opens after `}<Pink>10 ETH</Pink>{` fills it.`}</MonthlyChestDescription>
+                      <MonthlyChestDescription><Pink>{(monthlyChestValue || Number(monthlyChestValue) >= 0) ? (10 - (monthlyChestValue % 10).toFixed(2)) : ""}</Pink>
+                          {` until this one can be opened!.`}</MonthlyChestDescription>
                       <MonthlyChestInfo><Pink
-                        style={{fontSize: "150%"}}>{monthlyChestValue && Math.floor(monthlyChestValue / 10)}</Pink>
-                          {` Gemstone Chests Found so far! `}<Pink>({monthlyChestValue && monthlyChestValue.toFixed(2)} ETH)</Pink>
+                        style={{fontSize: "150%"}}>{monthlyChestValue ? Math.floor(monthlyChestValue / 10) : ""}</Pink>
+                          {` Gemstone Chests Opened so far! `}
                       </MonthlyChestInfo>
                   </ChestDescription>
               </ChestContainer>
@@ -178,8 +180,8 @@ const ChestsBar = ({worldChestValue, monthlyChestValue, foundersChestValue}) => 
                   <ChestDescription>
                       <ChestValue>{foundersChestValue && (foundersChestValue.toFixed(2))} ETH</ChestValue>
                       <ChestTitle>In The Founder's Chest!</ChestTitle>
-                      <MonthlyChestDescription>This Chest will start accepting Founder's Keys
-                          on <Pink>8-15-19</Pink></MonthlyChestDescription>
+                      <MonthlyChestDescription>This Chest will start accepting</MonthlyChestDescription>
+                      <MonthlyChestDescription>Founder's Keys on <Pink>8-15-19</Pink></MonthlyChestDescription>
                   </ChestDescription>
               </ChestContainer>
           </ChestBar>

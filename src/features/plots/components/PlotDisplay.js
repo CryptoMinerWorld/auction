@@ -169,21 +169,21 @@ class PlotDisplay extends Component {
             case "mined":
                 sortingFunction = (p1, p2) => {
                     if (p1.processedBlocks >= 100) {
-                        return -1;
+                        return 1;
                     }
                     else {
                         if (p2.processedBlocks >= 100) {
-                            return 1;
+                            return -1;
                         }
                     }
                     if (p1.currentPercentage === p2.currentPercentage) {
-                        return p1.miningState === MINING ? 1 : -1;
+                        return (p1.miningState === MINING || p1.miningState === MINED) ? 1 : -1;
                     }
                     return p1.currentPercentage - p2.currentPercentage;
                 };
                 break;
             case "time_left":
-                sortingFunction = (p1, p2) => p1.processedBlocks >= 100 ? -1 : p1.currentPercentage - p2.currentPercentage;
+                sortingFunction = (p1, p2) => p1.processedBlocks >= 100 ? 1 : p2.currentPercentage - p1.currentPercentage;
                 break;
             case "dirt":
                 sortingFunction = (p1, p2) => p1.layerPercentages["0"] - p2.layerPercentages["0"];
@@ -369,6 +369,7 @@ class PlotDisplay extends Component {
                                                 selected={plotSelected && plotSelected.id === plot.id}
                                                 //clipPath={PlotDisplay.generateRandomClipPath()}
                                                 onClick={() => {
+                                                    if (!isOwner) return;
                                                     if (plotSelected && plotSelected.id === plot.id) {
                                                         this.showSidebarPopup("plots-selected")
                                                     } else {
@@ -380,7 +381,7 @@ class PlotDisplay extends Component {
                                     <div style={miningStatus}>{convertMinutesToTimeString(getTimeLeftMinutes(plot, plot.gemMines))}</div>
                                   }
                                   {(plot.miningState === NO_GEM || plot.miningState === NEW_PLOT) &&
-                                    <div style={miningStatus}>{plot.currentPercentage} Blocks</div>
+                                    <div style={miningStatus}>{100 - plot.currentPercentage} Blocks</div>
                                   }
                                   {(plot.miningState !== MINING && plot.miningState !== NO_GEM && plot.miningState !== NEW_PLOT && plot.miningState !== PROCESSING) &&
                                     <div style={miningStatus}>&nbsp;</div>

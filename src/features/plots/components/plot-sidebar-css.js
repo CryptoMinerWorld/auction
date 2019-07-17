@@ -31,6 +31,7 @@ export const BuyButton = styled.div`
         padding: 0;
     }
 
+    opacity: ${props => props.disabled ? "0.5" : "1"};
     flex: 4;
     background-image: url(${buyNowImage});
     background-position: center center;
@@ -44,7 +45,7 @@ export const BuyButton = styled.div`
     justify-content: center;
     font-weight: bold;
     padding: 12px;
-    cursor: pointer;
+    cursor: ${props => props.disabled ? "default" : "pointer"};
     color: white;
     font-size: 16px
 `;

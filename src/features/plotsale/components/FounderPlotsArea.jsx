@@ -4,7 +4,7 @@ import actionButtonImage from "../../../app/images/noTextGemButton.png";
 import Icon from "antd/lib/icon";
 
 const antarcticaImageLinkMedium = 'https://firebasestorage.googleapis.com/v0/b/cryptominerworld-7afd6.appspot.com/o/flagMap%2FAntarctica_Flag_Map%40307px.png?alt=media&token=e1feac73-a4ea-48e6-a68e-bb21de668380';
-const PLOTS_TO_GET_NUMBER = 5;
+const PLOTS_TO_GET_NUMBER = 30;
 
 const FounderPlotsArea = ({founderPlotsBalance, handleGetFounderPlots}) => {
     const [processBuy, setProcessBuy] = useState(false);

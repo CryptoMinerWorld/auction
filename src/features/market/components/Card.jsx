@@ -14,7 +14,7 @@ class Cards extends React.Component {
 
     state = {
         gemImage: this.props.auction.image
-    }
+    };
 
     async componentDidMount() {
         const {auction} = this.props;
@@ -73,19 +73,19 @@ class Cards extends React.Component {
                       <small className="basic">
                           Ξ
                           {' '}
-                          <small>{auction.maxPrice}</small>
+                          <small>{auction.maxPrice.toFixed(3)}</small>
                       </small>
                       <big className="db b f3 o-70">
           <span className="basic" style={{color: '#FFB700'}}>
             Ξ
           </span>
                           {' '}
-                          <span style={{color: '#FFB700'}}>{auction.currentPrice}</span>
+                          <span style={{color: '#FFB700'}}>{auction.currentPrice.toFixed(3)}</span>
                       </big>
                       <small className="basic">
                           Ξ
                           {' '}
-                          <small>{auction.minPrice}</small>
+                          <small>{auction.minPrice.toFixed(3)}</small>
                       </small>
                   </div>
                   <div className="tc">

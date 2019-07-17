@@ -221,9 +221,9 @@ class PlotSale extends Component {
                             }
                         </BuyFormContainer>
                         <MapArea>
-                            {foundersPlotsBalance && (foundersPlotsBalance > 0) ?
+                            {foundersPlotsBalance && (Number(foundersPlotsBalance) > 0) ?
                             <FounderPlotsArea
-                              founderPlotsBalance={foundersPlotsBalance}
+                              founderPlotsBalance={Number(foundersPlotsBalance)}
                               handleGetFounderPlots={(n, callback) => {
                                       handleGetFounderPlots(n, callback)
                               }}

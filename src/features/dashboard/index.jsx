@@ -22,16 +22,12 @@ import {
 } from './dashboardActions';
 import {preLoadAuctionPage} from '../market/marketActions';
 import CountryDashboard from '../countries/components/Dashboard';
-import Gold from '../../app/images/dashboard/Gold.png';
-import Silver from '../../app/images/dashboard/Silver.png';
 import Gem from '../../app/images/dashboard/gems.png';
 import Artifact from '../../app/images/dashboard/Artifacts.png';
 import Keys from '../../app/images/dashboard/Keys.png';
 import Land from '../../app/images/dashboard/Land.png';
 import Plot from '../../app/images/dashboard/Plot.png';
 import {EnhancedCoupon} from './components/Coupon';
-import Loading from "../../components/Loading";
-import Spin from "antd/lib/spin";
 import {getUserBalance} from "../sale/saleActions";
 import PlotDashboard from "../plots";
 import {getUserPlots, refreshUserPlot} from "../plots/plotActions";
@@ -393,12 +389,12 @@ class Dashboard extends Component {
         }
 
         if (!(match.params && match.params.userId) && currentUserId) {
-            return <Redirect to={`/profile/${currentUserId}`} />;
+            return <Redirect to={`/profile/${currentUserId}`}/>;
         }
 
         return (
           <div className="bg-off-black white card-container" data-testid="profile-page">
-              <StatusBar dashboardUser={dashboardUser} userBalance={userBalance} />
+              <StatusBar dashboardUser={dashboardUser} userBalance={userBalance}/>
               <Tabs
                 activeKey={`${tab}`}
                 animated
@@ -476,8 +472,8 @@ class Dashboard extends Component {
                   >
                       <GemDashboard/>
                   </TabPane>
-                  <TabPane
-                    tab={(
+                  {(userCountries && userCountries.length > 0) ?
+                    <TabPane tab={(
                       <span
                         tabIndex={-2}
                         onKeyPress={() => this.setState({tab: 3})}
@@ -487,7 +483,7 @@ class Dashboard extends Component {
                           userCountries
                         ) && ' o-50'}`}
                       >
-                <img src={Land} alt="" className="h2 w-auto pr2"/>
+                          <img src={Land} alt="" className="h2 w-auto pr2"/>
                           {// eslint-disable-next-line
                               !userCountries ? (
                                 <Icon type="loading" theme="outlined"/>
@@ -495,27 +491,23 @@ class Dashboard extends Component {
                           }
                           {' '}
                           Countries
-              </span>
-                    )}
-                    disabled={
-                        !(userCountries)
-                        || userCountries.length === 0
-                    }
-
-                    key="3"
-                  >
-                      <CountryDashboard
-                        userCountryIdList={userCountries}
-                        withdrawEth={() => {
-                            this.props.handleWithdrawCountryEth();
-                        }}
-                        totalNotWithdrawn={this.props.countriesNotWithdrawnEth}
-                        isWithdrawing={pendingTransactions && pendingTransactions.find(tx => tx.type === COUNTRY_WITHDRAW)}
-                        userId={match.params.userId}
-                        currentUserId={currentUserId}
-                        handleGetAvailableCountryPlots={this.props.handleGetAvailableCountryPlots}
-                      />
-                  </TabPane>
+                      </span>)} disabled={
+                                 !(userCountries)
+                                 || userCountries.length === 0}
+                             key="3"
+                    >
+                        <CountryDashboard
+                          userCountryIdList={userCountries}
+                          withdrawEth={() => {
+                              this.props.handleWithdrawCountryEth();
+                          }}
+                          totalNotWithdrawn={this.props.countriesNotWithdrawnEth}
+                          isWithdrawing={pendingTransactions && pendingTransactions.find(tx => tx.type === COUNTRY_WITHDRAW)}
+                          userId={match.params.userId}
+                          currentUserId={currentUserId}
+                          handleGetAvailableCountryPlots={this.props.handleGetAvailableCountryPlots}
+                        />
+                    </TabPane> : ""}
 
                   <TabPane
                     tab={(

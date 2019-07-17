@@ -47,7 +47,7 @@ export class SelectedGemsPopup extends Component {
               </PlotsInfo>
               <div style={{display: "flex", flexWrap: "wrap"}}>
                   <Col flex={2} style={{marginRight: "10px", minWidth: "300px", alignItems: "center"}}>
-                      <MinedBlocks>
+                      {/*<MinedBlocks>
                           <div style={{width: "100%", textAlign: "center", color: "#AEAEB7"}}>
                               Total Blocks Gem has Mined
                           </div>
@@ -61,7 +61,7 @@ export class SelectedGemsPopup extends Component {
                             tier={3}>{Math.max(Math.min(plot.layerPercentages[3], plot.currentPercentage - plot.layerEndPercentages[2]), 0)}</TierIndicator>
                           <TierIndicator
                             tier={4}>{Math.max(Math.min(plot.layerPercentages[4], plot.currentPercentage - plot.layerEndPercentages[3]), 0)}</TierIndicator>
-                      </MinedBlocks>
+                      </MinedBlocks>*/}
                   </Col>
                   <Col flex={1}>
                       <ButtonsBlock>

@@ -14,7 +14,7 @@ class ProgressMeter extends PureComponent {
         <p className="basic" style={{ fontSize: 'xx-large' }}>
           Ξ
           {' '}
-          <span data-testid="currentPrice">{currentPrice}</span>
+          <span data-testid="currentPrice">{currentPrice.toFixed(4)}</span>
         </p>
 
         <Progress
@@ -28,12 +28,12 @@ class ProgressMeter extends PureComponent {
           <small className="basic">
             Ξ
             {' '}
-            <span data-testid="minPrice">{maxPrice}</span>
+            <span data-testid="minPrice">{maxPrice.toFixed(3)}</span>
           </small>
           <small className="basic">
             Ξ
             {' '}
-            <span data-testid="maxPrice">{minPrice}</span>
+            <span data-testid="maxPrice">{minPrice.toFixed(3)}</span>
           </small>
         </div>
       </div>

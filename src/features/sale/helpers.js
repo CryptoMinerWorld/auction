@@ -58,7 +58,7 @@ export const calculatePercentage = (min, max, current) =>
   // eslint-disable-next-line implicit-arrow-linebreak
   100 - ((current - min) / (max - min)) * 100;
 
-export const weiToEth = wei => Number((wei / 1000000000000000000).toFixed(3));
+export const weiToEth = wei => Number((wei / 1000000000000000000));
 
 export const gradeConverter = gradeValue => ({
   1: 'D',

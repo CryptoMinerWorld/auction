@@ -65,13 +65,7 @@ const Navbar = ({
               {/* <a href="https://cryptominerworld.com/" title="Home" className="fl">
           <img src={img} className="dib h2 w-auto br-100 dn-ns mr3" alt="CryptoMiner World" />
         </a> */}
-              <a
-                className="link dim dark-gray f6 f5-l dn dib-ns mr3 mr4-l"
-                href="https://cryptominerworld.com/game_info/"
-                title="Game Information"
-              >
-                  Game Info
-              </a>
+
 
               {existingUser ? (
                 <NavLink
