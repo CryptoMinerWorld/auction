@@ -307,7 +307,7 @@ const actions = {
 
 const select = store => ({
   web3: store.app.web3,
-  gemsContract: store.app.gemsContractInstance,
+  gemsContract: store.app.gemContract,
   currentAccountId: store.app.currentAccount,
 });
 

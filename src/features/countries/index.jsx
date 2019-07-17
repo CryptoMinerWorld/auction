@@ -14,7 +14,7 @@ import { checkIfCountryIsForSale } from './helpers';
 import styled from "styled-components";
 
 const select = store => ({
-  countryService: store.app.countryServiceInstance
+  countryService: store.app.countryService
 });
 
 const CountryAuction = ({countryService}) => {

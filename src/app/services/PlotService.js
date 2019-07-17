@@ -6,10 +6,10 @@ import {COUNTRY_WITHDRAW} from "../../features/dashboard/dashboardConstants";
 
 export default class PlotService {
 
-    constructor(plotContractInstance, plotSaleContractInstance, minerContractInstance) {
-        this.plotSaleContract = plotSaleContractInstance;
-        this.plotContract = plotContractInstance;
-        this.minerContract = minerContractInstance;
+    constructor(plotContract, plotSaleContract, minerContract) {
+        this.plotSaleContract = plotSaleContract;
+        this.plotContract = plotContract;
+        this.minerContract = minerContract;
     }
 
     withdrawCountriesEth = (ownerId) => {

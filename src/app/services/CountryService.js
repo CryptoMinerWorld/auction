@@ -3,9 +3,9 @@ import {unpackGemProperties} from "./GemService";
 
 export default class CountryService {
 
-    constructor(countryExtContractInstance, countryContractInstance) {
-        this.countryExtContract = countryExtContractInstance;
-        this.countryContract = countryContractInstance;
+    constructor(countryExtContract, countryContract) {
+        this.countryExtContract = countryExtContract;
+        this.countryContract = countryContract;
     }
 
     getTokenSoldMap = async () => {
@@ -14,7 +14,7 @@ export default class CountryService {
           .call();
         console.log('token map return: <<<<<<<<<<<<<<<<<< ', new BigNumber(countriesSoldMap).toString(2).padStart(192, '0'), countriesSoldMap);
         return new BigNumber(countriesSoldMap).toString(2).padStart(192, '0');
-    }
+    };
 
     getUserCountriesNumber = async userId => {
         const userIdToLowerCase = userId
@@ -22,7 +22,7 @@ export default class CountryService {
           .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
           .join('');
         return await this.countryContract.methods.balanceOf(userIdToLowerCase).call();
-    }
+    };
 
     getUserCountries = async userId => {
         const userIdToLowerCase = userId

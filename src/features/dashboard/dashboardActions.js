@@ -20,7 +20,7 @@ import {getUserBalance} from "../sale/saleActions";
 import {weiToEth} from "../sale/helpers";
 
 export const withdrawCountryEth = () => async (dispatch, getState) => {
-    const plotService = getState().app.plotServiceInstance;
+    const plotService = getState().app.plotService;
     const currentUserId = getState().auth.currentUserId;
     let txHash;
     plotService.withdrawCountriesEth(currentUserId)
@@ -46,8 +46,8 @@ export const getUserGems = ownerId => async (dispatch, getState) => {
     console.log('11111 FETCH!');
     dispatch({type: FETCH_USER_GEMS_BEGUN});
 
-    const gemService = getState().app.gemServiceInstance;
-    const auctionService = getState().app.auctionServiceInstance;
+    const gemService = getState().app.gemService;
+    const auctionService = getState().app.auctionService;
 
     const userIdToLowerCase = ownerId
       .split('')
@@ -70,13 +70,13 @@ export const getUserGems = ownerId => async (dispatch, getState) => {
 };
 
 export const getUserArtifacts = userId => async (dispatch, getState) => {
-    const artifactsBalance = await getState().app.artifactContractInstance.methods.balanceOf(userId).call();
+    const artifactsBalance = await getState().app.artifactContract.methods.balanceOf(userId).call();
     dispatch({type: USER_ARTIFACTS_RETRIEVED, payload: {userArtifacts: artifactsBalance}});
 };
 
 export const getUserCountries = userId => async (dispatch, getState) => {
-    const countryService = getState().app.countryServiceInstance;
-    const plotService = getState().app.plotServiceInstance;
+    const countryService = getState().app.countryService;
+    const plotService = getState().app.plotService;
     const currentUserId = getState().auth.currentUserId;
 
     const [userCountries, totalNotWithdrawn] = await Promise.all([
@@ -110,7 +110,7 @@ export const getUserDetails = async userId => {
 
 export const useCoupon = (couponCode, hidePopup) => async (dispatch, getState) => {
     //console.log('COUPON')
-    const silverGoldService = getState().app.silverGoldServiceInstance;
+    const silverGoldService = getState().app.silverGoldService;
     const currentUser = getState().auth.currentUserId;
     //console.log('Service:::', silverGoldService);
     if (!silverGoldService) return;

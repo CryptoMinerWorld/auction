@@ -7,7 +7,8 @@ export const plotSale = (state = {}, action) => {
         return {
             ...state,
             monthlyChestValue: action.payload.monthlyChestValue,
-            worldChestValue: action.payload.worldChestValue
+            worldChestValue: action.payload.worldChestValue,
+            foundersChestValue: action.payload.foundersChestValue,
         };
     }
     if (action.type === FOUNDERS_PLOTS) {

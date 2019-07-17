@@ -14,11 +14,12 @@ import {CHEST_VALUE_RECEIVED} from "../sale/saleConstants";
 import {PLOT_SALE_CHEST_VALUES_RECEIVED} from "./plotSaleReducer";
 import {BINDING_GEM, FOUNDERS_PLOTS, PLOT_SALE} from "../plots/plotConstants";
 import {AUCTION_START} from "../items/itemConstants";
-const REACT_APP_WORLD_CHEST="0x2281f7Dc57011dA1668eA9460BB40340dB89e29e";
-const REACT_APP_MONTHLY_CHEST="0x5446c218245a9440Ac3B03eda826260a9198C7a9";
+const REACT_APP_WORLD_CHEST="0x29E007c1BFc9c9aA1351B8B3D3B01Cc45dF6Ae4D";
+const REACT_APP_GEMSTONE_CHESTS="0x2906DA90D3f99D5913bB3461183682951ca7280c";
+const REACT_APP_FOUNDERS_CHEST="0xC352f692F55dEf49f0B736Ec1F7CA0F862eabD23";
 
 export const getAvailableCountryPlots = (countryId) => async (dispatch, getState) => {
-    const plotService = getState().app.plotServiceInstance;
+    const plotService = getState().app.plotService;
     const totalPlots = COUNTRY_PLOTS_DATA[countryId - 1];
     const plotsMinted = await plotService.getPlotsMintedByCountryId(countryId);
     console.log("PLOTS MINTED: ", plotsMinted);
@@ -29,14 +30,15 @@ export const getAvailableCountryPlots = (countryId) => async (dispatch, getState
 };
 
 export const getChestValues = () => async (dispatch, getState) => {
-    console.log("AAAAAAAAAAAA");
+    // console.log("AAAAAAAAAAAA");
     const web3 = getState().app.web3;
     const worldChestValue = weiToEth(await web3.eth.getBalance(REACT_APP_WORLD_CHEST));
-    const monthlyChestValue = weiToEth(await web3.eth.getBalance(REACT_APP_MONTHLY_CHEST));
-    console.log("AAAAAAAAAAAAa", worldChestValue, monthlyChestValue);
+    const monthlyChestValue = weiToEth(await web3.eth.getBalance(REACT_APP_GEMSTONE_CHESTS));
+    const foundersChestValue = weiToEth(await web3.eth.getBalance(REACT_APP_FOUNDERS_CHEST));
+    // console.log("AAAAAAAAAAAAa", worldChestValue, monthlyChestValue);
     dispatch({
         type: PLOT_SALE_CHEST_VALUES_RECEIVED,
-        payload: {worldChestValue, monthlyChestValue}
+        payload: {worldChestValue, monthlyChestValue, foundersChestValue}
     });
 };
 
@@ -47,7 +49,7 @@ export const buyPlots = (countryId, totalAmount, amountExceeded, referrer, hideP
     //const priceInEth = plotPrice*amount;
     const priceInEthNotExceeded = (totalAmount - amountExceeded)*plotPrice;
     const priceInEthExceeded = (amountExceeded)*plotPrice;
-    const plotService = getState().app.plotServiceInstance;
+    const plotService = getState().app.plotService;
     const currentUser = getState().auth.currentUserId;
     let randomCountry;
 
@@ -124,8 +126,8 @@ export const buyPlots = (countryId, totalAmount, amountExceeded, referrer, hideP
 };
 
 export const getFounderPlotsNumber = (userId) => async(dispatch, getState) => {
-    const foundersPlotsContract = getState().app.foundersPlotsContractInstance;
-    const plotAntarcticaContract = getState().app.plotAntarcticaContractInstance;
+    const foundersPlotsContract = getState().app.foundersPlotsContract;
+    const plotAntarcticaContract = getState().app.plotAntarcticaContract;
     console.log("FOUNDERS PLOTS CONTRACT", foundersPlotsContract, userId);
     const [initialBalance, issuedTokens] = await Promise.all([
       foundersPlotsContract.methods.geodeBalances(userId).call(),
@@ -139,7 +141,7 @@ export const getFounderPlotsNumber = (userId) => async(dispatch, getState) => {
 };
 
 export const getFounderPlots = (n, callback) => async(dispatch, getState) => {
-    const plotAntarcticaContract = getState().app.plotAntarcticaContractInstance;
+    const plotAntarcticaContract = getState().app.plotAntarcticaContract;
     const currentUserId = getState().auth.currentUserId;
     console.log("contract, userId", plotAntarcticaContract, currentUserId);
     let txHash;

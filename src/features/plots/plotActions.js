@@ -21,7 +21,7 @@ export const getUserPlots = ownerId => async (dispatch, getState) => {
     console.warn("GETTING USER PLOTS>>>");
     const currentUserId = getState().auth.currentUserId;
     let userId = ownerId || currentUserId;
-    const plotService = getState().app.plotServiceInstance;
+    const plotService = getState().app.plotService;
     const pendingTransactions = getState().tx.pendingTransactions;
     const {userPlots, gemMiningIds} = await plotService.getOwnerPlots(userId);
     console.log("CHECK:" + ownerId + " " + currentUserId + " " + pendingTransactions.length);
@@ -66,7 +66,7 @@ export const bindGem = (plot, gem, updatePlotCallback, transactionStartCallback)
     const initialMiningState = plot.miningState;
     const web3 = getState().app.web3;
     let txHash;
-    const result = getState().app.plotServiceInstance.bindGem(plot.id, gem.id, currentUser)
+    const result = getState().app.plotService.bindGem(plot.id, gem.id, currentUser)
       .on('transactionHash', (hash) => {
           txHash = hash;
           addPendingTransaction({
@@ -118,7 +118,7 @@ export const releaseGem = (plot, updatePlotCallback, transactionStartCallback) =
     const currentUser = getState().auth.currentUserId;
     const web3 = getState().app.web3;
     let txHash;
-    const result = getState().app.plotServiceInstance.releaseGem(plot.id, plot.gemMinesId)
+    const result = getState().app.plotService.releaseGem(plot.id, plot.gemMinesId)
       .on('transactionHash', (hash) => {
           txHash = hash;
           addPendingTransaction({
@@ -156,7 +156,7 @@ export const processPlots = (plotIds) => async (dispatch, getState) => {
     console.log("process plots ids:", plotIds);
     const currentUser = getState().auth.currentUserId;
     let txHash;
-    getState().app.plotServiceInstance.processPlots(plotIds)
+    getState().app.plotService.processPlots(plotIds)
       .on('transactionHash', (hash) => {
           txHash = hash;
           addPendingTransaction({
@@ -189,7 +189,7 @@ export const processBlocks = (plot, updatePlotCallback) => async (dispatch, getS
     const previousState = plot.miningState;
     console.warn("PLOT:", plot, plot.id);
     let txHash;
-    const result = getState().app.plotServiceInstance.processBlocks(plot.id, currentUser)
+    const result = getState().app.plotService.processBlocks(plot.id, currentUser)
       .on('transactionHash', (hash) => {
           txHash = hash;
           addPendingTransaction({

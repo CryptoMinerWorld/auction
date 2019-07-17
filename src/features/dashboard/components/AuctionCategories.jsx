@@ -13,7 +13,7 @@ import Land from '../../../app/images/dashboard/Land.png';
 import { setError } from '../../../app/appActions';
 
 const select = store => ({
-  preSaleContract: store.app.presaleContractInstance,
+  preSaleContract: store.app.presaleContract,
 });
 
 class PlayerStats extends PureComponent {
