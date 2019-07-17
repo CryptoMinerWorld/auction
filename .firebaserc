@@ -3,6 +3,7 @@
     "default": "dev-cryptominerworld",
     "dev": "dev-cryptominerworld",
     "prod": "cryptominerworld-7afd6",
-    "staging": "staging-cryptominerworld"
+    "staging": "staging-cryptominerworld",
+    "dev2": "dev2-cryptominerworld"
   }
 }

@@ -4,35 +4,7 @@ import getWeb3 from '../../app/utils/getWeb3';
 import { db, storage } from '../../app/utils/firebase';
 import DisplayCard from './DisplayCard';
 import MintForm from './MintForm';
-
-const mintABI = [
-  {
-    constant: false,
-    inputs: [
-      {
-        name: 'color',
-        type: 'uint8',
-      },
-      {
-        name: 'level',
-        type: 'uint8',
-      },
-      {
-        name: 'gradeType',
-        type: 'uint8',
-      },
-      {
-        name: 'gradeValue',
-        type: 'uint24',
-      },
-    ],
-    name: 'mint',
-    outputs: [],
-    payable: false,
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-];
+import MintHelper from './../../app/ABI/MintHelper';
 
 class Mint extends PureComponent {
   state = {
@@ -61,11 +33,18 @@ class Mint extends PureComponent {
     this.setState({ imageLoading: true });
 
     const type = {
-      7: 'Rub',
-      9: 'Sap',
-      10: 'Opa',
-      1: 'Gar',
-      2: 'Ame',
+        1: 'Gar',
+        2: 'Ame',
+        3: 'Aqu',
+        4: 'Dia',
+        5: 'Eme',
+        6: 'Pea',
+        7: 'Rub',
+        8: 'Per',
+        9: 'Sap',
+        10: 'Opa',
+        11: 'Top',
+        12: 'Tur',
     }[color];
 
     const grade = {
@@ -76,7 +55,6 @@ class Mint extends PureComponent {
       5: 'AA',
       6: 'AAA',
     }[gradeType];
-    console.log('FUCKFUCKFUCKFUCKFUCK');
     const fileName = `${type}-${level}-${grade}-4500.png`;
 
     storage
@@ -103,10 +81,10 @@ class Mint extends PureComponent {
     const { web3, contractAddress } = this.state;
 
     const currentAccount = await web3.eth.getAccounts().then(accounts => accounts[0]);
-    const mintContractInstance = new web3.eth.Contract(mintABI, contractAddress, {
+    const mintContractInstance = new web3.eth.Contract(MintHelper.abi, contractAddress, {
       from: currentAccount,
     });
-    await mintContractInstance.methods.mint(_color, _level, _gradeType, _gradeValue).send();
+    await mintContractInstance.methods.mint(_color, _level, _gradeType).send();
   };
 
   // eslint-disable-next-line
