@@ -3,6 +3,8 @@ src/app/images/
 build/
 environmnetVariables.md
 
+.idea/
+
 # cypress
 cypress/screenshots
 cypress/videos
