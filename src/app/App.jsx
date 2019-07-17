@@ -186,6 +186,8 @@ class App extends Component {
               artifactABI, balanceABI, plotAntarcticaABI, foundersPlotsABI
           }, currentAccountId);
 
+        console.info("contracts", contracts);
+
         if (contracts) {
             client.writeData({
                 data: {
