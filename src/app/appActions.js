@@ -2,6 +2,9 @@ import {CLEAR_ERROR, CONTRACTS_ADDED, SET_ERROR,} from './reduxConstants';
 
 
 export const sendContractsToRedux = (web3, contracts, services, currentAccount) => (dispatch) => {
+
+    console.info("SEND CONTRACTS TO REDUX", contracts, services);
+
     dispatch({
         type: CONTRACTS_ADDED,
         payload: {
@@ -23,6 +26,7 @@ export const clearError = () => ({type: CLEAR_ERROR});
 
 export const instantiateContracts = async (assistInstance, web3, ABISet, currentAccountId) => {
 
+
     let auctionContract, tokenHelperContract, gemContract, countryContract, refPointsTrackerContract, goldContract,
       silverContract, workshopContract, balanceContract, silverSaleContract, silverCouponsContract, plotSaleContract,
       plotContract,
@@ -32,7 +36,7 @@ export const instantiateContracts = async (assistInstance, web3, ABISet, current
         try {
             [auctionContract, tokenHelperContract, gemContract, countryContract, refPointsTrackerContract, goldContract,
                 silverContract, workshopContract, balanceContract, silverSaleContract, silverCouponsContract, plotSaleContract, plotContract,
-                minerContract, artifactContract, plotAntarcticaContract, foundersPlotsContract] = await Promise.all(
+                minerContract, artifactContract, plotAntarcticaContract, foundersPlotsContract] = await Promise.all([
                 assistInstance.Contract(await new web3.eth.Contract(ABISet.dutchAuctionABI,
                   process.env.REACT_APP_DUTCH_AUCTION, {from: currentAccountId})),
                 assistInstance.Contract(new web3.eth.Contract(ABISet.dutchAuctionHelperABI,
@@ -45,7 +49,7 @@ export const instantiateContracts = async (assistInstance, web3, ABISet, current
                   process.env.REACT_APP_REF_POINTS_TRACKER, {from: currentAccountId})),
                 assistInstance.Contract(new web3.eth.Contract(ABISet.goldABI,
                   process.env.REACT_APP_GOLD_ERC721, {from: currentAccountId})),
-                assistInstance.Contract(new web3.eth.Contract(ABIset.silverABI,
+                assistInstance.Contract(new web3.eth.Contract(ABISet.silverABI,
                   process.env.REACT_APP_SILVER_ERC721, {from: currentAccountId})),
                 assistInstance.Contract(new web3.eth.Contract(ABISet.workshopABI,
                   process.env.REACT_APP_WORKSHOP, {from: currentAccountId})),
@@ -66,14 +70,14 @@ export const instantiateContracts = async (assistInstance, web3, ABISet, current
                   process.env.REACT_APP_PLOT_ANTARCTICA, {from: currentAccountId})),
                 assistInstance.Contract(new web3.eth.Contract(ABISet.foundersPlotsABI,
                   process.env.REACT_APP_FOUNDERS_PLOTS, {from: currentAccountId}))
-            )
+            ])
         } catch(err) {console.error("ERROR OCCURRED WHILE INSTANTIATING CONTRACTS WITH ASSIST:", err)}
 
     } else {
         try {
             [auctionContract, tokenHelperContract, gemContract, countryContract, refPointsTrackerContract, goldContract,
                 silverContract, workshopContract, balanceContract, silverSaleContract, silverCouponsContract, plotSaleContract, plotContract,
-                minerContract, artifactContract, plotAntarcticaContract, foundersPlotsContract] = await Promise.all(
+                minerContract, artifactContract, plotAntarcticaContract, foundersPlotsContract] = await Promise.all([
                 (new web3.eth.Contract(ABISet.dutchAuctionABI,
                   process.env.REACT_APP_DUTCH_AUCTION, {from: currentAccountId})),
                 (new web3.eth.Contract(ABISet.dutchAuctionHelperABI,
@@ -86,7 +90,7 @@ export const instantiateContracts = async (assistInstance, web3, ABISet, current
                   process.env.REACT_APP_REF_POINTS_TRACKER, {from: currentAccountId})),
                 (new web3.eth.Contract(ABISet.goldABI,
                   process.env.REACT_APP_GOLD_ERC721, {from: currentAccountId})),
-                (new web3.eth.Contract(ABIset.silverABI,
+                (new web3.eth.Contract(ABISet.silverABI,
                   process.env.REACT_APP_SILVER_ERC721, {from: currentAccountId})),
                 (new web3.eth.Contract(ABISet.workshopABI,
                   process.env.REACT_APP_WORKSHOP, {from: currentAccountId})),
@@ -107,7 +111,7 @@ export const instantiateContracts = async (assistInstance, web3, ABISet, current
                   process.env.REACT_APP_PLOT_ANTARCTICA, {from: currentAccountId})),
                 (new web3.eth.Contract(ABISet.foundersPlotsABI,
                   process.env.REACT_APP_FOUNDERS_PLOTS, {from: currentAccountId}))
-            )
+            ])
         } catch (e) {console.error("ERROR OCCURRED WHILE INSTANTIATING CONTRACTS",e)}
     }
     return {
@@ -120,6 +124,7 @@ export const instantiateContracts = async (assistInstance, web3, ABISet, current
         silverContract,
         workshopContract,
         balanceContract,
+        presaleContract: {},
         silverSaleContract,
         silverCouponsContract,
         plotSaleContract,

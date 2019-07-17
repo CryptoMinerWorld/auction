@@ -21,7 +21,7 @@ import {gradeConverter} from "../market/helpers";
 export const getGemData = tokenId => async (dispatch, getState) => {
     // dispatch({type: FETCH_DATA_BEGUN});
     try {
-        const gemService = getState().app.gemServiceInstance;
+        const gemService = getState().app.gemService;
         const gem = await gemService.getGem(tokenId);
         dispatch({
             type: GEM_DETAILS_RECEIVED,
@@ -34,7 +34,7 @@ export const getGemData = tokenId => async (dispatch, getState) => {
 };
 
 export const getGemAuctionData = tokenId => async (dispatch, getState) => {
-    const auctionService = getState().app.auctionServiceInstance;
+    const auctionService = getState().app.auctionService;
     const auctionData = await auctionService.getGemAuctionData(tokenId);
 
     dispatch({
@@ -44,7 +44,7 @@ export const getGemAuctionData = tokenId => async (dispatch, getState) => {
 };
 
 export const getGemMiningData = tokenId => async (dispatch, getState) => {
-    const plotService = getState().app.plotServiceInstance;
+    const plotService = getState().app.plotService;
     const plotMined = await plotService.getPlotBoundToGem(tokenId);
     dispatch({
         type: GEM_MINING_DETAILS_RECEIVED,
@@ -265,7 +265,7 @@ export const giftGem = (gemId, addressTo) => (dispatch, getState) => {
 export const upgradeGem = (gem, levelUp, gradeUp, hidePopup, cost) => (dispatch, getState) => {
     console.log(333333333333, 'upgrading...');
     const workshopContract = getState().app.workshopContract;
-    const gemService = getState().app.gemServiceInstance;
+    const gemService = getState().app.gemService;
     console.log('Contract: ', workshopContract);
     const currentUser = getState().app.currentAccount;
     console.log('TX start');

@@ -35,8 +35,8 @@ export const getAuctions = () => async (dispatch, getState) => {
     dispatch({ type: FETCH_NEW_AUCTIONS_BEGUN });
     console.log('::::::::::::::::::getAuctions:::::::::::::::::::::');
 
-    //const gemService = getState().app.gemServiceInstance;
-    const auctionService = getState().app.auctionServiceInstance;
+    //const gemService = getState().app.gemService;
+    const auctionService = getState().app.auctionService;
     if (!auctionService)
         return;
 
@@ -54,12 +54,12 @@ export const getAuctions = () => async (dispatch, getState) => {
 
 
 export const getImagesForGems = gems => async (dispatch, getState) => {
-    const gemService = getState().app.gemServiceInstance;
+    const gemService = getState().app.gemService;
     console.log(':::::::::::::GEM SERVICE::', gemService);
     if (!gemService) return;
     const gemsWithImages = await gemService.getImagesForGems(gems);
     dispatch({type: FETCH_AUCTIONS_PAGE_IMAGES, payload: gemsWithImages});
-}
+};
 
 
 export const filterMarketplaceResults = () => (dispatch, getState) => {
@@ -215,13 +215,13 @@ export const setDefaultFilters = () => {
     return {
         type: SET_DEFAULT_GEM_MARKET_FILTERS,
     }
-}
+};
 
 export const deselectAllFilters = () => {
     return {
         type: DESELECT_ALL_GEM_MARKET_FILTERS,
     }
-}
+};
 
 export const applyFilterOption = (filterOption, optionType) => {
     return {
@@ -241,4 +241,4 @@ export const applySort = (newSortOption, newSortDirection) => (dispatch, getStat
             sortDirection: newSortDirection,
         }
     })
-}
+};

@@ -17,7 +17,7 @@ export const ONE_UNIT = 0.001;
 
 export const buyGeode = (type, amount, etherUsed, referralPointsUsed, referrer, hidePopup) => async (dispatch, getState) => {
 
-    const silverGoldService = getState().app.silverGoldServiceInstance;
+    const silverGoldService = getState().app.silverGoldService;
     const currentUser = getState().auth.currentUserId;
     console.log('SILVER gold service:', silverGoldService);
     let txHash;
@@ -47,7 +47,7 @@ export const buyGeode = (type, amount, etherUsed, referralPointsUsed, referrer, 
 };
 
 export const getChestValue = () => async (dispatch, getState) => {
-    const preSaleContract = getState().app.presaleContract;
+    //const preSaleContract = getState().app.presaleContract;
     const web3 = getState().app.web3;
     const chestValue = weiToEth(await web3.eth.getBalance(process.env.REACT_APP_FOUNDERS_CHEST));
     dispatch({
@@ -58,7 +58,7 @@ export const getChestValue = () => async (dispatch, getState) => {
 
 export const getUserBalance = (userId) => async (dispatch, getState) => {
 
-    const silverGoldService = getState().app.silverGoldServiceInstance;
+    const silverGoldService = getState().app.silverGoldService;
     const balances = await silverGoldService.getUserBalance(userId);
     dispatch({
         type: USER_BALANCE_RECEIVED,
@@ -89,7 +89,7 @@ export const updateSaleState = (event) => (dispatch) => {
 };
 
 export const getSaleState = () => async (dispatch, getState) => {
-    const silverGoldService = getState().app.silverGoldServiceInstance;
+    const silverGoldService = getState().app.silverGoldService;
     const rawSaleState = await silverGoldService.getSaleState();
     console.log('RAW SALE STATE:', rawSaleState);
     const saleState = parseSaleEventData(rawSaleState);
@@ -101,7 +101,7 @@ export const getSaleState = () => async (dispatch, getState) => {
 
 export const getBoxesAvailableData = () => async (dispatch, getState) => {
 
-    const silverGoldService = getState().app.silverGoldServiceInstance;
+    const silverGoldService = getState().app.silverGoldService;
     const boxesAvailable = await silverGoldService.getBoxesAvailable();
     console.log('BOXES AVAILABLE: ', boxesAvailable);
     const boxesPrices = await silverGoldService.getBoxesPricesArray();

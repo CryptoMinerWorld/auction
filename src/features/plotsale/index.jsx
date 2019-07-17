@@ -23,8 +23,8 @@ import rockBackground from '../../app/images/rockBackground.png';
 import FounderPlotsArea from "./components/FounderPlotsArea";
 
 const select = store => ({
-    plotService: store.app.plotServiceInstance,
-    countryService: store.app.countryServiceInstance,
+    plotService: store.app.plotService,
+    countryService: store.app.countryService,
     worldChestValue: store.plotSale.worldChestValue,
     monthlyChestValue: store.plotSale.monthlyChestValue,
     foundersChestValue: store.plotSale.foundersChestValue,

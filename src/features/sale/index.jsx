@@ -36,7 +36,7 @@ import {setSaleEventListeners} from "./saleEventListener";
 
 
 const select = store => ({
-    silverGoldService: store.app.silverGoldServiceInstance,
+    silverGoldService: store.app.silverGoldService,
     presaleContract: store.app.presaleContract,
     currentUserId: store.auth.currentUserId,
     saleState: store.sale.saleState,

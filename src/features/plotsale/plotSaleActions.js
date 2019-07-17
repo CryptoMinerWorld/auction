@@ -19,7 +19,7 @@ const REACT_APP_GEMSTONE_CHESTS="0x2906DA90D3f99D5913bB3461183682951ca7280c";
 const REACT_APP_FOUNDERS_CHEST="0xC352f692F55dEf49f0B736Ec1F7CA0F862eabD23";
 
 export const getAvailableCountryPlots = (countryId) => async (dispatch, getState) => {
-    const plotService = getState().app.plotServiceInstance;
+    const plotService = getState().app.plotService;
     const totalPlots = COUNTRY_PLOTS_DATA[countryId - 1];
     const plotsMinted = await plotService.getPlotsMintedByCountryId(countryId);
     console.log("PLOTS MINTED: ", plotsMinted);
@@ -49,7 +49,7 @@ export const buyPlots = (countryId, totalAmount, amountExceeded, referrer, hideP
     //const priceInEth = plotPrice*amount;
     const priceInEthNotExceeded = (totalAmount - amountExceeded)*plotPrice;
     const priceInEthExceeded = (amountExceeded)*plotPrice;
-    const plotService = getState().app.plotServiceInstance;
+    const plotService = getState().app.plotService;
     const currentUser = getState().auth.currentUserId;
     let randomCountry;
 

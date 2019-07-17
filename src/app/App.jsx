@@ -96,10 +96,10 @@ const StickyHeader = styled.div`
 `;
 
 const select = store => ({
-    plotService: store.app.plotServiceInstance,
-    auctionService: store.app.auctionServiceInstance,
-    gemService: store.app.gemServiceInstance,
-    silverGoldService: store.app.silverGoldServiceInstance,
+    plotService: store.app.plotService,
+    auctionService: store.app.auctionService,
+    gemService: store.app.gemService,
+    silverGoldService: store.app.silverGoldService,
     visible: store.app.modalVisible,
     error: store.app.error,
     currentUserId: store.auth.currentUserId,
@@ -158,15 +158,22 @@ class App extends Component {
             handleNotificationEvent: this.props.handleNotificationEvent,
         };
 
-        let assistInstance = assist.init(bncAssistConfig);
+        let assistInstance;
+        try {
+            assistInstance = assist.init(bncAssistConfig);
+        } catch(e) {
+            console.error("AssistInstance error:", e);
+        }
+
         if (assistInstance) {
             try {
                 await assistInstance.onboard();
             }
             catch (e) {
-                console.log(e.message);
+                console.error(e.message);
             }
         }
+
         const currentAccountId = await web3.eth.getAccounts().then(accounts => accounts[0]);
 
         // this ensures that the wallet in metamask is always the wallet in the currentAccountId
@@ -202,7 +209,7 @@ class App extends Component {
                 countryService: new CountryService(null, contracts.countryContract),
                 plotService: new PlotService(contracts.plotContract, contracts.plotSaleContract, contracts.minerContract)
             };
-            handleSendContractsToRedux(contracts, services);
+            handleSendContractsToRedux(web3, contracts, services, currentAccountId);
         }
     }
 

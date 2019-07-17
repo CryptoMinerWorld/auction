@@ -88,7 +88,7 @@ const StateBox = styled.div`
 const select = store => ({
     userPlots: store.plots.userPlots,
     gemMiningIds: store.plots.gemMiningIds,
-    plotService: store.app.plotServiceInstance,
+    plotService: store.app.plotService,
     userBalance: store.sale.balance
 });
 

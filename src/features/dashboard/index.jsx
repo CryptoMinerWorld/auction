@@ -96,11 +96,11 @@ const select = store => ({
     silverContract: store.app.silverContract,
     CountrySale: store.app.countrySaleInstance,
     currentAccount: store.app.currentAccount,
-    gemService: store.app.gemServiceInstance,
-    auctionService: store.app.auctionServiceInstance,
-    silverGoldService: store.app.silverGoldServiceInstance,
-    countryService: store.app.countryServiceInstance,
-    plotService: store.app.plotServiceInstance,
+    gemService: store.app.gemService,
+    auctionService: store.app.auctionService,
+    silverGoldService: store.app.silverGoldService,
+    countryService: store.app.countryService,
+    plotService: store.app.plotService,
     artifactContract: store.app.artifactContract,
 });
 

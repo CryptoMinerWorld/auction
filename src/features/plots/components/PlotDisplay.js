@@ -55,7 +55,7 @@ const select = store => {
         plots: plots,
         gems: store.dashboard.userGems,
         gemMiningIds: store.plots.gemMinesId,
-        plotService: store.app.plotServiceInstance,
+        plotService: store.app.plotService,
         currentAccount: store.auth.currentUserId,
     }
 };

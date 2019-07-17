@@ -56,14 +56,14 @@ const select = store => {
         gemContract: store.app.gemContract,
         web3: store.app.web3,
         dutchContract: store.app.auctionContract,
-        gemService: store.app.gemServiceInstance,
-        auctionService: store.app.auctionServiceInstance,
+        gemService: store.app.gemService,
+        auctionService: store.app.auctionService,
         gemContractAddress: store.app.gemContract && store.app.gemContract.options.address,
         silverContract: store.app.silverContract,
         goldContract: store.app.goldContract,
         userBalance: store.sale.balance,
-        plotService: store.app.plotServiceInstance,
-        silverGoldService: store.app.silverGoldServiceInstance,
+        plotService: store.app.plotService,
+        silverGoldService: store.app.silverGoldService,
         pendingTransactions: store.tx.pendingTransactions,
     }
 };
