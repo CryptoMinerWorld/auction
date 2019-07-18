@@ -15,7 +15,7 @@ const select = store => ({
     unprocessedPlotIds : store.plots.userPlots && store.plots.userPlots.filter(plot => plot.currentPercentage - plot.processedBlocks > 0).map(plot => plot.id)
 });
 
-const plotsPerTx = 10;
+const plotsPerTx = 7;
 
 export class ProcessAllPopup extends Component {
 

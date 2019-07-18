@@ -3,10 +3,12 @@ import {MINING, NO_GEM} from "../plots/plotConstants";
 export const setDashboardEventListeners = ({
                                                plotService,
                                                gemService,
+                                               silverGoldService,
                                                updatedEventCallback,
                                                releasedEventCallback,
                                                boundEventCallback,
                                                issuedEventCallback,
+                                               balanceUpdateCallback,
                                                reloadGemsCallback,
                                                changeGemCallback,
                                                currentUserId,
@@ -161,4 +163,16 @@ export const setDashboardEventListeners = ({
       .on('error', console.error);
 
 
-}
+    silverGoldService.saleContract.events.Unboxed({
+        filter: {'_by': currentUserId},
+        fromBlock: 'latest'
+    })
+      .on('data', function (event) {
+          balanceUpdateCallback();
+      })
+      .on('changed', function (event) {
+          // remove event from local database
+      })
+      .on('error', console.error);
+
+};

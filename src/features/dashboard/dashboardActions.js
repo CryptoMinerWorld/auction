@@ -111,13 +111,13 @@ export const getUserDetails = async userId => {
 export const useCoupon = (couponCode, hidePopup) => async (dispatch, getState) => {
     //console.log('COUPON')
     const silverGoldService = getState().app.silverGoldService;
-    const plotService = getState().app.plotService;
+    //const plotService = getState().app.plotService;
     const currentUser = getState().auth.currentUserId;
     //console.log('Service:::', silverGoldService);
-    if (!silverGoldService || !plotService) return;
+    if (!silverGoldService) return;
     // TODO: detect which type of coupon is used
     let txHash;
-    return plotService.useCoupon(couponCode)
+    return silverGoldService.useCoupon(couponCode)
       .on('transactionHash', (hash) => {
         hidePopup();
         txHash = hash;

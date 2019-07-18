@@ -193,10 +193,15 @@ class Dashboard extends Component {
             if (handleRefreshUserPlot && gemService && currentUserId) {
                 setDashboardEventListeners({
                     plotService,
+                    silverGoldService,
                     gemService,
                     updatedEventCallback: (plot) => {
                         handleRefreshUserPlot(plot);
                         handleGetUserBalance(currentUserId)
+                    },
+                    balanceUpdateCallback: () => {
+                        if (match.params.userId.toLowerCase() === currentUserId.toLowerCase())
+                            handleGetUserBalance(match.params.userId)
                     },
                     releasedEventCallback: handleRefreshUserPlot,
                     boundEventCallback: handleRefreshUserPlot,
@@ -291,10 +296,15 @@ class Dashboard extends Component {
           (plotService !== prevProps.plotService || match.params.userId !== prevProps.match.params.userId)) {
             setDashboardEventListeners({
                 plotService,
+                silverGoldService,
                 gemService,
                 updatedEventCallback: (plot) => {
                     handleRefreshUserPlot(plot);
                     handleGetUserBalance(currentUserId)
+                },
+                balanceUpdateCallback: () => {
+                    if (match.params.userId.toLowerCase() === currentUserId.toLowerCase())
+                        handleGetUserBalance(match.params.userId)
                 },
                 releasedEventCallback: handleRefreshUserPlot,
                 boundEventCallback: handleRefreshUserPlot,
