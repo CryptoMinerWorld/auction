@@ -170,7 +170,7 @@ const ChestsBar = ({worldChestValue, monthlyChestValue, foundersChestValue}) => 
                       <MonthlyChestDescription><Pink>{(monthlyChestValue || Number(monthlyChestValue) >= 0) ? (10 - (monthlyChestValue % 10).toFixed(2)) : ""}</Pink>
                           {` until this one can be opened!.`}</MonthlyChestDescription>
                       <MonthlyChestInfo><Pink
-                        style={{fontSize: "150%"}}>{monthlyChestValue ? Math.floor(monthlyChestValue / 10) : ""}</Pink>
+                        style={{fontSize: "150%"}}>{(monthlyChestValue || Number(monthlyChestValue) >= 0) ? Math.floor(monthlyChestValue / 10) : ""}</Pink>
                           {` Gemstone Chests Opened so far! `}
                       </MonthlyChestInfo>
                   </ChestDescription>
