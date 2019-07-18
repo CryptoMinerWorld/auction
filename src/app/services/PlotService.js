@@ -187,6 +187,11 @@ export const unpackPlotProperties = (packed64PlotProperties) => {
     }
 };
 
+export const useCoupon = (couponCode) => {
+    return this.plotSaleContract.methods.useCoupon(couponCode)
+      .send();
+};
+
 const MINUTES_TO_MINE = [90, 720, 2160, 4320, 8640];
 
 const blocksToEnergy = (tier, n) => {

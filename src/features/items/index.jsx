@@ -11,7 +11,6 @@ import AuctionImage from './components/AuctionImage';
 import AuctionBox from './components/AuctionBox';
 import TradingBox from './components/TradingBox';
 import DescriptionBox from './components/DescriptionBox/index';
-import FAQ from './components/FAQ';
 import MailingList from '../../components/MailingList';
 import './animations.css';
 import {OverlapOnDesktopView, RockOverlay, TopHighlight} from './styledComponents';

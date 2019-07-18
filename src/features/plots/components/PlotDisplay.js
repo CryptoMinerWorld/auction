@@ -183,7 +183,17 @@ class PlotDisplay extends Component {
                 };
                 break;
             case "time_left":
-                sortingFunction = (p1, p2) => p1.processedBlocks >= 100 ? 1 : p2.currentPercentage - p1.currentPercentage;
+                sortingFunction = (p1, p2) => {
+                    if (p1.gemMines && p2.gemMines) {
+                        const p1Time = getTimeLeftMinutes(p1, p1.gemMines);
+                        const p2Time = getTimeLeftMinutes(p2, p2.gemMines);
+                        return p1Time === p2Time ? (p1.miningState === MINED ? 1 : ((p2.miningState === MINED) ? -1 : p1.currentPercentage - p2.currentPercentage)) : p1Time - p2Time;
+                    }
+                    if (!p1.gemMines)
+                        return p2.gemMines ? -1 : 0;
+                    if (!p2.gemMines)
+                        return p1.gemMines ? 1 : 0;
+                };
                 break;
             case "dirt":
                 sortingFunction = (p1, p2) => p1.layerPercentages["0"] - p2.layerPercentages["0"];

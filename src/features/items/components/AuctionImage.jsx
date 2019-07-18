@@ -25,8 +25,4 @@ const AuctionImage = ({ sourceImage }) => (
   </div>
 );
 
-AuctionImage.propTypes = {
-  sourceImage: PropTypes.string.isRequired,
-};
-
 export default AuctionImage;

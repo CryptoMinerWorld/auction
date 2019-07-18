@@ -30,7 +30,8 @@ export const statePaneColors = (state) => ({
     "Mining": "#004056",
     "Going home": "#004056",
     "In Auction": "#443807",
-    "Stuck": "#700E23"
+    "Stuck": "#700E23",
+    "Mined!": "#59326e",
 }[state]);
 
 export const stateOutlineColors = (state) => ({
@@ -39,7 +40,8 @@ export const stateOutlineColors = (state) => ({
     "Mining": "#98C7FF",
     "Going home": "#98C7FF",
     "In Auction": "#F0D978",
-    "Stuck": "#EF6E7E"
+    "Stuck": "#EF6E7E",
+    "Mined!": "#BE79DB"
 }[state]);
 
 export const typePaneColors = (typeColor) => ({

@@ -1,7 +1,7 @@
 import {BigNumber} from 'bignumber.js';
 import {db, storage} from '../../app/utils/firebase';
 import {GETTING_READY, GOING_HOME, IDLE, IN_AUCTION, MINING} from "../../features/items/itemConstants";
-import {BINDING_GEM, STUCK, UNBINDING_GEM} from "../../features/plots/plotConstants";
+import {BINDING_GEM, MINED, STUCK, UNBINDING_GEM} from "../../features/plots/plotConstants";
 
 export default class GemService {
 
@@ -31,7 +31,7 @@ export default class GemService {
             console.log('GEM UNPACKED: ', gem);
 
             const baseRate = calculateMiningRate(gem.gradeType, gem.gradeValue);
-            const rate = (new Date()).getMonth() === gem.color ? baseRate / 20 * 21 : baseRate;
+            const rate = (new Date()).getMonth() === (gem.color - 1) ? baseRate / 20 * 21 : baseRate;
 
             const finalGem = {
                 ...gem,
@@ -157,7 +157,7 @@ export default class GemService {
             const id = packed256uint.modulo(new BigNumber(2).pow(24)).toNumber();
 
             const baseRate = calculateMiningRate(gradeType, gradeValue);
-            const rate = (new Date()).getMonth() === color ? baseRate / 20 * 21 : baseRate;
+            const rate = (new Date()).getMonth() === (color - 1) ? baseRate / 20 * 21 : baseRate;
 
             return {
                 gradeType,
@@ -191,7 +191,7 @@ export const resolveGemStateName = (gem) => {
     if (gem.plotMined && Number(gem.state) !== 0) {
         const blocksLeft = gem.plotMined.layerEndPercentages[gem.level - 1] - gem.plotMined.currentPercentage;
         if (blocksLeft === 0) {
-            return STUCK;
+            return gem.plotMined.currentPercentage < 100 ? STUCK : MINED;
         } else {
             return MINING;
         }

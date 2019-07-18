@@ -59,9 +59,10 @@ export const getGemImage = async (color, grade, level, gemId) => {
 
 };
 
-export const calculatePercentage = (min, max, current) =>
-  // eslint-disable-next-line implicit-arrow-linebreak
-  100 - ((current - min) / (max - min)) * 100;
+export const calculatePercentage = (min, max, current) => {
+    if (max-min < 0.00001) return 100;
+    return 100 - ((current - min) / (max - min)) * 100;
+};
 
 export const weiToEth = wei => Number((wei / 1000000000000000000));
 export const GWeiToEth = GWei => Number((GWei / 1000000000));

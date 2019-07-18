@@ -111,33 +111,35 @@ export const getUserDetails = async userId => {
 export const useCoupon = (couponCode, hidePopup) => async (dispatch, getState) => {
     //console.log('COUPON')
     const silverGoldService = getState().app.silverGoldService;
+    const plotService = getState().app.plotService;
     const currentUser = getState().auth.currentUserId;
     //console.log('Service:::', silverGoldService);
-    if (!silverGoldService) return;
+    if (!silverGoldService || !plotService) return;
+    // TODO: detect which type of coupon is used
     let txHash;
-    return silverGoldService.useCoupon(couponCode)
+    return plotService.useCoupon(couponCode)
       .on('transactionHash', (hash) => {
-          hidePopup();
-          txHash = hash;
-          addPendingTransaction({
-              hash: hash,
-              userId: currentUser,
-              type: COUPON_USE,
-              description: `Submitting coupon code`,
-              body: {
-                  code: couponCode
-              }
-          })(dispatch, getState);
-      })
+        hidePopup();
+        txHash = hash;
+        addPendingTransaction({
+            hash: hash,
+            userId: currentUser,
+            type: COUPON_USE,
+            description: `Submitting coupon code`,
+            body: {
+                code: couponCode
+            }
+        })(dispatch, getState);
+    })
       .on('receipt', async (receipt) => {
-          console.log('111RECEIPT: ', receipt);
-          getUserBalance(currentUser)(dispatch, getState);
       })
       .on('error', (err) => {
           if (txHash) {
               getUpdatedTransactionHistory()(dispatch, getState);
           }
       });
+    // return silverGoldService.useCoupon(couponCode)
+
 };
 
 export const getGemDetails = tokenId => dispatch => db

@@ -20,7 +20,7 @@ import {compose} from "redux";
 import connect from "react-redux/es/connect/connect";
 import styled from "styled-components";
 import {gradeConverter, type} from "../../plots/components/propertyPaneStyles";
-import {MINING, STUCK} from "../../plots/plotConstants";
+import {MINED, MINING, STUCK} from "../../plots/plotConstants";
 
 const select = store => {
     const gems = store.dashboard.userGems;
@@ -38,6 +38,8 @@ const select = store => {
                     } else {
                         gem.miningState = MINING;
                     }
+                } else {
+                    gem.miningState = MINED;
                 }
             }
         }
@@ -215,6 +217,7 @@ export default compose(
 const resolveGemFilterState = (gem) => {
     if (gem.auctionIsLive) return "auction";
     if (!gem.state) return "idle";
+    if (gem.miningState === MINED) return "stuck";
     if (gem.miningState === STUCK) return "stuck";
     if (gem.miningState === MINING) return "mining";
     //todo: return actual gem state: idle, mining, auction, stuck;

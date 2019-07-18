@@ -21,6 +21,7 @@ import {
 } from "./plotSaleActions";
 import rockBackground from '../../app/images/rockBackground.png';
 import FounderPlotsArea from "./components/FounderPlotsArea";
+import PlotSaleFAQ from "./components/PlotSaleFAQ";
 
 const select = store => ({
     plotService: store.app.plotService,
@@ -264,8 +265,8 @@ class PlotSale extends Component {
                     </BuyPlotsArea>
                 </div>
                 <ChestsBar worldChestValue={worldChestValue} monthlyChestValue={monthlyChestValue} foundersChestValue={foundersChestValue}/>
+                <PlotSaleFAQ/>
             </div>
-
         );
     }
 }

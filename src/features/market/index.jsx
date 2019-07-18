@@ -156,12 +156,10 @@ export default compose(
 )(Marketplace);
 
 Marketplace.propTypes = {
-    paginated: PropTypes.arrayOf(PropTypes.object).isRequired,
     handlePagination: PropTypes.func.isRequired,
     pageNumber: PropTypes.number,
     totalGems: PropTypes.number.isRequired,
     handlePreLoadAuctionPage: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired,
 };
 
 Marketplace.defaultProps = {

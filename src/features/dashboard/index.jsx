@@ -37,6 +37,7 @@ import {getAvailableCountryPlots} from "../plotsale/plotSaleActions";
 import {USER_PLOTS_RELOAD_BEGUN} from "../plots/plotConstants";
 import {COUNTRY_WITHDRAW} from "./dashboardConstants";
 import StatusBar from "./components/StatusBar";
+import PlotDashboardFAQ from "./components/PlotDashboardFAQ";
 
 
 const {TabPane} = Tabs;
@@ -452,6 +453,7 @@ class Dashboard extends Component {
                   >
                       <PlotDashboard dataLoaded={dataLoaded} userPlots={userPlots} userId={match.params.userId}
                                      goToGemWorkshop={() => this.setState({tab: 2})}/>
+                      <PlotDashboardFAQ/>
                   </TabPane>
                   <TabPane
                     tab={(

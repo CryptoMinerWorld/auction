@@ -1,24 +1,24 @@
 import React, {Component} from "react";
-import PropTypes from 'prop-types';
 import Progress from 'antd/lib/progress';
 import Tilt from 'react-tilt';
-import { calculatePercentage } from '../../market/helpers';
+import {calculatePercentage} from '../../market/helpers';
 import MiniGemBox from '../../../components/MiniGemBox';
-import { calculateGemName } from '../helpers';
+import {calculateGemName} from '../helpers';
 import Loading from "../../../components/Loading";
 import {getGemImage} from "../../../app/services/GemService";
-import {MINING, STUCK} from "../../plots/plotConstants";
+import {MINED, MINING, STUCK} from "../../plots/plotConstants";
+
 require('antd/lib/progress/style/css');
 
 const transitionRules = {
     //transitionDelay: 'display 2s'
-}
+};
 
 class Cards extends Component {
 
     state = {
         gemImage: this.props.auction.image
-    }
+    };
 
     async componentDidMount() {
         const {auction} = this.props;
@@ -78,7 +78,8 @@ class Cards extends Component {
                       <big className="db b f3">{calculateGemName(auction.color, auction.id)}</big>
                   </div>
                   <div className="flex pb0 w-100 jcc" style={{padding: "4px 0 15px 0"}}>
-                      <MiniGemBox level={auction.level} grade={auction.gradeType} rate={auction.rate} restingEnergy={!auction.state && auction.restingEnergy} market/>
+                      <MiniGemBox level={auction.level} grade={auction.gradeType} rate={auction.rate}
+                                  restingEnergy={!auction.state && auction.restingEnergy} market/>
                   </div>
               </div>
           </Tilt>
@@ -91,13 +92,15 @@ export default Cards;
 const calculateStatePercentage = (gem) => {
     if (gem.auctionIsLive) return calculatePercentage(gem.minPrice, gem.maxPrice, gem.currentPrice);
     if (!gem.state) return 100;
+    if (gem.miningState === MINED) return 100;
     if (gem.miningState === STUCK) return gem.plotMined ? gem.plotMined.currentPercentage : 100;
     if (gem.miningState === MINING) return gem.plotMined ? gem.plotMined.currentPercentage : 100;
-}
+};
 
 const calculateStrokeColor = (gem) => {
     if (gem.auctionIsLive) return "#443807";
     if (!gem.state) return "#204F3E";
+    if (gem.miningState === MINED) return "#5c4572";
     if (gem.miningState === STUCK) return "#700E23";
     if (gem.miningState === MINING) return "#004056";
-}
+};
