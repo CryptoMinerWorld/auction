@@ -34,7 +34,7 @@ class GemMarket extends React.Component {
         minPrice: 0,
         maxPrice: 100,
         mobileFiltersDisplayed: false,
-    }
+    };
 
     componentDidMount() {
         const {auctions} = this.props;
@@ -99,7 +99,7 @@ class GemMarket extends React.Component {
           });
         return [filteredGems || [], minPrice, maxPrice];
 
-    }
+    };
 
     sortGems = (gems) => {
         const {sortOption, sortDirection} = this.props.selectedSorting;
@@ -115,14 +115,14 @@ class GemMarket extends React.Component {
                 sortingFunction = (p1, p2) => +p1.currentPrice - p2.currentPrice;
                 break;
             case "REA":
-                sortingFunction = (p1, p2) => +p1.level - p2.level;
+                sortingFunction = (p1, p2) => +p1.restingEnergy - p2.restingEnergy;
                 break;
         }
         const directionSign = sortDirection === "up" ? 1 : -1;
         gems.sort((p1, p2) => {
             return directionSign * sortingFunction(p1, p2);
         });
-    }
+    };
 
     render() {
         const {
@@ -260,4 +260,4 @@ const Primary = styled.section`
 const infiniteScrollContainer = {
     display: "flex",
     overflow: "hidden",
-}
+};

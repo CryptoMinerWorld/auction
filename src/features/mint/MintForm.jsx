@@ -39,7 +39,7 @@ const MintForm = ({
             onChange={handleNetworkChange}
           >
               <Select.Option value="0x93b86262455D79705e0D14bC105c92Aa07022a3a">Ropsten</Select.Option>
-              <Select.Option value="">Mainnet</Select.Option>
+              <Select.Option value="0x5671823feaDb896eC6e3BD2f6F6cD5a561AdE9D3">Mainnet</Select.Option>
           </Select>
 
           <Select
