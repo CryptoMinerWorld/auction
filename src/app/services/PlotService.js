@@ -131,29 +131,45 @@ export default class PlotService {
         return (await this.minerContract.methods.getPlotBinding(plotId).call())[0];
     };
 
-    bindGem = (plotId, gemId, currentUser) => {
-        console.log("BIND GEM:",currentUser);
+
+    estimateBindGas = async (plotId, gemId) => {
+        return await this.minerContract.methods.bind(plotId, gemId).estimateGas({gas: 1400000});
+    };
+
+    estimateReleaseGas = async (plotId, gemId) => {
+        return await this.minerContract.methods.release(plotId).estimateGas({gas: 1400000});
+    };
+
+    estimateProcessBlocksGas = async (plotId) => {
+        return await this.minerContract.methods.update(plotId).estimateGas({gas: 1400000});
+    };
+
+    estimateProcessPlotsGas = async (plotIds) => {
+        return await this.minerContract.methods.bulkUpdate(plotIds).estimateGas({gas: 1400000});
+    };
+
+    bindGem = (plotId, gemId, currentUser, gasEstimation) => {
         return this.minerContract.methods.bind(plotId, gemId).send({
             from: currentUser,
+            gas: Number(gasEstimation) + 500000
         }, {messages: {txType: BINDING_GEM, description: `Binding gem ${gemId} to plot ${plotId}`}});
     };
 
-    releaseGem = (plotId, gemId) => {
-        console.log("Release gem. Miner contract:", this.minerContract);
-        // return this.minerContract.release(plotId).send();
-        return this.minerContract.methods.release(plotId).send({},
+    releaseGem = (plotId, gemId, gasEstimation) => {
+        return this.minerContract.methods.release(plotId).send({gas: Number(gasEstimation) + 500000},
           {messages: {txType: UNBINDING_GEM, description: `Releasing gem ${gemId} from plot ${plotId}`}});
     };
 
-    processBlocks = (plotId, currentUser) => {
+    processBlocks = (plotId, currentUser, gasEstimation) => {
         console.log('UPDATING PLOT:', plotId);
         return this.minerContract.methods.update(plotId).send({
-            from: currentUser
+            from: currentUser,
+            gas: gasEstimation + 500000
         }, {messages: {txType: PROCESSING, description: `Processing plot ${plotId}`}});
     };
 
-    processPlots = (plotIds) => {
-        return this.minerContract.methods.bulkUpdate(plotIds).send({},
+    processPlots = (plotIds, gasEstimation) => {
+        return this.minerContract.methods.bulkUpdate(plotIds).send({gas: gasEstimation + 500000},
           {messages: {txType: BULK_PROCESSING, description: `Bulk processing`}});
     };
 

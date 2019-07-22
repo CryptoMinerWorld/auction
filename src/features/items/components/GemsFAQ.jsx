@@ -5,8 +5,7 @@ import React from "react";
 const GemsFAQ = () => (
   <Container>
       <Description>
-          If you are confused about anything on this page, or if you just want more info, click either of the buttons
-          below.
+          If you are confused about anything on this page, or if you just want more info, click the button below.
       </Description>
       <div style={{display: "flex", flexWrap: "wrap"}}>
           <a target="_blank" href={"https://cryptominerworld.com/faq/#FAQ-About-Gems"}><FAQButton>More Info on Gems</FAQButton></a>
@@ -18,8 +17,7 @@ export default GemsFAQ;
 
 const Container = styled.div`
     position: absolute;
-    bottom: 0;
-    top: 0;
+    bottom: 150px;
     left: -66%;
     right: 100%;
     width: 440px;

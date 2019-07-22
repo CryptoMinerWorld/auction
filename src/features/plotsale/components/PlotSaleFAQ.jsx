@@ -5,8 +5,7 @@ import React from "react";
 const PlotSaleFAQ = () => (
   <Container>
       <Description>
-          If you are confused about anything on this page, or if you just want more info, click either of the buttons
-          below.
+          If you are confused about anything on this page, or if you just want more info, click the button below.
       </Description>
       <div style={{display: "flex", flexWrap: "wrap"}}>
           <a target="_blank" href={"https://cryptominerworld.com/faq/#FAQ-About-Plots"}><FAQButton>More Info on Plots</FAQButton></a>
