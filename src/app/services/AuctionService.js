@@ -31,11 +31,7 @@ export default class AuctionService {
                 //console.log('PACKED GEM:', packedGem);
                 let auctionGem = parseAuctionGem(packedGem);
                 let auctionData = parseAuctionData(initialList[index + 1], initialList[index + 2]);
-
-                console.log("Gems data:", auctionGem, auctionData);
-                console.log('USER ADDRESS:', auctionData.owner);
                 const userDetails = await getUserDetails(auctionData.owner);
-                console.log('USER DETAILS:', userDetails);
                 auctionGem.userName = userDetails.name;
                 auctionGem.userImage = userDetails.imageURL;
                 //result.push(auctionGem);

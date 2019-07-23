@@ -18,6 +18,7 @@ import {
 
 import {setError} from '../../app/appActions';
 import {db} from "../../app/utils/firebase";
+import React from "react";
 
 export const startTx = tx => ({type: TX_STARTED, payload: tx});
 export const completedTx = tx => ({type: TX_COMPLETED, payload: tx});
@@ -248,8 +249,10 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
           console.log("TRANSACTION RECEIPT:", receipt);
           if (receipt) {
               if (!receipt.status) {
-                  resolvedFailedTransactions.push(storedTx);
+                  resolvedFailedTransactions.push({...storedTx, status: TX_FAILED});
                   //todo: what to do if speed up or cancel tx failed?
+                  //if (storedTx.status === TX_SPEED_UP || storedTx.status === TX_CANCEL) {
+                  saveSpedUpOrCanceled(storedTx.hash, storedTx, TX_FAILED)(dispatch, getState);
               }
               else {
                   if (storedTx.status === TX_SPEED_UP) {
@@ -340,11 +343,7 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
         }
     });
 
-
     const latestBlock = await web3.eth.getBlockNumber();
-    console.log("LATEST BLOCK:", latestBlock);
-
-    console.log("CURRENT USER ID", currentUserId);
 
     //todo: change empirical amount of blocks for fromBlock parameter
     const allEventLogsArray = [
@@ -442,13 +441,14 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
 
     let transactionHistory = groupEventLogsByTransaction(allEventLogsArray, currentUserId);
     resolvedStoredTransactions.forEach(storedTx => {
-        if ([TX_CONFIRMED, TX_CANCEL_CONFIRMED, TX_CANCELED, TX_SPEED_UP_CONFIRMED, TX_SPED_UP].includes(storedTx.status)) {
+        if (storedTx && [TX_CONFIRMED, TX_CANCEL_CONFIRMED, TX_CANCELED, TX_SPEED_UP_CONFIRMED, TX_SPED_UP].includes(storedTx.status)) {
             const resolvedTx = transactionHistory.find(tx => tx.transactionHash === storedTx.transactionHash);
             if (resolvedTx) {
                 resolvedTx.unseen = true;
             }
         }
     });
+
     dispatch({
         type: EVENT_HISTORY_RECEIVED,
         payload: {transactionHistory, pendingTransactions: finalPendingTransactions, resolvedFailedTransactions},
@@ -480,6 +480,40 @@ const resolveTransactionDescription = (tx, currentUserId) => {
 
     if (!tx.events)
         return tx;
+
+    if (tx.events.find(e => e.event === "Updated")) {
+        let lootArray = [0, 0, 0, 0, 0, 0, 0, 0, 0]; //9 types of loot
+        let lootBlocksProcessed = 0;
+        let lootPlotsProcessed = 0;
+        tx.events.forEach((e) => {
+            if (e.event !== "Updated") return;
+            const newLootFound = e.returnValues;
+            const newLootArray = newLootFound['loot'];
+            if (newLootArray) {
+                for (let i = 0; i < lootArray.length; i++) {
+                    lootArray[i] = Number(lootArray[i]) + Number(newLootArray[i]);
+                }
+            }
+            lootBlocksProcessed += (Number(newLootFound['offsetTo']) - Number(newLootFound['offsetFrom']));
+            lootPlotsProcessed++;
+        });
+        let txDescription = "";
+
+        if (lootArray.find(el => Number(el) > 0)) {
+            txDescription += `${lootBlocksProcessed} block(s) of ${lootPlotsProcessed} plot(s) processed. Loot found:\n`;
+            txDescription += Number(lootArray[0]) > 0 ? `${lootArray[0]} Level 1 Gem${Number(lootArray[0]) > 1 ? "s" : ""}; ` : "";
+            txDescription += Number(lootArray[1]) > 0 ? `${lootArray[1]} Level 2 Gem${Number(lootArray[1]) > 1 ? "s" : ""}; ` : "";
+            txDescription += Number(lootArray[2]) > 0 ? `${lootArray[2]} Level 3 Gem${Number(lootArray[2]) > 1 ? "s" : ""}; ` : "";
+            txDescription += Number(lootArray[3]) > 0 ? `${lootArray[3]} Level 4 Gem${Number(lootArray[3]) > 1 ? "s" : ""}; ` : "";
+            txDescription += Number(lootArray[4]) > 0 ? `${lootArray[4]} Level 5 Gem${Number(lootArray[4]) > 1 ? "s" : ""}; ` : "";
+            txDescription += Number(lootArray[5]) > 0 ? `${lootArray[5]} Piece${Number(lootArray[5]) > 1 ? "s" : ""} of Silver; ` : "";
+            txDescription += Number(lootArray[6]) > 0 ? `${lootArray[6]} Piece${Number(lootArray[6]) > 1 ? "s" : ""} of Gold; ` : "";
+            txDescription += Number(lootArray[7]) > 0 ? `${lootArray[7]} Artifacts; ` : "";
+            txDescription += Number(lootArray[8]) > 0 ? `${lootArray[8]} Key${Number(lootArray[8]) > 1 ? "s" : ""}; ` : "";
+        }
+
+        tx.description = txDescription;
+    }
 
     if (tx.events.find(e => e.event === "Bound")) {
         tx.type = 'Gem bound';

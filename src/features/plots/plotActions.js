@@ -261,11 +261,9 @@ export const countTotalUnprocessedBlocks = (plots) => {
     plots.forEach((plot) => {
         if (plot.currentPercentage > plot.processedBlocks) {
             totalUnprocessedBlocks[0] += Math.max(Math.min(plot.currentPercentage, plot.layerEndPercentages[0]) - Math.max(0, plot.processedBlocks), 0);
-            console.log("T U S:", totalUnprocessedSum);
             for (let i = 1; i < 5; i++) {
                 totalUnprocessedBlocks[i] += Math.max(Math.min(plot.currentPercentage, plot.layerEndPercentages[i])
                   - Math.max(plot.layerEndPercentages[i - 1], plot.processedBlocks), 0);
-                console.log("T U S:", i, totalUnprocessedSum);
             }
         }
     });

@@ -46,7 +46,6 @@ export const getUserDetails = userId => (dispatch) => {
           .where('walletId', '==', userId)
           .onSnapshot((collection) => {
               const userDetails = collection.docs.map(doc => doc.data());
-              console.log('USER DETAILS: ', userDetails);
               dispatch({type: FETCH_USER_DETAILS_SUCCEEDED});
               dispatch({type: USER_DETAILS_RETRIEVED, payload: userDetails[0]});
           });
@@ -113,8 +112,9 @@ export const getCurrentUser = () => () => getWeb3
       return result.web3
   })
   .then(async (web3) => {
-      await web3.eth.net.getNetworkType((err, network) => console.log(222222222222222, network));
-      store.dispatch({type: WEB3_AVAILABLE, payload: web3});
+      console.info("get current user web3:", web3);
+      //await web3.eth.net.getNetworkType((err, network) => console.log(222222222222222, network));
+      //store.dispatch({type: WEB3_AVAILABLE, payload: web3});
       store.dispatch({type: 'NOT_SIGNING_UP'});
       return web3.eth.getAccounts();
   })

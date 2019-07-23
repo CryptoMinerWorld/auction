@@ -323,6 +323,8 @@ const TxStatus = styled.div`
 `;
 
 const TxDescription = styled.div`
+    max-width: 400px;
+    white-space: pre;
 `;
 
 const TxInfo = styled.div`
@@ -384,7 +386,7 @@ const menu = ({transactionHistory, pendingTransactions, failedTransactions, hand
                   <Badge count={1}>
                       <TxHeader>{tx.type}</TxHeader>
                   </Badge>
-                  <TxStatus status={tx.status ? tx.status : TX_FAILED}>Failed</TxStatus>
+                  <TxStatus status={tx.status ? tx.status : TX_FAILED}>{tx.status ? tx.status : "Failed"}</TxStatus>
                   <TxDescription>{tx.description}</TxDescription>
               </TxInfo>
               <a

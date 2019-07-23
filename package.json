@@ -93,6 +93,7 @@
     "terser-webpack-plugin": "1.1.0",
     "universal-cookie": "^3.0.7",
     "url-loader": "1.1.1",
+    "vconsole": "^3.3.2",
     "web3": "^1.0.0-beta.34",
     "webpack": "4.19.1",
     "webpack-dev-server": "^3.2.0",
