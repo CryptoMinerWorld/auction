@@ -2,27 +2,25 @@ import LoadingCard from "./LoadingCard";
 import {Link, withRouter} from "react-router-dom";
 import Cards from "./Card";
 import React from "react";
-import {gradeConverter, type} from "../../plots/components/propertyPaneStyles";
 import InfiniteScroll from "react-infinite-scroller";
-import GemMarketFilters from "./GemMarketFilters";
 import styled from "styled-components";
-import {
-    applyFilterOption,
-    applySort,
-    deselectAllFilters,
-    preLoadAuctionPage,
-    setDefaultFilters
-} from "../marketActions";
+import {preLoadAuctionPage} from "../marketActions";
 import {compose} from "redux";
 import connect from "react-redux/es/connect/connect";
-import GemDashboardFilters from "../../dashboard/components/GemDashboardFilters";
+import CountryGemsFilter from "./CountryGemsFilter";
+import {COUNTRY_LIST} from "../country_list";
+import {COUNTRY_FILTER_SELECTED} from "../marketConstants";
 
 const select = store => ({
     auctions: store.market.auctions,
     loading: store.market.auctions ? store.market.auctionsLoading : true,
     error: store.marketActions.error,
-    searchValue: store.market.countryGemsSearchValue,
+    selectedCountry: store.market.selectedCountryFilter,
 });
+
+const countries = COUNTRY_LIST.map((country, index) => {
+    return {countryId: index, name: country};
+}).sort((a, b) => a.name.localeCompare(b.name));
 
 class CountryGemsMarket extends React.Component {
 
@@ -33,22 +31,23 @@ class CountryGemsMarket extends React.Component {
         minPrice: 0,
         maxPrice: 100,
         mobileFiltersDisplayed: false,
+        searchValue: this.props.selectedCountry ? this.props.selectedCountry.name : "",
     };
 
     componentDidMount() {
         const {auctions} = this.props;
-        //const [filteredGems, minPrice, maxPrice] = this.filterGems(auctions);
+        const filteredGems = this.filterGems(auctions);
         //this.sortGems(filteredGems);
         this.setState({
-            allGems: auctions,
-            scrolledGems: auctions.slice(0, 16),
-            hasMoreGems: auctions.length > 16,
+            allGems: filteredGems,
+            scrolledGems: filteredGems.slice(0, 16),
+            hasMoreGems: filteredGems.length > 16,
         });
     }
 
     componentDidUpdate(prevProps) {
-        const {searchValue, auctions} = this.props;
-        if (searchValue !== prevProps.searchValue || auctions !== prevProps.auctions) {
+        const {selectedCountry, auctions} = this.props;
+        if (selectedCountry !== prevProps.selectedCountry || auctions !== prevProps.auctions) {
             const filteredGems = this.filterGems(auctions);
             this.setState({
                 allGems: filteredGems,
@@ -67,43 +66,35 @@ class CountryGemsMarket extends React.Component {
     }
 
     filterGems = (gems) => {
-        const unselectedFilters = this.props.unselectedFilters;
-        const filteredGems = gems.filter((gem) => {
-            return !unselectedFilters.grades.includes(gradeConverter(Number(gem.gradeType))) &&
-              !unselectedFilters.levels.includes("lvl_" + gem.level) &&
-              !unselectedFilters.types.includes(type(gem.color)) &&
-              (!isNaN(unselectedFilters.prices[0]) && Number(unselectedFilters.prices[0]) <= gem.currentPrice) &&
-              (!isNaN(unselectedFilters.prices[1]) && Number(unselectedFilters.prices[1]) >= gem.currentPrice);
-        });
-        return filteredGems;
+        if (this.props.selectedCountry) {
+            return gems.filter((gem) => {
+                return (Number(gem.id) > 61696) && (Number(gem.id) - 61696 === Number(this.props.selectedCountry.countryId));
+            });
+        }
+        else {
+            return gems.filter((gem) => {
+                return (Number(gem.id) > 61696) && (Number(gem.id) < 61952);
+            });
+        }
     };
 
     render() {
         const {
-            handlePreLoadAuctionPage, loading, handleApplySort, unselectedFilters, selectedSorting,
-            handleApplyFilterOption, handleDeselectAllFilters, handleSetDefaultFilters
+            handlePreLoadAuctionPage, loading, handleSelectCountry, handleClearFilter, selectedCountry
         } = this.props;
-        const {scrolledGems, hasMoreGems, minPrice, maxPrice, mobileFiltersDisplayed} = this.state;
-
-        console.log("SCROLED GEMS:", scrolledGems, scrolledGems.length);
+        const {scrolledGems, hasMoreGems, minPrice, maxPrice, mobileFiltersDisplayed, searchValue} = this.state;
 
         return (
           <div>
               <FixedFiltersColumn>
-                  <GemMarketFilters unselectedFilters={unselectedFilters}
-                                    applyFilter={(option, optionType) => {
-                                        handleApplyFilterOption(option, optionType)
-                                    }}
-                                    clearFilters={() => handleDeselectAllFilters()}
-                                    setDefaultFilters={() => handleSetDefaultFilters()}
-                                    selectedSort={selectedSorting}
-                                    applySort={(sortOption, sortDirection) => {
-                                        handleApplySort(sortOption, sortDirection);
-                                    }}
-                                    mobileFiltersDisplayed={mobileFiltersDisplayed}
-                                    toggleMobileFilters={() => this.setState({mobileFiltersDisplayed: !this.state.mobileFiltersDisplayed})}
-                                    minPrice={minPrice}
-                                    maxPrice={maxPrice}
+                  <CountryGemsFilter countries={countries}
+                                     selectedCountry={selectedCountry}
+                                     selectCountry={handleSelectCountry}
+                                     clearFilter={() => handleClearFilter()}
+                                     searchCountryValue={searchValue}
+                                     searchCountry={(searchValue) => this.setState({searchValue})}
+                                     mobileFiltersDisplayed={mobileFiltersDisplayed}
+                                     toggleMobileFilters={() => this.setState({mobileFiltersDisplayed: !this.state.mobileFiltersDisplayed})}
                   />
               </FixedFiltersColumn>
               <Grid>
@@ -120,7 +111,7 @@ class CountryGemsMarket extends React.Component {
                           >
                               <CardBox>
                                   {loading && [1, 2, 3, 4, 5, 6].map(num => <LoadingCard key={num}/>)}
-                                  {!loading && scrolledGems && scrolledGems.length >= 0 ? (
+                                  {!loading && scrolledGems && scrolledGems.length > 0 ? (
                                       scrolledGems.map(auction => (
                                         <Link
                                           to={`/gem/${auction.id}`}
@@ -147,10 +138,8 @@ class CountryGemsMarket extends React.Component {
 }
 
 const actions = {
-    handleApplySort: applySort,
-    handleApplyFilterOption: applyFilterOption,
-    handleDeselectAllFilters: deselectAllFilters,
-    handleSetDefaultFilters: setDefaultFilters,
+    handleSelectCountry: (country) => (dispatch) => dispatch({type: COUNTRY_FILTER_SELECTED, payload: {country}}),
+    handleClearFilter: () => (dispatch) => dispatch({type: COUNTRY_FILTER_SELECTED, payload: {country: null}}),
     handlePreLoadAuctionPage: preLoadAuctionPage,
 };
 

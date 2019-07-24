@@ -1,6 +1,6 @@
 import {
     APPLY_GEM_MARKET_FILTER_OPTION,
-    APPLY_GEM_MARKET_SORTING,
+    APPLY_GEM_MARKET_SORTING, COUNTRY_FILTER_SELECTED,
     DESELECT_ALL_GEM_MARKET_FILTERS,
     FETCH_NEW_AUCTIONS_BEGUN,
     FETCH_NEW_AUCTIONS_FAILED,
@@ -76,6 +76,10 @@ export const marketReducer = (
         return {...state, unselectedGemMarketFilters: allFiltersDeselected}
     }
 
+    if (action.type === COUNTRY_FILTER_SELECTED) {
+        return {...state, selectedCountryFilter: action.payload.country}
+    }
+
     return state;
 };
 
@@ -91,18 +95,18 @@ const allFiltersDeselected = {
     levels: ["lvl_1", "lvl_2", "lvl_3", "lvl_4", "lvl_5"],
     grades: ["D", "C", "B", "A", "AA", "AAA"],
     prices: [0, 1000]
-}
+};
 
 const defaultSorting = {
     sortOption: "price",
     sortDirection: "up",
-}
+};
 
 const filterIsClean = (unselectedFilters) => {
     return unselectedFilters.grades.length === allFiltersDeselected.grades.length &&
       unselectedFilters.levels.length === allFiltersDeselected.levels.length &&
       unselectedFilters.types.length === allFiltersDeselected.types.length;
-}
+};
 
 
 // @dev The reducer above was one of the first reducers I created
@@ -149,5 +153,5 @@ export const marketActionsReducer = (state = initialState, action) => {
     }
 
     return state;
-}
+};
 

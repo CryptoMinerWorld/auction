@@ -149,7 +149,7 @@ class App extends Component {
 
         let bncAssistConfig = {
             dappId: "e8432341-1602-487b-ba82-c3e2c46fb47d",      // [String] The API key created by step one above
-            networkId: 1,
+            networkId: 3,
             web3,
             style: {
                 darkMode: true,

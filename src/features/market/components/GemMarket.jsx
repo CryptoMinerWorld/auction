@@ -95,7 +95,8 @@ class GemMarket extends React.Component {
                 !unselectedFilters.levels.includes("lvl_" + gem.level) &&
                 !unselectedFilters.types.includes(type(gem.color)) &&
                 (!isNaN(unselectedFilters.prices[0]) && Number(unselectedFilters.prices[0]) <= gem.currentPrice) &&
-                (!isNaN(unselectedFilters.prices[1]) && Number(unselectedFilters.prices[1]) >= gem.currentPrice);
+                (!isNaN(unselectedFilters.prices[1]) && Number(unselectedFilters.prices[1]) >= gem.currentPrice) &&
+                (Number(gem.id) <= 61696 || Number(gem.id) >= 61952);
           });
         return [filteredGems || [], minPrice, maxPrice];
 
@@ -166,7 +167,7 @@ class GemMarket extends React.Component {
                           >
                               <CardBox>
                                   {loading && [1, 2, 3, 4, 5, 6].map(num => <LoadingCard key={num}/>)}
-                                  {!loading && scrolledGems && scrolledGems.length >= 0 ? (
+                                  {!loading && scrolledGems && scrolledGems.length > 0 ? (
                                       scrolledGems.map(auction => (
                                         <Link
                                           to={`/gem/${auction.id}`}

@@ -8,7 +8,6 @@ import searchIcon from "../../../app/images/search.png";
 
 
 const GemFiltersContainer = styled.div`
-      margin-top: -10px;
       width: 100%;
               
       @media(max-width: 800px) {
@@ -28,8 +27,9 @@ const GemFiltersFlexWrapper = styled.div`
     display: flex;
     color: white;
     flex-direction: column;
-    -webkit-clip-path: polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%);
-    clip-path: polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%); 
+    border-bottom: 2px solid #5e676d;
+    -webkit-clip-path: polygon(100.23% 96.54%,95.12% 99.87%,0% 100.01%,0% 0%,92.22% -0.24%,98.41% 1.33%,100.1% 5.29%);
+    clip-path: polygon(100.23% 96.54%,95.12% 99.87%,0% 100.01%,0% 0%,92.22% -0.24%,98.41% 1.33%,100.1% 5.29%); 
 
     @media(max-width: 800px) {
         padding: 5px 0;
@@ -109,18 +109,19 @@ const OpenCloseMobileFiltersButton = styled.div`
 class GemMarketFilters extends Component {
 
     render() {
-        const {countryData, handleClick, searchCountry, searchCountryValue,
+        const {countries, selectCountry, searchCountry, searchCountryValue, clearFilter,
             selectedCountry, mobileFiltersDisplayed, toggleMobileFilters} = this.props;
+
+        const searchedCountries = searchCountryValue ?
+          countries.filter(country => country.name.toLowerCase().includes(searchCountryValue.toLowerCase())) : countries;
 
         return (
           <GemFiltersContainer mobileFiltersDisplayed={mobileFiltersDisplayed}>
               <OpenCloseMobileFiltersButton mobileFiltersDisplayed={mobileFiltersDisplayed}
                                             onClick={() => toggleMobileFilters()}/>
               <GemFiltersFlexWrapper>
-                  <CountryList countries={countryData}
-                               selectCountry={(country) => {
-                                   handleClick(country);
-                               }}
+                  <CountryList countries={searchedCountries}
+                               selectCountry={selectCountry}
                                selectedCountry={selectedCountry}
                                searchCountry={searchCountry}
                                searchCountryValue={searchCountryValue}
@@ -134,33 +135,16 @@ class GemMarketFilters extends Component {
 export default GemMarketFilters;
 
 
-
-
-const CountryList = ({countries, selectedCountry, selectCountry, selectHoveredId, searchCountry, searchCountryValue}) => {
-
+const CountryList = ({countries, selectedCountry, selectCountry, searchCountry, searchCountryValue}) => {
     return (
       <CountryFilter>
           <CountryTableHeader>
               <CountrySearch selectedCountry={selectedCountry} searchCountry={searchCountry}
                              searchValue={searchCountryValue}/>
-              {/*selectedCountry &&
-              <CountryInfo>
-                  Plots Available:
-                  <span style={{
-                      color: numberOfPlots > selectedCountry.availablePlots ? "red" : "pink",
-                      margin: "0 10px 0 5px"
-                  }}>{selectedCountry && selectedCountry.availablePlots}</span>
-                  Total Plots:
-                  <span style={{
-                      color: "white",
-                      margin: "0 10px 0 5px"
-                  }}>{selectedCountry && selectedCountry.plots}</span>
-              </CountryInfo>
-              */}
           </CountryTableHeader>
           <CountriesTable>
               {countries && countries.map(country => (
-                <CountryLine key={country.mapIndex}
+                <CountryLine key={country.countryId}
                              selected={selectedCountry && country.name === selectedCountry.name}
                              onClick={() => selectCountry(country)}
                              >
@@ -171,6 +155,41 @@ const CountryList = ({countries, selectedCountry, selectCountry, selectHoveredId
       </CountryFilter>
     )
 };
+
+const CountryFilter = styled.div``;
+
+const CountriesTable = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    height: 450px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: #24292F;
+    padding: 5px;
+    align-content: flex-start;
+    align-items: flex-start;    
+`;
+
+const CountryLine = styled.div`
+    width: 100px;
+    font-size: 12px;
+    color: ${props => props.selected ? "white" : "#525B61"};
+    
+    &:hover {
+        color: white;
+        cursor: pointer;
+    }
+`;
+
+const CountryTableHeader = styled.div`
+    background-color: #5E676D;
+    font-size: 12px;
+    font-weight: normal;
+    padding: 7px 5px;
+    color: black;
+    display: flex;
+    justify-content: space-between;
+`;
 
 const SearchIcon = styled.img`
     width: 12px;
