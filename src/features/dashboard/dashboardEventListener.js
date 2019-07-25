@@ -16,8 +16,8 @@ export const setDashboardEventListeners = ({
     console.warn("!!!!!!!!!!!! SETTING UP EVENT LISTENERS !!!!!!!!!!!");
 
     const caughtEventIds = [];
-
-    plotService.minerContract.events.Updated({
+    // todo: replace minerContracts[0] with iterating over all miner contracts
+    plotService.minerContracts[0].events.Updated({
         filter: {'_by': currentUserId},
         fromBlock: 'latest'
     })
@@ -40,7 +40,7 @@ export const setDashboardEventListeners = ({
       })
       .on('error', console.error);
 
-    plotService.minerContract.events.Released({
+    plotService.minerContracts[0].events.Released({
         filter: {'_by': currentUserId},
         fromBlock: 'latest'
     })
@@ -63,7 +63,7 @@ export const setDashboardEventListeners = ({
       })
       .on('error', console.error);
 
-    plotService.minerContract.events.Bound({
+    plotService.minerContracts[0].events.Bound({
         filter: {'_by': currentUserId},
         fromBlock: 'latest'
     })

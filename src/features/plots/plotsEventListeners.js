@@ -2,7 +2,7 @@ import {MINING, NO_GEM} from "../plots/plotConstants";
 
 export const setDashboardEventListeners = ({plotService, updatedEventCallback, releasedEventCallback, boundEventCallback, currentUserId, transactionResolved}) => {
     console.log("SETTING UP EVENT LISTENERS");
-    plotService.minerContract.events.Updated({
+    plotService.minerContracts[0].events.Updated({
         filter: {'_by': currentUserId},
         fromBlock: 'latest'
     })
@@ -21,8 +21,8 @@ export const setDashboardEventListeners = ({plotService, updatedEventCallback, r
           console.log('CHANGED EVENT:', event);
       })
       .on('error', console.error);
-
-    plotService.minerContract.events.Released({
+    //todo: replace minerContracts[0] with iterating over all miner contracts
+    plotService.minerContracts[0].events.Released({
         filter: {'_by': currentUserId},
         fromBlock: 'latest'
     })
@@ -36,7 +36,7 @@ export const setDashboardEventListeners = ({plotService, updatedEventCallback, r
       })
       .on('error', console.error);
 
-    plotService.minerContract.events.Bound({
+    plotService.minerContracts[0].events.Bound({
         filter: {'_by': currentUserId},
         fromBlock: 'latest'
     })
@@ -53,4 +53,4 @@ export const setDashboardEventListeners = ({plotService, updatedEventCallback, r
 
 
 
-}
+};

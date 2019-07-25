@@ -12,7 +12,9 @@ import {completedTx, ErrorTx, startTx} from "../../transactions/txActions";
 import {parseTransactionHashFromError} from "../../transactions/helpers";
 
 const select = store => ({
-    unprocessedPlotIds : store.plots.userPlots && store.plots.userPlots.filter(plot => plot.currentPercentage - plot.processedBlocks > 0).map(plot => plot.id)
+    unprocessedPlots : store.plots.userPlots && store.plots.userPlots.filter(plot => plot.currentPercentage - plot.processedBlocks > 0),
+    plotService: store.app.plotService,
+    miners: store.app.plotService && store.app.plotService.minerContracts
 });
 
 const plotsPerTx = 7;
@@ -24,11 +26,14 @@ export class ProcessAllPopup extends Component {
     };
 
     componentDidMount() {
-        const {handleProcessPlots, unprocessedPlotIds} = this.props;
-        if (!unprocessedPlotIds) return;
-        for (let i = 0; i < Math.ceil(unprocessedPlotIds.length / plotsPerTx); i++) {
-            handleProcessPlots(unprocessedPlotIds.slice(i*plotsPerTx, Math.min((i+1)*plotsPerTx, unprocessedPlotIds.length)));
-        }
+        const {handleProcessPlots, unprocessedPlots, plotService, miners} = this.props;
+        if (!unprocessedPlots || !plotService) return;
+        const plotIdsByMiners = plotService.groupPlotIdsByMiners(unprocessedPlots);
+        plotIdsByMiners.forEach((minerPlotIds, index) => {
+            for (let i = 0; i < Math.ceil(minerPlotIds.length / plotsPerTx); i++) {
+                handleProcessPlots(minerPlotIds.slice(i*plotsPerTx, Math.min((i+1)*plotsPerTx, minerPlotIds.length)), miners[index]);
+            }
+        })
     }
 
     // componentDidUpdate(prevProps) {

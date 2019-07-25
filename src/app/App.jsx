@@ -207,7 +207,7 @@ class App extends Component {
                 auctionService: new AuctionService(contracts.auctionContract, contracts.tokenHelperContract, contracts.gemContract),
                 silverGoldService: new SilverGoldService(contracts.silverSaleContract, contracts.balanceContract, contracts.refPointsTrackerContract),
                 countryService: new CountryService(null, contracts.countryContract),
-                plotService: new PlotService(contracts.plotContract, contracts.plotSaleContract, contracts.minerContract)
+                plotService: new PlotService(contracts.plotContract, contracts.plotSaleContract, contracts.minerContracts)
             };
             handleSendContractsToRedux(web3, contracts, services, currentAccountId);
         }

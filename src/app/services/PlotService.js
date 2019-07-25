@@ -1,16 +1,36 @@
 import {utils} from "web3";
 import {BigNumber} from "bignumber.js";
-import {getCurrentUser} from "../../features/auth/authActions";
 import {BINDING_GEM, BULK_PROCESSING, PLOT_SALE, PROCESSING, UNBINDING_GEM} from "../../features/plots/plotConstants";
 import {COUNTRY_WITHDRAW} from "../../features/dashboard/dashboardConstants";
 
 export default class PlotService {
 
-    constructor(plotContract, plotSaleContract, minerContract) {
+    constructor(plotContract, plotSaleContract, minerContracts) {
         this.plotSaleContract = plotSaleContract;
         this.plotContract = plotContract;
-        this.minerContract = minerContract;
+        this.minerContracts = minerContracts;
     }
+
+    resolveMinerByGemId = (gemId) => {
+        return this.minerContracts[this.resolveMinerIndexByGemId(gemId)];
+    };
+
+    resolveMinerIndexByGemId = gemId => {
+        if (gemId > 0xF100 && gemId < 0xF200) {
+            if (this.minerContracts.length < 2) {
+                console.error("No miner contract for gemId between 0xF100 and 0xF200 provided");
+                throw "No miner contract for gemId between 0xF100 and 0xF200 provided";
+            }
+            return 1;
+        }
+        return 0;
+    };
+
+    groupPlotIdsByMiners = (plots) => {
+        const groups = Array.from({length: this.minerContracts.length}, () => []);
+        plots.forEach(plot => groups[this.resolveMinerIndexByGemId(plot.gemMinesId)].push(plot.id));
+        return plots;
+    };
 
     withdrawCountriesEth = (ownerId) => {
         return this.plotSaleContract.methods
@@ -37,7 +57,7 @@ export default class PlotService {
     };
 
     getEffectiveRestingEnergyOf = async (gemId) => {
-        return await this.minerContract.methods.restingEnergyOf(gemId).call();
+        return await this.resolveMinerByGemId(gemId).methods.restingEnergyOf(gemId).call();
     };
 
     unpackPlot = ([high256, low256]) => {
@@ -45,9 +65,8 @@ export default class PlotService {
           .dividedToIntegerBy(new BigNumber(2).pow(192))
           .modulo(new BigNumber(2).pow(64)));
         const plotState = high256.dividedToIntegerBy(new BigNumber(2).pow(32)).modulo(new BigNumber(2).pow(8)).toNumber();
-
         return {
-          ...plotTiers,
+            ...plotTiers,
             plotState
         }
     };
@@ -61,17 +80,7 @@ export default class PlotService {
           .modulo(new BigNumber(2).pow(64)));
         const plotState = packed96uint.dividedToIntegerBy(new BigNumber(2).pow(24)).modulo(new BigNumber(2).pow(8)).toNumber();
         // console.log('PLOT STATE: ', plotState);
-        let currentEvaluatedPercentage = 0;
-        if (plotState) {
-            try {
-                currentEvaluatedPercentage = await this.minerContract.methods.evaluate(plotId).call();
-            }
-            catch (e) {
-                console.error("Could not evaluate current percentage", e);
-            }
-        }
         plotTiers.processedBlocks = plotTiers.currentPercentage;
-        plotTiers.currentPercentage = Math.max(currentEvaluatedPercentage, plotTiers.currentPercentage);
         return {
             ...plotTiers,
             id: plotId,
@@ -95,7 +104,17 @@ export default class PlotService {
                     console.error("Could not get gem mines", e);
                 }
             }
-            if (gemMinesId) gemMiningIds.push(gemMinesId);
+            if (gemMinesId) {
+                gemMiningIds.push(gemMinesId);
+                let currentEvaluatedPercentage = 0;
+                    try {
+                        currentEvaluatedPercentage = await this.resolveMinerByGemId(gemMinesId).methods.evaluate(unpackedPlot.id).call();
+                    }
+                    catch (e) {
+                        console.error("Could not evaluate current percentage", e);
+                    }
+                unpackedPlot.currentPercentage = Math.max(currentEvaluatedPercentage, unpackedPlot.currentPercentage);
+            }
             unpackedPlot.owner = ownerId;
             unpackedPlot.gemMinesId = gemMinesId;
             return unpackedPlot
@@ -105,7 +124,7 @@ export default class PlotService {
     };
 
     getPlotBoundToGem = async (gemId) => {
-        const plotId = (await this.minerContract.methods.getGemBinding(gemId).call())[0];
+        const plotId = (await this.resolveMinerByGemId(gemId).methods.getGemBinding(gemId).call())[0];
         if (plotId) {
             const packedPlot = (await this.plotContract.methods.getPacked(plotId).call());
             const unpackedPlot = await this.unpackPlot([new BigNumber(packedPlot[0]), new BigNumber(packedPlot[1])]);
@@ -115,7 +134,7 @@ export default class PlotService {
             let currentEvaluatedPercentage = 0;
             if (unpackedPlot.plotState) {
                 try {
-                    currentEvaluatedPercentage = await this.minerContract.methods.evaluate(plotId).call();
+                    currentEvaluatedPercentage = await this.resolveMinerByGemId(gemId).methods.evaluate(plotId).call();
                 }
                 catch (e) {
                     console.error("Could not evaluate current percentage", e);
@@ -128,48 +147,54 @@ export default class PlotService {
     };
 
     getBoundGemId = async (plotId) => {
-        return (await this.minerContract.methods.getPlotBinding(plotId).call())[0];
+        const minerBoundGemIds = await Promise.all(this.minerContracts.map(async miner => (await miner.methods.getPlotBinding(plotId).call())[0]));
+        const boundGemId = minerBoundGemIds.find(id => id && Number(id) > 0);
+        if (!boundGemId) {
+            console.error("No gem bound is found on any miner");
+            throw "No gem bound is found on any miner";
+        }
+        return boundGemId;
     };
 
 
     estimateBindGas = async (plotId, gemId) => {
-        return await this.minerContract.methods.bind(plotId, gemId).estimateGas({gas: 1400000});
+        return await this.resolveMinerByGemId(gemId).methods.bind(plotId, gemId).estimateGas({gas: 1400000});
     };
 
     estimateReleaseGas = async (plotId, gemId) => {
-        return await this.minerContract.methods.release(plotId).estimateGas({gas: 1400000});
+        return await this.resolveMinerByGemId(gemId).methods.release(plotId).estimateGas({gas: 1400000});
     };
 
-    estimateProcessBlocksGas = async (plotId) => {
-        return await this.minerContract.methods.update(plotId).estimateGas({gas: 1400000});
+    estimateProcessBlocksGas = async (plotId, gemId) => {
+        return await this.resolveMinerByGemId(gemId).methods.update(plotId).estimateGas({gas: 1400000});
     };
 
-    estimateProcessPlotsGas = async (plotIds) => {
-        return await this.minerContract.methods.bulkUpdate(plotIds).estimateGas({gas: 1400000});
+    estimateProcessPlotsGas = async (plotIds, miner) => {
+        return await miner.methods.bulkUpdate(plotIds).estimateGas({gas: 1400000});
     };
 
     bindGem = (plotId, gemId, currentUser, gasEstimation) => {
-        return this.minerContract.methods.bind(plotId, gemId).send({
+        return this.resolveMinerByGemId(gemId).methods.bind(plotId, gemId).send({
             from: currentUser,
             gas: Number(gasEstimation) + 500000
         }, {messages: {txType: BINDING_GEM, description: `Binding gem ${gemId} to plot ${plotId}`}});
     };
 
     releaseGem = (plotId, gemId, gasEstimation) => {
-        return this.minerContract.methods.release(plotId).send({gas: Number(gasEstimation) + 500000},
+        return this.resolveMinerByGemId(gemId).methods.release(plotId).send({gas: Number(gasEstimation) + 500000},
           {messages: {txType: UNBINDING_GEM, description: `Releasing gem ${gemId} from plot ${plotId}`}});
     };
 
-    processBlocks = (plotId, currentUser, gasEstimation) => {
+    processBlocks = (plotId, gemId, currentUser, gasEstimation) => {
         console.log('UPDATING PLOT:', plotId);
-        return this.minerContract.methods.update(plotId).send({
+        return this.resolveMinerByGemId(gemId).methods.update(plotId).send({
             from: currentUser,
             gas: gasEstimation + 500000
         }, {messages: {txType: PROCESSING, description: `Processing plot ${plotId}`}});
     };
 
-    processPlots = (plotIds, gasEstimation) => {
-        return this.minerContract.methods.bulkUpdate(plotIds).send({gas: gasEstimation + 500000},
+    processPlots = (plotIds, miner, gasEstimation) => {
+        return miner.methods.bulkUpdate(plotIds).send({gas: gasEstimation + 500000},
           {messages: {txType: BULK_PROCESSING, description: `Bulk processing`}});
     };
 
@@ -222,7 +247,7 @@ export const blocksToMinutes = (plot) => {
     const rate = Number(plot.gemMines.rate);
 
     for (let tier = 0; tier < 5; tier++) {
-        const minutes = 100*blocksToEnergy(tier, Math.min(Math.max(plot.layerEndPercentages[tier] - plot.currentPercentage, 0), plot.layerPercentages[tier]))/(100 + rate);
+        const minutes = 100 * blocksToEnergy(tier, Math.min(Math.max(plot.layerEndPercentages[tier] - plot.currentPercentage, 0), plot.layerPercentages[tier])) / (100 + rate);
         console.log("Minutes:", minutes);
         console.log("n:", Math.min(Math.max(plot.layerEndPercentages[tier] - plot.currentPercentage, 0), plot.layerPercentages[tier]));
         blocksMinutes.push(convertMinutesToTimeString(minutes));
@@ -247,5 +272,5 @@ export const convertMinutesToTimeString = (minutes) => {
 };
 
 const calculateTimeLeftInDays = t => Math.floor(t / (60 * 24));
-const calculateTimeLeftInHours = t => Math.floor((t % (60 * 24))/ 60);
+const calculateTimeLeftInHours = t => Math.floor((t % (60 * 24)) / 60);
 const calculateTimeLeftInMinutes = t => Math.floor(t % 60);

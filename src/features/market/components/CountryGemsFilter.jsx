@@ -1,10 +1,7 @@
 import React, {Component} from "react";
 import styled from "styled-components";
-import SortOptions from "./GemMarketFilters/SortOptions"
-import Prices from "./GemMarketFilters/Prices"
-import GradesTypesLevels from "./GemMarketFilters/GradesTypesLevels"
-import FilterActions from "./GemMarketFilters/FilterActions"
 import searchIcon from "../../../app/images/search.png";
+import {CutEdgesButton} from "../../../components/CutEdgesButton";
 
 
 const GemFiltersContainer = styled.div`
@@ -27,7 +24,6 @@ const GemFiltersFlexWrapper = styled.div`
     display: flex;
     color: white;
     flex-direction: column;
-    border-bottom: 2px solid #5e676d;
     -webkit-clip-path: polygon(100.23% 96.54%,95.12% 99.87%,0% 100.01%,0% 0%,92.22% -0.24%,98.41% 1.33%,100.1% 5.29%);
     clip-path: polygon(100.23% 96.54%,95.12% 99.87%,0% 100.01%,0% 0%,92.22% -0.24%,98.41% 1.33%,100.1% 5.29%); 
 
@@ -38,19 +34,6 @@ const GemFiltersFlexWrapper = styled.div`
     }
 `;
 
-const FilterGroupsContainer = styled.div`
-    padding: 8px;
-    background-color: #383F45;
-    display: flex;
-    flex-direction: column;
-    margin: 10px 0;
-    clip-path: polygon(0 0,95% 0,100% 10%,100% 90%,95% 100%,0 100%);
-    -webkit-clip-path: polygon(0 0,95% 0,100% 10%,100% 90%,95% 100%,0 100%);    
-    
-    @media(max-width: 800px) {
-        margin: 0 10px;
-    }
-`;
 
 const OpenCloseMobileFiltersButton = styled.div`
     
@@ -106,11 +89,31 @@ const OpenCloseMobileFiltersButton = styled.div`
 }
 `;
 
+const ActionsFilterGroupsContainer = styled.div`
+    padding: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    background-color: #5E676D;
+    margin: 10px 0;
+    clip-path: polygon(0 0, 95% 0,100% 10%,100% 90%,95% 100%,0 100%);
+    -webkit-clip-path: polygon(0 0,95% 0,100% 10%,100% 90%,95% 100%,0 100%);
+
+    @media(max-width: 800px) {
+        margin: 0 10px;
+        flex-direction: column;
+        width: 120px;
+        justify-content: center;
+    }
+`;
+
 class GemMarketFilters extends Component {
 
     render() {
-        const {countries, selectCountry, searchCountry, searchCountryValue, clearFilter,
-            selectedCountry, mobileFiltersDisplayed, toggleMobileFilters} = this.props;
+        const {
+            countries, selectCountry, searchCountry, searchCountryValue, clearFilter,
+            selectedCountry, mobileFiltersDisplayed, toggleMobileFilters
+        } = this.props;
 
         const searchedCountries = searchCountryValue ?
           countries.filter(country => country.name.toLowerCase().includes(searchCountryValue.toLowerCase())) : countries;
@@ -126,6 +129,18 @@ class GemMarketFilters extends Component {
                                searchCountry={searchCountry}
                                searchCountryValue={searchCountryValue}
                   />
+                  <ActionsFilterGroupsContainer>
+                      <div style={{margin: "3px 3px", fontWeight: "normal", width: "140px"}}>
+                          <CutEdgesButton outlineColor={"orange"}
+                                          backgroundColor={"black"}
+                                          edgeSizes={[5, 15]}
+                                          outlineWidth={2}
+                                          height={32}
+                                          fontSize={18}
+                                          content={"Clear"}
+                                          onClick={() => clearFilter()}/>
+                      </div>
+                  </ActionsFilterGroupsContainer>
               </GemFiltersFlexWrapper>
           </GemFiltersContainer>
         )
@@ -147,7 +162,7 @@ const CountryList = ({countries, selectedCountry, selectCountry, searchCountry, 
                 <CountryLine key={country.countryId}
                              selected={selectedCountry && country.name === selectedCountry.name}
                              onClick={() => selectCountry(country)}
-                             >
+                >
                     {country.name}
                 </CountryLine>
               ))}
@@ -156,7 +171,9 @@ const CountryList = ({countries, selectedCountry, selectCountry, searchCountry, 
     )
 };
 
-const CountryFilter = styled.div``;
+const CountryFilter = styled.div`
+    border-bottom: 2px solid #5e676d;
+`;
 
 const CountriesTable = styled.div`
     display: flex;

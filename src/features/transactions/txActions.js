@@ -204,7 +204,7 @@ const plotSaleEventWhitelist = [
 export const getUpdatedTransactionHistory = () => async (dispatch, getState) => {
     console.log("~~~~~~ get updated TRANSACTION history ~~~~~~");
     const web3 = getState().app.web3;
-    const minerContract = getState().app.plotService.minerContract;
+    const minerContracts = getState().app.plotService.minerContracts;
     const auctionContract = getState().app.auctionContract;
     console.log("~~~~~~ get updated TRANSACTION history 2 ~~~~~~");
     const gemContract = getState().app.gemContract;
@@ -348,8 +348,9 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
 
     //todo: change empirical amount of blocks for fromBlock parameter
     const allEventLogsArray = [
+      //todo: replace minerContracts[0] with iterating over all miner contracts
         (await Promise.all(minerEventWhitelist.map(async event => {
-            return minerContract.getPastEvents(event,
+            return minerContracts[0].getPastEvents(event,
               {
                   filter: {'_by': currentUserId},
                   fromBlock: latestBlock - 15000,

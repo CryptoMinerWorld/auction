@@ -90,7 +90,7 @@ class CountryGemsMarket extends React.Component {
                   <CountryGemsFilter countries={countries}
                                      selectedCountry={selectedCountry}
                                      selectCountry={handleSelectCountry}
-                                     clearFilter={() => handleClearFilter()}
+                                     clearFilter={() => {this.setState({searchValue: ""}); handleClearFilter()}}
                                      searchCountryValue={searchValue}
                                      searchCountry={(searchValue) => this.setState({searchValue})}
                                      mobileFiltersDisplayed={mobileFiltersDisplayed}

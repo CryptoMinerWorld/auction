@@ -93,14 +93,25 @@ const Navbar = ({
                 </div>
               )}
               <NavLink
-                exact
-                to="/market"
+                to="/market?tab=1"
                 activeStyle={{
                     borderBottom: '2px solid purple',
                 }}
                 className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
               >
                   Market
+              </NavLink>
+              <NavLink
+                to="/market?tab=2"
+                activeStyle={{
+                    borderBottom: '2px solid purple',
+                }}
+                className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
+                style={{
+                    color: 'purple'
+                }}
+              >
+                  Special Gems
               </NavLink>
               <NavLink
                 exact
