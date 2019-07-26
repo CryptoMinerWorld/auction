@@ -1,6 +1,9 @@
 import {
-    APPLY_GEM_WORKSHOP_FILTER_OPTION, APPLY_GEM_WORKSHOP_SORTING,
-    DASHBOARD_WAS_FILTERED, DESELECT_ALL_GEM_WORKSHOP_FILTERS,
+    APPLY_GEM_SELECTION_FILTER_OPTION, APPLY_GEM_SELECTION_SORTING,
+    APPLY_GEM_WORKSHOP_FILTER_OPTION,
+    APPLY_GEM_WORKSHOP_SORTING,
+    DASHBOARD_WAS_FILTERED, DESELECT_ALL_GEM_SELECTION_FILTERS,
+    DESELECT_ALL_GEM_WORKSHOP_FILTERS,
     FETCH_USER_COUNTRIES,
     FETCH_USER_DETAILS_BEGUN,
     FETCH_USER_DETAILS_FAILED,
@@ -9,8 +12,9 @@ import {
     FETCH_USER_GEMS_FAILED,
     FETCH_USER_GEMS_SUCCEEDED,
     ONLY_WANT_TO_SEE_GEMS_IN_AUCTIONS,
-    PAGINATE,
-    SCROLL_GEMS, SET_DEFAULT_GEM_WORKSHOP_FILTERS, USER_ARTIFACTS_RETRIEVED,
+    PAGINATE, SET_DEFAULT_GEM_SELECTION_FILTERS,
+    SET_DEFAULT_GEM_WORKSHOP_FILTERS,
+    USER_ARTIFACTS_RETRIEVED,
     USER_DETAILS_RETRIEVED,
     USER_GEMS_RETRIEVED,
     USER_HAS_NO_GEMS_IN_WORKSHOP,
@@ -19,6 +23,7 @@ import {
 
 import {NO_USER_EXISTS} from '../auth/authConstants';
 import {NEW_AUCTION_CREATED,} from '../items/itemConstants';
+import {gradeConverter, type} from "../plots/components/propertyPaneStyles";
 
 const pageSize = 18;
 
@@ -37,10 +42,11 @@ export default function dashboardReducer(
       hasMoreGems: false,
       unselectedGemWorkshopFilters: defaultFiltersUnselected,
       selectedGemWorkshopSorting: defaultSorting,
+      unselectedGemSelectionFilters: defaultFiltersUnselected,
+      selectedGemSelectionSorting: "mrb_down"
   },
   action,
 ) {
-
     if (action.type === USER_GEMS_RETRIEVED) {
         return {
             ...state,
@@ -52,7 +58,11 @@ export default function dashboardReducer(
     }
 
     if (action.type === FETCH_USER_COUNTRIES) {
-        return {...state, userCountries: action.payload.userCountries, countriesNotWithdrawnEth: action.payload.totalNotWithdrawn};
+        return {
+            ...state,
+            userCountries: action.payload.userCountries,
+            countriesNotWithdrawnEth: action.payload.totalNotWithdrawn
+        };
     }
 
     if (action.type === USER_ARTIFACTS_RETRIEVED) {
@@ -139,7 +149,11 @@ export default function dashboardReducer(
     }
 
     if (action.type === WANT_TO_SEE_ALL_GEMS) {
-        return {...state, userGemsFiltered: state.userGems.slice(0, state.userGems.length), hasMoreGems: state.userGems.length > pageSize};
+        return {
+            ...state,
+            userGemsFiltered: state.userGems.slice(0, state.userGems.length),
+            hasMoreGems: state.userGems.length > pageSize
+        };
     }
 
     if (action.type === FETCH_USER_GEMS_BEGUN) {
@@ -239,13 +253,13 @@ export default function dashboardReducer(
         }
 
         return {
-          ...state, unselectedGemWorkshopFilters: newFilters
+            ...state, unselectedGemWorkshopFilters: newFilters
         }
     }
 
     if (action.type === APPLY_GEM_WORKSHOP_SORTING) {
         return {
-          ...state, selectedGemWorkshopSorting: action.payload
+            ...state, selectedGemWorkshopSorting: action.payload
         }
     }
 
@@ -255,6 +269,39 @@ export default function dashboardReducer(
 
     if (action.type === DESELECT_ALL_GEM_WORKSHOP_FILTERS) {
         return {...state, unselectedGemWorkshopFilters: allFiltersDeselected}
+    }
+
+    if (action.type === APPLY_GEM_SELECTION_FILTER_OPTION) {
+        const {filterOption, optionType} = action.payload;
+        let newFilters;
+        const unselectedFilters = state.unselectedGemSelectionFilters;
+        if (gemSelectionFilterIsClean(unselectedFilters)) {
+            newFilters = {...defaultFiltersUnselected};
+            newFilters[optionType] = allFiltersDeselected[optionType].filter(e => e !== filterOption);
+            console.log("NEW FILTERS:", newFilters);
+        } else {
+            newFilters = {...unselectedFilters};
+            newFilters[optionType] = unselectedFilters[optionType].includes(filterOption) ?
+              unselectedFilters[optionType].filter(e => e !== filterOption) :
+              unselectedFilters[optionType].concat(filterOption);
+        }
+        return {
+            ...state, unselectedGemSelectionFilters: newFilters
+        }
+    }
+
+    if (action.type === APPLY_GEM_SELECTION_SORTING) {
+        return {
+            ...state, selectedGemSelectionSorting: action.payload
+        }
+    }
+
+    if (action.type === SET_DEFAULT_GEM_SELECTION_FILTERS) {
+        return {...state, unselectedGemSelectionFilters: defaultFiltersUnselected}
+    }
+
+    if (action.type === DESELECT_ALL_GEM_SELECTION_FILTERS) {
+        return {...state, unselectedGemSelectionFilters: allFiltersDeselected}
     }
 
     return state;
@@ -277,6 +324,12 @@ const allFiltersDeselected = {
 const defaultSorting = {
     sortOption: "acq",
     sortDirection: "up",
+};
+
+const gemSelectionFilterIsClean = (unselectedFilters) => {
+    return unselectedFilters.grades.length === allFiltersDeselected.grades.length &&
+      unselectedFilters.levels.length === allFiltersDeselected.levels.length &&
+      unselectedFilters.types.length === allFiltersDeselected.types.length;
 };
 
 const filterIsClean = (unselectedFilters) => {

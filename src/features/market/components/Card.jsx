@@ -100,6 +100,7 @@ class Cards extends React.Component {
                         level={auction.level}
                         grade={auction.gradeType}
                         rate={auction.rate}
+                        baseRate={auction.baseRate}
                         restingEnergy={auction.restingEnergy}
                         market
                       />

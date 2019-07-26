@@ -34,6 +34,8 @@ const StyledButton = styled.div`
         align-items: center;
         justify-content: center;
         text-align: center;
+        white-space: pre;
+        line-height: 130%;
         content: "${props => props.content || ""}";
         background-color: ${props => props.backgroundColor};
         padding: 2px;
@@ -60,7 +62,7 @@ const StyledButton = styled.div`
             lowerVerticals + ', 100% ' + higherVerticals + ', ' + higherHorizontals + ' 100%, ' +
             lowerHorizontals + ' 100%, 0% ' + higherVerticals + ', 0 ' + lowerVerticals + ')';
         }};
-              
+       
         ${props => props.fontSize ? "font-size: "+props.fontSize+"px;": ""}
     }
 `;
@@ -79,4 +81,4 @@ export const CutEdgesButton = ({outlineColor, backgroundColor, fontColor, edgeSi
                     {...props}
       />
     )
-}
+};

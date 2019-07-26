@@ -81,7 +81,7 @@ class OwnerLevelGembox extends PureComponent {
                         outlineWidth={2}
                         fontSize={20}
                         height={73}
-                        content={gem.level + " " + levelToGemAge(gem.level)}
+                        content={gem.level + " \\a " + levelToGemAge(gem.level)}
                         otherStyles={"width: 76px; font-weight: bold;"}/>
                   </div>
                   <UpgradeColumn>

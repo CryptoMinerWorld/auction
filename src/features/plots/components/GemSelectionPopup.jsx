@@ -7,6 +7,11 @@ import connect from "react-redux/es/connect/connect";
 import GemSelectionFilters from "./GemSelectionFilters";
 import {gradeConverter, type} from "./propertyPaneStyles";
 import {bindGem} from "../plotActions";
+import {
+    APPLY_GEM_SELECTION_FILTER_OPTION,
+    APPLY_GEM_SELECTION_SORTING,
+    DESELECT_ALL_GEM_SELECTION_FILTERS, SET_DEFAULT_GEM_SELECTION_FILTERS
+} from "../../dashboard/dashboardConstants";
 
 const CardBox = styled.section`
   display: grid;
@@ -20,22 +25,12 @@ const GemSelectionFilter = styled.div`
 `;
 
 const select = store => {
-    console.log("Gem Mining Ids", store.plots);
     return {
         userGems: store.dashboard.userGems,
         gemMiningIds: store.plots.gemMiningIds,
+        unselectedFilters: store.dashboard.unselectedGemSelectionFilters,
+        selectedSort: store.dashboard.selectedGemSelectionSorting
     }
-};
-const defaultFiltersUnselected = {
-    types: ["Per", "Aqu", "Dia", "Top", "Tur"],
-    levels: [],
-    grades: [],
-};
-
-const deselectAllFilters = {
-    types: ["Ame", "Gar", "Opa", "Sap", "Rub", "Per", "Aqu", "Dia", "Eme", "Pea", "Top", "Tur"],
-    levels: ["lvl_1", "lvl_2", "lvl_3", "lvl_4", "lvl_5"],
-    grades: ["D", "C", "B", "A", "AA", "AAA"],
 };
 
 export class GemSelectionPopup extends Component {
@@ -44,22 +39,41 @@ export class GemSelectionPopup extends Component {
         allGems: this.props.userGems,
         scrolledGems: this.props.userGems.slice(0, 16),
         hasMoreGems: this.props.userGems.length > 16,
-        unselectedFilters: {
-            types: ["Per", "Aqu", "Dia", "Top", "Tur"],
-            levels: [],
-            grades: [],
-        },
-        filterIsClean: false,
-        selectedSort: ""
     };
 
     componentDidMount() {
-        this.sortGems("mrb_down");
         this.setState({windowWidth: window.innerWidth});
+        const filteredGems = this.filterGems(this.props.userGems);
+        this.sortGems(filteredGems);
+        this.setState({
+            allGems: filteredGems,
+            scrolledGems: filteredGems.slice(0, 16),
+            hasMoreGems: filteredGems.length > 16,
+        });
+    }
+
+    componentDidUpdate(prevProps) {
+        const {unselectedFilters, selectedSort, userGems} = this.props;
+        if (unselectedFilters !== prevProps.unselectedFilters || userGems !== prevProps.userGems) {
+            const filteredGems = this.filterGems(userGems);
+            this.sortGems(filteredGems);
+            this.setState({
+                allGems: filteredGems,
+                scrolledGems: filteredGems.slice(0, 16),
+                hasMoreGems: filteredGems.length > 16,
+            })
+        }
+        if (unselectedFilters === prevProps.unselectedFilters && selectedSort !== prevProps.selectedSort) {
+            this.sortGems(this.state.allGems);
+            this.setState({
+                allGems: this.state.allGems,
+                scrolledGems: this.state.allGems.slice(0, 16),
+                hasMoreGems: this.state.hasMoreGems,
+            })
+        }
     }
 
     loadMore(page) {
-        console.log("Load more ", page);
         const scrollTo = Math.min(page * 16, this.state.allGems.length);
         this.setState({
             scrolledGems: this.state.allGems.slice(0, scrollTo),
@@ -67,58 +81,16 @@ export class GemSelectionPopup extends Component {
         });
     }
 
-    setDefaultFilters = () => {
-        const newFilters = defaultFiltersUnselected;
-        const filteredGems = this.props.userGems.filter((gem) =>
-          !newFilters.grades.includes(gradeConverter(Number(gem.gradeType))) && !newFilters.levels.includes("lvl_" + gem.level) && !newFilters.types.includes(type(gem.color)));
-        this.setState({
-            allGems: filteredGems,
-            unselectedFilters: newFilters,
-            scrolledGems: filteredGems.slice(0, 16),
-            hasMoreGems: filteredGems.length > 16
-        }, () => this.sortGems(this.state.selectedSort))
+    filterGems = (gems) => {
+        const unselectedFilters = this.props.unselectedFilters;
+        return gems.filter((gem) =>
+          !unselectedFilters.grades.includes(gradeConverter(Number(gem.gradeType))) &&
+          !unselectedFilters.levels.includes("lvl_" + gem.level) &&
+          !unselectedFilters.types.includes(type(gem.color)));
     };
 
-    deselectAllFilters = () => {
-        const newFilters = {...deselectAllFilters};
-        this.setState({
-            allGems: [],
-            unselectedFilters: newFilters,
-            scrolledGems: [],
-            hasMoreGems: false
-        });
-    };
-
-    filterIsClean = () => {
-        return this.state.unselectedFilters.grades.length === deselectAllFilters.grades.length &&
-          this.state.unselectedFilters.levels.length === deselectAllFilters.levels.length &&
-          this.state.unselectedFilters.types.length === deselectAllFilters.types.length;
-    };
-
-    addFilterOption = (filterOption, optionType) => {
-        let newFilters;
-        if (this.filterIsClean()) {
-            newFilters = {...defaultFiltersUnselected};
-            newFilters[optionType] = deselectAllFilters[optionType].filter(e => e !== filterOption);
-            console.log("NEW FILTERS:", newFilters);
-        } else {
-            newFilters = {...this.state.unselectedFilters};
-            newFilters[optionType] = this.state.unselectedFilters[optionType].includes(filterOption) ?
-              this.state.unselectedFilters[optionType].filter(e => e !== filterOption) :
-              this.state.unselectedFilters[optionType].concat(filterOption);
-        }
-        const filteredGems = this.props.userGems.filter((gem) =>
-          !newFilters.grades.includes(gradeConverter(Number(gem.gradeType))) && !newFilters.levels.includes("lvl_" + gem.level) && !newFilters.types.includes(type(gem.color)));
-        this.setState({
-            allGems: filteredGems,
-            unselectedFilters: newFilters,
-            scrolledGems: filteredGems.slice(0, 16),
-            hasMoreGems: filteredGems.length > 16
-        }, () => this.sortGems(this.state.selectedSort))
-    };
-
-    sortGems = (sortOption) => {
-        if (sortOption === this.state.selectedSort) return;
+    sortGems = (gems) => {
+        const sortOption = this.props.selectedSort;
         let sortingFunction;
         switch (sortOption) {
             case "mrb_up":
@@ -133,22 +105,15 @@ export class GemSelectionPopup extends Component {
             case "level_down":
                 sortingFunction = (p1, p2) => +p2.level - p1.level;
                 break;
+            default:
+                sortingFunction = (p1, p2) => 1;
         }
-        const sortedGems = this.state.allGems.sort((p1, p2) => {
+        gems.sort((p1, p2) => {
             return sortingFunction(p1, p2);
-        });
-        this.setState({
-            allGems: sortedGems,
-            selectedSort: sortOption,
-            scrolledGems: sortedGems.slice(0, 16),
-            hasMoreGems: sortedGems.length > 16
         });
     };
 
     render() {
-
-        console.log("gem selection props:", this.props);
-
         const container = {
             display: "flex",
             width: this.state.windowWidth > 800 ? "800px" : this.state.windowWidth,
@@ -201,9 +166,10 @@ export class GemSelectionPopup extends Component {
             };
         `;
 
-        const {handleBindGem, selectedPlot, gemMiningIds, transactionStartCallback,
-            showConfirmPopupCallback, updatePlot} = this.props;
-        const {unselectedFilters, selectedSort, scrolledGems} = this.state;
+        const {handleBindGem, selectedPlot, gemMiningIds, transactionStartCallback, showConfirmPopupCallback,
+            updatePlot, unselectedFilters, selectedSort, handleApplySort, handleApplyFilterOption,
+            handleDeselectAllFilters, handleSetDefaultFilters} = this.props;
+        const {scrolledGems} = this.state;
 
         return (
           <div style={container}>
@@ -222,10 +188,9 @@ export class GemSelectionPopup extends Component {
                           scrolledGems.map(userGem => {
                               const available = !userGem.auctionIsLive && gemMiningIds && !gemMiningIds.includes(userGem.id.toString());
                               const applicable = selectedPlot.layerEndPercentages[userGem.level - 1] > selectedPlot.currentPercentage;
-                              console.log('USER GEM, SELECTED PLOT:', userGem.id, selectedPlot, userGem);
                               if (available) return (
                                 //<div></div>
-                                <GemSelectionCard auction={userGem} key={userGem.id} available={applicable}
+                                <GemSelectionCard selectedPlot={selectedPlot} auction={userGem} key={userGem.id} available={applicable}
                                     onClick={() => {
                                         if (applicable) {
                                             showConfirmPopupCallback();
@@ -243,13 +208,13 @@ export class GemSelectionPopup extends Component {
               }
               <GemSelectionFilters unselectedFilters={unselectedFilters}
                                    toggleFilter={(option, optionType) => {
-                                       this.addFilterOption(option, optionType)
+                                       handleApplyFilterOption(option, optionType)
                                    }}
-                                   clearFilters={() => this.deselectAllFilters()}
-                                   setDefaultFilters={() => this.setDefaultFilters()}
+                                   clearFilters={handleDeselectAllFilters}
+                                   setDefaultFilters={handleSetDefaultFilters}
                                    selectedSort={selectedSort}
                                    toggleSort={(sortOption) => {
-                                       this.sortGems(sortOption)
+                                       (sortOption !== selectedSort) && handleApplySort(sortOption)
                                    }}>
               </GemSelectionFilters>
           </div>
@@ -263,6 +228,10 @@ export default compose(
     select,
     {
         handleBindGem: bindGem,
+        handleApplySort: (sortOption) => ({type: APPLY_GEM_SELECTION_SORTING, payload: sortOption}),
+        handleApplyFilterOption: (option, optionType) => ({type: APPLY_GEM_SELECTION_FILTER_OPTION, payload: {filterOption: option, optionType: optionType}}),
+        handleDeselectAllFilters: () => ({type: DESELECT_ALL_GEM_SELECTION_FILTERS}),
+        handleSetDefaultFilters: () => ({type: SET_DEFAULT_GEM_SELECTION_FILTERS})
     }
   )
 )(GemSelectionPopup);

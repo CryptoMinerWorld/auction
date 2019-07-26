@@ -181,7 +181,7 @@ class Gembox extends PureComponent {
                   </div>
                   {plotMined && plotMined.miningState === UNBINDING_GEM ?
                     <div style={{textAlign: 'center'}}>Going home...</div> :
-                    <ProcessButton onClick={() => handleReleaseGem(plotMined, () => {return}, () => {return})}>
+                    <ProcessButton onClick={() => handleReleaseGem(plotMined, () => {}, () => {})}>
                         Stop Mining
                     </ProcessButton>
                   }
@@ -275,7 +275,7 @@ export const Gem = ({quality, image, amount}) => (
         className="w-auto center h3"
       />
       <p
-        style={{gridRow: 2, gridColumn: 2}}
+        style={{gridRow: 2, gridColumn: 2, lineHeight: '120%'}}
         className={`ttu f5 mt2 o-50 black tc pt1 b ${quality === 'grade' && 'pr2'}`}
       >
           {quality === 'rate' ? `+${amount}%` : amount}

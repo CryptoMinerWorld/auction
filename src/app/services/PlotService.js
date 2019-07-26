@@ -243,8 +243,10 @@ const blocksToEnergy = (tier, n) => {
 
 export const blocksToMinutes = (plot) => {
     let blocksMinutes = [];
-    // const rate = miningRate(plot.gemMines.gradeType, plot.gemMines.gradeValue);
-    const rate = Number(plot.gemMines.rate);
+    let rate = Number(plot.gemMines.rate);
+    if ((Number(plot.countryId) !== (Number(plot.gemMines.id) - 0xF100)) && Number(plot.gemMines.id) > 0xF100 && Number(plot.gemMines.id) < 0xF200) {
+        rate = rate / 1.5;
+    }
 
     for (let tier = 0; tier < 5; tier++) {
         const minutes = 100 * blocksToEnergy(tier, Math.min(Math.max(plot.layerEndPercentages[tier] - plot.currentPercentage, 0), plot.layerPercentages[tier])) / (100 + rate);
@@ -261,7 +263,11 @@ export const getTimeLeftMinutes = (plot, gem) => {
         if (gem.level - 1 < tier) break;
         energyLeft += blocksToEnergy(tier, Math.min(Math.max(plot.layerEndPercentages[tier] - plot.currentPercentage, 0), plot.layerPercentages[tier]));
     }
-    return 100 * energyLeft / (100 + Number(gem.rate));
+    let rate = Number(gem.rate);
+    if ((Number(plot.countryId) !== (Number(gem.id) - 0xF100)) && Number(gem.id) > 0xF100 && Number(gem.id) < 0xF200) {
+        rate = rate / 1.5;
+    }
+    return 100 * energyLeft / (100 + rate);
 };
 
 export const convertMinutesToTimeString = (minutes) => {

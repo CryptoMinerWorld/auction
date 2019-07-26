@@ -38,7 +38,6 @@ class GemMarket extends React.Component {
 
     componentDidMount() {
         const {auctions} = this.props;
-        console.log("AUCTIONS 1:", auctions, auctions.length);
         const [filteredGems, minPrice, maxPrice] = this.filterGems(auctions);
         this.sortGems(filteredGems);
         this.setState({
@@ -52,11 +51,8 @@ class GemMarket extends React.Component {
 
     componentDidUpdate(prevProps) {
         const {unselectedFilters, selectedSorting, auctions} = this.props;
-        console.log("AUCTIONS 2:", auctions, auctions.length);
         if (unselectedFilters !== prevProps.unselectedFilters || auctions !== prevProps.auctions) {
-            console.log("new unselectedFilters", unselectedFilters);
             const [filteredGems, minPrice, maxPrice] = this.filterGems(auctions);
-            console.log("Filtered gems", filteredGems, minPrice, maxPrice);
             this.sortGems(filteredGems);
             this.setState({
                 minPrice: minPrice,

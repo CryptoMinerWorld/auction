@@ -43,8 +43,7 @@ class ViewerGembox extends PureComponent {
             gem, styling, mobileHeader, handleUseMetals, currentAccount, role, plotMined, handleReleaseGem, gemMines,
         } = this.props;
 
-        const color = typePaneOutlineColors(gem.color);
-
+        const rateBoxContent = '' + gem.baseRate + '%' + (gem.rate > gem.baseRate ? (' \\a' + ' ' + gem.rate + '%') : "");
         return (
           <div className={styling}>
               <Stats>
@@ -76,7 +75,7 @@ class ViewerGembox extends PureComponent {
                     outlineWidth={2}
                     fontSize={16}
                     height={51}
-                    content={gem.rate + "%"}
+                    content={rateBoxContent}
                     otherStyles={"width: 85px; font-weight: bold;"}/>
                   {Number(gem.state) === 0 && gem.restingEnergy && gem.restingEnergy > 0 ?
                     <CutEdgesButton

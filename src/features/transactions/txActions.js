@@ -603,6 +603,8 @@ export const saveTransaction = (transaction) => async (dispatch, getState) => {
         status: transaction.status || "",
         description: transaction.description || "",
         body: transaction.body || "",
+        timestamp: Date.now(),
+        dateTimeUTC: new Date().toUTCString()
     };
 
     console.log("saving transaction:", newTx);

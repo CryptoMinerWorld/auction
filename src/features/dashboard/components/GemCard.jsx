@@ -78,7 +78,7 @@ class Cards extends Component {
                       <big className="db b f3">{calculateGemName(auction.color, auction.id)}</big>
                   </div>
                   <div className="flex pb0 w-100 jcc" style={{padding: "4px 0 15px 0"}}>
-                      <MiniGemBox level={auction.level} grade={auction.gradeType} rate={auction.rate}
+                      <MiniGemBox level={auction.level} grade={auction.gradeType} rate={auction.rate} baseRate={auction.baseRate}
                                   restingEnergy={!auction.state && auction.restingEnergy} market/>
                   </div>
               </div>

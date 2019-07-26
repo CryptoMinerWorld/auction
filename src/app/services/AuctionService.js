@@ -13,8 +13,6 @@ export default class AuctionService {
     }
 
     getAuctionOwnerGems = async (ownerId) => {
-        console.log('AUCTION CONTRACT:::::', this.auctionContract);
-        console.log('AUCTION CONTRACT:ADDR:', this.auctionContract.options.address);
         let packedAuctions;
         if (ownerId !== "0x0000000000000000000000000000000000000000") {
             packedAuctions = await this.auctionHelperContract.methods
@@ -31,11 +29,7 @@ export default class AuctionService {
                 //console.log('PACKED GEM:', packedGem);
                 let auctionGem = parseAuctionGem(packedGem);
                 let auctionData = parseAuctionData(initialList[index + 1], initialList[index + 2]);
-
-                console.log("Gems data:", auctionGem, auctionData);
-                console.log('USER ADDRESS:', auctionData.owner);
                 const userDetails = await getUserDetails(auctionData.owner);
-                console.log('USER DETAILS:', userDetails);
                 auctionGem.userName = userDetails.name;
                 auctionGem.userImage = userDetails.imageURL;
                 //result.push(auctionGem);
@@ -50,7 +44,6 @@ export default class AuctionService {
         return await this.auctionContract.methods
           .getTokenSaleStatus(this.gemContract.options.address, tokenId)
           .call()
-
     };
 
     getItem = async (tokenId) => {
@@ -73,9 +66,7 @@ export default class AuctionService {
     };
 
     getGemAuctionData = async (tokenId) => {
-
         const tokenSaleStatusArray = await this.getTokenSaleStatus(tokenId);
-        console.log('TOKEN SALE STATUS ARRAY:', tokenSaleStatusArray);
         const gemAuctionData = {};
         if (Number(tokenSaleStatusArray['t0']) === 0) {
             gemAuctionData.auctionIsLive = false;
@@ -91,6 +82,13 @@ export default class AuctionService {
         return {...gemAuctionData, id: tokenId};
     }
 }
+
+const gemRateMultiplier = (gem) => {
+    let multiplier = 1;
+    if (gem.color && (new Date()).getMonth() === (gem.color - 1)) multiplier *= 1.05;
+    if (gem.id && (Number(gem.id) > 61696) && (Number(gem.id) < 61952)) multiplier *= 1.5;
+    return multiplier;
+};
 
 export const parseAuctionData = (firstPartPacked, secondPartPacked) => {
     // *  index 3i + 1 – 256 bits
@@ -125,7 +123,7 @@ export const parseAuctionGem = (auctionGem) => {
     const color = packed256uint.dividedToIntegerBy(new BigNumber(2).pow(24)).modulo(new BigNumber(2).pow(8)).toNumber();
     const id = packed256uint.modulo(new BigNumber(2).pow(24)).toNumber();
     const baseRate = calculateMiningRate(gradeType, gradeValue);
-    const rate = (new Date()).getMonth() === (color - 1) ? baseRate / 20 * 21 : baseRate;
+    const rate = baseRate * gemRateMultiplier({id, color});
 
     return {
         gradeType,
@@ -141,6 +139,7 @@ export const parseAuctionGem = (auctionGem) => {
         auctionIsLive: true,
         name: calculateGemName(color, id),
         rate: Math.floor(rate),
+        baseRate: Math.floor(baseRate)
         //restingEnergyMinutes: calculateGemRestingEnergy(gemCreationTime)
     }
 };
