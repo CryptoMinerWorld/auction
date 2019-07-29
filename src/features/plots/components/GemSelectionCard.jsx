@@ -35,7 +35,7 @@ class GemSelectionCard extends Component {
 
     render() {
         const {auction, available, selectedPlot} = this.props;
-        const rateBoxContent = '' + auction.baseRate + '%' + (auction.rate > auction.baseRate ? (' \\a' + ' ' + auction.rate + '%') : "");
+        const rateBoxContent = '' + auction.baseRate + '%' + (auction.rate > auction.baseRate ? (' \\a' + ' ' + auction.rate + '% ') : "");
         return (
           <Tilt className="Tilt gem-selection-card" options={{max: 35, scale: 1.02}}
                 style={{cursor: "pointer", opacity: available ? "1" : "0.5"}}>

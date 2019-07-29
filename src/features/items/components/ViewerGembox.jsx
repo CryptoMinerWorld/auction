@@ -43,7 +43,7 @@ class ViewerGembox extends PureComponent {
             gem, styling, mobileHeader, handleUseMetals, currentAccount, role, plotMined, handleReleaseGem, gemMines,
         } = this.props;
 
-        const rateBoxContent = '' + gem.baseRate + '%' + (gem.rate > gem.baseRate ? (' \\a' + ' ' + gem.rate + '%') : "");
+        const rateBoxContent = '' + gem.baseRate + '%' + (gem.rate > gem.baseRate ? (' \\a' + ' ' + gem.rate + '% ') : "");
         return (
           <div className={styling}>
               <Stats>

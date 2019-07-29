@@ -35,7 +35,7 @@ const StyledButton = styled.div`
         justify-content: center;
         text-align: center;
         white-space: pre;
-        line-height: 130%;
+        line-height: 120%;
         content: "${props => props.content || ""}";
         background-color: ${props => props.backgroundColor};
         padding: 2px;

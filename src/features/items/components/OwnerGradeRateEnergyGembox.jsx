@@ -75,7 +75,7 @@ class OwnerGradeRateEnergyGembox extends PureComponent {
         } = this.props;
 
         const unprocessed = gemMines && plotMined && (plotMined.processedBlocks < plotMined.currentPercentage);
-        const rateBoxContent = '' + gem.baseRate + '%' + (gem.rate > gem.baseRate ? (' \\a' + ' ' + gem.rate + '%') : "");
+        const rateBoxContent = '' + gem.baseRate + '%' + (gem.rate > gem.baseRate ? (' \\a' + ' ' + gem.rate + '% ') : "");
         return (
           <div className={styling}>
               <PropertyContainer edgeSizes={[5, 10]}>
@@ -101,7 +101,7 @@ class OwnerGradeRateEnergyGembox extends PureComponent {
 
                       <div style={{display: "flex", marginTop: "5px", alignItems: "center"}}>
                           <div style={{
-                              fontSize: "18px",
+                              fontSize: "17px",
                               color: "#808e97",
                               fontWeight: "bold",
                               width: "73px"
