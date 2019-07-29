@@ -31,7 +31,7 @@ export default class GemService {
             console.log('GEM UNPACKED: ', gem);
 
             const baseRate = calculateMiningRate(gem.gradeType, gem.gradeValue);
-            const rate = (new Date()).getMonth() === (gem.color - 1) ? baseRate / 20 * 21 : baseRate;
+            const rate = baseRate * gemRateMultiplier({id: tokenId, color: gem.color});
 
             const finalGem = {
                 ...gem,
@@ -41,6 +41,7 @@ export default class GemService {
                 image: await getGemImage(gem, tokenId),
                 name: calculateGemName(gem.color, tokenId),
                 rate: Math.floor(rate),
+                baseRate: Math.floor(baseRate),
                 restingEnergy: gem.gradeType >= 4 ? calculateGemRestingEnergy(gem.age, gem.modifiedTime) : 0
             };
 
@@ -155,10 +156,8 @@ export default class GemService {
             const level = packed256uint.dividedToIntegerBy(new BigNumber(2).pow(152)).modulo(new BigNumber(2).pow(8)).toNumber();
             const color = packed256uint.dividedToIntegerBy(new BigNumber(2).pow(24)).modulo(new BigNumber(2).pow(8)).toNumber();
             const id = packed256uint.modulo(new BigNumber(2).pow(24)).toNumber();
-
             const baseRate = calculateMiningRate(gradeType, gradeValue);
-            const rate = (new Date()).getMonth() === (color - 1) ? baseRate / 20 * 21 : baseRate;
-
+            const rate = baseRate * gemRateMultiplier({id, color});
             return {
                 gradeType,
                 gradeValue,
@@ -174,13 +173,23 @@ export default class GemService {
                 ownershipModified: ownershipModifiedTime,
                 auctionIsLive: false,
                 name: calculateGemName(color, id),
-                rate: Math.floor(rate)
-
-                //restingEnergyMinutes: calculateGemRestingEnergy(gemCreationTime)
+                rate: Math.floor(rate),
+                baseRate: Math.floor(baseRate),
             }
         })
     }
 }
+
+const gemRateMultiplier = (gem) => {
+    let multiplier = 1;
+    if (gem.color && (new Date()).getMonth() === (gem.color - 1)) multiplier *= 1.05;
+    if (gem.id && (Number(gem.id) > 61696) && (Number(gem.id) < 61952)) multiplier *= 1.5;
+    return multiplier;
+};
+
+export const gemRateDivider = (gemId, plot) => {
+    return (Number(gemId) > 61696) && (Number(gemId) - 61696 === Number(plot.countryId)) ? 3/2 : 1;
+};
 
 export const resolveGemStateName = (gem) => {
     if (gem.auctionIsLive) return IN_AUCTION;

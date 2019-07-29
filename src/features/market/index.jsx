@@ -13,6 +13,8 @@ import styled from 'styled-components';
 import stripeImage from "../../app/images/stripe.png";
 import {setItemEventListeners} from "../items/itemEventListener";
 import {setMarketEventListeners} from "./marketEventListener";
+import CountryGemsMarket from "./components/CountryGemsMarket";
+import queryString from "query-string";
 
 const {TabPane} = Tabs;
 require('antd/lib/tabs/style/css');
@@ -43,7 +45,7 @@ class Marketplace extends React.Component {
     };
 
     componentDidMount() {
-        const {auctionService, handleGetAuctions, handlePagination} = this.props;
+        const {auctionService, handleGetAuctions, handlePagination, location} = this.props;
         if (auctionService) {
             setMarketEventListeners({
                 auctionService,
@@ -52,10 +54,16 @@ class Marketplace extends React.Component {
             });
             handleGetAuctions();
         }
+        if (location && location.search) {
+            let params = queryString.parse(location.search);
+            if (params.tab && !isNaN(Number(params.tab))) {
+                this.setState({tab: Number(params.tab)});
+            }
+        }
     }
 
     componentDidUpdate(prevProps) {
-        const {auctionService, handleGetAuctions} = this.props;
+        const {auctionService, handleGetAuctions, location} = this.props;
         if (auctionService && (auctionService !== prevProps.auctionService)) {
             setMarketEventListeners({
                 auctionService,
@@ -63,6 +71,12 @@ class Marketplace extends React.Component {
                 transactionResolved: () => {}
             });
             handleGetAuctions();
+        }
+        if (location && location.search && prevProps.location !== location) {
+            let params = queryString.parse(location.search);
+            if (params.tab && Number(params.tab) !== Number(this.state.tab)) {
+                this.setState({tab: Number(params.tab)});
+            }
         }
     }
 
@@ -103,6 +117,23 @@ class Marketplace extends React.Component {
                   >
                       <GemMarket/>
                   </TabPane>
+                  <TabPane
+                    tab={(
+                      <span
+                        tabIndex={-1}
+                        role="button"
+                        onKeyPress={() => this.setState({tab: 2})}
+                        className="h-100 flex aic"
+                        onClick={() => this.setState({tab: 2})}
+                      >
+                          <img src={Gem} alt="Gems" className="h2 w-auto pr2"/>
+                          Country Gem
+                      </span>
+                    )}
+                    key="2"
+                  >
+                      <CountryGemsMarket/>
+                  </TabPane>
                   <TabPane tab={(
                     <span
                       tabIndex={-2}
@@ -111,7 +142,7 @@ class Marketplace extends React.Component {
                       </span>
                   )}
                            disabled
-                           key="2"
+                           key="2a"
                   >
                   </TabPane>
                   <TabPane

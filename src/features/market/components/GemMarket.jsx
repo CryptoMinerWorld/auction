@@ -38,7 +38,6 @@ class GemMarket extends React.Component {
 
     componentDidMount() {
         const {auctions} = this.props;
-        console.log("AUCTIONS 1:", auctions, auctions.length);
         const [filteredGems, minPrice, maxPrice] = this.filterGems(auctions);
         this.sortGems(filteredGems);
         this.setState({
@@ -52,11 +51,8 @@ class GemMarket extends React.Component {
 
     componentDidUpdate(prevProps) {
         const {unselectedFilters, selectedSorting, auctions} = this.props;
-        console.log("AUCTIONS 2:", auctions, auctions.length);
         if (unselectedFilters !== prevProps.unselectedFilters || auctions !== prevProps.auctions) {
-            console.log("new unselectedFilters", unselectedFilters);
             const [filteredGems, minPrice, maxPrice] = this.filterGems(auctions);
-            console.log("Filtered gems", filteredGems, minPrice, maxPrice);
             this.sortGems(filteredGems);
             this.setState({
                 minPrice: minPrice,
@@ -95,7 +91,8 @@ class GemMarket extends React.Component {
                 !unselectedFilters.levels.includes("lvl_" + gem.level) &&
                 !unselectedFilters.types.includes(type(gem.color)) &&
                 (!isNaN(unselectedFilters.prices[0]) && Number(unselectedFilters.prices[0]) <= gem.currentPrice) &&
-                (!isNaN(unselectedFilters.prices[1]) && Number(unselectedFilters.prices[1]) >= gem.currentPrice);
+                (!isNaN(unselectedFilters.prices[1]) && Number(unselectedFilters.prices[1]) >= gem.currentPrice) &&
+                (Number(gem.id) <= 61696 || Number(gem.id) >= 61952);
           });
         return [filteredGems || [], minPrice, maxPrice];
 
@@ -166,7 +163,7 @@ class GemMarket extends React.Component {
                           >
                               <CardBox>
                                   {loading && [1, 2, 3, 4, 5, 6].map(num => <LoadingCard key={num}/>)}
-                                  {!loading && scrolledGems && scrolledGems.length >= 0 ? (
+                                  {!loading && scrolledGems && scrolledGems.length > 0 ? (
                                       scrolledGems.map(auction => (
                                         <Link
                                           to={`/gem/${auction.id}`}

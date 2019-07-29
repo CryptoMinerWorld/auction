@@ -1,8 +1,6 @@
 import React, {Component} from "react";
 import PropTypes from 'prop-types';
 import Tilt from 'react-tilt';
-import Loading from "../../../components/Loading";
-import {getGemImage} from "../../../app/services/GemService";
 import {CutEdgesButton} from "../../../components/CutEdgesButton";
 import {
     energyOutlineColor,
@@ -19,6 +17,7 @@ import {
 } from "./propertyPaneStyles";
 import GemImage from "../../../components/GemImage";
 import styled from 'styled-components';
+import {gemRateDivider} from "../../../app/services/GemService";
 
 const transitionRules = {
     //transitionDelay: 'display 2s'
@@ -29,16 +28,17 @@ const formatRestingEnergy = (energy) => {
 };
 
 const calculateEnergyInDays = t => Math.floor(t / (60 * 24));
-const calculateEnergyInHours = t => Math.floor((t % (60 * 24))/ 60);
+const calculateEnergyInHours = t => Math.floor((t % (60 * 24)) / 60);
 const calculateEnergyInMinutes = t => Math.floor(t % 60);
 
 class GemSelectionCard extends Component {
 
     render() {
-        const {auction, available} = this.props;
-
+        const {auction, available, selectedPlot} = this.props;
+        const rateBoxContent = '' + auction.baseRate + '%' + (auction.rate > auction.baseRate ? (' \\a' + ' ' + auction.rate + '% ') : "");
         return (
-          <Tilt className="Tilt gem-selection-card" options={{max: 35, scale: 1.02}} style={{cursor: "pointer", opacity: available ? "1" : "0.5"}}>
+          <Tilt className="Tilt gem-selection-card" options={{max: 35, scale: 1.02}}
+                style={{cursor: "pointer", opacity: available ? "1" : "0.5"}}>
               <div
                 onClick={this.props.onClick}
                 className="bg-off-black shadow-3 white relative"
@@ -102,7 +102,7 @@ class GemSelectionCard extends Component {
                                           outlineWidth={1}
                                           height={32}
                                           fontSize={11}
-                                          content={auction.rate + "%"}/>
+                                          content={rateBoxContent}/>
                       </div>
                   </div>
               </div>

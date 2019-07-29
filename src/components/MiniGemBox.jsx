@@ -40,8 +40,9 @@ class Gembox extends PureComponent {
 
   render() {
     const {
-      level, grade, rate, restingEnergy, market,
+      level, grade, rate, baseRate, restingEnergy, market,
     } = this.props;
+    const rateBoxContent = '' + baseRate + '%' + (rate > baseRate ? (' \\a ' + rate + '% ') : "");
     return (
       <div className="flex jcv w-100">
           <CutEdgesButton
@@ -72,7 +73,7 @@ class Gembox extends PureComponent {
             outlineWidth={2}
             fontSize={14}
             height={41}
-            content={rate+"%"}
+            content={rateBoxContent}
             otherStyles={"width: 70px; font-weight: bold;"}/>
           {restingEnergy && restingEnergy > 0 ?
           <CutEdgesButton

@@ -8,7 +8,7 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
 
     const caughtEventIds = [];
 
-    plotService.minerContract.events.Updated({
+    plotService.minerContracts[0].events.Updated({
         filter: {'_by': currentUserId},
         fromBlock: 'latest'
     })
@@ -31,7 +31,8 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
       })
       .on('error', console.error);
 
-    plotService.minerContract.events.Released({
+    //todo: replace [0] with iterating over all miner contracts
+    plotService.minerContracts[0].events.Released({
         filter: {'_by': currentUserId},
         fromBlock: 'latest'
     })
@@ -46,7 +47,7 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
       })
       .on('error', console.error);
 
-    plotService.minerContract.events.Bound({
+    plotService.minerContracts[0].events.Bound({
         filter: {'_by': currentUserId},
         fromBlock: 'latest'
     })
@@ -61,7 +62,7 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
       })
       .on('error', console.error);
 
-    plotService.minerContract.events.RestingEnergyConsumed({
+    plotService.minerContracts[0].events.RestingEnergyConsumed({
         filter: {'_by': currentUserId},
         fromBlock: 'latest'
     })
@@ -283,4 +284,4 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
 
     console.log('App Event Listeners set');
 
-}
+};

@@ -50,7 +50,7 @@ class MiningGembox extends PureComponent {
                         outlineWidth={2}
                         fontSize={12}
                         height={50}
-                        content={"Stop Mining"}
+                        content={"Stop \\a Mining"}
                         otherStyles={"width: 53px; font-weight: bold;"}
                         onClick={() => handleReleaseGem()}
                       />

@@ -113,6 +113,7 @@ class App extends Component {
             font: '',
             wrongNetwork: false,
             lootFound: false,
+            eventsShown: [],
         };
     }
 
@@ -206,7 +207,7 @@ class App extends Component {
                 auctionService: new AuctionService(contracts.auctionContract, contracts.tokenHelperContract, contracts.gemContract),
                 silverGoldService: new SilverGoldService(contracts.silverSaleContract, contracts.balanceContract, contracts.refPointsTrackerContract),
                 countryService: new CountryService(null, contracts.countryContract),
-                plotService: new PlotService(contracts.plotContract, contracts.plotSaleContract, contracts.minerContract)
+                plotService: new PlotService(contracts.plotContract, contracts.plotSaleContract, contracts.minerContracts)
             };
             handleSendContractsToRedux(web3, contracts, services, currentAccountId);
         }
@@ -234,7 +235,6 @@ class App extends Component {
             let lootToShowArray = [];
             this.props.transactionHistory.forEach((tx) => {
                 if (tx && tx.unseen) {
-                    console.log("Unseen tx:", tx);
                     tx.events.forEach((eventTx) => {
                         if (eventTx.event === "Updated") {
                             lootToShowArray.push(eventTx);
@@ -260,6 +260,7 @@ class App extends Component {
             lootEventsArray = [eventUpdateArray];
         }
         let lootFound = this.state.lootFound;
+        let eventsShown = this.state.eventsShown;
         if (!lootFound) {
             lootFound = {};
             lootFound['loot'] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -270,6 +271,8 @@ class App extends Component {
         console.log("LOOT IS ALREADY NOT EMPTY", lootFound);
         let lootArray = lootFound['loot'] || [0, 0, 0, 0, 0, 0, 0, 0, 0]; //9 types of loot
         lootEventsArray.forEach(async eventUpdate => {
+            if (eventsShown.includes(eventUpdate['id'])) return;
+            eventsShown.push(eventUpdate['id']);
             const newLootFound = eventUpdate.returnValues;
             const newLootArray = newLootFound['loot'];
             if (newLootArray) {
@@ -284,6 +287,7 @@ class App extends Component {
             // this.props.plotService.getPlotState(eventUpdate.returnValues['plotId']);
         });
         this.setState({
+            eventsShown: eventsShown,
             lootFound: lootFound
         })
     };
@@ -330,7 +334,7 @@ class App extends Component {
                       >
                       </Modal>
                       {lootFound && <LootPopup visible={!!lootFound} lootFound={lootFound} onClose={() => {
-                          this.setState({lootFound: false})
+                          this.setState({lootFound: false, eventsShown: []})
                       }}/>}
                       <StickyHeader>
                           <Navbar/>
