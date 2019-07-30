@@ -2,6 +2,7 @@ import {BigNumber} from 'bignumber.js';
 import {db, storage} from '../../app/utils/firebase';
 import {GETTING_READY, GOING_HOME, IDLE, IN_AUCTION, MINING} from "../../features/items/itemConstants";
 import {BINDING_GEM, MINED, STUCK, UNBINDING_GEM} from "../../features/plots/plotConstants";
+import {COUNTRY_LIST} from "../../features/market/country_list";
 
 export default class GemService {
 
@@ -365,6 +366,12 @@ export const calculateGradeType = (gradeType) => ({
 
 
 export const calculateGemName = (color, tokenId) => {
+    const id = Number(tokenId);
+    if (id > 0xF100 && id < 0xF200) {
+        const name = `SCG #${id - 0xF100} ${COUNTRY_LIST[id - 0xF100 - 1]}`;
+        return name.length > 19 ? name.substring(0, 16) + "..." : name;
+    }
+
     const gemType = {
         1: 'Garnet',
         2: 'Amethyst',

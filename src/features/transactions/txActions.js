@@ -24,23 +24,6 @@ export const startTx = tx => ({type: TX_STARTED, payload: tx});
 export const completedTx = tx => ({type: TX_COMPLETED, payload: tx});
 export const ErrorTx = tx => ({type: TX_ERROR, payload: {error: tx.error, ...tx}});
 
-export const resolveTXStatus = async (pendingTransactions, dbWrite, dbDelete, queryBlockchain) => {
-    // eslint-disable-next-line
-    for (const gemId of pendingTransactions) {
-        try {
-            // pendingTransactions.forEach(async (gemId) => {
-            // eslint-disable-next-line
-            const payload = await queryBlockchain(gemId);
-            dbWrite(gemId, payload)
-              .then(() => dbDelete(gemId))
-              .catch(err => setError(err));
-        } catch (err) {
-            setError(err);
-        }
-    }
-};
-
-
 export const resolveTransactionEvent = (txEventObject) => async (dispatch, getState) => {
     //todo: handle all tx types and events;
     /*
@@ -99,7 +82,7 @@ export const resolveTransactionEvent = (txEventObject) => async (dispatch, getSt
                 if (storedTx) storedTxData = storedTx.data();
             }
             catch (e) {
-                console.error("FUCK:!:", e);
+                console.error("Error getting stored transaction from firebase", e);
             }
             if (storedTxData) {
                 console.log("STORED TX::", storedTxData.toString());
@@ -203,38 +186,38 @@ const plotSaleEventWhitelist = [
 ];
 
 export const getUpdatedTransactionHistory = () => async (dispatch, getState) => {
-    console.log("~~~~~~ get updated TRANSACTION history ~~~~~~");
     const web3 = getState().app.web3;
     const minerContracts = getState().app.plotService.minerContracts;
     const auctionContract = getState().app.auctionContract;
-    console.log("~~~~~~ get updated TRANSACTION history 2 ~~~~~~");
     const gemContract = getState().app.gemContract;
-    console.log("~~~~~~ get updated TRANSACTION history 3 ~~~~~~");
     const plotSaleContract = getState().app.plotService.plotSaleContract;
-    console.log("~~~~~~ get updated TRANSACTION history 4 ~~~~~~");
     const saleContract = getState().app.silverGoldService.saleContract;
 
     const currentUserId = getState().auth.currentUserId;
 
-    const [storedPendingTransactionDocs, storedSpeedUpTransactionDocs, storedCancelTransactionDocs] = await Promise.all([
-        await db.collection('transactions')
-          .where('userId', '==', currentUserId.toLowerCase())
-          .where('status', '==', TX_PENDING)
-          .get(),
-        await db.collection('transactions')
-          .where('userId', '==', currentUserId.toLowerCase())
-          .where('status', '==', TX_SPEED_UP)
-          .get(),
-        await db.collection('transactions')
-          .where('userId', '==', currentUserId.toLowerCase())
-          .where('status', '==', TX_CANCEL)
-          .get()
-    ]);
-
+    let storedPendingTransactionDocs, storedSpeedUpTransactionDocs, storedCancelTransactionDocs;
+    try {
+        [storedPendingTransactionDocs, storedSpeedUpTransactionDocs, storedCancelTransactionDocs] = await Promise.all([
+            await db.collection('transactions')
+              .where('userId', '==', currentUserId.toLowerCase())
+              .where('status', '==', TX_PENDING)
+              .get(),
+            await db.collection('transactions')
+              .where('userId', '==', currentUserId.toLowerCase())
+              .where('status', '==', TX_SPEED_UP)
+              .get(),
+            await db.collection('transactions')
+              .where('userId', '==', currentUserId.toLowerCase())
+              .where('status', '==', TX_CANCEL)
+              .get()
+        ]);
+    }
+    catch(e) {
+        [storedPendingTransactionDocs, storedSpeedUpTransactionDocs, storedCancelTransactionDocs] = [[], [], []];
+        console.log("Error while getting transactions from firebase", e);
+    }
 
     let lastBlockNumber;
-
-    // const resolvedStoredTransactions = [];
     const resolvedStoredTransactionHashes = [];
     const pendingTransactions = [];
     const resolvedFailedTransactions = [];
@@ -244,14 +227,12 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
           ...storedSpeedUpTransactionDocs.docs,
           ...storedCancelTransactionDocs.docs].map(async (pendingTxDoc) => {
           const storedTx = pendingTxDoc.data();
-          console.log("STORED TRANSACTION:", storedTx);
+
           const receipt = await web3.eth.getTransactionReceipt(storedTx.hash);
-          console.log("TRANSACTION RECEIPT:", receipt);
+
           if (receipt) {
               if (!receipt.status) {
                   resolvedFailedTransactions.push({...storedTx, status: TX_FAILED});
-                  //todo: what to do if speed up or cancel tx failed?
-                  //if (storedTx.status === TX_SPEED_UP || storedTx.status === TX_CANCEL) {
                   saveSpedUpOrCanceled(storedTx.hash, storedTx, TX_FAILED)(dispatch, getState);
               }
               else {
@@ -324,12 +305,7 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
               return storedTx;
           }
       }));
-    console.log("RESOLVED STORED TRANSACTIONS HASHES", resolvedStoredTransactionHashes);
-    console.log("RESOLVED STORED TRANSACTIONS HASHES LENGTH", resolvedStoredTransactionHashes.length);
-    console.log("RESOLVED STORED TRANSACTIONS", resolvedStoredTransactions);
-    console.log("PENDING TRANSACTIONS", pendingTransactions);
 
-    // !!! loop for pendings and move one to resolved if its hash in the resolvedStoredTransactionHashes
     const finalPendingTransactions = [];
     pendingTransactions.forEach(pending => {
         const inInferred = inferredResolvedStoredTransactions
@@ -342,103 +318,109 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
             }
         }
     });
-
     const latestBlock = await web3.eth.getBlockNumber();
-
-    //todo: change empirical amount of blocks for fromBlock parameter
-    const allEventLogsArray = [
-      //todo: replace minerContracts[0] with iterating over all miner contracts
-        (await Promise.all(minerEventWhitelist.map(async event => {
-            return minerContracts[0].getPastEvents(event,
+    let allEventLogsArray;
+    try {
+        //todo: change empirical amount of blocks for fromBlock parameter
+        allEventLogsArray = [
+            //todo: replace minerContracts[0] with iterating over all miner contracts
+            (await Promise.all(minerEventWhitelist.map(async event => {
+                return minerContracts[0].getPastEvents(event,
+                  {
+                      filter: {'_by': currentUserId},
+                      fromBlock: latestBlock - 15000,
+                      toBlock: 'latest',
+                  })
+            }))).flat(),
+            (await Promise.all(minerEventWhitelist.map(async event => {
+                return minerContracts[1].getPastEvents(event,
+                  {
+                      filter: {'_by': currentUserId},
+                      fromBlock: latestBlock - 15000,
+                      toBlock: 'latest',
+                  })
+            }))).flat(),
+            await auctionContract.getPastEvents('ItemAdded',
+              {
+                  filter: {'_from': currentUserId},
+                  fromBlock: latestBlock - 15000,
+                  toBlock: 'latest',
+              }),
+            await auctionContract.getPastEvents('ItemRemoved',
+              {
+                  filter: {'_to': currentUserId},
+                  fromBlock: latestBlock - 15000,
+                  toBlock: 'latest',
+              }),
+            await auctionContract.getPastEvents('ItemBought',
+              {
+                  filter: {'_to': currentUserId},
+                  fromBlock: latestBlock - 15000,
+                  toBlock: 'latest',
+              }),
+            await gemContract.getPastEvents('Upgraded',
+              {
+                  filter: {'_owner': currentUserId},
+                  fromBlock: latestBlock - 15000,
+                  toBlock: 'latest',
+              }),
+            await gemContract.getPastEvents('LevelUp',
+              {
+                  filter: {'_owner': currentUserId},
+                  fromBlock: latestBlock - 15000,
+                  toBlock: 'latest',
+              }),
+            (await Promise.all(plotSaleEventWhitelist.map(async event => {
+                return plotSaleContract.getPastEvents(event,
+                  {
+                      filter: {'_by': currentUserId},
+                      fromBlock: latestBlock - 15000,
+                      toBlock: 'latest',
+                  })
+            }))).flat(),
+            await plotSaleContract.getPastEvents('CountryBalanceUpdated',
+              {
+                  filter: {'owner': currentUserId},
+                  fromBlock: latestBlock - 15000,
+                  toBlock: 'latest',
+              }),
+            await gemContract.getPastEvents('Transfer',
+              {
+                  filter: {'_to': currentUserId},
+                  fromBlock: latestBlock - 15000,
+                  toBlock: 'latest',
+              }),
+            await gemContract.getPastEvents('Transfer',
+              {
+                  filter: {'_from': currentUserId},
+                  fromBlock: latestBlock - 15000,
+                  toBlock: 'latest',
+              }),
+            await auctionContract.getPastEvents('ItemBought',
+              {
+                  filter: {'_from': currentUserId},
+                  fromBlock: latestBlock - 15000,
+                  toBlock: 'latest',
+              }),
+            await saleContract.getPastEvents('Unboxed',
               {
                   filter: {'_by': currentUserId},
                   fromBlock: latestBlock - 15000,
-                  toBlock: 'latest',
-              })
-        }))).flat(),
-        await auctionContract.getPastEvents('ItemAdded',
-          {
-              filter: {'_from': currentUserId},
-              fromBlock: latestBlock - 15000,
-              toBlock: 'latest',
-          }),
-        await auctionContract.getPastEvents('ItemRemoved',
-          {
-              filter: {'_to': currentUserId},
-              fromBlock: latestBlock - 15000,
-              toBlock: 'latest',
-          }),
-        await auctionContract.getPastEvents('ItemBought',
-          {
-              filter: {'_to': currentUserId},
-              fromBlock: latestBlock - 15000,
-              toBlock: 'latest',
-          }),
-        await gemContract.getPastEvents('Upgraded',
-          {
-              filter: {'_owner': currentUserId},
-              fromBlock: latestBlock - 15000,
-              toBlock: 'latest',
-          }),
-        await gemContract.getPastEvents('LevelUp',
-          {
-              filter: {'_owner': currentUserId},
-              fromBlock: latestBlock - 15000,
-              toBlock: 'latest',
-          }),
-        (await Promise.all(plotSaleEventWhitelist.map(async event => {
-            return plotSaleContract.getPastEvents(event,
-              {
-                  filter: {'_by': currentUserId},
-                  fromBlock: latestBlock - 15000,
-                  toBlock: 'latest',
-              })
-        }))).flat(),
-        await plotSaleContract.getPastEvents('CountryBalanceUpdated',
-          {
-              filter: {'owner': currentUserId},
-              fromBlock: latestBlock - 15000,
-              toBlock: 'latest',
-          }),
-        await gemContract.getPastEvents('Transfer',
-          {
-              filter: {'_to': currentUserId},
-              fromBlock: latestBlock - 15000,
-              toBlock: 'latest',
-          }),
-        await gemContract.getPastEvents('Transfer',
-          {
-              filter: {'_from': currentUserId},
-              fromBlock: latestBlock - 15000,
-              toBlock: 'latest',
-          }),
-        await auctionContract.getPastEvents('ItemBought',
-          {
-              filter: {'_from': currentUserId},
-              fromBlock: latestBlock - 15000,
-              toBlock: 'latest',
-          }),
-        await saleContract.getPastEvents('Unboxed',
-          {
-              filter: {'_by': currentUserId},
-              fromBlock: latestBlock - 15000,
-              toBlock: 'latest'
-          }),
-        // plotSaleContract.getPastEvents({
-        //   event: "allEvents",
-        //   filter: {'_by': currentUserId, 'owner': currentUserId},
-        //   fromBlock: latestBlock - 7000,
-        //   toBlock: 'latest',
-        // }),
-    ].flat();
-    allEventLogsArray.sort((e1, e2) => e2.blockNumber !== e1.blockNumber ? e2.blockNumber - e1.blockNumber : e2.transactionIndex - e1.transactionIndex);
-
-    console.log("ALL EVENTS LOGS ARRAY", allEventLogsArray);
-
-    // console.log("MINER EVENT LOGS:", minerEventLogs);
-    // console.log("Auction EVENT LOGS:", auctionEventLogs);
-    // console.log("Gem EVENT LOGS:", gemEventLogs);
-    // console.log("Plot Sale EVENT LOGS:", plotSaleEventLogs);
+                  toBlock: 'latest'
+              }),
+            // plotSaleContract.getPastEvents({
+            //   event: "allEvents",
+            //   filter: {'_by': currentUserId, 'owner': currentUserId},
+            //   fromBlock: latestBlock - 7000,
+            //   toBlock: 'latest',
+            // }),
+        ].flat();
+        allEventLogsArray.sort((e1, e2) => e2.blockNumber !== e1.blockNumber ? e2.blockNumber - e1.blockNumber : e2.transactionIndex - e1.transactionIndex);
+    }
+    catch (e) {
+        allEventLogsArray = [];
+        console.error("Error while getting event logs:", e);
+    }
 
     let transactionHistory = groupEventLogsByTransaction(allEventLogsArray, currentUserId);
     resolvedStoredTransactions.forEach(storedTx => {

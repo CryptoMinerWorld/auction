@@ -8,6 +8,7 @@ import {
 
 export const plots = (state = {
     plotsLoaded: false,
+    gemMiningIds: []
 }, action) => {
 
     if (action.type === USER_PLOTS_RELOAD_BEGUN) {

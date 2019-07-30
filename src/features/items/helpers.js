@@ -146,7 +146,7 @@ export const getGemQualities = (_contract, _tokenId) => {
       }).catch((err) =>
         console.log(55555555555, err));
 
-}
+};
 
 export function getPrice(_tokenId, _contract, gemContract) {
     return _contract.methods.getCurrentPrice(gemContract, Number(_tokenId)).call();
@@ -155,6 +155,7 @@ export function getPrice(_tokenId, _contract, gemContract) {
 export const nonExponential = count => fromExponential(Number(count) / 1000000000000000000);
 
 export const calculateGemName = (providedGrade, providedTokenId) => {
+
     const gemType = {
         1: 'Garnet',
         2: 'Amethyst',

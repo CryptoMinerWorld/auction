@@ -157,6 +157,10 @@ class Dashboard extends Component {
         })
     };
 
+    componentWillUnmount() {
+        this.clearSubscriptions();
+    }
+
     async componentDidMount() {
 
         console.log('PROPS is ', this.props);
@@ -191,28 +195,30 @@ class Dashboard extends Component {
         if (plotService) {
             console.log("DASHBOARD PROPS PENDING TRANSACTION (1):", pendingTransactions);
             if (handleRefreshUserPlot && gemService && currentUserId) {
-                setDashboardEventListeners({
-                    plotService,
-                    silverGoldService,
-                    gemService,
-                    updatedEventCallback: (plot) => {
-                        handleRefreshUserPlot(plot);
-                        handleGetUserBalance(currentUserId)
-                    },
-                    balanceUpdateCallback: () => {
-                        if (match.params.userId.toLowerCase() === currentUserId.toLowerCase())
-                            handleGetUserBalance(match.params.userId)
-                    },
-                    releasedEventCallback: handleRefreshUserPlot,
-                    boundEventCallback: handleRefreshUserPlot,
-                    issuedEventCallback: handleGetUserPlots,
-                    reloadGemsCallback: handleGetUserGems,
-                    countryBalanceUpdatedCallback: handleGetUserCountries,
-                    changeGemCallback: () => {
-                        handleGetUserGems(currentUserId)
-                    },
-                    currentUserId,
-                });
+                const eventSubscriptions =
+                  setDashboardEventListeners({
+                      plotService,
+                      silverGoldService,
+                      gemService,
+                      updatedEventCallback: (plot) => {
+                          handleRefreshUserPlot(plot);
+                          handleGetUserBalance(currentUserId)
+                      },
+                      balanceUpdateCallback: () => {
+                          if (match.params.userId.toLowerCase() === currentUserId.toLowerCase())
+                              handleGetUserBalance(match.params.userId)
+                      },
+                      releasedEventCallback: handleRefreshUserPlot,
+                      boundEventCallback: handleRefreshUserPlot,
+                      issuedEventCallback: handleGetUserPlots,
+                      reloadGemsCallback: handleGetUserGems,
+                      countryBalanceUpdatedCallback: handleGetUserCountries,
+                      changeGemCallback: () => {
+                          handleGetUserGems(currentUserId)
+                      },
+                      currentUserId,
+                  });
+                this.setState({eventSubscriptions});
             }
 
             if (pendingTransactions && currentUserId) {
@@ -294,28 +300,30 @@ class Dashboard extends Component {
 
         if (plotService && handleRefreshUserPlot && currentUserId &&
           (plotService !== prevProps.plotService || match.params.userId !== prevProps.match.params.userId)) {
-            setDashboardEventListeners({
-                plotService,
-                silverGoldService,
-                gemService,
-                updatedEventCallback: (plot) => {
-                    handleRefreshUserPlot(plot);
-                    handleGetUserBalance(currentUserId)
-                },
-                balanceUpdateCallback: () => {
-                    if (match.params.userId.toLowerCase() === currentUserId.toLowerCase())
-                        handleGetUserBalance(match.params.userId)
-                },
-                releasedEventCallback: handleRefreshUserPlot,
-                boundEventCallback: handleRefreshUserPlot,
-                issuedEventCallback: handleGetUserPlots,
-                reloadGemsCallback: handleGetUserGems,
-                countryBalanceUpdatedCallback: handleGetUserCountries,
-                changeGemCallback: () => {
-                    handleGetUserGems(currentUserId)
-                },
-                currentUserId,
-            });
+            const eventSubscriptions =
+              setDashboardEventListeners({
+                  plotService,
+                  silverGoldService,
+                  gemService,
+                  updatedEventCallback: (plot) => {
+                      handleRefreshUserPlot(plot);
+                      handleGetUserBalance(currentUserId)
+                  },
+                  balanceUpdateCallback: () => {
+                      if (match.params.userId.toLowerCase() === currentUserId.toLowerCase())
+                          handleGetUserBalance(match.params.userId)
+                  },
+                  releasedEventCallback: handleRefreshUserPlot,
+                  boundEventCallback: handleRefreshUserPlot,
+                  issuedEventCallback: handleGetUserPlots,
+                  reloadGemsCallback: handleGetUserGems,
+                  countryBalanceUpdatedCallback: handleGetUserCountries,
+                  changeGemCallback: () => {
+                      handleGetUserGems(currentUserId)
+                  },
+                  currentUserId,
+              });
+            this.setState({eventSubscriptions});
         }
 
 
@@ -504,8 +512,8 @@ class Dashboard extends Component {
                           {' '}
                           Countries
                       </span>)} disabled={
-                                 !(userCountries)
-                                 || userCountries.length === 0}
+                        !(userCountries)
+                        || userCountries.length === 0}
                              key="3"
                     >
                         <CountryDashboard

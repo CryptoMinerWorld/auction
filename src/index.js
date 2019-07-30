@@ -34,29 +34,18 @@ const client = new ApolloClient({
   }),
 });
 
-// var vconsole = new VConsole();
-
-async function firebaseLog(log, type) {
-    const newLog = db.doc(`logs/${Date.now().toString()}`)
-      .set({
-          logString: log,
-          logType: type,
-          time: new Date().toLocaleTimeString(),
-      });
-    //console.log("CREATE LOG:", log, type, newLog);
-}
+var vconsole = new VConsole();
 
 async function noop() {}
 
 // if (process.env.NODE_ENV !== 'development') {
-    console.log = (log) => noop(log, 'log');
-    console.warn = (log) => noop(log, 'warn');
+//     console.log = (log) => noop(log, 'log');
+//     console.warn = (log) => noop(log, 'warn');
     // console.error = (log) => noop(log, 'error');
 // }
 
 // @notice these are all the actions fired when the app starts up
 store.dispatch(getCurrentUser());
-//store.dispatch(getAuctions());
 
 ReactDOM.render(
   // eslint-disable-next-line

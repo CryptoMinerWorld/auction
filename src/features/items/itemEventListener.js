@@ -1,5 +1,5 @@
 export const setItemEventListeners = ({gemService, gemChangedCallback, tokenId, auctionChangedCallback}) => {
-    console.log("SETTING UP EVENT LISTENERS");
+
     const subscriptions = [];
 
     subscriptions.push(
@@ -62,5 +62,4 @@ export const setItemEventListeners = ({gemService, gemChangedCallback, tokenId, 
     );
 
     return subscriptions;
-    console.log("GEM EVENT LISTENERS SET UP");
 };

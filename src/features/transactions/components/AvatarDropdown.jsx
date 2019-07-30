@@ -492,20 +492,12 @@ class AvatarDropdown extends React.Component {
 }
 
 const select = store => {
-    console.log('AVATAR DROPDOWN STORE:', store);
     return {
         transactions: store.tx.transactions || [],
         unseen: store.tx.transactions ? store.tx.transactions.reduce((acc, curTx) => curTx.unseen ? acc + 1 : acc, 0) : 0,
         transactionHistory: store.tx.transactionHistory,
         pendingTransactions: store.tx.pendingTransactions,
         failedTransactions: store.tx.failedTransactions,
-        //hash: store.tx.txHash,
-        //txConfirmations: store.tx.txConfirmations,
-        //txReceipt: store.tx.txReceipt,
-        //txError: store.tx.txError,
-        //txCurrentUser: store.tx.txCurrentUser,
-        //txMethod: store.tx.txMethod,
-        //txTokenId: store.tx.txTokenId,
     }
 };
 
@@ -517,13 +509,5 @@ const actions = {
 export default connect(select, actions)(AvatarDropdown);
 
 AvatarDropdown.propTypes = {
-    // to: PropTypes.string.isRequired,
-    //userImage: PropTypes.string.isRequired,
-    //userName: PropTypes.string.isRequired,
-    // walletId: PropTypes.string,
     upperCaseWalletId: PropTypes.string.isRequired,
 };
-
-// AvatarDropdown.defaultProps = {
-//   walletId: '',
-// };

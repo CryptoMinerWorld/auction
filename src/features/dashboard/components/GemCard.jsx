@@ -3,7 +3,7 @@ import Progress from 'antd/lib/progress';
 import Tilt from 'react-tilt';
 import {calculatePercentage} from '../../market/helpers';
 import MiniGemBox from '../../../components/MiniGemBox';
-import {calculateGemName} from '../helpers';
+import {calculateGemName} from '../../../app/services/GemService';
 import Loading from "../../../components/Loading";
 import {getGemImage} from "../../../app/services/GemService";
 import {MINED, MINING, STUCK} from "../../plots/plotConstants";
