@@ -111,7 +111,7 @@ const Navbar = ({
                     color: 'purple'
                 }}
               >
-                  Special Gems
+                  Country Gems
               </NavLink>
               <NavLink
                 exact

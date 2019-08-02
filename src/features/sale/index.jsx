@@ -343,20 +343,7 @@ class Sale extends Component {
                           </div>
                           <div><span style={{color: '#ff00ce'}}>5%</span> of all sales go to the Founder's Chest!</div>
                       </div>
-                      <div style={{
-                          fontSize: '14px',
-                          color: 'rgb(140, 160, 180)',
-                          marginTop: '10px',
-                          maxWidth: '500px',
-                          alignSelf: 'flex-start'
-                      }}>Don’t worry if you do not have any Founder’s Plots.
-                          Yes, they are the only way to find Founder’s
-                          Keys, which are the only thing that can open the
-                          Founder’s Chest. But you will be able
-                          to buy keys or even Founder’s Plots
-                          From other players in the market
-                          once mining starts!
-                      </div>
+
                       {/*<CountdownTimer message={<span style={{fontSize: '20px'}}>Sale started!</span>}*/}
                       {/*deadline={saleState['3'].saleStart}/>*/}
                       <p></p>

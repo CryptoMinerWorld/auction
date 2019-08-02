@@ -33,6 +33,7 @@ class Cards extends React.Component {
     render() {
         const {auction} = this.props;
         const {gemImage} = this.state;
+        const isSpecialGem = Number(auction.id) > 0xF100 && Number(auction.id) < 0xF200;
 
         return (
           <Tilt className="Tilt" options={{max: 20, scale: 1}}>
@@ -104,16 +105,24 @@ class Cards extends React.Component {
                         restingEnergy={auction.restingEnergy}
                         market
                       />
-                      <div className="flex aic o-70 mb2 w-100">
-                          <img
-                            src={auction.userImage}
-                            alt={auction.userName}
-                            className="h2 ma2"
-                          />
-                          <div className="db">
-                              <p className="pl2 ma0 truncate mw5">{auction.userName}</p>
-                          </div>
-                      </div>
+                      {isSpecialGem ?
+                        <div className="flex aic pl3 o-70 w-100">
+                            <div className="db">
+                                <p className="ma0 truncate mw5">{auction.name}</p>
+                            </div>
+                        </div>
+                        :
+                        <div className="flex aic o-70 pl3 mb2 w-100">
+                            <img
+                              src={auction.userImage}
+                              alt={auction.userName}
+                              className="h2 ma2"
+                            />
+                            <div className="db">
+                                <p className="pl2 ma0 truncate mw5">{auction.userName}</p>
+                            </div>
+                        </div>
+                      }
                   </div>
               </div>
           </Tilt>
