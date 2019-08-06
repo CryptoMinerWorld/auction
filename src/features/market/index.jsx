@@ -5,6 +5,7 @@ import {compose} from 'recompose';
 import {getAuctions, getImagesForGems, paginate, preLoadAuctionPage,} from './marketActions';
 import Plot from "../../app/images/dashboard/Plot.png";
 import Gem from "../../app/images/dashboard/gems.png";
+import CountryGem from "../../app/images/dashboard/countryGem.png";
 import Artifact from "../../app/images/dashboard/Artifacts.png";
 import Keys from "../../app/images/dashboard/Keys.png";
 import Tabs from "antd/lib/tabs";
@@ -123,10 +124,10 @@ class Marketplace extends React.Component {
                         tabIndex={-1}
                         role="button"
                         onKeyPress={() => this.setState({tab: 2})}
-                        className="h-100 flex aic"
+                        className="h-100 flex aic b"
                         onClick={() => this.setState({tab: 2})}
                       >
-                          <img src={Gem} alt="Gems" className="h2 w-auto pr2"/>
+                          <img src={CountryGem} alt="Gems" className="h2 w-auto pr2"/>
                           Country Gem
                       </span>
                     )}

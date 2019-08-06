@@ -19,7 +19,7 @@ const select = store => ({
 });
 
 const countries = COUNTRY_LIST.map((country, index) => {
-    return {countryId: index, name: country};
+    return {countryId: index + 1, name: country};
 }).sort((a, b) => a.name.localeCompare(b.name));
 
 class CountryGemsMarket extends React.Component {
@@ -68,7 +68,7 @@ class CountryGemsMarket extends React.Component {
     filterGems = (gems) => {
         if (this.props.selectedCountry) {
             return gems.filter((gem) => {
-                return (Number(gem.id) > 61696) && (Number(gem.id) - 61696 === Number(this.props.selectedCountry.countryId));
+                return (Number(gem.id) > 61696 && Number(gem.id) < 61952) && (Number(gem.id) - 61696 === Number(this.props.selectedCountry.countryId));
             });
         }
         else {

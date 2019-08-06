@@ -29,7 +29,7 @@ export default class PlotService {
     groupPlotIdsByMiners = (plots) => {
         const groups = Array.from({length: this.minerContracts.length}, () => []);
         plots.forEach(plot => groups[this.resolveMinerIndexByGemId(plot.gemMinesId)].push(plot.id));
-        return plots;
+        return groups;
     };
 
     withdrawCountriesEth = (ownerId) => {

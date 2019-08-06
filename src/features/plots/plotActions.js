@@ -157,7 +157,6 @@ export const releaseGem = (plot, updatePlotCallback, transactionStartCallback) =
 };
 
 export const processPlots = (plotIds, miner) => async (dispatch, getState) => {
-    console.log("process plots ids:", plotsIds);
     const currentUser = getState().auth.currentUserId;
     const estimatedGas = await getState().app.plotService.estimateProcessPlotsGas(plotIds, miner);
     console.debug("ESTIMATED GAS:", estimatedGas);
@@ -193,7 +192,6 @@ export const processPlots = (plotIds, miner) => async (dispatch, getState) => {
 export const processBlocks = (plot, updatePlotCallback) => async (dispatch, getState) => {
     const currentUser = getState().auth.currentUserId;
     const previousState = plot.miningState;
-    console.warn("PLOT:", plot, plot.id);
     const estimatedGas = await getState().app.plotService.estimateProcessBlocksGas(plot.id, plot.gemMinesId);
     console.debug("ESTIMATED GAS:", estimatedGas);
     let txHash;
