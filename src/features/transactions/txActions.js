@@ -9,7 +9,7 @@ import {
     TX_CONFIRMED,
     TX_ERROR,
     TX_FAILED,
-    TX_PENDING,
+    TX_PENDING, TX_REMOVED,
     TX_SPED_UP,
     TX_SPEED_UP,
     TX_SPEED_UP_CONFIRMED,
@@ -93,11 +93,9 @@ export const resolveTransactionEvent = (txEventObject) => async (dispatch, getSt
                             saveSpedUpOrCanceled(txEventObject.transaction.originalHash, storedTxData, TX_SPED_UP)(dispatch, getState);
                         }
                     {
-                        const txUpdated = await db
-                          .doc(`transactions/${txEventObject.transaction.hash}`)
-                          .update({
-                              status: TX_SPEED_UP_CONFIRMED
-                          });
+                        updateTransaction(txEventObject.transaction.hash, {
+                            status: TX_SPEED_UP_CONFIRMED
+                        })
                     }
                         break;
                     case TX_CANCEL:
@@ -105,11 +103,9 @@ export const resolveTransactionEvent = (txEventObject) => async (dispatch, getSt
                             saveSpedUpOrCanceled(txEventObject.transaction.originalHash, storedTxData, TX_CANCELED)(dispatch, getState);
                         }
                     {
-                        const txUpdated = await db
-                          .doc(`transactions/${txEventObject.transaction.hash}`)
-                          .update({
-                              status: TX_CANCEL_CONFIRMED
-                          });
+                        updateTransaction(txEventObject.transaction.hash, {
+                            status: TX_CANCEL_CONFIRMED
+                        })
                     }
                         break;
                     default:
@@ -194,6 +190,14 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
     const saleContract = getState().app.silverGoldService.saleContract;
 
     const currentUserId = getState().auth.currentUserId;
+    let currentTransactionCount = 0;
+    try {
+        const currentUserId = getState().auth.currentUserId;
+        currentTransactionCount = Number(await web3.eth.getTransactionCount(currentUserId));
+    }
+    catch (e) {
+        console.error("Error when get transaction count", e);
+    }
 
     let storedPendingTransactionDocs, storedSpeedUpTransactionDocs, storedCancelTransactionDocs;
     try {
@@ -234,6 +238,7 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
               if (!receipt.status) {
                   resolvedFailedTransactions.push({...storedTx, status: TX_FAILED});
                   saveSpedUpOrCanceled(storedTx.hash, storedTx, TX_FAILED)(dispatch, getState);
+                  return {...storedTx, status: TX_FAILED}
               }
               else {
                   if (storedTx.status === TX_SPEED_UP) {
@@ -246,11 +251,9 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
                           });
                           resolvedStoredTransactionHashes.push(originalHash);
                       }
-                      const txUpdatedStored = await db
-                        .doc(`transactions/${storedTx.hash}`)
-                        .update({
-                            status: receipt.status ? TX_SPEED_UP_CONFIRMED : TX_FAILED
-                        });
+                      updateTransaction(storedTx.hash, {
+                          status: receipt.status ? TX_SPEED_UP_CONFIRMED : TX_FAILED
+                      });
                       resolvedStoredTransactionHashes.push(storedTx.hash);
                       return {
                           transactionHash: receipt.transactionHash,
@@ -270,11 +273,9 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
                           });
                           resolvedStoredTransactionHashes.push(originalHash)
                       }
-                      const txUpdatedStored = await db
-                        .doc(`transactions/${storedTx.hash}`)
-                        .update({
-                            status: receipt.status ? TX_CANCEL_CONFIRMED : TX_FAILED
-                        });
+                      updateTransaction(storedTx.hash, {
+                          status: receipt.status ? TX_CANCEL_CONFIRMED : TX_FAILED
+                      });
                       resolvedStoredTransactionHashes.push(storedTx.hash);
                       return {
                           transactionHash: receipt.transactionHash,
@@ -286,11 +287,9 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
                   }
               }
               if (storedTx.status === TX_PENDING) {
-                  const txUpdatedStored = await db
-                    .doc(`transactions/${storedTx.hash}`)
-                    .update({
-                        status: receipt.status ? TX_CONFIRMED : TX_FAILED
-                    });
+                  updateTransaction(storedTx.hash, {
+                      status: receipt.status ? TX_CONFIRMED : TX_FAILED
+                  });
                   return {
                       transactionHash: receipt.transactionHash,
                       description: storedTx.description,
@@ -311,10 +310,14 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
         const inInferred = inferredResolvedStoredTransactions
           .find(txPart => txPart.transactionHash.toLowerCase() === pending.hash);
         if (inInferred) {
-            resolvedStoredTransactions.push(inInferred);
+            resolvedStoredTransactions.push({...pending, ...inInferred});
         } else {
-            if (!resolvedStoredTransactionHashes.includes(pending.hash)) {
-                finalPendingTransactions.push({...pending, ...inInferred})
+            if (pending && pending.transactionCount && pending.transactionCount < currentTransactionCount) {
+                updateTransaction(pending.hash, {status: TX_REMOVED});
+            } else {
+                if (!resolvedStoredTransactionHashes.includes(pending.hash)) {
+                    finalPendingTransactions.push(pending)
+                }
             }
         }
     });
@@ -576,11 +579,7 @@ const resolveTransactionDescription = (tx, currentUserId) => {
 };
 
 export const transactionResolved = (event) => async (dispatch, getState) => {
-    const txUpdatedStored = await db
-      .doc(`transactions/${event.transactionHash}`)
-      .update({
-          status: TX_CONFIRMED
-      });
+    const txUpdatedStored = await updateTransaction(event.transactionHash, {status: TX_CONFIRMED});
     const transactionHistory = getState().tx.transactionHistory;
     let resolvedTx = transactionHistory && transactionHistory.find(tx => tx.transactionHash === event.transactionHash);
     if (resolvedTx) {
@@ -605,12 +604,29 @@ export const transactionResolved = (event) => async (dispatch, getState) => {
             payload: withDescription
         })
     }
+};
 
+const updateTransaction = (transactionHash, txUpdate) => {
+    try {
+        db.doc(`transactions/${transactionHash}`)
+          .update(txUpdate);
+    }
+    catch (err) {
+        console.error("Error when update transaction:", err);
+    }
 };
 
 export const saveTransaction = (transaction) => async (dispatch, getState) => {
     if (!(transaction && transaction.hash && transaction.userId)) {
         return;
+    }
+    let transactionCount = 0;
+    try {
+        const currentUserId = getState().auth.currentUserId;
+        transactionCount = Number(await getState().app.web3.eth.getTransactionCount(currentUserId));
+    }
+    catch (e) {
+        console.error("Error when get transaction count", e);
     }
     const newTx = {
         hash: transaction.hash,
@@ -619,6 +635,7 @@ export const saveTransaction = (transaction) => async (dispatch, getState) => {
         status: transaction.status || "",
         description: transaction.description || "",
         body: transaction.body || "",
+        transactionCount,
         timestamp: Date.now(),
         dateTimeUTC: new Date().toUTCString()
     };

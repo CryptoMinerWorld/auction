@@ -181,21 +181,18 @@ export default class PlotService {
     };
 
     releaseGem = (plotId, gemId, gasEstimation) => {
-        return this.resolveMinerByGemId(gemId).methods.release(plotId).send({gas: Number(gasEstimation) + 500000},
-          {messages: {txType: UNBINDING_GEM, description: `Releasing gem ${gemId} from plot ${plotId}`}});
+        return this.resolveMinerByGemId(gemId).methods.release(plotId).send({gas: Number(gasEstimation) + 500000});
     };
 
     processBlocks = (plotId, gemId, currentUser, gasEstimation) => {
         console.log('UPDATING PLOT:', plotId);
         return this.resolveMinerByGemId(gemId).methods.update(plotId).send({
             from: currentUser,
-            gas: gasEstimation + 500000
-        }, {messages: {txType: PROCESSING, description: `Processing plot ${plotId}`}});
+            gas: gasEstimation + 500000});
     };
 
     processPlots = (plotIds, miner, gasEstimation) => {
-        return miner.methods.bulkUpdate(plotIds).send({gas: gasEstimation + 500000},
-          {messages: {txType: BULK_PROCESSING, description: `Bulk processing`}});
+        return miner.methods.bulkUpdate(plotIds).send({gas: gasEstimation + 500000});
     };
 
     getPlotState = async (plotId) => {
