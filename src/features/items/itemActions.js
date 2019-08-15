@@ -134,7 +134,7 @@ export const createAuction = (payload, createCallback, history) => async (dispat
     let txHash;
     return gemContract.methods
       .safeTransferFrom(currentAccount, process.env.REACT_APP_DUTCH_AUCTION, token, data)
-      .send({}, {messages: {txType: AUCTION_START, description: `Adding gem ${token} to auction`}})
+      .send()
       .on('transactionHash', hash => {
           txHash = hash;
           addPendingTransaction({
@@ -169,7 +169,7 @@ export const removeFromAuction = (tokenId, history, turnLoaderOff) => async (
     removeAuctionHelper(dutchContract, tokenId, gemContractAddress)
       .send({
           from: currentUser,
-      }, {messages: {txType: AUCTION_END, description: `Removing gem ${tokenId} from auction`}})
+      })
       .on('transactionHash', (hash) => {
           txHash = hash;
           addPendingTransaction({
@@ -204,7 +204,7 @@ export const handleBuyNow = (gem, _from, history, setLoading) => (dispatch, getS
       .buy(gemContractAddress, gem.id)
       .send({
           value:  Number(utils.toWei(priceInEth.toString(), 'ether'))
-      }, {messages: {txType: BUYING_GEM, description: `Buying gem ${gem.id} for ${priceInEth} ETH`}})
+      })
       .on('transactionHash', (hash) => {
           txHash = hash;
           addPendingTransaction({
@@ -241,7 +241,7 @@ export const giftGem = (gemId, addressTo) => (dispatch, getState) => {
     let txHash;
     gemsContract.methods
       .safeTransferFrom(from, to, tokenId)
-      .send({}, {messages: {txType: GEM_GIFTING, description: `Gifting gem ${gemId} to ${addressTo}`}})
+      .send()
       .on('transactionHash', hash => {
           txHash = hash;
           addPendingTransaction({
@@ -283,7 +283,7 @@ export const upgradeGem = (gem, levelUp, gradeUp, hidePopup, cost) => (dispatch,
     let txHash;
     return workshopContract.methods
       .upgrade(gem.id, levelUp, gradeUp, silver, gold)
-      .send({}, {messages: {txType: gradeUp > 0 ? GEM_UPGRADE : GEM_LEVEL_UP, description: `Upgrading gem ${gem.id}`}})
+      .send()
       .on('transactionHash', (hash) => {
           txHash = hash;
           addPendingTransaction({

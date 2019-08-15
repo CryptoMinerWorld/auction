@@ -41,7 +41,7 @@ const select = store => ({
     currentUserId: store.auth.currentUserId,
     saleState: store.sale.saleState,
     userBalance: store.sale.balance,
-    provider: store.auth.web3 && store.auth.web3.currentProvider,
+    provider: store.app.web3 && store.app.web3.currentProvider,
     accountExists: store.auth.existingUser,
     chestValue: store.sale.chestValue
 });
@@ -72,7 +72,6 @@ class Sale extends Component {
     };
 
     async componentDidMount() {
-        console.log(888888888888, ' PROPS: ', this.props);
         const {
             handleGetBoxesAvailable, handleUpdateSaleState, handleGetSaleState, silverGoldService,
             currentUserId, handleGetUserBalance, presaleContract, handleGetChestValue
@@ -109,9 +108,6 @@ class Sale extends Component {
         } = this.props;
         const {silverAvailable, goldAvailable} = this.state;
 
-        console.log('11111 PROPS: ', this.props);
-        console.log('22222 PROPS: ', prevProps);
-
         if (presaleContract && presaleContract !== prevProps.presaleContract) {
             handleGetChestValue();
         }
@@ -124,12 +120,10 @@ class Sale extends Component {
         if (silverGoldService && currentUserId && (silverGoldService !== prevProps.silverGoldService || currentUserId !== prevProps.currentUserId)) {
 
             let referrer = silverGoldService.getReferralId(this.props.location.search);
-            console.log('Saved referrer: ', referrer);
             if (referrer && !(await silverGoldService.ifReferrerIsValid(referrer, currentUserId))) {
                 referrer = 'some referral link is already used';
             }
             this.setState({referrer});
-            console.log('state-state:', this.state);
 
             handleGetUserBalance(currentUserId);
         }
@@ -288,7 +282,6 @@ class Sale extends Component {
                 'points': (referralPointsPrices[index] * amount)
             }
         };
-        console.log('SALE STATE PROP:', saleState);
 
         const saleStarted = saleState['3'] && saleState['3'].saleStart * 1000 <= Math.round(new Date().getTime());
         const timeLeftInHours = t => Math.floor((t % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));

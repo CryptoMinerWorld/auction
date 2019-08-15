@@ -161,7 +161,7 @@ const EnhancedCart = props => (
 const selection = store => ({
   countrySale: store.app.countrySaleInstance,
   accountExists: store.auth.existingUser,
-  provider: store.auth.web3 && !!store.auth.web3.currentProvider,
+  provider: store.app.web3 && !!store.app.web3.currentProvider,
 });
 
 const actions = {

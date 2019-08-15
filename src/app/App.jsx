@@ -30,6 +30,8 @@ import Gold from './ABI/GoldERC20';
 import Workshop from './ABI/Workshop';
 import SilverSale from './ABI/SilverSale';
 import SilverCoupons from './ABI/SilverCoupons';
+import ChestFactory from './ABI/ChestFactory';
+import FoundersKey from './ABI/FoundersKeyERC20';
 import PlotSale from './ABI/PlotSale';
 import Plot from './ABI/PlotERC721';
 import Artifact from './ABI/ArtifactERC20';
@@ -87,6 +89,8 @@ const artifactABI = Artifact.abi;
 const balanceABI = BalanceProxy.abi;
 const plotAntarcticaABI = PlotAntarctica.abi;
 const foundersPlotsABI = FoundersPlots.abi;
+const chestFactoryABI = ChestFactory.abi;
+const foundersKeyABI = FoundersKey.abi;
 
 const StickyHeader = styled.div`
   position: -webkit-sticky; /* Safari */
@@ -154,7 +158,7 @@ class App extends Component {
             web3,
             style: {
                 darkMode: true,
-                notificationsPosition: {mobile: 'bottom'}
+                notificationsPosition: {desktop:'bottomRight', mobile: 'bottom'}
             },
             handleNotificationEvent: this.props.handleNotificationEvent,
         };
@@ -190,7 +194,7 @@ class App extends Component {
           {
               dutchAuctionABI, dutchAuctionHelperABI, gemsABI, countryABI, refPointsTrackerABI, goldABI,
               silverABI, workshopABI, silverSaleABI, silverCouponsABI, plotSaleABI, plotABI, minerABI,
-              artifactABI, balanceABI, plotAntarcticaABI, foundersPlotsABI
+              artifactABI, balanceABI, plotAntarcticaABI, foundersPlotsABI, chestFactoryABI, foundersKeyABI
           }, currentAccountId);
 
         console.info("contracts", contracts);
@@ -215,7 +219,6 @@ class App extends Component {
 
     componentDidUpdate(prevProps) {
         const {plotService, gemService, auctionService, silverGoldService, currentUserId, handleTransactionResolved} = this.props;
-        console.log(">>>>>> APP UPDATED <<<<<", this.props);
         if (plotService && gemService && auctionService && silverGoldService && currentUserId &&
           (plotService !== prevProps.plotService || currentUserId !== prevProps.currentUserId || gemService !== prevProps.gemService ||
             auctionService !== prevProps.auctionService || silverGoldService !== prevProps.silverGoldService)) {
@@ -251,7 +254,6 @@ class App extends Component {
     };
 
     showLoot = (eventUpdateArray) => {
-        console.log("Show loot", eventUpdateArray);
         let lootEventsArray;
         if (Array.isArray(eventUpdateArray)) {
             lootEventsArray = eventUpdateArray;
@@ -268,7 +270,6 @@ class App extends Component {
             lootFound['blocksProcessed'] = 0;
             lootFound['plotsProcessed'] = 0;
         }
-        console.log("LOOT IS ALREADY NOT EMPTY", lootFound);
         let lootArray = lootFound['loot'] || [0, 0, 0, 0, 0, 0, 0, 0, 0]; //9 types of loot
         lootEventsArray.forEach(async eventUpdate => {
             if (eventsShown.includes(eventUpdate['id'])) return;
@@ -304,7 +305,6 @@ class App extends Component {
     render() {
         const {visible, error, errorTitle, currentUserId} = this.props;
         const {font, wrongNetwork, lootFound} = this.state;
-        console.warn('----------> APP starts <----------');
         return (
           <>
               {/* <React.StrictMode> */}

@@ -35,7 +35,7 @@ export default class PlotService {
     withdrawCountriesEth = (ownerId) => {
         return this.plotSaleContract.methods
           .withdraw(ownerId)
-          .send({}, {messages: {txType: COUNTRY_WITHDRAW, description: `Withdrawing countries income`}});
+          .send();
     };
 
     getTotalNotWithdrawn = async (owner) => {
@@ -53,7 +53,7 @@ export default class PlotService {
           .buy(countryId, plotsNumber)
           .send({
               value: priceInWei,
-          }, {messages: {txType: PLOT_SALE, description: `Buying ${plotsNumber} plots`}});
+          });
     };
 
     getEffectiveRestingEnergyOf = async (gemId) => {
@@ -177,12 +177,11 @@ export default class PlotService {
         return this.resolveMinerByGemId(gemId).methods.bind(plotId, gemId).send({
             from: currentUser,
             gas: Number(gasEstimation) + 500000
-        }, {messages: {txType: BINDING_GEM, description: `Binding gem ${gemId} to plot ${plotId}`}});
+        });
     };
 
     releaseGem = (plotId, gemId, gasEstimation) => {
-        return this.resolveMinerByGemId(gemId).methods.release(plotId).send({gas: Number(gasEstimation) + 500000},
-          {messages: {txType: UNBINDING_GEM, description: `Releasing gem ${gemId} from plot ${plotId}`}});
+        return this.resolveMinerByGemId(gemId).methods.release(plotId).send({gas: Number(gasEstimation) + 500000});
     };
 
     processBlocks = (plotId, gemId, currentUser, gasEstimation) => {
@@ -190,12 +189,11 @@ export default class PlotService {
         return this.resolveMinerByGemId(gemId).methods.update(plotId).send({
             from: currentUser,
             gas: gasEstimation + 500000
-        }, {messages: {txType: PROCESSING, description: `Processing plot ${plotId}`}});
+        });
     };
 
     processPlots = (plotIds, miner, gasEstimation) => {
-        return miner.methods.bulkUpdate(plotIds).send({gas: gasEstimation + 500000},
-          {messages: {txType: BULK_PROCESSING, description: `Bulk processing`}});
+        return miner.methods.bulkUpdate(plotIds).send({gas: gasEstimation + 500000});
     };
 
     getPlotState = async (plotId) => {

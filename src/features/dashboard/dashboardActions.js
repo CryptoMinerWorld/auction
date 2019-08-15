@@ -89,8 +89,6 @@ export const getUserCountries = userId => async (dispatch, getState) => {
 export const getUserDetails = async userId => {
 
     const userIdToLowerCase = userId
-
-
       .split('')
       .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
       .join('');
@@ -103,7 +101,7 @@ export const getUserDetails = async userId => {
         const userDetails = (await col).data();
         return userDetails || {name: "", imageURL: ""};
     } catch (err) {
-        console.log(33333333333, err);
+        console.error(err);
     }
 };
 

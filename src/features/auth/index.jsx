@@ -38,7 +38,7 @@ const images = [
 
 const select = store => ({
   currentUser: store.auth.currentUserId,
-  web3: store.auth.web3,
+  web3: store.app.web3,
 });
 
 class Auth extends PureComponent {

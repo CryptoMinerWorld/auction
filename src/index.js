@@ -41,7 +41,7 @@ async function noop() {}
 // if (process.env.NODE_ENV !== 'development') {
     console.log = (log) => noop(log, 'log');
     console.warn = (log) => noop(log, 'warn');
-//     console.error = (log) => noop(log, 'error');
+    // console.error = (log) => noop(log, 'error');
 // }
 
 // @notice these are all the actions fired when the app starts up
