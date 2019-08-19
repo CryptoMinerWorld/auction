@@ -131,7 +131,7 @@ class Chest extends Component {
                   </ChestContainer>
                   <ChestInfo>
                       <Heading><Blue>Founder's Chest</Blue> is Now Accepting <Yellow>Keys</Yellow>!</Heading>
-                      <Info>The Winning Key will open the Chest on <Date><Pink>August 22 2019</Pink> at <Pink>5:00</Pink></Date>pm (GMT)</Info>
+                      <Info>The Winning Key will open the Chest on <Date><Pink>August 23 2019</Pink> at <Pink>1:00</Pink></Date>pm (GMT)</Info>
                       <ChestValue>
                           <div style={{width: "170px", padding: "3px 0"}}>
                               Owner of the Winning Key will receive this!!!
@@ -145,7 +145,7 @@ class Chest extends Component {
                           </div>
                       </ChestValue>
                       <SubmitArea>
-                          {userBalance && userBalance.foundersKeys >= 0 ?
+                          {userBalance && userBalance.foundersKeys > 0 ?
                             <HasKeys>
                                 <KeysInfo>
                                     You have <Pink style={{fontSize: "26px"}}>{userBalance.foundersKeys}</Pink> Keys!
@@ -162,7 +162,7 @@ class Chest extends Component {
                             <NoKeys>You don't have any Founder's Keys. You still have time to get some!</NoKeys>
                           }
                       </SubmitArea>
-                      {userBalance && userBalance.keys &&
+                      {userBalance && userBalance.foundersKeys > 0 &&
                       <SecondarySubmit>
                           <SecondarySubmitInfo>
                               All available Keys are submitted by default. There will never be more than one Chest
@@ -256,6 +256,38 @@ const ChestContainer = styled.div`
     padding: 0 20px;
   `;
 const ChestImage = styled.img`
+
+ animation: bounce 2s infinite;
+ -webkit-animation: bounce 2s infinite;
+ -moz-animation: bounce 2s infinite;
+ -o-animation: bounce 2s infinite;
+}
+ 
+@-webkit-keyframes bounce {
+ 0%, 20%, 50%, 80%, 100% {-webkit-transform: translateY(0);} 
+ 40% {-webkit-transform: translateY(-30px);}
+ 60% {-webkit-transform: translateY(-15px);}
+}
+ 
+@-moz-keyframes bounce {
+ 0%, 20%, 50%, 80%, 100% {-moz-transform: translateY(0);}
+ 40% {-moz-transform: translateY(-30px);}
+ 60% {-moz-transform: translateY(-15px);}
+}
+ 
+@-o-keyframes bounce {
+ 0%, 20%, 50%, 80%, 100% {-o-transform: translateY(0);}
+ 40% {-o-transform: translateY(-30px);}
+ 60% {-o-transform: translateY(-15px);}
+}
+@keyframes bounce {
+ 0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+ 40% {transform: translateY(-30px);}
+ 60% {transform: translateY(-15px);}
+}
+
+
+
 `;
 const ChestInfo = styled.div`
     max-width: 400px;

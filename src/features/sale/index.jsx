@@ -310,32 +310,32 @@ class Sale extends Component {
               <div style={{display: 'flex', flexWrap: 'wrap-reverse'}}>
                   <div style={{flex: '3', paddingTop: '20px', minWidth: '300px', display: 'flex',
                       flexWrap: 'wrap', alignItems:'center', justifyContent:'center'}}>
-                      <div style={{maxWidth:'420px', alignSelf: 'flex-end'}}>
-                          <div style={{
-                              display: 'flex',
-                              alignItems: 'flex-end',
-                              flexWrap: 'wrap'
-                          }}>
-                              <img src={foundersChest} style={{
-                                  flex: '3',
-                                  minWidth: '125px',
-                                  maxWidth: '175px',
-                                  marginLeft: '-10px',
-                                  marginRight: '16px'
-                              }}/>
-                              <div style={{
-                                  minWidth: '180px',
-                                  flex: '4',
-                                  paddingBottom: '12px',
-                                  fontSize: '18px',
-                                  fontWeight: 'bold'
-                              }}>
-                                  <div style={{color: '#ff00ce'}}>{chestValue && chestValue.toFixed(2)} ETH</div>
-                                  <div>In Founder's Chest</div>
-                              </div>
-                          </div>
-                          <div><span style={{color: '#ff00ce'}}>5%</span> of all sales go to the Founder's Chest!</div>
-                      </div>
+                      {/*<div style={{maxWidth:'420px', alignSelf: 'flex-end'}}>*/}
+                          {/*<div style={{*/}
+                              {/*display: 'flex',*/}
+                              {/*alignItems: 'flex-end',*/}
+                              {/*flexWrap: 'wrap'*/}
+                          {/*}}>*/}
+                              {/*<img src={foundersChest} style={{*/}
+                                  {/*flex: '3',*/}
+                                  {/*minWidth: '125px',*/}
+                                  {/*maxWidth: '175px',*/}
+                                  {/*marginLeft: '-10px',*/}
+                                  {/*marginRight: '16px'*/}
+                              {/*}}/>*/}
+                              {/*<div style={{*/}
+                                  {/*minWidth: '180px',*/}
+                                  {/*flex: '4',*/}
+                                  {/*paddingBottom: '12px',*/}
+                                  {/*fontSize: '18px',*/}
+                                  {/*fontWeight: 'bold'*/}
+                              {/*}}>*/}
+                                  {/*<div style={{color: '#ff00ce'}}>{chestValue && chestValue.toFixed(2)} ETH</div>*/}
+                                  {/*<div>In Founder's Chest</div>*/}
+                              {/*</div>*/}
+                          {/*</div>*/}
+                          {/*<div><span style={{color: '#ff00ce'}}>5%</span> of all sales go to the Founder's Chest!</div>*/}
+                      {/*</div>*/}
 
                       {/*<CountdownTimer message={<span style={{fontSize: '20px'}}>Sale started!</span>}*/}
                       {/*deadline={saleState['3'].saleStart}/>*/}

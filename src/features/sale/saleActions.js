@@ -59,13 +59,12 @@ export const getChestValue = () => async (dispatch, getState) => {
     //const preSaleContract = getState().app.presaleContract;
     const chestFactoryContract = getState().app.chestFactoryContract;
     const web3 = getState().app.web3;
-    //const chestValue = weiToEth(await
-    // chestFactoryContract.methods.getValue(process.env.REACT_APP_FOUNDERS_CHEST_ID).call())
-    const chestFactoryValue = weiToEth(await web3.eth.getBalance(process.env.REACT_APP_FACTORY_FOUNDERS_CHEST));
-    const chestValue = weiToEth(await web3.eth.getBalance(process.env.REACT_APP_FOUNDERS_CHEST));
+    const chestValue = weiToEth(await chestFactoryContract.methods.getValue(process.env.REACT_APP_FOUNDERS_CHEST_ID).call());
+    // const chestFactoryValue = weiToEth(await web3.eth.getBalance(process.env.REACT_APP_FACTORY_FOUNDERS_CHEST));
+    // const chestValue = weiToEth(await web3.eth.getBalance(process.env.REACT_APP_FOUNDERS_CHEST));
     dispatch({
         type: CHEST_VALUE_RECEIVED,
-        payload: chestValue + chestFactoryValue
+        payload: chestValue
     });
 };
 
