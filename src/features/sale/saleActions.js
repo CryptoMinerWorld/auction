@@ -10,7 +10,7 @@ import {BigNumber} from "bignumber.js";
 import {
     CHEST_VALUE_RECEIVED,
     FOUNDERS_KEYS_ISSUED,
-    SALE_STATE_RECEIVED,
+    SALE_STATE_RECEIVED, SUBMITTED_KEYS_BY_USER_RECEIVED,
     SUBMITTED_KEYS_RECEIVED,
     USER_BALANCE_RECEIVED
 } from "./saleConstants";
@@ -65,6 +65,17 @@ export const getChestValue = () => async (dispatch, getState) => {
     dispatch({
         type: CHEST_VALUE_RECEIVED,
         payload: chestValue
+    });
+};
+
+export const getKeysSubmittedByUser = (chestId, userAddress) => async (dispatch, getState) => {
+    const chestFactoryContract = getState().app.chestFactoryContract;
+    const foundersKeys = (await chestFactoryContract.methods
+      .getKeyBalances(chestId, userAddress).call()).foundersKeys;
+
+    dispatch({
+        type: SUBMITTED_KEYS_BY_USER_RECEIVED,
+        payload: foundersKeys
     });
 };
 

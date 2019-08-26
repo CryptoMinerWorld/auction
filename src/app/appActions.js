@@ -73,8 +73,10 @@ export const instantiateContracts = async (assistInstance, web3, ABISet, current
                   process.env.REACT_APP_PLOT_ANTARCTICA, {from: currentAccountId})),
                 assistInstance.Contract(new web3.eth.Contract(ABISet.foundersPlotsABI,
                   process.env.REACT_APP_FOUNDERS_PLOTS, {from: currentAccountId})),
-                assistInstance.Contract(new web3.eth.Contract(ABISet.chestFactoryABI,
-                  process.env.REACT_APP_CHEST_FACTORY, {from: currentAccountId})),
+                //assistInstance.Contract(new web3.eth.Contract(ABISet.chestFactoryABI,
+                //  process.env.REACT_APP_CHEST_FACTORY, {from: currentAccountId})),
+                new web3.eth.Contract(ABISet.chestFactoryABI,
+                 process.env.REACT_APP_CHEST_FACTORY, {from: currentAccountId}),
                 assistInstance.Contract(new web3.eth.Contract(ABISet.foundersKeyABI,
                   process.env.REACT_APP_FOUNDERS_KEY_ERC20, {from: currentAccountId})),
             ])

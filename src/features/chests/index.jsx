@@ -2,13 +2,12 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {compose} from 'redux';
 import {withRouter} from 'react-router-dom';
-import {submitKeys} from './chestActions';
-import {getFoundersKeysIssued, getKeysSubmitted, getUserBalance} from "../sale/saleActions";
+import {submitKeys, withdrawKeys, withdrawTreasure} from './chestActions';
+import {getFoundersKeysIssued, getKeysSubmitted, getKeysSubmittedByUser, getUserBalance} from "../sale/saleActions";
 import styled from 'styled-components';
-import chestImage from './../../app/images/sale/foundersChest.png';
+import chestImage from './../../app/images/sale/foundersChestWithCoins800.png';
 import rockBackground from '../../app/images/rockBackground.png';
 import actionButtonImage from "../../app/images/noTextGemButton.png";
-import {CutEdgesButton} from "../../components/CutEdgesButton";
 import playerNameImage from "../../app/images/PlayerName.png";
 import keysSubmittedImage from "../../app/images/KeysSubmitted.png";
 import {getChestValues} from "../plotsale/plotSaleActions";
@@ -32,6 +31,7 @@ const select = store => ({
     silverGoldService: store.app.silverGoldService,
     chestContract: store.app.chestContract,
     submittedKeys: store.sale.foundersKeysSubmitted,
+    submittedKeysByUser: store.sale.foundersKeysSubmittedByUser
 });
 
 const chestId = process.env.REACT_APP_FOUNDERS_CHEST_ID;
@@ -53,7 +53,7 @@ class Chest extends Component {
 
     async componentDidMount() {
         const {
-            match, handleGetUserBalance, foundersKeyContract, handleGetFoundersKeySubmitted,
+            match, handleGetUserBalance, foundersKeyContract, handleGetFoundersKeySubmitted, handleGetKeysSubmittedByUser,
             handleGetFoundersKeyIssued, handleGetChestValues, chestFactoryContract, silverGoldService, web3, currentUserId
         } = this.props;
 
@@ -63,6 +63,9 @@ class Chest extends Component {
         if (foundersKeyContract) {
             handleGetFoundersKeyIssued();
             handleGetFoundersKeySubmitted(chestId);
+        }
+        if (chestFactoryContract && currentUserId) {
+            handleGetKeysSubmittedByUser(chestId, currentUserId)
         }
         if (chestFactoryContract) {
             handleGetChestValues();
@@ -83,7 +86,7 @@ class Chest extends Component {
 
     async componentDidUpdate(prevProps) {
         const {
-            match, web3, foundersKeyContract, chestFactoryContract, handleGetFoundersKeySubmitted,
+            match, web3, foundersKeyContract, chestFactoryContract, handleGetFoundersKeySubmitted, handleGetKeysSubmittedByUser,
             handleGetFoundersKeyIssued, handleGetChestValues, silverGoldService, handleGetUserBalance, currentUserId,
         } = this.props;
 
@@ -94,6 +97,9 @@ class Chest extends Component {
         if (foundersKeyContract !== prevProps.foundersKeyContract) {
             handleGetFoundersKeyIssued();
             handleGetFoundersKeySubmitted(chestId);
+        }
+        if (currentUserId && chestFactoryContract && (currentUserId !== prevProps.currentUserId || chestFactoryContract !== prevProps.chestFactoryContract)) {
+            handleGetKeysSubmittedByUser(chestId, currentUserId)
         }
         if (chestFactoryContract !== prevProps.chestFactoryContract) {
             handleGetChestValues();
@@ -108,13 +114,16 @@ class Chest extends Component {
             currentUserId,
             //     match,
             userBalance,
-            chestValue,
+            handleWithdrawKeys,
+            handleWithdrawTreasure,
             totalFoundersKeys,
             submittedKeys,
-            handleSubmitKeys
+            handleSubmitKeys,
+            submittedKeysByUser
         } = this.props;
 
         const ethPrice = this.state.ethPrice;
+        const chestValue = 19.83;
 
         const totalSubmittedKeys = submittedKeys ? submittedKeys.reduce((sum, cur) => sum + Number(cur.foundersKeys), 0) : "";
 
@@ -130,11 +139,67 @@ class Chest extends Component {
                       <ChestImage src={chestImage}/>
                   </ChestContainer>
                   <ChestInfo>
-                      <Heading><Blue>Founder's Chest</Blue> is Now Accepting <Yellow>Keys</Yellow>!</Heading>
-                      <Info>The Winning Key will open the Chest on <Date><Pink>August 23 2019</Pink> at <Pink>1:00</Pink></Date>pm (GMT)</Info>
+                      <Heading><Blue>Founder's Chest</Blue> Has Been <Yellow>Opened</Yellow>!</Heading>
+                      {currentUserId && currentUserId.toLowerCase() === "0x360bbad1120b0abf63573e2e21b6727e07d1bf18" ?
+                        <SubmitArea>
+                            <HasKeys>
+                                <div style={{fontSize: "20px"}}>You WON!!!</div>
+                                <SubmitButton onClick={() => handleWithdrawTreasure(chestId)}>
+                                    Withdraw ETH
+                                </SubmitButton>
+                            </HasKeys>
+                            <HasKeys>
+                                <KeysInfo>
+                                    Take your Keys back
+                                </KeysInfo>
+                                <SubmitButton onClick={() => handleWithdrawKeys(chestId, () => {
+                                    this.props.handleGetUserBalance(currentUserId);
+                                    this.props.handleGetFoundersKeyIssued();
+                                    this.props.handleGetFoundersKeySubmitted(chestId);
+                                })}>
+                                    Retrieve Keys
+                                </SubmitButton>
+                            </HasKeys>
+                        </SubmitArea> :
+                        (
+                          <SubmitArea>
+                              {(submittedKeysByUser && Number(submittedKeysByUser) > 0) ?
+                                <HasKeys>
+                                    <KeysInfo>
+                                        Take your Keys back
+                                    </KeysInfo>
+                                    <SubmitButton onClick={() => handleWithdrawKeys(chestId, () => {
+                                        this.props.handleGetUserBalance(currentUserId);
+                                        this.props.handleGetFoundersKeyIssued();
+                                        this.props.handleGetFoundersKeySubmitted(chestId);
+                                    })}>
+                                        Retrieve Keys
+                                    </SubmitButton>
+                                </HasKeys>
+                                :
+                                <HasKeys>
+                                    <KeysInfo>
+                                        <img
+                                          src="https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FAquamarine%20Face%20Emoji.png?alt=media&amp;token=b759ae07-bb8c-4ec8-9399-d3844d5428ef"
+                                          width="50"/>
+                                        Proof
+                                    </KeysInfo>
+                                    <div style={{textAlign: "center"}}>had the Key that opened the Chest!</div>
+                                </HasKeys>}
+                          </SubmitArea>)
+                      }
                       <ChestValue>
                           <div style={{width: "170px", padding: "3px 0"}}>
-                              Owner of the Winning Key will receive this!!!
+                              {currentUserId && currentUserId.toLowerCase() === "0x360bbad1120b0abf63573e2e21b6727e07d1bf18" ?
+                                "You will receive this" :
+                                <div>
+                                    <img
+                                      src="https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FAquamarine%20Face%20Emoji.png?alt=media&amp;token=b759ae07-bb8c-4ec8-9399-d3844d5428ef"
+                                      width="30"/>
+                                    Proof
+                                    <div>received this</div>
+                                </div>
+                              }
                           </div>
                           <div>
                               {chestValue &&
@@ -144,47 +209,19 @@ class Chest extends Component {
                                 style={{fontSize: "16px"}}>USD</span></ValueUsd>}
                           </div>
                       </ChestValue>
-                      <SubmitArea>
-                          {userBalance && userBalance.foundersKeys > 0 ?
-                            <HasKeys>
-                                <KeysInfo>
-                                    You have <Pink style={{fontSize: "26px"}}>{userBalance.foundersKeys}</Pink> Keys!
-                                </KeysInfo>
-                                <SubmitButton onClick={() => handleSubmitKeys(userBalance.foundersKeys, chestId, () => {
-                                    this.props.handleGetUserBalance(currentUserId);
-                                    this.props.handleGetFoundersKeyIssued();
-                                    this.props.handleGetFoundersKeySubmitted(chestId);
-                                })}>
-                                    Submit Keys
-                                </SubmitButton>
-                            </HasKeys>
-                            :
-                            <NoKeys>You don't have any Founder's Keys. You still have time to get some!</NoKeys>
-                          }
-                      </SubmitArea>
-                      {userBalance && userBalance.foundersKeys > 0 &&
-                      <SecondarySubmit>
-                          <SecondarySubmitInfo>
-                              All available Keys are submitted by default. There will never be more than one Chest
-                              accepting Keys at one time.
-                              If you would like to submit less than all of your Keys, click this button to submit one
-                              key at a time.
-                          </SecondarySubmitInfo>
-                          <SecondarySubmitButton>
-                              <CutEdgesButton content={"Submit 1 Key"}
-                                              backgroundColor={"#2a3238"}
-                                              outlineColor={"#6e7c89"}
-                                              outlineWidth={1}
-                                              edgeSizes={[5, 20]}
-                                              otherStyles={"height: 28px"}
-                                              onClick={() => handleSubmitKeys(1, chestId, () => {
-                                                  this.props.handleGetUserBalance(currentUserId);
-                                                  this.props.handleGetFoundersKeyIssued();
-                                                  this.props.handleGetFoundersKeySubmitted(chestId);
-                                              })}
-                              />
-                          </SecondarySubmitButton>
-                      </SecondarySubmit>}
+                      {((currentUserId && currentUserId.toLowerCase() === "0x360bbad1120b0abf63573e2e21b6727e07d1bf18")
+                        || submittedKeysByUser && Number(submittedKeysByUser) > 0) ? "" :
+                        <NoKeys style={{color: "white"}}>Get mining and find Keys so you have a chance of opening the
+                            next Chest</NoKeys>
+                      }
+                      {(currentUserId && currentUserId.toLowerCase() !== "0x360bbad1120b0abf63573e2e21b6727e07d1bf18"
+                        && submittedKeysByUser && Number(submittedKeysByUser) > 0) ?
+                        <div style={{textAlign: "center", color: "white"}}>
+                            Sorry, non of your Keys opened this Chest.<br/>
+                            But your Keys could open other Chests.<br/>
+                            Take them back and keep trying!<br/>
+                            Good luck!!!
+                        </div> : ""}
                   </ChestInfo>
               </ChestArea>
               <StatsArea>
@@ -229,7 +266,10 @@ const actions = {
     handleSubmitKeys: submitKeys,
     handleGetChestValues: getChestValues,
     handleGetFoundersKeyIssued: getFoundersKeysIssued,
-    handleGetFoundersKeySubmitted: getKeysSubmitted
+    handleGetFoundersKeySubmitted: getKeysSubmitted,
+    handleWithdrawTreasure: withdrawTreasure,
+    handleWithdrawKeys: withdrawKeys,
+    handleGetKeysSubmittedByUser: getKeysSubmittedByUser,
 };
 
 export default compose(

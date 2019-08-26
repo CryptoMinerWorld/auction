@@ -29,15 +29,55 @@ export const submitKeys = (numberOfKeys, chestId, reloadCallBack) => (dispatch, 
       });
 };
 
-// export const getKeysSubmitted = (chestId) => async (dispatch, getState) => {
-//     const chestFactoryContract = getState().app.chestFactoryContract;
-//     const participants = await chestFactoryContract.methods.getParticipants(chestId).call();
-//     const userKeys = await Promise.all(participants.map(async userAddress => {
-//         const [foundersKeys, chestKeys] = await chestFactoryContract.getKeyBalances(chestId, userAddress);
-//         return {userAddress, foundersKeys};
-//     }));
-//     return userKeys;
-// }
+
+export const withdrawKeys = (chestId, reloadCallBack) => (dispatch, getState) => {
+    const chestContract = getState().app.chestFactoryContract;
+    const from = getState().auth.currentUserId;
+    let txHash;
+
+    chestContract.methods.withdrawKeys(chestId, from)
+      .send()
+      .on('transactionHash', hash => {
+          txHash = hash;
+          addPendingTransaction({
+              hash: hash,
+              userId: from,
+              type: 'Withdrawing keys',
+              description: `Withdrawing key(s) back`,
+          })(dispatch, getState)
+      })
+      .on('receipt', async (receipt) => {
+          reloadCallBack();
+      })
+      .on('error', (error) => {
+          if (txHash) {
+              getUpdatedTransactionHistory()(dispatch, getState);
+          }
+      });
+};
+
+export const withdrawTreasure = (chestId) => (dispatch, getState) => {
+    const chestContract = getState().app.chestFactoryContract;
+    const from = getState().auth.currentUserId;
+    let txHash;
+
+    chestContract.methods.withdrawTreasure(chestId)
+      .send()
+      .on('transactionHash', hash => {
+          txHash = hash;
+          addPendingTransaction({
+              hash: hash,
+              userId: from,
+              type: 'Withdrawing the Treasure',
+              description: `Withdrawing the Treasure!`,
+          })(dispatch, getState)
+      })
+      .on('error', (error) => {
+          if (txHash) {
+              getUpdatedTransactionHistory()(dispatch, getState);
+          }
+      });
+};
 
 function abiPack(chestId) {
     // pack and return
@@ -56,27 +96,3 @@ const toBytes = (uint256) => {
     }
     return `0x${s}`;
 };
-
-/*
-function getParticipants(uint256 chestId) public view returns(address[] memory) {
-    // verify the input
-    require(chestId != 0);
-
-    // read corresponding chest participants array and return
-    return chests[chestId - 1].participants;
-  }
-*/
-  /**
-   * @notice Gets number of keys submitted by the participant to open the chest
-   * @param chestId ID of the chest to query
-   * @param participant address to query
-   */
-/*
-function getKeyBalances(uint256 chestId, address participant) public view returns(uint256 foundersKeys, uint256 chestKeys) {
-    // verify the inputs
-    require(chestId != 0 && participant != address(0));
-
-    // read number of keys balance for corresponding participant and return
-    return (chests[chestId - 1].foundersKeys[participant], chests[chestId - 1].chestKeys[participant]);
-}
- */
