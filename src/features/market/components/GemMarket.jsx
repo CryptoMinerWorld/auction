@@ -15,7 +15,6 @@ import {
 } from "../marketActions";
 import {compose} from "redux";
 import connect from "react-redux/es/connect/connect";
-import GemDashboardFilters from "../../dashboard/components/GemDashboardFilters";
 
 const select = store => ({
     auctions: store.market.auctions,
@@ -87,13 +86,14 @@ class GemMarket extends React.Component {
         const filteredGems = gems.filter((gem) => {
             minPrice = gem.currentPrice < minPrice ? gem.currentPrice : minPrice;
             maxPrice = gem.currentPrice > maxPrice ? gem.currentPrice : maxPrice;
-              return !unselectedFilters.grades.includes(gradeConverter(Number(gem.gradeType))) &&
-                !unselectedFilters.levels.includes("lvl_" + gem.level) &&
-                !unselectedFilters.types.includes(type(gem.color)) &&
-                (!isNaN(unselectedFilters.prices[0]) && Number(unselectedFilters.prices[0]) <= gem.currentPrice) &&
-                (!isNaN(unselectedFilters.prices[1]) && Number(unselectedFilters.prices[1]) >= gem.currentPrice) &&
-                (Number(gem.id) <= 61696 || Number(gem.id) >= 61952);
-          });
+            return !unselectedFilters.grades.includes(gradeConverter(Number(gem.gradeType))) &&
+              !unselectedFilters.levels.includes("lvl_" + gem.level) &&
+              !unselectedFilters.types.includes(type(gem.color)) &&
+              (!isNaN(unselectedFilters.prices[0]) && Number(unselectedFilters.prices[0]) <= gem.currentPrice) &&
+              (!isNaN(unselectedFilters.prices[1]) && Number(unselectedFilters.prices[1]) >= gem.currentPrice)
+            // Uncomment to show country gems in the common gems market
+            // && (Number(gem.id) <= 61696 || Number(gem.id) >= 61952);
+        });
         return [filteredGems || [], minPrice, maxPrice];
 
     };
@@ -185,7 +185,7 @@ class GemMarket extends React.Component {
                   </Primary>
               </Grid>
           </div>
-          )
+        )
     }
 }
 
