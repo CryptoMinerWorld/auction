@@ -35,7 +35,7 @@ export default class PlotService {
     withdrawCountriesEth = (ownerId) => {
         return this.plotSaleContract.methods
           .withdraw(ownerId)
-          .send({}, {messages: {txType: COUNTRY_WITHDRAW, description: `Withdrawing countries income`}});
+          .send();
     };
 
     getTotalNotWithdrawn = async (owner) => {
@@ -53,7 +53,7 @@ export default class PlotService {
           .buy(countryId, plotsNumber)
           .send({
               value: priceInWei,
-          }, {messages: {txType: PLOT_SALE, description: `Buying ${plotsNumber} plots`}});
+          });
     };
 
     getEffectiveRestingEnergyOf = async (gemId) => {
@@ -177,7 +177,7 @@ export default class PlotService {
         return this.resolveMinerByGemId(gemId).methods.bind(plotId, gemId).send({
             from: currentUser,
             gas: Number(gasEstimation) + 500000
-        }, {messages: {txType: BINDING_GEM, description: `Binding gem ${gemId} to plot ${plotId}`}});
+        });
     };
 
     releaseGem = (plotId, gemId, gasEstimation) => {
@@ -188,7 +188,8 @@ export default class PlotService {
         console.log('UPDATING PLOT:', plotId);
         return this.resolveMinerByGemId(gemId).methods.update(plotId).send({
             from: currentUser,
-            gas: gasEstimation + 500000});
+            gas: gasEstimation + 500000
+        });
     };
 
     processPlots = (plotIds, miner, gasEstimation) => {

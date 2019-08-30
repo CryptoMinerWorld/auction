@@ -89,7 +89,7 @@ export default class SilverGoldService {
             console.log('USE REF POINTS: ', type, amount, priceInEth, priceInPoints);
             return this.saleContract.methods
               .get(geodeTypeNumber, amount)
-              .send({}, {messages: {txType: 'Silver Sale', description: `Getting ${type} for referral points`}});
+              .send();
         }
         else {
             const priceInWei = Number(utils.toWei(priceInEth, 'ether'));
@@ -98,14 +98,14 @@ export default class SilverGoldService {
                   .buyRef(geodeTypeNumber, amount, referrer)
                   .send({
                       value: priceInWei,
-                  }, {messages: {txType: 'Silver Sale', description: `Buying ${type}`}});
+                  });
             }
             else {
                 return this.saleContract.methods
                   .buy(geodeTypeNumber, amount)
                   .send({
                       value: priceInWei,
-                  }, {messages: {txType: 'Silver Sale', description: `Buying ${type}`}});
+                  });
             }
         }
     };

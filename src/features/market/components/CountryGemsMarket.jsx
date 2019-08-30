@@ -37,7 +37,7 @@ class CountryGemsMarket extends React.Component {
     componentDidMount() {
         const {auctions} = this.props;
         const filteredGems = this.filterGems(auctions);
-        //this.sortGems(filteredGems);
+        filteredGems.sort((gem1, gem2) => gem1.id - gem2.id);
         this.setState({
             allGems: filteredGems,
             scrolledGems: filteredGems.slice(0, 16),
@@ -49,6 +49,7 @@ class CountryGemsMarket extends React.Component {
         const {selectedCountry, auctions} = this.props;
         if (selectedCountry !== prevProps.selectedCountry || auctions !== prevProps.auctions) {
             const filteredGems = this.filterGems(auctions);
+            filteredGems.sort((gem1, gem2) => gem1.id - gem2.id);
             this.setState({
                 allGems: filteredGems,
                 scrolledGems: filteredGems.slice(0, 16),

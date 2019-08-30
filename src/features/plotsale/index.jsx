@@ -1,10 +1,8 @@
 import React, {Component} from 'react';
-// import PropTypes from 'prop-types';
 import Icon from 'antd/lib/icon';
 import {db, rtdb} from '../../app/utils/firebase';
 import Map from './components/Map';
 import geoData from '../../app/maps/world-50m-with-population.json';
-// import countryDatum from './components/countryData';
 import {compose} from "recompose";
 import {withRouter} from "react-router-dom";
 import connect from "react-redux/es/connect/connect";
@@ -62,6 +60,7 @@ if (window.innerWidth > 800) {
         plot46 = require('../../app/images/plots/46-60_new_3500w.png')
     }
 }
+
 
 class PlotSale extends Component {
 

@@ -41,7 +41,7 @@ const select = store => ({
     currentUserId: store.auth.currentUserId,
     saleState: store.sale.saleState,
     userBalance: store.sale.balance,
-    provider: store.auth.web3 && store.auth.web3.currentProvider,
+    provider: store.app.web3 && store.app.web3.currentProvider,
     accountExists: store.auth.existingUser,
     chestValue: store.sale.chestValue
 });
@@ -72,7 +72,6 @@ class Sale extends Component {
     };
 
     async componentDidMount() {
-        console.log(888888888888, ' PROPS: ', this.props);
         const {
             handleGetBoxesAvailable, handleUpdateSaleState, handleGetSaleState, silverGoldService,
             currentUserId, handleGetUserBalance, presaleContract, handleGetChestValue
@@ -109,9 +108,6 @@ class Sale extends Component {
         } = this.props;
         const {silverAvailable, goldAvailable} = this.state;
 
-        console.log('11111 PROPS: ', this.props);
-        console.log('22222 PROPS: ', prevProps);
-
         if (presaleContract && presaleContract !== prevProps.presaleContract) {
             handleGetChestValue();
         }
@@ -124,12 +120,10 @@ class Sale extends Component {
         if (silverGoldService && currentUserId && (silverGoldService !== prevProps.silverGoldService || currentUserId !== prevProps.currentUserId)) {
 
             let referrer = silverGoldService.getReferralId(this.props.location.search);
-            console.log('Saved referrer: ', referrer);
             if (referrer && !(await silverGoldService.ifReferrerIsValid(referrer, currentUserId))) {
                 referrer = 'some referral link is already used';
             }
             this.setState({referrer});
-            console.log('state-state:', this.state);
 
             handleGetUserBalance(currentUserId);
         }
@@ -288,7 +282,6 @@ class Sale extends Component {
                 'points': (referralPointsPrices[index] * amount)
             }
         };
-        console.log('SALE STATE PROP:', saleState);
 
         const saleStarted = saleState['3'] && saleState['3'].saleStart * 1000 <= Math.round(new Date().getTime());
         const timeLeftInHours = t => Math.floor((t % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -317,32 +310,32 @@ class Sale extends Component {
               <div style={{display: 'flex', flexWrap: 'wrap-reverse'}}>
                   <div style={{flex: '3', paddingTop: '20px', minWidth: '300px', display: 'flex',
                       flexWrap: 'wrap', alignItems:'center', justifyContent:'center'}}>
-                      <div style={{maxWidth:'420px', alignSelf: 'flex-end'}}>
-                          <div style={{
-                              display: 'flex',
-                              alignItems: 'flex-end',
-                              flexWrap: 'wrap'
-                          }}>
-                              <img src={foundersChest} style={{
-                                  flex: '3',
-                                  minWidth: '125px',
-                                  maxWidth: '175px',
-                                  marginLeft: '-10px',
-                                  marginRight: '16px'
-                              }}/>
-                              <div style={{
-                                  minWidth: '180px',
-                                  flex: '4',
-                                  paddingBottom: '12px',
-                                  fontSize: '18px',
-                                  fontWeight: 'bold'
-                              }}>
-                                  <div style={{color: '#ff00ce'}}>{chestValue && chestValue.toFixed(2)} ETH</div>
-                                  <div>In Founder's Chest</div>
-                              </div>
-                          </div>
-                          <div><span style={{color: '#ff00ce'}}>5%</span> of all sales go to the Founder's Chest!</div>
-                      </div>
+                      {/*<div style={{maxWidth:'420px', alignSelf: 'flex-end'}}>*/}
+                          {/*<div style={{*/}
+                              {/*display: 'flex',*/}
+                              {/*alignItems: 'flex-end',*/}
+                              {/*flexWrap: 'wrap'*/}
+                          {/*}}>*/}
+                              {/*<img src={foundersChest} style={{*/}
+                                  {/*flex: '3',*/}
+                                  {/*minWidth: '125px',*/}
+                                  {/*maxWidth: '175px',*/}
+                                  {/*marginLeft: '-10px',*/}
+                                  {/*marginRight: '16px'*/}
+                              {/*}}/>*/}
+                              {/*<div style={{*/}
+                                  {/*minWidth: '180px',*/}
+                                  {/*flex: '4',*/}
+                                  {/*paddingBottom: '12px',*/}
+                                  {/*fontSize: '18px',*/}
+                                  {/*fontWeight: 'bold'*/}
+                              {/*}}>*/}
+                                  {/*<div style={{color: '#ff00ce'}}>{chestValue && chestValue.toFixed(2)} ETH</div>*/}
+                                  {/*<div>In Founder's Chest</div>*/}
+                              {/*</div>*/}
+                          {/*</div>*/}
+                          {/*<div><span style={{color: '#ff00ce'}}>5%</span> of all sales go to the Founder's Chest!</div>*/}
+                      {/*</div>*/}
 
                       {/*<CountdownTimer message={<span style={{fontSize: '20px'}}>Sale started!</span>}*/}
                       {/*deadline={saleState['3'].saleStart}/>*/}

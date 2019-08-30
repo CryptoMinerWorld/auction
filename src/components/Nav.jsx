@@ -1,4 +1,3 @@
-// @ts-check
 import React from 'react';
 import styled from 'styled-components';
 import {connect} from 'react-redux';
@@ -6,10 +5,12 @@ import PropTypes from 'prop-types';
 import {NavLink} from 'react-router-dom';
 import Auth from '../features/auth';
 import RippleButton from './RippleButton/RippleButton';
-// @ts-ignore
 import img from '../app/images/Profile-Image-Logo-60x60.png';
 import Tx from '../features/transactions/index';
 import AvatarDropdown from '../features/transactions/components/AvatarDropdown';
+import foundersChest from '../app/images/dashboard/foundersChest100.png';
+import countryGem from '../app/images/dashboard/countryGem.png';
+
 
 const BottomHighlight = styled.div`
   background: linear-gradient(to right, #bc197c, #fc01ca);
@@ -22,9 +23,6 @@ const select = store => {
     console.warn('----------> Nav starts <----------');
     const res = {
         user: store.auth.user,
-        //userImage: store.auth.user && store.auth.user.imageURL,
-        //userId: store.auth.user && store.auth.user.walletId,
-        //userName: store.auth.user && store.auth.user.name,
         existingUser: store.auth.existingUser,
         signInBox: store.auth.signInBox,
         upperCaseWalletId: store.app && store.app.currentAccount,
@@ -34,9 +32,6 @@ const select = store => {
 };
 
 const Navbar = ({
-                    //userImage,
-                    //userId,
-                    //userName,
                     user,
                     handleShowSignInModal,
                     existingUser,
@@ -111,7 +106,20 @@ const Navbar = ({
                     color: 'purple'
                 }}
               >
-                  Country Gems
+                  <img width={30} src={countryGem}/> Country Gems
+              </NavLink>
+              <NavLink
+                exact
+                to="/chest"
+                activeStyle={{
+                    borderBottom: '2px solid purple',
+                }}
+                className="link dim dark-gray f6 f5-l dib mr3 mr4-l b"
+                style={{
+                    color: 'purple'
+                }}
+              >
+                  <img width={30} src={foundersChest}/> Founder's Chest
               </NavLink>
               <NavLink
                 exact

@@ -1,6 +1,6 @@
 import {
-    CHEST_VALUE_RECEIVED,
-    SALE_STATE_RECEIVED, USER_BALANCE_RECEIVED
+    CHEST_VALUE_RECEIVED, FOUNDERS_KEYS_ISSUED,
+    SALE_STATE_RECEIVED, SUBMITTED_KEYS_RECEIVED, USER_BALANCE_RECEIVED
 } from './saleConstants';
 
 export const sale = (state = {}, action) => {
@@ -14,6 +14,14 @@ export const sale = (state = {}, action) => {
 
   if (action.type === CHEST_VALUE_RECEIVED) {
     return {...state, chestValue: action.payload};
+  }
+
+  if (action.type === FOUNDERS_KEYS_ISSUED) {
+    return {...state, foundersKeysIssued: action.payload}
+  }
+
+  if (action.type === SUBMITTED_KEYS_RECEIVED) {
+    return {...state, foundersKeysSubmitted: action.payload}
   }
 
   return state;

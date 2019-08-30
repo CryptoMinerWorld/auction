@@ -7,12 +7,19 @@ import {
 } from "../transactions/txActions";
 import {parseTransactionHashFromError} from "../transactions/helpers";
 import {BigNumber} from "bignumber.js";
-import {CHEST_VALUE_RECEIVED, SALE_STATE_RECEIVED, USER_BALANCE_RECEIVED} from "./saleConstants";
+import {
+    CHEST_VALUE_RECEIVED,
+    FOUNDERS_KEYS_ISSUED,
+    SALE_STATE_RECEIVED,
+    SUBMITTED_KEYS_RECEIVED,
+    USER_BALANCE_RECEIVED
+} from "./saleConstants";
 import {utils} from "web3";
 import {weiToEth} from "./helpers";
 import {AUCTION_START} from "../items/itemConstants";
+import {getUserDetails} from "../dashboard/dashboardActions";
 
-
+const chestId = process.env.REACT_APP_FOUNDERS_CHEST_ID;
 export const ONE_UNIT = 0.001;
 
 export const buyGeode = (type, amount, etherUsed, referralPointsUsed, referrer, hidePopup) => async (dispatch, getState) => {
@@ -46,19 +53,54 @@ export const buyGeode = (type, amount, etherUsed, referralPointsUsed, referrer, 
 
 };
 
+// export const getChestFactoryValue = (chestId) => async (dispatch, getState)
+
 export const getChestValue = () => async (dispatch, getState) => {
     //const preSaleContract = getState().app.presaleContract;
+    const chestFactoryContract = getState().app.chestFactoryContract;
     const web3 = getState().app.web3;
-    const chestValue = weiToEth(await web3.eth.getBalance(process.env.REACT_APP_FOUNDERS_CHEST));
+    const chestValue = weiToEth(await chestFactoryContract.methods.getValue(process.env.REACT_APP_FOUNDERS_CHEST_ID).call());
+    // const chestFactoryValue = weiToEth(await web3.eth.getBalance(process.env.REACT_APP_FACTORY_FOUNDERS_CHEST));
+    // const chestValue = weiToEth(await web3.eth.getBalance(process.env.REACT_APP_FOUNDERS_CHEST));
     dispatch({
         type: CHEST_VALUE_RECEIVED,
         payload: chestValue
     });
 };
 
+export const getKeysSubmitted = (chestId) => async (dispatch, getState) => {
+    const chestFactoryContract = getState().app.chestFactoryContract;
+    const participants = await chestFactoryContract.methods.getParticipants(chestId).call();
+    const userKeys = await Promise.all(participants.map(async userAddress => {
+        const foundersKeys = (await chestFactoryContract.methods
+          .getKeyBalances(chestId, userAddress).call()).foundersKeys;
+        return {userAddress, foundersKeys};
+    }));
+    const uniqueUserKeys = {};
+    userKeys.forEach(el => uniqueUserKeys[el.userAddress] = (uniqueUserKeys[el.userAddress] || 0) + 1);
+    const userKeysFiltered =  await Promise.all(Object.keys(uniqueUserKeys).map(async function(v){
+        const userDetails = await getUserDetails(v);
+        return {
+            userAddress: v,
+            foundersKeys: uniqueUserKeys[v],
+            userName: userDetails.name,
+            userImageUrl: userDetails.imageURL
+        }
+    }));
+
+    userKeysFiltered.sort((a, b) => Number(b.foundersKeys) - Number(a.foundersKeys));
+    dispatch({
+        type: SUBMITTED_KEYS_RECEIVED,
+        payload: userKeysFiltered
+    });
+};
+
 export const getUserBalance = (userId) => async (dispatch, getState) => {
+    const chestFactoryContract = getState().app.chestFactoryContract;
     const silverGoldService = getState().app.silverGoldService;
     const balances = await silverGoldService.getUserBalance(userId);
+    const foundersKeys = (await chestFactoryContract.methods
+      .getKeyBalances(chestId, userId).call()).foundersKeys;
     dispatch({
         type: USER_BALANCE_RECEIVED,
         payload: {
@@ -70,7 +112,8 @@ export const getUserBalance = (userId) => async (dispatch, getState) => {
                   gems: balances.gems,
                   plots: balances.plots,
                   artifacts: balances.artifacts,
-                  keys: +Number(balances.foundersKeys) + Number(balances.chestKeys),
+                  keys: +Number(balances.foundersKeys) + Number(balances.chestKeys) + Number(foundersKeys),
+                  foundersKeys: Number(balances.foundersKeys)
               }
         }
     })
@@ -141,4 +184,15 @@ export const parseSaleEventData = (rawSaleState) => {
     saleState[3].saleEnd = packedSaleState.dividedToIntegerBy(new BigNumber(2).pow(96).modulo(new BigNumber(2).pow(32))).dividedToIntegerBy(1000,10).toNumber();
 
     return saleState;
+};
+
+export const getFoundersKeysIssued = () => async (dispatch, getState) => {
+    const foundersKeyContract = getState().app.foundersKeyContract;
+    const totalKeysIssued = await foundersKeyContract.methods.totalSupply().call();
+    console.log("TOTAL KEYS:", totalKeysIssued);
+    dispatch({
+        type: FOUNDERS_KEYS_ISSUED,
+        payload: totalKeysIssued
+    })
+
 };

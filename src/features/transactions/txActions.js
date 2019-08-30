@@ -199,6 +199,8 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
         console.error("Error when get transaction count", e);
     }
 
+    console.log("NONCE:", await web3.eth.getTransactionCount(currentUserId));
+
     let storedPendingTransactionDocs, storedSpeedUpTransactionDocs, storedCancelTransactionDocs;
     try {
         [storedPendingTransactionDocs, storedSpeedUpTransactionDocs, storedCancelTransactionDocs] = await Promise.all([
@@ -232,6 +234,8 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
           ...storedCancelTransactionDocs.docs].map(async (pendingTxDoc) => {
           const storedTx = pendingTxDoc.data();
 
+          const tx = await web3.eth.getTransaction(storedTx.hash);
+          console.log("txTx", tx);
           const receipt = await web3.eth.getTransactionReceipt(storedTx.hash);
 
           if (receipt) {
@@ -426,6 +430,9 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
     }
 
     let transactionHistory = groupEventLogsByTransaction(allEventLogsArray, currentUserId);
+
+    console.log("txTx History", transactionHistory);
+
     resolvedStoredTransactions.forEach(storedTx => {
         if (storedTx && [TX_CONFIRMED, TX_CANCEL_CONFIRMED, TX_CANCELED, TX_SPEED_UP_CONFIRMED, TX_SPED_UP].includes(storedTx.status)) {
             const resolvedTx = transactionHistory.find(tx => tx.transactionHash === storedTx.transactionHash);

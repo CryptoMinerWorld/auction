@@ -31,6 +31,10 @@ const Sale = Loadable({
     loader: () => import('../features/sale/index'),
     loading: Loading,
 });
+const Chest = Loadable({
+    loader: () => import('../features/chests/index'),
+    loading: Loading,
+});
 
 const Routes = props => (
   <Fragment>
@@ -43,6 +47,7 @@ const Routes = props => (
       <Route path="/gem/:gemId" render={() => <Items {...props} />}/>
       <Route exact path="/plots" render={() => <Map {...props} />}/>
       <Route exact path="/plots/:countryId" render={() => <Map {...props} />}/>
+      <Route exact path="/chest" render={() => <Chest {...props}/>}/>
   </Fragment>
 );
 

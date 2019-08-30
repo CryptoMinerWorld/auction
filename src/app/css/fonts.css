@@ -26,7 +26,7 @@
   src: local('Franklin Gothic Medium'), url('../fonts/FranklinGothicMediumRegular.ttf') format('ttf');
 }
 
-.plots, .plot-sale {
+.plots, .plot-sale, .chests {
   font-family: 'Franklin Gothic Medium', sans-serif !important;
 }
 

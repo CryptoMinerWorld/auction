@@ -17,6 +17,8 @@ import {AUCTION_START} from "../items/itemConstants";
 const REACT_APP_WORLD_CHEST="0x29E007c1BFc9c9aA1351B8B3D3B01Cc45dF6Ae4D";
 const REACT_APP_GEMSTONE_CHESTS="0x2906DA90D3f99D5913bB3461183682951ca7280c";
 const REACT_APP_FOUNDERS_CHEST="0xC352f692F55dEf49f0B736Ec1F7CA0F862eabD23";
+const REACT_APP_FACTORY_FOUNDERS_CHEST="0xb314d6159dFcc89743DD43f514A5325594201369";
+
 
 export const getAvailableCountryPlots = (countryId) => async (dispatch, getState) => {
     const plotService = getState().app.plotService;
@@ -30,18 +32,19 @@ export const getAvailableCountryPlots = (countryId) => async (dispatch, getState
 };
 
 export const getChestValues = () => async (dispatch, getState) => {
-    // console.log("AAAAAAAAAAAA");
     const web3 = getState().app.web3;
+    const chestFactoryContract = getState().app.chestFactoryContract;
     const worldChestValue = weiToEth(await web3.eth.getBalance(REACT_APP_WORLD_CHEST));
     const monthlyChestValue = weiToEth(await web3.eth.getBalance(REACT_APP_GEMSTONE_CHESTS));
-    const foundersChestValue = weiToEth(await web3.eth.getBalance(REACT_APP_FOUNDERS_CHEST));
-    // console.log("AAAAAAAAAAAAa", worldChestValue, monthlyChestValue);
+    // const foundersChestValue = weiToEth(await web3.eth.getBalance(REACT_APP_FOUNDERS_CHEST));
+    const foundersChestValue = weiToEth(await chestFactoryContract.methods.getValue(process.env.REACT_APP_FOUNDERS_CHEST_ID).call());
+    // const foundersChestFactoryValue = weiToEth(await web3.eth.getBalance(REACT_APP_FACTORY_FOUNDERS_CHEST));
+
     dispatch({
         type: PLOT_SALE_CHEST_VALUES_RECEIVED,
         payload: {worldChestValue, monthlyChestValue, foundersChestValue}
     });
 };
-
 
 export const buyPlots = (countryId, totalAmount, amountExceeded, referrer, hidePopup) => async (dispatch, getState) => {
 

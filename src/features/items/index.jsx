@@ -51,7 +51,7 @@ const select = store => {
         error: store.app.error,
         currentAccount: store.auth.currentUserId,
         releaseConfetti: store.app.releaseConfetti,
-        provider: store.auth.web3 && !!store.auth.web3.currentProvider,
+        provider: store.app.web3 && !!store.app.web3.currentProvider,
         gemContract: store.app.gemContract,
         web3: store.app.web3,
         dutchContract: store.app.auctionContract,
