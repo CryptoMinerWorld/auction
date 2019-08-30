@@ -91,11 +91,15 @@ class Mint extends PureComponent {
     };
 
     createFoundersChest = async (value) => {
+        this.createChest(value, true);
+    };
+
+    createChest = async (value, isFounders = false) => {
         const {web3} = this.state;
         const currentAccount = await web3.eth.getAccounts().then(accounts => accounts[0]);
         const chestFactoryContract = new web3.eth.Contract(ChestFactory.abi,
           process.env.REACT_APP_CHEST_FACTORY, {from: currentAccount});
-        await chestFactoryContract.methods.createChest(true)
+        await chestFactoryContract.methods.createChest(isFounders)
           .send({
               from: currentAccount,
               value: value,
@@ -162,7 +166,7 @@ class Mint extends PureComponent {
                 value={chestValue}
                 onChange={e => this.handleChestValueChange(e.target.value)}
               />
-                  <Button onClick={() => this.createFoundersChest(chestValue)}>Create Chest</Button>
+                  <Button onClick={() => this.createChest(chestValue)}>Create Chest</Button>
               </div>
           </div>
         );

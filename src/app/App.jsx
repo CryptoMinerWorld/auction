@@ -32,6 +32,7 @@ import SilverSale from './ABI/SilverSale';
 import SilverCoupons from './ABI/SilverCoupons';
 import ChestFactory from './ABI/ChestFactory';
 import FoundersKey from './ABI/FoundersKeyERC20';
+import ChestKey from './ABI/ChestKeyERC20';
 import PlotSale from './ABI/PlotSale';
 import Plot from './ABI/PlotERC721';
 import Artifact from './ABI/ArtifactERC20';
@@ -91,6 +92,7 @@ const plotAntarcticaABI = PlotAntarctica.abi;
 const foundersPlotsABI = FoundersPlots.abi;
 const chestFactoryABI = ChestFactory.abi;
 const foundersKeyABI = FoundersKey.abi;
+const chestKeyABI = ChestKey.abi;
 
 const StickyHeader = styled.div`
   position: -webkit-sticky; /* Safari */
@@ -194,7 +196,7 @@ class App extends Component {
           {
               dutchAuctionABI, dutchAuctionHelperABI, gemsABI, countryABI, refPointsTrackerABI, goldABI,
               silverABI, workshopABI, silverSaleABI, silverCouponsABI, plotSaleABI, plotABI, minerABI,
-              artifactABI, balanceABI, plotAntarcticaABI, foundersPlotsABI, chestFactoryABI, foundersKeyABI
+              artifactABI, balanceABI, plotAntarcticaABI, foundersPlotsABI, chestFactoryABI, foundersKeyABI, chestKeyABI
           }, currentAccountId);
 
         console.info("contracts", contracts);

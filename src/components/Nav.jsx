@@ -9,6 +9,7 @@ import img from '../app/images/Profile-Image-Logo-60x60.png';
 import Tx from '../features/transactions/index';
 import AvatarDropdown from '../features/transactions/components/AvatarDropdown';
 import foundersChest from '../app/images/dashboard/foundersChest100.png';
+import gemstoneChest from '../app/images/dashboard/chestSeptemberSapphire100.png';
 import countryGem from '../app/images/dashboard/countryGem.png';
 
 
@@ -119,7 +120,7 @@ const Navbar = ({
                     color: 'purple'
                 }}
               >
-                  <img width={30} src={foundersChest}/> Founder's Chest
+                  <img width={30} src={gemstoneChest}/> Gemstone Chest
               </NavLink>
               <NavLink
                 exact

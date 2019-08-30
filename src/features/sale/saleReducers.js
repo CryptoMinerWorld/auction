@@ -17,7 +17,7 @@ export const sale = (state = {}, action) => {
   }
 
   if (action.type === FOUNDERS_KEYS_ISSUED) {
-    return {...state, foundersKeysIssued: action.payload}
+    return {...state, foundersKeysIssued: action.payload.foundersKeysIssued, chestKeysIssued: action.payload.chestKeysIssued}
   }
 
   if (action.type === SUBMITTED_KEYS_RECEIVED) {

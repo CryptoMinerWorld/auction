@@ -108,7 +108,7 @@ class Cards extends React.Component {
                       {isSpecialGem ?
                         <div className="flex aic pl3 o-70 w-100">
                             <div className="db">
-                                <p className="ma0 truncate mw5">{auction.name}</p>
+                                <p className="ma0 truncate mw5 mt3 mb3">{auction.name}</p>
                             </div>
                         </div>
                         :
