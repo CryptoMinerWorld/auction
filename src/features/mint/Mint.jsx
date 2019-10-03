@@ -92,19 +92,30 @@ class Mint extends PureComponent {
     };
 
     createFoundersChest = async (value) => {
-        this.createChest(value, true);
+        this.createChest(value, false, true);
     };
 
-    createChest = async (value, isFounders = false) => {
+    createChest = async (value, isOneHourChest, isFounders = false) => {
         const {web3} = this.state;
         const currentAccount = await web3.eth.getAccounts().then(accounts => accounts[0]);
         const chestFactoryContract = new web3.eth.Contract(ChestFactory.abi,
           process.env.REACT_APP_CHEST_FACTORY, {from: currentAccount});
-        await chestFactoryContract.methods.createChest(isFounders)
+        
+        if (isOneHourChest) {
+            const tossTime = (Date.now() / 1000 | 0) + 3660;    // + 3660 secs (1 hour and 1 minute)
+            await chestFactoryContract.methods.createWith(isFounders, tossTime)
           .send({
               from: currentAccount,
               value: value,
           })
+        }
+        else {
+            await chestFactoryContract.methods.createChest(isFounders)
+            .send({
+                from: currentAccount,
+                value: value,
+            })
+        }
     };
 
     tossChest = async (chestId) => {
@@ -176,7 +187,8 @@ class Mint extends PureComponent {
                 value={chestValue}
                 onChange={e => this.handleChestValueChange(e.target.value)}
               />
-                  <Button onClick={() => this.createChest(chestValue)}>Create Chest</Button>
+                  <Button onClick={() => this.createChest(chestValue, false, false)}>Create Chest</Button>
+                  <Button onClick={() => this.createChest(chestValue, true, false)}>Create 1 hour Chest</Button>
               </div>
               <div className="mt3 center white flex">
                   Chest ID: <Input
