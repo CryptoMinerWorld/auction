@@ -19,6 +19,7 @@ class Mint extends PureComponent {
         gemImage: 'https://via.placeholder.com/350x350',
         imageLoading: false,
         chestValue: 0,
+        tossChestId: 0
     };
 
     async componentDidMount() {
@@ -106,6 +107,14 @@ class Mint extends PureComponent {
           })
     };
 
+    tossChest = async (chestId) => {
+        const {web3} = this.state;
+        const currentAccount = await web3.eth.getAccounts().then(accounts => accounts[0]);
+        const chestFactoryContract = new web3.eth.Contract(ChestFactory.abi,
+          process.env.REACT_APP_CHEST_FACTORY, {from: currentAccount});
+        await chestFactoryContract.methods.toss(chestId).send()
+    }
+
     // eslint-disable-next-line
     handleSubmit = (_contractAddress, _color, _level, _gradeType, _gradeValue) => this.createGem(_contractAddress, _color, _level, _gradeType, _gradeValue);
 
@@ -120,7 +129,7 @@ class Mint extends PureComponent {
 
     handleGradeValueChange = value => this.setState({gradeValue: value});
     handleChestValueChange = value => this.setState({chestValue: value});
-    handleChestIdChange = value => this.setState({chestId: value});
+    handleTossChestIdChange = value => this.setState({tossChestId: value});
 
     randomGradeValue = () => this.setState({gradeValue: Math.floor(1000000 * Math.random())});
 
@@ -135,6 +144,7 @@ class Mint extends PureComponent {
             gemImage,
             imageLoading,
             chestValue,
+            tossChestId
         } = this.state;
 
         return (
@@ -158,8 +168,8 @@ class Mint extends PureComponent {
                       <DisplayCard gemImage={gemImage} imageLoading={imageLoading}/>
                   </div>
               </div>
-              <div className="mw4 center white flex">
-                  Value: <Input
+              <div className="center white flex">
+                  Value in WEI: <Input
                 placeholder="In WEI"
                 type="number"
                 style={{width: "300px", marginRight: "20px"}}
@@ -167,6 +177,16 @@ class Mint extends PureComponent {
                 onChange={e => this.handleChestValueChange(e.target.value)}
               />
                   <Button onClick={() => this.createChest(chestValue)}>Create Chest</Button>
+              </div>
+              <div className="mt3 center white flex">
+                  Chest ID: <Input
+                placeholder="chest id"
+                type="number"
+                style={{width: "300px", marginRight: "20px"}}
+                value={tossChestId}
+                onChange={e => this.handleTossChestIdChange(e.target.value)}
+              />
+                  <Button onClick={() => this.tossChest(tossChestId)}>Toss</Button>
               </div>
           </div>
         );
