@@ -178,10 +178,11 @@ const ChestsBar = ({worldChestValue, monthlyChestValue, foundersChestValue}) => 
               <ChestContainer>
                   <ChestImg src={foundersChest}/>
                   <ChestDescription>
-                      <ChestValue>{foundersChestValue && (foundersChestValue.toFixed(2))} ETH</ChestValue>
+                      <ChestValue>19.83 ETH</ChestValue>
                       <ChestTitle>In The Founder's Chest!</ChestTitle>
-                      <MonthlyChestDescription>This Chest will start accepting</MonthlyChestDescription>
-                      <MonthlyChestDescription>Founder's Keys on <Pink>8-15-19</Pink></MonthlyChestDescription>
+                      <MonthlyChestDescription>
+                          <img src="https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FAquamarine%20Face%20Emoji.png?alt=media&amp;token=b759ae07-bb8c-4ec8-9399-d3844d5428ef"
+                        width="30"/> Proof opened the chest on <Pink>8-23-19</Pink></MonthlyChestDescription>
                   </ChestDescription>
               </ChestContainer>
           </ChestBar>
