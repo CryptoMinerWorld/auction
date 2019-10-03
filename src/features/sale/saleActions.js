@@ -19,7 +19,7 @@ import {weiToEth} from "./helpers";
 import {AUCTION_START} from "../items/itemConstants";
 import {getUserDetails} from "../dashboard/dashboardActions";
 
-const chestId = process.env.REACT_APP_FOUNDERS_CHEST_ID;
+const chestId = process.env.REACT_APP_FACTORY_CHEST_ID;
 export const ONE_UNIT = 0.001;
 
 export const buyGeode = (type, amount, etherUsed, referralPointsUsed, referrer, hidePopup) => async (dispatch, getState) => {
@@ -59,7 +59,7 @@ export const getChestValue = () => async (dispatch, getState) => {
     //const preSaleContract = getState().app.presaleContract;
     const chestFactoryContract = getState().app.chestFactoryContract;
     const web3 = getState().app.web3;
-    const chestValue = weiToEth(await chestFactoryContract.methods.getValue(process.env.REACT_APP_FOUNDERS_CHEST_ID).call());
+    const chestValue = weiToEth(await chestFactoryContract.methods.getValue(process.env.REACT_APP_FACTORY_CHEST_ID).call());
     // const chestFactoryValue = weiToEth(await web3.eth.getBalance(process.env.REACT_APP_FACTORY_FOUNDERS_CHEST));
     // const chestValue = weiToEth(await web3.eth.getBalance(process.env.REACT_APP_FOUNDERS_CHEST));
     dispatch({

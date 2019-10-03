@@ -21,7 +21,7 @@ const select = store => ({
     },
     chestFactoryContract: store.app.chestFactoryContract,
     foundersKeyContract: store.app.foundersKeyContract,
-    chestValue: store.plotSale.foundersChestValue,
+    chestValue: store.plotSale.monthlyChestValue,
     dataRefreshed: store.dashboard.dataRefreshed,
     currentUser: store.auth.user,
     userExists: store.auth.existingUser,
@@ -35,7 +35,7 @@ const select = store => ({
     submittedKeys: store.sale.foundersKeysSubmitted,
 });
 
-const chestId = process.env.REACT_APP_FOUNDERS_CHEST_ID;
+const chestId = process.env.REACT_APP_FACTORY_CHEST_ID;
 
 class Chest extends Component {
 
