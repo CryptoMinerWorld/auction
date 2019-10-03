@@ -92,3 +92,5 @@ typings/
 # Serverless directories
 .serverless
 
+#Firebase cache
+.firebase
