@@ -20,7 +20,7 @@ const select = store => ({
     },
     chestFactoryContract: store.app.chestFactoryContract,
     foundersKeyContract: store.app.foundersKeyContract,
-    chestValue: store.plotSale.foundersChestValue,
+    chestValue: store.plotSale.monthlyChestValue,
     dataRefreshed: store.dashboard.dataRefreshed,
     currentUser: store.auth.user,
     userExists: store.auth.existingUser,
@@ -126,6 +126,8 @@ class Chest extends Component {
         const chestValue = 19.83;
 
         const totalSubmittedKeys = submittedKeys ? submittedKeys.reduce((sum, cur) => sum + Number(cur.foundersKeys), 0) : "";
+        const winnerAddress = "0x0e9c1bedf18e77a87e61100e5709aea4d0ba83e1";
+
 
         // const userBalance = {keys: 3};
         // const chestValue = 19.65;
@@ -139,8 +141,8 @@ class Chest extends Component {
                       <ChestImage src={chestImage}/>
                   </ChestContainer>
                   <ChestInfo>
-                      <Heading><Blue>Founder's Chest</Blue> Has Been <Yellow>Opened</Yellow>!</Heading>
-                      {currentUserId && currentUserId.toLowerCase() === "0x360bbad1120b0abf63573e2e21b6727e07d1bf18" ?
+                      <Heading><Blue>1st Gemstone Chest</Blue> Has Been <Yellow>Opened</Yellow>!</Heading>
+                      {currentUserId && currentUserId.toLowerCase() === winnerAddress ?
                         <SubmitArea>
                             <HasKeys>
                                 <div style={{fontSize: "20px"}}>You WON!!!</div>
@@ -182,7 +184,7 @@ class Chest extends Component {
                                         <img
                                           src="https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FAquamarine%20Face%20Emoji.png?alt=media&amp;token=b759ae07-bb8c-4ec8-9399-d3844d5428ef"
                                           width="50"/>
-                                        Proof
+                                        XXX
                                     </KeysInfo>
                                     <div style={{textAlign: "center"}}>had the Key that opened the Chest!</div>
                                 </HasKeys>}
@@ -190,7 +192,7 @@ class Chest extends Component {
                       }
                       <ChestValue>
                           <div style={{width: "170px", padding: "3px 0"}}>
-                              {currentUserId && currentUserId.toLowerCase() === "0x360bbad1120b0abf63573e2e21b6727e07d1bf18" ?
+                              {currentUserId && currentUserId.toLowerCase() === winnerAddress ?
                                 "You will receive this" :
                                 <div>
                                     <img
@@ -209,12 +211,12 @@ class Chest extends Component {
                                 style={{fontSize: "16px"}}>USD</span></ValueUsd>}
                           </div>
                       </ChestValue>
-                      {((currentUserId && currentUserId.toLowerCase() === "0x360bbad1120b0abf63573e2e21b6727e07d1bf18")
+                      {((currentUserId && currentUserId.toLowerCase() === winnerAddress)
                         || submittedKeysByUser && Number(submittedKeysByUser) > 0) ? "" :
                         <NoKeys style={{color: "white"}}>Get mining and find Keys so you have a chance of opening the
                             next Chest</NoKeys>
                       }
-                      {(currentUserId && currentUserId.toLowerCase() !== "0x360bbad1120b0abf63573e2e21b6727e07d1bf18"
+                      {(currentUserId && currentUserId.toLowerCase() !== winnerAddress
                         && submittedKeysByUser && Number(submittedKeysByUser) > 0) ?
                         <div style={{textAlign: "center", color: "white"}}>
                             Sorry, non of your Keys opened this Chest.<br/>

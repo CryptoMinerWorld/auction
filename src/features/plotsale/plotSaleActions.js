@@ -34,12 +34,12 @@ export const getAvailableCountryPlots = (countryId) => async (dispatch, getState
 export const getChestValues = () => async (dispatch, getState) => {
     const web3 = getState().app.web3;
     const chestFactoryContract = getState().app.chestFactoryContract;
+    const factoryChestValue = weiToEth(await chestFactoryContract.methods.getValue(process.env.REACT_APP_FOUNDERS_CHEST_ID).call())
     const worldChestValue = weiToEth(await web3.eth.getBalance(REACT_APP_WORLD_CHEST));
-    const monthlyChestValue = weiToEth(await web3.eth.getBalance(REACT_APP_GEMSTONE_CHESTS));
-    // const foundersChestValue = weiToEth(await web3.eth.getBalance(REACT_APP_FOUNDERS_CHEST));
-    const foundersChestValue = weiToEth(await chestFactoryContract.methods.getValue(process.env.REACT_APP_FOUNDERS_CHEST_ID).call());
-    // const foundersChestFactoryValue = weiToEth(await web3.eth.getBalance(REACT_APP_FACTORY_FOUNDERS_CHEST));
-
+    const monthlyChestValue = factoryChestValue;
+    // const monthlyChestValue = weiToEth(await web3.eth.getBalance(REACT_APP_GEMSTONE_CHESTS));
+    const foundersChestValue = weiToEth(await web3.eth.getBalance(REACT_APP_FOUNDERS_CHEST));
+    
     dispatch({
         type: PLOT_SALE_CHEST_VALUES_RECEIVED,
         payload: {worldChestValue, monthlyChestValue, foundersChestValue}
