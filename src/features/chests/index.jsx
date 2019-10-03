@@ -123,7 +123,7 @@ class Chest extends Component {
         } = this.props;
 
         const ethPrice = this.state.ethPrice;
-        const chestValue = 19.83;
+        const chestValue = 0.01;
 
         const totalSubmittedKeys = submittedKeys ? submittedKeys.reduce((sum, cur) => sum + Number(cur.foundersKeys), 0) : "";
         const winnerAddress = "0x0e9c1bedf18e77a87e61100e5709aea4d0ba83e1";
@@ -198,7 +198,7 @@ class Chest extends Component {
                                     <img
                                       src="https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FAquamarine%20Face%20Emoji.png?alt=media&amp;token=b759ae07-bb8c-4ec8-9399-d3844d5428ef"
                                       width="30"/>
-                                    Proof
+                                    XXX
                                     <div>received this</div>
                                 </div>
                               }
