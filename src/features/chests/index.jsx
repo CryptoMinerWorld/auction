@@ -5,7 +5,7 @@ import {withRouter} from 'react-router-dom';
 import {submitKeys} from './chestActions';
 import {getKeysIssued, getKeysSubmitted, getUserBalance} from "../sale/saleActions";
 import styled from 'styled-components';
-import chestImage from './../../app/images/sale/chestSeptemberSapphire800.png';
+import chestImage from './../../app/images/sale/chestOctoberOpal800.png';
 import rockBackground from '../../app/images/rockBackground.png';
 import actionButtonImage from "../../app/images/noTextGemButton.png";
 import {CutEdgesButton} from "../../components/CutEdgesButton";

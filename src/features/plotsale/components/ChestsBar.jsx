@@ -3,6 +3,7 @@ import worldChest from "./../../../app/images/sale/worldChest.png"
 import gemstoneChests from "./../../../app/images/sale/gemstoneChests.png"
 import foundersChest from "./../../../app/images/sale/foundersChest.png"
 import styled from 'styled-components';
+import { calculateTimeLeftInDays, calculateTimeLeftInHours } from '../../../app/services/PlotService';
 
 const ChestBarContainer = styled.div`
     display: flex;
@@ -35,7 +36,25 @@ const ChestContainer = styled.div`
     @media(max-width: 570px) {
         min-width: 320px;
     }
+`;
 
+const ChestContainerLink = styled.a`
+    display: flex;
+    flex: 1;
+    color: inherit;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    @media((min-width: 571px) and (max-width: 1200px)) {
+        min-width: 450px;
+    }
+    @media(max-width: 570px) {
+        min-width: 320px;
+    }
+
+    &:hover {
+        color: inherit !important;
+    }
 `;
 
 
@@ -110,7 +129,7 @@ const MonthlyChestNumber = styled.div`
 `;
 
 const ChestDescription = styled.div`
-    padding: 0 0 20px 20px;
+    padding: 0 0 0px 20px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -145,6 +164,12 @@ const MonthlyChestInfo = styled.div`
 `;
 
 const ChestsBar = ({worldChestValue, monthlyChestValue, foundersChestValue}) => {
+
+    const chestTossTimestampSeconds = (new Date().getTime() / 1000) + 1.5*24*60*60; //1.5 days from now.
+    const timeLeft = chestTossTimestampSeconds -  new Date().getTime()/1000; 
+    const timeLeftInHours = Math.floor((timeLeft % (60 * 60 * 24)) / (60 * 60));
+    const timeLeftInDays = Math.floor(timeLeft / (60 * 60 * 24));
+
     return (
       <ChestBarContainer>
           <FullWidthLine/>
@@ -159,22 +184,21 @@ const ChestsBar = ({worldChestValue, monthlyChestValue, foundersChestValue}) => 
                       </ChestInfo>
                   </ChestDescription>
               </ChestContainer>
-              <ChestContainer>
+              <ChestContainerLink href="/chest">
                   <ChestImg src={gemstoneChests}/>
                   <ChestDescription>
-                      <ChestValue>{monthlyChestValue && (monthlyChestValue % 10).toFixed(2)} ETH</ChestValue>
+                      <ChestTitle style={{fontSize:"22px", lineHeight:"110%"}}>A <Pink>10 ETH</Pink> Gemstone Chest is accepting Keys now!</ChestTitle>
+                      <ChestTitle>Click <Pink>HERE</Pink> to try to open it!</ChestTitle>
+                      <MonthlyChestDescription>
+                          <Pink>{timeLeftInDays} </Pink>days
+                          <Pink> {timeLeftInHours} </Pink>hours
+                          {` until it will be opened!.`}</MonthlyChestDescription>
                       <MonthlyChestInfo>
-                          {`In the current Gemstone Chest`}
+                          <Pink>{monthlyChestValue && (monthlyChestValue % 10).toFixed(2)} ETH </Pink>
+                          {`is in the next Gemstone Chest`}
                           </MonthlyChestInfo>
-                      <MonthlyChestDescription>{`Gemstone Chest opens after `}<Pink>10 ETH</Pink>{` fills it.`}</MonthlyChestDescription>
-                      <MonthlyChestDescription><Pink>{(monthlyChestValue || Number(monthlyChestValue) >= 0) ? (10 - (monthlyChestValue % 10).toFixed(2)) : ""}</Pink>
-                          {` until this one can be opened!.`}</MonthlyChestDescription>
-                      <MonthlyChestInfo><Pink
-                        style={{fontSize: "150%"}}>{(monthlyChestValue || Number(monthlyChestValue) >= 0) ? Math.floor(monthlyChestValue / 10) : ""}</Pink>
-                          {` Gemstone Chests Opened so far! `}
-                      </MonthlyChestInfo>
                   </ChestDescription>
-              </ChestContainer>
+              </ChestContainerLink>
               <ChestContainer>
                   <ChestImg src={foundersChest}/>
                   <ChestDescription>
