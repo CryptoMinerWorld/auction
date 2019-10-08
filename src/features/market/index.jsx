@@ -16,6 +16,7 @@ import {setItemEventListeners} from "../items/itemEventListener";
 import {setMarketEventListeners} from "./marketEventListener";
 import CountryGemsMarket from "./components/CountryGemsMarket";
 import queryString from "query-string";
+import { Erc20Market } from '../../components/Erc20Market';
 
 const {TabPane} = Tabs;
 require('antd/lib/tabs/style/css');
@@ -135,6 +136,20 @@ class Marketplace extends React.Component {
                   >
                       <CountryGemsMarket/>
                   </TabPane>
+                  <TabPane
+                    tab={(
+                      <span 
+                        onKeyPress={() => this.setState({tab: 3})}
+                        onClick={() => this.setState({tab: 3})}
+                        className="h-100 flex aic white">
+                          <img src={Artifact} alt="" className="h2 w-auto pr2"/>
+                          Artifact | Silver | Gold | Key
+                      </span>
+                    )}
+                    key="3"
+                  >
+                    <Erc20Market/>
+                  </TabPane>
                   <TabPane tab={(
                     <span
                       tabIndex={-2}
@@ -146,26 +161,6 @@ class Marketplace extends React.Component {
                            key="2a"
                   >
                   </TabPane>
-                  <TabPane
-                    tab={(
-                      <span className="h-100 flex aic white o-50">
-                          <img src={Artifact} alt="" className="h2 w-auto pr2"/>
-                          Artifact
-                      </span>
-                    )}
-                    disabled
-                    key="3"
-                  />
-                  <TabPane
-                    tab={(
-                      <span className="h-100 flex aic white o-50">
-                          <img src={Keys} alt="" className="h2 w-auto pr2"/>
-                          Key
-                      </span>
-                    )}
-                    disabled
-                    key="4"
-                  />
               </Tabs>
           </div>
         )
