@@ -21,7 +21,7 @@ const select = store => ({
     },
     chestFactoryContract: store.app.chestFactoryContract,
     foundersKeyContract: store.app.foundersKeyContract,
-    chestValue: store.plotSale.monthlyChestValue,
+    chestValue: store.plotSale.chestFactoryValue,
     dataRefreshed: store.dashboard.dataRefreshed,
     currentUser: store.auth.user,
     userExists: store.auth.existingUser,

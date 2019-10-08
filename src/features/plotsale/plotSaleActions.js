@@ -32,18 +32,22 @@ export const getAvailableCountryPlots = (countryId) => async (dispatch, getState
 };
 
 export const getChestValues = () => async (dispatch, getState) => {
+
     const web3 = getState().app.web3;
     const chestFactoryContract = getState().app.chestFactoryContract;
     const worldChestValue = weiToEth(await web3.eth.getBalance(REACT_APP_WORLD_CHEST));
     // get value from chest factory contract for chest that accepting keys
-    const chestFactoryValue = weiToEth(await chestFactoryContract.methods.getValue(process.env.REACT_APP_FACTORY_CHEST_ID).call());
-    // const monthlyChestValue = weiToEth(await web3.eth.getBalance(REACT_APP_GEMSTONE_CHESTS));
-    const monthlyChestValue = chestFactoryValue
+    let chestFactoryValue;
+    try {
+        chestFactoryValue = weiToEth(await chestFactoryContract.methods.getValue(process.env.REACT_APP_FACTORY_CHEST_ID).call());
+    } catch(e) {}
+    const monthlyChestValue = weiToEth(await web3.eth.getBalance(REACT_APP_GEMSTONE_CHESTS));
+    //const monthlyChestValue = chestFactoryValue
     const foundersChestValue = weiToEth(await web3.eth.getBalance(REACT_APP_FOUNDERS_CHEST));
     
     dispatch({
         type: PLOT_SALE_CHEST_VALUES_RECEIVED,
-        payload: {worldChestValue, monthlyChestValue, foundersChestValue}
+        payload: {worldChestValue, monthlyChestValue, foundersChestValue, chestFactoryValue}
     });
 };
 
