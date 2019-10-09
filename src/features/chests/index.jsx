@@ -146,7 +146,7 @@ class Chest extends Component {
                           </div>
                       </ChestValue>
                       <SubmitArea>
-                          {userBalance && Number(userBalance.foundersKeys) > 0 && Number(userBalance.chestKeys) > 0 ?
+                          {userBalance && (Number(userBalance.foundersKeys) > 0 || Number(userBalance.chestKeys) > 0) ?
                             <HasKeys>
                                 <KeysInfo>
                                     You have <Pink style={{fontSize: "26px"}}>{userBalance.foundersKeys + userBalance.chestKeys}</Pink> Keys!
@@ -172,7 +172,7 @@ class Chest extends Component {
                               key at a time.
                           </SecondarySubmitInfo>
                           <div style={{display: "flex", flexDirection: "column"}}>
-                          {Number(userBalance.foundersKeys > 0) &&
+                          {Number(userBalance.foundersKeys > 0) ?
                           <SecondarySubmitButton>
                               <CutEdgesButton content={"Submit 1 Founder's Key"}
                                               backgroundColor={"#2a3238"}
@@ -186,8 +186,8 @@ class Chest extends Component {
                                                   this.props.handleGetFoundersKeySubmitted(chestId);
                                               })}
                               />
-                          </SecondarySubmitButton>}
-                          {Number(userBalance.chestKeys > 0) &&
+                          </SecondarySubmitButton> : ""}
+                          {Number(userBalance.chestKeys > 0) ?
                           <SecondarySubmitButton>
                               <CutEdgesButton content={"Submit 1 Chest Key"}
                                               backgroundColor={"#2a3238"}
@@ -201,7 +201,7 @@ class Chest extends Component {
                                                   this.props.handleGetFoundersKeySubmitted(chestId);
                                               })}
                               />
-                          </SecondarySubmitButton>}
+                          </SecondarySubmitButton> : ""}
                           </div>
                       </SecondarySubmit>}
                   </ChestInfo>
@@ -212,7 +212,7 @@ class Chest extends Component {
                           <Pink style={{fontSize: "56px"}}>{totalSubmittedKeys}</Pink> OF
                           <Pink style={{fontSize: "56px"}}> {totalFoundersKeys}</Pink> Keys have been submitted
                       </KeysSubmittedValue>
-                      <KeysSubmittedInfo>There may be more Keys burried! Get mining!!!
+                      <KeysSubmittedInfo>There are more Keys buried! Get mining!!!
                           This is just how many have been submitted out of what has been discovered so far.
                       </KeysSubmittedInfo>
                   </KeysSubmitted>
