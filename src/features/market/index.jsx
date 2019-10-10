@@ -4,9 +4,13 @@ import {connect} from 'react-redux';
 import {compose} from 'recompose';
 import {getAuctions, getImagesForGems, paginate, preLoadAuctionPage,} from './marketActions';
 import Plot from "../../app/images/dashboard/Plot.png";
-import Gem from "../../app/images/dashboard/gems.png";
+import Gem from "../../app/images/dashboard/gem100.png";
+import Silver from "../../app/images/dashboard/silver100.png";
+import Gold from "../../app/images/dashboard/gold100.png";
+import ChestKey from "../../app/images/dashboard/chestKey100.png";
+import FoundersKey from "../../app/images/dashboard/foundersKey100.png";
 import CountryGem from "../../app/images/dashboard/countryGem.png";
-import Artifact from "../../app/images/dashboard/Artifacts.png";
+import Artifact from "../../app/images/dashboard/artifacts100.png";
 import Keys from "../../app/images/dashboard/Keys.png";
 import Tabs from "antd/lib/tabs";
 import GemMarket from "./components/GemMarket";
@@ -142,8 +146,12 @@ class Marketplace extends React.Component {
                         onKeyPress={() => this.setState({tab: 3})}
                         onClick={() => this.setState({tab: 3})}
                         className="h-100 flex aic white">
+                          <img src={Silver} alt="" className="h2 w-auto pr2"/>
+                          <img src={Gold} alt="" className="h2 w-auto pr2"/>
+                          <img src={ChestKey} alt="" className="h2 w-auto pr2"/>
+                          <img src={FoundersKey} alt="" className="h2 w-auto pr2"/>
                           <img src={Artifact} alt="" className="h2 w-auto pr2"/>
-                          Artifact | Silver | Gold | Key
+                          ERC20
                       </span>
                     )}
                     key="3"

@@ -7,7 +7,7 @@ import { Spring } from 'react-spring';
 import Gold from '../../../app/images/dashboard/Gold.png';
 import Silver from '../../../app/images/dashboard/Silver.png';
 import Gem from '../../../app/images/dashboard/gems.png';
-import Artifact from '../../../app/images/dashboard/Artifacts.png';
+import Artifact from '../../../app/images/dashboard/artifacts100.png';
 import Keys from '../../../app/images/dashboard/Keys.png';
 import Land from '../../../app/images/dashboard/Land.png';
 import { setError } from '../../../app/appActions';
