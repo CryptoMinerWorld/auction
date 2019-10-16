@@ -70,12 +70,15 @@ export const getChestValue = () => async (dispatch, getState) => {
 
 export const getKeysSubmittedByUser = (chestId, userAddress) => async (dispatch, getState) => {
     const chestFactoryContract = getState().app.chestFactoryContract;
-    const foundersKeys = (await chestFactoryContract.methods
-      .getKeyBalances(chestId, userAddress).call()).foundersKeys;
+    const allKeys = (await chestFactoryContract.methods
+      .getKeyBalances(chestId, userAddress).call());
+
+    const foundersKeys = allKeys.foundersKeys;
+    const chestKeys = allKeys.chestKeys;
 
     dispatch({
         type: SUBMITTED_KEYS_BY_USER_RECEIVED,
-        payload: foundersKeys
+        payload: Number(foundersKeys) + Number(chestKeys)
     });
 };
 

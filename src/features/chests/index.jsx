@@ -123,10 +123,10 @@ class Chest extends Component {
         } = this.props;
 
         const ethPrice = this.state.ethPrice;
-        const chestValue = 0.01;
+        const chestValue = 2.00;
 
         const totalSubmittedKeys = submittedKeys ? submittedKeys.reduce((sum, cur) => sum + Number(cur.foundersKeys), 0) : "";
-        const winnerAddress = "0x0e9c1bedf18e77a87e61100e5709aea4d0ba83e1";
+        const winnerAddress = "0x501e13c2ae8d9232b88f63e87dfa1df28103acb6";
 
 
         // const userBalance = {keys: 3};
@@ -232,7 +232,7 @@ class Chest extends Component {
                           <Pink style={{fontSize: "56px"}}>{totalSubmittedKeys}</Pink> OF
                           <Pink style={{fontSize: "56px"}}> {totalFoundersKeys}</Pink> Founder's Keys submitted
                       </KeysSubmittedValue>
-                      <KeysSubmittedInfo>There may be more Founder's Keys yet to be mined up.
+                      <KeysSubmittedInfo>There are more Keys yet to be mined up.
                           This is just how many have been submitted out of what has been discovered so far.
                       </KeysSubmittedInfo>
                   </KeysSubmitted>
