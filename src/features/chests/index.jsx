@@ -126,7 +126,7 @@ class Chest extends Component {
         const chestValue = 2.00;
 
         const totalSubmittedKeys = submittedKeys ? submittedKeys.reduce((sum, cur) => sum + Number(cur.foundersKeys), 0) : "";
-        const winnerAddress = "0x501e13c2ae8d9232b88f63e87dfa1df28103acb6";
+        const winnerAddress = "0x0e9c1bedf18e77a87e61100e5709aea4d0ba83e1";
 
 
         // const userBalance = {keys: 3};
@@ -219,7 +219,7 @@ class Chest extends Component {
                       {(currentUserId && currentUserId.toLowerCase() !== winnerAddress
                         && submittedKeysByUser && Number(submittedKeysByUser) > 0) ?
                         <div style={{textAlign: "center", color: "white"}}>
-                            Sorry, non of your Keys opened this Chest.<br/>
+                            Sorry, none of your Keys opened this Chest.<br/>
                             But your Keys could open other Chests.<br/>
                             Take them back and keep trying!<br/>
                             Good luck!!!
@@ -230,7 +230,7 @@ class Chest extends Component {
                   <KeysSubmitted>
                       <KeysSubmittedValue>
                           <Pink style={{fontSize: "56px"}}>{totalSubmittedKeys}</Pink> OF
-                          <Pink style={{fontSize: "56px"}}> {totalFoundersKeys}</Pink> Founder's Keys submitted
+                          <Pink style={{fontSize: "56px"}}> {totalFoundersKeys}</Pink> Keys submitted
                       </KeysSubmittedValue>
                       <KeysSubmittedInfo>There are more Keys yet to be mined up.
                           This is just how many have been submitted out of what has been discovered so far.
