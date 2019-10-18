@@ -10,6 +10,7 @@ import Tx from '../features/transactions/index';
 import AvatarDropdown from '../features/transactions/components/AvatarDropdown';
 import foundersChest from '../app/images/dashboard/foundersChest100.png';
 import countryGem from '../app/images/dashboard/countryGem.png';
+import erc20Market from '../app/images/dashboard/erc20Market.png';
 
 
 const BottomHighlight = styled.div`
@@ -97,7 +98,7 @@ const Navbar = ({
                   Market
               </NavLink>
               <NavLink
-                to="/market?tab=2"
+                to="/market?tab=3"
                 activeStyle={{
                     borderBottom: '2px solid purple',
                 }}
@@ -106,7 +107,7 @@ const Navbar = ({
                     color: 'purple'
                 }}
               >
-                  <img width={30} src={countryGem}/> Country Gems
+                  <img width={30} src={erc20Market}/> ERC20 Market
               </NavLink>
               <NavLink
                 exact

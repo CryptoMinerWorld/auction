@@ -111,9 +111,15 @@ class Marketplace extends React.Component {
                       <span
                         tabIndex={-1}
                         role="button"
-                        onKeyPress={() => this.setState({tab: 1})}
+                        onKeyPress={() => {
+                          this.setState({tab: 1})
+                          this.props.history.push('/market?tab=1')
+                        }}
                         className="h-100 flex aic"
-                        onClick={() => this.setState({tab: 1})}
+                        onClick={() => {
+                          this.setState({tab: 1})
+                          this.props.history.push('/market?tab=1')
+                        }}
                       >
                           <img src={Gem} alt="Gems" className="h2 w-auto pr2"/>
                           Gem
@@ -128,9 +134,15 @@ class Marketplace extends React.Component {
                       <span
                         tabIndex={-1}
                         role="button"
-                        onKeyPress={() => this.setState({tab: 2})}
-                        className="h-100 flex aic b"
-                        onClick={() => this.setState({tab: 2})}
+                        onKeyPress={() => {
+                          this.setState({tab: 2})
+                          this.props.history.push('/market?tab=2')
+                        }}
+                        className="h-100 flex aic "
+                        onClick={() => {
+                          this.setState({tab: 2})
+                          this.props.history.push('/market?tab=2')
+                        }}
                       >
                           <img src={CountryGem} alt="Gems" className="h2 w-auto pr2"/>
                           Country Gem
@@ -143,9 +155,15 @@ class Marketplace extends React.Component {
                   <TabPane
                     tab={(
                       <span 
-                        onKeyPress={() => this.setState({tab: 3})}
-                        onClick={() => this.setState({tab: 3})}
-                        className="h-100 flex aic white">
+                        onKeyPress={() => {
+                          this.setState({tab: 3})
+                          this.props.history.push('/market?tab=3')
+                        }}
+                        onClick={() => {
+                          this.setState({tab: 3})
+                          this.props.history.push('/market?tab=3')
+                        }}
+                        className="h-100 flex aic white b">
                           <img src={Silver} alt="" className="h2 w-auto pr2"/>
                           <img src={Gold} alt="" className="h2 w-auto pr2"/>
                           <img src={ChestKey} alt="" className="h2 w-auto pr2"/>
