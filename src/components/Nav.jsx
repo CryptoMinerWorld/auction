@@ -9,7 +9,7 @@ import img from '../app/images/Profile-Image-Logo-60x60.png';
 import Tx from '../features/transactions/index';
 import AvatarDropdown from '../features/transactions/components/AvatarDropdown';
 import foundersChest from '../app/images/dashboard/foundersChest100.png';
-import gemstoneChest from '../app/images/dashboard/chestSeptemberSapphire100.png';
+import gemstoneChest from '../app/images/dashboard/chestOctoberOpal100.png';
 import countryGem from '../app/images/dashboard/countryGem.png';
 
 

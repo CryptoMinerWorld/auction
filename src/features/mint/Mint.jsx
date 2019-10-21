@@ -200,7 +200,7 @@ class Mint extends PureComponent {
               />
                   <Button onClick={() => this.tossChest(tossChestId)}>Toss</Button>
               </div>
-              <div>Current chest id used: {process.env.REACT_APP_FACTORY_CHEST_ID}</div>
+              <div style={{color:"#dedede"}}>Current chest id used: {process.env.REACT_APP_FACTORY_CHEST_ID}</div>
           </div>
         );
     }

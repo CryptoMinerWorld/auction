@@ -111,6 +111,7 @@ class Chest extends Component {
             userBalance,
             chestValue,
             totalFoundersKeys,
+            totalChestKeys,
             submittedKeys,
             handleSubmitKeys
         } = this.props;
@@ -210,7 +211,7 @@ class Chest extends Component {
                   <KeysSubmitted>
                       <KeysSubmittedValue>
                           <Pink style={{fontSize: "56px"}}>{totalSubmittedKeys}</Pink> OF
-                          <Pink style={{fontSize: "56px"}}> {totalFoundersKeys}</Pink> Keys have been submitted
+                          <Pink style={{fontSize: "56px"}}> {totalFoundersKeys && +totalFoundersKeys + (+totalChestKeys)}</Pink> Keys have been submitted
                       </KeysSubmittedValue>
                       <KeysSubmittedInfo>There are more Keys buried! Get mining!!!
                           This is just how many have been submitted out of what has been discovered so far.
