@@ -101,7 +101,7 @@ export const createAuction = (payload, createCallback, history) => async (dispat
     } = payload;
 
     // construct auction parameters
-    const token = new BigNumber(tokenId);
+    const token = tokenId; //new BigNumber(tokenId);
     const t0 = Math.round(new Date().getTime() / 1000) || 0;
     const t1 = t0 + duration;
     const p0 = startPrice;
