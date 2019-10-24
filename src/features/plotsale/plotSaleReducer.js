@@ -9,6 +9,7 @@ export const plotSale = (state = {}, action) => {
             monthlyChestValue: action.payload.monthlyChestValue,
             worldChestValue: action.payload.worldChestValue,
             foundersChestValue: action.payload.foundersChestValue,
+            chestFactoryValue: action.payload.chestFactoryValue
         };
     }
     if (action.type === FOUNDERS_PLOTS) {

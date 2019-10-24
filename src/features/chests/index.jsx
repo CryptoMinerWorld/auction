@@ -2,12 +2,13 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {compose} from 'redux';
 import {withRouter} from 'react-router-dom';
-import {submitKeys, withdrawKeys, withdrawTreasure} from './chestActions';
-import {getFoundersKeysIssued, getKeysSubmitted, getKeysSubmittedByUser, getUserBalance} from "../sale/saleActions";
+import {submitKeys} from './chestActions';
+import {getKeysIssued, getKeysSubmitted, getUserBalance} from "../sale/saleActions";
 import styled from 'styled-components';
-import chestImage from './../../app/images/sale/foundersChestWithCoins800.png';
+import chestImage from './../../app/images/sale/chestOctoberOpal800.png';
 import rockBackground from '../../app/images/rockBackground.png';
 import actionButtonImage from "../../app/images/noTextGemButton.png";
+import {CutEdgesButton} from "../../components/CutEdgesButton";
 import playerNameImage from "../../app/images/PlayerName.png";
 import keysSubmittedImage from "../../app/images/KeysSubmitted.png";
 import {getChestValues} from "../plotsale/plotSaleActions";
@@ -20,21 +21,21 @@ const select = store => ({
     },
     chestFactoryContract: store.app.chestFactoryContract,
     foundersKeyContract: store.app.foundersKeyContract,
-    chestValue: store.plotSale.foundersChestValue,
+    chestValue: store.plotSale.chestFactoryValue,
     dataRefreshed: store.dashboard.dataRefreshed,
     currentUser: store.auth.user,
     userExists: store.auth.existingUser,
     userBalance: store.sale.balance,
     currentUserId: store.auth.currentUserId,
     totalFoundersKeys: store.sale.foundersKeysIssued,
+    totalChestKeys: store.sale.chestKeysIssued,
     web3: store.app.web3,
     silverGoldService: store.app.silverGoldService,
     chestContract: store.app.chestContract,
     submittedKeys: store.sale.foundersKeysSubmitted,
-    submittedKeysByUser: store.sale.foundersKeysSubmittedByUser
 });
 
-const chestId = process.env.REACT_APP_FOUNDERS_CHEST_ID;
+const chestId = process.env.REACT_APP_FACTORY_CHEST_ID;
 
 class Chest extends Component {
 
@@ -53,7 +54,7 @@ class Chest extends Component {
 
     async componentDidMount() {
         const {
-            match, handleGetUserBalance, foundersKeyContract, handleGetFoundersKeySubmitted, handleGetKeysSubmittedByUser,
+            match, handleGetUserBalance, foundersKeyContract, handleGetFoundersKeySubmitted,
             handleGetFoundersKeyIssued, handleGetChestValues, chestFactoryContract, silverGoldService, web3, currentUserId
         } = this.props;
 
@@ -63,9 +64,6 @@ class Chest extends Component {
         if (foundersKeyContract) {
             handleGetFoundersKeyIssued();
             handleGetFoundersKeySubmitted(chestId);
-        }
-        if (chestFactoryContract && currentUserId) {
-            handleGetKeysSubmittedByUser(chestId, currentUserId)
         }
         if (chestFactoryContract) {
             handleGetChestValues();
@@ -86,7 +84,7 @@ class Chest extends Component {
 
     async componentDidUpdate(prevProps) {
         const {
-            match, web3, foundersKeyContract, chestFactoryContract, handleGetFoundersKeySubmitted, handleGetKeysSubmittedByUser,
+            match, web3, foundersKeyContract, chestFactoryContract, handleGetFoundersKeySubmitted,
             handleGetFoundersKeyIssued, handleGetChestValues, silverGoldService, handleGetUserBalance, currentUserId,
         } = this.props;
 
@@ -97,9 +95,6 @@ class Chest extends Component {
         if (foundersKeyContract !== prevProps.foundersKeyContract) {
             handleGetFoundersKeyIssued();
             handleGetFoundersKeySubmitted(chestId);
-        }
-        if (currentUserId && chestFactoryContract && (currentUserId !== prevProps.currentUserId || chestFactoryContract !== prevProps.chestFactoryContract)) {
-            handleGetKeysSubmittedByUser(chestId, currentUserId)
         }
         if (chestFactoryContract !== prevProps.chestFactoryContract) {
             handleGetChestValues();
@@ -114,18 +109,16 @@ class Chest extends Component {
             currentUserId,
             //     match,
             userBalance,
-            handleWithdrawKeys,
-            handleWithdrawTreasure,
+            chestValue,
             totalFoundersKeys,
+            totalChestKeys,
             submittedKeys,
-            handleSubmitKeys,
-            submittedKeysByUser
+            handleSubmitKeys
         } = this.props;
 
         const ethPrice = this.state.ethPrice;
-        const chestValue = 19.83;
 
-        const totalSubmittedKeys = submittedKeys ? submittedKeys.reduce((sum, cur) => sum + Number(cur.foundersKeys), 0) : "";
+        const totalSubmittedKeys = submittedKeys ? submittedKeys.reduce((sum, cur) => sum + Number(cur.keys), 0) : "";
 
         // const userBalance = {keys: 3};
         // const chestValue = 19.65;
@@ -139,67 +132,11 @@ class Chest extends Component {
                       <ChestImage src={chestImage}/>
                   </ChestContainer>
                   <ChestInfo>
-                      <Heading><Blue>Founder's Chest</Blue> Has Been <Yellow>Opened</Yellow>!</Heading>
-                      {currentUserId && currentUserId.toLowerCase() === "0x360bbad1120b0abf63573e2e21b6727e07d1bf18" ?
-                        <SubmitArea>
-                            <HasKeys>
-                                <div style={{fontSize: "20px"}}>You WON!!!</div>
-                                <SubmitButton onClick={() => handleWithdrawTreasure(chestId)}>
-                                    Withdraw ETH
-                                </SubmitButton>
-                            </HasKeys>
-                            <HasKeys>
-                                <KeysInfo>
-                                    Take your Keys back
-                                </KeysInfo>
-                                <SubmitButton onClick={() => handleWithdrawKeys(chestId, () => {
-                                    this.props.handleGetUserBalance(currentUserId);
-                                    this.props.handleGetFoundersKeyIssued();
-                                    this.props.handleGetFoundersKeySubmitted(chestId);
-                                })}>
-                                    Retrieve Keys
-                                </SubmitButton>
-                            </HasKeys>
-                        </SubmitArea> :
-                        (
-                          <SubmitArea>
-                              {(submittedKeysByUser && Number(submittedKeysByUser) > 0) ?
-                                <HasKeys>
-                                    <KeysInfo>
-                                        Take your Keys back
-                                    </KeysInfo>
-                                    <SubmitButton onClick={() => handleWithdrawKeys(chestId, () => {
-                                        this.props.handleGetUserBalance(currentUserId);
-                                        this.props.handleGetFoundersKeyIssued();
-                                        this.props.handleGetFoundersKeySubmitted(chestId);
-                                    })}>
-                                        Retrieve Keys
-                                    </SubmitButton>
-                                </HasKeys>
-                                :
-                                <HasKeys>
-                                    <KeysInfo>
-                                        <img
-                                          src="https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FAquamarine%20Face%20Emoji.png?alt=media&amp;token=b759ae07-bb8c-4ec8-9399-d3844d5428ef"
-                                          width="50"/>
-                                        Proof
-                                    </KeysInfo>
-                                    <div style={{textAlign: "center"}}>had the Key that opened the Chest!</div>
-                                </HasKeys>}
-                          </SubmitArea>)
-                      }
+                      <Heading>1st <Blue>Gemstone Chest</Blue> is Now Accepting <Yellow>Keys</Yellow>!</Heading>
+                      {/*<Info>The Winning Key will open the Chest on <Date><Pink>August 23 2019</Pink> at <Pink>1:00</Pink></Date>pm (GMT)</Info>*/}
                       <ChestValue>
                           <div style={{width: "170px", padding: "3px 0"}}>
-                              {currentUserId && currentUserId.toLowerCase() === "0x360bbad1120b0abf63573e2e21b6727e07d1bf18" ?
-                                "You will receive this" :
-                                <div>
-                                    <img
-                                      src="https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FAquamarine%20Face%20Emoji.png?alt=media&amp;token=b759ae07-bb8c-4ec8-9399-d3844d5428ef"
-                                      width="30"/>
-                                    Proof
-                                    <div>received this</div>
-                                </div>
-                              }
+                              Owner of the Winning Key will receive this!!!
                           </div>
                           <div>
                               {chestValue &&
@@ -209,28 +146,74 @@ class Chest extends Component {
                                 style={{fontSize: "16px"}}>USD</span></ValueUsd>}
                           </div>
                       </ChestValue>
-                      {((currentUserId && currentUserId.toLowerCase() === "0x360bbad1120b0abf63573e2e21b6727e07d1bf18")
-                        || submittedKeysByUser && Number(submittedKeysByUser) > 0) ? "" :
-                        <NoKeys style={{color: "white"}}>Get mining and find Keys so you have a chance of opening the
-                            next Chest</NoKeys>
-                      }
-                      {(currentUserId && currentUserId.toLowerCase() !== "0x360bbad1120b0abf63573e2e21b6727e07d1bf18"
-                        && submittedKeysByUser && Number(submittedKeysByUser) > 0) ?
-                        <div style={{textAlign: "center", color: "white"}}>
-                            Sorry, non of your Keys opened this Chest.<br/>
-                            But your Keys could open other Chests.<br/>
-                            Take them back and keep trying!<br/>
-                            Good luck!!!
-                        </div> : ""}
+                      <SubmitArea>
+                          {userBalance && (Number(userBalance.foundersKeys) > 0 || Number(userBalance.chestKeys) > 0) ?
+                            <HasKeys>
+                                <KeysInfo>
+                                    You have <Pink style={{fontSize: "26px"}}>{userBalance.foundersKeys + userBalance.chestKeys}</Pink> Keys!
+                                </KeysInfo>
+                                <SubmitButton onClick={() => handleSubmitKeys(Number(userBalance.foundersKeys), Number(userBalance.chestKeys), chestId, () => {
+                                    this.props.handleGetUserBalance(currentUserId);
+                                    this.props.handleGetFoundersKeyIssued();
+                                    this.props.handleGetFoundersKeySubmitted(chestId);
+                                })}>
+                                    Submit Keys
+                                </SubmitButton>
+                            </HasKeys>
+                            :
+                            <NoKeys>You don't have any keys. You still have time to get some!</NoKeys>
+                          }
+                      </SubmitArea>
+                      {userBalance && (Number(userBalance.foundersKeys) + Number(userBalance.chestKeys) > 0) &&
+                      <SecondarySubmit>
+                          <SecondarySubmitInfo>
+                              All available Keys are submitted by default. There will never be more than one Chest
+                              accepting Keys at one time.
+                              If you would like to submit less than all of your Keys, click this button to submit one
+                              key at a time.
+                          </SecondarySubmitInfo>
+                          <div style={{display: "flex", flexDirection: "column"}}>
+                          {Number(userBalance.foundersKeys > 0) ?
+                          <SecondarySubmitButton>
+                              <CutEdgesButton content={"Submit 1 Founder's Key"}
+                                              backgroundColor={"#2a3238"}
+                                              outlineColor={"#6e7c89"}
+                                              outlineWidth={1}
+                                              edgeSizes={[5, 20]}
+                                              otherStyles={"height: 28px"}
+                                              onClick={() => handleSubmitKeys(1, 0, chestId, () => {
+                                                  this.props.handleGetUserBalance(currentUserId);
+                                                  this.props.handleGetFoundersKeyIssued();
+                                                  this.props.handleGetFoundersKeySubmitted(chestId);
+                                              })}
+                              />
+                          </SecondarySubmitButton> : ""}
+                          {Number(userBalance.chestKeys > 0) ?
+                          <SecondarySubmitButton>
+                              <CutEdgesButton content={"Submit 1 Chest Key"}
+                                              backgroundColor={"#2a3238"}
+                                              outlineColor={"#6e7c89"}
+                                              outlineWidth={1}
+                                              edgeSizes={[5, 20]}
+                                              otherStyles={"height: 28px"}
+                                              onClick={() => handleSubmitKeys(0, 1, chestId, () => {
+                                                  this.props.handleGetUserBalance(currentUserId);
+                                                  this.props.handleGetFoundersKeyIssued();
+                                                  this.props.handleGetFoundersKeySubmitted(chestId);
+                                              })}
+                              />
+                          </SecondarySubmitButton> : ""}
+                          </div>
+                      </SecondarySubmit>}
                   </ChestInfo>
               </ChestArea>
               <StatsArea>
                   <KeysSubmitted>
                       <KeysSubmittedValue>
                           <Pink style={{fontSize: "56px"}}>{totalSubmittedKeys}</Pink> OF
-                          <Pink style={{fontSize: "56px"}}> {totalFoundersKeys}</Pink> Founder's Keys submitted
+                          <Pink style={{fontSize: "56px"}}> {totalFoundersKeys && +totalFoundersKeys + (+totalChestKeys)}</Pink> Keys have been submitted
                       </KeysSubmittedValue>
-                      <KeysSubmittedInfo>There may be more Founder's Keys yet to be mined up.
+                      <KeysSubmittedInfo>There are more Keys buried! Get mining!!!
                           This is just how many have been submitted out of what has been discovered so far.
                       </KeysSubmittedInfo>
                   </KeysSubmitted>
@@ -251,7 +234,7 @@ class Chest extends Component {
                               <UserName>
                                   {row.userAddress}
                               </UserName>}
-                            <UserKeys>{row.foundersKeys}</UserKeys>
+                            <UserKeys>{row.keys}</UserKeys>
                         </UserBoardRow>
                       )}
                   </UserBoard>
@@ -265,11 +248,8 @@ const actions = {
     handleGetUserBalance: getUserBalance,
     handleSubmitKeys: submitKeys,
     handleGetChestValues: getChestValues,
-    handleGetFoundersKeyIssued: getFoundersKeysIssued,
-    handleGetFoundersKeySubmitted: getKeysSubmitted,
-    handleWithdrawTreasure: withdrawTreasure,
-    handleWithdrawKeys: withdrawKeys,
-    handleGetKeysSubmittedByUser: getKeysSubmittedByUser,
+    handleGetFoundersKeyIssued: getKeysIssued,
+    handleGetFoundersKeySubmitted: getKeysSubmitted
 };
 
 export default compose(
@@ -304,15 +284,38 @@ const ChestImage = styled.img`
 }
  
 @-webkit-keyframes bounce {
- 0%, 20%, 50%, 80%, 100% {-webkit-transform: translateY(0);} 
- 40% {-webkit-transform: translateY(-30px);}
- 60% {-webkit-transform: translateY(-15px);}
+
+ 0% {-webkit-transform: translateY(0);}
+ 
+ 20% {-webkit-transform: rotate(5deg);}
+ 25% {-webkit-transform: rotate(-5deg);}
+ 30% {-webkit-transform: rotate(5deg);}
+ 35% {-webkit-transform: rotate(-5deg);}
+ 40% {-webkit-transform: rotate(0deg);}
+ 
+ 50% {-webkit-transform: translateY(-30px);}
+ 
+ 60% {-webkit-transform: translateY(0);}
+ 
+ 70% {-webkit-transform: translateY(-15px);}
+ 100% {-webkit-transform: translateY(0);}
 }
  
 @-moz-keyframes bounce {
- 0%, 20%, 50%, 80%, 100% {-moz-transform: translateY(0);}
- 40% {-moz-transform: translateY(-30px);}
- 60% {-moz-transform: translateY(-15px);}
+ 0% {-moz-transform: translateY(0);}
+ 
+ 20% {-moz-transform: rotate(5deg);}
+ 25% {-moz-transform: rotate(-5deg);}
+ 30% {-moz-transform: rotate(5deg);}
+ 35% {-moz-transform: rotate(-5deg);}
+ 40% {-moz-transform: rotate(0deg);}
+ 
+ 55% {-moz-transform: translateY(-30px);}
+ 
+ 65% {-moz-transform: translateY(0);}
+ 
+ 75% {-moz-transform: translateY(-15px);}
+ 100% {-moz-transform: translateY(0);}
 }
  
 @-o-keyframes bounce {
@@ -321,9 +324,21 @@ const ChestImage = styled.img`
  60% {-o-transform: translateY(-15px);}
 }
 @keyframes bounce {
- 0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
- 40% {transform: translateY(-30px);}
- 60% {transform: translateY(-15px);}
+ 
+ 0% {transform: translateY(0);}
+ 
+ 20% {transform: rotate(5deg);}
+ 25% {transform: rotate(-5deg);}
+ 30% {transform: rotate(5deg);}
+ 35% {transform: rotate(-5deg);}
+ 40% {transform: rotate(0deg);}
+ 
+ 50% {transform: translateY(-30px);}
+ 
+ 60% {transform: translateY(0);}
+ 
+ 70% {transform: translateY(-15px);}
+ 100% {transform: translateY(0);}
 }
 
 
@@ -424,9 +439,9 @@ const SecondarySubmitInfo = styled.div`
     line-height: 120%;
   `;
 const SecondarySubmitButton = styled.div`
-    margin: 0px 3px;
-    max-width: 86px;
-    min-width: 86px;
+    margin: 3px 3px;
+    max-width: 120px;
+    min-width: 120px;
     font-size: 10px;
     font-weight: bold;
     display: flex;

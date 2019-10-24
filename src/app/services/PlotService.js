@@ -275,6 +275,7 @@ export const convertMinutesToTimeString = (minutes) => {
     return daysLeft > 0 ? (daysLeft + "d " + hoursLeft + "h") : (hoursLeft > 0 ? hoursLeft + "h " + minutesLeft + "m" : (minutesLeft + "m"));
 };
 
-const calculateTimeLeftInDays = t => Math.floor(t / (60 * 24));
-const calculateTimeLeftInHours = t => Math.floor((t % (60 * 24)) / 60);
-const calculateTimeLeftInMinutes = t => Math.floor(t % 60);
+//converts minutes left to intervals
+export const calculateTimeLeftInDays = t => Math.floor(t / (60 * 24));
+export const calculateTimeLeftInHours = t => Math.floor((t % (60 * 24)) / 60);
+export const calculateTimeLeftInMinutes = t => Math.floor(t % 60);
