@@ -23,7 +23,7 @@ import {
 import {preLoadAuctionPage} from '../market/marketActions';
 import CountryDashboard from '../countries/components/Dashboard';
 import Gem from '../../app/images/dashboard/gems.png';
-import Artifact from '../../app/images/dashboard/Artifacts.png';
+import Artifact from '../../app/images/dashboard/artifacts100.png';
 import Keys from '../../app/images/dashboard/Keys.png';
 import Land from '../../app/images/dashboard/Land.png';
 import Plot from '../../app/images/dashboard/Plot.png';

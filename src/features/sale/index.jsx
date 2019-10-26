@@ -74,7 +74,8 @@ class Sale extends Component {
     async componentDidMount() {
         const {
             handleGetBoxesAvailable, handleUpdateSaleState, handleGetSaleState, silverGoldService,
-            currentUserId, handleGetUserBalance, presaleContract, handleGetChestValue
+            currentUserId, handleGetUserBalance, presaleContract, 
+            // handleGetChestValue
         } = this.props;
 
         this.interval = setInterval(
@@ -88,9 +89,9 @@ class Sale extends Component {
             currentTime: new Date().getTime()
         });
 
-        if (presaleContract) {
-            handleGetChestValue();
-        }
+        // if (presaleContract) {
+        //     handleGetChestValue();
+        // }
 
         if (silverGoldService) {
             setSaleEventListeners({silverGoldService, handleUpdateSaleState, currentUserId, handleGetUserBalance});
@@ -104,13 +105,14 @@ class Sale extends Component {
     async componentDidUpdate(prevProps) {
         const {
             handleGetUserBalance, silverGoldService, currentUserId, handleUpdateSaleState, handleGetSaleState,
-            saleState, userBalance, presaleContract, handleGetChestValue
+            saleState, userBalance, presaleContract, 
+            // handleGetChestValue
         } = this.props;
         const {silverAvailable, goldAvailable} = this.state;
 
-        if (presaleContract && presaleContract !== prevProps.presaleContract) {
-            handleGetChestValue();
-        }
+        // if (presaleContract && presaleContract !== prevProps.presaleContract) {
+        //     handleGetChestValue();
+        // }
 
         if (silverGoldService && (prevProps.silverGoldService !== silverGoldService)) {
             setSaleEventListeners({silverGoldService, handleUpdateSaleState, currentUserId, handleGetUserBalance});
@@ -667,7 +669,7 @@ const actions = {
     handleUpdateSaleState: updateSaleState,
     handleGetSaleState: getSaleState,
     handleGetUserBalance: getUserBalance,
-    handleGetChestValue: getChestValue,
+    //handleGetChestValue: getChestValue,
     handleShowSignInBox: () => ({type: 'SHOW_SIGN_IN_BOX'}),
 };
 

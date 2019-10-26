@@ -19,7 +19,7 @@ import {weiToEth} from "./helpers";
 import {AUCTION_START} from "../items/itemConstants";
 import {getUserDetails} from "../dashboard/dashboardActions";
 
-const chestId = process.env.REACT_APP_FOUNDERS_CHEST_ID;
+const chestId = process.env.REACT_APP_FACTORY_CHEST_ID;
 export const ONE_UNIT = 0.001;
 
 export const buyGeode = (type, amount, etherUsed, referralPointsUsed, referrer, hidePopup) => async (dispatch, getState) => {
@@ -59,7 +59,7 @@ export const getChestValue = () => async (dispatch, getState) => {
     //const preSaleContract = getState().app.presaleContract;
     const chestFactoryContract = getState().app.chestFactoryContract;
     const web3 = getState().app.web3;
-    const chestValue = weiToEth(await chestFactoryContract.methods.getValue(process.env.REACT_APP_FOUNDERS_CHEST_ID).call());
+    const chestValue = weiToEth(await chestFactoryContract.methods.getValue(process.env.REACT_APP_FACTORY_CHEST_ID).call());
     // const chestFactoryValue = weiToEth(await web3.eth.getBalance(process.env.REACT_APP_FACTORY_FOUNDERS_CHEST));
     // const chestValue = weiToEth(await web3.eth.getBalance(process.env.REACT_APP_FOUNDERS_CHEST));
     dispatch({
@@ -86,9 +86,9 @@ export const getKeysSubmitted = (chestId) => async (dispatch, getState) => {
     const chestFactoryContract = getState().app.chestFactoryContract;
     const participants = await chestFactoryContract.methods.getParticipants(chestId).call();
     const userKeys = await Promise.all(participants.map(async userAddress => {
-        const foundersKeys = (await chestFactoryContract.methods
-          .getKeyBalances(chestId, userAddress).call()).foundersKeys;
-        return {userAddress, foundersKeys};
+        const keys = (await chestFactoryContract.methods
+          .getKeyBalances(chestId, userAddress).call());
+        return {userAddress, foundersKeys: keys.foundersKeys, chestKeys: keys.chestKeys};
     }));
     const uniqueUserKeys = {};
     userKeys.forEach(el => uniqueUserKeys[el.userAddress] = (uniqueUserKeys[el.userAddress] || 0) + 1);
@@ -96,13 +96,13 @@ export const getKeysSubmitted = (chestId) => async (dispatch, getState) => {
         const userDetails = await getUserDetails(v);
         return {
             userAddress: v,
-            foundersKeys: uniqueUserKeys[v],
+            keys: uniqueUserKeys[v],
             userName: userDetails.name,
             userImageUrl: userDetails.imageURL
         }
     }));
 
-    userKeysFiltered.sort((a, b) => Number(b.foundersKeys) - Number(a.foundersKeys));
+    userKeysFiltered.sort((a, b) => Number(b.keys) - Number(a.keys));
     dispatch({
         type: SUBMITTED_KEYS_RECEIVED,
         payload: userKeysFiltered
@@ -113,8 +113,8 @@ export const getUserBalance = (userId) => async (dispatch, getState) => {
     const chestFactoryContract = getState().app.chestFactoryContract;
     const silverGoldService = getState().app.silverGoldService;
     const balances = await silverGoldService.getUserBalance(userId);
-    const foundersKeys = (await chestFactoryContract.methods
-      .getKeyBalances(chestId, userId).call()).foundersKeys;
+    const submittedKeys = (await chestFactoryContract.methods
+      .getKeyBalances(chestId, userId).call());
     dispatch({
         type: USER_BALANCE_RECEIVED,
         payload: {
@@ -126,8 +126,9 @@ export const getUserBalance = (userId) => async (dispatch, getState) => {
                   gems: balances.gems,
                   plots: balances.plots,
                   artifacts: balances.artifacts,
-                  keys: +Number(balances.foundersKeys) + Number(balances.chestKeys) + Number(foundersKeys),
-                  foundersKeys: Number(balances.foundersKeys)
+                  keys: +Number(balances.foundersKeys) + Number(balances.chestKeys) + Number(submittedKeys.foundersKeys) + Number(submittedKeys.chestKeys),
+                  foundersKeys: Number(balances.foundersKeys),
+                  chestKeys: Number(balances.chestKeys)
               }
         }
     })
@@ -180,7 +181,6 @@ export const parseSaleEventData = (rawSaleState) => {
     };
 
     for (let i = 0; i < 3; i++) {
-        console.log(55555555555, saleState[0]);
         const packedState = new BigNumber(rawSaleState[i]);
         saleState[i].boxesAvailable = packedState.dividedToIntegerBy(new BigNumber(2).pow(160)).modulo(new BigNumber(2).pow(16)).toNumber();
         saleState[i].currentPrice = Number(utils.fromWei(packedState
@@ -200,13 +200,14 @@ export const parseSaleEventData = (rawSaleState) => {
     return saleState;
 };
 
-export const getFoundersKeysIssued = () => async (dispatch, getState) => {
+export const getKeysIssued = () => async (dispatch, getState) => {
     const foundersKeyContract = getState().app.foundersKeyContract;
-    const totalKeysIssued = await foundersKeyContract.methods.totalSupply().call();
-    console.log("TOTAL KEYS:", totalKeysIssued);
+    const foundersKeysIssued = await foundersKeyContract.methods.totalSupply().call();
+    const chestKeyContract = getState().app.chestKeyContract;
+    const chestKeysIssued = await chestKeyContract.methods.totalSupply().call();
+
     dispatch({
         type: FOUNDERS_KEYS_ISSUED,
-        payload: totalKeysIssued
+        payload: {chestKeysIssued, foundersKeysIssued}
     })
-
 };

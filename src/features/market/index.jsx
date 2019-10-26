@@ -4,9 +4,13 @@ import {connect} from 'react-redux';
 import {compose} from 'recompose';
 import {getAuctions, getImagesForGems, paginate, preLoadAuctionPage,} from './marketActions';
 import Plot from "../../app/images/dashboard/Plot.png";
-import Gem from "../../app/images/dashboard/gems.png";
+import Gem from "../../app/images/dashboard/gem100.png";
+import Silver from "../../app/images/dashboard/silver100.png";
+import Gold from "../../app/images/dashboard/gold100.png";
+import ChestKey from "../../app/images/dashboard/chestKey100.png";
+import FoundersKey from "../../app/images/dashboard/foundersKey100.png";
 import CountryGem from "../../app/images/dashboard/countryGem.png";
-import Artifact from "../../app/images/dashboard/Artifacts.png";
+import Artifact from "../../app/images/dashboard/artifacts100.png";
 import Keys from "../../app/images/dashboard/Keys.png";
 import Tabs from "antd/lib/tabs";
 import GemMarket from "./components/GemMarket";
@@ -16,6 +20,7 @@ import {setItemEventListeners} from "../items/itemEventListener";
 import {setMarketEventListeners} from "./marketEventListener";
 import CountryGemsMarket from "./components/CountryGemsMarket";
 import queryString from "query-string";
+import { Erc20Market } from '../../components/Erc20Market';
 
 const {TabPane} = Tabs;
 require('antd/lib/tabs/style/css');
@@ -106,9 +111,15 @@ class Marketplace extends React.Component {
                       <span
                         tabIndex={-1}
                         role="button"
-                        onKeyPress={() => this.setState({tab: 1})}
+                        onKeyPress={() => {
+                          this.setState({tab: 1})
+                          this.props.history.push('/market?tab=1')
+                        }}
                         className="h-100 flex aic"
-                        onClick={() => this.setState({tab: 1})}
+                        onClick={() => {
+                          this.setState({tab: 1})
+                          this.props.history.push('/market?tab=1')
+                        }}
                       >
                           <img src={Gem} alt="Gems" className="h2 w-auto pr2"/>
                           Gem
@@ -123,9 +134,15 @@ class Marketplace extends React.Component {
                       <span
                         tabIndex={-1}
                         role="button"
-                        onKeyPress={() => this.setState({tab: 2})}
-                        className="h-100 flex aic b"
-                        onClick={() => this.setState({tab: 2})}
+                        onKeyPress={() => {
+                          this.setState({tab: 2})
+                          this.props.history.push('/market?tab=2')
+                        }}
+                        className="h-100 flex aic "
+                        onClick={() => {
+                          this.setState({tab: 2})
+                          this.props.history.push('/market?tab=2')
+                        }}
                       >
                           <img src={CountryGem} alt="Gems" className="h2 w-auto pr2"/>
                           Country Gem
@@ -134,6 +151,30 @@ class Marketplace extends React.Component {
                     key="2"
                   >
                       <CountryGemsMarket/>
+                  </TabPane>
+                  <TabPane
+                    tab={(
+                      <span 
+                        onKeyPress={() => {
+                          this.setState({tab: 3})
+                          this.props.history.push('/market?tab=3')
+                        }}
+                        onClick={() => {
+                          this.setState({tab: 3})
+                          this.props.history.push('/market?tab=3')
+                        }}
+                        className="h-100 flex aic white b">
+                          <img src={Silver} alt="" className="h2 w-auto pr2"/>
+                          <img src={Gold} alt="" className="h2 w-auto pr2"/>
+                          <img src={ChestKey} alt="" className="h2 w-auto pr2"/>
+                          <img src={FoundersKey} alt="" className="h2 w-auto pr2"/>
+                          <img src={Artifact} alt="" className="h2 w-auto pr2"/>
+                          ERC20
+                      </span>
+                    )}
+                    key="3"
+                  >
+                    <Erc20Market/>
                   </TabPane>
                   <TabPane tab={(
                     <span
@@ -146,26 +187,6 @@ class Marketplace extends React.Component {
                            key="2a"
                   >
                   </TabPane>
-                  <TabPane
-                    tab={(
-                      <span className="h-100 flex aic white o-50">
-                          <img src={Artifact} alt="" className="h2 w-auto pr2"/>
-                          Artifact
-                      </span>
-                    )}
-                    disabled
-                    key="3"
-                  />
-                  <TabPane
-                    tab={(
-                      <span className="h-100 flex aic white o-50">
-                          <img src={Keys} alt="" className="h2 w-auto pr2"/>
-                          Key
-                      </span>
-                    )}
-                    disabled
-                    key="4"
-                  />
               </Tabs>
           </div>
         )

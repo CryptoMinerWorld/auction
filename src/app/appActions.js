@@ -28,14 +28,14 @@ export const instantiateContracts = async (assistInstance, web3, ABISet, current
 
     let auctionContract, tokenHelperContract, gemContract, countryContract, refPointsTrackerContract, goldContract,
       silverContract, workshopContract, balanceContract, silverSaleContract, silverCouponsContract, plotSaleContract,
-      plotContract, chestFactoryContract, foundersKeyContract,
+      plotContract, chestFactoryContract, foundersKeyContract, chestKeyContract,
       minerContracts, artifactContract, plotAntarcticaContract, foundersPlotsContract;
 
     if (assistInstance) {
         try {
             [auctionContract, tokenHelperContract, gemContract, countryContract, refPointsTrackerContract, goldContract,
                 silverContract, workshopContract, balanceContract, silverSaleContract, silverCouponsContract, plotSaleContract, plotContract,
-                minerContracts, artifactContract, plotAntarcticaContract, foundersPlotsContract, chestFactoryContract, foundersKeyContract] = await Promise.all([
+                minerContracts, artifactContract, plotAntarcticaContract, foundersPlotsContract, chestFactoryContract, foundersKeyContract, chestKeyContract] = await Promise.all([
                 assistInstance.Contract(await new web3.eth.Contract(ABISet.dutchAuctionABI,
                   process.env.REACT_APP_DUTCH_AUCTION, {from: currentAccountId})),
                 assistInstance.Contract(new web3.eth.Contract(ABISet.dutchAuctionHelperABI,
@@ -79,6 +79,8 @@ export const instantiateContracts = async (assistInstance, web3, ABISet, current
                  process.env.REACT_APP_CHEST_FACTORY, {from: currentAccountId}),
                 assistInstance.Contract(new web3.eth.Contract(ABISet.foundersKeyABI,
                   process.env.REACT_APP_FOUNDERS_KEY_ERC20, {from: currentAccountId})),
+                assistInstance.Contract(new web3.eth.Contract(ABISet.chestKeyABI,
+                  process.env.REACT_APP_CHEST_KEY_ERC20, {from: currentAccountId})),
             ])
         } catch (err) {
             console.error("ERROR OCCURRED WHILE INSTANTIATING CONTRACTS WITH ASSIST:", err)
@@ -88,7 +90,7 @@ export const instantiateContracts = async (assistInstance, web3, ABISet, current
         try {
             [auctionContract, tokenHelperContract, gemContract, countryContract, refPointsTrackerContract, goldContract,
                 silverContract, workshopContract, balanceContract, silverSaleContract, silverCouponsContract, plotSaleContract, plotContract,
-                minerContracts, artifactContract, plotAntarcticaContract, foundersPlotsContract, chestFactoryContract] = await Promise.all([
+                minerContracts, artifactContract, plotAntarcticaContract, foundersPlotsContract, chestFactoryContract, foundersKeyContract, chestKeyContract] = await Promise.all([
                 (new web3.eth.Contract(ABISet.dutchAuctionABI,
                   process.env.REACT_APP_DUTCH_AUCTION, {from: currentAccountId})),
                 (new web3.eth.Contract(ABISet.dutchAuctionHelperABI,
@@ -129,7 +131,9 @@ export const instantiateContracts = async (assistInstance, web3, ABISet, current
                 (new web3.eth.Contract(ABISet.chestFactoryABI,
                   process.env.REACT_APP_CHEST_FACTORY, {from: currentAccountId})),
                 (new web3.eth.Contract(ABISet.foundersKeyABI,
-                  process.env.REACT_APP_FOUNDERS_KEY_ERC20, {from: currentAccountId}))
+                  process.env.REACT_APP_FOUNDERS_KEY_ERC20, {from: currentAccountId})),
+                (new web3.eth.Contract(ABISet.chestKeyABI,
+                  process.env.REACT_APP_CHEST_KEY_ERC20, {from: currentAccountId}))
             ])
         } catch (e) {
             console.error("ERROR OCCURRED WHILE INSTANTIATING CONTRACTS", e)
@@ -155,6 +159,7 @@ export const instantiateContracts = async (assistInstance, web3, ABISet, current
         plotAntarcticaContract,
         foundersPlotsContract,
         chestFactoryContract,
-        foundersKeyContract
+        foundersKeyContract,
+        chestKeyContract
     }
 };

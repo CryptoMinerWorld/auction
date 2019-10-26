@@ -3,20 +3,41 @@ import {GEM_GIFTING} from "../items/itemConstants";
 import {BigNumber} from "bignumber.js";
 import {getUserBalance} from "../sale/saleActions";
 
-export const submitKeys = (numberOfKeys, chestId, reloadCallBack) => (dispatch, getState) => {
+export const submitKeys = (numberOfFounderKeys, numberOfChestKeys, chestId, reloadCallBack) => (dispatch, getState) => {
     const foundersKeyContract = getState().app.foundersKeyContract;
+    const chestKeyContract = getState().app.chestKeyContract;
     const from = getState().auth.currentUserId;
     const to = process.env.REACT_APP_CHEST_FACTORY;
     let txHash;
-    foundersKeyContract.methods.safeTransferFrom(from, to, numberOfKeys, abiPack(chestId))
+    numberOfFounderKeys > 0 && foundersKeyContract.methods.safeTransferFrom(from, to, numberOfFounderKeys, abiPack(chestId))
       .send()
       .on('transactionHash', hash => {
           txHash = hash;
           addPendingTransaction({
               hash: hash,
               userId: from,
-              type: 'Submitting keys',
-              description: `Submitting ${numberOfKeys} key(s)`,
+              type: `Submitting founder's keys`,
+              description: `Submitting ${numberOfFounderKeys} founder's key(s)`,
+          })(dispatch, getState)
+      })
+      .on('receipt', async (receipt) => {
+          reloadCallBack();
+      })
+      .on('error', (error) => {
+          if (txHash) {
+              getUpdatedTransactionHistory()(dispatch, getState);
+          }
+      });
+
+    numberOfChestKeys > 0 && chestKeyContract.methods.safeTransferFrom(from, to, numberOfChestKeys, abiPack(chestId))
+      .send()
+      .on('transactionHash', hash => {
+          txHash = hash;
+          addPendingTransaction({
+              hash: hash,
+              userId: from,
+              type: 'Submitting chest keys',
+              description: `Submitting ${numberOfChestKeys} chest key(s)`,
           })(dispatch, getState)
       })
       .on('receipt', async (receipt) => {
