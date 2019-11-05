@@ -168,15 +168,17 @@ export const getGemStory = async (gemProperties, tokenId) => {
   try {
       if (type && lvl) {
           let story = "";
-          const docData = (await db
+          console.log("DOC DATA0");
+          const docData = (await db.firestore()
             .doc(`specialStones/${tokenId}`)
             .get()).data();
-
+            console.log("DOC DATA1", docData);
           if (!docData) {
               try {
-                  const storyDoc = (await db
+                  const storyDoc = (await db.firestore()
                     .doc(`gems/${type}`)
                     .get());
+                    console.log("DOC DATA2", docData);
                   if (storyDoc) {
                       story = storyDoc.data()[lvl] || ""
                   }
@@ -186,7 +188,8 @@ export const getGemStory = async (gemProperties, tokenId) => {
               }
           }
           else {
-              story = (await db
+            console.log("DOC DATA3", docData);
+              story = (await db.firestore()
                 .doc(`gems/${docData.storyName}`)
                 .get()).data()[lvl];
               if (!story) {
@@ -233,7 +236,7 @@ export const getGemImage = async (gemProperties, tokenId) => {
   if (type && gradeType && level) {
       let url;
       try {
-          const doc = await db
+          const doc = await db.firestore()
             .doc(`specialStones/${tokenId}`)
             .get();
 

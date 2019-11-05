@@ -174,11 +174,13 @@ const getGemStory = exports.getGemStory = (() => {
     try {
       if (type && lvl) {
         let story = "";
-        const docData = (yield db.doc(`specialStones/${tokenId}`).get()).data();
-
+        console.log("DOC DATA0");
+        const docData = (yield db.firestore().doc(`specialStones/${tokenId}`).get()).data();
+        console.log("DOC DATA1", docData);
         if (!docData) {
           try {
-            const storyDoc = yield db.doc(`gems/${type}`).get();
+            const storyDoc = yield db.firestore().doc(`gems/${type}`).get();
+            console.log("DOC DATA2", docData);
             if (storyDoc) {
               story = storyDoc.data()[lvl] || "";
             }
@@ -186,7 +188,8 @@ const getGemStory = exports.getGemStory = (() => {
             throw "No default story for this type of gem!";
           }
         } else {
-          story = (yield db.doc(`gems/${docData.storyName}`).get()).data()[lvl];
+          console.log("DOC DATA3", docData);
+          story = (yield db.firestore().doc(`gems/${docData.storyName}`).get()).data()[lvl];
           if (!story) {
             throw "No special story for this gem!";
           }
@@ -195,7 +198,7 @@ const getGemStory = exports.getGemStory = (() => {
         return story;
       }
     } catch (e) {
-      console.log("Empty story returned");
+      console.log("Empty story returned", e);
       return "Nothing is known about this gem";
     }
   });
@@ -236,7 +239,7 @@ const getGemImage = exports.getGemImage = (() => {
     if (type && gradeType && level) {
       let url;
       try {
-        const doc = yield db.doc(`specialStones/${tokenId}`).get();
+        const doc = yield db.firestore().doc(`specialStones/${tokenId}`).get();
 
         try {
           url = (yield storageBucket.file(`gems512/${doc.data().imageName}-${level}-${gradeType}.png`).getSignedUrl({
@@ -347,7 +350,7 @@ const calculateGemRestingEnergy = (age, modifiedTime) => {
 };
 
 const formatRestingEnergy = energy => {
-  return calculateEnergyInDays(energy) + " days, " + calculateEnergyInHours(energy) + " hours, " + calculateEnergyInMinutes(energy) + "minutes";
+  return calculateEnergyInDays(energy) + " days, " + calculateEnergyInHours(energy) + " hours, " + calculateEnergyInMinutes(energy) + " minutes";
 };
 
 const calculateEnergyInDays = t => Math.floor(t / (60 * 24));
