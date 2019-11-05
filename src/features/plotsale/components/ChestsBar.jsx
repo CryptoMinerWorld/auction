@@ -184,21 +184,25 @@ const ChestsBar = ({worldChestValue, monthlyChestValue, foundersChestValue}) => 
                       </ChestInfo>
                   </ChestDescription>
               </ChestContainer>
-              <ChestContainerLink href="/chest">
-                  <BounceChestImage src={gemstoneChests}/>
+              <ChestContainer>
+                  <ChestImg src={gemstoneChests}/>
                   <ChestDescription>
-                      <ChestTitle style={{fontSize:"22px", lineHeight:"110%"}}>A <Pink>10 ETH</Pink> Gemstone Chest is accepting Keys now!</ChestTitle>
-                      <ChestTitle>Click <Pink>HERE</Pink> to try to open it!</ChestTitle>
-                      <MonthlyChestDescription>
-                          <Pink>{timeLeftInDays} </Pink>days
-                          <Pink> {timeLeftInHours} </Pink>hours
-                          {` until it will be opened!.`}</MonthlyChestDescription>
+                      <ChestValue>{monthlyChestValue && (monthlyChestValue % 10).toFixed(2)} ETH</ChestValue>
                       <MonthlyChestInfo>
-                          <Pink>{monthlyChestValue && monthlyChestValue.toFixed(2)} ETH </Pink>
-                          {`is in the next Gemstone Chest`}
+                          {`In the current Gemstone Chest`}
                           </MonthlyChestInfo>
+                      <MonthlyChestDescription>{`Gemstone Chest opens after `}<Pink>10 ETH</Pink>{` fills it.`}</MonthlyChestDescription>
+                      <MonthlyChestDescription><Pink>{(monthlyChestValue || Number(monthlyChestValue) >= 0) ? (10 - (monthlyChestValue % 10).toFixed(2)) : ""}</Pink>
+                          {` until this one can be opened!.`}</MonthlyChestDescription>
+                      <MonthlyChestInfo>
+                            <a target="_black" href="https://etherscan.io/tx/0x7306e6469bd177d07a1f0756a825055c9c3a869f84a6feffa280e7b15ebb3ddf#eventlog" 
+                            style={{color: "white"}}>
+                                <Pink style={{fontSize: "150%"}}>1</Pink>
+                                {` Gemstone Chests Opened so far! `}
+                            </a>
+                      </MonthlyChestInfo>
                   </ChestDescription>
-              </ChestContainerLink>
+              </ChestContainer>
               <ChestContainer>
                   <ChestImg src={foundersChest}/>
                   <ChestDescription>

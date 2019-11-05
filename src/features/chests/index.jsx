@@ -3,9 +3,9 @@ import {connect} from 'react-redux';
 import {compose} from 'redux';
 import {withRouter} from 'react-router-dom';
 import {submitKeys, withdrawKeys, withdrawTreasure} from './chestActions';
-import {getFoundersKeysIssued, getKeysSubmitted, getKeysSubmittedByUser, getUserBalance} from "../sale/saleActions";
+import {getKeysIssued, getKeysSubmitted, getKeysSubmittedByUser, getUserBalance} from "../sale/saleActions";
 import styled from 'styled-components';
-import chestImage from './../../app/images/sale/foundersChestWithCoins800.png';
+import chestImage from './../../app/images/sale/chestOctoberOpalOpened.png';
 import rockBackground from '../../app/images/rockBackground.png';
 import actionButtonImage from "../../app/images/noTextGemButton.png";
 import playerNameImage from "../../app/images/PlayerName.png";
@@ -20,13 +20,14 @@ const select = store => ({
     },
     chestFactoryContract: store.app.chestFactoryContract,
     foundersKeyContract: store.app.foundersKeyContract,
-    chestValue: store.plotSale.monthlyChestValue,
+    chestValue: store.plotSale.chestFactoryValue,
     dataRefreshed: store.dashboard.dataRefreshed,
     currentUser: store.auth.user,
     userExists: store.auth.existingUser,
     userBalance: store.sale.balance,
     currentUserId: store.auth.currentUserId,
     totalFoundersKeys: store.sale.foundersKeysIssued,
+    totalChestKeys: store.sale.chestKeysIssued,
     web3: store.app.web3,
     silverGoldService: store.app.silverGoldService,
     chestContract: store.app.chestContract,
@@ -34,7 +35,7 @@ const select = store => ({
     submittedKeysByUser: store.sale.foundersKeysSubmittedByUser
 });
 
-const chestId = process.env.REACT_APP_FOUNDERS_CHEST_ID;
+const chestId = process.env.REACT_APP_FACTORY_CHEST_ID;
 
 class Chest extends Component {
 
@@ -117,18 +118,18 @@ class Chest extends Component {
             handleWithdrawKeys,
             handleWithdrawTreasure,
             totalFoundersKeys,
+            totalChestKeys,
             submittedKeys,
             handleSubmitKeys,
             submittedKeysByUser
         } = this.props;
 
         const ethPrice = this.state.ethPrice;
-        const chestValue = 2.00;
+        const chestValue = 10.00;
 
-        const totalSubmittedKeys = submittedKeys ? submittedKeys.reduce((sum, cur) => sum + Number(cur.foundersKeys), 0) : "";
-        const winnerAddress = "0x0e9c1bedf18e77a87e61100e5709aea4d0ba83e1";
-
-
+        const totalSubmittedKeys = submittedKeys ? submittedKeys.reduce((sum, cur) => sum + Number(cur.keys), 0) : "";
+        const winnerAddress = "0x360bbad1120b0abf63573e2e21b6727e07d1bf18";
+        
         // const userBalance = {keys: 3};
         // const chestValue = 19.65;
         // const totalKeys = 6;
@@ -184,7 +185,7 @@ class Chest extends Component {
                                         <img
                                           src="https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FAquamarine%20Face%20Emoji.png?alt=media&amp;token=b759ae07-bb8c-4ec8-9399-d3844d5428ef"
                                           width="50"/>
-                                        XXX
+                                        Proof
                                     </KeysInfo>
                                     <div style={{textAlign: "center"}}>had the Key that opened the Chest!</div>
                                 </HasKeys>}
@@ -198,7 +199,7 @@ class Chest extends Component {
                                     <img
                                       src="https://firebasestorage.googleapis.com/v0/b/dev-cryptominerworld.appspot.com/o/avatars%2FAquamarine%20Face%20Emoji.png?alt=media&amp;token=b759ae07-bb8c-4ec8-9399-d3844d5428ef"
                                       width="30"/>
-                                    XXX
+                                    Proof
                                     <div>received this</div>
                                 </div>
                               }
@@ -230,7 +231,7 @@ class Chest extends Component {
                   <KeysSubmitted>
                       <KeysSubmittedValue>
                           <Pink style={{fontSize: "56px"}}>{totalSubmittedKeys}</Pink> OF
-                          <Pink style={{fontSize: "56px"}}> {totalFoundersKeys}</Pink> Keys submitted
+                          <Pink style={{fontSize: "56px"}}> {totalFoundersKeys && +totalFoundersKeys + (+totalChestKeys)}</Pink> Keys have been submitted
                       </KeysSubmittedValue>
                       <KeysSubmittedInfo>There are more Keys yet to be mined up.
                           This is just how many have been submitted out of what has been discovered so far.
@@ -253,7 +254,7 @@ class Chest extends Component {
                               <UserName>
                                   {row.userAddress}
                               </UserName>}
-                            <UserKeys>{row.foundersKeys}</UserKeys>
+                            <UserKeys>{row.keys}</UserKeys>
                         </UserBoardRow>
                       )}
                   </UserBoard>
@@ -267,7 +268,7 @@ const actions = {
     handleGetUserBalance: getUserBalance,
     handleSubmitKeys: submitKeys,
     handleGetChestValues: getChestValues,
-    handleGetFoundersKeyIssued: getFoundersKeysIssued,
+    handleGetFoundersKeyIssued: getKeysIssued,
     handleGetFoundersKeySubmitted: getKeysSubmitted,
     handleWithdrawTreasure: withdrawTreasure,
     handleWithdrawKeys: withdrawKeys,
@@ -306,27 +307,63 @@ const ChestImage = styled.img`
 }
  
 @-webkit-keyframes bounce {
- 0%, 20%, 50%, 80%, 100% {-webkit-transform: translateY(0);} 
- 40% {-webkit-transform: translateY(-30px);}
- 60% {-webkit-transform: translateY(-15px);}
-}
+
+  0% {-webkit-transform: translateY(0);}
+  
+  20% {-webkit-transform: rotate(5deg);}
+  25% {-webkit-transform: rotate(-5deg);}
+  30% {-webkit-transform: rotate(5deg);}
+  35% {-webkit-transform: rotate(-5deg);}
+  40% {-webkit-transform: rotate(0deg);}
+  
+  50% {-webkit-transform: translateY(-30px);}
+  
+  60% {-webkit-transform: translateY(0);}
+  
+  70% {-webkit-transform: translateY(-15px);}
+  100% {-webkit-transform: translateY(0);}
+ }
+  
+ @-moz-keyframes bounce {
+  0% {-moz-transform: translateY(0);}
+  
+  20% {-moz-transform: rotate(5deg);}
+  25% {-moz-transform: rotate(-5deg);}
+  30% {-moz-transform: rotate(5deg);}
+  35% {-moz-transform: rotate(-5deg);}
+  40% {-moz-transform: rotate(0deg);}
+  
+  55% {-moz-transform: translateY(-30px);}
+  
+  65% {-moz-transform: translateY(0);}
+  
+  75% {-moz-transform: translateY(-15px);}
+  100% {-moz-transform: translateY(0);}
+ }
+  
+ @-o-keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {-o-transform: translateY(0);}
+  40% {-o-transform: translateY(-30px);}
+  60% {-o-transform: translateY(-15px);}
+ }
+ @keyframes bounce {
+  
+  0% {transform: translateY(0);}
+  
+  20% {transform: rotate(5deg);}
+  25% {transform: rotate(-5deg);}
+  30% {transform: rotate(5deg);}
+  35% {transform: rotate(-5deg);}
+  40% {transform: rotate(0deg);}
+  
+  50% {transform: translateY(-30px);}
+  
+  60% {transform: translateY(0);}
+  
+  70% {transform: translateY(-15px);}
+  100% {transform: translateY(0);}
+ }
  
-@-moz-keyframes bounce {
- 0%, 20%, 50%, 80%, 100% {-moz-transform: translateY(0);}
- 40% {-moz-transform: translateY(-30px);}
- 60% {-moz-transform: translateY(-15px);}
-}
- 
-@-o-keyframes bounce {
- 0%, 20%, 50%, 80%, 100% {-o-transform: translateY(0);}
- 40% {-o-transform: translateY(-30px);}
- 60% {-o-transform: translateY(-15px);}
-}
-@keyframes bounce {
- 0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
- 40% {transform: translateY(-30px);}
- 60% {transform: translateY(-15px);}
-}
 
 
 

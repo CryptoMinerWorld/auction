@@ -15,7 +15,7 @@
     "babel-jest": "23.6.0",
     "babel-loader": "8.0.4",
     "babel-plugin-named-asset-import": "^0.2.2",
-    "babel-preset-react-app": "^5.0.4",
+    "babel-preset-react-app": "^6.0.1",
     "bfj": "6.1.1",
     "bignumber.js": "^7.2.1",
     "bnc-assist": "^0.10.1",
@@ -106,15 +106,14 @@
     "analyze": "source-map-explorer build/static/js/main.*",
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
+    "build-api": "NODE_ENV=production BABEL_ENV=production babel api --out-dir functions --copy-files --ignore api/node_modules",
     "test": "node scripts/test.js",
     "coverage": "jest --env=jsdom --coverage",
     "storybook": "start-storybook -p 9001 -c .storybook",
-    "dev": "npx cypress open"
-  },
-  "babel": {
-    "presets": [
-      "react-app"
-    ]
+    "dev": "npx cypress open",
+    "postbuild-api": "cd functions && npm i -s",
+    "prebuild-api": "node node_modules/rimraf/bin functions",
+    "deploy": "npm run build && firebase deploy"
   },
   "browserslist": [
     ">0.2%",
@@ -131,8 +130,11 @@
     "@storybook/addon-storyshots": "^4.0.4",
     "@storybook/react": "^4.0.0-alpha.24",
     "@storybook/storybook-deployer": "^2.3.0",
+    "babel-cli": "^6.26.0",
     "babel-plugin-import": "^1.9.1",
     "babel-plugin-styled-components": "^1.8.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
     "css-loader": "^1.0.0",
     "cypress": "^3.1.5",
     "cypress-testing-library": "^2.3.1",
@@ -146,6 +148,7 @@
     "jest-in-case": "^1.0.2",
     "react-test-renderer": "^16.5.2",
     "react-testing-library": "^5.1.0",
+    "rimraf": "^3.0.0",
     "storybook-addon-jsx": "^5.4.0",
     "style-loader": "^0.23.0",
     "truffle-privatekey-provider": "^0.1.0"

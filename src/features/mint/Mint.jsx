@@ -7,6 +7,7 @@ import MintForm from './MintForm';
 import MintHelper from './../../app/ABI/MintHelper';
 import ChestFactory from './../../app/ABI/ChestFactory';
 import {Button, Input} from "antd";
+import Country from './../../app/ABI/CountryERC721';
 
 class Mint extends PureComponent {
     state = {
@@ -129,6 +130,14 @@ class Mint extends PureComponent {
     // eslint-disable-next-line
     handleSubmit = (_contractAddress, _color, _level, _gradeType, _gradeValue) => this.createGem(_contractAddress, _color, _level, _gradeType, _gradeValue);
 
+    transferCountry = async (from, to, countryId) => {
+        const {web3} = this.state;
+        const currentAccount = await web3.eth.getAccounts().then(accounts => accounts[0]);
+        const countryContract = new web3.eth.Contract(Country.abi,
+          process.env.REACT_APP_COUNTRY_ERC721, {from: currentAccount});
+        await countryContract.methods.safeTransferFrom(from, to, countryId).send()    
+    }
+
     handleNetworkChange = value => this.setState({contractAddress: value});
 
     handleChange = quality => (value) => {
@@ -141,6 +150,10 @@ class Mint extends PureComponent {
     handleGradeValueChange = value => this.setState({gradeValue: value});
     handleChestValueChange = value => this.setState({chestValue: value});
     handleTossChestIdChange = value => this.setState({tossChestId: value});
+
+    handleCountryIdTransferChange = value => this.setState({transferCountryId: value})
+    handleCountryNewOwnerTransferChange = value => this.setState({transferCountryNewOwner: value})
+    handleCountryOwnerTransferChange = value => this.setState({transferCountryOwner: value})
 
     randomGradeValue = () => this.setState({gradeValue: Math.floor(1000000 * Math.random())});
 
@@ -155,7 +168,10 @@ class Mint extends PureComponent {
             gemImage,
             imageLoading,
             chestValue,
-            tossChestId
+            tossChestId,
+            transferCountryId,
+            transferCountryOwner,
+            transferCountryNewOwner
         } = this.state;
 
         return (
@@ -201,6 +217,27 @@ class Mint extends PureComponent {
                   <Button onClick={() => this.tossChest(tossChestId)}>Toss</Button>
               </div>
               <div style={{color:"#dedede"}}>Current chest id used: {process.env.REACT_APP_FACTORY_CHEST_ID}</div>
+              <div className="mt3 center white flex">
+                    Country ID: <Input
+                                placeholder="token id"
+                                style={{width: "300px", marginRight: "20px"}}
+                                value={transferCountryId}
+                                onChange={e => this.handleCountryIdTransferChange(e.target.value)}
+                                />
+                    From: <Input
+                                placeholder="Current owner address"
+                                style={{width: "500px", marginRight: "20px"}}
+                                value={transferCountryOwner}
+                                onChange={e => this.handleCountryOwnerTransferChange(e.target.value)}
+                                />  
+                    To: <Input
+                                placeholder="New owner address"
+                                style={{width: "500px", marginRight: "20px"}}
+                                value={transferCountryNewOwner}
+                                onChange={e => this.handleCountryNewOwnerTransferChange(e.target.value)}
+                                />
+                  <Button onClick={() => this.transferCountry(transferCountryOwner, transferCountryNewOwner, transferCountryId)}>Transfer</Button>
+              </div>
           </div>
         );
     }

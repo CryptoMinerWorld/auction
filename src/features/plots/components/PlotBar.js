@@ -2,6 +2,12 @@ import React, {Component} from "react";
 import styled from 'styled-components';
 import {getGemImage} from "../../../app/services/GemService";
 import GemImage from "../../../components/GemImage";
+import GradeAAAbackground from "../../../app/images/plots/gradeAAAbackground.png"
+import GradeAAbackground from "../../../app/images/plots/gradeAAbackground.png"
+import GradeAbackground from "../../../app/images/plots/gradeAbackground.png"
+import GradeBbackground from "../../../app/images/plots/gradeBbackground.png"
+import GradeCbackground from "../../../app/images/plots/gradeCbackground.png"
+import GradeDbackground from "../../../app/images/plots/gradeDbackground.png"
 
 class PlotBar extends Component {
 
@@ -59,8 +65,21 @@ class PlotBar extends Component {
 
 const CurrentGemUsed = ({topOffset, gem, onClick}) => {
 
-    const calculateGemBackgroundColor = (grade) => {
-        return "#7a7a7a";
+    const getGemGradeBackgroundImage = (grade) => {
+        switch(grade.toString()) {
+            case '1':
+                return GradeDbackground;
+            case '2':
+                return GradeCbackground;
+            case '3':
+                return GradeBbackground;
+            case '4':
+                return GradeAbackground;
+            case '5':
+                return GradeAAbackground;
+            case '6':
+                return GradeAAAbackground;
+        }
     }
 
     const imageStyle = {
@@ -68,7 +87,9 @@ const CurrentGemUsed = ({topOffset, gem, onClick}) => {
         height: "74px",
         position: "absolute",
         top: Math.max(topOffset - 60, 0) + "px",
-        backgroundColor: calculateGemBackgroundColor(gem.gradeValue),
+        backgroundImage: `url(${getGemGradeBackgroundImage(gem.gradeType)})`,
+        backgroundSize: "contain",
+        backgroundColor: "#7a7a7a",
         border: "4px solid black",
         left: "-7px",
         zIndex: "10",
