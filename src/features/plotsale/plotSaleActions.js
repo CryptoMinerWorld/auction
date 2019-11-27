@@ -51,6 +51,35 @@ export const getChestValues = () => async (dispatch, getState) => {
     });
 };
 
+export const getPlots = (totalAmount, hidePopup) => async (dispatch, getState) => {
+    const plotService = getState().app.plotService;
+    const currentUser = getState().auth.currentUserId;
+    let txHash;
+    const txResult = plotService.getPlots(totalAmount)
+      .on('transactionHash', (hash) => {
+          txHash = hash;
+          addPendingTransaction({
+              hash: hash,
+              userId: currentUser,
+              type: PLOT_SALE,
+              description: `Getting ${totalAmount} plots`,
+              body: {
+                  countryId: 255,
+                  count: totalAmount,
+              }
+          })(dispatch, getState);
+          hidePopup();
+      })
+      .on('receipt', async (receipt) => {
+      })
+      .on('error', (err) => {
+          hidePopup();
+          if (txHash) {
+              getUpdatedTransactionHistory()(dispatch, getState);
+          }
+      })
+}
+
 export const buyPlots = (countryId, totalAmount, amountExceeded, referrer, hidePopup) => async (dispatch, getState) => {
 
     const plotPrice = 0.02;
@@ -60,6 +89,11 @@ export const buyPlots = (countryId, totalAmount, amountExceeded, referrer, hideP
     const plotService = getState().app.plotService;
     const currentUser = getState().auth.currentUserId;
     let randomCountry;
+
+    const silverGoldService = getState().app.silverGoldService;
+
+    const isValid = await silverGoldService.ifReferrerIsValid(referrer, currentUser);
+    console.debug("Is valid referrer:", isValid)
 
     if(amountExceeded > 0) {
         let iterations = 0;

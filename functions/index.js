@@ -41,7 +41,7 @@ const getGem = (() => {
       console.log("Gem:", JSON.stringify(gem));
       const baseRate = calculateMiningRate(gem.gradeType, gem.gradeValue);
       const monthBonusMultiplier = gemMonthRateMultiplier(gem.color);
-      const countryBonusMultiplier = gemCountryRateMultiplier(gem.id);
+      const countryBonusMultiplier = gemCountryRateMultiplier(tokenId);
       //const rateMultiplier = gemRateMultiplier({id: tokenId, color: gem.color});
       const rate = baseRate * countryBonusMultiplier * monthBonusMultiplier;
 
@@ -52,29 +52,24 @@ const getGem = (() => {
         "trait_type": "grade",
         "value": calculateGradeType(gem.gradeType)
       }, {
-        "trait_type": "rate",
-        "value": rate.toFixed(1) + "%"
+        "trait_type": "Mining rate bonus %",
+        "value": Number(baseRate.toFixed(1))
       }, {
-        "trait_type": "resting energy",
-        "value": gem.gradeType >= 4 ? formatRestingEnergy(calculateGemRestingEnergy(gem.age, gem.modifiedTime)) : 0
+        "display_type": "boost_number",
+        "trait_type": "resting energy minutes",
+        "value": gem.gradeType >= 4 ? calculateGemRestingEnergy(gem.age, gem.modifiedTime) : 0 //formatRestingEnergy
       }];
-
-      if (monthBonusMultiplier > 1) attributes.push({
-        "display_type": "boost_percentage",
-        "trait_type": "monthly bonus",
-        "value": 5
-      });
 
       if (countryBonusMultiplier > 1) attributes.push({
         "display_type": "boost_percentage",
-        "trait_type": `when used on ${_country_list.COUNTRY_LIST[Number(tokenId) - 0xF100 - 1]}`,
+        "trait_type": `gem's rate multiplier when used on ${_country_list.COUNTRY_LIST[Number(tokenId) - 0xF100 - 1]}`,
         "value": 50
       });
 
       const finalGem = {
+        name: calculateGemName(gem.color, tokenId),
         description: yield getGemStory(gem, tokenId),
         image: yield getGemImage(gem, tokenId),
-        name: calculateGemName(gem.color, tokenId),
         "external_url": "https://game.cryptominerworld.com/gem/" + tokenId,
         attributes
       };
@@ -262,7 +257,7 @@ const getGemImage = exports.getGemImage = (() => {
           console.error("Error while retrieving image from the storage", e);
         }
       }
-      return url;
+      return url.substring(0, url.indexOf('?'));
     }
   });
 
@@ -357,7 +352,7 @@ const calculateEnergyInDays = t => Math.floor(t / (60 * 24));
 const calculateEnergyInHours = t => Math.floor(t % (60 * 24) / 60);
 const calculateEnergyInMinutes = t => Math.floor(t % 60);
 
-api.get('/api/gem/:id', (() => {
+api.get('/api/v2/gem/:id', (() => {
   var _ref6 = _asyncToGenerator(function* (request, response) {
     try {
       const gem = yield getGem(request.params.id);
@@ -365,7 +360,12 @@ api.get('/api/gem/:id', (() => {
         response.statusCode = 404;
         response.send({ error: "Token not found" });
       } else {
-        response.send(gem);
+        //response.writeHead('Content-Type', 'application/json')
+        response.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+        response.set('Pragma', 'no-cache');
+        response.set('Expires', 0);
+        response.set('Surrogate-Control', 'no-store');
+        response.json(gem);
       }
     } catch (e) {
       response.statusCode = 500;

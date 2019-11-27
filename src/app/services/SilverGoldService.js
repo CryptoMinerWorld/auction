@@ -45,13 +45,19 @@ export default class SilverGoldService {
     };
 
     ifReferrerIsValid = async (referrer, referred) => {
-        if (!(referrer && referred))  {
-            return false;
-        }
+        if (!(referrer && referred)) return false;
+        if (!(referrer.startsWith("0x") && referrer.length === 42)) return false;
+        if (!(referred.startsWith("0x") && referred.length === 42)) return false;
+        
         return await this.refPointsTrackerContract.methods
           .isValid(referrer, referred)
           .call();
     };
+
+    canBeReferrer = async (address) => {
+        const someNotUsedAddress = "0x2Bd00163856195ca8fDe9ba90f2b350f494a10bc"
+        return await this.ifReferrerIsValid(address, someNotUsedAddress)
+    }
 
     getBoxesAvailable = async () => {
         return await this.saleContract.methods

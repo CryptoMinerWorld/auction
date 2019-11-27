@@ -4,7 +4,7 @@ import {
     WEB3_AVAILABLE,
     USER_EXISTS,
     NEW_USER,
-    NO_USER_EXISTS, GUEST_USER,
+    NO_USER_EXISTS, GUEST_USER, USER_REFERRER_EXIST,
 } from './authConstants';
 
 export default function authReducer(
@@ -21,6 +21,16 @@ export default function authReducer(
 
   if (action.type === CURRENT_USER_NOT_AVAILABLE) {
     return { ...state, currentUserId: 'PLEASE SIGN IN TO METAMASK' };
+  }
+
+  if (action.type === USER_REFERRER_EXIST) {
+    console.debug("USER REF. EXIST")
+    return {
+      user: {
+        ...state.user,
+        referrer: action.payload
+      }
+    }
   }
 
   if (action.type === GUEST_USER) {

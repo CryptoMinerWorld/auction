@@ -10,27 +10,39 @@ import ChestsBar from "./components/ChestsBar";
 import BuyForm from "./components/BuyForm";
 import arrowDownActive from "../../app/images/arrowDownActive.png";
 import styled from "styled-components";
+import queryString from "query-string";
+import UserService from "./../../app/services/UserService"
 import {
     buyPlots,
     getAvailableCountryPlots,
     getChestValues,
     getFounderPlots,
-    getFounderPlotsNumber
+    getFounderPlotsNumber,
+    getPlots
 } from "./plotSaleActions";
+import {getUserBalance} from "../sale/saleActions";
 import rockBackground from '../../app/images/rockBackground.png';
 import FounderPlotsArea from "./components/FounderPlotsArea";
 import PlotSaleFAQ from "./components/PlotSaleFAQ";
+import { USER_REFERRER_EXIST } from '../auth/authConstants';
+import {PlotSalePopup} from './components/PlotSalePopup';
+import {ReferralPointsArea} from './components/ReferralPointsArea';
+import { number } from 'prop-types';
 
 const select = store => ({
     plotService: store.app.plotService,
     countryService: store.app.countryService,
+    silverGoldService: store.app.silverGoldService,
     worldChestValue: store.plotSale.worldChestValue,
     monthlyChestValue: store.plotSale.monthlyChestValue,
     foundersChestValue: store.plotSale.foundersChestValue,
     web3: store.app.web3,
     currentUserId: store.auth.currentUserId,
+    currentUser: store.auth.user,
+    isNewUser: store.auth.newUser,
     foundersPlotsBalance: store.plotSale.foundersPlotsBalance,
     foundersPlotsContract: store.app.foundersPlotsContract,
+    userBalance: store.sale.balance,
 });
 
 let plot1;
@@ -83,10 +95,15 @@ class PlotSale extends Component {
         searchCountryValue: "",
         numberOfPlots: 20,
         plotImage: plot16,
+        showPlotSaleInfoPopup: false,
+        showBuyReferredPopup: false,
+        showUsePointsPopup: false,
+        processBuy: false
     };
 
     async componentDidMount() {
-        const {countryService, handleGetChestValues, web3, currentUserId, handleGetFounderPlotsBalance, foundersPlotsContract, plotService} = this.props;
+        const {countryService, handleGetChestValues, web3, currentUserId, handleGetFounderPlotsBalance, foundersPlotsContract, 
+            handleGetUserBalance, plotService, silverGoldService, userService, currentUser, location, isNewUser } = this.props;
         if (!countryService) {
             console.log('No service')
         }
@@ -99,10 +116,31 @@ class PlotSale extends Component {
         if (currentUserId && foundersPlotsContract) {
             handleGetFounderPlotsBalance(currentUserId);
         }
+        if (currentUserId && silverGoldService && location) {
+            let referrer = currentUser ? currentUser.referrer : null;
+            if (!referrer) {
+                let params = queryString.parse(location.search);
+                if (params.refId && (await silverGoldService.ifReferrerIsValid(params.refId, currentUserId))) {
+                        UserService.setReferralId(params.refId, currentUserId)
+                        handleSetUserReferrer(params.refId);         
+                        this.setState({referrer: params.refId});
+                } 
+            }
+            else {
+                if (await silverGoldService.ifReferrerIsValid(referrer, currentUserId)) {
+                    this.setState({referrer});
+                }
+            }
+            if (await silverGoldService.canBeReferrer(currentUserId)) {
+                this.setState({canBeReferrer: true}) 
+            }
+            handleGetUserBalance(currentUserId);
+        }
     }
 
     async componentDidUpdate(prevProps, prevState) {
-        const {countryService, handleGetChestValues, web3, handleGetAvailableCountryPlots, currentUserId, handleGetFounderPlotsBalance, foundersPlotsContract, plotService} = this.props;
+        const {countryService, handleGetChestValues, web3, handleGetAvailableCountryPlots, currentUserId, silverGoldService, isNewUser,
+            handleGetUserBalance, handleGetFounderPlotsBalance, foundersPlotsContract, plotService, currentUser, userService, handleSetUserReferrer, location} = this.props;
         if (!countryService) {
             console.log('No service')
         }
@@ -121,6 +159,27 @@ class PlotSale extends Component {
         }
         if (currentUserId && foundersPlotsContract && (currentUserId !== prevProps.currentUserId || foundersPlotsContract !== prevProps.foundersPlotsContract)) {
                 handleGetFounderPlotsBalance(currentUserId);
+        }
+        if (silverGoldService && (currentUser || isNewUser) && currentUserId && location && (silverGoldService !== prevProps.silverGoldService || 
+            currentUserId !== prevProps.currentUserId || location !== prevProps.location || prevProps.currentUser == null || prevProps.isNewUser !== isNewUser)) {
+            let referrer = currentUser ? currentUser.referrer : null;
+            if (!referrer) {
+                let params = queryString.parse(location.search);
+                if (params.refId && (await silverGoldService.ifReferrerIsValid(params.refId, currentUserId))) {
+                        UserService.setReferralId(params.refId, currentUserId)
+                        handleSetUserReferrer(params.refId);
+                        this.setState({referrer: params.refId})
+                }
+            }
+            else {
+                if (await silverGoldService.ifReferrerIsValid(referrer, currentUserId)) {
+                    this.setState({referrer});
+                }
+            }
+            if (await silverGoldService.canBeReferrer(currentUserId)) {
+                this.setState({canBeReferrer: true}) 
+            }
+            handleGetUserBalance(currentUserId);
         }
     }
 
@@ -161,16 +220,57 @@ class PlotSale extends Component {
         });
     };
 
-    render() {
+    handleUsePoints = () => {
+        if (this.props.userBalance && this.props.userBalance.referralPoints > 0) {
+            this.setState({
+                showUsePointsPopup: true
+            })
+        }
+        else {
+            this.setState({
+                showPlotSaleInfoPopup: true
+            })
+        }
+    }
 
-        const {countryData, zoom, coordinates, countryIdHovered, selection, cart, mapIsShown, searchCountryValue, countryList, searchCountryList, numberOfPlots} = this.state;
-        const {handleGetAvailableCountryPlots, handleBuy, worldChestValue, monthlyChestValue, foundersPlotsBalance, handleGetFounderPlots, foundersChestValue} = this.props;
+    handleWantToBeReferrer = () => {
+        this.setState({
+            showWantToBeReferrerPopup: true
+        })
+    }
+
+    handleBuyPlots = (callback) => {
+        if (this.state.referrer && this.state.numberOfPlots < 5) {
+            this.setState({
+                showBuyReferredPopup: true
+            })
+        }
+        else {
+            this.props.handleBuy(this.state.selection.countryId, this.state.numberOfPlots, 
+                this.state.selection.availablePlots ? Math.max(this.state.numberOfPlots - this.state.selection.availablePlots, 0) : this.state.numberOfPlots, 
+                this.state.referrer, callback)
+        }
+    }
+
+    handleShowInfo = () => {
+        this.setState({
+            showPlotSaleInfoPopup: true
+        })
+    }
+
+    render() {
+        const {countryData, zoom, coordinates, countryIdHovered, selection, processBuy,
+            cart, mapIsShown, searchCountryValue, countryList, searchCountryList, numberOfPlots, 
+            showUsePointsPopup, showBuyReferredPopup, showPlotSaleInfoPopup, showWantToBeReferrerPopup} = this.state;
+        const {handleGetAvailableCountryPlots, handleBuy, handleGet, worldChestValue, monthlyChestValue, 
+            foundersPlotsBalance, handleGetFounderPlots, foundersChestValue, userBalance, currentUserId} = this.props;
 
         return (
             <div data-testid="mapPage" className="plot-sale bg-off-black white w-100" style={{
                 backgroundImage: 'url(' + rockBackground + ')',
                 backgroundRepeat: 'repeat',
                 backgroundSize: 'contain',
+                position: 'relative'
             }}>
                 <div style={{
                     backgroundImage: 'url(' + this.state.plotImage + ')',
@@ -207,10 +307,13 @@ class PlotSale extends Component {
                                      }}
                                      numberOfPlots={numberOfPlots}
                                      setNumberOfPlots={(value) => {this.setBackgroundImage(value); this.setState({numberOfPlots: value})}}
-                                     handleBuy={(callBack) => {
-                                         if ((Date.now() >= 1550772000 * 1000)) {
-                                           handleBuy(selection.countryId, numberOfPlots, selection.availablePlots ? Math.max(numberOfPlots - selection.availablePlots, 0) : numberOfPlots, null, callBack)
-                                         }}}
+                                     handleBuy={() => {
+                                        this.setState({processBuy: true}); 
+                                        setTimeout(() => this.setState({processBuy: false}), 8000);
+                                        this.handleBuyPlots(() => this.setState({processBuy: false}))
+                                     }}
+                                     buyProcessed={processBuy}
+                                     referrer={this.state.referrer}
                             />
                             {!mapIsShown &&
                             <PickLocationButton content={"Pick Plot's Location"} onClick={() => {
@@ -265,18 +368,68 @@ class PlotSale extends Component {
                 </div>
                 <ChestsBar worldChestValue={worldChestValue} monthlyChestValue={monthlyChestValue} foundersChestValue={foundersChestValue}/>
                 <PlotSaleFAQ/>
+                <ReferralPointsArea 
+                    referralPoints={userBalance && userBalance.referralPoints} 
+                    canBeReferrer={this.state.canBeReferrer && !this.state.referrer}
+                    showInfoPopup={() => this.handleShowInfo()}
+                    showUsePointsPopup={() => this.handleUsePoints()}
+                    showWantToBeReferrerPopup={() => this.handleWantToBeReferrer()}
+                    currentUserId={currentUserId}/>
+                {showPlotSaleInfoPopup ? 
+                <PlotSalePopup
+                    referrer = {this.state.referrer}
+                    pointsAvailable = {userBalance && userBalance.referralPoints}
+                    showInfo = {true}
+                    handleClosePopup = {() => this.setState({showPlotSaleInfoPopup: false})}
+                /> :
+                ""}
+                {showBuyReferredPopup ? 
+                <PlotSalePopup
+                    referrer = {this.state.referrer}
+                    pointsAvailable = {userBalance && userBalance.referralPoints}
+                    plotsChosen = {numberOfPlots}
+                    showInfo = {false}
+                    usePoints = {false}
+                    handleClosePopup = {() => this.setState({showBuyReferredPopup: false, processBuy: false})}
+                    handleBuy={() => 
+                        handleBuy(selection.countryId, numberOfPlots, 
+                            selection.availablePlots ? Math.max(numberOfPlots - selection.availablePlots, 0) : numberOfPlots, 
+                            this.state.referrer, () => {this.setState({processBuy: false})})
+                    }
+                /> :
+                ""}
+                {showUsePointsPopup ? 
+                <PlotSalePopup
+                    currentUserId={currentUserId}
+                    referrer = {this.state.referrer}
+                    pointsAvailable = {userBalance && userBalance.referralPoints}
+                    plotsChosen = {false}
+                    showInfo = {false}
+                    usePoints = {true}
+                    handleClosePopup = {() => this.setState({showUsePointsPopup: false})}
+                    handleBuy={(count, callback) => handleGet(count, callback)}
+                /> :
+                ""}
+                {showWantToBeReferrerPopup ?
+                <PlotSalePopup
+                    wantToBeReferrer={true}
+                    handleClosePopup = {() => this.setState({showWantToBeReferrerPopup: false})}
+                /> :
+                ""}
             </div>
         );
     }
 }
 
 const actions = {
-
     handleGetAvailableCountryPlots: getAvailableCountryPlots,
     handleBuy: buyPlots,
+    handleGet: getPlots,
     handleGetChestValues: getChestValues,
     handleGetFounderPlotsBalance: getFounderPlotsNumber,
     handleGetFounderPlots: getFounderPlots,
+    handleGetUserBalance: getUserBalance,
+    handleSetUserReferrer: (referrer) => dispatch => dispatch({type: USER_REFERRER_EXIST, payload: referrer})
 };
 
 export default compose(

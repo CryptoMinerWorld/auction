@@ -115,12 +115,10 @@ const BuyInfo = styled.div`
 
 class BuyForm extends Component {
 
-    state = {processBuy: false};
-
     render() {
         const {
-            countryData, handleClick, selectHoveredId, mapIsShown, toggleMap, handleBuy,
-            searchCountry, searchCountryValue, selectedCountry, numberOfPlots, setNumberOfPlots
+            countryData, handleClick, selectHoveredId, mapIsShown, toggleMap, handleBuy, referrer,
+            searchCountry, searchCountryValue, selectedCountry, numberOfPlots, setNumberOfPlots, buyProcessed
         } = this.props;
 
         return (
@@ -183,13 +181,10 @@ class BuyForm extends Component {
                   <Col style={{flex: 1}}>{selectedCountry.imageLinkMedium &&
                   <SelectedCountryIcon src={selectedCountry.imageLinkMedium}/>}</Col>
                   <Col style={{flex: 2}}>
-                      {(!this.state.processBuy && countryData && countryData.length > 0) ?
-                        <BuyButton onClick={() => {
-                            this.setState({processBuy: true});
-                            handleBuy(() => {
-                                this.setState({processBuy: false})
-                            });
-                        }}>Buy Now</BuyButton> : (
+                      {(!this.props.buyProcessed && countryData && countryData.length > 0) ?
+                        <BuyButton onClick={() => handleBuy()}>
+                            Buy Now
+                        </BuyButton> : (
                           <div className="flex x h3 w-100">
                               <Icon type="loading" theme="outlined"/>
                           </div>
@@ -207,6 +202,7 @@ class BuyForm extends Component {
                   <Col style={{flex: 1}}>{selectedCountry.imageLinkMedium &&
                   <SelectedCountryIcon src={selectedCountry.imageLinkMedium}/>}</Col>
               </div>
+              {referrer ? <span style={{textAlign: "center", fontSize: "10px"}}>{`Referrer Id: ${referrer}`}</span> : ""}
               {mapIsShown &&
               <>
                   <ShowButton content={"Hide Map"} onClick={() => toggleMap()}/>

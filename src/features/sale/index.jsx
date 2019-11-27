@@ -19,9 +19,10 @@ import {
     updateSaleState
 } from "./saleActions";
 import {withRouter} from "react-router-dom";
+import queryString from "query-string";
 import {parseSaleEventData} from "../../app/services/SilverGoldService";
 import CountdownTimer from "./components/CountdownTimer";
-
+import UserService from "./../../app/services/UserService"
 import tableReferralPoints from '../../app/images/sale/tableReferralPoints.png';
 import gemEating from '../../app/images/sale/gemEatingGoldGeode.png';
 import getLoot from '../../app/images/sale/getLoot.png';
@@ -33,12 +34,15 @@ import downArrow from '../../app/images/sale/downMagentaArrow.png';
 import foundersChest from '../../app/images/sale/foundersChest.png';
 import {transactionResolved} from "../transactions/txActions";
 import {setSaleEventListeners} from "./saleEventListener";
+import { USER_REFERRER_EXIST } from '../auth/authConstants';
 
 
 const select = store => ({
     silverGoldService: store.app.silverGoldService,
     presaleContract: store.app.presaleContract,
     currentUserId: store.auth.currentUserId,
+    currentUser: store.auth.user,
+    isNewUser: store.auth.newUser,
     saleState: store.sale.saleState,
     userBalance: store.sale.balance,
     provider: store.app.web3 && store.app.web3.currentProvider,
@@ -73,8 +77,8 @@ class Sale extends Component {
 
     async componentDidMount() {
         const {
-            handleGetBoxesAvailable, handleUpdateSaleState, handleGetSaleState, silverGoldService,
-            currentUserId, handleGetUserBalance, presaleContract, 
+            handleGetBoxesAvailable, handleUpdateSaleState, handleGetSaleState, silverGoldService, isNewUser,
+            currentUserId, handleGetUserBalance, presaleContract, currentUser, location, handleSetUserReferrer
             // handleGetChestValue
         } = this.props;
 
@@ -100,12 +104,29 @@ class Sale extends Component {
                 handleGetUserBalance(currentUserId);
             }
         }
+
+        if (currentUserId && silverGoldService && location && (isNewUser || currentUser)) {
+            let referrer = currentUser ? currentUser.referrer : null;
+            if (!referrer) {
+                let params = queryString.parse(location.search);
+                if (params.refId) {
+                    if (await silverGoldService.ifReferrerIsValid(params.refId, currentUserId)) {
+                        UserService.setReferralId(params.refId, currentUserId);
+                        handleSetUserReferrer(params.refId);         
+                        this.setState({referrer: params.refId});
+                    }   
+                }
+            }
+            else {
+                this.setState({referrer});
+            }
+        }
     }
 
     async componentDidUpdate(prevProps) {
         const {
-            handleGetUserBalance, silverGoldService, currentUserId, handleUpdateSaleState, handleGetSaleState,
-            saleState, userBalance, presaleContract, 
+            handleGetUserBalance, silverGoldService, currentUserId, handleUpdateSaleState, handleGetSaleState, currentUser, location,
+            saleState, userBalance, presaleContract, handleSetUserReferrer, isNewUser
             // handleGetChestValue
         } = this.props;
         const {silverAvailable, goldAvailable} = this.state;
@@ -119,14 +140,28 @@ class Sale extends Component {
             handleGetSaleState();
         }
 
-        if (silverGoldService && currentUserId && (silverGoldService !== prevProps.silverGoldService || currentUserId !== prevProps.currentUserId)) {
-
-            let referrer = silverGoldService.getReferralId(this.props.location.search);
-            if (referrer && !(await silverGoldService.ifReferrerIsValid(referrer, currentUserId))) {
-                referrer = 'some referral link is already used';
+        if (silverGoldService && (currentUser || isNewUser) && currentUserId && location && (silverGoldService !== prevProps.silverGoldService || 
+            currentUserId !== prevProps.currentUserId || location !== prevProps.location || prevProps.currentUser == null || prevProps.isNewUser !== isNewUser)) {
+            let referrer = currentUser ? currentUser.referrer : null;
+            if (!referrer) {
+                let params = queryString.parse(location.search);
+                if (params.refId) {
+                    if (await silverGoldService.ifReferrerIsValid(params.refId, currentUserId)) {
+                        UserService.setReferralId(params.refId, currentUserId);
+                        handleSetUserReferrer(params.refId);
+                        this.setState({referrer: params.refId});
+                    }
+                    else {
+                        console.error("referrer is not valid")
+                    }
+                }
             }
-            this.setState({referrer});
+            else {
+                this.setState({referrer});
+            }
+        }
 
+        if (silverGoldService && currentUserId && (silverGoldService !== prevProps.silverGoldService || currentUserId !== prevProps.currentUserId)) {
             handleGetUserBalance(currentUserId);
         }
     }
@@ -669,6 +704,7 @@ const actions = {
     handleUpdateSaleState: updateSaleState,
     handleGetSaleState: getSaleState,
     handleGetUserBalance: getUserBalance,
+    handleSetUserReferrer: (referrer) => dispatch => dispatch({type: USER_REFERRER_EXIST, payload: referrer}),
     //handleGetChestValue: getChestValue,
     handleShowSignInBox: () => ({type: 'SHOW_SIGN_IN_BOX'}),
 };

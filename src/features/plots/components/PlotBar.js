@@ -84,13 +84,13 @@ const CurrentGemUsed = ({topOffset, gem, onClick}) => {
 
     const imageStyle = {
         width: "74px",
-        height: "74px",
+        height: "70px",
+        padding: "2px",
         position: "absolute",
         top: Math.max(topOffset - 60, 0) + "px",
         backgroundImage: `url(${getGemGradeBackgroundImage(gem.gradeType)})`,
         backgroundSize: "contain",
         backgroundColor: "#7a7a7a",
-        border: "4px solid black",
         left: "-7px",
         zIndex: "10",
     }

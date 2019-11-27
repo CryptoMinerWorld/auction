@@ -113,8 +113,7 @@ export const getUserBalance = (userId) => async (dispatch, getState) => {
     const chestFactoryContract = getState().app.chestFactoryContract;
     const silverGoldService = getState().app.silverGoldService;
     const balances = await silverGoldService.getUserBalance(userId);
-    const submittedKeys = (await chestFactoryContract.methods
-      .getKeyBalances(chestId, userId).call());
+    const submittedKeys = (!isNaN(chestId) && userId) ? await chestFactoryContract.methods.getKeyBalances(chestId, userId).call() : null;
     dispatch({
         type: USER_BALANCE_RECEIVED,
         payload: {
@@ -126,7 +125,8 @@ export const getUserBalance = (userId) => async (dispatch, getState) => {
                   gems: balances.gems,
                   plots: balances.plots,
                   artifacts: balances.artifacts,
-                  keys: +Number(balances.foundersKeys) + Number(balances.chestKeys) + Number(submittedKeys.foundersKeys) + Number(submittedKeys.chestKeys),
+                  keys: +Number(balances.foundersKeys) + Number(balances.chestKeys) + 
+                      submittedKeys ? (Number(submittedKeys.foundersKeys) + Number(submittedKeys.chestKeys)) : 0,
                   foundersKeys: Number(balances.foundersKeys),
                   chestKeys: Number(balances.chestKeys)
               }

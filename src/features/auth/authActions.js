@@ -30,10 +30,9 @@ export const checkIfUserExists = userId => (dispatch) => {
       .get()
       .then(
         doc => {
-            console.log('OK? ', doc.exists);
             return doc.exists
-              ? dispatch({type: USER_EXISTS, payload: doc.data()})
-              : dispatch({type: NO_USER_EXISTS, payload: userId})
+              ? dispatch({type: USER_EXISTS, payload: {...doc.data(), walletId: userIdToLowerCase}})
+              : dispatch({type: NO_USER_EXISTS, payload: userIdToLowerCase})
         })
       .catch(error => setError(error));
 };
@@ -91,12 +90,9 @@ export const createNewUser = payload => (dispatch) => {
 
     return db
       .doc(`users/${userIdToLowerCase}`)
-      .set(payload)
+      .set(payload, {merge: true})
       .then(() => {
-          console.log('USER_EXISTS_OK');
-          dispatch({type: USER_EXISTS, payload});
-
-          //getDetailsForAllGemsAUserCurrentlyOwns(userIdToLowerCase);
+          checkIfUserExists(userIdToLowerCase)(dispatch)
       })
       .catch(error => setError(error));
 };

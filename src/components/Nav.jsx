@@ -64,7 +64,7 @@ const Navbar = ({
         </a> */}
 
 
-              {existingUser ? (
+              {existingUser && user && user.name ? (
                 <NavLink
                   className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
                   to={`/profile/${user.walletId}`}

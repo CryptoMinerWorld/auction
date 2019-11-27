@@ -50,11 +50,18 @@ export default class PlotService {
     buyPlots = (countryId, plotsNumber, priceInEth, referrer) => {
         const priceInWei = Number(utils.toWei(priceInEth.toFixed(2), 'ether'));
         return this.plotSaleContract.methods
-          .buy(countryId, plotsNumber)
+          .buyRef(countryId, plotsNumber, referrer)
           .send({
               value: priceInWei,
           });
     };
+
+    getPlots = (plotsNumber) => {
+        return this.plotSaleContract.methods
+          .get(plotsNumber)
+          .send();
+    };
+
 
     getEffectiveRestingEnergyOf = async (gemId) => {
         return await this.resolveMinerByGemId(gemId).methods.restingEnergyOf(gemId).call();

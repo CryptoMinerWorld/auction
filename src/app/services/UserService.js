@@ -46,10 +46,9 @@ export default class UserService {
           .get()
           .then(
             doc => {
-                console.log('OK? ',doc.exists);
                 return doc.exists
-                  ? dispatch({ type: USER_EXISTS, payload: doc.data() })
-                  : dispatch({ type: NO_USER_EXISTS, payload: userId })
+                  ? dispatch({ type: USER_EXISTS, payload: doc.data(), walletId: userIdToLowerCase })
+                  : dispatch({ type: NO_USER_EXISTS, payload: userIdToLowerCase })
             })
           .catch(error => setError(error));
     };
@@ -64,7 +63,7 @@ export default class UserService {
 
         return db
           .doc(`users/${userIdToLowerCase}`)
-          .set(payload)
+          .set(payload, {merge: true})
           .then(() => {
               console.log('USER_EXISTS_OK');
               dispatch({ type: USER_EXISTS, payload });
@@ -74,5 +73,18 @@ export default class UserService {
           .catch(error => setError(error));
     };
 
+    static setReferralId = (referrer, currentUserId) => {
+      if (referrer) {
+          if (referrer.startsWith("0x") && referrer.length === 42) {
+            try {
+              db.collection("users").doc(currentUserId.toLowerCase()).set({referrer: referrer.toLowerCase()}, {merge: true});
+            }
+            catch (err) {
+              console.error(err);
+            }
+          }
+      } 
+      return referrer;
+  };
 
 }
