@@ -12,7 +12,7 @@ import {
     getUserArtifacts, getUserCountries,
     getUserDetails,
     getUserGems,
-    scrollGems, setDefaultFilters, useCoupon
+    scrollGems, setDefaultFilters, useCoupon, applyGemFiltersInMarket, proceedCombine
 } from "../dashboardActions";
 import {preLoadAuctionPage} from "../../market/marketActions";
 import {getUserBalance} from "../../sale/saleActions";
@@ -21,6 +21,7 @@ import connect from "react-redux/es/connect/connect";
 import styled from "styled-components";
 import {gradeConverter, type} from "../../plots/components/propertyPaneStyles";
 import {MINED, MINING, STUCK} from "../../plots/plotConstants";
+import SidebarPopup from "../../plots/components/SidebarPopup";
 
 const select = store => {
     const gems = store.dashboard.userGems;
@@ -51,6 +52,7 @@ const select = store => {
         loading: !store.dashboard.gemsLoaded,
         unselectedFilters: store.dashboard.unselectedGemWorkshopFilters,
         selectedSorting: store.dashboard.selectedGemWorkshopSorting,
+        selectedGems: store.dashboard.selectedGems
     }
 };
 
@@ -61,6 +63,8 @@ class GemDashboard extends React.Component {
         allGems: [],
         hasMoreGems: false,
         mobileFiltersDisplayed: false,
+        gemsCombineAsset: null,
+        gemCombinationStep: "choose-asset",
     };
 
     componentDidMount() {
@@ -138,12 +142,41 @@ class GemDashboard extends React.Component {
 
     render() {
         const {handlePreLoadAuctionPage, loading, handleApplySort, unselectedFilters, selectedSorting,
-            handleApplyFilterOption, handleDeselectAllFilters, handleSetDefaultFilters} = this.props;
-        const {scrolledGems, hasMoreGems, mobileFiltersDisplayed} = this.state;
+            handleApplyFilterOption, handleDeselectAllFilters, handleSetDefaultFilters, handleProceedCombine, 
+            showGemsCombine, selectedGems, handleApplyGemFiltersInMarket} = this.props;
+        const {scrolledGems, hasMoreGems, mobileFiltersDisplayed, gemsCombineAsset, gemCombinationStep} = this.state;
 
         return (
         <Grid className="ph3">
             <Primary>
+                {showGemsCombine && 
+                    <SidebarPopup type={"gems-combine-" + gemCombinationStep} 
+                        gemsCombineAsset={gemsCombineAsset}
+                        selectedGemsToCombine={selectedGems}
+                        hideHeader={true} 
+                        showGemSelectionPopup = {(combineAsset) => {
+                            this.setState({gemsCombineAsset: combineAsset, 
+                                gemCombinationStep: "select"})
+                        }}
+                        showProceedCombinePopup = {(selectedGems) => {
+                            this.setState({selectedGems, gemCombinationStep: "proceed"})
+                        }}
+                        proceedCombine = {() => handleProceedCombine(selectedGems, gemsCombineAsset,
+                            () => {
+                                this.setState({ gemsCombineAsset: null, gemCombinationStep: "choose-asset"})
+                                this.props.closeGemsCombinePopup();
+                            })}
+                        goToMarketAndApplyFilters={(unselectedFilters) => {
+                            this.props.history.push('/market?tab=1')
+                            handleApplyGemFiltersInMarket(unselectedFilters)
+                        }}
+                        step={0}
+                        closeCallback = {() => {
+                            this.setState({ gemsCombineAsset: null, gemCombinationStep: "choose-asset"})
+                            this.props.closeGemsCombinePopup();
+                        }}
+                        />
+                }
                 <div className="flex jcb aic">
                     <GemDashboardFilters unselectedFilters={unselectedFilters}
                                          applyFilter={(option, optionType) => {
@@ -204,6 +237,8 @@ const actions = {
     handleDeselectAllFilters: deselectAllFilters,
     handleSetDefaultFilters: setDefaultFilters,
     handlePreLoadAuctionPage: preLoadAuctionPage,
+    handleApplyGemFiltersInMarket: applyGemFiltersInMarket,
+    handleProceedCombine: proceedCombine
 };
 
 export default compose(

@@ -89,11 +89,8 @@ export const buyPlots = (countryId, totalAmount, amountExceeded, referrer, hideP
     const plotService = getState().app.plotService;
     const currentUser = getState().auth.currentUserId;
     let randomCountry;
-
     const silverGoldService = getState().app.silverGoldService;
-
     const isValid = await silverGoldService.ifReferrerIsValid(referrer, currentUser);
-    console.debug("Is valid referrer:", isValid)
 
     if(amountExceeded > 0) {
         let iterations = 0;

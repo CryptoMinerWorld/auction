@@ -6,11 +6,13 @@ import SelectedGemsPopup from "./SelectedGemsPopup";
 import GemsPopup from "./GemsPopup";
 import FilterPopup from "./FilterPopup";
 import GemSelectionPopup from "./GemSelectionPopup";
+import ProceedCombinePopup from "../../dashboard/components/ProceedCombinePopup";
 import ProcessAllPopup from "./ProcessAllPopup";
+import GemCombinationPopup from "../../dashboard/components/GemCombinationPopup";
 
 const OctagonLayoutOuter = styled.div`
             max-width: 900px;
-            max-height: 525px;
+            //max-height: 525px;
             background: #62626B;
             position: relative;
             padding: 0 4px;
@@ -66,7 +68,7 @@ const SemiOctagonHeaderOuter = styled.div`
 
 const OctagonLayoutInner = styled.div`
             max-width: 892px;
-            max-height: 525px;
+            //max-height: 525px;
             background: #2a3238;
             position: relative;
             z-index: 20;
@@ -175,12 +177,6 @@ const CloseButton = styled.div`
 
 export class SidebarPopup extends Component {
 
-    componentDidMount() {
-        // this.setState({
-        //     activeOptions: this.props.activeOptions
-        // });
-    }
-
     generatePopupContent() {
         switch (this.props.type) {
             case "plots-all":
@@ -217,6 +213,22 @@ export class SidebarPopup extends Component {
                 return <PlotActionPopup>Artifacts are coming soon</PlotActionPopup>;
             case "process-all":
                 return <ProcessAllPopup plots={this.props.plots} processPlots={this.props.processPlots}/>
+            case "gems-combine-choose-asset":
+                    return <GemCombinationPopup showGemSelectionPopup={this.props.showGemSelectionPopup}/>
+            case "gems-combine-select":
+                if (this.props.gemsCombineAsset) {
+                    return <GemSelectionPopup combineAsset={this.props.gemsCombineAsset} 
+                                    showProceedCombinePopup={this.props.showProceedCombinePopup}
+                                    goToMarketAndApplyFilters={this.props.goToMarketAndApplyFilters}/>
+                }
+            case "gems-combine-proceed": 
+                if (this.props.gemsCombineAsset && 
+                    this.props.selectedGemsToCombine && 
+                    (this.props.selectedGemsToCombine.length === 4)) {
+                        return <ProceedCombinePopup combineAsset={this.props.gemsCombineAsset}
+                                                    proceedCombine={this.props.proceedCombine}
+                                                    showGemSelectionPopup={this.props.showGemSelectionPopup}/>
+                } 
         }
     }
 
@@ -248,8 +260,7 @@ export class SidebarPopup extends Component {
     }
 
     render() {
-
-        console.log("SELECTED PLOT: ", this.props.selectedPlot);
+        console.debug("Props:", this.props);
 
         const shadowLayerStyle = {
             position: 'fixed',
@@ -272,16 +283,18 @@ export class SidebarPopup extends Component {
               <div style={popupStyle} onClick={(e) => {
                   e.stopPropagation()
               }}>
-                  <SemiOctagonHeaderOuter>
-                      <SemiOctagonHeaderInner>
-                          <div style={{
-                              fontSize: "20px", color: "#97A8B4", position: "absolute",
-                              top: "-11px", width: "100%", textAlign: "center"
-                          }}>
-                              {SidebarPopup.generatePopupHeader(this.props.type)}
-                          </div>
-                      </SemiOctagonHeaderInner>
-                  </SemiOctagonHeaderOuter>
+                {!this.props.hideHeader && 
+                <SemiOctagonHeaderOuter>
+                    <SemiOctagonHeaderInner>
+                        <div style={{
+                            fontSize: "20px", color: "#97A8B4", position: "absolute",
+                            top: "-11px", width: "100%", textAlign: "center"
+                        }}>
+                            {SidebarPopup.generatePopupHeader(this.props.type)}
+                        </div>
+                    </SemiOctagonHeaderInner>
+                </SemiOctagonHeaderOuter>
+                }
                   <OctagonLayoutOuter>
                       <OctagonLayoutInner>
                           {this.generatePopupContent()}

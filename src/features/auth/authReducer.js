@@ -24,7 +24,6 @@ export default function authReducer(
   }
 
   if (action.type === USER_REFERRER_EXIST) {
-    console.debug("USER REF. EXIST")
     return {
       user: {
         ...state.user,

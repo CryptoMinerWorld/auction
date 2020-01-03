@@ -6,11 +6,11 @@ import {COUNTRY_LIST} from "../../features/market/country_list";
 
 export default class GemService {
 
-    constructor(gemContract, web3Instance, auctionContract) {
-        console.log('Gem Service constructor called', gemContract);
+    constructor(gemContract, web3Instance, auctionContract, gemBurnerContract) {
         this.contract = gemContract;
         this.web3 = web3Instance;
         this.auctionContract = auctionContract;
+        this.gemBurnerContract = gemBurnerContract;
     }
 
     getGemProperties = async (tokenId) => {
@@ -179,6 +179,15 @@ export default class GemService {
             }
         })
     }
+
+    burnGems = (gemIds, tradeAsset) => {
+        if (tradeAsset === "gold") {
+            return this.gemBurnerContract.methods.tradeForGold(gemIds).send(); 
+        } else if (tradeAsset === "silver") {
+            return this.gemBurnerContract.methods.tradeForSilver(gemIds).send();
+        }
+    }
+
 }
 
 const gemRateMultiplier = (gem) => {

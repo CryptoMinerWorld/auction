@@ -12,6 +12,8 @@ import foundersChest from '../app/images/dashboard/foundersChest100.png';
 import gemstoneChest from '../app/images/dashboard/chestOctoberOpal100.png';
 import countryGem from '../app/images/dashboard/countryGem.png';
 import erc20Market from '../app/images/dashboard/erc20Market.png';
+import workshopIcon from '../app/images/dashboard/workshopIcon50.png';
+import gemCombinationIcon from '../app/images/dashboard/gemCombinationIcon64.png'
 
 
 const BottomHighlight = styled.div`
@@ -74,7 +76,7 @@ const Navbar = ({
                   }}
                   data-testid="myWorkshop"
                 >
-                    My Workshop
+                    <img width={30} src={workshopIcon}/> My Workshop
                 </NavLink>
               ) : (
                 <div
@@ -86,9 +88,24 @@ const Navbar = ({
                   tabIndex={0}
                   data-testid="signUp"
                 >
-                    Workshop
+                    <img width={30} src={workshopIcon}/> Workshop
                 </div>
               )}
+              {existingUser && user && user.name ?
+                <NavLink
+                  exact
+                  to={`/profile/${user.walletId}`}
+                  activeStyle={{
+                      borderBottom: '2px solid purple',
+                  }}
+                  className="link dim dark-gray f6 f5-l dib mr3 mr4-l b"
+                  style={{
+                      color: 'purple',
+                  }}
+                >
+                    <img width={30} src={gemCombinationIcon}/> Gem Combination
+                </NavLink> : ""
+              }
               <NavLink
                 to="/market?tab=1"
                 activeStyle={{
@@ -136,20 +153,6 @@ const Navbar = ({
                 }}
               >
                   Plots of Land
-              </NavLink>
-              <NavLink
-                exact
-                to="/S_and_G_Sale"
-                activeStyle={{
-                    borderBottom: '2px solid purple',
-                }}
-                className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
-                data-testid="mapLink"
-                style={{
-                    color: 'purple',
-                }}
-              >
-                  Silver and Gold
               </NavLink>
               {user && (
                 <AvatarDropdown

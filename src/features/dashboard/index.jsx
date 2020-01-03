@@ -35,10 +35,9 @@ import {setDashboardEventListeners} from "./dashboardEventListener";
 import GemDashboard from "./components/GemDashboard";
 import {getAvailableCountryPlots} from "../plotsale/plotSaleActions";
 import {USER_PLOTS_RELOAD_BEGUN} from "../plots/plotConstants";
-import {COUNTRY_WITHDRAW} from "./dashboardConstants";
+import {COUNTRY_WITHDRAW, SET_DEFAULT_GEM_SELECTION_FILTERS} from "./dashboardConstants";
 import StatusBar from "./components/StatusBar";
 import PlotDashboardFAQ from "./components/PlotDashboardFAQ";
-
 
 const {TabPane} = Tabs;
 
@@ -46,7 +45,6 @@ require('antd/lib/tabs/style/css');
 require('antd/lib/notification/style/css');
 require('antd/lib/pagination/style/css');
 require('antd/lib/slider/style/css');
-
 
 const RedeemCoupon = styled.div`
     @media(min-width: 900px) {
@@ -148,6 +146,7 @@ class Dashboard extends Component {
         redirectPath: '',
         alreadyRedirected: false,
         eventSubscriptions: [],
+        showGemsCombine: false,
     };
 
     clearSubscriptions = () => {
@@ -162,11 +161,7 @@ class Dashboard extends Component {
     }
 
     async componentDidMount() {
-
-        console.log('PROPS is ', this.props);
-
         this.setState({redirectPath: ''});
-
         const {
             pendingTransactions,
             preSaleContract, match, data, handleGetUserBalance, handleGetUserGems, gemService, countryService, plotService, handleGetUserPlots, handleRefreshUserPlot,
@@ -256,11 +251,8 @@ class Dashboard extends Component {
 
     async componentDidUpdate(prevProps) {
 
-        console.log('DASHBOARD PROPS is ', this.props);
-        console.log('DASHBOARD STATE is ', this.state);
         const {
-            pendingTransactions,
-            web3, preSaleContract, match,
+            pendingTransactions, match,
             handleGetUserGems, gemService, auctionService, silverGoldService, countryService, plotService, handleGetUserPlots, handleGetUserCountries,
             handleGetUserBalance, currentUserId, userExists, currentUser, artifactContract, handleGetUserArtifacts, handleRefreshUserPlot,
             handleShowSignInBox, handlePlotsReloadBegun
@@ -325,7 +317,6 @@ class Dashboard extends Component {
               });
             this.setState({eventSubscriptions});
         }
-
 
         if (plotService && pendingTransactions && currentUserId && match.params.userId &&
           (pendingTransactions !== prevProps.pendingTransactions)) {
@@ -397,10 +388,11 @@ class Dashboard extends Component {
             userCountries,
             userArtifacts,
             pendingTransactions,
+            handleDeselectGemsToCombine,
         } = this.props;
 
         const {
-            plots, tab, redirectPath, alreadyRedirected, dashboardUser
+            plots, tab, redirectPath, alreadyRedirected, dashboardUser, showGemsCombine
         } = this.state;
         if (redirectPath && !alreadyRedirected) {
             this.setState({alreadyRedirected: true});
@@ -413,7 +405,8 @@ class Dashboard extends Component {
 
         return (
           <div className="bg-off-black white card-container" data-testid="profile-page">
-              <StatusBar dashboardUser={dashboardUser} userBalance={userBalance}/>
+              <StatusBar dashboardUser={dashboardUser} userBalance={userBalance}
+               openGemsCombinePopup={() => this.setState({showGemsCombine: true, tab: 2})}/>
               <Tabs
                 activeKey={`${tab}`}
                 animated
@@ -490,7 +483,11 @@ class Dashboard extends Component {
                     )}
                     key="2"
                   >
-                      <GemDashboard/>
+                      <GemDashboard showGemsCombine={showGemsCombine} 
+                      closeGemsCombinePopup={() => {
+                          this.setState({showGemsCombine:false })
+                          handleDeselectGemsToCombine()
+                      }}/>
                   </TabPane>
                   {(userCountries && userCountries.length > 0) ?
                     <TabPane tab={(
@@ -572,6 +569,7 @@ const actions = {
     handleGetUserCountries: getUserCountries,
     handleGetAvailableCountryPlots: getAvailableCountryPlots,
     handleWithdrawCountryEth: withdrawCountryEth,
+    handleDeselectGemsToCombine: () => dispatch => dispatch({type: SET_DEFAULT_GEM_SELECTION_FILTERS})
 };
 
 export default compose(

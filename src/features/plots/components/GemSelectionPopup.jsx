@@ -7,11 +7,18 @@ import connect from "react-redux/es/connect/connect";
 import GemSelectionFilters from "./GemSelectionFilters";
 import {gradeConverter, type} from "./propertyPaneStyles";
 import {bindGem} from "../plotActions";
+import {proceedCombine} from "../../dashboard/dashboardActions";
 import {
+    SELECT_GEM_TO_COMBINE,
     APPLY_GEM_SELECTION_FILTER_OPTION,
     APPLY_GEM_SELECTION_SORTING,
     DESELECT_ALL_GEM_SELECTION_FILTERS, SET_DEFAULT_GEM_SELECTION_FILTERS
 } from "../../dashboard/dashboardConstants";
+import {
+    typePaneColors, 
+    typePaneOutlineColors 
+} from "./propertyPaneStyles";
+import { CutEdgesButton } from "../../../components/CutEdgesButton";
 
 const CardBox = styled.section`
   display: grid;
@@ -19,6 +26,7 @@ const CardBox = styled.section`
   grid-template-columns: repeat(auto-fill, minMax(150px, 1fr));
   grid-column-gap: 10px
   grid-row-gap: 10px;
+  padding-bottom: 200px;
 `;
 
 const GemSelectionFilter = styled.div`
@@ -29,7 +37,8 @@ const select = store => {
         userGems: store.dashboard.userGems,
         gemMiningIds: store.plots.gemMiningIds,
         unselectedFilters: store.dashboard.unselectedGemSelectionFilters,
-        selectedSort: store.dashboard.selectedGemSelectionSorting
+        selectedSort: store.dashboard.selectedGemSelectionSorting,
+        selectedGems: store.dashboard.selectedGems,
     }
 };
 
@@ -113,6 +122,17 @@ export class GemSelectionPopup extends Component {
         });
     };
 
+    isGemApplicableToCombine = (gem, selectedGems, combineAsset) => {
+        if (selectedGems.length === 0) return true;
+        if (combineAsset === "silver") {
+            return selectedGems[0].level === gem.level //&& selectedGems[0].color === gem.color
+        }
+        if (combineAsset === "gold") {
+            return selectedGems[0].gradeType === gem.gradeType //&& selectedGems[0].color === gem.color
+        }
+        return false;
+    }
+
     render() {
         const container = {
             display: "flex",
@@ -168,7 +188,8 @@ export class GemSelectionPopup extends Component {
 
         const {handleBindGem, selectedPlot, gemMiningIds, transactionStartCallback, showConfirmPopupCallback,
             updatePlot, unselectedFilters, selectedSort, handleApplySort, handleApplyFilterOption,
-            handleDeselectAllFilters, handleSetDefaultFilters} = this.props;
+            handleDeselectAllFilters, handleSetDefaultFilters, combineAsset, selectedGems, 
+            handleSelectGem, showProceedCombinePopup, goToMarketAndApplyFilters} = this.props;
         const {scrolledGems} = this.state;
 
         return (
@@ -187,20 +208,50 @@ export class GemSelectionPopup extends Component {
                         {scrolledGems && scrolledGems.length > 0 ? (
                           scrolledGems.map(userGem => {
                               const available = !userGem.auctionIsLive && gemMiningIds && !gemMiningIds.includes(userGem.id.toString());
-                              const applicable = selectedPlot.layerEndPercentages[userGem.level - 1] > selectedPlot.currentPercentage;
+                              const applicableToPlot = selectedPlot ? selectedPlot.layerEndPercentages[userGem.level - 1] > selectedPlot.currentPercentage : false
+                              const isSelectedToCombine = (combineAsset && selectedGems.length > 0) ? selectedGems.find(gem => gem.id === userGem.id) : false
                               if (available) return (
                                 //<div></div>
-                                <GemSelectionCard selectedPlot={selectedPlot} auction={userGem} key={userGem.id} available={applicable}
+                                <GemSelectionCard 
+                                    backgroundColor={isSelectedToCombine ? typePaneColors(userGem.color) : undefined} 
+                                    outlineColor={isSelectedToCombine ? typePaneOutlineColors(userGem.color) : undefined} 
+                                    selectedPlot={selectedPlot} 
+                                    auction={userGem} 
+                                    key={userGem.id} 
+                                    available={(selectedPlot && applicableToPlot) ||
+                                         (combineAsset && this.isGemApplicableToCombine(userGem, selectedGems, combineAsset))}
                                     onClick={() => {
-                                        if (applicable) {
-                                            showConfirmPopupCallback();
-                                            handleBindGem(selectedPlot, userGem, updatePlot, transactionStartCallback)
+                                        if (selectedPlot) {
+                                            if (applicableToPlot) {
+                                                showConfirmPopupCallback();
+                                                handleBindGem(selectedPlot, userGem, updatePlot, transactionStartCallback)
+                                            }
+                                            return
+                                        }
+                                        if (combineAsset) {
+                                            handleSelectGem(userGem, combineAsset)
+                                            return
                                         }
                                     }}
                                 />
                               )
                           })
                         ) : ""
+                        }
+                        {combineAsset ? 
+                            <CutEdgesButton outlineColor={"white"}
+                                fontColor={"#dedede"}
+                                backgroundColor={"black"}
+                                edgeSizes={[7, 7]}
+                                outlineWidth={3}
+                                height={210}
+                                fontSize={22}
+                                content={"Click here to \\A"+
+                                        "go to Market \\A " + 
+                                        "to buy Gems \\A " +
+                                        "of this Color \\A " + 
+                                        "and " + (combineAsset === "silver" ? "Level" : "Grade")}
+                                onClick={() => goToMarketAndApplyFilters(unselectedFilters)}/> : ""
                         }
                     </CardBox>
                 </InfiniteScroll> :
@@ -215,7 +266,12 @@ export class GemSelectionPopup extends Component {
                                    selectedSort={selectedSort}
                                    toggleSort={(sortOption) => {
                                        (sortOption !== selectedSort) && handleApplySort(sortOption)
-                                   }}>
+                                   }}
+                                   selectedGems={selectedGems}
+                                   combineAsset={combineAsset}
+                                   proceedCombine={() => selectedGems && selectedGems.length === 4 
+                                        && showProceedCombinePopup(selectedGems)}
+                                   >
               </GemSelectionFilters>
           </div>
         );
@@ -227,11 +283,12 @@ export default compose(
   connect(
     select,
     {
+        handleSelectGem: (gem, combineAsset) => ({type: SELECT_GEM_TO_COMBINE, payload: {gem, combineAsset}}),
         handleBindGem: bindGem,
         handleApplySort: (sortOption) => ({type: APPLY_GEM_SELECTION_SORTING, payload: sortOption}),
         handleApplyFilterOption: (option, optionType) => ({type: APPLY_GEM_SELECTION_FILTER_OPTION, payload: {filterOption: option, optionType: optionType}}),
         handleDeselectAllFilters: () => ({type: DESELECT_ALL_GEM_SELECTION_FILTERS}),
-        handleSetDefaultFilters: () => ({type: SET_DEFAULT_GEM_SELECTION_FILTERS})
+        handleSetDefaultFilters: () => ({type: SET_DEFAULT_GEM_SELECTION_FILTERS}),
     }
   )
 )(GemSelectionPopup);

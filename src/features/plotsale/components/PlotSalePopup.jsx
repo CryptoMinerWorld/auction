@@ -1,6 +1,7 @@
 import React, {Component, useState} from "react";
 import styled from "styled-components";
-import plotSaleInfo from "../../../app/images/plots/plotSaleInfo.webp";
+import InfoBackground from "../../../app/images/plots/RefSysInfoBackground.png"
+import InfoTable from "../../../app/images/plots/RefSysInfoTable.png"
 import actionButtonImage from "../../../app/images/pinkBuyNowButton.png";
 import faqButtonImage from '../../../app/images/darkGreyBlankButton.png';
 import {CutEdgesButton} from "../../../components/CutEdgesButton";
@@ -8,8 +9,6 @@ import {CopyToClipboard} from 'react-copy-to-clipboard';
 import gemKid from '../../../app/images/gemKid.png';
 
 export const PlotSalePopup = (props) => {
-
-    console.debug("Props", props);
 
     const shadowLayerStyle = {
         position: 'fixed',
@@ -114,9 +113,45 @@ const PopupContainer = styled.div`
         `;
 
 const ReferralSystemInfo = () => {
-    return <div style={{padding: "10px"}}>
-        <img src={plotSaleInfo}/>
+    return <div style={{width: "600px", padding: "0 10px", display: "flex", flexDirection: "column", alignItems: "center"}}>
+    <div style={{fontSize: "26px", textAlign: "center", marginBottom: "20px"}}>
+        Referral System for Plot of Land sale!
+        </div>
+    <TextRow style={{margin: "0"}}>The rundown on the referral system:</TextRow>
+    <TextRow style={{margin: "0"}}><Pink>1.</Pink> Click “Create Referral Link”. That copies your link to your clipboard</TextRow>
+    <TextRow style={{margin: "0"}}><Pink>2.</Pink> Are you sure you do not want to get any referral points?!</TextRow>
+    <TextRow style={{margin: "0"}}><Pink>3.</Pink> Share that code with your friends, enemies and anyone else you want.</TextRow>
+    <TextRow style={{margin: "0"}}><Pink>4.</Pink> When people use your link they will earn both themselves and you,
+        Referral Points from their ﬁrst purchase of Plots of Land.</TextRow>
+    
+    <div style={{
+        backgroundImage: `url(${InfoBackground})`,
+        backgroundSize: "contain",
+        display: "flex",
+        width: "540px",
+        height: "182px",
+        padding: "17px",
+        margin: "15px 0 30px",
+        alignItems: "center"
+    }}>
+        <div style={{
+            width: "280px",
+            fontSize: "24px",
+            lineHeight: "100%",
+            marginRight: "10px"
+        }}>
+        For every <Pink>5</Pink> Plots they buy
+        you will earn <Pink>2</Pink> points,
+        they will earn <Pink>1</Pink> point.
+        </div>
+        <img src={InfoTable}/>
     </div>
+
+    <TextRow style={{fontSize: "22px"}}>
+        Every <Pink>4</Pink> Referral Points will get you <br/>
+        <Pink> 1</Pink> FREE Plot of Land in the Bermuda Triangle!
+    </TextRow>
+</div>
 }
 
 const ConfirmReferredBuy = ({handleBuy, handleClose}) => {
@@ -187,14 +222,13 @@ const UseReferralPoints = ({pointsAvailable, handleBuy, currentUserId}) => {
 const TryCreateReferralLink = () => {
     return <div style={{width: "600px", padding: "0 10px", display: "flex", flexDirection: "column", alignItems: "center"}}>
         <TextRow style={{fontSize: "26px"}}>Thanks for trying to create a Referral Link!</TextRow>
-        <TextRow style={{fontSize: "20px", marginTop: "20px"}}>You can not that just yet. To refer people you need to be
-         part of the game. Buy a Gem, Plot of Land, or anything else. After that then you can create referral links. 
+        <TextRow style={{fontSize: "20px", marginTop: "20px"}}>Unfortunately you can not do that just yet. 
+        To refer people you need to have bought a Gem or a Plot of Land. After you buy either you will be able to create referral links.
         </TextRow>
         <TextRow style={{fontSize: "20px", marginTop: "0"}}>Thanks!</TextRow>
         
     </div>
 }
-
 
 const BuyButton = styled.div`
     background-image: url(${actionButtonImage});
@@ -236,7 +270,6 @@ const DarkButton = ({content, ...props}) => {
 
 
 const generatePopupContent = ({referrer, pointsAvailable, plotsChosen, showInfo, usePoints, handleClosePopup, handleBuy, currentUserId, wantToBeReferrer}) => {
-    console.debug("popup props:", pointsAvailable, usePoints, showInfo);
     if (usePoints && pointsAvailable > 0) {
         return <PopupContainer>
             <UseReferralPoints handleBuy={(count) => handleBuy(count, handleClosePopup)} pointsAvailable={pointsAvailable} currentUserId={currentUserId}/>

@@ -34,20 +34,16 @@ const calculateEnergyInMinutes = t => Math.floor(t % 60);
 class GemSelectionCard extends Component {
 
     render() {
-        const {auction, available, selectedPlot} = this.props;
+        const {auction, available, selectedPlot, outlineColor, backgroundColor} = this.props;
         const rateBoxContent = '' + auction.baseRate + '%' + (auction.rate > auction.baseRate ? (' \\a' + ' ' + auction.rate + '% ') : "");
         return (
           <Tilt className="Tilt gem-selection-card" options={{max: 35, scale: 1.02}}
-                style={{cursor: "pointer", opacity: available ? "1" : "0.5"}}>
-              <div
+                style={{cursor: "pointer", opacity: available ? "1" : "0.5", position: "relative"}}>
+            <CardOutline outlineColor={outlineColor}/>
+            <CardContainer
+                backgroundColor = {backgroundColor}
                 onClick={this.props.onClick}
-                className="bg-off-black shadow-3 white relative"
-                style={{
-                    WebkitClipPath:
-                      'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)',
-                    clipPath:
-                      'polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%)',
-                }}>
+                className="shadow-3 white relative">
                   <GemName>{auction.id}</GemName>
                   {auction.restingEnergy && auction.restingEnergy > 0 ?
                     <GemEnergy>{formatRestingEnergy(auction.restingEnergy)}</GemEnergy> : ""
@@ -105,7 +101,7 @@ class GemSelectionCard extends Component {
                                           content={rateBoxContent}/>
                       </div>
                   </div>
-              </div>
+              </CardContainer>
           </Tilt>
         )
     }
@@ -126,6 +122,28 @@ GemSelectionCard.propTypes = {
 };
 
 export default GemSelectionCard;
+
+const CardContainer= styled.div`
+
+    background-color: ${props => props.backgroundColor ? props.backgroundColor : "#24292f"};
+    -webkit-clip-path: polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, 
+        -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%);
+    clip-path: polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, 
+        -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%);
+
+`
+
+const CardOutline = styled.div `
+
+    position: absolute;
+    left: -2px;
+    top: -2px;
+    background-color: ${props => props.outlineColor};
+    bottom: -2px;
+    right: -2px;
+    clip-path: polygon(100.23% 96.54%, 95.12% 99.87%, 8.69% 100.01%, 1.21% 98.76%, 
+        -0.22% 92.82%, 0.03% 2.74%, 4.31% -0.23%, 92.22% -0.24%, 98.41% 1.33%, 100.1% 5.29%);
+`
 
 const GemName = styled.div`
     position: absolute;

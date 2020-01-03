@@ -19,6 +19,7 @@ import {
     USER_GEMS_RETRIEVED,
     USER_HAS_NO_GEMS_IN_WORKSHOP,
     WANT_TO_SEE_ALL_GEMS,
+    SELECT_GEM_TO_COMBINE
 } from './dashboardConstants';
 
 import {NO_USER_EXISTS} from '../auth/authConstants';
@@ -43,7 +44,8 @@ export default function dashboardReducer(
       unselectedGemWorkshopFilters: defaultFiltersUnselected,
       selectedGemWorkshopSorting: defaultSorting,
       unselectedGemSelectionFilters: defaultFiltersUnselected,
-      selectedGemSelectionSorting: "mrb_down"
+      selectedGemSelectionSorting: "mrb_down",
+      selectedGems: []
   },
   action,
 ) {
@@ -297,11 +299,41 @@ export default function dashboardReducer(
     }
 
     if (action.type === SET_DEFAULT_GEM_SELECTION_FILTERS) {
-        return {...state, unselectedGemSelectionFilters: defaultFiltersUnselected}
+        return {...state, unselectedGemSelectionFilters: defaultFiltersUnselected, selectedGems: []}
     }
 
     if (action.type === DESELECT_ALL_GEM_SELECTION_FILTERS) {
-        return {...state, unselectedGemSelectionFilters: allFiltersDeselected}
+        return {...state, unselectedGemSelectionFilters: allFiltersDeselected, selectedGems: []}
+    }
+
+    if (action.type === SELECT_GEM_TO_COMBINE) {
+        const {gem, combineAsset} = action.payload;
+        if (state.selectedGems.length == 0) {
+            const newFilters = {...defaultFiltersUnselected};
+            //const newTypeFilters = [...allFiltersDeselected.types]
+            //newFilters["types"] = newTypeFilters.filter(t => t !== type(gem.color));
+            if (combineAsset == "silver") {
+                const newLevelFilters = [...allFiltersDeselected.levels]
+                newLevelFilters.splice(gem.level - 1, 1);
+                newFilters["levels"] = newLevelFilters;
+            } else if (combineAsset == "gold") {
+                const newGradeFilters = [...allFiltersDeselected.grades]
+                newGradeFilters.splice(gem.gradeType - 1, 1);
+                newFilters["grades"] = newGradeFilters;
+            }
+            return {...state, selectedGems: [gem], unselectedGemSelectionFilters: newFilters}
+        }
+
+        if (state.selectedGems.length <= 4) {
+            const newSelectedGems = state.selectedGems.filter((g) => g.id != gem.id);
+            if (newSelectedGems.length === state.selectedGems.length && newSelectedGems.length < 4) {
+                if ((combineAsset === "silver" && gem.level === state.selectedGems[0].level) ||
+                (combineAsset === "gold") && gem.gradeType === state.selectedGems[0].gradeType) {
+                    newSelectedGems.push(gem);
+                }
+            }
+            return {...state, selectedGems: newSelectedGems}
+        } 
     }
 
     return state;

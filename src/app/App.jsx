@@ -40,6 +40,7 @@ import Miner from './ABI/Miner';
 import BalanceProxy from './ABI/BalanceProxy';
 import PlotAntarctica from './ABI/PlotAntarctica';
 import FoundersPlots from './ABI/FoundersPlots';
+import GemBurner from './ABI/GemBurner';
 import GemService from "./services/GemService";
 import AuctionService from "./services/AuctionService";
 import SilverGoldService from "./services/SilverGoldService";
@@ -93,6 +94,7 @@ const foundersPlotsABI = FoundersPlots.abi;
 const chestFactoryABI = ChestFactory.abi;
 const foundersKeyABI = FoundersKey.abi;
 const chestKeyABI = ChestKey.abi;
+const gemBurnerABI = GemBurner.abi;
 
 const StickyHeader = styled.div`
   position: -webkit-sticky; /* Safari */
@@ -196,7 +198,7 @@ class App extends Component {
           {
               dutchAuctionABI, dutchAuctionHelperABI, gemsABI, countryABI, refPointsTrackerABI, goldABI,
               silverABI, workshopABI, silverSaleABI, silverCouponsABI, plotSaleABI, plotABI, minerABI,
-              artifactABI, balanceABI, plotAntarcticaABI, foundersPlotsABI, chestFactoryABI, foundersKeyABI, chestKeyABI
+              artifactABI, balanceABI, plotAntarcticaABI, foundersPlotsABI, chestFactoryABI, foundersKeyABI, chestKeyABI, gemBurnerABI
           }, currentAccountId);
 
         console.info("contracts", contracts);
@@ -209,7 +211,7 @@ class App extends Component {
             });
 
             const services = {
-                gemService: new GemService(contracts.gemContract, web3, contracts.auctionContract),
+                gemService: new GemService(contracts.gemContract, web3, contracts.auctionContract, contracts.gemBurnerContract),
                 auctionService: new AuctionService(contracts.auctionContract, contracts.tokenHelperContract, contracts.gemContract),
                 silverGoldService: new SilverGoldService(contracts.silverSaleContract, contracts.balanceContract, contracts.refPointsTrackerContract),
                 countryService: new CountryService(null, contracts.countryContract),

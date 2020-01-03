@@ -49,3 +49,12 @@ export const Username = styled.h1`
         font-size: 24px;
     }
 `;
+
+export const GemCombinationButton = styled.img`
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 325px;
+    cursor: pointer;
+`;

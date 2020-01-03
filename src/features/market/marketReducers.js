@@ -6,6 +6,7 @@ import {
     FETCH_NEW_AUCTIONS_FAILED,
     NEW_AUCTIONS_RECEIVED,
     SET_DEFAULT_GEM_MARKET_FILTERS,
+    SET_GEM_MARKET_FILTERS,
 } from './marketConstants';
 import {NEW_AUCTION_CREATED} from '../items/itemConstants';
 
@@ -78,6 +79,14 @@ export const marketReducer = (
 
     if (action.type === COUNTRY_FILTER_SELECTED) {
         return {...state, selectedCountryFilter: action.payload.country}
+    }
+
+    if (action.type === SET_GEM_MARKET_FILTERS) {
+        const newMarketFilters = {...defaultFiltersUnselected};
+        newMarketFilters.grades = action.payload.unselectedFilters.grades;
+        newMarketFilters.levels = action.payload.unselectedFilters.levels;
+        newMarketFilters.types = action.payload.unselectedFilters.types;
+        return {...state, unselectedGemMarketFilters: newMarketFilters}
     }
 
     return state;

@@ -18,6 +18,7 @@ import {db} from '../../app/utils/firebase';
 import {addPendingTransaction, getUpdatedTransactionHistory} from "../transactions/txActions";
 import {getUserBalance} from "../sale/saleActions";
 import {weiToEth} from "../sale/helpers";
+import { SET_GEM_MARKET_FILTERS } from '../market/marketConstants';
 
 export const withdrawCountryEth = () => async (dispatch, getState) => {
     const plotService = getState().app.plotService;
@@ -43,7 +44,6 @@ export const withdrawCountryEth = () => async (dispatch, getState) => {
 };
 
 export const getUserGems = ownerId => async (dispatch, getState) => {
-    console.log('11111 FETCH!');
     dispatch({type: FETCH_USER_GEMS_BEGUN});
 
     const gemService = getState().app.gemService;
@@ -55,13 +55,10 @@ export const getUserGems = ownerId => async (dispatch, getState) => {
       .join('');
 
     try {
-        console.log('11111 FETCH!');
         const [notAuctionOwnerGems, auctionOwnerGems] = await Promise.all([
             gemService.getOwnerGems(userIdToLowerCase),
             auctionService.getAuctionOwnerGems(userIdToLowerCase)
         ]);
-        console.warn('AUCTIONOWNERGEMS: ', auctionOwnerGems);
-        console.warn('NOTAUCTIONGEMS:', notAuctionOwnerGems);
         dispatch({type: USER_GEMS_RETRIEVED, payload: auctionOwnerGems.concat(notAuctionOwnerGems)});
     }
     catch (e) {
@@ -137,7 +134,6 @@ export const useCoupon = (couponCode, hidePopup) => async (dispatch, getState) =
           }
       });
     // return silverGoldService.useCoupon(couponCode)
-
 };
 
 export const getGemDetails = tokenId => dispatch => db
@@ -220,3 +216,39 @@ export const applySort = (newSortOption, newSortDirection) => (dispatch, getStat
         }
     })
 };
+
+export const proceedCombine = (userGems, combineAsset, hidePopup) => (dispatch, getState) => {
+    const gemService = getState().app.gemService;
+    const currentUserId = getState().auth.currentUserId;
+
+    let txHash;
+    return gemService.burnGems(userGems.map(gem => gem.id), combineAsset)
+      .on('transactionHash', (hash) => {
+        hidePopup();
+        txHash = hash;
+        addPendingTransaction({
+            hash: hash,
+            userId: currentUserId,
+            type: COUPON_USE,
+            description: `Combining gems`,
+            body: {
+                combineAsset: combineAsset
+            }
+        })(dispatch, getState);
+    })
+    .on('receipt', async (receipt) => {})
+    .on('error', (err) => {
+        if (txHash) {
+            getUpdatedTransactionHistory()(dispatch, getState);
+        }
+    });
+}
+
+export const applyGemFiltersInMarket = (unselectedFilters) => (dispatch, getState) => {
+    dispatch({
+        type: SET_GEM_MARKET_FILTERS,
+        payload: {
+            unselectedFilters: unselectedFilters
+        }
+    })
+}

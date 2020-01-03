@@ -91,7 +91,8 @@ class GemSelectionFilters extends Component {
     render() {
 
         const unselectedFilters = this.props.unselectedFilters || {};
-        const {toggleFilter, selectedSort, toggleSort, clearFilters, setDefaultFilters} = this.props;
+        const {toggleFilter, selectedSort, toggleSort, clearFilters, setDefaultFilters,
+             combineAsset, proceedCombine, selectedGems} = this.props;
 
         return (
           <GemFiltersContainer>
@@ -111,10 +112,30 @@ class GemSelectionFilters extends Component {
                           <Types unselectedFilters={unselectedFilters} toggleFilter={toggleFilter}/>
                       </div>
                       <div style={{flex: "3", padding: "5px 5px"}}>
-                          <SortOptions selectedSort={selectedSort} toggleSort={toggleSort}/>
+                          {combineAsset ?
+                            <CombineGems combineAsset={combineAsset} proceedCombine={proceedCombine} selectedGems={selectedGems}/> :
+                            <SortOptions selectedSort={selectedSort} toggleSort={toggleSort}/>
+                          }
                       </div>
                       <div style={{flex: "2", flexDirection: "column"}}>
                           {/*Actions*/}
+
+                          {combineAsset ? 
+                            <div style={{flex: 2, margin: "5px 3px", fontWeight: "normal", display: "flex"}}>
+                                {[0, 1, 2, 3].map(i => 
+                                    <CutEdgesButton outlineColor={"#FF00CD"}
+                                        backgroundColor={selectedGems.length > i ? "#FF00CD" : "black"}
+                                        fontColor={selectedGems.length > i ? "black" : "#FF00CD"}
+                                        edgeSizes={[15, 10]}
+                                        outlineWidth={1}
+                                        height={32}
+                                        fontSize={16}
+                                        content={i + 1}
+                                        otherStyles={"margin: 0 1px;"}
+                                    />
+                                )}
+                            </div> 
+                          : ""}
                           <div style={{flex: 2, margin: "5px 3px", fontWeight: "normal"}}>
                               <CutEdgesButton outlineColor={"orange"}
                                               backgroundColor={"black"}
@@ -123,8 +144,9 @@ class GemSelectionFilters extends Component {
                                               height={32}
                                               fontSize={16}
                                               content={"Clear"}
-                                              onClick={() => clearFilters()}/>
+                                              onClick={() => !combineAsset ? clearFilters() : setDefaultFilters()}/>
                           </div>
+                          {!combineAsset ? 
                           <div style={{flex: 2, margin: "8px 3px", fontWeight: "normal"}}>
                               <CutEdgesButton outlineColor={"aquamarine"}
                                               backgroundColor={"black"}
@@ -134,7 +156,7 @@ class GemSelectionFilters extends Component {
                                               fontSize={16}
                                               content={"Default"}
                                               onClick={() => setDefaultFilters()}/>
-                          </div>
+                          </div> : ""}
                       </div>
                   </div>
               </div>
@@ -210,6 +232,37 @@ const Types = ({unselectedFilters, toggleFilter}) => {
                 </TypeBox>)
           })}
       </div>
+    )
+}
+
+const CombineGems = ({combineAsset, proceedCombine, selectedGems}) => {
+
+    return (
+        <div style={{flex: "2", flexDirection: "column"}}>
+                          {/*Actions*/}
+                          <div style={{flex: 2, fontWeight: "normal"}}>
+                              <CutEdgesButton outlineColor={(combineAsset == "silver" && selectedGems.length == 4) ? "silver" : "transparent"}
+                                              fontColor={"silver"}
+                                              backgroundColor={"black"}
+                                              edgeSizes={[7, 20]}
+                                              outlineWidth={2}
+                                              height={32}
+                                              fontSize={16}
+                                              content={"Create Silver"}
+                                              onClick={() => combineAsset === "silver" && proceedCombine()}/>
+                          </div>
+                          <div style={{flex: 2, margin: "5px 3px", fontWeight: "normal"}}>
+                              <CutEdgesButton outlineColor={(combineAsset == "gold" && selectedGems.length == 4) ? "gold" : "transparent"}
+                                              fontColor={"gold"}
+                                              backgroundColor={"black"}
+                                              edgeSizes={[7, 20]}
+                                              outlineWidth={2}
+                                              height={32}
+                                              fontSize={16}
+                                              content={"Create Gold"}
+                                              onClick={() => combineAsset === "gold" && proceedCombine()}/>
+                          </div>
+                      </div>
     )
 }
 

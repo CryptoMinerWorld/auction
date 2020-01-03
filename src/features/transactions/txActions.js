@@ -448,7 +448,7 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
     })
 };
 
-const groupEventLogsByTransaction = (sortedEventLogs, currentUserId) => {
+export const groupEventLogsByTransaction = (sortedEventLogs, currentUserId) => {
     const transactions = [];
     let currentTransaction = null;
     let previousTxHash = null;

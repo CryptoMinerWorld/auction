@@ -3,9 +3,10 @@ import Spin from "antd/lib/spin";
 import Icon from "antd/lib/icon";
 import Gold from "../../../app/images/dashboard/Gold.png";
 import Silver from "../../../app/images/dashboard/Silver.png";
-import {Avatar, SilverGoldBalance, Username} from "./status-bar-css"
+import gemCombinationButtonImage from "../../../app/images/dashboard/gemCombinationButton.png";
+import {Avatar, SilverGoldBalance, Username, GemCombinationButton} from "./status-bar-css"
 
-const StatusBar = ({dashboardUser, userBalance}) => {
+const StatusBar = ({dashboardUser, userBalance, openGemsCombinePopup}) => {
     return (
         <div className="flex aic wrap jcb relative">
             <div className=" flex aic pt0-ns">
@@ -19,6 +20,7 @@ const StatusBar = ({dashboardUser, userBalance}) => {
                     {dashboardUser && dashboardUser.name || "Loading..."}
                 </Username>
             </div>
+            <GemCombinationButton src={gemCombinationButtonImage} onClick={openGemsCombinePopup}/>
             <SilverGoldBalance className="flex col tc b">
                 <div className="flex">
                     <div className="flex col justify-center-ns"

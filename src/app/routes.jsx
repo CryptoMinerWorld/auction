@@ -36,6 +36,11 @@ const Chest = Loadable({
     loader: () => import('../features/chests/index'),
     loading: Loading,
 });
+const ReferralInfo = Loadable({
+    loader: () => import('../features/referrals/index'),
+    loading: Loading,
+});
+
 
 const Routes = props => (
   <Fragment>
@@ -43,6 +48,7 @@ const Routes = props => (
       <Route path="/market" component={Market}/>
       <Route path="/S_and_G_Sale" render={() => <Sale {...props} />}/>
       <Route path="/mint" render={() => <CreateAuction {...props} />}/>
+      <Route path="/referrals" render={() => <ReferralInfo/>}/>
       <Route path="/mSig" render={() => <AccessMultiSig {...props} />}/>
       <Route path="/profile/:userId?" render={() => <Dashboard {...props} />}/>
       <Route path="/gem/:gemId" render={() => <Items {...props} />}/>
