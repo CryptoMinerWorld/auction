@@ -217,31 +217,72 @@ export const applySort = (newSortOption, newSortDirection) => (dispatch, getStat
     })
 };
 
-export const proceedCombine = (userGems, combineAsset, hidePopup) => (dispatch, getState) => {
+export const approveGemBurn = ({onTransactionSent, onApproveCallback, hidePopup}) => async (dispatch, getState) => {
     const gemService = getState().app.gemService;
     const currentUserId = getState().auth.currentUserId;
+    const gemBurnerAddress = process.env.REACT_APP_GEM_BURNER;
 
-    let txHash;
-    return gemService.burnGems(userGems.map(gem => gem.id), combineAsset)
-      .on('transactionHash', (hash) => {
-        hidePopup();
-        txHash = hash;
-        addPendingTransaction({
-            hash: hash,
-            userId: currentUserId,
-            type: COUPON_USE,
-            description: `Combining gems`,
-            body: {
-                combineAsset: combineAsset
-            }
-        })(dispatch, getState);
-    })
-    .on('receipt', async (receipt) => {})
-    .on('error', (err) => {
-        if (txHash) {
-            getUpdatedTransactionHistory()(dispatch, getState);
+    try {
+        const isApproved = await gemService.contract.methods.isApprovedForAll(currentUserId, gemBurnerAddress).call();
+        
+        if (!isApproved) {
+            gemService.contract.methods.setApprovalForAll(gemBurnerAddress, true).send()
+            .on('transactionHash', (hash) => {
+                onTransactionSent()
+            })
+            .on('receipt', async receipt => {
+                onApproveCallback()
+            })
+            .on('error', err => {
+                console.error("Error while approving:", err)
+                hidePopup()
+                return
+            })
         }
-    });
+    } catch(err) {
+        console.error("Error while approving:", err)
+        hidePopup()
+    }
+}
+
+export const proceedCombine = (userGems, combineAsset, hidePopup, onNotApprovedCallback) => async (dispatch, getState) => {
+    const gemService = getState().app.gemService;
+    const currentUserId = getState().auth.currentUserId;
+    const gemBurnerAddress = process.env.REACT_APP_GEM_BURNER;
+    const isApproved = await gemService.contract.methods.isApprovedForAll(currentUserId, gemBurnerAddress).call();
+    
+    if (!isApproved) {
+        onNotApprovedCallback && onNotApprovedCallback()
+        return
+    }
+
+    try {
+        let txHash;
+        gemService.burnGems(userGems.map(gem => gem.id).sort(), combineAsset)
+        .on('transactionHash', (hash) => {
+            hidePopup();
+            txHash = hash;
+            addPendingTransaction({
+                hash: hash,
+                userId: currentUserId,
+                type: COUPON_USE,
+                description: `Combining gems`,
+                body: {
+                    combineAsset: combineAsset
+                }
+            })(dispatch, getState);
+        })
+        .on('receipt', async (receipt) => {})
+        .on('error', (err) => {
+            if (txHash) {
+                getUpdatedTransactionHistory()(dispatch, getState);
+            }
+        });
+    } catch(err) {
+        hidePopup()
+    }
+    
+    return;
 }
 
 export const applyGemFiltersInMarket = (unselectedFilters) => (dispatch, getState) => {

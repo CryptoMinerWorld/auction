@@ -263,6 +263,36 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
       })
       .on('error', console.error);
 
+    gemService.gemBurnerContract.events.TradedForGold({
+        filter: {'_by': currentUserId},
+        fromBlock: 'latest'
+    })
+      .on('data', function (event) {
+          if (!caughtEventIds.includes(event['id'])) {
+              caughtEventIds.push(event['id']);
+              transactionResolved(event, currentUserId);
+          }
+      })
+      .on('changed', function (event) {
+          console.log('CHANGED EVENT:', event);
+      })
+      .on('error', console.error);
+
+    gemService.gemBurnerContract.events.TradedForSilver({
+        filter: {'_by': currentUserId},
+        fromBlock: 'latest'
+    })
+      .on('data', function (event) {
+          if (!caughtEventIds.includes(event['id'])) {
+              caughtEventIds.push(event['id']);
+              transactionResolved(event, currentUserId);
+          }
+      })
+      .on('changed', function (event) {
+          console.log('CHANGED EVENT:', event);
+      })
+      .on('error', console.error);
+
     // --------------------------------------------------------
     // --- Silver sale transaction event listeners starts ---
     // --------------------------------------------------------

@@ -150,29 +150,31 @@ class GemDashboard extends React.Component {
         <Grid className="ph3">
             <Primary>
                 {showGemsCombine && 
-                    <SidebarPopup type={"gems-combine-" + gemCombinationStep} 
+                    <SidebarPopup type={"gems-combine"} 
                         gemsCombineAsset={gemsCombineAsset}
                         selectedGemsToCombine={selectedGems}
                         hideHeader={true} 
                         showGemSelectionPopup = {(combineAsset) => {
-                            this.setState({gemsCombineAsset: combineAsset, 
-                                gemCombinationStep: "select"})
+                            this.setState({gemsCombineAsset: combineAsset})
                         }}
                         showProceedCombinePopup = {(selectedGems) => {
-                            this.setState({selectedGems, gemCombinationStep: "proceed"})
+                            this.setState({selectedGems})
                         }}
-                        proceedCombine = {() => handleProceedCombine(selectedGems, gemsCombineAsset,
-                            () => {
-                                this.setState({ gemsCombineAsset: null, gemCombinationStep: "choose-asset"})
-                                this.props.closeGemsCombinePopup();
-                            })}
+                        proceedCombine = {(onNotApprovedCallback) => {
+                            handleProceedCombine(selectedGems, gemsCombineAsset,
+                                () => {
+                                    this.setState({gemsCombineAsset: null})
+                                    this.props.closeGemsCombinePopup();
+                                },
+                                onNotApprovedCallback)}
+                        }
                         goToMarketAndApplyFilters={(unselectedFilters) => {
                             this.props.history.push('/market?tab=1')
                             handleApplyGemFiltersInMarket(unselectedFilters)
                         }}
                         step={0}
                         closeCallback = {() => {
-                            this.setState({ gemsCombineAsset: null, gemCombinationStep: "choose-asset"})
+                            this.setState({gemsCombineAsset: null})
                             this.props.closeGemsCombinePopup();
                         }}
                         />

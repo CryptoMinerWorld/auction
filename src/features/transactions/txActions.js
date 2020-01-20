@@ -24,6 +24,8 @@ export const startTx = tx => ({type: TX_STARTED, payload: tx});
 export const completedTx = tx => ({type: TX_COMPLETED, payload: tx});
 export const ErrorTx = tx => ({type: TX_ERROR, payload: {error: tx.error, ...tx}});
 
+const numberOfBlocksHistory = 15000 //process.env.REACT_APP_NUMBER_OF_BLOCKS
+
 export const resolveTransactionEvent = (txEventObject) => async (dispatch, getState) => {
     //todo: handle all tx types and events;
     /*
@@ -181,6 +183,11 @@ const plotSaleEventWhitelist = [
     //todo: CouponConsumed event
 ];
 
+const gemBurnerEventWhitelist = [
+    'TradedForSilver',
+    'TradedForGold'
+]
+
 export const getUpdatedTransactionHistory = () => async (dispatch, getState) => {
     const web3 = getState().app.web3;
     const minerContracts = getState().app.plotService.minerContracts;
@@ -188,6 +195,7 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
     const gemContract = getState().app.gemContract;
     const plotSaleContract = getState().app.plotService.plotSaleContract;
     const saleContract = getState().app.silverGoldService.saleContract;
+    const gemBurnerContract = getState().app.gemBurnerContract;
 
     const currentUserId = getState().auth.currentUserId;
     let currentTransactionCount = 0;
@@ -335,7 +343,7 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
                 return minerContracts[0].getPastEvents(event,
                   {
                       filter: {'_by': currentUserId},
-                      fromBlock: latestBlock - 15000,
+                      fromBlock: latestBlock - numberOfBlocksHistory,
                       toBlock: 'latest',
                   })
             }))).flat(),
@@ -343,78 +351,92 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
                 return minerContracts[1].getPastEvents(event,
                   {
                       filter: {'_by': currentUserId},
-                      fromBlock: latestBlock - 15000,
+                      fromBlock: latestBlock - numberOfBlocksHistory,
                       toBlock: 'latest',
                   })
             }))).flat(),
             await auctionContract.getPastEvents('ItemAdded',
               {
                   filter: {'_from': currentUserId},
-                  fromBlock: latestBlock - 15000,
+                  fromBlock: latestBlock - numberOfBlocksHistory,
                   toBlock: 'latest',
               }),
             await auctionContract.getPastEvents('ItemRemoved',
               {
                   filter: {'_to': currentUserId},
-                  fromBlock: latestBlock - 15000,
+                  fromBlock: latestBlock - numberOfBlocksHistory,
                   toBlock: 'latest',
               }),
             await auctionContract.getPastEvents('ItemBought',
               {
                   filter: {'_to': currentUserId},
-                  fromBlock: latestBlock - 15000,
+                  fromBlock: latestBlock - numberOfBlocksHistory,
                   toBlock: 'latest',
               }),
             await gemContract.getPastEvents('Upgraded',
               {
                   filter: {'_owner': currentUserId},
-                  fromBlock: latestBlock - 15000,
+                  fromBlock: latestBlock - numberOfBlocksHistory,
                   toBlock: 'latest',
               }),
             await gemContract.getPastEvents('LevelUp',
               {
                   filter: {'_owner': currentUserId},
-                  fromBlock: latestBlock - 15000,
+                  fromBlock: latestBlock - numberOfBlocksHistory,
                   toBlock: 'latest',
               }),
             (await Promise.all(plotSaleEventWhitelist.map(async event => {
                 return plotSaleContract.getPastEvents(event,
                   {
                       filter: {'_by': currentUserId},
-                      fromBlock: latestBlock - 15000,
+                      fromBlock: latestBlock - numberOfBlocksHistory,
                       toBlock: 'latest',
                   })
             }))).flat(),
             await plotSaleContract.getPastEvents('CountryBalanceUpdated',
               {
                   filter: {'owner': currentUserId},
-                  fromBlock: latestBlock - 15000,
+                  fromBlock: latestBlock - numberOfBlocksHistory,
                   toBlock: 'latest',
               }),
             await gemContract.getPastEvents('Transfer',
               {
                   filter: {'_to': currentUserId},
-                  fromBlock: latestBlock - 15000,
+                  fromBlock: latestBlock - numberOfBlocksHistory,
                   toBlock: 'latest',
               }),
             await gemContract.getPastEvents('Transfer',
               {
                   filter: {'_from': currentUserId},
-                  fromBlock: latestBlock - 15000,
+                  fromBlock: latestBlock - numberOfBlocksHistory,
                   toBlock: 'latest',
               }),
             await auctionContract.getPastEvents('ItemBought',
               {
                   filter: {'_from': currentUserId},
-                  fromBlock: latestBlock - 15000,
+                  fromBlock: latestBlock - numberOfBlocksHistory,
                   toBlock: 'latest',
               }),
             await saleContract.getPastEvents('Unboxed',
               {
                   filter: {'_by': currentUserId},
-                  fromBlock: latestBlock - 15000,
+                  fromBlock: latestBlock - numberOfBlocksHistory,
                   toBlock: 'latest'
               }),
+            await gemBurnerContract.getPastEvents('TradedForSilver',
+              {
+                filter: {'_by': currentUserId},
+                fromBlock: latestBlock - numberOfBlocksHistory,
+                toBlock: 'latest',
+              }
+            ),
+            await gemBurnerContract.getPastEvents('TradedForGold',
+              {
+                filter: {'_by': currentUserId},
+                fromBlock: latestBlock - numberOfBlocksHistory,
+                toBlock: 'latest',
+              }
+            ),
             // plotSaleContract.getPastEvents({
             //   event: "allEvents",
             //   filter: {'_by': currentUserId, 'owner': currentUserId},
@@ -428,11 +450,7 @@ export const getUpdatedTransactionHistory = () => async (dispatch, getState) => 
         allEventLogsArray = [];
         console.error("Error while getting event logs:", e);
     }
-
     let transactionHistory = groupEventLogsByTransaction(allEventLogsArray, currentUserId);
-
-    console.log("txTx History", transactionHistory);
-
     resolvedStoredTransactions.forEach(storedTx => {
         if (storedTx && [TX_CONFIRMED, TX_CANCEL_CONFIRMED, TX_CANCELED, TX_SPEED_UP_CONFIRMED, TX_SPED_UP].includes(storedTx.status)) {
             const resolvedTx = transactionHistory.find(tx => tx.transactionHash === storedTx.transactionHash);
@@ -473,6 +491,20 @@ const resolveTransactionDescription = (tx, currentUserId) => {
 
     if (!tx.events)
         return tx;
+
+    if (tx.events.find(e => e.event === "TradedForSilver")) {
+        const event = tx.events.find(event => event.event === "TradedForSilver");
+        tx.type = "Gems Combined"
+        tx.description = event.returnValues.silverMinted + " Silver Created"
+        return tx;
+    }
+
+    if (tx.events.find(e => e.event === "TradedForGold")) {
+        const event = tx.events.find(event => event.event === "TradedForGold");
+        tx.type = "Gems Combined"
+        tx.description = event.returnValues.goldMinted + " Gold Created"
+        return tx;
+    }
 
     if (tx.events.find(e => e.event === "Updated")) {
         let lootArray = [0, 0, 0, 0, 0, 0, 0, 0, 0]; //9 types of loot
@@ -557,10 +589,10 @@ const resolveTransactionDescription = (tx, currentUserId) => {
     }
     if (tx.events.find(e => e.event === "Transfer")) {
         const event = tx.events.find(event => event.event === "Transfer");
-        if (event.returnValues['_to'] === currentUserId) {
+        if (event.returnValues['_to'].toLowerCase() === currentUserId) {
             tx.type = `Gem #${event.returnValues['_tokenId']} acquired`
         } else {
-            if (event.returnValues['_from'] === currentUserId) {
+            if (event.returnValues['_from'].toLowerCase() === currentUserId) {
                 tx.type = `Gem #${event.returnValues['_tokenId']} transferred`
             }
         }
@@ -587,6 +619,7 @@ const resolveTransactionDescription = (tx, currentUserId) => {
 
 export const transactionResolved = (event) => async (dispatch, getState) => {
     const txUpdatedStored = await updateTransaction(event.transactionHash, {status: TX_CONFIRMED});
+    const currentUserId = getState().auth.currentUserId;
     const transactionHistory = getState().tx.transactionHistory;
     let resolvedTx = transactionHistory && transactionHistory.find(tx => tx.transactionHash === event.transactionHash);
     if (resolvedTx) {
@@ -603,9 +636,7 @@ export const transactionResolved = (event) => async (dispatch, getState) => {
         resolvedTx.unseen = true;
         //todo: bug is possible: firing updated event before bound/released will set tx type as 'plot processed'
         //todo: instead of bound/released
-        console.warn("resolvedTx:", resolvedTx);
-        const withDescription = resolveTransactionDescription(resolvedTx);
-        console.warn("With description:", withDescription);
+        const withDescription = resolveTransactionDescription(resolvedTx, currentUserId);
         dispatch({
             type: TRANSACTION_RESOLVED,
             payload: withDescription

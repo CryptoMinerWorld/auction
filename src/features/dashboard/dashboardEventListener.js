@@ -109,36 +109,36 @@ export const setDashboardEventListeners = ({
         .on('error', console.error)
     );
 
-    subscriptions.push(
-      gemService.auctionContract.events.ItemRemoved({
-          filter: {'_by': currentUserId},
-          fromBlock: 'latest'
-      })
-        .on('data', function (event) {
-            if (!caughtEventIds.includes(event['id'])) {
-                caughtEventIds.push(event['id']);
-                reloadGemsCallback(currentUserId);
-            }
-        })
-        .on('changed', function (event) {
-            console.log('CHANGED EVENT:', event);
-        })
-        .on('error', console.error)
-    );
+    // subscriptions.push(
+    //   gemService.auctionContract.events.ItemRemoved({
+    //       filter: {'_by': currentUserId},
+    //       fromBlock: 'latest'
+    //   })
+    //     .on('data', function (event) {
+    //         if (!caughtEventIds.includes(event['id'])) {
+    //             caughtEventIds.push(event['id']);
+    //             reloadGemsCallback(currentUserId);
+    //         }
+    //     })
+    //     .on('changed', function (event) {
+    //         console.log('CHANGED EVENT:', event);
+    //     })
+    //     .on('error', console.error)
+    // );
 
-    subscriptions.push(
-      gemService.auctionContract.events.ItemAdded({
-          filter: {'_by': currentUserId},
-          fromBlock: 'latest'
-      })
-        .on('data', function (event) {
-            reloadGemsCallback(currentUserId);
-        })
-        .on('changed', function (event) {
-            console.log('CHANGED EVENT:', event);
-        })
-        .on('error', console.error)
-    );
+    // subscriptions.push(
+    //   gemService.auctionContract.events.ItemAdded({
+    //       filter: {'_by': currentUserId},
+    //       fromBlock: 'latest'
+    //   })
+    //     .on('data', function (event) {
+    //         reloadGemsCallback(currentUserId);
+    //     })
+    //     .on('changed', function (event) {
+    //         console.log('CHANGED EVENT:', event);
+    //     })
+    //     .on('error', console.error)
+    // );
 
     subscriptions.push(
       gemService.contract.events.LevelUp({
@@ -168,6 +168,40 @@ export const setDashboardEventListeners = ({
                 caughtEventIds.push(event['id']);
                 const params = event.returnValues;
                 changeGemCallback({id: params['_tokenId'], grade: params['_to']});
+            }
+        })
+        .on('changed', function (event) {
+            console.log('CHANGED EVENT:', event);
+        })
+        .on('error', console.error)
+    );
+
+    subscriptions.push(
+        gemService.contract.events.Transfer({
+            filter: {'_from': currentUserId},
+            fromBlock: 'latest'
+        })
+          .on('data', function (event) {
+              if (!caughtEventIds.includes(event['id'])) {
+                  caughtEventIds.push(event['id']);
+                  reloadGemsCallback(currentUserId);
+              }
+          })
+          .on('changed', function (event) {
+              console.log('CHANGED EVENT:', event);
+          })
+          .on('error', console.error)
+      );
+
+    subscriptions.push(
+        gemService.contract.events.Transfer({
+        filter: {'_to': currentUserId},
+        fromBlock: 'latest'
+        })
+        .on('data', function (event) {
+            if (!caughtEventIds.includes(event['id'])) {
+                caughtEventIds.push(event['id']);
+                reloadGemsCallback(currentUserId);
             }
         })
         .on('changed', function (event) {

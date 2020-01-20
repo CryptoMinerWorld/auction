@@ -19,7 +19,9 @@ import {
     USER_GEMS_RETRIEVED,
     USER_HAS_NO_GEMS_IN_WORKSHOP,
     WANT_TO_SEE_ALL_GEMS,
-    SELECT_GEM_TO_COMBINE
+    SELECT_GEM_TO_COMBINE,
+    SHOW_GEMS_COMBINE_POPUP,
+    HIDE_GEMS_COMBINE_POPUP
 } from './dashboardConstants';
 
 import {NO_USER_EXISTS} from '../auth/authConstants';
@@ -45,7 +47,8 @@ export default function dashboardReducer(
       selectedGemWorkshopSorting: defaultSorting,
       unselectedGemSelectionFilters: defaultFiltersUnselected,
       selectedGemSelectionSorting: "mrb_down",
-      selectedGems: []
+      selectedGems: [],
+      showGemsCombinePopup: false
   },
   action,
 ) {
@@ -310,8 +313,8 @@ export default function dashboardReducer(
         const {gem, combineAsset} = action.payload;
         if (state.selectedGems.length == 0) {
             const newFilters = {...defaultFiltersUnselected};
-            //const newTypeFilters = [...allFiltersDeselected.types]
-            //newFilters["types"] = newTypeFilters.filter(t => t !== type(gem.color));
+            const newTypeFilters = [...allFiltersDeselected.types]
+            newFilters["types"] = newTypeFilters.filter(t => t !== type(gem.color));
             if (combineAsset == "silver") {
                 const newLevelFilters = [...allFiltersDeselected.levels]
                 newLevelFilters.splice(gem.level - 1, 1);
@@ -334,6 +337,14 @@ export default function dashboardReducer(
             }
             return {...state, selectedGems: newSelectedGems}
         } 
+    }
+
+    if (action.type === SHOW_GEMS_COMBINE_POPUP) {
+        return {...state, showGemsCombinePopup: true}
+    }
+
+    if (action.type === HIDE_GEMS_COMBINE_POPUP) {
+        return {...state, showGemsCombinePopup: false}
     }
 
     return state;

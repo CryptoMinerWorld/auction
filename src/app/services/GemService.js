@@ -181,6 +181,7 @@ export default class GemService {
     }
 
     burnGems = (gemIds, tradeAsset) => {
+        
         if (tradeAsset === "gold") {
             return this.gemBurnerContract.methods.tradeForGold(gemIds).send(); 
         } else if (tradeAsset === "silver") {

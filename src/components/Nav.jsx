@@ -14,6 +14,7 @@ import countryGem from '../app/images/dashboard/countryGem.png';
 import erc20Market from '../app/images/dashboard/erc20Market.png';
 import workshopIcon from '../app/images/dashboard/workshopIcon50.png';
 import gemCombinationIcon from '../app/images/dashboard/gemCombinationIcon64.png'
+import { SHOW_GEMS_COMBINE_POPUP } from '../features/dashboard/dashboardConstants';
 
 
 const BottomHighlight = styled.div`
@@ -37,6 +38,7 @@ const select = store => {
 
 const Navbar = ({
                     user,
+                    handleShowGemsCombine,
                     handleShowSignInModal,
                     existingUser,
                     signInBox,
@@ -93,11 +95,12 @@ const Navbar = ({
               )}
               {existingUser && user && user.name ?
                 <NavLink
+                  onClick={handleShowGemsCombine}
                   exact
                   to={`/profile/${user.walletId}`}
-                  activeStyle={{
-                      borderBottom: '2px solid purple',
-                  }}
+                  // activeStyle={{
+                  //     borderBottom: '2px solid purple',
+                  // }}
                   className="link dim dark-gray f6 f5-l dib mr3 mr4-l b"
                   style={{
                       color: 'purple',
@@ -178,6 +181,7 @@ const Navbar = ({
 
 const actions = dispatch => ({
     handleShowSignInModal: () => dispatch({type: 'SHOW_SIGN_IN_BOX'}),
+    handleShowGemsCombine: () => dispatch({type: SHOW_GEMS_COMBINE_POPUP})
 });
 
 export default connect(

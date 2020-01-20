@@ -92,7 +92,7 @@ class GemSelectionFilters extends Component {
 
         const unselectedFilters = this.props.unselectedFilters || {};
         const {toggleFilter, selectedSort, toggleSort, clearFilters, setDefaultFilters,
-             combineAsset, proceedCombine, selectedGems} = this.props;
+             combineAsset, proceedCombine, selectedGems, changeCombineAsset} = this.props;
 
         return (
           <GemFiltersContainer>
@@ -113,7 +113,8 @@ class GemSelectionFilters extends Component {
                       </div>
                       <div style={{flex: "3", padding: "5px 5px"}}>
                           {combineAsset ?
-                            <CombineGems combineAsset={combineAsset} proceedCombine={proceedCombine} selectedGems={selectedGems}/> :
+                            <CombineGems combineAsset={combineAsset} proceedCombine={proceedCombine} 
+                                selectedGems={selectedGems} changeCombineAsset={changeCombineAsset}/> :
                             <SortOptions selectedSort={selectedSort} toggleSort={toggleSort}/>
                           }
                       </div>
@@ -124,6 +125,7 @@ class GemSelectionFilters extends Component {
                             <div style={{flex: 2, margin: "5px 3px", fontWeight: "normal", display: "flex"}}>
                                 {[0, 1, 2, 3].map(i => 
                                     <CutEdgesButton outlineColor={"#FF00CD"}
+                                        key={i}
                                         backgroundColor={selectedGems.length > i ? "#FF00CD" : "black"}
                                         fontColor={selectedGems.length > i ? "black" : "#FF00CD"}
                                         edgeSizes={[15, 10]}
@@ -235,13 +237,13 @@ const Types = ({unselectedFilters, toggleFilter}) => {
     )
 }
 
-const CombineGems = ({combineAsset, proceedCombine, selectedGems}) => {
+const CombineGems = ({combineAsset, proceedCombine, selectedGems, changeCombineAsset}) => {
 
     return (
         <div style={{flex: "2", flexDirection: "column"}}>
                           {/*Actions*/}
                           <div style={{flex: 2, fontWeight: "normal"}}>
-                              <CutEdgesButton outlineColor={(combineAsset == "silver" && selectedGems.length == 4) ? "silver" : "transparent"}
+                              <CutEdgesButton outlineColor={combineAsset == "silver" ? "silver" : "transparent"}
                                               fontColor={"silver"}
                                               backgroundColor={"black"}
                                               edgeSizes={[7, 20]}
@@ -249,10 +251,10 @@ const CombineGems = ({combineAsset, proceedCombine, selectedGems}) => {
                                               height={32}
                                               fontSize={16}
                                               content={"Create Silver"}
-                                              onClick={() => combineAsset === "silver" && proceedCombine()}/>
+                                              onClick={() => combineAsset === "gold" && changeCombineAsset("silver")}/>
                           </div>
                           <div style={{flex: 2, margin: "5px 3px", fontWeight: "normal"}}>
-                              <CutEdgesButton outlineColor={(combineAsset == "gold" && selectedGems.length == 4) ? "gold" : "transparent"}
+                              <CutEdgesButton outlineColor={combineAsset == "gold" ? "gold" : "transparent"}
                                               fontColor={"gold"}
                                               backgroundColor={"black"}
                                               edgeSizes={[7, 20]}
@@ -260,7 +262,7 @@ const CombineGems = ({combineAsset, proceedCombine, selectedGems}) => {
                                               height={32}
                                               fontSize={16}
                                               content={"Create Gold"}
-                                              onClick={() => combineAsset === "gold" && proceedCombine()}/>
+                                              onClick={() => combineAsset === "silver" && changeCombineAsset("gold")}/>
                           </div>
                       </div>
     )

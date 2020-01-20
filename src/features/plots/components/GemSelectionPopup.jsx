@@ -19,6 +19,7 @@ import {
     typePaneOutlineColors 
 } from "./propertyPaneStyles";
 import { CutEdgesButton } from "../../../components/CutEdgesButton";
+import SidebarPopup from "./SidebarPopup";
 
 const CardBox = styled.section`
   display: grid;
@@ -48,6 +49,7 @@ export class GemSelectionPopup extends Component {
         allGems: this.props.userGems,
         scrolledGems: this.props.userGems.slice(0, 16),
         hasMoreGems: this.props.userGems.length > 16,
+        assetToConfirmSwitchTo: null
     };
 
     componentDidMount() {
@@ -123,12 +125,13 @@ export class GemSelectionPopup extends Component {
     };
 
     isGemApplicableToCombine = (gem, selectedGems, combineAsset) => {
+        if (gem.id > 0xF100 && gem.id < 0xF200) return false;
         if (selectedGems.length === 0) return true;
         if (combineAsset === "silver") {
-            return selectedGems[0].level === gem.level //&& selectedGems[0].color === gem.color
+            return selectedGems[0].level === gem.level && selectedGems[0].color === gem.color
         }
         if (combineAsset === "gold") {
-            return selectedGems[0].gradeType === gem.gradeType //&& selectedGems[0].color === gem.color
+            return selectedGems[0].gradeType === gem.gradeType && selectedGems[0].color === gem.color
         }
         return false;
     }
@@ -189,8 +192,8 @@ export class GemSelectionPopup extends Component {
         const {handleBindGem, selectedPlot, gemMiningIds, transactionStartCallback, showConfirmPopupCallback,
             updatePlot, unselectedFilters, selectedSort, handleApplySort, handleApplyFilterOption,
             handleDeselectAllFilters, handleSetDefaultFilters, combineAsset, selectedGems, 
-            handleSelectGem, showProceedCombinePopup, goToMarketAndApplyFilters} = this.props;
-        const {scrolledGems} = this.state;
+            handleSelectGem, showProceedCombinePopup, goToMarketAndApplyFilters, changeCombineAsset} = this.props;
+        const {scrolledGems, assetToConfirmSwitchTo} = this.state;
 
         return (
           <div style={container}>
@@ -257,6 +260,17 @@ export class GemSelectionPopup extends Component {
                 </InfiniteScroll> :
                 <div>No matching gems found. Check the filter settings</div>
               }
+              {assetToConfirmSwitchTo  ?
+              <SidebarPopup type={"asset-switch-warning"}
+                hideHeader={true}
+                confirmSwitch={() => {
+                    handleSetDefaultFilters()
+                    changeCombineAsset(assetToConfirmSwitchTo)
+                    this.setState({assetToConfirmSwitchTo: null})
+                }}
+                cancelSwitch={() => this.setState({assetToConfirmSwitchTo: null})}
+                closeCallback={() => this.setState({assetToConfirmSwitchTo: null})}
+              /> : ""}
               <GemSelectionFilters unselectedFilters={unselectedFilters}
                                    toggleFilter={(option, optionType) => {
                                        handleApplyFilterOption(option, optionType)
@@ -269,6 +283,14 @@ export class GemSelectionPopup extends Component {
                                    }}
                                    selectedGems={selectedGems}
                                    combineAsset={combineAsset}
+                                   changeCombineAsset={(combineAsset) => {
+                                       if (selectedGems.length > 0) {
+                                           this.setState({assetToConfirmSwitchTo: combineAsset})
+                                       } else {
+                                        handleSetDefaultFilters()
+                                        changeCombineAsset(combineAsset)
+                                       }
+                                   }}
                                    proceedCombine={() => selectedGems && selectedGems.length === 4 
                                         && showProceedCombinePopup(selectedGems)}
                                    >

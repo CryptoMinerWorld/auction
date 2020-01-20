@@ -35,7 +35,7 @@ import {setDashboardEventListeners} from "./dashboardEventListener";
 import GemDashboard from "./components/GemDashboard";
 import {getAvailableCountryPlots} from "../plotsale/plotSaleActions";
 import {USER_PLOTS_RELOAD_BEGUN} from "../plots/plotConstants";
-import {COUNTRY_WITHDRAW, SET_DEFAULT_GEM_SELECTION_FILTERS} from "./dashboardConstants";
+import {COUNTRY_WITHDRAW, SET_DEFAULT_GEM_SELECTION_FILTERS, HIDE_GEMS_COMBINE_POPUP, SHOW_GEMS_COMBINE_POPUP} from "./dashboardConstants";
 import StatusBar from "./components/StatusBar";
 import PlotDashboardFAQ from "./components/PlotDashboardFAQ";
 
@@ -97,6 +97,7 @@ const select = store => ({
     countryService: store.app.countryService,
     plotService: store.app.plotService,
     artifactContract: store.app.artifactContract,
+    showGemsCombine: store.dashboard.showGemsCombinePopup,
 });
 
 class Dashboard extends Component {
@@ -145,8 +146,7 @@ class Dashboard extends Component {
         tab: 1,
         redirectPath: '',
         alreadyRedirected: false,
-        eventSubscriptions: [],
-        showGemsCombine: false,
+        eventSubscriptions: []
     };
 
     clearSubscriptions = () => {
@@ -165,7 +165,7 @@ class Dashboard extends Component {
         const {
             pendingTransactions,
             preSaleContract, match, data, handleGetUserBalance, handleGetUserGems, gemService, countryService, plotService, handleGetUserPlots, handleRefreshUserPlot,
-            handleTransactionResolved,
+            handleTransactionResolved, showGemsCombine,
             auctionService, silverGoldService, userExists, currentUserId, currentUser, handleShowSignInBox, handleGetUserCountries, handleGetUserArtifacts, artifactContract
         } = this.props;
 
@@ -247,6 +247,10 @@ class Dashboard extends Component {
                 handleShowSignInBox();
             }
         }
+
+        if (showGemsCombine) {
+            this.setState({tab: 2})
+        }
     }
 
     async componentDidUpdate(prevProps) {
@@ -255,7 +259,7 @@ class Dashboard extends Component {
             pendingTransactions, match,
             handleGetUserGems, gemService, auctionService, silverGoldService, countryService, plotService, handleGetUserPlots, handleGetUserCountries,
             handleGetUserBalance, currentUserId, userExists, currentUser, artifactContract, handleGetUserArtifacts, handleRefreshUserPlot,
-            handleShowSignInBox, handlePlotsReloadBegun
+            handleShowSignInBox, handlePlotsReloadBegun, showGemsCombine
         } = this.props;
 
         if (!match.params) return;
@@ -338,6 +342,9 @@ class Dashboard extends Component {
         if (artifactContract !== prevProps.artifactContract || (match.params.userId !== prevProps.match.params.userId)) {
             handleGetUserArtifacts(match.params.userId);
         }
+        if (showGemsCombine && showGemsCombine !== prevProps.showGemsCombine) {
+            this.setState({tab: 2})
+        }
     }
 
     populateDashboard = () => {
@@ -389,10 +396,13 @@ class Dashboard extends Component {
             userArtifacts,
             pendingTransactions,
             handleDeselectGemsToCombine,
+            showGemsCombine,
+            handleHideGemsCombine,
+            handleShowGemsCombine
         } = this.props;
 
         const {
-            plots, tab, redirectPath, alreadyRedirected, dashboardUser, showGemsCombine
+            plots, tab, redirectPath, alreadyRedirected, dashboardUser
         } = this.state;
         if (redirectPath && !alreadyRedirected) {
             this.setState({alreadyRedirected: true});
@@ -406,7 +416,7 @@ class Dashboard extends Component {
         return (
           <div className="bg-off-black white card-container" data-testid="profile-page">
               <StatusBar dashboardUser={dashboardUser} userBalance={userBalance}
-               openGemsCombinePopup={() => this.setState({showGemsCombine: true, tab: 2})}/>
+               openGemsCombinePopup={handleShowGemsCombine}/>
               <Tabs
                 activeKey={`${tab}`}
                 animated
@@ -485,7 +495,7 @@ class Dashboard extends Component {
                   >
                       <GemDashboard showGemsCombine={showGemsCombine} 
                       closeGemsCombinePopup={() => {
-                          this.setState({showGemsCombine:false })
+                          handleHideGemsCombine()
                           handleDeselectGemsToCombine()
                       }}/>
                   </TabPane>
@@ -569,7 +579,9 @@ const actions = {
     handleGetUserCountries: getUserCountries,
     handleGetAvailableCountryPlots: getAvailableCountryPlots,
     handleWithdrawCountryEth: withdrawCountryEth,
-    handleDeselectGemsToCombine: () => dispatch => dispatch({type: SET_DEFAULT_GEM_SELECTION_FILTERS})
+    handleDeselectGemsToCombine: () => dispatch => dispatch({type: SET_DEFAULT_GEM_SELECTION_FILTERS}),
+    handleHideGemsCombine: () => dispatch => dispatch({type: HIDE_GEMS_COMBINE_POPUP}),
+    handleShowGemsCombine: () => dispatch => dispatch({type: SHOW_GEMS_COMBINE_POPUP})
 };
 
 export default compose(

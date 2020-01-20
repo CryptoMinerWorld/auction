@@ -15,6 +15,10 @@ import {
     typePaneOutlineColors 
 } from "./propertyPaneStyles";
 import { CutEdgesButton } from "../../../components/CutEdgesButton";
+import { SET_DEFAULT_GEM_SELECTION_FILTERS } from "../dashboardConstants";
+import ApproveGemBurnPopup from "./ApproveGemBurnPopup";
+import { approveGemBurn } from "../dashboardActions";
+import SidebarPopup from "../../plots/components/SidebarPopup";
 
 const select = store => ({
     selectedGems: store.dashboard.selectedGems
@@ -23,7 +27,7 @@ const select = store => ({
 export class ProceedCombinePopup extends Component {
 
     state = {
-        
+        showApproveGemBurnPopup: false
     };
 
     calculateAssetAmount() {
@@ -42,7 +46,9 @@ export class ProceedCombinePopup extends Component {
     }
 
     render() {
-        const {selectedGems, combineAsset, proceedCombine, showGemSelectionPopup} = this.props;
+        const {selectedGems, combineAsset, proceedCombine, showGemSelectionPopup,
+             handleSetDefaultFilters, handleApproveGemBurn} = this.props;
+        const {showApproveGemBurnPopup} = this.state;
         return (
           <PopupContainer>
               <Row style={{margin: "0"}}>
@@ -73,11 +79,15 @@ export class ProceedCombinePopup extends Component {
               <Row style={{width: "100%", justifyContent: "space-evenly"}}>
                     <ProceedCombineSection>
                         {combineAsset === "silver" ? 
-                        <CreateSilverButton onClick={proceedCombine}>
+                        <CreateSilverButton onClick={() => proceedCombine(
+                            () => this.setState({showApproveGemBurnPopup: true})
+                        )}>
                             Create {this.calculateAssetAmount()} Silver
                         </CreateSilverButton> : ""}
                         {combineAsset === "gold" ? 
-                        <CreateGoldButton onClick={proceedCombine}>
+                        <CreateGoldButton onClick={() => proceedCombine(
+                            () => this.setState({showApproveGemBurnPopup: true})
+                        )}>
                             Create {this.calculateAssetAmount()} Gold
                         </CreateGoldButton> : ""}
                     </ProceedCombineSection>
@@ -90,9 +100,31 @@ export class ProceedCombinePopup extends Component {
                                               height={72}
                                               fontSize={20}
                                               content={"No, I want to \\A spare them!"}
-                                              onClick={() => showGemSelectionPopup(combineAsset)}/>
+                                              onClick={() => {
+                                                handleSetDefaultFilters()
+                                                showGemSelectionPopup(null)
+                                              }}/>
                     </CancelCombineSection>
               </Row>
+            {showApproveGemBurnPopup ? 
+                <SidebarPopup
+                    type={"approve-gem-burn"}
+                    hideHeader={true}
+                    onApprovedCallback={proceedCombine}
+                    confirmApprove={() => {
+                        handleApproveGemBurn({
+                            onTransactionSent: () => this.setState({proceedStatus: "sent"}),
+                            onApproveCallback: () => {
+                                this.setState({showApproveGemBurnPopup: false})
+                                proceedCombine()
+                            },
+                            hidePopup: () => this.setState({showApproveGemBurnPopup: false})
+                        })
+                    }}
+                    cancelApprove={() => this.setState({showApproveGemBurnPopup: false})}
+                    closeCallback={() => this.setState({showApproveGemBurnPopup: false})}
+                /> : ""
+            }
           </PopupContainer>
         );
     }
@@ -162,6 +194,9 @@ const Pink = styled.span`
 export default compose(
   connect(
     select,
-    null
+    {
+        handleSetDefaultFilters: () => ({type: SET_DEFAULT_GEM_SELECTION_FILTERS}),
+        handleApproveGemBurn: approveGemBurn
+    }
   )
 )(ProceedCombinePopup);
