@@ -9,6 +9,8 @@ import GemSelectionPopup from "./GemSelectionPopup";
 import ProceedCombinePopup from "../../dashboard/components/ProceedCombinePopup";
 import ProcessAllPopup from "./ProcessAllPopup";
 import GemCombinationPopup from "../../dashboard/components/GemCombinationPopup";
+import { AssetSwitchPopup } from "../../dashboard/components/AssetSwitchPopup";
+import { ApproveGemBurnPopup } from "../../dashboard/components/ApproveGemBurnPopup";
 
 const OctagonLayoutOuter = styled.div`
             max-width: 900px;
@@ -213,22 +215,32 @@ export class SidebarPopup extends Component {
                 return <PlotActionPopup>Artifacts are coming soon</PlotActionPopup>;
             case "process-all":
                 return <ProcessAllPopup plots={this.props.plots} processPlots={this.props.processPlots}/>
-            case "gems-combine-choose-asset":
-                    return <GemCombinationPopup showGemSelectionPopup={this.props.showGemSelectionPopup}/>
-            case "gems-combine-select":
+            case "gems-combine":
                 if (this.props.gemsCombineAsset) {
-                    return <GemSelectionPopup combineAsset={this.props.gemsCombineAsset} 
+                    if (this.props.selectedGemsToCombine && 
+                        (this.props.selectedGemsToCombine.length === 4)) {
+                            return <ProceedCombinePopup combineAsset={this.props.gemsCombineAsset}
+                                                        proceedCombine={this.props.proceedCombine}
+                                                        showGemSelectionPopup={this.props.showGemSelectionPopup}/>
+                    }
+                    else {
+                        return <GemSelectionPopup combineAsset={this.props.gemsCombineAsset} 
+                                    changeCombineAsset={this.props.showGemSelectionPopup}
                                     showProceedCombinePopup={this.props.showProceedCombinePopup}
                                     goToMarketAndApplyFilters={this.props.goToMarketAndApplyFilters}/>
+                    }
+                } else {
+                    return <GemCombinationPopup showGemSelectionPopup={this.props.showGemSelectionPopup}/>
                 }
-            case "gems-combine-proceed": 
-                if (this.props.gemsCombineAsset && 
-                    this.props.selectedGemsToCombine && 
-                    (this.props.selectedGemsToCombine.length === 4)) {
-                        return <ProceedCombinePopup combineAsset={this.props.gemsCombineAsset}
-                                                    proceedCombine={this.props.proceedCombine}
-                                                    showGemSelectionPopup={this.props.showGemSelectionPopup}/>
-                } 
+            case "asset-switch-warning":
+                return <AssetSwitchPopup confirmSwitch={this.props.confirmSwitch}
+                    cancelSwitch={this.props.cancelSwitch}
+                />
+            case "approve-gem-burn":
+                return <ApproveGemBurnPopup 
+                    confirmApprove={() => this.props.confirmApprove(this.props.closeCallback)}
+                    cancelApprove={this.props.cancelApprove}
+                />
         }
     }
 
@@ -260,8 +272,6 @@ export class SidebarPopup extends Component {
     }
 
     render() {
-        console.debug("Props:", this.props);
-
         const shadowLayerStyle = {
             position: 'fixed',
             margin: 'auto',
