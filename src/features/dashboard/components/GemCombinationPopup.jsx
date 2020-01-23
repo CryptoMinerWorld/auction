@@ -39,7 +39,7 @@ export class GemCombinationPopup extends Component {
           <PopupContainer>
               <Row>
                   <GemCombinationImage src={gemCombinationImage} />
-                  <div>
+                  <div style={{flex: "3 0 350px"}}>
                     <div style={{fontSize: "26px"}}><Pink>Gem Combination</Pink></div>
                     <div>
                         You can tell your Gem buddies to combine 
@@ -90,8 +90,8 @@ const ColorText = () => (<span>
 </span>)
 
 const GemCombinationImage = styled.img`
-    min-width: 175px;
-    width: 175px;
+    flex: 3 1 142px;
+    max-width: 175px;
     margin-right: 10px;
 `
 
@@ -118,7 +118,7 @@ const SilverSection = styled.div`
     background-size: contain;
     background-repeat: no-repeat;
     display: flex;
-    width: 266px;
+    max-width: 266px;
     height: 325px;
     flex-direction: column;
     align-items: center;
@@ -128,6 +128,7 @@ const SilverSection = styled.div`
     text-align: center;
     margin: 10px 5px 0px;
     font-size: 18px;
+    flex: 1 1 260px;
 `;
 
 const GoldSection = styled.div`
@@ -135,7 +136,7 @@ const GoldSection = styled.div`
     background-size: contain;
     background-repeat: no-repeat;
     display: flex;
-    width: 285px;
+    max-width: 285px;
     height: 325px;
     flex-direction: column;
     align-items: center;
@@ -144,17 +145,19 @@ const GoldSection = styled.div`
     text-align: center;
     margin: 10px 5px 0px;
     font-size: 18px;
+    flex: 1 1 280px;
 `;
 
 const PopupContainer = styled.div`
-            @media (max-width: 600px) {
+            @media (max-width: 752px) {
                 font-size: 12px;
+                max-height: 460px;
             }
         
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 100%;
+            overflow-y: auto;
             padding: 0 1%;
             font-size: 15px;
             font-weight: bold;
@@ -165,6 +168,8 @@ const PopupContainer = styled.div`
 const Row = styled.div`
             display: flex;
             align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
 `
 
 const Pink = styled.span`color: #FF00CD;`;

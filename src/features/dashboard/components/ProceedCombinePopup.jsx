@@ -61,7 +61,7 @@ export class ProceedCombinePopup extends Component {
               </Row>
               <Row style={{flexWrap: "wrap"}}>
                   {selectedGems.map(gem => 
-                    <div key={gem.id} style={{width: "160px", margin: "0 5px"}}>
+                    <GemSelectionCardWrapper key={gem.id}>
                         <GemSelectionCard 
                             backgroundColor={typePaneColors(gem.color)} 
                             outlineColor={typePaneOutlineColors(gem.color)} 
@@ -69,7 +69,7 @@ export class ProceedCombinePopup extends Component {
                             available={true}
                             onClick={() => {}}
                         />
-                    </div>
+                    </GemSelectionCardWrapper>
                   )}
               </Row>
               <Row>
@@ -134,6 +134,17 @@ const ProceedCombineSection = styled.div`
 
 `;
 
+const GemSelectionCardWrapper = styled.div`
+
+    @media (max-width: 380px) {
+        font-size: 12px;
+        max-height: 460px;
+    }
+
+    width: 150px;
+    margin: 0 5px;
+`
+
 const CancelCombineSection = styled.div`
     width: 200px;
     margin: 10px 20px;
@@ -166,14 +177,15 @@ const CreateGoldButton = styled.div`
 `;
 
 const PopupContainer = styled.div`
-            @media (max-width: 600px) {
+            @media (max-width: 752px) {
                 font-size: 12px;
+                max-height: 460px;
             }
         
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 100%;
+            overflow-y: auto;
             padding: 0 1%;
             font-size: 15px;
             font-weight: bold;
@@ -185,6 +197,8 @@ const Row = styled.div`
             display: flex;
             align-items: center;
             margin: 10px 0;
+            flex-wrap: wrap;
+            justify-content: center;
 `
 
 const Pink = styled.span`

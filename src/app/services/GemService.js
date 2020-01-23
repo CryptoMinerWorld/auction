@@ -3,6 +3,7 @@ import {db, storage} from '../../app/utils/firebase';
 import {GETTING_READY, GOING_HOME, IDLE, IN_AUCTION, MINING} from "../../features/items/itemConstants";
 import {BINDING_GEM, MINED, STUCK, UNBINDING_GEM} from "../../features/plots/plotConstants";
 import {COUNTRY_LIST} from "../../features/market/country_list";
+import { type, gradeConverter } from '../../features/dashboard/components/propertyPaneStyles';
 
 export default class GemService {
 
@@ -29,11 +30,9 @@ export default class GemService {
     getGem = async (tokenId) => {
         try {
             const gem = await this.getPackedGem(tokenId);
-            console.log('GEM UNPACKED: ', gem);
-
             const baseRate = calculateMiningRate(gem.gradeType, gem.gradeValue);
             const rate = baseRate * gemRateMultiplier({id: tokenId, color: gem.color});
-
+            
             const finalGem = {
                 ...gem,
                 id: tokenId,
@@ -45,8 +44,6 @@ export default class GemService {
                 baseRate: Math.floor(baseRate),
                 restingEnergy: gem.gradeType >= 4 ? calculateGemRestingEnergy(gem.age, gem.modifiedTime) : 0
             };
-
-            console.log('FINAL GEM:', finalGem);
             return finalGem;
         }
         catch (e) {
@@ -59,7 +56,6 @@ export default class GemService {
             const packed256_256 = await (this.contract.methods
               .getPacked(tokenId)
               .call());
-            console.log('PACKED GEM!!!!!!!!!!!!!!', packed256_256);
             return await this.unpackGem([new BigNumber(packed256_256[0]), new BigNumber(packed256_256[1])]);
         }
         catch (err) {
@@ -69,10 +65,6 @@ export default class GemService {
 
     unpackGem = async ([high256, low256]) => {
 
-        console.warn("High, low::", high256, low256);
-
-        //const plotId = high256.dividedToIntegerBy(new BigNumber(2).pow(232)).modulo(new
-        // BigNumber(2).pow(24)).toNumber();
         const color = high256.dividedToIntegerBy(new BigNumber(2).pow(248)).modulo(0x100).toNumber();
         const level = high256
           .dividedToIntegerBy(new BigNumber(2).pow(240))
@@ -128,7 +120,6 @@ export default class GemService {
     };
 
     getImagesForGems = async (gemsToLoadImages) => {
-        console.log('GEMS TO LOAD IMAGES: ', gemsToLoadImages);
         return await Promise.all(
           gemsToLoadImages.map(async gem => {
               if (!gem.image) {
@@ -140,7 +131,6 @@ export default class GemService {
                         gradeValue: gem.gradeValue
                     }, gem.id);
               }
-              //return gem;
           }));
     };
 
@@ -235,9 +225,6 @@ export const unpackGemProperties = (properties) => {
 };
 
 export const getGemStory = async (gemProperties, tokenId) => {
-
-    console.log('GET GEM STORY, gemProperties: ', gemProperties.color);
-
     const type = {
         1: 'garnet',
         2: 'amethyst',
@@ -257,8 +244,6 @@ export const getGemStory = async (gemProperties, tokenId) => {
         12: 'turquoise',
     }[gemProperties.color];
     const lvl = `lvl${gemProperties.level}`;
-
-    console.log('GET GEM STORY: ', type, lvl);
 
     try {
         if (type && lvl) {
@@ -298,6 +283,11 @@ export const getGemStory = async (gemProperties, tokenId) => {
     }
 };
 
+export const isGemIsSpecial = (gem) => {
+    const commonGemImageRef = `gems512/${type(gem.color)}-${gem.level}-${gradeConverter(gem.gradeType)}-4500.png`
+    return gem.image ? !decodeURIComponent(gem.image).includes(commonGemImageRef) : false
+}
+
 export const getGemImage = async (gemProperties, tokenId) => {
 
     const type = {
@@ -317,11 +307,6 @@ export const getGemImage = async (gemProperties, tokenId) => {
 
     const level = gemProperties.level;
     const gradeType = calculateGradeType(gemProperties.gradeType);
-    // check if any special images are present for gem
-    // if no - use type-level-grade formula
-    //const sourceImage = `${type}-${level}-${gradeType}-4500.png`;
-
-    //console.log('GET GEM IMAGE: ', type, level);
 
     if (type && gradeType && level) {
         let url;
@@ -329,7 +314,6 @@ export const getGemImage = async (gemProperties, tokenId) => {
             const doc = await db
               .doc(`specialStones/${tokenId}`)
               .get();
-
             try {
                 url = await (storage.ref(`gems512/${doc.data().imageName}-${level}-${gradeType}.png`).getDownloadURL());
             }
@@ -356,13 +340,6 @@ export const calculateMiningRate = (gradeType, gradeValue) => ({
     4: 720 + (9 * gradeValue) / 50000,
     5: 2500 + 6 * gradeValue / 10000,
     6: 5000 + 13 * gradeValue / 10000,
-    //
-    // 1: gradeValue / 200000,
-    // 2: 10 + gradeValue / 200000,
-    // 3: 20 + gradeValue / 200000,
-    // 4: 40 + (3 * gradeValue) / 200000,
-    // 5: 100 + gradeValue / 40000,
-    // 6: 300 + gradeValue / 10000,
 }[gradeType] - 100);
 
 export const calculateGradeType = (gradeType) => ({
@@ -373,7 +350,6 @@ export const calculateGradeType = (gradeType) => ({
     5: 'AA',
     6: 'AAA',
 }[gradeType]);
-
 
 export const calculateGemName = (color, tokenId) => {
     const id = Number(tokenId);

@@ -7,9 +7,15 @@ export class AssetSwitchPopup extends Component {
         
         return (
           <PopupContainer>
-              <div>Switch asset?</div>
-              <div onClick={this.props.confirmSwitch}><Pink>Confrim</Pink></div>
-              <div onClick={this.props.cancelSwitch}><Blue>Cancel</Blue></div>
+                <div>Do you want to switch what you are combining Gems for? All current gems selected will be deselected.</div>
+                <div onClick={this.props.confirmSwitch} 
+                    style={{pading: "5px"}}>
+                    <Pink>Switch</Pink>
+                </div>
+                <div onClick={this.props.cancelSwitch}
+                    style={{pading: "5px"}}>
+                    <Blue>Cancel</Blue>
+                </div>
           </PopupContainer>
         );
     }
@@ -30,11 +36,6 @@ const PopupContainer = styled.div`
             min-width: 320px;
             max-width: 580px;
         `;
-
-const Row = styled.div`
-            display: flex;
-            align-items: center;
-`
 
 const Pink = styled.span`color: #FF00CD;`;
 const Silver = styled.span`color: #bcc9d8;`

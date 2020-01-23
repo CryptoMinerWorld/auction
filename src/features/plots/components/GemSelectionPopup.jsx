@@ -20,6 +20,7 @@ import {
 } from "./propertyPaneStyles";
 import { CutEdgesButton } from "../../../components/CutEdgesButton";
 import SidebarPopup from "./SidebarPopup";
+import {isGemIsSpecial} from "../../../app/services/GemService";
 
 const CardBox = styled.section`
   display: grid;
@@ -210,7 +211,9 @@ export class GemSelectionPopup extends Component {
                     <CardBox>
                         {scrolledGems && scrolledGems.length > 0 ? (
                           scrolledGems.map(userGem => {
-                              const available = !userGem.auctionIsLive && gemMiningIds && !gemMiningIds.includes(userGem.id.toString());
+                              const available = !userGem.auctionIsLive && gemMiningIds && !gemMiningIds.includes(userGem.id.toString()) 
+                                && !(combineAsset && userGem.id > 0xF100 && userGem.id < 0xF200) 
+                                && !(combineAsset && isGemIsSpecial(userGem)) 
                               const applicableToPlot = selectedPlot ? selectedPlot.layerEndPercentages[userGem.level - 1] > selectedPlot.currentPercentage : false
                               const isSelectedToCombine = (combineAsset && selectedGems.length > 0) ? selectedGems.find(gem => gem.id === userGem.id) : false
                               if (available) return (

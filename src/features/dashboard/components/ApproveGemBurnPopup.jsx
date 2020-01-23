@@ -6,24 +6,32 @@ import Loading from "../../../components/Loading";
 export class ApproveGemBurnPopup extends Component {
 
     state = {
-        waitingForConfirmation: false
+        waitingForConfirmation: true
+    }
+
+    componentDidMount() {
+      try {
+        this.props.confirmApprove()
+      } catch (reject) {
+        this.props.cancelApprove()
+      }
     }
 
     render() {
         return (
         <PopupContainer>
-              <div>Please confirm transaction to allow gems to combine. Click Next to continue.</div>
+              <div>To start combining Gems you have grant permission with a one time transaction.</div>
               {this.state.waitingForConfirmation ? 
               <>
                 <div style={{position: "relative", height: "30px"}}><Loading/></div>
                 <div>
-                  Waiting for the transaction to be completed
+                Waiting for transaction to be confirmed.
                 </div>
               </> :
               <>
                 <div onClick={() => {
                         this.setState({waitingForConfirmation: true})
-                        this.props.confirmApprove()}}>
+                        }}>
                     <Pink>Next</Pink>
                 </div>
                 <div onClick={this.props.cancelApprove}><Blue>Cancel</Blue></div>

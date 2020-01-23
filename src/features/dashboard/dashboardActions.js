@@ -3,6 +3,7 @@ import {
     APPLY_GEM_WORKSHOP_SORTING,
     AUCTION_DETAILS_RECEIVED, COUNTRY_WITHDRAW,
     COUPON_USE,
+    GEM_COMBINE,
     DASHBOARD_WAS_FILTERED,
     DESELECT_ALL_GEM_WORKSHOP_FILTERS,
     FETCH_USER_COUNTRIES,
@@ -265,8 +266,8 @@ export const proceedCombine = (userGems, combineAsset, hidePopup, onNotApprovedC
             addPendingTransaction({
                 hash: hash,
                 userId: currentUserId,
-                type: COUPON_USE,
-                description: `Combining gems`,
+                type: GEM_COMBINE,
+                description: `Create ${combineAsset}`,
                 body: {
                     combineAsset: combineAsset
                 }

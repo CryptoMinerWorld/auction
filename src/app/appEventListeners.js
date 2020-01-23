@@ -13,8 +13,7 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
         fromBlock: 'latest'
     })
       .on('data', function (event) {
-          console.warn("<< << << updated app event");
-          if (event.returnValues['_by'] !== currentUserId) {
+          if (event.returnValues['_by'].toLowerCase() !== currentUserId.toLowerCase()) {
               console.error("_by address is different from current user address.", event.returnValues['_by'], currentUserId);
           }
           else {
@@ -285,7 +284,7 @@ export const setAppEventListeners = ({plotService, gemService, auctionService, s
       .on('data', function (event) {
           if (!caughtEventIds.includes(event['id'])) {
               caughtEventIds.push(event['id']);
-              transactionResolved(event, currentUserId);
+              transactionResolved(event, currentUserId);   
           }
       })
       .on('changed', function (event) {

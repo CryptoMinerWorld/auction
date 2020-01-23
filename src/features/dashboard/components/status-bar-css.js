@@ -32,6 +32,7 @@ export const SilverGoldBalance = styled.div`
         #silver-label {
             margin-top: 4px;
         }
+        margin: 0 5px;
     }
     
     @media(min-width: 801px) {
@@ -45,16 +46,22 @@ export const Username = styled.h1`
     color: #fff !important;
     margin: 10px 0;
     @media(max-width: 800px) {
-        margin: 0;
+        margin: 0 10px 0 0;
         font-size: 24px;
     }
 `;
 
 export const GemCombinationButton = styled.img`
-    position: absolute;
+
+    @media(min-width: 900px) {
+        left: -100px;
+    }
+
+    position: relative;
     left: 0;
     right: 0;
     margin: auto;
     width: 325px;
     cursor: pointer;
+    order: 3;
 `;
