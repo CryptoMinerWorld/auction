@@ -3,8 +3,6 @@ import {CLEAR_ERROR, CONTRACTS_ADDED, SET_ERROR,} from './reduxConstants';
 
 export const sendContractsToRedux = (web3, contracts, services, currentAccount) => (dispatch) => {
 
-    console.info("SEND CONTRACTS TO REDUX", contracts, services);
-
     dispatch({
         type: CONTRACTS_ADDED,
         payload: {
@@ -23,6 +21,8 @@ export const setError = (payload, title) => ({
     meta: title,
 });
 export const clearError = () => ({type: CLEAR_ERROR});
+
+
 
 export const instantiateContracts = async (assistInstance, web3, ABISet, currentAccountId) => {
 

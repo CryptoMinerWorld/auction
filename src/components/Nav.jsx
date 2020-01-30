@@ -14,6 +14,8 @@ import countryGem from '../app/images/dashboard/countryGem.png';
 import erc20Market from '../app/images/dashboard/erc20Market.png';
 import workshopIcon from '../app/images/dashboard/workshopIcon50.png';
 import gemCombinationIcon from '../app/images/dashboard/gemCombinationIcon64.png'
+import landIcon from '../app/images/dashboard/Land.png'
+import gemMarketIcon from '../app/images/dashboard/gemMarket.png'
 import { SHOW_GEMS_COMBINE_POPUP } from '../features/dashboard/dashboardConstants';
 
 
@@ -116,7 +118,7 @@ const Navbar = ({
                 }}
                 className="link dim dark-gray f6 f5-l dib mr3 mr4-l"
               >
-                  Market
+                  <img width={30} src={gemMarketIcon}/> Market
               </NavLink>
               <NavLink
                 to="/market?tab=3"
@@ -155,7 +157,7 @@ const Navbar = ({
                     color: 'purple',
                 }}
               >
-                  Plots of Land
+                  <img width={30} src={landIcon}/> Plots of Land
               </NavLink>
               {user && (
                 <AvatarDropdown

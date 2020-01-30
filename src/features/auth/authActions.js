@@ -87,14 +87,13 @@ export const createNewUser = payload => (dispatch) => {
       .split('')
       .map(item => (typeof item === 'string' ? item.toLowerCase() : item))
       .join('');
-
     return db
       .doc(`users/${userIdToLowerCase}`)
       .set(payload, {merge: true})
       .then(() => {
           checkIfUserExists(userIdToLowerCase)(dispatch)
       })
-      .catch(error => setError(error));
+      .catch(error => console.error("auth error", error));
 };
 
 export const showSignInModal = () => dispatch => dispatch({type: NEW_USER});

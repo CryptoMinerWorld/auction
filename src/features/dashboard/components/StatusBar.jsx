@@ -6,7 +6,7 @@ import Silver from "../../../app/images/dashboard/Silver.png";
 import gemCombinationButtonImage from "../../../app/images/dashboard/gemCombinationButton.png";
 import {Avatar, SilverGoldBalance, Username, GemCombinationButton} from "./status-bar-css"
 
-const StatusBar = ({dashboardUser, userBalance, openGemsCombinePopup}) => {
+const StatusBar = ({dashboardUser, userBalance, currentUserId, openGemsCombinePopup}) => {
     return (
         <div className="flex aic wrap jcb relative">
             <div className=" flex aic pt0-ns">
@@ -20,7 +20,9 @@ const StatusBar = ({dashboardUser, userBalance, openGemsCombinePopup}) => {
                     {dashboardUser && dashboardUser.name || "Loading..."}
                 </Username>
             </div>
+            {dashboardUser && currentUserId === dashboardUser.walletId ? 
             <GemCombinationButton src={gemCombinationButtonImage} onClick={openGemsCombinePopup}/>
+            :""}
             <SilverGoldBalance className="flex col tc b">
                 <div className="flex">
                     <div className="flex col justify-center-ns"

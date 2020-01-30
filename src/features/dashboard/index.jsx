@@ -415,7 +415,7 @@ class Dashboard extends Component {
 
         return (
           <div className="bg-off-black white card-container" data-testid="profile-page">
-              <StatusBar dashboardUser={dashboardUser} userBalance={userBalance}
+              <StatusBar dashboardUser={dashboardUser} currentUserId={currentUserId} userBalance={userBalance}
                openGemsCombinePopup={handleShowGemsCombine}/>
               <Tabs
                 activeKey={`${tab}`}

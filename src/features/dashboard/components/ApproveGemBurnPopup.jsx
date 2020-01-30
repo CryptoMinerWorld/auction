@@ -20,7 +20,7 @@ export class ApproveGemBurnPopup extends Component {
     render() {
         return (
         <PopupContainer>
-              <div>To start combining Gems you have grant permission with a one time transaction.</div>
+              <div>To start combining Gems you have to grant permission with a one time transaction.</div>
               {this.state.waitingForConfirmation ? 
               <>
                 <div style={{position: "relative", height: "30px"}}><Loading/></div>

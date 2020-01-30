@@ -125,36 +125,16 @@ class App extends Component {
         };
     }
 
-    async componentDidMount() {
-        const {
-            handleSendContractsToRedux, handleUpdateWalletId, handleSetError, client,
-        } = this.props;
-
-        // @notice loading a custom font when app mounts
-        const font = new FontFaceObserver('Muli', {
-            weight: 400,
-        });
-        font
-          .load()
-          .then(() => this.setState({font: 'muli'}))
-          .catch(error => handleSetError(error));
-
-        // @notice loading web3 when component mounts
+    async setupContactsAndServices(walletAddress) {
+        const handleSendContractsToRedux = this.props.handleSendContractsToRedux
         let Web3, web3;
-
-        //const network = await web3.eth.net.getNetworkType();
         try {
             Web3 = await getWeb3;
         } catch (err) {
-            console.log("ERROR GETTING WEB3", error);
+            console.error("ERROR GETTING WEB3", error);
             return;
         }
-        console.info("Web3:", Web3);
         web3 = Web3.web3;
-
-        // if (network !== process.env.REACT_APP_NETWORK_TYPE) {
-        //     this.setState({wrongNetwork: true})
-        // }
 
         let bncAssistConfig = {
             dappId: "e8432341-1602-487b-ba82-c3e2c46fb47d",      // [String] The API key created by step one above
@@ -182,42 +162,67 @@ class App extends Component {
                 console.error(e.message);
             }
         }
-        const currentAccountId = await web3.eth.getAccounts().then(accounts => accounts[0]);
+        
+        const contracts = await instantiateContracts(
+            assistInstance,
+            web3,
+            {
+                dutchAuctionABI, dutchAuctionHelperABI, gemsABI, countryABI, refPointsTrackerABI, goldABI,
+                silverABI, workshopABI, silverSaleABI, silverCouponsABI, plotSaleABI, plotABI, minerABI,
+                artifactABI, balanceABI, plotAntarcticaABI, foundersPlotsABI, chestFactoryABI, foundersKeyABI, chestKeyABI, gemBurnerABI
+            }, walletAddress);
+  
+          if (contracts) {  
+              const services = {
+                  gemService: new GemService(contracts.gemContract, web3, contracts.auctionContract, contracts.gemBurnerContract),
+                  auctionService: new AuctionService(contracts.auctionContract, contracts.tokenHelperContract, contracts.gemContract),
+                  silverGoldService: new SilverGoldService(contracts.silverSaleContract, contracts.balanceContract, contracts.refPointsTrackerContract),
+                  countryService: new CountryService(null, contracts.countryContract),
+                  plotService: new PlotService(contracts.plotContract, contracts.plotSaleContract, contracts.minerContracts)
+              };
+              handleSendContractsToRedux(web3, contracts, services, walletAddress);
+          }
+    }
 
+    async componentDidMount() {
+        const {
+            handleSendContractsToRedux, handleUpdateWalletId, handleSetError, client,
+        } = this.props;
+
+        // @notice loading a custom font when app mounts
+        const font = new FontFaceObserver('Muli', {
+            weight: 400,
+        });
+        font
+          .load()
+          .then(() => this.setState({font: 'muli'}))
+          .catch(error => handleSetError(error));
+
+        // @notice loading web3 when component mounts
+        let Web3, web3;
+
+        //const network = await web3.eth.net.getNetworkType();
+        try {
+            Web3 = await getWeb3;
+        } catch (err) {
+            console.log("ERROR GETTING WEB3", error);
+            return;
+        }
+        console.info("Web3:", Web3);
+        web3 = Web3.web3;
+
+        let currentAccountId = await web3.eth.getAccounts().then(accounts => accounts[0]);
+        this.setupContactsAndServices(currentAccountId)
         // this ensures that the wallet in metamask is always the wallet in the currentAccountId
-        // however this is a problem because it means that you cant view someone else profile page
         if (web3.currentProvider.publicConfigStore) {
             web3.currentProvider.publicConfigStore.on('update', ({selectedAddress}) => {
-                handleUpdateWalletId(selectedAddress)
+                if (selectedAddress !== currentAccountId) {
+                    console.debug("UPDATE ADDRESS:", selectedAddress, currentAccountId)
+                    currentAccountId = selectedAddress
+                    handleUpdateWalletId(selectedAddress)
+                    this.setupContactsAndServices(selectedAddress)
+                }
             });
-        }
-
-        const contracts = await instantiateContracts(
-          assistInstance,
-          web3,
-          {
-              dutchAuctionABI, dutchAuctionHelperABI, gemsABI, countryABI, refPointsTrackerABI, goldABI,
-              silverABI, workshopABI, silverSaleABI, silverCouponsABI, plotSaleABI, plotABI, minerABI,
-              artifactABI, balanceABI, plotAntarcticaABI, foundersPlotsABI, chestFactoryABI, foundersKeyABI, chestKeyABI, gemBurnerABI
-          }, currentAccountId);
-
-        console.info("contracts", contracts);
-
-        if (contracts) {
-            client.writeData({
-                data: {
-                    userId: currentAccountId,
-                },
-            });
-
-            const services = {
-                gemService: new GemService(contracts.gemContract, web3, contracts.auctionContract, contracts.gemBurnerContract),
-                auctionService: new AuctionService(contracts.auctionContract, contracts.tokenHelperContract, contracts.gemContract),
-                silverGoldService: new SilverGoldService(contracts.silverSaleContract, contracts.balanceContract, contracts.refPointsTrackerContract),
-                countryService: new CountryService(null, contracts.countryContract),
-                plotService: new PlotService(contracts.plotContract, contracts.plotSaleContract, contracts.minerContracts)
-            };
-            handleSendContractsToRedux(web3, contracts, services, currentAccountId);
         }
     }
 
