@@ -59,7 +59,7 @@
     "react-automata": "^4.0.4",
     "react-confetti": "^2.3.0",
     "react-copy-to-clipboard": "^5.0.1",
-    "react-dev-utils": "^6.0.5",
+    "react-dev-utils": "^11.0.4",
     "react-dom": "^16.7.0-alpha.0",
     "react-ga": "^2.5.3",
     "react-image-webp": "^0.2.2",
